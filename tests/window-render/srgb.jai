@@ -1,5 +1,5 @@
 #import "Basic";
-S :: #import "sRGB";
+S :: #import "Srgb";
 #import "Math";
 
 near :: (a: float, b: float, tolerance: float) {

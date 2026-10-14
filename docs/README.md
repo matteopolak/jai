@@ -95,6 +95,8 @@ The LLVM backend, C ABI and linking.
 ## Standard library
 
 - [Window/render worker coverage and verification](window-render.md)
+- [Window/render API coverage ledger](window-render-coverage.md)
+- [Window/render worker handoff and integration gates](window-render-handoff.md)
 - [Focused window/render verification runner](../tools/check_window_render.py)
 - [Window/render contract questions](specs/stdlib/window-render-questions.md)
 - [jaic Extensions](extensions/README.md)

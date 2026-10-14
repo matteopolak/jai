@@ -18,6 +18,7 @@ def main():
     parser.add_argument("--jaic", type=Path, default=ROOT / "target/window-compiler/debug/jaic")
     parser.add_argument("--stdlib", type=Path, default=ROOT / "target/window-integration-stdlib")
     parser.add_argument("--native-libs", type=Path, default=ROOT / "target/window-native")
+    parser.add_argument("--font", type=Path, help="caller-provided native font asset; never copied into the repository")
     args = parser.parse_args()
     compiler = args.jaic.resolve(strict=True)
     if not compiler.is_relative_to(ROOT / "target"):
@@ -39,13 +40,17 @@ def main():
     host = ["srgb", "mapping", "bitmap-native"]
     if platform.system() == "Darwin":
         host.append("clipboard-host")
+    if args.font:
+        host.append("font-native")
     for name in host:
         source = ROOT / f"tests/window-render/{name}.jai"
-        run([compiler, source, "-interp", "-I", ROOT / "stdlib"], "ok\n")
+        parameters = [args.font.resolve()] if name == "font-native" else []
+        program_args = ["--", *parameters] if parameters else []
+        run([compiler, source, "-interp", "-I", ROOT / "stdlib", *program_args], "ok\n")
         for optimization in ["O0", "O2"]:
             binary = output / f"{name}-{optimization}"
             run([compiler, source, f"-{optimization}", "-exe", binary, "-I", ROOT / "stdlib"])
-            run([binary], "ok\n")
+            run([binary, *parameters], "ok\n")
         print(f"passed host interpreter and native O0/O2: {name}", flush=True)
 
     linux = ["types", "portable", "callback-types", "keycodes", "window-invalid", "bitmap-codec", "gamepad-virtual"]
@@ -54,10 +59,15 @@ def main():
         run([compiler, source, "-interp", "-os", "linux", "-I", ROOT / "stdlib"], "ok\n")
         print(f"passed Linux-target interpreter: {name}", flush=True)
 
+    if args.font:
+        run([compiler, ROOT / "tests/window-render/font-public.jai", "-interp", "-os", "linux",
+             "-I", ROOT / "stdlib", "--", args.font.resolve()], "ok\n")
+        print("passed public font facade with native FreeType (Linux-target interpreter)", flush=True)
+
     for os_name in ["linux", "windows"]:
         for cpu in ["x64", "arm64"]:
-            cases = ["types", "callback-types", "keycodes"]
-            cases += ["evdev-signatures", "window-invalid"] if os_name == "linux" else ["clipboard-host"]
+            cases = ["types", "callback-types", "keycodes", "window-types"]
+            cases += ["evdev-signatures", "window-invalid"] if os_name == "linux" else ["clipboard-host", "windows-queries"]
             for name in cases:
                 run([compiler, ROOT / f"tests/window-render/{name}.jai", "-check", "-os", os_name,
                      "-cpu", cpu, "-I", ROOT / "stdlib"])

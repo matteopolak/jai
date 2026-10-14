@@ -40,9 +40,10 @@ def main():
     if platform.system() == "Darwin":
         probe = ROOT / "tests/window-render/clipboard-inspect.m"
         obj = output / "window_clipboard_probe.o"
-        subprocess.run(["cc", "-O2", "-fobjc-arc", "-c", str(probe), "-o", str(obj)], check=True)
-        subprocess.run(["ar", "rcs", str(output / "libwindow_clipboard_probe.a"), str(obj)], check=True)
-        subprocess.run(["cc", "-dynamiclib", str(obj), "-framework", "AppKit", "-o",
+        subprocess.run(["cc", "-O2", "-fobjc-arc", "-I", str(source), "-c", str(probe), "-o", str(obj)], check=True)
+        decoder = output / "stb_image.o"
+        subprocess.run(["ar", "rcs", str(output / "libwindow_clipboard_probe.a"), str(obj), str(decoder)], check=True)
+        subprocess.run(["cc", "-dynamiclib", str(obj), str(decoder), "-framework", "AppKit", "-o",
                         str(output / "libwindow_clipboard_probe.dylib")], check=True)
     print(output)
 

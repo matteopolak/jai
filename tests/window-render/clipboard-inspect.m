@@ -1,24 +1,31 @@
 #import <AppKit/AppKit.h>
 #include <stdio.h>
+#include <limits.h>
+#include "stb_image.h"
 
 // Independent native SDK observation of the Jai backend's PNG clipboard payload.
-int window_clipboard_probe(void) {
+int window_clipboard_probe(int test_case) {
     @autoreleasepool {
         NSData *data = [[NSPasteboard generalPasteboard] dataForType:NSPasteboardTypePNG];
         if (!data) return 1;
-        NSBitmapImageRep *image = [[NSBitmapImageRep alloc] initWithData:data];
-        if (!image || image.pixelsWide != 2 || image.pixelsHigh != 2) return 2;
-        // Inspect encoded channel samples directly. NSColor conversion to the device
-        // profile changes numeric RGB values and would test color management instead.
-        if (image.bitsPerSample != 8 || image.samplesPerPixel != 4) return 3;
-        NSUInteger first[4], last[4];
-        [image getPixel:first atX:0 y:0];
-        [image getPixel:last atX:1 y:1];
-        if (first[0] != 0 || first[1] != 0 || first[2] != 255 || first[3] != 255) {
-            fprintf(stderr, "first native PNG pixel: %lu %lu %lu %lu\n", first[0], first[1], first[2], first[3]);
-            return 4;
+        if (data.length > INT_MAX) return 2;
+        int width, height, channels;
+        unsigned char *pixels = stbi_load_from_memory(data.bytes, (int)data.length,
+                                                      &width, &height, &channels, 4);
+        if (!pixels) return 3;
+        int result = 0;
+        if (width != 2 || height != 2) result = 4;
+        // Decode numeric PNG samples independently of Cocoa's premultiplication
+        // and device color-space conversion. Caller RGBA is straight alpha.
+        else if (test_case == 0 && (pixels[0] != 0 || pixels[1] != 0 || pixels[2] != 128 || pixels[3] != 128 ||
+                 pixels[12] != 0 || pixels[13] != 64 || pixels[14] != 0 || pixels[15] != 128)) {
+            fprintf(stderr, "native PNG first/last RGBA: %u %u %u %u / %u %u %u %u\n",
+                    pixels[0], pixels[1], pixels[2], pixels[3], pixels[12], pixels[13], pixels[14], pixels[15]);
+            result = 5;
         }
-        if (last[0] != 0 || last[1] != 255 || last[2] != 0 || last[3] != 255) return 5;
-        return 0;
+        else if (test_case == 1 && (pixels[0] != 9 || pixels[1] != 1 || pixels[2] != 2 || pixels[3] != 255 ||
+                 pixels[12] != 6 || pixels[13] != 7 || pixels[14] != 8 || pixels[15] != 255)) result = 6;
+        stbi_image_free(pixels);
+        return result;
     }
 }

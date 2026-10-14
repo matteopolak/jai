@@ -128,12 +128,12 @@ Reproducible commands:
 python3 tools/window_render_native.py
 python3 tools/check_window_render.py
 target/window-jaifmt --check stdlib/Window_Type stdlib/Window_Creation stdlib/Input \
-  stdlib/Keymap stdlib/Gamepad stdlib/Simp stdlib/sRGB stdlib/Clipboard \
+  stdlib/Keymap stdlib/Gamepad stdlib/Simp stdlib/Srgb stdlib/Clipboard \
   stdlib/internal/window stdlib/internal/input stdlib/internal/gamepad \
   stdlib/internal/rendering stdlib/internal/clipboard tests/window-render
 JAIC_STDLIB=$PWD/target/window-integration-stdlib target/window-compiler/debug/jailint \
   -D warnings -I stdlib stdlib/Window_Type stdlib/Window_Creation stdlib/Input \
-  stdlib/Keymap stdlib/Gamepad stdlib/Simp stdlib/sRGB stdlib/Clipboard \
+  stdlib/Keymap stdlib/Gamepad stdlib/Simp stdlib/Srgb stdlib/Clipboard \
   stdlib/internal/window stdlib/internal/input stdlib/internal/gamepad \
   stdlib/internal/rendering stdlib/internal/clipboard tests/window-render
 ```
@@ -145,3 +145,32 @@ bitmap round-trip, and the actual SDL virtual-device pipeline; and Linux/Windows
 configuration checks. Scoped formatter check, warnings-denied lint, and database
 regeneration-plus-format idempotence passed. No Rust files were modified in this checkout.
 Extensions have no worker diff.
+
+## Face lifecycle and straight-alpha regression milestone
+
+Real FreeType memory/file face loading, owned data copies, name lookup, filename caching,
+and face destruction are now implemented. A private registry captures the creating
+allocator for data/name/object release. Malformed font bytes return null without leaving
+a registered face. `init_fonts` initializes the actual FreeType library; non-default
+atlas-size requests explicitly diagnose the unfinished atlas backend. Dynamic glyphs,
+shaping and rendering remain outstanding. Filename loading on non-Unix targets diagnoses
+the inherited File backend limitation; memory loading is independent of that module.
+
+The optional runtime font test accepts a path argument and does not copy an asset into
+the repository. The host run used `/System/Library/Fonts/Helvetica.ttc`, checking native
+glyph/unit metadata, independent owned memory, failure cleanup and face destruction.
+The exact face source also has a native test component with no window substitution.
+
+Independent PNG decoding exposed Cocoa's default premultiplied-alpha interpretation.
+The bitmap backend now specifies the SDK's straight-alpha flag, preserving caller RGB
+and alpha bytes through actual PNG clipboard encoding. Host tests cover partial alpha,
+RGB/RGBA, and flipped/non-flipped rows. No looser color tolerance replaced pixel checks.
+
+Window_Creation additionally supplies the reviewed native Saved_Window_Info shapes and
+Windows style constants, plus real Win32 client dimensions and mouse-position overloads.
+Windows fullscreen and creation remain outstanding. Right-handed global Win32 coordinates
+use the virtual desktop bottom; client pixel queries use `height - 1 - y`.
+
+Latest focused run: `python3 tools/check_window_render.py --font
+/System/Library/Fonts/Helvetica.ttc` passed **57** invocations. The canonical module import
+is `Srgb`, matching the reviewed spec title; no alternate export/module alias is invented.
