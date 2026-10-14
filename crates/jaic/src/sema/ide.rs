@@ -1879,9 +1879,19 @@ impl Compiler {
             EntityKind::Decl {
                 decl, ..
             } => match &e.state {
-                EntityState::Done(Resolved::Proc(p)) => {
-                    (IdeKind::Function, clip(&self.ide_header_text(*p)))
-                }
+                EntityState::Done(Resolved::Proc(p))
+                | EntityState::Done(Resolved::Const {
+                    value: value::Value::Proc(p),
+                    ..
+                }) => (IdeKind::Function, clip(&self.ide_header_text(*p))),
+                EntityState::Done(Resolved::ProcSet(procedures)) => (
+                    IdeKind::Function,
+                    procedures
+                        .iter()
+                        .map(|p| clip(&self.ide_header_text(*p)))
+                        .collect::<Vec<_>>()
+                        .join(" | "),
+                ),
                 EntityState::Done(Resolved::Global {
                     ty, ..
                 }) => (IdeKind::Variable, self.types.name(*ty)),
@@ -2035,11 +2045,32 @@ impl Compiler {
             })
             .collect();
         ids.sort_by_key(|&e| self.entity(e).name.as_str());
-        let mut names: Vec<IdeName> = ids
-            .into_iter()
-            .filter(|&e| !self.entity(e).file_private)
-            .filter_map(|e| self.ide_entity_name(e))
-            .collect();
+        let mut names = Vec::new();
+        for id in ids {
+            let entity = self.entity(id);
+            if entity.file_private {
+                continue;
+            }
+            // Facades often export procedures through aliases. Syntax alone calls
+            // these constants, even when their targets are overload sets. Resolve
+            // only simple aliases through the usual lookup/visibility rules; do
+            // not eagerly compile every unrelated declaration or procedure body.
+            if matches!(entity.state, EntityState::Unresolved)
+                && let EntityKind::Decl {
+                    decl, ..
+                } = &entity.kind
+                && decl.kind == ast::DeclKind::Const
+                && matches!(
+                    decl.value.as_ref().map(|v| &v.kind),
+                    Some(ast::ExprKind::Ident(_) | ast::ExprKind::Member(..))
+                )
+            {
+                let _ = self.resolve_entity(id);
+            }
+            if let Some(name) = self.ide_entity_name(id) {
+                names.push(name);
+            }
+        }
         for index in self.modules[m.0 as usize].exported_using_imports.clone() {
             if let Ok(Some(inner)) = self.import_module(scope, index) {
                 let mut inherited = self.ide_module_exports(inner, visiting);
