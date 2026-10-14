@@ -58,6 +58,13 @@ accounting, reset retention, stamping, release and allocator modes. Its optional
 `USE_UNMAPPING_ALLOCATOR=true` configuration fails explicitly until the native
 unmapping subsystem is available. It is not counted as supported configuration.
 
+Basic now includes canonical two-limb integer records, portable full-width
+multiplication and signed/unsigned division. Twenty-four independently generated
+128-bit division vectors supplement boundary checks. Random uses the reviewed
+128-bit multiplicative recurrence and context-backed state; seeding and output
+ranges have interpreter/native checks. Memory's optional candidate and unwrap
+exports use the portable copying backend, preserving fixed-width byte counts.
+
 The worker built the compiler worker's independent Rust sources with `--locked`
 and `CARGO_TARGET_DIR` under this checkout, first without LLVM and then with the
 default LLVM feature. No supplied reference binary was executed.

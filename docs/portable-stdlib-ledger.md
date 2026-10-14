@@ -72,7 +72,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [mail](specs/stdlib/modules/mail.md) | Not implemented in this checkout; see ownership exclusions |
 | [math](specs/stdlib/modules/math.md) | Not implemented in this checkout; see ownership exclusions |
 | [md5](specs/stdlib/modules/md5.md) | Not implemented in this checkout; see ownership exclusions |
-| [memory](specs/stdlib/modules/memory.md) | Generic overlapping copy passes interpreter/native contracts; optional candidate/unwrap APIs not implemented |
+| [memory](specs/stdlib/modules/memory.md) | Generic and optional candidate/unwrap exports implemented with portable backend; overlap, widths and mutable capability state checked interpreter/native |
 | [meow-hash](specs/stdlib/modules/meow-hash.md) | Not implemented in this checkout; see ownership exclusions |
 | [meshoptimizer](specs/stdlib/modules/meshoptimizer.md) | Not implemented in this checkout; see ownership exclusions |
 | [metal](specs/stdlib/modules/metal.md) | Not implemented in this checkout; see ownership exclusions |
@@ -97,7 +97,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [project-generator](specs/stdlib/modules/project-generator.md) | Not implemented in this checkout; see ownership exclusions |
 | [protocol-for-memory-visualization](specs/stdlib/modules/protocol-for-memory-visualization.md) | Not implemented in this checkout; see ownership exclusions |
 | [radixsort](specs/stdlib/modules/radixsort.md) | Not implemented in this checkout; see ownership exclusions |
-| [random](specs/stdlib/modules/random.md) | Not implemented in this checkout; see ownership exclusions |
+| [random](specs/stdlib/modules/random.md) | All reviewed exports implemented; recurrence, odd seeds and float ranges checked interpreter/native |
 | [reflection](specs/stdlib/modules/reflection.md) | All reviewed exports implemented; scalar/range/enum/array checks pass interpreter/native; malformed parser edges remain under review |
 | [relative-pointers](specs/stdlib/modules/relative-pointers.md) | Not implemented in this checkout; see ownership exclusions |
 | [remap-context](specs/stdlib/modules/remap-context.md) | Not implemented in this checkout; see ownership exclusions |
