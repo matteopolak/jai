@@ -12,6 +12,7 @@ main :: () {
     assert(e.type == .UNINITIALIZED);
     assert(e.key_code == .UNKNOWN);
     assert(e.modifier_flags.packed == 0);
+    assert(size_of(I.Event.Modifier_Flags) == 4);
     e.shift_pressed = true;
     assert(e.modifier_flags.packed != 0);
     assert(cast(u32) I.Key_Code.META == cast(u32) I.Key_Code.CMD);

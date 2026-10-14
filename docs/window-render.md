@@ -78,3 +78,70 @@ Validation added: host clipboard interpreter/native O0/O2; SDL mapping interpret
 O0/O2; Linux-target callback-record interpreter; Linux-target interpreter invoking the
 host's real SDL2 virtual-controller APIs for attach, press, hold, release, axis extremes,
 and detach. No physical controller was required or emulated by a success stub.
+
+## Image codecs, native queries, and native declaration milestone
+
+Simp bitmap load/from-memory and save now use source-built pinned stb C codecs. Native
+decoder memory is copied into the caller allocator and freed through stbi_image_free;
+failed decoding retains the previous bitmap. Saving supports eight-bit R/RG/RGB/RGBA,
+RGBX and BGRA, honors stride, swaps BGRA channels, and writes PNG/BMP/TGA/JPEG by extension.
+Other formats or malformed storage return false. Mipmap construction remains outstanding.
+The exact CPU source and declaration files are additionally exercised in a test-only
+component module so native checks do not require the missing macOS window class. No
+window types or fake handles are substituted by that test component.
+
+Window_Creation now has real X11 dimension/pointer queries and EWMH fullscreen requests
+that check the window manager's supported atoms. A successfully queued request is
+asynchronous; returned dimensions describe the current native window. Invalid zero
+handles produce failure. Native creation remains blocked by the unreviewed background
+default, and non-X11 window backends remain unavailable. No X server was available for
+successful-window integration coverage on this host.
+
+Input key translation covers reviewed common controls/function/modifier keys and X11
+ASCII, using native SDK constants. Windows letters/digits and control/function keys are
+supported; OEM/layout-specific punctuation remains unresolved. Native event pumps are
+still outstanding. Keymap remains a nominal-record implementation only.
+
+All 84 reviewed libevdev procedures are declared, independently grouped by responsibility
+and alphabetized within groups. Contextual input records alias the native binding owner's
+Linux types. Private C enum values were verified against the public libevdev 1.13.3 header:
+`https://gitlab.freedesktop.org/libevdev/libevdev/-/raw/libevdev-1.13.3/libevdev/libevdev.h`,
+SHA256 `afb637077d8b7636e7d9d31d96614c2cd99567a74a09e99a310bb8cae54f2789`.
+The signature fixture resolves every procedure and checks assignability where signatures
+contain public types. Linux runtime libevdev/device coverage remains unverified.
+
+Windows Clipboard now uses real moveable global memory, UTF-8/UTF-16 conversion,
+bounded CF_UNICODETEXT reads, eager CF_DIBV5 bitmap ownership transfer, and a real invisible
+native owner window. Four missing SDK operations are declared privately in this adapter;
+they can move to the native bindings owner at integration without changing facade exports.
+The process owns the hidden owner for its lifetime; use this UI adapter from its creating
+thread. Source checks pass for Windows x64 and arm64; no Windows host runtime claim is made.
+Native ownership follows Microsoft's [SetClipboardData documentation](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setclipboarddata).
+
+The macOS clipboard fixture independently reads and decodes PNG clipboard data through a
+source-built Objective-C SDK probe, checking exact RGB/alpha samples and flip orientation.
+The probe examines encoded samples rather than converting NSColor to the device profile.
+
+Reproducible commands:
+
+```sh
+python3 tools/window_render_native.py
+python3 tools/check_window_render.py
+target/window-jaifmt --check stdlib/Window_Type stdlib/Window_Creation stdlib/Input \
+  stdlib/Keymap stdlib/Gamepad stdlib/Simp stdlib/sRGB stdlib/Clipboard \
+  stdlib/internal/window stdlib/internal/input stdlib/internal/gamepad \
+  stdlib/internal/rendering stdlib/internal/clipboard tests/window-render
+JAIC_STDLIB=$PWD/target/window-integration-stdlib target/window-compiler/debug/jailint \
+  -D warnings -I stdlib stdlib/Window_Type stdlib/Window_Creation stdlib/Input \
+  stdlib/Keymap stdlib/Gamepad stdlib/Simp stdlib/sRGB stdlib/Clipboard \
+  stdlib/internal/window stdlib/internal/input stdlib/internal/gamepad \
+  stdlib/internal/rendering stdlib/internal/clipboard tests/window-render
+```
+
+The focused runner passed **45** compiler/program invocations, including host interpreter
+and native O0/O2 for color transfer, SDL mappings, CPU bitmap codecs, and actual Cocoa
+clipboard; Linux-target interpreter cases for records, input reset, window failures,
+bitmap round-trip, and the actual SDL virtual-device pipeline; and Linux/Windows x64/arm64
+configuration checks. Scoped formatter check, warnings-denied lint, and database
+regeneration-plus-format idempotence passed. No Rust files were modified in this checkout.
+Extensions have no worker diff.
