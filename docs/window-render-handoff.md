@@ -110,3 +110,36 @@ position constraints; neither native failure was ignored or replaced by fake val
 
 Full deviations/progress live in docs/status. Native Windows/X11/GPU/physical
 devices/Focus acceptance and combined production corpus remain coordinator gates.
+
+AppKit pump batch: 87 focused invocations pass including real NSApplication
+post/dequeue/dispatch with key presses/repeats/releases and synchronous native
+window resize/close notifications in interpreter/native O0/O2. The notification
+observer is a native NSObject subclass with no custom ivars, retained for process
+lifetime. Native text is raw key-event text; NSTextInputClient marked-text/IME
+composition remains outstanding. An independent native probe preserves evidence
+that posting an inconsistent physical A key plus emoji text is retranslated by
+AppKit to A; the production test now asserts that actual native behavior and
+separately verifies caller-supplied external Unicode projection.
+
+Actual GPU verification attempt now exposes a compiler dependency blocker. Build
+the test native libraries with `python3 tools/window_render_native.py`; the Apple
+SDK fixture creates a real OpenGL 4.1 core context. Running texture-driver.jai in
+interpreter/native O0 fails in canonical GL.gl_load at indexed extension discovery.
+GL symbol lookup succeeds; a minimal generic reflection test proves missing
+PROCEDURE_WITH_VOID_POINTER_TYPE_INFO for stored callbacks under the procedure-hiding
+struct directive. See questions #26. This driver regression is included in the
+runner and is currently failing, not counted as completed GPU behavior.
+
+Private CPU glyph-atlas batch: exact production kernel is loaded in Simp; the
+component test aliases the canonical public records, with no substitute Math/font
+types. Real FreeType coverage and native advance/bearings feed transparent padded
+shelf pages. Blank glyphs, page-full/native errors, signed pitch, monochrome expansion
+and all tracked allocations are tested. This is CPU staging evidence; Dynamic_Font
+ownership/layout, GPU upload and public text drawing remain incomplete.
+
+Latest focused result: 95 compiler/program invocations passed and 3 actual-driver
+executions failed at the reflection dependency. Failure aggregation now completes
+independent checks and returns failure; native execution is conditional on a successful
+build, preventing stale-binary passes. Full owned source-built jaifmt --check and
+jailint -D warnings passed. Generated libevdev/GL mappings remain idempotent. Focus
+and full combined production acceptance remain pending, with no release action.

@@ -53,5 +53,12 @@ main :: () {
         assert(I.mouse_delta_z == -120);
     }
 
+    assert(post_message(win, W.WM_MOVE, 0, 0x123456788000ffff) != 0);
+    I.update_window_events();
+    moves := I.get_window_moves();
+
+    assert(moves.count == 1);
+    assert(moves[0].window == win && moves[0].x == -1 && moves[0].y == -32768);
+
     print("ok\n");
 }
