@@ -8,12 +8,12 @@ Loaded-file constructors preserve type, alias and storage identity in original
 interpreter and native/WASM64 O0/O2 tests; existing producer constructor behavior
 also passes. No namespace/module-name exception was introduced.
 
-Latest lexical-binding follow-up: loaded module parameter headers retain their
+Lexical-binding checkpoint 02e3de0: loaded module parameter headers retain their
 declaring file environment for defaults, annotations, explicit conversions and
 interface constraints. Original tests cover private imports, canonical distinct
 type identity and unused invalid replacements. Missing ordinary arguments now
 reject even when unused; late binding of second-list program parameters remains
-supported and tested. Broad checks pass; this follow-up is ready for commit.
+supported and tested. Broad checks pass and the implementation is committed.
 
 Evidence: 265 selected core/backend unit/regression cases pass; 25 LSP unit tests
 pass. Public compiler-owned runner: 25/25 in interpreter mode and 25/25 in native
