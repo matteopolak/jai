@@ -40,6 +40,18 @@ The associated test is a pending reproducer, not a passing functionality claim.
 
 ## Verification
 
+File provides Unix stdio operations, offset whole-file reads, preserving or
+truncating writes, builder writes, path resolution, directories and links.
+Its native types come from the bindings worker's newly generated POSIX module;
+focused tests assemble a separate tree under `target/portable-integration-stdlib`.
+No reserved binding source is modified or committed by this worker. Unix file
+and reduced-path fixtures pass interpreter/native checks in that assembled tree.
+Windows/Android-specific file behavior and the unresolved Seek_Type API remain
+unfinished. File_Utilities currently provides component/path manipulation only.
+
+Basic Apollo duration conversion handles signed 64-bit extrema using two-limb
+arithmetic. Calendar/clock and floating-to-Apollo APIs remain unfinished.
+
 PCG implements the reviewed pre-advance XSH-RR sequence and all state/global
 overloads. Crc implements the non-reflected CRC-64/WE recurrence. Base64 exports
 immutable decoder tables and both standard and URL codecs; permissive tails,

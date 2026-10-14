@@ -40,9 +40,9 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [dxgi](specs/stdlib/modules/dxgi.md) | Not implemented in this checkout; see ownership exclusions |
 | [example-plugin](specs/stdlib/modules/example-plugin.md) | Not implemented in this checkout; see ownership exclusions |
 | [executable-formats](specs/stdlib/modules/executable-formats.md) | Not implemented in this checkout; see ownership exclusions |
-| [file-utilities](specs/stdlib/modules/file-utilities.md) | Not implemented in this checkout; see ownership exclusions |
+| [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial: canonical Path, reduction/search/format/copy/free; focused path fixture passes interpreter/native. Filesystem traversal/metadata/copy not yet implemented |
 | [file-watcher](specs/stdlib/modules/file-watcher.md) | Not implemented in this checkout; see ownership exclusions |
-| [file](specs/stdlib/modules/file.md) | Not implemented in this checkout; see ownership exclusions |
+| [file](specs/stdlib/modules/file.md) | Partial Unix stdio/file/directory/link helpers; offset, EOF, preserving/truncating writes pass interpreter/native with new POSIX dependency. Seek_Type unresolved; Windows/Android incomplete |
 | [flat-pool](specs/stdlib/modules/flat-pool.md) | Not implemented in this checkout; see ownership exclusions |
 | [float16](specs/stdlib/modules/float16.md) | Not implemented in this checkout; see ownership exclusions |
 | [freetype](specs/stdlib/modules/freetype.md) | Not implemented in this checkout; see ownership exclusions |
