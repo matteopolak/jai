@@ -117,8 +117,9 @@ only that generated program. The bootstrap, runtime, array, overlapping-memory,
 String and builder tests are separate cases; their passing does not establish
 full module or target conformance.
 
-Remaining runtime work includes optional crash backtraces and platform startup
-adaptation. Windows/WASI native libc adaptation has not been implemented.
+POSIX optional crash backtraces and bootstrap flag integration are implemented;
+see [crash diagnostics](portable-crash-handler.md). Windows crash handling and
+Windows/WASI native libc adaptation remain unimplemented.
 
 RadixSort implements stable byte passes for u32/u64/float rank arrays, retained
 capacity, invalidation, reordering and resource release. Relative_Pointers

@@ -103,8 +103,8 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [remap-context](specs/stdlib/modules/remap-context.md) | Both remap procedures implemented with cached validated field-copy plans; interpreter/native tests pass. Lexical expansion withheld pending caller-scope push_context compiler fix |
 | [rewrite](specs/stdlib/modules/rewrite.md) | Owned portable scope; not implemented |
 | [rpmalloc](specs/stdlib/modules/rpmalloc.md) | Reserved for bindings worker; not implemented or modified here |
-| [runtime-support-crash-handler](specs/stdlib/modules/runtime-support-crash-handler.md) | Owned portable scope; not implemented |
-| [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Embedding initialization, owned scratch lifetime, synchronized output, explicit-Code once and fault hooks implemented; optional crash backtrace/platform startup adaptations unfinished |
+| [runtime-support-crash-handler](specs/stdlib/modules/runtime-support-crash-handler.md) | POSIX public records and real native signal/TLS backend implemented; explicit/protected faults, distinct worker stacks and cleanup pass interpreter/native. Linux native execution and Windows remain unfinished; deployment/lifetime details documented |
+| [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Embedding initialization, owned scratch lifetime, synchronized output, explicit-Code once and fault hooks implemented; POSIX crash backtrace startup ON/OFF verified through source-built Compiler workspace; remaining platform adaptations unfinished |
 | [sdl](specs/stdlib/modules/sdl.md) | Reserved for bindings worker; not implemented or modified here |
 | [shared-memory-channel](specs/stdlib/modules/shared-memory-channel.md) | Owned portable scope; not implemented |
 | [simd](specs/stdlib/modules/simd.md) | Owned portable scope; not implemented |

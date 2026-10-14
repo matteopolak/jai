@@ -101,6 +101,8 @@ The LLVM backend, C ABI and linking.
 - [Owned source format/lint runner](../tools/format_portable_stdlib.py): explicit scope and source-built jaifmt/jailint
 - [WAV parser design and validation](portable-wav.md)
 - [SMTP/MIME transport and loopback validation](portable-mail.md)
+- [POSIX crash diagnostics and native startup verification](portable-crash-handler.md)
+- [Portable worker progress](status/stdlib-progress.md) and [deviations](status/stdlib-deviations.md)
 - [Socket native declaration ledger](socket-native-ledger.json)
 - [Focused portable regression runner](../tools/check_portable_stdlib.py)
 - [Portable implementation plan](plans/portable-stdlib.md)

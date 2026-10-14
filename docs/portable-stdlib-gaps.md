@@ -3,6 +3,12 @@
 This worker ledger complements docs/specs/stdlib/questions.md. Local tests prove
 the implemented behavior; they do not establish missing reference contracts.
 
+Crash-handler native integration, process-lifetime library pinning, existing
+signal/alternate-stack replacement and deployment/Linux/Windows limitations are
+described in [crash diagnostics](portable-crash-handler.md) and the mandatory
+[deviations report](status/stdlib-deviations.md). Native best-effort backtraces
+do not establish an exact reference diagnostic format.
+
 - Text_File_Handler helpers return independently allocated array strings/table
   keys. Callers free each plus container storage. The spec does not yet settle
   exact helper ownership. With version parsing enabled, startup currently requires
