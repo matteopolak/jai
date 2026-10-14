@@ -50,6 +50,13 @@ Good inputs: `examples/tour` (expected to be clean apart from its untaken `#if`)
 - `--errors`: print each file's type-checker errors (first line of each).
 - `--stats`: print how many compiles each file's requests started and how long they took. A file that needs many compiles points at a cache that is thrashing.
 - `--stdlib DIR`: the stdlib to import from (default `stdlib/`).
+- The bootstrap is the canonical `prelude/module.jai` under that directory. For
+  independent NEW-library integration before runtime/bootstrap integration is
+  complete, `--no-runtime` disables runtime support and stack traces. It does not
+  fabricate Context fields or suppress source diagnostics.
+- [Partial-edit coverage](lsp-partial-edits.md) adds timeout-isolated suffix-edit
+  assertions. This identifier report remains useful for baseline typechecking
+  gaps; a successful report process is not a claim that every input typechecks.
 
 ## Dependencies
 
