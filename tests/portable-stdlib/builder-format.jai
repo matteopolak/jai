@@ -20,8 +20,23 @@ main :: () {
     missing := "% %";
     extra := "";
 
-    assert(!print(*builder, missing, 1));
-    assert(!print(*builder, extra, 1));
+    errors: int;
+
+    {
+        replacement := context;
+        replacement.logger = count_error;
+        replacement.logger_data = *errors;
+        push_context replacement {
+            assert(print(*builder, missing, 1));
+            assert(print(*builder, extra, 1));
+        }
+    }
+
+    assert(errors == 1);
+    partial := builder_to_string(*builder);
+
+    defer free(partial);
+    assert(partial == "1 ");
     assert(tprint("%:%", "temporary", 7) == "temporary:7");
     assert(tprint("%2 %1 %", "one", "two") == "two one two");
     assert(tprint("\% %0", 5) == "% 5");
@@ -102,4 +117,9 @@ track_allocation :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, o
 
 deny_allocation :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {
     return null;
+}
+
+count_error :: (message: string, data: *void, info: Log_Info) {
+    assert((info.common_flags & .ERROR) != 0);
+    (cast(*int) data).* += 1;
 }

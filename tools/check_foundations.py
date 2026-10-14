@@ -7,7 +7,8 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "basic-filesystem",
-         "file-utilities-shape", "foundation-filesystem", "hash-scalars", "file-visitation", "basic-output", "formatter-records", "basic-sleep")
+         "file-utilities-shape", "foundation-filesystem", "hash-scalars", "file-visitation", "basic-output", "formatter-records", "basic-sleep",
+         "format-grammar", "format-floats", "format-aggregates", "format-types", "assert-message")
 
 
 def main():

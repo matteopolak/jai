@@ -10,19 +10,29 @@ Implemented progress:
   String_Builder.Buffer declaration and optional ensured_count layout remain.
 - Added the reviewed builder print overload and temporary-storage tprint.
   Numbered `%N`, sequential `%0`, and escaped-percent directives follow the
-  supplied own Rust compiler's format checker and lexer. Missing/extra
-  arguments report false through the builder interface.
+  reviewed grammar. Invalid selections are omitted, logged according to the
+  style, and reset the sequential cursor; extra arguments are ignored.
+  Only builder failure makes the builder interface return false.
   Builder print and print_to_builder are true aliases with tested callable
   identity. Added expand and append_and_steal_buffers; inline bytes are copied,
   heap buffers transfer only between matching allocators, and differing
   allocators take a copy-and-release path.
 - Added canonical Formatter and FormatInt records, formatInt and real integer
-  formatting for bases 2–36, minimum digits, padding and grouping. Signed
+  formatting for bases 2–64, minimum digits capped at 64, padding and grouping. Signed
   minimum and unsigned maximum values are covered.
   Added the reviewed FormatFloat, FormatStruct, FormatArray and Print_Style
   records and real formatFloat/formatStruct constructors, with tests for
-  canonical names, promoted value storage, nested enums and defaults. Float
-  and aggregate printing itself remains pending the output contract review.
+  canonical names, promoted value storage, nested enums and defaults.
+  Float rendering supports decimal/scientific/shortest modes, rounding,
+  explicit precision padding, zero removal, prefixes, grouping, separators,
+  signed zero, NaN and infinity. Native C conversion supplies rounding;
+  shortest mode searches significant precisions until the source width
+  round-trips. Aggregate rendering supports reflected member filtering,
+  long/short forms, doubled name separators, indentation, array truncation,
+  nested string quoting, enum flags, variants, pointers and custom printers.
+  Formatter wrappers expand only at top level. Type names cover ordinary
+  scalars, records, pointers, arrays and procedure types. Default-filtered
+  generic names explicitly diagnose missing compiler default metadata.
 - Added String wildcard matching with bounded iterative star backtracking,
   byte sets/ranges, scan/scan2 with actual parsing and pointer writes. Scan
   values occupy temporary storage; earlier results/writes survive later
@@ -70,7 +80,7 @@ target/jaifmt [owned paths]
 target/jaifmt --check [owned paths]
 ```
 
-The focused runner checks twelve real cases in interpreter/native O0/O2.
+The focused runner checks seventeen real cases in interpreter/native O0/O2.
 Unused-code checks pass on Linux x64/arm64, macOS arm64, Windows x64/arm64 and
 wasm64. The Windows-specific fixture is also cross-checked on both Windows
 CPUs, including callback instantiations; it requires an actual Windows host
@@ -109,9 +119,25 @@ String, Hash and File_Utilities facades/internals and focused tests were
 formatted with this executable; --check passes. Source-built jailint passes
 with warnings denied over the same scope.
 
-Full float/aggregate formatting and the scalar FNV operation's unresolved
+Assertion messages now format their arguments before dispatching to the
+context callback. A focused regression checks message bytes, caller location,
+callback return and the successful-assert path; the old implementation fails
+that regression with exit 2 because it drops the arguments.
+
+Remaining formatter compatibility details, ENABLE_ASSERT configuration,
+generic parameter default reflection and the scalar FNV operation's unresolved
 byte/word behavior remain incomplete. Windows runtime testing remains required;
 Windows jaifmt also depends on the portable worker's File/runtime backends.
 See the
 [focused questions](specs/stdlib/foundations-questions.md) for exact missing
 contracts. Full integration/corpus/release verification remains coordinator work.
+
+The latest formatter work retains the peer POSIX macOS/x64 failure above.
+All seventeen cases passed interpreter/native O0/O2. Six independent
+cross-target checks passed before the final assertion-message regression;
+macOS x64 failed as recorded. Real jaifmt format/check and warnings-denied
+jailint passed over Basic's facade, changed formatter/scalar sources, builder,
+integer128/parsing, the Windows filesystem source and all changed positive
+tests. Inherited allocation/time/array/temporary/File code was retained. See
+the deviations report for remaining limits and
+precise exclusions.
