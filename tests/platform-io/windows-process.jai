@@ -19,7 +19,19 @@ main :: () {
     assert(args.count == 2);
     assert(size_of(P.Pipe_Platform) == 16 && size_of(P.Process.Pipe) == 24);
     assert(size_of(P.Process_Platform) == 32 && size_of(P.Process) == 104);
+    assert(type_info(P.Process).name == "Process" && type_info(P.Process.Pipe).name == "Pipe");
+    assert(type_info(P.Process_Platform).name == "Process_Platform" && type_info(P.Pipe_Platform).name == "Pipe_Platform");
     standalone: P.Process.Pipe;
+
+    assert(standalone.handle == W.INVALID_HANDLE_VALUE && standalone.overlapped == null && !standalone.eof);
+
+    {
+        push_allocator(Allocator.{ deny_allocations, null });
+        allocated, failed_client := P.init_named_pipe_pair(*standalone, false);
+        assert(!allocated && failed_client == W.INVALID_HANDLE_VALUE);
+        assert(standalone.handle == W.INVALID_HANDLE_VALUE && standalone.overlapped == null);
+    }
+
     pair_ok, client := P.init_named_pipe_pair(*standalone, false);
 
     assert(pair_ok && standalone.overlapped != null);
@@ -36,6 +48,16 @@ main :: () {
     P.deinit(*standalone);
     assert(standalone.overlapped == null && standalone.handle == W.INVALID_HANDLE_VALUE);
     child: P.Process;
+
+    assert(!P.create_process(*child));
+    failed, failed_output, failed_errors, failed_timeout := P.run_command("_platform_io_missing_executable_31eea0.exe", capture_and_return_output = true);
+
+    assert(failed.type == .FAILED_TO_LAUNCH && failed_output.count == 0 && failed_errors.count == 0 && !failed_timeout);
+    assert(P.create_process(*child, ..string.[args[1], "exit-high"]));
+    exited, high := P.get_process_result(*child, 0x100000001);
+
+    assert(exited && high.type == .EXITED && high.exit_code == -1);
+    P.deinit(*child);
 
     assert(P.create_process(*child, ..string.[args[1], "emit", "雪😀 quote\" slash\\"], capture_and_return_output = true));
     assert(child.info.hProcess != null && child.info.hThread != null);
@@ -141,6 +163,10 @@ main :: () {
 }
 
 #scope_file
+deny_allocations :: (_mode: Allocator_Mode, _size: s64, _old_size: s64, _old_memory: *void, _allocator_data: *void) -> *void {
+    return null;
+}
+
 wait_child :: (child: *P.Process, timeout: s64) -> bool, bool, u32 {
     ok, result := P.get_process_result(child, timeout);
     return ok, result.type == .EXITED, cast,no_check(u32) result.exit_code;

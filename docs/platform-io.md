@@ -62,8 +62,9 @@ runtime correctness. See the [progress](status/platform-io-progress.md) and
 Unresolved contracts are recorded in the [platform I/O questions](specs/stdlib/platform-io-questions.md).
 The [compiler/tool handoff](platform-io-compiler-handoff.md) records remaining
 interpreter and semantic-lint requirements. The scoped format/lint runner is
-`tools/format_platform_io.py`; its strict lint mode currently fails on incomplete
-coverage instead of treating the underlying tool's quiet exit zero as a full pass.
+`tools/format_platform_io.py`. Its strict lint mode selects macOS ARM64, Linux x64,
+Windows x64 and Windows ARM64, fails on incomplete checking, verifies staged owned
+files byte-for-byte and requires every owned file in the checked-file manifests.
 
 ## System, Thread and runtime
 
@@ -88,16 +89,37 @@ Native Windows process entry parses GetCommandLineW with CommandLineToArgvW and
 strictly converts to UTF-8; the allocations outlive the runtime context and are freed
 after its finalization. Direct initialization calls retain their supplied argc/argv.
 Fatal Jai checks still terminate through the CRT. Optional Windows hardware exception
-diagnostics use a private source-built C backend with SDK-native contexts, bypassing
-no public ABI. The public crash-handler facade still needs its outstanding review.
+diagnostics implement the reviewed public x64 crash-handler facade through a private
+source-built C backend. Its SDK size/offset assertions check the byte-shaped public
+records; contexts are copied to aligned native storage before stack walking. Mutable
+public handler state retains its documented names and storage.
 
 Build the DLL and import library with `tools/build_platform_io_runtime.py --stdlib
-target/platform-io-stdlib --cpu x64` (or arm64). The runner's `--windows-crash` option
+target/platform-io-stdlib --cpu x64`. The runner's `--windows-crash` option
 builds this dependency and an enabled-startup access-violation fixture, checking the
 native exception code and emitted diagnostics when run on Windows. This is a real
 production dependency requiring coordinator native CI/package integration. The
 diagnostic handler prints up to 64 actual frames and resolves available symbols;
-missing unwind/symbol information is not synthesized.
+missing unwind/symbol information is not synthesized. DbgHelp calls are serialized.
+A fault that interrupts an active symbol operation prints an explicit stack-unavailable
+message instead of deadlocking. The public section query inspects the running main
+executable's PE section table and returns the real section name and write permission.
+
+Crash initialization occurs only from the configured system entry point. An
+initialization-only import does not install or import the handler. The reviewed
+Windows contract is x64-only; enabling it on ARM64 fails with a target diagnostic,
+while ordinary ARM64 entry/initialization continues to compile. The runner checks
+both configurations, including the expected failure. The x64 DLL/import library
+must be built and the DLL packaged beside executables using the handler.
+
+The owned startup metaprogram selects DEBUG/O0 or OPTIMIZED/O2 explicitly through
+Compiler.set_optimization. The runner exercises backtraces ON and OFF in both modes;
+ARM64 OFF is supported and ON must diagnose the reviewed unsupported target. The
+fault fixture suppresses interactive Windows error boxes while retaining the actual
+access violation and native exit code. Independent test failures are accumulated:
+an interpreter failure does not prevent native O0/O2 or later fixtures from running,
+and any failure still makes the runner exit nonzero. Failed builds never execute
+an older artifact. This retains the pending interpreter failures in native CI.
 
 ## Public Windows Process
 
@@ -111,6 +133,12 @@ before returning caller buffers. Job objects provide parent-exit cleanup and are
 assigned before the suspended child starts. Callers can explicitly opt out.
 Transfer counts always come from GetOverlappedResult, including immediate completion;
 a zero-byte native pipe write is not treated as EOF.
+
+Public 64-bit wait durations are split into finite native DWORD-sized waits,
+repeating only after an actual WAIT_TIMEOUT. Zero polls and negative infinite waits
+retain their native modes. Large finite inputs are not truncated to a single native
+wait. This preserves the OS's wait-time accounting; the only extra work for long
+durations is another native wait at each completed chunk.
 
 Windows verification can be added to the runner with `--windows-process`; cross-build
 fixtures with `--windows-build x64` (or arm64 with that native toolchain installed).
@@ -132,6 +160,7 @@ also exercises job ownership on parent exit on a native Windows host.
 - [Condition variable waits](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleepconditionvariablecs)
 - [CRT thread lifecycle](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/beginthread-beginthreadex?view=msvc-170)
 - [Explicit inherited process handles](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute)
+- [Native wait duration and result semantics](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitformultipleobjects)
 - [Asynchronous I/O cancellation](https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-cancelioex)
 - [Job lifetime limits](https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-setinformationjobobject)
 - [Windows stack walking](https://learn.microsoft.com/en-us/windows/win32/api/dbghelp/nf-dbghelp-stackwalk64)

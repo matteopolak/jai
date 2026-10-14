@@ -14,11 +14,68 @@ OWNED = [
     "stdlib/internal/platform-io", "stdlib/System/module.jai", "stdlib/internal/system/windows.jai",
     "stdlib/Thread/module.jai", "stdlib/internal/thread",
     "stdlib/Runtime_Support/module.jai", "stdlib/internal/runtime/module.jai",
-    "stdlib/internal/runtime/startup.jai", "stdlib/internal/runtime/windows-io.jai",
-    "stdlib/internal/runtime/windows-arguments.jai", "stdlib/internal/runtime/windows-crash.jai",
+    "stdlib/internal/runtime/windows-io.jai",
+    "stdlib/internal/runtime/windows-arguments.jai", "stdlib/Runtime_Support_Crash_Handler/module.jai",
+    "stdlib/internal/runtime/windows-crash-types.jai", "stdlib/internal/runtime/windows-crash-handler.jai",
     "stdlib/Runtime_Support/tests/windows-crash-bootstrap.jai",
     "tests/platform-io",
 ]
+
+
+def owned_files():
+    return sorted({file for path in OWNED for file in
+                   ([ROOT / path] if (ROOT / path).is_file() else (ROOT / path).rglob("*.jai"))})
+
+
+def lint_owned(binary, stdlib):
+    files = owned_files()
+    staged = {}
+    for file in files:
+        path = stdlib / file.relative_to(ROOT / "stdlib") if file.is_relative_to(ROOT / "stdlib") else file
+        if path.read_bytes() != file.read_bytes():
+            raise RuntimeError(f"staged owned source differs: {file}")
+        staged[file] = path.resolve()
+    env = dict(os.environ, JAIC_STDLIB=str(stdlib))
+    checked = set()
+    output = ROOT / "target/platform-io-lint"
+    output.mkdir(parents=True, exist_ok=True)
+    for os_target, cpu in [("macos", "arm64"), ("linux", "x64"), ("windows", "x64"), ("windows", "arm64")]:
+        selected = []
+        for original, path in staged.items():
+            relative = original.relative_to(ROOT).as_posix()
+            # OS-specific source roots are checked on their actual supported
+            # targets. #load files still receive context from their real module.
+            if os_target != "windows" and "windows" in relative:
+                continue
+            if os_target == "windows" and ("native-unix" in relative or "native-macos" in relative or "synchronization.jai" in relative):
+                continue
+            if os_target == "windows" and cpu == "arm64" and (
+                    "Runtime_Support_Crash_Handler" in relative or "windows-crash" in relative or "windows-arm64-crash-handler" in relative):
+                continue  # Reviewed x64-only handler; negative ARM64 checks live in the test runner.
+            if os_target == "linux" and "native-macos" in relative:
+                continue
+            selected.append(str(path))
+        manifest = output / f"{os_target}-{cpu}.txt"
+        definitions = []
+        if os_target == "windows":
+            definitions = ["--add", f'OPTIMIZED :: false; BACKTRACE_ENABLED :: {str(cpu == "x64").lower()}; '
+                           f'OUTPUT_PATH :: "{output.as_posix()}"; '
+                           f'CHILD_SOURCE :: "{(ROOT / "tests/platform-io/windows-fault.jai").as_posix()}";']
+        result = subprocess.run([str(binary), "-D", "warnings", "--os", os_target, "--cpu", cpu,
+                                 "--config", str(ROOT / "jailint.toml"), "--checked-files", str(manifest), *definitions, *selected],
+                                cwd=ROOT, env=env, text=True, capture_output=True)
+        (output / f"{os_target}-{cpu}.log").write_text(result.stdout + result.stderr)
+        sys.stdout.write(result.stdout)
+        sys.stderr.write(result.stderr)
+        if result.returncode:
+            return result.returncode
+        checked.update(Path(path).resolve() for path in manifest.read_text().splitlines() if path)
+        print(f"passed strict lint {os_target}/{cpu}", flush=True)
+    missing = [str(original.relative_to(ROOT)) for original, path in staged.items() if path not in checked]
+    if missing:
+        raise RuntimeError("owned files never checked: " + ", ".join(missing))
+    print(f"passed strict lint coverage of {len(files)} owned Jai files", flush=True)
+    return 0
 
 
 def main():
@@ -33,16 +90,7 @@ def main():
     if args.lint:
         if not args.jailint or not args.stdlib:
             parser.error("--lint requires --jailint and --stdlib source-built tool/dependencies")
-        env = dict(os.environ, JAIC_STDLIB=str(args.stdlib.resolve(strict=True)))
-        result = subprocess.run([str(args.jailint.resolve(strict=True)), "-v", "-D", "warnings",
-                                 "--config", str(ROOT / "jailint.toml"), *OWNED],
-                                cwd=ROOT, env=env, capture_output=True, text=True)
-        sys.stdout.write(result.stdout)
-        sys.stderr.write(result.stderr)
-        incomplete = "did not compile completely" in result.stdout + result.stderr
-        if incomplete:
-            print("platform I/O lint incomplete: required bodies were not checked; see docs/platform-io-compiler-handoff.md", file=sys.stderr)
-        return result.returncode or int(incomplete)
+        return lint_owned(args.jailint.resolve(strict=True), args.stdlib.resolve(strict=True))
     if not args.jaifmt:
         parser.error("format/check requires --jaifmt source-built formatter")
     return subprocess.run([str(args.jaifmt.resolve(strict=True)), "--config", str(ROOT / "jaifmt.toml"),

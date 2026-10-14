@@ -29,9 +29,15 @@ main :: () {
     assert(logical >= fast_logical && physical >= fast_physical);
 
     #if OS == .WINDOWS {
+        counter := S.read_cpu_counter();
+
+        W.Sleep(1);
+        assert(S.read_cpu_counter() > counter);
         set_last_error(2);
         assert(S.get_error_value() == 2);
         code, description := S.get_error_value_and_string();
+
+        assert(type_of(code) == W.OS_Error_Code);
         assert(code == 2 && description.count > 0);
     } else {
         P.set_errno(P.ENOENT);

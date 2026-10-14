@@ -541,12 +541,25 @@ impl Compiler {
         for i in 0..self.entities.len() {
             let id = EntityId(i as u32);
             let e = self.entity(id);
+            let (scope, span) = (e.scope, e.span);
             if matches!(e.kind, EntityKind::Decl { .. })
                 && matches!(e.state, EntityState::Unresolved)
-                && self.ide_wants(e.span.file)
-                && let Err(e) = self.resolve_entity(id)
+                && self.ide_wants(span.file)
             {
-                errors.push(*e);
+                // A record constant may depend on type_of of an earlier field.
+                // Match ordinary unreferenced checking: establish the containing
+                // record's fields before resolving its member constants.
+                let result = if let ScopeKind::Struct(t) = self.scope(scope).kind
+                    && let TypeKind::Struct(s) = self.types.kind(t).clone()
+                {
+                    self.layout_struct(s, span)
+                        .and_then(|()| self.resolve_entity(id))
+                } else {
+                    self.resolve_entity(id)
+                };
+                if let Err(e) = result {
+                    errors.push(*e);
+                }
             }
         }
         // A struct with a member of an unknown type fails when it is laid out.

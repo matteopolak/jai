@@ -1,5 +1,11 @@
 # Platform I/O worker progress
 
+Latest code checkpoint: `6d71f26` (full finite Windows waits and final Unix
+preservation audit); preceding checkpoints are `556330b`, `2b1d623`, `27b719c`
+and `700f07e`. Owned code/tests are committed. Native Windows verification and
+the explicit compiler/dependency/contract items below remain coordinator inputs;
+this is not a full integration or release-completion claim.
+
 ## Refreshed-contract continuation
 
 Coordinator-filtered CI feedback confirms candidate `159ca65` passed File
@@ -24,8 +30,83 @@ The complete Windows public suite and helper cross-link at x64 O0/O2. Executed:
 target/platform-io-stdlib --cross-check --native --windows-process --windows-build x64`.
 These new Windows behaviors still require native CI.
 
-Next: align crash initialization/target behavior with the refreshed reviewed contract,
-implement the public x64 crash facade, and repair general strict-lint coverage.
+Public Process checkpoint: `700f07e`.
+
+The reviewed public x64 crash facade is now implemented, including mutable globals,
+record layouts, section queries, exception callback and backtrace. The private SDK
+backend checks native size/offsets and copies byte-shaped contexts to aligned native
+storage. DbgHelp is serialized; interrupted symbol work produces an explicit
+stack-unavailable diagnostic. Runtime installs the public handler from system entry
+only; the superseded startup wrapper and private crash module were removed.
+The runner passes ARM64 initialization-only checking and the expected enabled-handler
+rejection. x64 enabled-startup fault and public crash ABI fixtures cross-link at O0/O2;
+actual exception execution remains pending native CI.
+
+General strict-lint repairs implement target selection, library-owned virtual roots,
+bootstrap-instance reuse, loaded-file facts/manifests, and failure for incomplete
+checking. Application privacy remains enforced by an original regression. IDE record
+constants now establish their containing layout before resolution, matching ordinary
+compiler checking; this fixes the real Thread INFO_SIZE lint failure. Library-call
+rules follow canonical exported aliases. All 23 jailint Rust tests pass (11 unit,
+5 CLI, 7 rule cases), as does scoped clippy with warnings denied.
+
+`tools/format_platform_io.py --lint --jailint target/debug/jailint --stdlib
+target/platform-io-stdlib` passed all four target configurations and verified manifest
+coverage for all 42 owned Jai files. Staged owned files were compared byte-for-byte;
+this remains independent dependency staging, not coordinator production integration.
+The previous quiet/incomplete lint evidence below is historical and superseded.
+
+The expanded common runner now passes eight contract fixtures plus argument handling
+in host interpreter/native O0/O2, four-target -no_dce checks, and Windows x64 O0/O2
+cross-linking. The new Thread_Group case runs both stealing modes, checks unique
+completion pointers/results and worker context, then joins and verifies teardown.
+The public Process/crash fixtures also check canonical reflected names. Executed:
+`python3 tools/check_platform_io.py --jaic target/debug/jaic --stdlib
+target/platform-io-stdlib --cross-check --native --windows-process --windows-crash
+--windows-build x64`. Enabled x64 fault startup cross-builds; no Windows native pass
+is inferred. The standalone IDE Rust regression was confirmed failing with only
+the new ordering step removed, then passing when restored.
+
+Tool checkpoint: `27b719c`. Remaining integration requirements: Windows native CI,
+compiler suspended-CRT-thread/event/callback lifetime support, public Machine_X64
+dependency, reviewed Thread DEBUG configuration, and existing File contract questions.
+
+Crash/entry checkpoint: `2b1d623`. Subsequent strict coverage adds an owned startup
+metaprogram selecting Compiler.set_optimization explicitly, ON/OFF backtrace builds
+at O0/O2, and native-fault checks for both configurations. All four x64 variants
+cross-link. PE imports confirm the crash DLL dependency appears only with ON.
+ARM64 O0/O2 OFF passes -check -no_dce and ON retains the required rejection. Actual
+ARM64 cross-linking is unavailable locally: no aarch64 MinGW linker is installed.
+Program_Print/Code_Visit and their internals were staged from the permitted compiler
+producer to satisfy genuine no-DCE Compiler dependencies; no placeholder was used.
+
+The runner retains independent failures, continues into native/later fixtures, and
+exits nonzero overall. A temporary explicit false assertion in the owned runtime
+fixture produced three genuine failures (interpreter/O0/O2) while later Thread_Group
+still ran. The original file was restored from its durable backup; the final complete
+positive run passed. Public Windows Process coverage additionally checks empty/failed
+launch, named-pipe allocation failure and the native 0xffffffff exit-code bit pattern.
+These Windows behaviors remain source/cross-build evidence until native CI.
+
+Final local gates: source-built jaifmt --check, strict jailint on four targets with
+42/42 owned source coverage, all 23 jailint Rust tests, standalone IDE regression,
+scoped rustfmt/clippy with warnings denied, and the complete platform runner above.
+
+Runner/entry-option checkpoint: `556330b`. A final backend audit found that native
+DWORD conversion truncated public 64-bit process waits. The engine now spends the
+full finite budget in real native wait chunks and returns timeout only after all
+chunks actually timed out. Poll/infinite/error/signal outcomes remain native. The
+public quick-exit regression now supplies a value larger than DWORD. Giant elapsed
+durations have not been waited out; no synthetic fast-forward result is counted.
+The first infinite-loop formulation produced a real compiler return-path warning;
+the final bounded budget loop has an explicit derived timeout exit and passes the
+same warning-free source/build and strict-lint gates.
+
+Re-ran the original Unix `file`, `filesystem`, `system`, `thread-condition`,
+`thread-lifetime`, `thread-groups`, `thread-shutdown`, `process`, and `process-io`
+fixtures against the latest runtime/producer compiler: all 27 interpreter/O0/O2
+executions returned exactly ok with no stderr. Detailed evidence is durable in
+target/platform-io-unix-preservation/results.log. Extensions remains unchanged.
 
 Durable producer commits: `eb5d83d` (File), `339a16e` (System/Thread/runtime),
 `fe44299` (private Process engine, native exception diagnostics, SDK checks and

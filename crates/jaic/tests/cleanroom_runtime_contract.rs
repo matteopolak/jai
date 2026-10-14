@@ -28,7 +28,7 @@ fn windows_arm64_backtrace_has_an_explicit_unsupported_diagnostic() {
     assert!(
         error
             .message
-            .contains("Windows crash backtraces require x64"),
+            .contains("the reviewed Windows crash handler supports x64 only"),
         "{}",
         error.render(&compiler.sources)
     );

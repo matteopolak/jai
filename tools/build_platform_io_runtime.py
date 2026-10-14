@@ -16,6 +16,8 @@ def main():
     parser.add_argument("--cpu", choices=["x64", "arm64"], default="x64")
     parser.add_argument("--compiler", help="native C compiler; defaults to clang or the target MinGW compiler")
     args = parser.parse_args()
+    if args.cpu != "x64":
+        parser.error("the reviewed public Windows crash-backtrace contract supports x64 only")
     stdlib = args.stdlib.resolve(strict=True)
     if not stdlib.is_relative_to(ROOT):
         parser.error("build outputs must stay in this checkout; use a local staged stdlib")

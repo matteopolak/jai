@@ -13,9 +13,86 @@
   allocator. No duplicate public handle state or guessed public fields remain.
 - The reviewed crash contract explicitly limits Windows native backtraces to x64
   and ties their initialization to DEFINE_SYSTEM_ENTRY_POINT. Earlier private ARM64
-  runtime-backtrace support is being removed from the compatibility path; it cannot
-  be counted as an established public contract. The proper implementation and
-  target/configuration regressions are the next checkpoint.
+  runtime-backtrace support has been removed from the compatibility path. The public
+  x64 adapter, SDK ABI checks and configuration regressions are implemented. ARM64
+  enabled-handler rejection is required behavior, not an exclusion to hide a failure.
+- The private crash DLL/import library is a production dependency. The runner now
+  builds/copies it before x64 fixtures, with compiler warnings denied; coordinator
+  packaging and native execution are still required. Stack walking is bounded at
+  64 real frames. DbgHelp serialization avoids unsafe concurrent use; when a fault
+  interrupts symbol work, an explicit stack-unavailable diagnostic replaces a
+  potentially deadlocking wait. Risk: incomplete crash traces during concurrent
+  symbol activity. Proper long-term improvement: out-of-process crash reporting.
+- The earlier private-root/target lint workaround is replaced by generic jailint
+  support, strict incomplete-check failures and per-target checked-file manifests.
+  All 42 owned Jai sources are covered without blanket rule suppression. Legitimate
+  x64-only crash roots are linted on x64 and checked for rejection on ARM64. Rust
+  tests needed the repository's original lint fixtures/docs copied alongside the
+  locally staged compiler manifests; initial missing-fixture/dependency failures
+  remain in durable logs. Independent numerics Math was staged for the existing
+  rule suite. This is tool/dependency staging, not production integration.
+- System's reviewed public M64 import depends on Machine_X64, absent from this
+  snapshot and the allowed portable producer at review time. Windows counter behavior
+  is real rdtsc on x64 and QPC on ARM64, but the public M64 dependency still needs
+  portable-worker completion/integration. Do not invent a partial public module.
+- The new Thread_Group regression initially assumed every Worker_Info address
+  was cache-line aligned. The reviewed shape puts work_steal_indices after the
+  padded info, so the record stride need not be a multiple of CACHE_LINE_SIZE.
+  Corrected this unsupported test assumption to check the actual aligned allocation
+  base; retained record layout, all completion/worker assertions and teardown.
+  This is test-contract correction, not a production alignment repair or claimed
+  reference guarantee. No public layout was altered for the test.
+- Thread DEBUG configuration is still unresolved: program-local DEBUG is not
+  visible in imported modules, and the reviewed module has no such parameter.
+  Recorded the original check in questions rather than inventing an export or
+  weakening isolation/assertions. Native DEBUG/race-detector support is not claimed.
+- The public Windows exception callback is implemented in Jai and installed using
+  the compiler's foreign callback machinery. Native executable lifetime is valid;
+  interpreter callback/library lifetime through teardown has not been verified.
+  Risk: a later OS exception could call a retired interpreter trampoline. Proper
+  fix belongs in generic callback/runtime lifetime handling, with an original
+  interpreter teardown/fault regression on real Windows. Do not replace the
+  canonical public context with a disconnected shadow state to conceal this.
+- ARM64 Windows native cross-linking is not available on this host: the real
+  linker search reports no aarch64 MinGW toolchain. ARM64 startup OFF and required
+  ON rejection are source-checked at both optimization settings, not counted as
+  executable builds. Proper fix: coordinator native ARM64 jobs or an installed
+  independent native cross toolchain; never substitute an x64 artifact.
+- Startup lint uses --add with the actual output/source/optimization/backtrace
+  configuration required by the original metaprogram. The linter implements this
+  through ordinary ProgramSource strings, preserving module isolation. This is
+  explicit build context, not a changed staged test body. No fallback definition
+  or skipped assertion was added. A real no-DCE check exposed missing staged
+  Program_Print/Code_Visit dependencies; producer sources were copied locally.
+- Native fault fixtures set SEM_NOGPFAULTERRORBOX through the real OS API so CI
+  cannot hang on an interactive error box. Access violation, stderr diagnostics,
+  and native status remain asserted. No fault/safety check is disabled.
+- Runner failure aggregation was tested by temporarily inserting an explicit
+  false assertion in the owned runtime fixture. All three execution modes failed;
+  later independent tests still executed and overall status failed. The source was
+  restored and the final positive suite rerun. Evidence and durable source backup
+  remain under target/platform-io-runner-negative.log and
+  target/platform-io-runtime-contract-backup.jai. This verifies the runner only,
+  not any additional Windows functionality.
+- `internal/platform-io/windows-process.jai` previously clamped positive 64-bit
+  timeouts to the maximum finite DWORD value, shortening very long waits. Removed
+  that reduction: a reusable bounded loop repeats real native waits and spends the
+  remaining budget only after actual WAIT_TIMEOUT results. This adds one native
+  call per exhausted chunk, without wall-clock reinterpretation or fake completion.
+  The initial unbounded-loop prototype generated a genuine compiler warning and
+  failed the runner; the bounded budget algorithm passes without suppressing it.
+  Source/cross-build and large-value quick-exit coverage exist; 49-day-plus elapsed
+  exhaustion and Windows runtime behavior have not been executed locally. Proper
+  remaining validation is native Windows CI and review of the budget arithmetic.
+- API-created Process pipes own a private allocation whose first member is the
+  public native OVERLAPPED. Module operations recover its pending/original-allocator
+  fields from that managed pointer. This preserves native pointer/storage identity
+  and copying, but assumes the pointer came from the module constructor; replacing
+  it with an independently allocated SDK-only record is not established supported
+  behavior and could read beyond that foreign record. Recorded the ownership
+  question explicitly. If reviewed interoperability requires foreign allocations,
+  the proper fix is separate private ownership tracking and a defined borrowed-state
+  policy, with native regressions; do not silently accept an incompatible record.
 
 Role: platform-io. Scope: owned File, Windows System/Thread/runtime internals,
 private encoding, original platform I/O fixtures and runner. Updated 2026-10-14.
