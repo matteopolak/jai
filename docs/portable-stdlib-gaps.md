@@ -46,6 +46,14 @@ be fixed at that boundary before counting Meow's macro API as supported. Only th
 official public upstream C implementation was consulted for algorithm feasibility;
 no original/upstream Jai implementation was accessed or ported.
 
+Shared_Memory_Channel implements real Unix SPSC transport; framing/alignment,
+absolute offsets, logical-capacity/name/OS-magic and paused/reconnect policies
+need review. Windows is absent, Linux native unverified, failed OS cleanup can be
+partial, and early unjournaled resources are honestly recorded in
+[shared-memory design](portable-shared-memory.md). Simple_Package lacks package/
+TOC magic values and per-entry wire encoding in its current page; do not fabricate
+a replacement archive format to claim conformance.
+
 - Text_File_Handler helpers return independently allocated array strings/table
   keys. Callers free each plus container storage. The spec does not yet settle
   exact helper ownership. With version parsing enabled, startup currently requires
