@@ -14,6 +14,7 @@ from wrappers import simple_body, forwarding_body
 from objc import materialize_methods
 from bitfields import body as bitfield_body
 from spec import Declaration
+from conditions import possible
 
 ROOT = Path(__file__).resolve().parents[2]
 MODULES = {
@@ -73,6 +74,25 @@ def guard(code, condition):
     return '#if ' + condition + ' {\n' + code + '\n}\n' if condition else code + '\n'
 
 
+def normalized_signature(code):
+    tokens = re.findall(r'"(?:\\.|[^"\\])*"|[^\s"]+',code.strip().rstrip(';'))
+    return ''.join(tokens)
+
+
+def authored_signatures(text):
+    signatures = set()
+    for match in re.finditer(r'^[ \t]*\w+\s*::\s*(?:inline\s+)?\(',text,re.M):
+        fragment = text[match.start():]
+        parts = procedure_parts(fragment)
+        if not parts or '{' not in parts[3]:
+            continue
+        # Parameter defaults may contain aggregate literals. Only a brace in
+        # the tail after the balanced parameter list starts the authored body.
+        end = len(fragment)-len(parts[3])+parts[3].index('{')
+        signatures.add(normalized_signature(fragment[:end]))
+    return signatures
+
+
 def condition_for(module, declaration, spec=None):
     condition = declaration.condition
     if condition == 'else branch':
@@ -97,7 +117,7 @@ def condition_for(module, declaration, spec=None):
     return condition
 
 
-def com_forward(module, declaration):
+def com_forward(module, declaration, declarations=()):
     parts = procedure_parts(declaration.code)
     if module not in COM_MODULES or not parts:
         return None
@@ -106,8 +126,18 @@ def com_forward(module, declaration):
         return declaration.code + ' { return ' + args[0] + '.vtable; }'
     if args and args[0] == 'this':
         target = re.match(r'this:\s*\*([\w]+)', params[0])
-        if target and name.startswith(target[1] + '_'):
-            method = name[len(target[1]) + 1:]
+        aliases = {d.name:match[1] for d in declarations
+                   if (match := re.fullmatch(r'\w+\s*::\s*(\w+)',d.code))}
+        def canonical(type_name):
+            visited = set()
+            while type_name in aliases and type_name not in visited:
+                visited.add(type_name)
+                type_name = aliases[type_name]
+            return type_name
+        prefixes = ([target[1]]+[alias for alias in aliases if canonical(alias)==canonical(target[1])]) if target else []
+        owner = next((p for p in sorted(prefixes,key=len,reverse=True) if name.startswith(p+'_')),None)
+        if owner:
+            method = name[len(owner) + 1:]
             if method == 'Destructor':
                 method = 'Destructor'
             call = 'this.vtable.' + method + '(' + ', '.join(args) + ');'
@@ -175,13 +205,13 @@ def generate_facade(module, spec):
     constants_path = ROOT/'stdlib/internal/bindings/vendor/constants.json'
     native_constants = json.loads(constants_path.read_text()) if constants_path.exists() else {}
     manual_path = ROOT / 'stdlib' / module / 'wrappers.jai'
-    manual_names = set(re.findall(r'^\s*(\w+)\s*::\s*(?:inline\s+)?\(', manual_path.read_text(), re.M)) if manual_path.exists() else set()
+    manual_signatures = authored_signatures(manual_path.read_text()) if manual_path.exists() else set()
     for d in spec.declarations:
         record = {'name': d.name, 'signature': d.code, 'condition': d.condition, 'spec_line': d.line}
         condition = condition_for(module, d, spec)
         if condition != d.condition:
             record['effective_condition'] = condition
-        if d.name in manual_names:
+        if normalized_signature(d.code) in manual_signatures:
             record.update(status='implemented_manual', artifact=str(manual_path.relative_to(ROOT)))
             ledger.append(record)
             continue
@@ -214,16 +244,28 @@ def generate_facade(module, spec):
                 selected = [replace(s, condition=condition) for s in candidates if s.condition == 'OS == .LINUX']
             if not selected and not condition and candidates and all(s.condition for s in candidates):
                 selected = candidates
-            if not selected and len(candidates) == 1:
-                selected = candidates
+            base_condition = ' && '.join('('+c+')' for c in (TARGETS.get(module,''),condition) if c) or 'true'
+            if not selected:
+                selected = [s for s in candidates if possible('('+base_condition+') && ('+(s.condition or 'true')+')')]
+            selected = [s for s in selected if possible('('+base_condition+') && ('+(s.condition or 'true')+')')]
             if not selected:
                 record.update(status='unresolved', reason='No unambiguous shape for this configuration')
                 ledger.append(record)
                 continue
             blocks = []
+            coverage = ' || '.join('('+(s.condition or 'true')+')' for s in selected)
+            missing_shape = '('+base_condition+') && !('+coverage+')'
+            partial = possible(missing_shape)
+            if partial:
+                record['unresolved_shape_condition'] = missing_shape
             for s in selected:
                 body = s.code
                 if module in ('ImGui', 'nvtt'):
+                    if module == 'ImGui' and d.name == 'TextFilter':
+                        metadata = json.loads((ROOT/'stdlib/internal/bindings/vendor/imgui-symbols.json').read_text())
+                        symbol = metadata['symbols']['windows-x64' if s.condition=='OS == .WINDOWS' else 'linux-x64']
+                        body = re.sub(r'(\bsplit\s*::[^\n]+?#foreign imgui)(?=\s*[;}])',r'\1 "'+symbol+'"',body)
+                        record['native_symbol_metadata'] = metadata
                     # Public C++ shapes can put several prototypes on a line.
                     # Split only at statement boundaries before a procedure;
                     # aggregate member and overload order remain unchanged.
@@ -278,12 +320,12 @@ def generate_facade(module, spec):
                         body = code + ' ' + body[body.index('{'):]
                 blocks.append(guard(body, s.condition if s.condition != condition else ''))
             code = '\n'.join(blocks)
-            record['status'] = 'declared'
+            record['status'] = 'partially_declared' if partial else 'declared'
         elif '#foreign' in code or '#elsewhere' in code:
             code += ';'
             record['status'] = 'declared'
         elif procedure_parts(code):
-            forwarded = com_forward(module, d)
+            forwarded = com_forward(module, d, spec.declarations)
             if forwarded:
                 code = forwarded
                 record['status'] = 'forwarded'
@@ -322,6 +364,7 @@ def main():
         all_ledger[module] = {'spec': str(page.relative_to(ROOT)), 'spec_sha256': digest,
                               'counts': dict(Counter(e['status'] for e in entries)),
                               'member_counts':dict(Counter(m['status'] for e in entries for m in e.get('members',[]))),
+                              'contextual_shapes':spec.contextual_blocks,
                               'declarations': entries}
         if args.module and module not in args.module:
             continue
@@ -340,6 +383,8 @@ def main():
             context = ROOT/'stdlib/internal/bindings/vendor/mojoshader-context.jai'
             if context.exists():
                 preamble.append(context.read_text())
+        if module == 'telemetry3':
+            preamble += [guard(block, 'ENABLED && OS == .WINDOWS') for block in spec.contextual_blocks]
         library_names = sorted(set(re.findall(r'#(?:foreign|elsewhere)\s+(\w+)', code + '\n' + PRIVATE.get(module, ''))))
         for name in library_names:
             if name == 'gl_lib':
@@ -347,7 +392,7 @@ def main():
             else:
                 preamble.append(name + ' :: #library,system "' + LIBRARIES.get(name, name) + '";')
         preamble.append('#scope_export')
-        code = '// Generated from ' + str(page.relative_to(ROOT)) + '.\n// Regenerate with tools/native_bindings/generate.py; do not hand-edit.\n\n' + '\n'.join(preamble) + '\n\n' + code
+        code = ('// Generated from ' + str(page.relative_to(ROOT)) + '.\n// Regenerate with tools/native_bindings/generate.py; do not hand-edit.\n\n' + '\n'.join(preamble) + '\n\n' + code).rstrip()+'\n'
         if args.check:
             if not path.exists() or path.read_text() != code:
                 stale.append(str(path.relative_to(ROOT)))

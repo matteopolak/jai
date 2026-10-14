@@ -61,6 +61,10 @@ def main():
         'xxhash070': [vendor/'xxhash/xxhash.c'],
         'meshoptimizer': sorted((vendor/'meshoptimizer/src').glob('*.cpp')),
         'binding_ffi': [ROOT/'stdlib/internal/bindings/varargs/bridge.c'],
+        'graphics_macro_probe': [ROOT/'tests/native-bindings/generated/d3d12_macro_probe.c'],
+        'sdl_abi_probe': [ROOT/'tests/native-bindings/sdl_abi_probe.c'],
+        'imgui': [vendor/manifest['imgui']['archive']['root']/name for name in
+                  ('imgui.cpp','imgui_draw.cpp','imgui_tables.cpp','imgui_widgets.cpp','imgui_demo.cpp')],
     }
     macros = {'stb_image': 'STB_IMAGE_IMPLEMENTATION',
               'stb_image_resize': 'STB_IMAGE_RESIZE_IMPLEMENTATION',
@@ -75,12 +79,13 @@ def main():
         compiled = []
         for i, path in enumerate(sources):
             obj = objects / (name + str(i) + '.o')
-            run(['c++' if path.suffix == '.cpp' else 'cc', '-O2', '-fPIC', '-I', vendor/'stb', '-c', path, '-o', obj])
+            includes = ['-isystem',vendor/manifest['sdl2-oracle']['archive']['root']/'include'] if name=='sdl_abi_probe' else []
+            run(['c++' if path.suffix == '.cpp' else 'cc', '-O2', '-fPIC', '-I', vendor/'stb', *includes, '-c', path, '-o', obj])
             compiled.append(obj)
         run(['ar', 'rcs', args.output / ('lib' + name + '.a'), *compiled])
         suffix = '.dylib' if platform.system() == 'Darwin' else '.so'
         extra = ['-lffi'] if name == 'binding_ffi' else []
-        run(['c++' if name == 'meshoptimizer' else 'cc', '-dynamiclib' if suffix == '.dylib' else '-shared', *compiled,
+        run(['c++' if name in ('meshoptimizer','imgui') else 'cc', '-dynamiclib' if suffix == '.dylib' else '-shared', *compiled,
              '-lm', *extra, '-o', args.output / ('lib' + name + suffix)])
         print('Built ' + name)
     mojo = vendor/manifest['mojoshader']['archive']['root']

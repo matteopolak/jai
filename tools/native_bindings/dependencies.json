@@ -73,7 +73,8 @@
     "revision": "76c04c2021ef4a831a6f1e06d9566002d746139b",
     "files": {
       "generation/WinSDK/RecompiledIdlHeaders/um/d3d11.h": "ff082b8df5a18dab59939df3b5d041b5abe9206a0d1c8e2e75dc1be1cbe22135",
-      "generation/WinSDK/RecompiledIdlHeaders/shared/hidclass.h": "6ad68a5d2bfc2c50d59c3dbfc9325d8ac1d7b47e335e0118ccc3743936ee0f7b"
+      "generation/WinSDK/RecompiledIdlHeaders/shared/hidclass.h": "6ad68a5d2bfc2c50d59c3dbfc9325d8ac1d7b47e335e0118ccc3743936ee0f7b",
+      "generation/WinSDK/RecompiledIdlHeaders/um/d3d12.h": "f5c5a1325f94bf70fd1e1a607b7ff36f5559fae032101d0afef1275598e4738f"
     }
   },
   "imgui": {
@@ -107,6 +108,33 @@
       "url": "https://www.x.org/releases/individual/lib/libX11-1.8.12.tar.xz",
       "sha256": "fa026f9bb0124f4d6c808f9aef4057aad65e7b35d8ff43951cef0abe06bb9a9a",
       "root": "libX11-1.8.12"
+    }
+  },
+  "rpmalloc": {
+    "repository": "mjansson/rpmalloc",
+    "revision": "e4393ff85585d91400bcbad2e7266c011075b673",
+    "files": {
+      "rpmalloc/rpmalloc.c": "f9005d0e75ab052063ed8f574661557df56c161dba75277e700f1aee445a222a",
+      "rpmalloc/rpmalloc.h": "a45bfebb3122146c23b564f510d8605d32e201789e4668ea1a054da1b36f8ab1",
+      "LICENSE": "992dc09524f6c215f1ae0ff7d26e8ce548b7212df65a09919dbafc98e2323b41"
+    }
+  },
+  "sdl2-oracle": {
+    "repository": "libsdl-org/SDL",
+    "revision": "release-2.0.1",
+    "files": {
+      "include/SDL.h": "285d8e35b8380d2dddbbe3094e988cf12e8cba4725e11877706f5ad268cfe95f",
+      "include/SDL_version.h": "97fe54106d411f49af2bdb79d942533cd0151e7afe9b0c1693273f4f1dfbb8bd",
+      "include/SDL_rwops.h": "049a08f59b0acf8d49684adda6bd1f4878d2007b64cff01f6ad9f43fac49aa6f",
+      "include/SDL_rect.h": "236500556eb28305382eb142d7c0520ac1a94e7810c34db5d19e35fed43d194f",
+      "include/SDL_events.h": "178d2382155b74bd2594706dc2ff93ba2911d22e8dc911e35eb5e949ba67d4e0",
+      "include/SDL_pixels.h": "2d060297f616fa2a3eae36ad06af7b5f5616674d91c569f212073d87114ad8d5",
+      "COPYING.txt": "222d3c20d95f7e0f6874c7908bbac8e931e829161108eefae1feae61560d761f"
+    },
+    "archive": {
+      "url": "https://www.libsdl.org/release/SDL2-2.0.1.tar.gz",
+      "sha256": "0ae7e902a26777614a011fe7053ca7e8b14843db3c42ca117564d208cf6732f0",
+      "root": "SDL2-2.0.1"
     }
   }
 }

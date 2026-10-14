@@ -20,20 +20,20 @@ machine-readable ledger and the questions document.
 
 ## Work sequence
 
-- [ ] Add generator parser regression tests for conditional shapes, implicit
+- [x] Add generator parser regression tests for conditional shapes, implicit
   enum references, anonymous unions, overloads and private contextual types.
-- [ ] Implement deterministic spec parsing and generation; verify every
+- [x] Implement deterministic spec parsing and generation; verify every
   inventoried declaration is emitted, implemented manually, or explicitly
   unresolved in the complete ledger.
-- [ ] Implement the compression, image, mesh and hashing facades and wrappers;
+- [x] Implement the compression, image, mesh and hashing facades and wrappers;
   pin native dependencies and check host C layouts and runtime operations.
 - [ ] Implement OS, graphics, COM and SDK facades and wrappers using the same
   condition-aware generator; document ambiguous contracts rather than guessing.
-- [ ] Stage newly authored foundation sources from ../stdlib and compiler
+- [x] Stage newly authored foundation sources from ../stdlib and compiler
   sources from ../compiler into a durable test tree, preserving one bootstrap.
-- [ ] Check six desktop configurations (Linux/macOS/Windows × x64/arm64),
+- [x] Check six desktop configurations (Linux/macOS/Windows × x64/arm64),
   module parameter configurations, public nominal names and export privacy.
-- [ ] Run host native Jai programs that compare C sizes/offsets and exercise
+- [x] Run host native Jai programs that compare C sizes/offsets and exercise
   real runtime calls. Record unavailable SDK checks separately.
 - [ ] Self-review changes against the specs, update docs/README.md and the
   coverage ledger, commit each verified batch, and continue remaining scope.

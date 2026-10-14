@@ -1,0 +1,9 @@
+{
+  "oracle": "Official SDL 2.0.1 headers; native SDL2-compatible installed runtime",
+  "runtime_path": "/opt/homebrew/Cellar/sdl2-compat/2.32.70/lib/libSDL2-2.0.0.dylib",
+  "runtime_sha256": "53f5a5ac80d12b996aa4c5c7cbab679aa7649c38d02f5bd6b5dac90db8e33b5c",
+  "headers": {
+    "include/SDL2/SDL_version.h": "3f855e8b65f58b0dbc6db4a12465b136d32a0d03985f73904d95c12ed31858d7",
+    "include/SDL2/SDL_rwops.h": "4262fe54e2752a2db76fa5526bb985d782d0fe4f2aec53a73059f7fe41b229ec"
+  }
+}

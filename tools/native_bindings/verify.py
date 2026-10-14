@@ -16,33 +16,56 @@ import sys
 
 from config import TARGETS
 from generate import MODULES, condition_for
-from spec import parse_spec
+from spec import parse_spec, Declaration, Spec
 from symbols import check_symbols
-import ast
 import re
+from conditions import evaluate
 
 ROOT = Path(__file__).resolve().parents[2]
 TARGET_CONFIGS = [(os_name, cpu) for os_name in ('linux', 'macos', 'windows') for cpu in ('x64', 'arm64')]
 
 
-def enabled(condition, os_name, cpu):
+def enabled(condition, os_name, cpu, parameters=None):
     if not condition:
         return True
     values = {'OS': os_name.upper(), 'CPU': cpu.upper(), 'ENABLED': False,
               'ENABLE_ALL_EXTENSIONS': False, 'DUMP_GL_ERRORS': False, 'INCLUDE_DEBUG_BINDINGS': False,
               'INCLUDE_MEDIA_BINDINGS': False, 'INCLUDE_CAMERA_BINDINGS': False,
               'DEFINE_ANDROID_MAIN_AND_CALL_THIS': False, 'ENABLE_STATISTICS': True,
-              'RPMALLOC_FIRST_CLASS_HEAPS': True}
-    expression = condition.replace('&&', ' and ').replace('||', ' or ')
-    expression = re.sub(r'!(?!=)', ' not ', expression)
-    expression = re.sub(r'\.(WINDOWS|LINUX|MACOS|ANDROID|IOS|X64|ARM64)', lambda m: repr(m[1]), expression)
-    for name, value in values.items():
-        expression = re.sub(r'\b' + name + r'\b', repr(value), expression)
-    tree = ast.parse(expression.strip(), mode='eval')
-    if any(not isinstance(node, (ast.Expression, ast.BoolOp, ast.UnaryOp, ast.Compare, ast.Constant,
-                                 ast.And, ast.Or, ast.Not, ast.Eq, ast.NotEq, ast.Load)) for node in ast.walk(tree)):
-        raise ValueError('Unsupported condition: ' + condition)
-    return bool(eval(compile(tree, '<reviewed-condition>', 'eval'), {'__builtins__': {}}))
+              'RPMALLOC_FIRST_CLASS_HEAPS': True, 'USE_RAW':False,
+              'USE_GLUE_NATIVE_PORT':True, 'NINTENDO_SUPPORT':False}
+    values.update(parameters or {})
+    return evaluate(condition,values)
+
+
+def public_source(module, spec, os_name, cpu, parameters=None, arguments=''):
+    lines = ['M :: #import "'+module+'"'+arguments+';']
+    names = sorted(set(d.name for d in spec.declarations if d.name != 'operator =='))
+    for i, name in enumerate(names):
+        records = [d for d in spec.declarations if d.name == name]
+        if any(enabled(condition_for(module,d,spec),os_name,cpu,parameters) for d in records):
+            variable = any(re.match(r'(?:using )?\w+\s*:(?!:)',d.code) for d in records)
+            expression = 'type_of(M.'+name+')' if variable else 'M.'+name
+            lines.append('visible_'+str(i)+' :: '+expression+';')
+    coverage = json.loads((ROOT/'docs/native/bindings-coverage.json').read_text())['modules'][module]
+    members = sorted(set((d['name'],m['signature'].split('::',1)[0].strip(),m['condition'])
+                         for d in coverage['declarations'] for m in d.get('members',[])))
+    for i, (owner, member, condition) in enumerate(members):
+        if enabled(condition,os_name,cpu,parameters):
+            lines.append('visible_member_'+str(i)+' :: M.'+owner+'.'+member+';')
+    nominal = set()
+    for d in spec.declarations:
+        if enabled(condition_for(module,d,spec),os_name,cpu,parameters) and re.search(r'::\s*(?:struct|union|enum(?:_flags)?)\b(?!\s*\()',d.code):
+            nominal.add(d.name)
+    for name in sorted(nominal):
+        lines.append('#assert type_info(M.'+name+').name == "'+name+'";')
+    for d in spec.declarations:
+        alias = re.fullmatch(r'(?:using )?\w+\s*::\s*(\w+)',d.code)
+        if alias and alias[1] in nominal and enabled(condition_for(module,d,spec),os_name,cpu,parameters):
+            lines.append('#assert M.'+d.name+' == M.'+alias[1]+';')
+            lines.append('#assert type_info(M.'+d.name+').name == "'+alias[1]+'";')
+    lines.append('main :: () {}')
+    return '\n'.join(lines)
 
 
 def stage(destination, foundation=None):
@@ -96,13 +119,19 @@ def main():
                                 for p in sorted(stdlib.rglob('*.jai')) if 'Extensions' not in p.parts}
     report['specs'] = {}
     report['symbols'] = []
+    report['test_sources'] = {}
+    report['native_artifacts'] = {p.name:hashlib.sha256(p.read_bytes()).hexdigest()
+                                  for p in sorted((ROOT/'.work/native').glob('lib*')) if p.is_file()} if args.runtime else {}
     for module, slug in MODULES.items():
         if args.module and module not in args.module:
             continue
         spec = parse_spec((ROOT/'docs/specs/stdlib/modules'/f'{slug}.md').read_text())
         report['specs'][module] = hashlib.sha256((ROOT/'docs/specs/stdlib/modules'/f'{slug}.md').read_bytes()).hexdigest()
-        if args.runtime and module in ('lz4','meshoptimizer','Curl','freetype','stb_image','stb_image_resize','stb_image_write','stb_vorbis','MojoShader'):
-            report['symbols'].extend(check_symbols(module, spec, enabled, ROOT/'.work/native'))
+        if args.runtime and module in ('lz4','meshoptimizer','Curl','freetype','stb_image','stb_image_resize','stb_image_write','stb_vorbis','MojoShader','ImGui','SDL'):
+            coverage = json.loads((ROOT/'docs/native/bindings-coverage.json').read_text())['modules'][module]
+            members = [Declaration(m['signature'],m['condition']) for d in coverage['declarations'] for m in d.get('members',[])]
+            symbols = Spec(declarations=spec.declarations+members)
+            report['symbols'].extend(check_symbols(module, symbols, enabled, ROOT/'.work/native'))
         for os_name, cpu in TARGET_CONFIGS:
             file = work/'module-check.jai'
             file.write_text('#import "' + module + '"; main :: () {}\n')
@@ -115,25 +144,7 @@ def main():
                 # Qualified aliases force lookup of required importer-visible
                 # names. They do not promote helpers or make missing procedures
                 # disappear behind DCE.
-                names = sorted(set(d.name for d in spec.declarations if d.name != 'operator =='))
-                lines = ['M :: #import "' + module + '";']
-                for i, name in enumerate(names):
-                    conditions = sorted(set(condition_for(module, d, spec) for d in spec.declarations if d.name == name))
-                    if any(enabled(c, os_name, cpu) for c in conditions):
-                        records = [d for d in spec.declarations if d.name == name]
-                        is_variable = any(re.match(r'(?:using )?\w+\s*:(?!:)', d.code) for d in records)
-                        expression = 'type_of(M.' + name + ')' if is_variable else 'M.' + name
-                        lines.append('visible_' + str(i) + ' :: ' + expression + ';')
-                # A namespace-only check misses absent C++ convenience bodies
-                # and the header-delegated class API. Force member lookup too.
-                coverage = json.loads((ROOT/'docs/native/bindings-coverage.json').read_text())['modules'][module]
-                members = sorted(set((d['name'],m['signature'].split('::',1)[0].strip(),m['condition'])
-                                     for d in coverage['declarations'] for m in d.get('members',[])))
-                for i, (owner, member, condition) in enumerate(members):
-                    if enabled(condition, os_name, cpu):
-                        lines.append('visible_member_'+str(i)+' :: M.'+owner+'.'+member+';')
-                lines.append('main :: () {}')
-                file.write_text('\n'.join(lines))
+                file.write_text(public_source(module,spec,os_name,cpu))
                 public_result = invoke(command, env)
                 public_result.update(module=module, os=os_name, cpu=cpu, check='public_names',
                                      status='passed' if public_result['exit'] == 0 else 'failed')
@@ -151,8 +162,8 @@ def main():
         result['status'] = 'passed' if result['exit'] != 0 and ('has no exported member `'+private+'`') in result['stderr'] else 'failed'
         report['privacy'].append(result)
     if args.runtime:
-        for name in ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'curl', 'ios', 'objective-c', 'mojoshader', 'macos', 'metal', 'gl']:
-            relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL']}.get(name, [name])
+        for name in ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'curl', 'ios', 'objective-c', 'mojoshader', 'macos', 'metal', 'gl', 'graphics-math', 'sdl', 'sdl-layout']:
+            relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
             if args.module and not any(m in args.module for m in relevant):
                 continue
             source = ROOT/'tests/native-bindings'/f'{name}.jai'
@@ -160,12 +171,29 @@ def main():
                 report['native'].append({'name': name, 'status': 'not_implemented'})
                 continue
             exe = work/(name+'-test')
+            report['test_sources'][str(source.relative_to(ROOT))] = hashlib.sha256(source.read_bytes()).hexdigest()
             result = invoke([compiler, source, '-exe', exe], env)
-            result.update(name=name, phase='build', status='passed' if result['exit']==0 else 'failed')
+            result.update(name=name, phase='build',scope='private_arithmetic' if name=='graphics-math' else 'library_runtime',status='passed' if result['exit']==0 else 'failed')
             report['native'].append(result)
             if result['exit'] == 0:
                 result = invoke([exe], env)
                 result.update(name=name, phase='run', status='passed' if result['exit']==0 else 'failed')
+                report['native'].append(result)
+        if not args.module or 'ImGui' in args.module:
+            pin = json.loads((ROOT/'tools/native_bindings/dependencies.json').read_text())['imgui']
+            exe = work/'imgui-ffi-test'
+            source = ROOT/'tests/native-bindings/imgui_ffi.cpp'
+            report['test_sources'][str(source.relative_to(ROOT))] = hashlib.sha256(source.read_bytes()).hexdigest()
+            command = ['c++','-std=c++17','-Wall','-Wextra','-Werror','-isystem',ROOT/'.work/vendor'/pin['archive']['root'],
+                       ROOT/'tests/native-bindings/imgui_ffi.cpp',ROOT/'.work/native/libimgui.a',
+                       ROOT/'.work/native/libbinding_ffi.a','-lffi','-o',exe]
+            result = invoke(command,env)
+            result.update(name='imgui-ffi',language='C++',phase='build',header_sha256=pin['files']['imgui.h'],
+                          status='passed' if result['exit']==0 else 'failed')
+            report['native'].append(result)
+            if result['exit'] == 0:
+                result = invoke([exe],env)
+                result.update(name='imgui-ffi',language='C++',phase='run',status='passed' if result['exit']==0 else 'failed')
                 report['native'].append(result)
     args.report.write_text(json.dumps(report, indent=2)+'\n')
     failures = [x for category in ['targets','privacy','native','symbols'] for x in report[category] if x['status'] in ['failed','not_implemented','unavailable']]

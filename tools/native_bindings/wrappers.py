@@ -8,6 +8,22 @@ from bitfields import body as bitfield_body
 
 
 def simple_body(module, name, condition=''):
+    if module == 'd3d12':
+        bodies = {
+            'D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING':'return cast(D3D12_SHADER_COMPONENT_MAPPING) Binding_Math.encode_components(Src0,Src1,Src2,Src3);',
+            'D3D12_DECODE_SHADER_4_COMPONENT_MAPPING':'return cast(D3D12_SHADER_COMPONENT_MAPPING) Binding_Math.decode_component(ComponentToExtract,Mapping);',
+            'D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING':'return D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0,1,2,3);',
+            'D3D12_ENCODE_BASIC_FILTER':'return cast(D3D12_FILTER) Binding_Math.encode_filter(cast(s32) min,cast(s32) mag,cast(s32) mip,cast(s32) reduction);',
+            'D3D12_ENCODE_ANISOTROPIC_FILTER':'return cast(D3D12_FILTER) Binding_Math.encode_anisotropic(cast(s32) reduction);',
+            'D3D12_DECODE_MIN_FILTER':'return cast(D3D12_FILTER_TYPE) Binding_Math.decode_minimum(cast(s32) D3D12Filter);',
+            'D3D12_DECODE_MAG_FILTER':'return cast(D3D12_FILTER_TYPE) Binding_Math.decode_magnification(cast(s32) D3D12Filter);',
+            'D3D12_DECODE_MIP_FILTER':'return cast(D3D12_FILTER_TYPE) Binding_Math.decode_mip(cast(s32) D3D12Filter);',
+            'D3D12_DECODE_FILTER_REDUCTION':'return cast(D3D12_FILTER_REDUCTION_TYPE) Binding_Math.decode_reduction(cast(s32) D3D12Filter);',
+            'D3D12_DECODE_IS_COMPARISON_FILTER':'return Binding_Math.is_comparison(cast(s32) D3D12Filter);',
+            'D3D12_DECODE_IS_ANISOTROPIC_FILTER':'return Binding_Math.is_anisotropic(cast(s32) D3D12Filter);',
+        }
+        if name in bodies:
+            return bodies[name]
     if module == 'Objective_C':
         bodies = {
             'NSMakePoint': 'return NSPoint.{x,y};',
@@ -164,6 +180,39 @@ def forwarding_body(module, declaration, declarations, parts, parse):
         return bits
     name, params, args, tail = parts
     prefix = 'return ' if '->' in tail and not re.search(r'->\s*(?:void|\(\))', tail) else ''
+    if module == 'ImGui' and any(p.split(':',1)[0].strip() == 'fmt' and ': string' in p for p in params) and '__args' in args:
+        for native in declarations:
+            if native.name != name+'_CFormat' or native.condition != declaration.condition:
+                continue
+            target = parse(native.code)
+            if not target or len(target[1]) != len(params):
+                continue
+            fixed, compatible = [], True
+            for public, raw, argument in zip(params,target[1],args):
+                public_type = public.split(':',1)[1].split('=',1)[0].strip()
+                raw_type = raw.split(':',1)[1].split('=',1)[0].strip()
+                if argument == '__args':
+                    continue
+                if argument == 'fmt':
+                    fixed.append('.{kind=6,value=cast(u64) cformat}')
+                elif raw_type.startswith('*') and public_type == raw_type[1:]:
+                    fixed.append('.{kind=6,value=cast(u64) *'+argument+'}')
+                elif raw_type == public_type and raw_type.startswith('*'):
+                    fixed.append('.{kind=6,value=cast(u64) '+argument+'}')
+                elif raw_type == public_type and public_type == 'TreeNodeFlags':
+                    fixed.append('.{kind=1,value=cast(u64) '+argument+'}')
+                else:
+                    compatible = False
+                    break
+            if compatible:
+                setup = 'cformat := Native.terminated_copy(fmt); defer Native.release(cformat); '
+                setup += 'fixed: ['+str(len(fixed))+']Varargs.Argument = .['+', '.join(fixed)+']; '
+                # The overloaded string/pointer ID variants need a typed
+                # procedure address to select their exact native signature.
+                signature = native.code.split('::',1)[1].split('#foreign',1)[0].strip()
+                setup += 'Native_Format :: #type '+signature+' #c_call; function: Native_Format = '+native.name+'; '
+                invoke = 'invoke_bool' if prefix else 'invoke_void'
+                return setup+prefix+'Varargs.'+invoke+'(cast(*void) function,fixed,__args);'
     if module == 'Vulkan' and re.search(r'->\s*\[\]', tail):
         element = re.search(r'->\s*\[\]\s*(\w+)', tail)[1]
         has_result = 'VkResult' in tail

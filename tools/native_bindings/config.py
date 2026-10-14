@@ -29,11 +29,12 @@ PARAMETERS = {
     'telemetry3': '#module_parameters(ENABLED := false)();',
 }
 PRIVATE = {
+    'd3d12': 'Binding_Math :: #import "internal/bindings/graphics-math";',
     'nvtt': '#if OS == .WINDOWS { #import "Windows"; }',
     'd3d11': '__MIDL___MIDL_itf_d3d11_0000_0034_0001 :: struct { __bitfield: u32; }',
     'X11': 'wchar_t :: s32;',
     'SDL': '#if OS == .LINUX { #import "X11"; }',
-    'ImGui': '#import "Math";',
+    'ImGui': '#import "Math";\nNative :: #import "internal/bindings/native";\nVarargs :: #import "internal/bindings/varargs";',
     'macOS': '''Boolean :: u8;
 UTF32Char :: u32;
 UTF16Char :: u16;
@@ -117,6 +118,8 @@ binding_abort :: () #foreign libc "abort";''',
 }''',
 }
 TARGETS = {
+    'GL': 'OS == .WINDOWS || OS == .LINUX || OS == .MACOS',
+    'SDL': 'OS == .WINDOWS || OS == .LINUX || OS == .MACOS',
     'Windows': 'OS == .WINDOWS', 'd3d11': 'OS == .WINDOWS',
     'd3d12': 'OS == .WINDOWS', 'd3d_compiler': 'OS == .WINDOWS',
     'dxc_compiler': 'OS == .WINDOWS', 'dxgi': 'OS == .WINDOWS',

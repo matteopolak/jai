@@ -15,7 +15,7 @@ implementations, where built, come from pinned official vendor repositories.
 
 ## Validation so far
 
-- Twenty-four Python parser/generator regressions pass, including configuration
+- Thirty-one Python parser/generator regressions pass, including configuration
   labels between aggregate names and kinds, multi-type fences, GL parent/field
   relationships across metadata sections, and implicit native enum dependencies.
 - lz4, xxHash, meshoptimizer, freetype, stb_image, stb_image_resize,
@@ -69,8 +69,8 @@ The complete default target run against the independent snapshot is durable at
 `.work/full-independent-verification.json`: 204 declaration checks, additional
 active public-name checks, privacy checks, symbol probes and all native builds
 and executions. It reports 44 failed/unimplemented checks; these failures are
-not omitted or relabeled as passes. [Earlier verified snapshot evidence](bindings-verified-snapshot.json)
-retains the preceding batch and its limitations. Newer native evidence is in
+not omitted or relabeled as passes. [Verified snapshot evidence](bindings-verified-snapshot.json)
+summarizes the latest batch and its limitations. Earlier native evidence is in
 `.work/vendor-native-verification.json` and `.work/mojo-native-verification.json`.
 
 The initial MojoShader fixture incorrectly assumed a positive runtime version.
@@ -81,6 +81,29 @@ changed to satisfy it.
 - Public declarations containing omitted method bodies, contextual types,
   generated configuration differences and unsupported target branches still
   need implementation review. The ledger lists these explicitly.
+
+## Latest reviewed batch
+
+The latest complete worker run, `.work/coverage-final-batch.json`, records 208
+passing source/public-surface checks, 70 explicitly unsupported desktop
+combinations, and 34 failed source/public checks. Seven privacy checks pass;
+one is blocked by a dependent D3D layout failure. All 901 probed native symbols
+resolve, including 518 ImGui functions and nested methods.
+
+Twelve source-built Jai native programs and one real ImGui C++/libffi program
+pass (26 build/execution checks). The Jai programs include eleven library
+runtime suites and one private Direct3D arithmetic suite checked against
+complete selected SDK C macros. The iOS host helper and host GL program still
+fail to build. In total, this run retains 37 failed/unimplemented checks. It
+does not establish complete support for the assigned module set.
+
+The separate `.work/configuration-latest.json` checks GL extension/debug
+variants, Direct3D debug interfaces, raw/statistics rpmalloc alternatives,
+enabled telemetry, and Android/iOS targets. It retains 58 failed required
+configuration checks, including missing helpers and compiler target rejection;
+passing declaration phases are recorded separately from failing public-surface
+phases. [Generation and tool verification](bindings-generation.md) explains
+these limits and the remaining formatter blocker.
 
 ## Reproduction
 

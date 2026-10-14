@@ -14,6 +14,7 @@ def body(parts):
     data_type = 'u32'
     storage = 'fields.__bitfield'
     mapping = {}
+    prefix, suffix = '', ''
     if record == 'D3D11_VIDEO_PROCESSOR_COLOR_SPACE':
         mapping = {'Usage':(0,1), 'RGB_Range':(1,1), 'YCbCr_Matrix':(2,1),
                    'YCbCr_xvYCC':(3,1), 'Nominal_Range':(4,2), 'Reserved':(6,26)}
@@ -34,6 +35,13 @@ def body(parts):
         mapping = {'name':(0,1),'prealloc':(1,1),'pad1':(2,30)}
     elif record == 'ImFontGlyph':
         mapping = {'Colored':(0,1),'Visible':(1,1),'Codepoint':(2,30)}
+    elif record == 'D3D12_RAYTRACING_INSTANCE_DESC':
+        mapping = {'InstanceID':(0,24),'InstanceMask':(24,8),
+                   'InstanceContributionToHitGroupIndex':(0,24),'Flags':(24,8)}
+        offset = 4 if member in ('InstanceContributionToHitGroupIndex','Flags') else 0
+        storage = 'word'
+        prefix = 'word := '+ ' | '.join('((cast(u32) fields.__bitfield['+str(offset+i)+']) << '+str(i*8)+')' for i in range(4))+'; '
+        suffix = ' for i: 0..3 fields.__bitfield['+str(offset)+'+i] = cast,trunc(u8) (word >> (i*8));'
     elif record == 'mach_msg_type_descriptor_t':
         mapping = {'pad3':(0,24),'type':(24,8)}
     elif record == 'mach_msg_port_descriptor_t':
@@ -47,7 +55,7 @@ def body(parts):
     if name.startswith('set_'):
         value_type = params[1].split(':',1)[1].strip()
         converted = 'value' if value_type == data_type else '(cast('+data_type+') value)'
-        return storage+' = ('+storage+' & ~(cast('+data_type+') '+str(mask << shift)+')) | (('+converted+' & '+str(mask)+') << '+str(shift)+');'
+        return prefix+storage+' = ('+storage+' & ~(cast('+data_type+') '+str(mask << shift)+')) | (('+converted+' & '+str(mask)+') << '+str(shift)+');'+suffix
     result = '('+storage+' >> '+str(shift)+') & '+str(mask)
     return_type = re.search(r'->\s*(\w+)',tail)[1]
-    return 'return ('+result+') != 0;' if return_type=='bool' else 'return cast('+return_type+') ('+result+');'
+    return prefix+('return ('+result+') != 0;' if return_type=='bool' else 'return cast('+return_type+') ('+result+');')

@@ -4,7 +4,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "native_bindings"))
-from generate import generate_facade, split_arguments
+from generate import generate_facade, split_arguments, authored_signatures, normalized_signature
 from spec import parse_spec
 
 
@@ -98,6 +98,72 @@ run :: (this: *Compressor, options: *Options) -> bool #foreign libnvtt; run :: (
         code, ledger = generate_facade('nvtt', spec)
         self.assertIn('return run(this, *options);', code)
         self.assertEqual([m['status'] for m in ledger[0]['members']], ['declared', 'implemented'])
+
+    def test_imgui_format_overloads_select_native_pointer_signature(self):
+        spec = parse_spec('''# ImGui
+## Public declaration inventory
+- `TreeNode_CFormat :: (str_id: *u8, fmt: *u8, __args: ..Any) -> bool #foreign imgui "string_symbol"`
+- `TreeNode_CFormat :: (ptr_id: *void, fmt: *u8, __args: ..Any) -> bool #foreign imgui "pointer_symbol"`
+- `TreeNode :: (ptr_id: *void, fmt: string, __args: ..Any) -> bool`
+''')
+        code, ledger = generate_facade('ImGui',spec)
+        self.assertIn('Native_Format :: #type (ptr_id: *void, fmt: *u8, __args: ..Any) -> bool #c_call',code)
+        self.assertIn('Varargs.invoke_bool',code)
+        self.assertEqual(ledger[-1]['status'],'implemented')
+
+    def test_authored_coverage_matches_complete_overload_contract(self):
+        signatures = authored_signatures('''
+write :: (value: string, suffix := "a b") -> bool { return true; }
+write :: (value: s32) -> bool { return true; }
+''')
+        self.assertIn(normalized_signature('write :: (value: string, suffix := "a b") -> bool'),signatures)
+        self.assertNotIn(normalized_signature('write :: (text: string, suffix := "a b") -> bool'),signatures)
+        self.assertNotIn(normalized_signature('write :: (value: string, suffix := "ab") -> bool'),signatures)
+        self.assertNotIn(normalized_signature('write :: (value: u64) -> bool'),signatures)
+
+    def test_com_helper_alias_uses_canonical_receiver_vtable(self):
+        spec = parse_spec('''# dxc_compiler
+## Public declaration inventory
+- `Wide :: Utf16`
+- `Wide_GetStringLength :: inline (this: *Utf16) -> u64`
+''')
+        code, ledger = generate_facade('dxc_compiler',spec)
+        self.assertIn('return this.vtable.GetStringLength(this);',code)
+        self.assertEqual(ledger[-1]['status'],'forwarded')
+
+    def test_broader_shape_is_valid_and_missing_cpu_shape_stays_unresolved(self):
+        page = '''# Example
+## Public declaration inventory
+- [OS == .MACOS && CPU == .X64] `Record :: struct`
+## Public aggregate shapes and enum values
+### `Record`
+Variant 1 (macOS):
+```jai
+Record :: struct { value: u64; }
+```
+'''
+        code, ledger = generate_facade('Example',parse_spec(page))
+        self.assertIn('value: u64',code)
+        self.assertEqual(ledger[0]['status'],'declared')
+        code, ledger = generate_facade('Example',parse_spec(page.replace('Variant 1 (macOS):','Variant 1 (macOS, ARM64):')))
+        self.assertNotIn('Record ::',code)
+        self.assertEqual(ledger[0]['status'],'unresolved')
+
+    def test_partial_shape_keeps_supported_branch_and_records_gap(self):
+        spec = parse_spec('''# Example
+## Public declaration inventory
+- [OS == .MACOS] `Record :: struct`
+## Public aggregate shapes and enum values
+### `Record`
+Variant 1 (macOS, ARM64):
+```jai
+Record :: struct { value: u64; }
+```
+''')
+        code, ledger = generate_facade('Example',spec)
+        self.assertIn('CPU == .ARM64',code)
+        self.assertEqual(ledger[0]['status'],'partially_declared')
+        self.assertIn('unresolved_shape_condition',ledger[0])
 
 
 if __name__ == '__main__':

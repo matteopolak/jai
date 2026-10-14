@@ -10,6 +10,7 @@
         "unresolved": 7
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "__android_aborter_function",
@@ -6613,6 +6614,7 @@
         "declared": 92
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "AAUDIO_UNSPECIFIED",
@@ -7265,9 +7267,11 @@
       "spec_sha256": "7a1acba6aca794bb0aa3ee01fcd9d1901a23ae3a66b1966384b7f3c66338e26e",
       "counts": {
         "declared": 236,
-        "unresolved": 5
+        "unresolved": 1,
+        "implemented_manual": 4
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "EGL_VERSION_1_0",
@@ -8934,32 +8938,32 @@
           "signature": "egl_create_surface :: (info: *EGL_Info, window: *ANativeWindow) -> bool",
           "condition": "",
           "spec_line": 244,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/EGL/wrappers.jai"
         },
         {
           "name": "egl_destroy_surface",
           "signature": "egl_destroy_surface :: (info: *EGL_Info) -> bool",
           "condition": "",
           "spec_line": 245,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/EGL/wrappers.jai"
         },
         {
           "name": "egl_error_to_string",
           "signature": "egl_error_to_string :: (error: EGLint) -> error: string, description: string",
           "condition": "",
           "spec_line": 246,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/EGL/wrappers.jai"
         },
         {
           "name": "egl_get_error_string",
           "signature": "egl_get_error_string :: () -> string, string #expand",
           "condition": "",
           "spec_line": 247,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/EGL/wrappers.jai"
         }
       ]
     },
@@ -8971,6 +8975,7 @@
         "implemented": 10
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "LIBCURL_COPYRIGHT",
@@ -14954,6 +14959,7 @@
         "implemented": 12
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "D3D_FL9_1_REQ_TEXTURE1D_U_DIMENSION",
@@ -24382,10 +24388,10 @@
       "counts": {
         "declared": 1284,
         "forwarded": 431,
-        "implemented": 4,
-        "unresolved": 19
+        "implemented": 23
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "D3D_FL9_1_REQ_TEXTURE1D_U_DIMENSION",
@@ -32792,64 +32798,56 @@
           "signature": "set_InstanceID :: (fields: *D3D12_RAYTRACING_INSTANCE_DESC, value: u32)",
           "condition": "",
           "spec_line": 1209,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_InstanceID",
           "signature": "get_InstanceID :: (fields: D3D12_RAYTRACING_INSTANCE_DESC) -> u32",
           "condition": "",
           "spec_line": 1210,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_InstanceMask",
           "signature": "set_InstanceMask :: (fields: *D3D12_RAYTRACING_INSTANCE_DESC, value: u32)",
           "condition": "",
           "spec_line": 1211,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_InstanceMask",
           "signature": "get_InstanceMask :: (fields: D3D12_RAYTRACING_INSTANCE_DESC) -> u32",
           "condition": "",
           "spec_line": 1212,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_InstanceContributionToHitGroupIndex",
           "signature": "set_InstanceContributionToHitGroupIndex :: (fields: *D3D12_RAYTRACING_INSTANCE_DESC, value: u32)",
           "condition": "",
           "spec_line": 1213,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_InstanceContributionToHitGroupIndex",
           "signature": "get_InstanceContributionToHitGroupIndex :: (fields: D3D12_RAYTRACING_INSTANCE_DESC) -> u32",
           "condition": "",
           "spec_line": 1214,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "set_Flags",
           "signature": "set_Flags :: (fields: *D3D12_RAYTRACING_INSTANCE_DESC, value: u32)",
           "condition": "",
           "spec_line": 1215,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "get_Flags",
           "signature": "get_Flags :: (fields: D3D12_RAYTRACING_INSTANCE_DESC) -> u32",
           "condition": "",
           "spec_line": 1216,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_RAYTRACING_GEOMETRY_DESC",
@@ -36643,88 +36641,77 @@
           "signature": "D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING :: (Src0: s32, Src1: s32, Src2: s32, Src3: s32) -> D3D12_SHADER_COMPONENT_MAPPING",
           "condition": "",
           "spec_line": 1736,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_DECODE_SHADER_4_COMPONENT_MAPPING",
           "signature": "D3D12_DECODE_SHADER_4_COMPONENT_MAPPING :: (ComponentToExtract: s32, Mapping: s32) -> D3D12_SHADER_COMPONENT_MAPPING",
           "condition": "",
           "spec_line": 1737,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING",
           "signature": "D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING :: () -> D3D12_SHADER_COMPONENT_MAPPING",
           "condition": "",
           "spec_line": 1738,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_ENCODE_BASIC_FILTER",
           "signature": "D3D12_ENCODE_BASIC_FILTER :: (min: D3D12_FILTER_TYPE, mag: D3D12_FILTER_TYPE, mip: D3D12_FILTER_TYPE, reduction: D3D12_FILTER_REDUCTION_TYPE) -> D3D12_FILTER",
           "condition": "",
           "spec_line": 1739,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_ENCODE_ANISOTROPIC_FILTER",
           "signature": "D3D12_ENCODE_ANISOTROPIC_FILTER :: (reduction: D3D12_FILTER_REDUCTION_TYPE) -> D3D12_FILTER",
           "condition": "",
           "spec_line": 1740,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_DECODE_MIN_FILTER",
           "signature": "D3D12_DECODE_MIN_FILTER :: (D3D12Filter: D3D12_FILTER) -> D3D12_FILTER_TYPE",
           "condition": "",
           "spec_line": 1741,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_DECODE_MAG_FILTER",
           "signature": "D3D12_DECODE_MAG_FILTER :: (D3D12Filter: D3D12_FILTER) -> D3D12_FILTER_TYPE",
           "condition": "",
           "spec_line": 1742,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_DECODE_MIP_FILTER",
           "signature": "D3D12_DECODE_MIP_FILTER :: (D3D12Filter: D3D12_FILTER) -> D3D12_FILTER_TYPE",
           "condition": "",
           "spec_line": 1743,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_DECODE_FILTER_REDUCTION",
           "signature": "D3D12_DECODE_FILTER_REDUCTION :: (D3D12Filter: D3D12_FILTER) -> D3D12_FILTER_REDUCTION_TYPE",
           "condition": "",
           "spec_line": 1744,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_DECODE_IS_COMPARISON_FILTER",
           "signature": "D3D12_DECODE_IS_COMPARISON_FILTER :: (D3D12Filter: D3D12_FILTER) -> bool",
           "condition": "",
           "spec_line": 1745,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "D3D12_DECODE_IS_ANISOTROPIC_FILTER",
           "signature": "D3D12_DECODE_IS_ANISOTROPIC_FILTER :: (D3D12Filter: D3D12_FILTER) -> bool",
           "condition": "",
           "spec_line": 1746,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         }
       ]
     },
@@ -36733,11 +36720,12 @@
       "spec_sha256": "1aa06ff6072106cf93087cfc2bc5bb087168dd21a01496d86a19681ecaa8de60",
       "counts": {
         "declared": 62,
-        "unresolved": 4,
-        "forwarded": 21,
-        "implemented": 2
+        "forwarded": 23,
+        "implemented": 2,
+        "unresolved": 2
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "D3DCOMPILER_DLL_A",
@@ -36891,16 +36879,14 @@
           "signature": "ID3D10Blob_GetBufferPointer :: inline (this: *ID3DBlob) -> *void",
           "condition": "",
           "spec_line": 28,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "forwarded"
         },
         {
           "name": "ID3D10Blob_GetBufferSize",
           "signature": "ID3D10Blob_GetBufferSize :: inline (this: *ID3DBlob) -> SIZE_T",
           "condition": "",
           "spec_line": 29,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "forwarded"
         },
         {
           "name": "vtable",
@@ -37374,10 +37360,11 @@
       "counts": {
         "declared": 92,
         "implemented": 2,
-        "forwarded": 153,
-        "unresolved": 5
+        "forwarded": 155,
+        "unresolved": 3
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "DXC_CP_UTF8",
@@ -37552,16 +37539,14 @@
           "signature": "IDxcBlobWide_GetStringPointer :: inline (this: *IDxcBlobUtf16) -> *s16",
           "condition": "",
           "spec_line": 35,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "forwarded"
         },
         {
           "name": "IDxcBlobWide_GetStringLength",
           "signature": "IDxcBlobWide_GetStringLength :: inline (this: *IDxcBlobUtf16) -> SIZE_T",
           "condition": "",
           "spec_line": 36,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "forwarded"
         },
         {
           "name": "vtable",
@@ -39159,6 +39144,7 @@
         "implemented": 4
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "DXGI_STANDARD_MULTISAMPLE_QUALITY_PATTERN",
@@ -42166,6 +42152,7 @@
         "declared": 764
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "FT_HAS_HORIZONTAL",
@@ -47640,12 +47627,13 @@
       "spec": "docs/specs/stdlib/modules/gl.md",
       "spec_sha256": "c4ca5ccdc42205349d86a028a3a1c66ccfd4981e9a4c23a1d143949c76d0a1bd",
       "counts": {
-        "implemented_manual": 13,
+        "implemented_manual": 15,
         "declared": 1591,
-        "unresolved": 10,
+        "unresolved": 8,
         "duplicate": 1
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "gl_parse_version",
@@ -47818,16 +47806,16 @@
           "signature": "DumpShaderInfoLog :: (shader: GLuint, name: string)",
           "condition": "",
           "spec_line": 28,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/GL/wrappers.jai"
         },
         {
           "name": "DumpProgramInfoLog",
           "signature": "DumpProgramInfoLog :: (program: GLuint, name: string)",
           "condition": "",
           "spec_line": 29,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/GL/wrappers.jai"
         },
         {
           "name": "DumpGLErrors",
@@ -58987,13 +58975,13 @@
       "spec_sha256": "88486730797c1f0aa1ec5bf439ba16b37c476c75c2122ca688132d590e4be8f6",
       "counts": {
         "declared": 939,
-        "implemented": 96,
-        "unresolved": 24
+        "implemented": 120
       },
       "member_counts": {
         "declared": 297,
         "implemented": 78
       },
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "ImVec2",
@@ -60309,8 +60297,7 @@
           "signature": "Text :: (fmt: string, __args: ..Any)",
           "condition": "OS != .WINDOWS",
           "spec_line": 197,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TextColored_CFormat",
@@ -60324,8 +60311,7 @@
           "signature": "TextColored :: (col: ImVec4, fmt: string, __args: ..Any)",
           "condition": "OS != .WINDOWS",
           "spec_line": 199,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TextDisabled_CFormat",
@@ -60339,8 +60325,7 @@
           "signature": "TextDisabled :: (fmt: string, __args: ..Any)",
           "condition": "OS != .WINDOWS",
           "spec_line": 201,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TextWrapped_CFormat",
@@ -60354,8 +60339,7 @@
           "signature": "TextWrapped :: (fmt: string, __args: ..Any)",
           "condition": "OS != .WINDOWS",
           "spec_line": 203,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "LabelText_CFormat",
@@ -60369,8 +60353,7 @@
           "signature": "LabelText :: (label: *u8, fmt: string, __args: ..Any)",
           "condition": "OS != .WINDOWS",
           "spec_line": 205,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "BulletText_CFormat",
@@ -60384,8 +60367,7 @@
           "signature": "BulletText :: (fmt: string, __args: ..Any)",
           "condition": "OS != .WINDOWS",
           "spec_line": 207,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "SeparatorText",
@@ -60931,8 +60913,7 @@
           "signature": "TreeNode :: (str_id: *u8, fmt: string, __args: ..Any) -> bool",
           "condition": "OS != .WINDOWS",
           "spec_line": 285,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TreeNode_CFormat",
@@ -60946,8 +60927,7 @@
           "signature": "TreeNode :: (ptr_id: *void, fmt: string, __args: ..Any) -> bool",
           "condition": "OS != .WINDOWS",
           "spec_line": 287,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TreeNodeEx",
@@ -60968,8 +60948,7 @@
           "signature": "TreeNodeEx :: (str_id: *u8, flags: TreeNodeFlags, fmt: string, __args: ..Any) -> bool",
           "condition": "OS != .WINDOWS",
           "spec_line": 290,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TreeNodeEx_CFormat",
@@ -60983,8 +60962,7 @@
           "signature": "TreeNodeEx :: (ptr_id: *void, flags: TreeNodeFlags, fmt: string, __args: ..Any) -> bool",
           "condition": "OS != .WINDOWS",
           "spec_line": 292,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TreePush",
@@ -61236,8 +61214,7 @@
           "signature": "SetTooltip :: (fmt: string, __args: ..Any)",
           "condition": "OS != .WINDOWS",
           "spec_line": 328,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "BeginPopup",
@@ -61587,8 +61564,7 @@
           "signature": "LogText :: (fmt: string, __args: ..Any)",
           "condition": "OS != .WINDOWS",
           "spec_line": 378,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "BeginDragDropSource",
@@ -62637,6 +62613,18 @@
           "signature": "TextFilter :: struct",
           "condition": "OS != .WINDOWS",
           "spec_line": 512,
+          "native_symbol_metadata": {
+            "header_sha256": "27ce505daa602cc7cb69345606b14cccd8d4bc8b248c30765093416dead73ec8",
+            "signature_source": "template<typename T> struct ImVector;\nstruct ImGuiTextFilter {\n    struct ImGuiTextRange {\n        void split(char separator, ImVector<ImGuiTextRange>* out) const;\n    };\n};\n",
+            "symbols": {
+              "windows-x64": "?split@ImGuiTextRange@ImGuiTextFilter@@QEBAXDPEAU?$ImVector@UImGuiTextRange@ImGuiTextFilter@@@@@Z",
+              "windows-arm64": "?split@ImGuiTextRange@ImGuiTextFilter@@QEBAXDPEAU?$ImVector@UImGuiTextRange@ImGuiTextFilter@@@@@Z",
+              "linux-x64": "_ZNK15ImGuiTextFilter14ImGuiTextRange5splitEcP8ImVectorIS0_E",
+              "linux-arm64": "_ZNK15ImGuiTextFilter14ImGuiTextRange5splitEcP8ImVectorIS0_E",
+              "macos-x64": "_ZNK15ImGuiTextFilter14ImGuiTextRange5splitEcP8ImVectorIS0_E",
+              "macos-arm64": "_ZNK15ImGuiTextFilter14ImGuiTextRange5splitEcP8ImVectorIS0_E"
+            }
+          },
           "members": [
             {
               "signature": "Constructor :: (this: *TextFilter, default_filter: *u8 = \"\") -> void #cpp_method #foreign imgui \"_ZN15ImGuiTextFilterC1EPKc\"",
@@ -62664,7 +62652,7 @@
               "status": "declared"
             },
             {
-              "signature": "split :: (this: *TextRange, separator: u8, out: *ImVector(TextRange)) -> void #cpp_method #foreign imgui }",
+              "signature": "split :: (this: *TextRange, separator: u8, out: *ImVector(TextRange)) -> void #cpp_method #foreign imgui \"_ZNK15ImGuiTextFilter14ImGuiTextRange5splitEcP8ImVectorIS0_E\" }",
               "condition": "OS != .WINDOWS",
               "status": "declared"
             }
@@ -64981,8 +64969,7 @@
           "signature": "Text :: (fmt: string, __args: ..Any)",
           "condition": "OS == .WINDOWS",
           "spec_line": 727,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TextColored_CFormat",
@@ -64996,8 +64983,7 @@
           "signature": "TextColored :: (col: ImVec4, fmt: string, __args: ..Any)",
           "condition": "OS == .WINDOWS",
           "spec_line": 729,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TextDisabled_CFormat",
@@ -65011,8 +64997,7 @@
           "signature": "TextDisabled :: (fmt: string, __args: ..Any)",
           "condition": "OS == .WINDOWS",
           "spec_line": 731,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TextWrapped_CFormat",
@@ -65026,8 +65011,7 @@
           "signature": "TextWrapped :: (fmt: string, __args: ..Any)",
           "condition": "OS == .WINDOWS",
           "spec_line": 733,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "LabelText_CFormat",
@@ -65041,8 +65025,7 @@
           "signature": "LabelText :: (label: *u8, fmt: string, __args: ..Any)",
           "condition": "OS == .WINDOWS",
           "spec_line": 735,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "BulletText_CFormat",
@@ -65056,8 +65039,7 @@
           "signature": "BulletText :: (fmt: string, __args: ..Any)",
           "condition": "OS == .WINDOWS",
           "spec_line": 737,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "SeparatorText",
@@ -65603,8 +65585,7 @@
           "signature": "TreeNode :: (str_id: *u8, fmt: string, __args: ..Any) -> bool",
           "condition": "OS == .WINDOWS",
           "spec_line": 815,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TreeNode_CFormat",
@@ -65618,8 +65599,7 @@
           "signature": "TreeNode :: (ptr_id: *void, fmt: string, __args: ..Any) -> bool",
           "condition": "OS == .WINDOWS",
           "spec_line": 817,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TreeNodeEx",
@@ -65640,8 +65620,7 @@
           "signature": "TreeNodeEx :: (str_id: *u8, flags: TreeNodeFlags, fmt: string, __args: ..Any) -> bool",
           "condition": "OS == .WINDOWS",
           "spec_line": 820,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TreeNodeEx_CFormat",
@@ -65655,8 +65634,7 @@
           "signature": "TreeNodeEx :: (ptr_id: *void, flags: TreeNodeFlags, fmt: string, __args: ..Any) -> bool",
           "condition": "OS == .WINDOWS",
           "spec_line": 822,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "TreePush",
@@ -65908,8 +65886,7 @@
           "signature": "SetTooltip :: (fmt: string, __args: ..Any)",
           "condition": "OS == .WINDOWS",
           "spec_line": 858,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "BeginPopup",
@@ -66259,8 +66236,7 @@
           "signature": "LogText :: (fmt: string, __args: ..Any)",
           "condition": "OS == .WINDOWS",
           "spec_line": 908,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented"
         },
         {
           "name": "BeginDragDropSource",
@@ -67309,6 +67285,18 @@
           "signature": "TextFilter :: struct",
           "condition": "OS == .WINDOWS",
           "spec_line": 1042,
+          "native_symbol_metadata": {
+            "header_sha256": "27ce505daa602cc7cb69345606b14cccd8d4bc8b248c30765093416dead73ec8",
+            "signature_source": "template<typename T> struct ImVector;\nstruct ImGuiTextFilter {\n    struct ImGuiTextRange {\n        void split(char separator, ImVector<ImGuiTextRange>* out) const;\n    };\n};\n",
+            "symbols": {
+              "windows-x64": "?split@ImGuiTextRange@ImGuiTextFilter@@QEBAXDPEAU?$ImVector@UImGuiTextRange@ImGuiTextFilter@@@@@Z",
+              "windows-arm64": "?split@ImGuiTextRange@ImGuiTextFilter@@QEBAXDPEAU?$ImVector@UImGuiTextRange@ImGuiTextFilter@@@@@Z",
+              "linux-x64": "_ZNK15ImGuiTextFilter14ImGuiTextRange5splitEcP8ImVectorIS0_E",
+              "linux-arm64": "_ZNK15ImGuiTextFilter14ImGuiTextRange5splitEcP8ImVectorIS0_E",
+              "macos-x64": "_ZNK15ImGuiTextFilter14ImGuiTextRange5splitEcP8ImVectorIS0_E",
+              "macos-arm64": "_ZNK15ImGuiTextFilter14ImGuiTextRange5splitEcP8ImVectorIS0_E"
+            }
+          },
           "members": [
             {
               "signature": "Constructor :: (this: *TextFilter, default_filter: *u8 = \"\") -> void #cpp_method #foreign imgui \"??0ImGuiTextFilter@@QEAA@PEBD@Z\"",
@@ -67336,7 +67324,7 @@
               "status": "declared"
             },
             {
-              "signature": "split :: (this: *TextRange, separator: u8, out: *ImVector(TextRange)) -> void #cpp_method #foreign imgui }",
+              "signature": "split :: (this: *TextRange, separator: u8, out: *ImVector(TextRange)) -> void #cpp_method #foreign imgui \"?split@ImGuiTextRange@ImGuiTextFilter@@QEBAXDPEAU?$ImVector@UImGuiTextRange@ImGuiTextFilter@@@@@Z\" }",
               "condition": "OS == .WINDOWS",
               "status": "declared"
             }
@@ -68369,6 +68357,7 @@
         "implemented_manual": 2
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "get_ios_target_triple",
@@ -68403,6 +68392,7 @@
         "implemented": 5
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "Epoll_Ctl",
@@ -69372,6 +69362,7 @@
         "declared": 110
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "LZ4_VERSION_MAJOR",
@@ -70154,6 +70145,7 @@
         "implemented_manual": 2
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "kCFStringEncodingInvalidId",
@@ -87995,6 +87987,7 @@
         "declared": 39
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "MESHOPTIMIZER_VERSION",
@@ -88279,6 +88272,7 @@
         "declared": 162
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "init_metal",
@@ -89479,6 +89473,7 @@
         "declared": 154
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "MOJOSHADER_version",
@@ -90567,6 +90562,7 @@
         "declared": 117
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "GFSDK_Aftermath_Version",
@@ -91401,6 +91397,7 @@
         "declared": 558,
         "implemented": 45
       },
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "NVTT_VERSION",
@@ -98054,6 +98051,7 @@
         "unresolved": 8
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "init_objective_c",
@@ -101482,6 +101480,7 @@
         "unresolved": 70
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "OS_Error_Code",
@@ -171458,6 +171457,7 @@
         "declared": 31
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "rpmalloc_allocator_proc",
@@ -172327,6 +172327,7 @@
         "implemented": 17
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "SDL_INIT_FLAGS",
@@ -176110,6 +176111,7 @@
         "declared": 46
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "STBI_VERSION",
@@ -176442,6 +176444,7 @@
         "declared": 16
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "STBIR_ALPHA_CHANNEL_NONE",
@@ -176564,6 +176567,7 @@
         "declared": 17
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "stbi_write_png_to_mem",
@@ -176693,6 +176697,7 @@
         "declared": 32
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "stb_vorbis_alloc",
@@ -176929,6 +176934,9 @@
         "unresolved": 14
       },
       "member_counts": {},
+      "contextual_shapes": [
+        "    tm_error :: enum u32 {\n        TM_OK :: 0;\n        TMERR_DISABLED :: 1;\n        TMERR_INVALID_PARAM :: 2;\n        TMERR_NULL_API :: 3;\n        TMERR_OUT_OF_RESOURCES :: 4;\n        TMERR_UNINITIALIZED :: 5;\n        TMERR_BAD_HOSTNAME :: 6;\n        TMERR_COULD_NOT_CONNECT :: 7;\n        TMERR_UNKNOWN_NETWORK :: 8;\n        TMERR_ALREADY_SHUTDOWN :: 9;\n        TMERR_ARENA_TOO_SMALL :: 10;\n        TMERR_BAD_HANDSHAKE :: 11;\n        TMERR_UNALIGNED :: 12;\n        TMERR_NETWORK_NOT_INITIALIZED :: 13;\n        TMERR_BAD_VERSION :: 14;\n        TMERR_BAD_TIMER :: 15;\n        TMERR_ALREADY_OPENED :: 16;\n        TMERR_ALREADY_INITIALIZED :: 17;\n        TMERR_FILE_OPEN_FAILED :: 18;\n        TMERR_INIT_NETWORKING_FAILED :: 19;\n        TMERR_THREAD_CREATE_FAILED :: 20;\n        TMERR_WRONG_PLATFORM :: 21;\n        TMERR_UNKNOWN :: 0xFFFF;\n    }\n\n    tm_compression :: enum u32\n    {\n        TMCOMPRESS_LZB :: 0;\n        TMCOMPRESS_LZ4_DEPRECATED :: 1;\n        TMCOMPRESS_NONE :: 2;\n        TMCOMPRESS_UNKNOWN :: 0x7FFFFFFF;\n    }\n\n    tm_zone_flags :: enum u32\n    {\n        TMZF_NONE :: 0;\n        TMZF_STALL :: 1 << 1;\n        TMZF_IDLE :: 1 << 2;\n        TMZF_CONTEXT_SWITCH  :: 1 << 3;\n        TMZF_PLOT_TIME  :: 1 << 4;\n        TMZF_PLOT_TIME_EXPERIMENTAL :: TMZF_PLOT_TIME;\n        TMZF_HAS_ACCUMULATION  :: 1 << 5;\n        TMZF_ACCUMULATION  :: 1 << 6;\n        TMZF_LOCK_HOLD  :: 1 << 7;\n        TMZF_LOCK_WAIT  :: 1 << 8;\n        TMZF_RECURSIVE  :: 1 << 9;\n        TMZF_NO_DURATION_LABEL :: 1 << 10;\n        TMZF_KERNEL_SAMPLING_ZONE :: 1 << 11;\n    }\n\n    tm_open_flags :: enum u32\n    {\n        TMOF_INIT_NETWORKING :: 1 << 0;\n        TMOF_CAPTURE_CONTEXT_SWITCHES :: 1 << 1;\n        TMOF_SAVE_PLOTS_CSV :: 1 << 3;\n        TMOF_SAVE_ZONES_CSV :: 1 << 4;\n        TMOF_SAVE_TIME_SPANS_CSV :: 1 << 5;\n        TMOF_SAVE_MESSAGES_CSV :: 1 << 6;\n        TMOF_GENERATE_HTML_REPORT :: 1 << 7;\n        TMOF_BREAK_ON_MISMATCHED_ZONE :: 1 << 8;\n        TMOF_SEND_ENTER_ZONE_EXPERIMENTAL :: 1 << 9;\n        TMOF_SAVE_ALL_CSV :: TMOF_SAVE_PLOTS_CSV | TMOF_SAVE_ZONES_CSV | TMOF_SAVE_TIME_SPANS_CSV | TMOF_SAVE_MESSAGES_CSV;\n    }\n\n    tm_connection_type :: enum u32\n    {\n        TMCT_TCP :: 0;\n        TMCT_IPC :: 1;\n        TMCT_FILE :: 2;\n        TMCT_USER_PROVIDED :: 3;\n    }\n\n    tm_plot_draw_type :: enum u32\n    {\n        TM_PLOT_DRAW_LINE       :: 0;\n        TM_PLOT_DRAW_POINTS     :: 1;\n        TM_PLOT_DRAW_STEPPED_XY :: 2;\n        TM_PLOT_DRAW_STEPPED_YX :: 3;\n        TM_PLOT_DRAW_COLUMN     :: 4;\n        TM_PLOT_DRAW_LOLLIPOP   :: 5;\n    }\n\n    tm_plot_units :: enum u32\n    {\n        TM_PLOT_UNITS_REAL                :: 0;\n        TM_PLOT_UNITS_MEMORY              :: 1;\n        TM_PLOT_UNITS_HEX                 :: 2;\n        TM_PLOT_UNITS_INTEGER             :: 3;\n        TM_PLOT_UNITS_PERCENTAGE_COMPUTED :: 4;\n        TM_PLOT_UNITS_PERCENTAGE_DIRECT   :: 5;\n        TM_PLOT_UNITS_TIME                :: 6;\n        TM_PLOT_UNITS_TIME_MS             :: 7;\n        TM_PLOT_UNITS_TIME_US             :: 8;\n        TM_PLOT_UNITS_TIME_CLOCKS         :: 9;\n        TM_PLOT_UNITS_TIME_INTERVAL       :: 10;\n    }\n\n    tm_library_type :: enum u32 {\n        TM_RELEASE :: 0;\n        TM_DEBUG :: 1;\n    }\n\nTM_API_NYI :: #type () -> void #c_call;\n\n    tm_gpu_zone :: struct {\n        name_id : u64;\n        file_id : u64;\n        line    : u32;\n        depth   : u32;\n    }\n\n    tm_api :: struct #type_info_none {\n        major_version                 : u32;\n        minor_version                 : u32;\n        revision_number               : u32;\n        build_number                  : u32;\n        tmCheckVersion                : ( major_version : u32, minor_version : u32, revision_number : u32, build_number : u32 ) -> tm_error #c_call;\n        tmInitialize                  : ( arena_size : u32, arena_address : *u8 ) -> tm_error #c_call;\n        tmOpen                        : ( ctx : u32, program_name : *u8, build_info : *u8, host_or_filename : *u8,\n                                          connection_type : tm_connection_type, port : u16, open_flags : tm_open_flags, timeout_ms : s32) -> tm_error #c_call;\n        tmClose                       : ( ctx : u32 ) -> void #c_call;\n        tmShutdown                    : () -> void #c_call;\n        tmGetThreadHandle             : () -> void #c_call;\n        tmTick                        : ( mask : u64 ) -> void #c_call;\n        _tmRegisterFileCallbacks      : TM_API_NYI;\n        tmFlush                       : () -> void #c_call;\n        tmMessage_Core                : ( mask : u64, flags : u32, filename : *u8, filename_id : *u64, line_number : u32, message: *u8, message_id: *u64) -> void #c_call;\n        tmMessageV_Core               : ( mask : u64, flags : u32, filename : *u8, filename_id : *u64, line_number : u32, fmt : *u8, args: .. Any ) -> void #c_call;\n        tmString                      : ( static_string : *u8 ) -> u64 #c_call;\n        tmStaticString                : ( string_id : *u64, static_string : *u8 ) -> u64 #c_call;\n        tmPrintf                      : ( fmt : *u8, args: .. Any ) -> u64 #c_call;\n        _tmPrintfV                    : TM_API_NYI;\n        tmCallStack                   : ( mask : u64 ) -> u64 #c_call;\n        tmZoneColor                   : ( red : float, green : float, blue : float ) -> void #c_call;\n        _tmZoneWaitingFor             : TM_API_NYI;\n        tmEnterZone_Core              : ( mask : u64 , flags : u32 , file : *u8, file_id : *u64, line : u32 , zone_name: *u8, zone_name_id : *u64  ) -> void #c_call;\n        tmEnterZoneV_Core             : ( mask : u64 , flags : u32 , file : *u8, file_id : *u64, line : u32 , zone_name: *u8, args: .. Any) -> void #c_call;\n        tmLeaveZone                   : ( mask : u64 ) -> void #c_call;\n        _tmRenameZone_Core            : TM_API_NYI;\n        _tmRenameZoneV_Core           : TM_API_NYI;\n        _tmZoneAtTime_Core            : TM_API_NYI;\n        _tmZoneAtTimeV_Core           : TM_API_NYI;\n        _tmEmitAccumulationZone_Core  : TM_API_NYI;\n        _tmEmitAccumulationZoneV_Core : TM_API_NYI;\n        _tmSetZoneFlag                : TM_API_NYI;\n        tmSetCaptureMask              : ( mask : u64 ) -> void #c_call;\n        tmGetCaptureMask              : () -> u64 #c_call;\n        _tmGetSessionName             : TM_API_NYI;\n        _tmBeginTimeSpan_Core         : TM_API_NYI;\n        _tmBeginTimeSpanV_Core        : TM_API_NYI;\n        _tmEndTimeSpan_Core           : TM_API_NYI;\n        _tmSetTimeSpanName_Core       : TM_API_NYI;\n        _tmSetTimeSpanNameV_Core      : TM_API_NYI;\n        _tmStartWaitForLock_Core      : TM_API_NYI;\n        _tmStartWaitForLockV_Core     : TM_API_NYI;\n        _tmEndWaitForLock_Core        : TM_API_NYI;\n        _tmAcquiredLock_Core          : TM_API_NYI;\n        _tmAcquiredLockV_Core         : TM_API_NYI;\n        _tmReleasedLock_Core          : TM_API_NYI;\n        tmPlot_Core                   : ( mask : u64, units : tm_plot_units, draw_type : tm_plot_draw_type, plot_value : float64, plot_name : *u8, plot_name_id : *u64 ) -> void #c_call;\n        tmPlotAt_Core                 : ( mask : u64, ts: u64, units : tm_plot_units, draw_type : tm_plot_draw_type, plot_value : float64, plot_name : *u8, plot_name_id : *u64 ) -> void #c_call;\n        tmSetPlotInfo                 : ( plot_name : u64, draw_type : tm_plot_draw_type, units : tm_plot_units ) -> void #c_call;\n        _tmAlloc_Core                 : TM_API_NYI;\n        _tmAllocV_Core                : TM_API_NYI;\n        _tmFree_Core                  : TM_API_NYI;\n        tmThreadName                  : ( mask : u64, thread_id : u32, fmt : *u8, args : .. Any ) -> void #c_call;\n        tmEndThread                   : ( mask : u64, thread_id : u32 ) -> void #c_call;\n        tmTrackOrder                  : ( mask : u64, track_id : u32, track_order : u64 ) -> void #c_call;\n        tmTrackColor                  : ( mask : u64, track_id : u32, r : float32, g : float32, b : float32 ) -> void #c_call;\n        tmHash                        : ( str : *u8, len : s32 ) -> u64 #c_call;\n        tmHashString                  : ( str: *u8 ) -> u64 #c_call;\n        tmHash32                      : ( str: *u8, len : s32 ) -> u32 #c_call;\n        _tmSetMaxThreadCount          : TM_API_NYI;\n        _tmGetMaxThreadCount          : TM_API_NYI;\n        _tmSetMaxTimeSpanTrackCount   : TM_API_NYI;\n        _tmGetMaxTimeSpanTrackCount   : TM_API_NYI;\n        _tmSetSendBufferSize          : TM_API_NYI;\n        _tmGetSendBufferSize          : TM_API_NYI;\n        _tmSetSendBufferCount         : TM_API_NYI;\n        _tmGetSendBufferCount         : TM_API_NYI;\n        _tmGetMemoryFootprint         : TM_API_NYI;\n        tmRunning                     : () -> u32 #c_call;\n        _tmSetCompression             : TM_API_NYI;\n        _tmSetZoneFilterThreshold     : TM_API_NYI;\n        tmNewTrackID                  : () -> u32 #c_call;\n        tmTrackName                   : ( mask : u64, track_id : u32, fmt : *u8 ) -> void #c_call;\n        _tmThreadTrack                : TM_API_NYI;\n        _tmSwitchToFiber              : TM_API_NYI;\n        _tmEndFiber                   : TM_API_NYI;\n        tmEnterZoneFast_Core          : ( mask : u64, flags : u32, file_id : u64, line : u32, zone_id : u64 ) -> void #c_call;\n        tmGetCurrentThreadId          : () -> u64 #c_call;\n        _tmZoneColorSticky            : TM_API_NYI;\n        _tmSwitchToFiberOnTrack       : TM_API_NYI;\n        _tmGetZoneDepth               : TM_API_NYI;\n        tmSecondsToTicks              : ( seconds : float64 ) -> u64 #c_call;\n        _tmBeginColoredTimeSpan_Core  : TM_API_NYI;\n        _tmBeginColoredTimeSpanV_Core : TM_API_NYI;\n        _tmNewTimeSpanTrackID         : TM_API_NYI;\n        _tmScreenshot                 : TM_API_NYI;\n        _tmTickAtTime                 : TM_API_NYI;\n        _tmContextSwitchAtTime        : TM_API_NYI;\n        _tmTimeSpanAtTime_Core        : TM_API_NYI;\n        _tmTimeSpanAtTimeV_Core       : TM_API_NYI;\n        _tmMessageAtTime_Core         : TM_API_NYI;\n        _tmMessageAtTimeV_Core        : TM_API_NYI;\n        _tmMemZoneAtTime              : TM_API_NYI;\n        _tmAllocAtTime_Core           : TM_API_NYI;\n        _tmAllocAtTimeV_Core          : TM_API_NYI;\n        _tmFreeAtTime_Core            : TM_API_NYI;\n        tmProfileThread               : ( mask : u64, thread_id : u32, flags : u32 ) -> void #c_call;\n        tmSetSamplingInterval         : ( microseconds : u32 ) -> void #c_call;\n        tmGpuZone : ( zone: *tm_gpu_zone, track: u32,\n                      gpu_enter: u64, gpu_leave: u64, cpu_time: u64, fast_time: u64,\n                      gpu_begin: u64, cpu_begin: u64, fast_begin: u64,\n                      gpu_freq: u64, cpu_freq: u64 ) -> void #c_call;\n        _tmBitmapRGB                  : TM_API_NYI;\n        _tmBitmapPlanes               : TM_API_NYI;\n        _tmBitmapStart                : TM_API_NYI;\n        _tmBitmapEnd                  : TM_API_NYI;\n        _tmBitmapSendRGB              : TM_API_NYI;\n        _tmBitmapSendPlane            : TM_API_NYI;\n        _tmSetThreadStackSize         : TM_API_NYI;\n        _tmGetThreadStackSize         : TM_API_NYI;\n        _tmSetMaxTweakCount           : TM_API_NYI;\n        _tmGetMaxTweakCount           : TM_API_NYI;\n        _tmTweakVar_Core              : TM_API_NYI;\n        _tmRegisterTweakCallback      : TM_API_NYI;\n        _tmGetZoneIDPtr               : TM_API_NYI;\n        _tmDependsOnPtr               : TM_API_NYI;\n        _tmAddDependencyPtr           : TM_API_NYI;\n        connected                     : s32;\n        error                         : tm_error;\n    }"
+      ],
       "declarations": [
         {
           "name": "ENABLE_TELEMETRY",
@@ -177355,6 +177363,7 @@
         "implemented": 62
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "VkVersion",
@@ -200705,15 +200714,15 @@
     },
     "Windows": {
       "spec": "docs/specs/stdlib/modules/windows.md",
-      "spec_sha256": "739b918587e10b6f11a31bec60ee81ca9b34b8fc4137bcc77523b45cdd01bfb2",
+      "spec_sha256": "2d1f72fa3fef5480c49f3ce2c95e0fa3dd7ee35da1bc15f8a2157addcb4a961d",
       "counts": {
-        "declared": 1547,
+        "declared": 1548,
         "implemented": 9,
-        "unresolved": 1,
         "forwarded": 4,
         "implemented_manual": 1
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "LARGE_INTEGER_S64",
@@ -205575,23 +205584,16 @@
         },
         {
           "name": "XBOX_GUID",
-          "signature": "XBOX_GUID :: GUID.",
+          "signature": "XBOX_GUID :: GUID.{ 0xec87f1e3, 0xc13b, 0x4100, .[ 0xb5, 0xf7, 0x8b, 0x84, 0xd5, 0x42, 0x60, 0xcb ] }",
           "condition": "OS == .WINDOWS",
           "spec_line": 702,
-          "status": "unresolved",
-          "reason": "Reviewed inventory omits aggregate initializer contents"
+          "status": "declared"
         },
         {
           "name": "GUID_DEVINTERFACE_HID",
-          "signature": "GUID_DEVINTERFACE_HID :: GUID.",
+          "signature": "GUID_DEVINTERFACE_HID :: GUID.{ 0x4d1e55b2, 0xf16f, 0x11cf, .[ 0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30 ] }",
           "condition": "OS == .WINDOWS",
           "spec_line": 703,
-          "native_initializer": {
-            "package": "windows-sdk",
-            "header": "generation/WinSDK/RecompiledIdlHeaders/shared/hidclass.h",
-            "header_sha256": "6ad68a5d2bfc2c50d59c3dbfc9325d8ac1d7b47e335e0118ccc3743936ee0f7b",
-            "code": "GUID_DEVINTERFACE_HID :: GUID.{0x4d1e55b2, 0xf16f, 0x11cf, .[0x88, 0xcb, 0x0, 0x11, 0x11, 0x0, 0x0, 0x30]}"
-          },
           "status": "declared"
         },
         {
@@ -211664,10 +211666,12 @@
       "spec_sha256": "4a08c1afb5c9b826afabe65ecca056abd03112b1c4f697afdf4f43a0b33c62bc",
       "counts": {
         "declared": 1248,
-        "unresolved": 14,
+        "unresolved": 9,
+        "implemented_manual": 5,
         "implemented": 7
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "x_global_display",
@@ -211976,8 +211980,8 @@
           "signature": "xdnd_context_reset :: (dnd: *Xdnd_Context)",
           "condition": "",
           "spec_line": 51,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "init_global_display",
@@ -212016,8 +212020,8 @@
           "signature": "x_window_is_ours :: (display: *Display, win: Window) -> bool",
           "condition": "",
           "spec_line": 56,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "x_toolkit_create_simple_window",
@@ -212062,8 +212066,8 @@
           "signature": "x_color_to_pixel :: (dpy: *Display, cmap: Colormap, col: XColor) -> u64",
           "condition": "",
           "spec_line": 62,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "x_draw_button",
@@ -212078,8 +212082,8 @@
           "signature": "x_draw_string :: (dpy: *Display, d: Drawable, x: s32, y: s32, msg: string)",
           "condition": "",
           "spec_line": 64,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "x_textwidth",
@@ -212093,8 +212097,8 @@
           "signature": "x_lock_window_size :: (dpy: *Display, w: Window, width: s32, height: s32)",
           "condition": "",
           "spec_line": 66,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "x_rgb_to_color",
@@ -220594,6 +220598,7 @@
         "implemented": 9
       },
       "member_counts": {},
+      "contextual_shapes": [],
       "declarations": [
         {
           "name": "XXH_VERSION_MAJOR",
