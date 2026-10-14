@@ -983,6 +983,7 @@ pub struct UsingStmt {
 
 #[derive(Clone, Debug)]
 pub struct PushContextStmt {
+    pub backtick: bool,
     pub context: Expr,
     pub body: Box<Stmt>,
     /// No context was named (`push_context { }`): `context` is the current one, and a copy

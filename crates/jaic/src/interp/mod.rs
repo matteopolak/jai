@@ -605,8 +605,16 @@ pub struct Interp {
     #[cfg(not(target_arch = "wasm32"))]
     callback_stacks: Vec<ValueStack>,
     /// Fibers by the address of their `Fiber_Context` (`fibers.rs`).
+    #[cfg(all(
+        any(unix, windows),
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    ))]
     fibers: HashMap<u64, Box<fibers::FiberRec>>,
     /// A trap a fiber ended in, for the context that started it to return.
+    #[cfg(all(
+        any(unix, windows),
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    ))]
     fiber_trap: Option<Trap>,
     /// `release_code` ran: no code runs anymore.
     closed: bool,
@@ -674,6 +682,10 @@ impl ValueStack {
     }
 
     /// `len` words of memory that outlives the stack and is zeroed.
+    #[cfg(all(
+        any(unix, windows),
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    ))]
     fn borrowed(words: *mut u64, len: usize) -> Self {
         ValueStack {
             words,
@@ -795,7 +807,15 @@ impl Interp {
             unseen_thunks: Vec::new(),
             #[cfg(not(target_arch = "wasm32"))]
             callback_stacks: Vec::new(),
+            #[cfg(all(
+                any(unix, windows),
+                any(target_arch = "x86_64", target_arch = "aarch64")
+            ))]
             fibers: HashMap::default(),
+            #[cfg(all(
+                any(unix, windows),
+                any(target_arch = "x86_64", target_arch = "aarch64")
+            ))]
             fiber_trap: None,
             closed: false,
             covered: profile::coverage_file().map(|_| Vec::new()),
@@ -1149,7 +1169,13 @@ impl Interp {
         self.ct_type_table = (0, 0);
         self.stack = ValueStack::default();
         self.sp = 0;
-        self.fibers = HashMap::default();
+        #[cfg(all(
+            any(unix, windows),
+            any(target_arch = "x86_64", target_arch = "aarch64")
+        ))]
+        {
+            self.fibers = HashMap::default();
+        }
         #[cfg(not(target_arch = "wasm32"))]
         {
             self.callback_stacks = Vec::new();
@@ -2868,5 +2894,35 @@ mod atomic_contention_tests {
             worker.join().unwrap();
         }
         assert_eq!(value.load(Ordering::SeqCst), 80_000);
+    }
+
+    #[test]
+    fn interpreted_exchange_preserves_all_prior_values_under_contention() {
+        let value = Arc::new(AtomicU64::new(0));
+        let barrier = Arc::new(Barrier::new(4));
+        let workers: Vec<_> = (0..4)
+            .map(|index| {
+                let value = value.clone();
+                let barrier = barrier.clone();
+                std::thread::spawn(move || {
+                    let mut interp = Interp::new(Box::new(NativeHost));
+                    let address = Arc::as_ptr(&value) as u64;
+                    barrier.wait();
+                    let mut sum = 0;
+                    for i in 1..=20_000 {
+                        sum += interp
+                            .intrinsic(
+                                ir::Intrinsic::AtomicRmw(ir::AtomicOp::Xchg, ir::ORDER_SEQ_CST),
+                                &[address, index * 20_000 + i, 8],
+                            )
+                            .unwrap()
+                            .into_vec()[0];
+                    }
+                    sum
+                })
+            })
+            .collect();
+        let sum: u64 = workers.into_iter().map(|w| w.join().unwrap()).sum();
+        assert_eq!(sum + value.load(Ordering::SeqCst), 80_000 * 80_001 / 2);
     }
 }

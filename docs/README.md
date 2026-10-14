@@ -52,6 +52,9 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Independent compiler facades](compiler/compiler-facades.md): current supported helpers, traversal/printing and focused test overlay
 - [Compiler-managed global data](compiler/compiler-global-data.md): registered storage identity, segment handles and compile-time/target runtime records
 - [Bootstrap atomics](compiler/bootstrap-atomics.md): scalar validation, host/native/WASM atomic semantics and contention regressions
+- [Context cleanup](compiler/context-cleanup.md): conditional caller-scope macro context and lexical exit behavior
+- [Generic default reflection](compiler/generic-default-reflection.md): source identity, evaluated instance defaults and storage contract
+- [Measured performance messages](compiler/performance-messages.md): reviewed run records, actual counters and host timing boundary
 - [Compiler progress](status/compiler-progress.md) and [deviations](status/compiler-deviations.md): producer checkpoints, verification evidence, gaps and required long-term fixes
 - [Literal precision](compiler/literal-precision.md): contextual defaults, required precision, aliases, folding, overloads and module arguments
 - [Browser integration status](compiler/browser-integration-status.md): explicit source-library embedding, supported Compiler regression and remaining integration failures
@@ -68,6 +71,7 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 How `crates/jaic`, the interpreter and the language server work.
 
 - [Compiler architecture](compiler/architecture.md)
+- [Owned compiler formatting verification](compiler/formatting-verification.md): source-built formatter/linter and generated-source idempotence
 - [Compiler integration handoff](compiler-integration-handoff.md): source build, canonical bootstrap and runtime contract for independent library workers
 - [Clean-room compiler implementation plan](compiler/cleanroom-implementation-plan.md)
 - [Diagnostics](compiler/diagnostics.md): error message style guide, rendering, runtime failures, exit statuses
@@ -173,5 +177,3 @@ Scripts, CI and project policies.
 Agreed designs that are not built yet.
 
 - [Async IO, HTTP and JSON](plans/async-io.md): fibers over io_uring/epoll/kqueue/IOCP, typed JSON, and an HTTP server and client
-
-- [Context cleanup](compiler/context-cleanup.md): conditional caller-scope macro context and lexical exit behavior

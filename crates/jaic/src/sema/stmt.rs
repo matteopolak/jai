@@ -414,6 +414,7 @@ impl Compiler {
                     context,
                     body,
                     bare,
+                    ..
                 } = &**boxed;
                 let depth = f.mark_defers();
                 let addr = self.push_context_addr(f, scope, context, *bare, span)?;

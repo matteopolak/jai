@@ -9,8 +9,32 @@ atomic_store :: (pointer: *$T, new: T) #intrinsic;
 atomic_exchange :: (pointer: *$T, new: T) -> T #intrinsic;
 compare_and_swap :: (pointer: *$T, old: T, new: T) -> (bool, T) #intrinsic;
 atomic_counter: u64;
+exchange_counter: u64;
+publication_data: u64;
+publication_ready: u64;
 #program_export "atomic_address"
 address :: () -> *u64 #c_call { return *atomic_counter; }
+#program_export "exchange_address"
+exchange_address :: () -> *u64 #c_call { return *exchange_counter; }
+#program_export "publication_data_address"
+publication_data_address :: () -> *u64 #c_call { return *publication_data; }
+#program_export "publication_ready_address"
+publication_ready_address :: () -> *u64 #c_call { return *publication_ready; }
+#program_export "atomic_replace"
+replace :: (p: *u64, value: u64) -> u64 #c_call { return atomic_exchange(p, value); }
+#program_export "atomic_publish"
+publish :: (data: *u64, ready: *u64, value: u64) #c_call {
+    while atomic_load(ready) != 0 {}
+    data.* = value;
+    atomic_store(ready, 1);
+}
+#program_export "atomic_observe"
+observe :: (data: *u64, ready: *u64) -> u64 #c_call {
+    while atomic_load(ready) == 0 {}
+    result := data.*;
+    atomic_store(ready, 0);
+    return result;
+}
 #program_export "atomic_step"
 step :: (p: *u64) -> u64 #c_call {
     while true {
@@ -113,23 +137,49 @@ fn native_scalars_alignment_and_real_thread_contention() {
 #include <pthread.h>
 #include <stdint.h>
 #include <stdatomic.h>
+#include <unistd.h>
 extern uint64_t atomic_step(uint64_t *);
 extern int atomic_check(void);
+extern uint64_t atomic_replace(uint64_t *, uint64_t);
+extern void atomic_publish(uint64_t *, uint64_t *, uint64_t);
+extern uint64_t atomic_observe(uint64_t *, uint64_t *);
 static _Atomic uint64_t count;
-static uint64_t sums[4];
+static _Atomic uint64_t exchanges;
+static uint64_t sums[4], exchange_sums[4];
+static _Alignas(8) uint64_t data;
+static _Atomic uint64_t ready;
+static int publication_failed;
 static void *worker(void *arg) {
     uintptr_t index=(uintptr_t)arg;
-    for (int i=0;i<30000;i++) sums[index]+=atomic_step((uint64_t*)&count);
+    for (int i=0;i<30000;i++) {
+        sums[index]+=atomic_step((uint64_t*)&count);
+        exchange_sums[index]+=atomic_replace((uint64_t*)&exchanges,index*30000+i+1);
+    }
+    return 0;
+}
+static void *producer(void *arg) {
+    for(uint64_t i=1;i<=30000;i++) atomic_publish(&data,(uint64_t*)&ready,i);
+    return 0;
+}
+static void *consumer(void *arg) {
+    for(uint64_t i=1;i<=30000;i++) if(atomic_observe(&data,(uint64_t*)&ready)!=i) publication_failed=1;
     return 0;
 }
 int main(int argc, char **argv) {
     if (argc>1) { _Alignas(8) unsigned char bytes[24]={0}; atomic_step((uint64_t*)(bytes+1)); return 98; }
+    alarm(15);
     if (atomic_check()) return 1;
     pthread_t threads[4];
     for (uintptr_t i=0;i<4;i++) if(pthread_create(&threads[i],0,worker,(void*)i)) return 2;
     for (int i=0;i<4;i++) if(pthread_join(threads[i],0)) return 3;
     uint64_t sum=sums[0]+sums[1]+sums[2]+sums[3];
-    return atomic_load(&count)==120000 && sum==UINT64_C(120000)*119999/2 ? 0:4;
+    if(atomic_load(&count)!=120000 || sum!=UINT64_C(120000)*119999/2) return 4;
+    uint64_t exchange_sum=atomic_load(&exchanges);
+    for(int i=0;i<4;i++) exchange_sum+=exchange_sums[i];
+    if(exchange_sum!=UINT64_C(120000)*120001/2) return 5;
+    if(pthread_create(&threads[0],0,producer,0) || pthread_create(&threads[1],0,consumer,0)) return 6;
+    if(pthread_join(threads[0],0) || pthread_join(threads[1],0)) return 7;
+    return publication_failed ? 8:0;
 }
 "#).unwrap();
         let executable = dir.join("driver");
@@ -204,6 +254,12 @@ fn wasm64_shared_memory_contention() {
             "--no-entry",
             "--export=atomic_step",
             "--export=atomic_address",
+            "--export=exchange_address",
+            "--export=atomic_replace",
+            "--export=atomic_publish",
+            "--export=atomic_observe",
+            "--export=publication_data_address",
+            "--export=publication_ready_address",
             "--export-memory",
             "--allow-undefined",
             "--shared-memory",
@@ -219,23 +275,38 @@ const fs=require('fs'),{Worker}=require('worker_threads');
 function env(m,memory){const e={memory};for(const i of WebAssembly.Module.imports(m))if(i.kind==='function')e[i.name]=()=>{throw Error('unexpected runtime failure '+i.name);};return e;}
 const primary=new WebAssembly.Module(fs.readFileSync(process.argv[1]));
 const first=new WebAssembly.Instance(primary,{env:env(primary)});
-const memory=first.exports.memory, pointer=first.exports.atomic_address();
+const memory=first.exports.memory, pointer=first.exports.atomic_address(), exchangePointer=first.exports.exchange_address();
 const module=new WebAssembly.Module(fs.readFileSync(process.argv[2]));
 const workerSource=`const {parentPort,workerData:d}=require('worker_threads');
 const e={memory:d.memory};for(const i of WebAssembly.Module.imports(d.module))if(i.kind==='function')e[i.name]=()=>{throw Error('unexpected runtime failure');};
 const x=new WebAssembly.Instance(d.module,{env:e});parentPort.postMessage('ready');
-parentPort.once('message',()=>{let sum=0n;for(let i=0;i<30000;i++)sum+=x.exports.atomic_step(d.pointer);parentPort.postMessage(sum);});`;
+parentPort.once('message',()=>{let sum=0n,exchanges=0n;for(let i=0;i<30000;i++){sum+=x.exports.atomic_step(d.pointer);exchanges+=x.exports.atomic_replace(d.exchangePointer,BigInt(d.index*30000+i+1));}parentPort.postMessage([sum,exchanges]);});`;
 const workers=[],ready=[],done=[];
 for(let i=0;i<4;i++){
- const w=new Worker(workerSource,{eval:true,workerData:{memory,module,pointer}});workers.push(w);
+ const w=new Worker(workerSource,{eval:true,workerData:{memory,module,pointer,exchangePointer,index:i}});workers.push(w);
  ready.push(new Promise((resolve,reject)=>{w.once('message',resolve);w.once('error',reject);}));
- done.push(new Promise((resolve,reject)=>{w.on('message',m=>{if(typeof m==='bigint')resolve(m);});w.once('error',reject);}));
+ done.push(new Promise((resolve,reject)=>{w.on('message',m=>{if(Array.isArray(m))resolve(m);});w.once('error',reject);}));
 }
 setTimeout(()=>{throw Error('contention timeout');},15000).unref();
 (async()=>{await Promise.all(ready);for(const w of workers)w.postMessage('go');const sums=await Promise.all(done);
 const count=Atomics.load(new BigUint64Array(memory.buffer),Number(pointer/8n));
-if(count!==120000n || sums.reduce((a,b)=>a+b,0n)!==120000n*119999n/2n)throw Error('lost atomic updates '+count);
-for(const w of workers)await w.terminate();})().catch(e=>{console.error(e);process.exit(1);});
+if(count!==120000n || sums.reduce((a,b)=>a+b[0],0n)!==120000n*119999n/2n)throw Error('lost atomic updates '+count);
+const last=Atomics.load(new BigUint64Array(memory.buffer),Number(exchangePointer/8n));
+if(sums.reduce((a,b)=>a+b[1],last)!==120000n*120001n/2n)throw Error('lost exchange values');
+for(const w of workers)await w.terminate();
+const data=first.exports.publication_data_address(),flag=first.exports.publication_ready_address();
+const publicationSource=`const {parentPort,workerData:d}=require('worker_threads');
+const e={memory:d.memory};for(const i of WebAssembly.Module.imports(d.module))if(i.kind==='function')e[i.name]=()=>{throw Error('unexpected runtime failure');};
+const x=new WebAssembly.Instance(d.module,{env:e});parentPort.postMessage('ready');
+parentPort.once('message',()=>{for(let i=1n;i<=30000n;i++){if(d.producer)x.exports.atomic_publish(d.data,d.flag,i);else if(x.exports.atomic_observe(d.data,d.flag)!==i)throw Error('publication order mismatch');}parentPort.postMessage('done');});`;
+const pair=[],pairReady=[],pairDone=[];
+for(const producer of [false,true]){
+ const w=new Worker(publicationSource,{eval:true,workerData:{memory,module,data,flag,producer}});pair.push(w);
+ pairReady.push(new Promise((resolve,reject)=>{w.once('message',resolve);w.once('error',reject);}));
+ pairDone.push(new Promise((resolve,reject)=>{w.on('message',m=>{if(m==='done')resolve();});w.once('error',reject);}));
+}
+await Promise.all(pairReady);for(const w of pair)w.postMessage('go');await Promise.all(pairDone);for(const w of pair)await w.terminate();
+})().catch(e=>{console.error(e);process.exit(1);});
 "#;
     run(Command::new("node")
         .args(["-e", script])

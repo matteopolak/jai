@@ -29,5 +29,9 @@ error. Shared-memory linkage/configuration remains the embedder's responsibility
 Original tests in the core and LLVM cleanroom_atomics suites cover bit patterns,
 prior values, invalid types/orders/alignment, native O0/O2 execution, host CAS
 contention, and four WASM shared-memory workers. Native and WASM contention each
-validate 120,000 updates and the sum of all prior values. They do not substitute
+validate 120,000 CAS updates and contended exchanges using sums of prior values.
+A two-thread 30,000-round publication handshake verifies store/load ordering over
+ordinary data in native and shared-WASM execution. The interpreter also runs
+simultaneous-host CAS and exchange contention. Real-prelude fixtures cover enum
+and procedure identity as well as integer storage. They do not substitute
 for full platform CI or production library integration.

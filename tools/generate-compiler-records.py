@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Emit compiler ABI declarations solely from the reviewed public specification.
 
-The two report types awaiting a reviewed run-record shape are deliberately omitted.
 No source distribution or old library implementation is an input.
 """
 from pathlib import Path
+import argparse
 import re
+import subprocess
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +42,18 @@ def declaration_order(item):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--formatter", type=Path, default=ROOT / "target/jaifmt",
+                        help="repository source-built jaifmt used to normalize generated declarations")
+    args = parser.parse_args()
+    formatter = args.formatter.resolve(strict=True)
+    if ROOT / "target" not in formatter.parents:
+        parser.error("formatter must be source-built under this workspace's target directory")
+
+    def normalized(text):
+        return subprocess.run([str(formatter), "--stdin", "--config", str(ROOT / "jaifmt.toml")],
+                              input=text, text=True, capture_output=True, check=True).stdout
+
     source = SPEC.read_text()
     inventory = source.split("## Public type members")[0]
     declarations = dict(re.findall(r"^- `([A-Za-z_][A-Za-z_0-9]*) :: ((?:struct|enum|enum_flags)[^`]*)`$", inventory, re.M))
@@ -48,11 +61,9 @@ def main():
     registered = []
     sections = re.findall(r"^#### `([^`]+)`[^\n]*\n(.*?)(?=^#### |^## |\Z)", source, re.M | re.S)
     for name, body in sorted(sections, key=declaration_order):
-        if name in {"Run_Directive_Report", "Message_Performance_Report"}:
-            continue
         if name not in declarations:
             raise ValueError(f"no inventory declaration for {name}")
-        if declarations[name] == "struct" and (name.startswith(("Code_", "Message")) or name in {"Time_Report", "Polymorph_Report", "Bytecode_Report", "Global_Data_Info", "Global_Data_Segment_Info"}):
+        if declarations[name] == "struct" and (name.startswith(("Code_", "Message")) or name in {"Time_Report", "Run_Directive_Report", "Polymorph_Report", "Bytecode_Report", "Global_Data_Info", "Global_Data_Segment_Info"}):
             registered.append("C." + name)
         blocks = re.findall(r"```jai\n(.*?)```", body, re.S)
         if blocks:
@@ -71,11 +82,13 @@ def main():
         lines.append("}\n")
         chunks.append("\n".join(lines))
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text("\n\n".join(chunks))
+    declarations_text = normalized("\n\n".join(chunks))
     registry = ROOT / "stdlib/internal/compiler-api/registry.jai"
     registry.parent.mkdir(parents=True, exist_ok=True)
     registered += ["Type_Info", "Type_Info_Integer", "Type_Info_Float", "Type_Info_String", "Type_Info_Pointer", "Type_Info_Procedure", "Type_Info_Struct", "Type_Info_Struct_Member", "Type_Info_Array", "Type_Info_Enum", "Type_Info_Variant", "Source_Code_Location"]
-    registry.write_text("// Generated from reviewed compiler/prelude record inventories.\n#scope_module\nregister_compiler_types :: () {\n" + "".join("    register_type(type_info(" + name + "));\n" for name in registered) + "}\n#scope_file\nC :: #import \"Compiler\";\n")
+    registry_text = normalized("// Generated from reviewed compiler/prelude record inventories.\n#scope_module\nregister_compiler_types :: () {\n" + "".join("    register_type(type_info(" + name + "));\n" for name in registered) + "}\n#scope_file\nC :: #import \"Compiler\";\n")
+    OUT.write_text(declarations_text)
+    registry.write_text(registry_text)
     print(OUT)
 
 

@@ -1,38 +1,43 @@
 # Compiler progress
 
-Active task: general bootstrap atomics, caller-scope deferred context in macros,
-and generic-default reflection. Atomic producer checkpoint: `1d8833b`.
+Producer checkpoints: atomic lowering 1d8833b; caller-owned context cleanup
+ec7e23e; generic defaults/speculative context initialization 5c3846c. The current
+checkpoint adds measured performance reports, generated-source normalization,
+owned Jai formatting and stronger atomic contention/publication regressions.
 
-Investigation: bootstrap load/store/exchange names are absent from intrinsic
-dispatch. Existing ordered IR operations exist, but scalar/alignment validation
-is incomplete and interpreter operations use cooperative load/store sequences.
-The portable worker's independent context reproducer is available and reviewed.
-Reviewed Basic default-elision semantics require generic default metadata.
+Implemented in this task: real interpreter/native/WASM bootstrap load, store,
+exchange and CAS with scalar/signature/order/alignment checks; caller-block
+context lifetime including conditional/nested macro cleanup and exit ordering;
+source/instance generic defaults with shared source identity; reviewed run-report
+records using actual timings/counters. Actual wasm32 compiler hosts explicitly
+diagnose unavailable performance timing. Native-only fiber state now follows its
+supported host capability gates, resolving wasm32 warnings without suppression.
 
-Atomic milestone: five original core tests and four LLVM/runtime tests pass.
-Native O0/O2 and WASM64 preserve signed/unsigned, float/NaN payload, bool and
-pointer values. Native pthread and shared-memory WASM worker tests validate
-120,000 updates plus the sum of prior values. The host-interpreter CAS test
-failed with 53,537/80,000 before repair and passes with real host atomics.
-WASM atomics now select +atomics from IR; explicitly disabling it is an error.
+Verification on source-built artifacts:
+- Core/LLVM: 240 unit/focused integration tests pass. One pre-existing ignored
+  test is not counted. Includes host CAS/exchange contention, native/shared-WASM
+  contention and 30,000-round store/load publication handshakes.
+- Public compiler-owned contract cases: 25 pass in interpreter and 25 native.
+  Public-language suite: 11 pass. LSP library: 25 pass. CLI program arguments pass.
+- Scoped Rust formatting and core/LLVM/LSP/browser clippy -D warnings pass.
+  Actual wasm32 browser-crate cargo check and clippy -D warnings pass.
+- Repository formatter/linter build from own sources with independent overlay.
+  All owned public/private Jai and four new fixture directories pass repository
+  jaifmt --check and jailint -D warnings. Generated records/registry regeneration
+  is hash-idempotent through source-built formatter normalization.
 
-Context milestone: eight original core regressions pass, including conditional
-registration, nested macro blocks, deferred ordering and return/loop exits.
-Native and WASM64 execute the control-flow cases at O0 and O2. Runtime context
-selection and guarded caller-owned cleanup replace compile-time pointer choice;
-stable cleanup boundaries handle insertion into nested macro scopes.
+Remaining integration limits: fresh-overlay browser suite 19/28; seven broad LSP
+  auto-import failures use the incomplete local stdlib; a legacy CLI executable
+  path test imports unavailable System. Assertions/failures remain intact.
+Dependent-default metadata encoding and anonymous run callee representation are
+explicit questions. Selected printer/visitor/debugger/backend gaps remain bounded
+in the deviations ledger. No production integration, full corpus or release claim.
 
-Next: checkpoint verified context lowering, then implement generic reflection.
-No production integration or full corpus claim is made.
-
-Verification: 151 core unit, five atomic, 35 module, three layout, five literal,
-18 LLVM unit, and four LLVM/backend tests pass. Scoped rustfmt and core/backend
-clippy with warnings denied pass for the atomic checkpoint. This task adds Rust
-tests containing original Jai/C/JS programs, not new stdlib Jai files. Native CLI
-rebuild for that checkpoint passed. Context core/backend clippy with warnings denied passes.
-No quarantined integration sources/history, vendor sources, or transcripts read.
-No agent-message tool is available; commentary and this file provide milestones.
-
-Context broad core verification: 151 unit tests and 56 focused integration cases
-passed; one pre-existing ignored test was not counted. Prior verification is
-recorded in `docs/compiler-integration-handoff.md`; it is not production integration.
+Handoff: docs/compiler-integration-handoff.md. Deviations:
+docs/status/compiler-deviations.md. Next owner/coordinator steps: consume instance
+default metadata for dependent Basic formatting, integrate the independent
+portable/numerics/native/browser dependencies, and rerun full platform/corpus gates.
+No quarantined integration/history, vendor source bodies, transcripts, credentials
+or harness auth were read. No subagents, peer writes, reference execution or
+publication occurred; Extensions is untouched. No agent-message tool is available,
+so commentary and these durable documents provide milestone reporting.

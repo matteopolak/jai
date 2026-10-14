@@ -2137,12 +2137,15 @@ impl Exporter<'_> {
                 let crate::ast::PushContextStmt {
                     context,
                     body,
+                    backtick,
                     ..
                 } = &**boxed;
                 let context = self.expr(context);
                 let block = self.stmt_block(body);
                 let mut rec = self.node("Code_Push_Context", node::PUSH_CONTEXT, span);
-                rec.ptr("to_push", context).ptr("block", block);
+                rec.ptr("to_push", context)
+                    .ptr("block", block)
+                    .int("push_context_flags", i64::from(*backtick));
                 self.add(rec)
             }
             S::Insert(boxed) => {

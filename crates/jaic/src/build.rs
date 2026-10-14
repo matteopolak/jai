@@ -1745,6 +1745,10 @@ pub fn call(
             Ok(Rets::default())
         }
         MetaOp::BeginIntercept => {
+            #[cfg(target_arch = "wasm32")]
+            if arg(1) as i64 & (INTERCEPT_REPORT_RUNS | INTERCEPT_REPORT_POLYMORPHS) != 0 {
+                return Err(trap("performance reporting requires a host monotonic clock; this WASM compiler host does not provide one".into()));
+            }
             let mut reg = shared.borrow_mut();
             let ws = reg.ws(arg(0) as i64).map_err(trap)?;
             ws.intercepted = true;

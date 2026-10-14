@@ -25,3 +25,5 @@ context-block returns natively and on WASM64 at O0 and O2. This is focused
 compiler verification, not integrated production library/corpus verification.
 
 A source-built formatter exposed a missed speculative-checking initialization path. All procedure/thunk/lambda/scratch contexts now initialize runtime context storage through the setter; the field is private. An original is_constant/procedure-call regression covers the missed path.
+
+Public Code_Push_Context serialization preserves IS_BACKTICKED for both explicit context blocks and deferred-pop statements, and DEFER_POP for the latter. The formatted real-prelude compiler-context fixture verifies both flag combinations and block presence; the ordinary-block flag assertion failed before parser/export preservation was added.
