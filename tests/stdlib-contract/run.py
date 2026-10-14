@@ -26,6 +26,7 @@ def main() -> int:
     parser.add_argument("--jaic", required=True, help="absolute path to source-built jaic under this workspace's target/")
     parser.add_argument("--stdlib-root", required=True, help="absolute path to the public stdlib import root")
     parser.add_argument("--mode", choices=("interp", "native", "check"), help="override each positive case's manifest mode")
+    parser.add_argument("--case", action="append", help="run only this manifest case name; repeat to select several")
     args = parser.parse_args()
 
     jaic = checked_path(args.jaic, "jaic")
@@ -41,6 +42,11 @@ def main() -> int:
     import_dir = SUITE
     failures = []
     cases = json.loads((SUITE / "manifest.json").read_text())
+    if args.case:
+        unknown = set(args.case) - {case["name"] for case in cases}
+        if unknown:
+            parser.error("unknown case names: " + ", ".join(sorted(unknown)))
+        cases = [case for case in cases if case["name"] in args.case]
 
     for case in cases:
         source = (SUITE / case["source"]).resolve(strict=True)
@@ -65,7 +71,9 @@ def main() -> int:
                     ran = subprocess.run([str(executable)], cwd=temporary, env=env,
                                          text=True, capture_output=True, timeout=timeout)
                     output, error, code = ran.stdout, error + ran.stderr, ran.returncode
-                if mode == "check":
+                if "error_contains" in case:
+                    passed = code == case["exit_code"] and case["error_contains"] in error and output == case["stdout"]
+                elif mode == "check":
                     passed = code == 0
                 else:
                     passed = code == 0 and output == case["stdout"]

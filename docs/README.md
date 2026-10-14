@@ -38,6 +38,7 @@ Jai language behavior as implemented by `jaic`.
 - [Type values, identity and type info](language/type-values-and-info.md)
 - [Unions and tagged unions](language/unions.md)
 - [using](language/using.md)
+- [Compiler compatibility questions](specs/stdlib/compiler-questions.md): unresolved API contracts and implementation limits
 
 ## Metaprogramming
 
@@ -48,9 +49,15 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Compile-time values, globals and runtime info](metaprogramming/compile-time-data-and-state.md)
 - [Compile-time execution (`#run`)](metaprogramming/compile-time-execution.md)
 - [Compiler module (Jai side)](metaprogramming/compiler-module.md)
+- [Independent compiler facades](compiler/compiler-facades.md): current supported helpers, traversal/printing and focused test overlay
+- [Compiler-managed global data](compiler/compiler-global-data.md): registered storage identity, segment handles and compile-time/target runtime records
+- [Literal precision](compiler/literal-precision.md): contextual defaults, required precision, aliases, folding, overloads and module arguments
+- [Browser integration status](compiler/browser-integration-status.md): explicit source-library embedding, supported Compiler regression and remaining integration failures
+- [Using-filter propagation](compiler/using-filter-propagation.md): parameter/macro bindings, embedded filters, mapped storage and safe Code reconstruction
+- [Independent runtime Jai lexer](compiler/runtime-jai-lexer.md): implementation, supported recovery and interpreter/native verification
 - [Compiler records (messages, syntax trees, type descriptors)](metaprogramming/compiler-records.md)
 - [Metaprogram plugins (`+Name`)](metaprogramming/metaprogram-plugins.md)
-- [Preload and Runtime_Support bootstrap](specs/jai/README.md)
+- [Bootstrap and Runtime_Support](specs/jai/README.md)
 - [Reflection and Type_Info](metaprogramming/reflection-and-type-info.md)
 - [Workspaces and metaprograms](metaprogramming/workspaces.md)
 
@@ -59,6 +66,8 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 How `crates/jaic`, the interpreter and the language server work.
 
 - [Compiler architecture](compiler/architecture.md)
+- [Compiler integration handoff](compiler-integration-handoff.md): source build, canonical bootstrap and runtime contract for independent library workers
+- [Clean-room compiler implementation plan](compiler/cleanroom-implementation-plan.md)
 - [Diagnostics](compiler/diagnostics.md): error message style guide, rendering, runtime failures, exit statuses
 - [Format string check](compiler/format-string-check.md): `print` format strings against their argument count
 - [jaic `#asm` blocks](compiler/asm.md)
@@ -73,6 +82,8 @@ How `crates/jaic`, the interpreter and the language server work.
 - [Doc comments](compiler/doc-comments.md): the Markdown comment convention (parameters, intra-doc links) and how the server and the VS Code grammar use it
 - [Language server refactorings](compiler/language-server-refactorings.md): extract, inline, fill in cases and fields, `ifx` rewrites, call hierarchy, selection ranges
 - [Parser](compiler/parser.md)
+- [Module instance identity](compiler/module-instance-identity.md): ordered module arguments and module specialization identity
+- [Private standard-library source loading](compiler/internal-source-policy.md): canonical import/load provenance and cache checks
 - [Sema: module loading and top-level expansion](compiler/sema-modules.md)
 - [Sema: polymorphism and declarations](compiler/sema-polymorphism-and-declarations.md)
 - [Stack traces (`context.stack_trace`)](compiler/stack-traces.md)
