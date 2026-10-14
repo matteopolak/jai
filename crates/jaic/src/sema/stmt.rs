@@ -30,6 +30,7 @@ impl Compiler {
                 self.declare_local_consts(scope, scope, decl)?;
             }
         }
+        let mut failed = None;
         for (i, stmt) in stmts.iter().enumerate() {
             if let S::PushContextDefer(defer) = &stmt.kind {
                 let ast::PushContextDeferStmt {
@@ -41,11 +42,11 @@ impl Compiler {
                 let saved = f.context.replace(addr);
                 let result = self.check_block_stmts_from(f, scope, &stmts[i + 1..]);
                 f.context = saved;
-                return result;
+                return failed.map_or(result, Err);
             }
-            self.check_block_stmt(f, scope, stmt)?;
+            self.check_block_stmt_ide(f, scope, stmt, &mut failed)?;
         }
-        Ok(())
+        failed.map_or(Ok(()), Err)
     }
 
     /// The tail of a block: its constants and imports were already hoisted.
@@ -55,15 +56,38 @@ impl Compiler {
         scope: ScopeId,
         stmts: &[ast::Stmt],
     ) -> Result<()> {
+        let mut failed = None;
         for (i, stmt) in stmts.iter().enumerate() {
             if matches!(stmt.kind, S::PushContextDefer(_)) {
-                return self.check_block_stmts(f, scope, &stmts[i..]);
+                let result = self.check_block_stmts(f, scope, &stmts[i..]);
+                return failed.map_or(result, Err);
             }
-            self.check_block_stmt(f, scope, stmt)?;
+            self.check_block_stmt_ide(f, scope, stmt, &mut failed)?;
         }
-        Ok(())
+        failed.map_or(Ok(()), Err)
     }
 
+    /// Keep checking independent statements for editor facts, but return a real error
+    /// for the body afterward. Invalid IR must never become an executable procedure.
+    fn check_block_stmt_ide(
+        &mut self,
+        f: &mut FnCtx,
+        scope: ScopeId,
+        stmt: &ast::Stmt,
+        failed: &mut Option<Box<Diagnostic>>,
+    ) -> Result<()> {
+        match self.check_block_stmt(f, scope, stmt) {
+            Err(error) if self.ide.is_some() && !self.sketching() => {
+                self.ide.as_mut().unwrap().errors.push((*error).clone());
+                if failed.is_none() {
+                    *failed = Some(error);
+                }
+                self.sketch_reopen(f);
+                Ok(())
+            }
+            result => result,
+        }
+    }
 
     /// A statement of a block. A sketch goes on past a statement it cannot check, for the
     /// facts of the rest.
@@ -2625,6 +2649,7 @@ impl Compiler {
         });
         let result = self.call_procs(f, loop_scope, &procs, args, None, span);
         f.pending_for_body = None;
+        self.ide_note_for_keyword(span);
         result.map(|_| ())
     }
 

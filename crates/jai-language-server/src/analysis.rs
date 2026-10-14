@@ -237,13 +237,10 @@ impl Analysis {
             key: crate::semantic::text_key(text),
         };
         let file = FileId(0);
-        let tokens = match jaic::lexer::lex(file, text) {
-            Ok(tokens) => tokens,
-            Err(error) => {
-                result.compiler_diagnostic(&index, text, &error, DiagnosticCode::Lexer);
-                return result;
-            }
-        };
+        let (tokens, lex_errors) = jaic::lexer::lex_ide(file, text);
+        for error in &lex_errors {
+            result.compiler_diagnostic(&index, text, error, DiagnosticCode::Lexer);
+        }
         // One entry per token but the end marker: sized once, not grown by doubling.
         let mut converted: Vec<Token> = Vec::with_capacity(tokens.len());
         converted.extend(tokens.iter().filter_map(|token| {
@@ -292,16 +289,18 @@ impl Analysis {
             return result;
         }
         let expected_rows = (tokens.len() / 16).min(limits.rows);
-        let (parsed, tokens) = jaic::parser::parse_tokens(file, text, tokens);
-        drop(tokens);
-        crate::semantic::note_parse(text, parsed.as_ref().err().map(|d| d.span.start as usize));
-        let parsed = match parsed {
-            Ok(parsed) => parsed,
-            Err(error) => {
-                result.compiler_diagnostic(&index, text, &error, DiagnosticCode::Parser);
-                return result;
-            }
-        };
+        let parsed = jaic::parser::parse_tokens_ide(file, text, tokens);
+        crate::semantic::note_parse(
+            text,
+            lex_errors
+                .first()
+                .or(parsed.diagnostics.first())
+                .map(|d| d.span.start as usize),
+        );
+        for error in &parsed.diagnostics {
+            result.compiler_diagnostic(&index, text, error, DiagnosticCode::Parser);
+        }
+        let parsed = parsed.file;
         let context = Context {
             text,
             limits,

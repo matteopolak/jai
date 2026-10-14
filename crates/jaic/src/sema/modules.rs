@@ -423,7 +423,14 @@ impl Compiler {
         self.file_by_path
             .insert((path.clone(), module), self.files.len());
         let text = self.sources.get(file).text.clone();
-        let ast = crate::parser::parse_file(file, &text).map_err(Box::new)?;
+        let ast = if let Some(ide) = self.ide.as_mut() {
+            let parsed = crate::parser::parse_file_ide(file, &text);
+            ide.parse_errors.extend(parsed.diagnostics.iter().cloned());
+            ide.errors.extend(parsed.diagnostics);
+            parsed.file
+        } else {
+            crate::parser::parse_file(file, &text).map_err(Box::new)?
+        };
         let module_scope = self.modules[module.0 as usize].scope;
         let file_scope = self.new_scope(ScopeKind::File, Some(module_scope), module, Some(file));
         self.files.push(FileInfo {

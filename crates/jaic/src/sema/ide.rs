@@ -111,6 +111,9 @@ pub struct IdeFacts {
     /// Errors of procedure bodies that failed while the program compiled, beyond the one the
     /// compile stopped at.
     pub errors: Vec<Diagnostic>,
+    /// Original lexical/syntax errors. Bodies covering them may supply editor facts,
+    /// but must not be executed by compile-time code after malformed statements vanish.
+    pub parse_errors: Vec<Diagnostic>,
     /// Where each enum member's name is declared.
     pub(super) enum_decls: HashMap<(crate::types::EnumId, Sym), Span>,
     /// The types an inferred member (`.NAME`) of the recorded files was expected to have, by
@@ -575,6 +578,9 @@ impl Compiler {
             .collect();
         failed.sort_by_key(|e| (e.span.file.0, e.span.start));
         errors.extend(failed);
+        if let Some(ide) = self.ide.as_mut() {
+            errors.append(&mut ide.errors);
+        }
         errors
     }
 

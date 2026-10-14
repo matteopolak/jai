@@ -29,14 +29,14 @@ target.
 
 ## Implementation and verification sequence
 
-- [ ] Add standalone LSP fixtures/tests for malformed statements and selected custom
+- [x] Add standalone LSP fixtures/tests for malformed statements and selected custom
   iteration; run them and inspect failures before implementation.
-- [ ] Implement selected-procedure keyword association; verify named, pointer,
+- [x] Implement selected-procedure keyword association; verify named, pointer,
   generic, overloaded, aliased, imported and ordinary loops. Commit reviewed progress.
-- [ ] Implement IDE parser recovery with strict-parser negative checks. Verify
+- [x] Implement IDE parser recovery with strict-parser negative checks. Verify
   symbols, type hover, definition, completion, document features and incremental
   edits including Unicode; retain local syntax diagnostics. Commit reviewed progress.
-- [ ] Check IDE semantic continuation with no invented locals or swallowed errors.
+- [x] Check IDE semantic continuation with no invented locals or swallowed errors.
 - [ ] Add a deterministic suffix-edit corpus harness using baseline IDE coverage,
   varied byte/UTF-16 boundaries, explicit assertions, process timeouts and reports.
   Exercise original fixtures first, then all available public application and NEW

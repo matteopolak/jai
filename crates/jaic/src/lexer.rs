@@ -196,6 +196,36 @@ pub fn lex(file: FileId, text: &str) -> Result<Vec<Token>, Diagnostic> {
     Ok(lx.out)
 }
 
+/// Editor-only lexing. Retain good tokens, report lexical errors, and restart after
+/// the malformed literal's line. Offsets always refer to the original UTF-8 text.
+pub fn lex_ide(file: FileId, text: &str) -> (Vec<Token>, Vec<Diagnostic>) {
+    let mut lx = Lexer {
+        file,
+        text,
+        src: text.as_bytes(),
+        at: 0,
+        out: Vec::with_capacity(text.len() / 4 + 16),
+        newline: true,
+    };
+    let mut errors = Vec::new();
+    while let Err(mut error) = lx.run() {
+        let start = error.span.start as usize;
+        let end = text[start..].find('\n').map_or(text.len(), |i| start + i);
+        error.span.end = end as u32;
+        // An unclosed comment/here-string has no trustworthy internal token boundaries.
+        let opaque =
+            error.message.contains("block comment") || error.message.contains("here-string");
+        errors.push(error);
+        lx.at = if opaque {
+            text.len()
+        } else {
+            end
+        };
+        lx.newline = true;
+    }
+    (lx.out, errors)
+}
+
 /// `span` widened to balance its parentheses: the parser leaves grouping parentheses out of
 /// an expression's span, so `(a + b) * c` spans `a + b) * c` and `a && (b` ends early.
 /// `tokens` are the file's, from `lex`.
@@ -281,7 +311,7 @@ impl<'a> Lexer<'a> {
 
     fn run(&mut self) -> Result<(), Diagnostic> {
         // Skip a UTF-8 byte order mark.
-        if self.src.starts_with(&[0xEF, 0xBB, 0xBF]) {
+        if self.at == 0 && self.src.starts_with(&[0xEF, 0xBB, 0xBF]) {
             self.at = 3;
         }
         // A `#!` line at the very start (`#!/usr/bin/env jai`) is ignored, so a script can be run

@@ -29,7 +29,7 @@ impl Parser<'_> {
         let mut modify = self.parse_struct_flags(&mut flags)?;
         self.expect(P::LBrace, "to start the body")?;
         let body = self.parse_stmts_until_close()?;
-        let end = self.expect(P::RBrace, "to end the body")?;
+        let end = self.ide_close_block(start, "to end the body")?;
         modify = self.parse_struct_flags(&mut flags)?.or(modify);
         self.block_end = self.pos;
         let lit = StructLit {

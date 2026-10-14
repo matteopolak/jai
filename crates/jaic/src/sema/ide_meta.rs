@@ -496,6 +496,32 @@ impl Compiler {
         });
     }
 
+    /// Custom iteration uses the same overload resolver as calls. Give only its keyword
+    /// a procedure reference, using the actual selection even if expansion of the body
+    /// subsequently failed. The collection's expression keeps its own entity reference.
+    pub(super) fn ide_note_for_keyword(&mut self, span: Span) {
+        let Some(ide) = self.ide.as_mut() else {
+            return;
+        };
+        let Some(call) = ide.calls.iter().find(|call| call.span == span) else {
+            return;
+        };
+        // Equally ranked overloads have no unique selected definition for the editor.
+        if call.ambiguous {
+            return;
+        }
+        let chosen = call.chosen;
+        ide.refs.push(IdeRef {
+            span: Span {
+                end: span.start + 3,
+                ..span
+            },
+            what: IdeWhat::Procs(vec![chosen]),
+            ty: TypeId::COMPILE_TIME,
+            decl: false,
+        });
+    }
+
     /// Each `name = value` argument of a call to `chosen`: hovering `name` shows the
     /// parameter and its type, and go to definition goes to the parameter.
     fn ide_note_named_args(&mut self, chosen: ProcId, slots: &[Slot], args: &[CallArg]) {

@@ -335,15 +335,12 @@ impl Session {
     }
 
     /// The type checker's errors, when the program `uri` belongs to fails to compile and the
-    /// error (or one of its notes) is in `uri`. Only a document that parses is checked; its
-    /// syntax error is already reported.
+    /// error (or one of its notes) is in `uri`. Syntax errors already reported by the
+    /// syntax layer are deduplicated; independent semantic errors remain visible.
     pub(crate) fn check_diagnostics(&self, uri: &DocumentUri) -> Vec<Diagnostic> {
         let Ok(doc) = self.document(uri) else {
             return Vec::new();
         };
-        if semantic::parse_error(&doc.text).is_some() {
-            return Vec::new();
-        }
         let (errors, warnings) = self
             .with_semantic(uri, &doc.text, |analysis, path| {
                 Some((analysis.check_errors(path), analysis.check_warnings(path)))
@@ -359,8 +356,15 @@ impl Session {
         all.extend(tagged(warnings, DiagnosticSeverity::Warning));
         all.into_iter()
             .filter_map(|(start, end, message, severity)| {
+                let range = self.range_of(uri, Span::new(start, end))?;
+                if self.analyses[uri].diagnostics.iter().any(|d| {
+                    matches!(d.code, DiagnosticCode::Lexer | DiagnosticCode::Parser)
+                        && d.range.start == range.start
+                }) {
+                    return None;
+                }
                 Some(Diagnostic {
-                    range: self.range_of(uri, Span::new(start, end))?,
+                    range,
                     severity,
                     code: DiagnosticCode::Check,
                     message,
@@ -1023,10 +1027,7 @@ impl Session {
             let files = a.decl_files(&names);
             Some((names, files))
         };
-        if let Some((names, files)) = self.with_compiled_before(uri, text, at, ask) {
-            return Some((prefix, names, files));
-        }
-        let probe = repair(&format!("{}{}", &text[..at], &text[byte..]), Some(at))?;
+        let probe = self.probe(uri, text, None)?;
         let (names, files) = self.with_semantic(uri, &probe, ask)?;
         Some((prefix, names, files))
     }
@@ -1070,6 +1071,9 @@ impl Session {
                 Some((names, files))
             });
             let (names, files) = found.unwrap_or_default();
+            if names.is_empty() {
+                continue;
+            }
             return Some((prefix, names, files));
         }
         Some((prefix, Vec::new(), BTreeMap::new()))
@@ -1667,47 +1671,12 @@ impl Session {
     }
 }
 
-/// `text` made to parse by blanking the lines the parser stops at (an edit in progress): first
-/// the line at `first` (the cursor's, when completing), then each reported line, or the one
-/// before it when that is empty (a missing `;` is reported on the next line). Byte offsets are
-/// kept.
+/// Current-source IDE probe. Statement recovery happens inside the compiler parser;
+/// no lines are deleted and every unaffected byte keeps its original source position.
 pub(crate) fn repair(text: &str, first: Option<usize>) -> Option<String> {
-    let mut text = text.to_owned();
-    for attempt in 0..6 {
-        let error = match semantic::parse_error(&text) {
-            None => return Some(text),
-            Some(error) => error,
-        };
-        let mut at = error.min(text.len());
-        if let (0, Some(first)) = (attempt, first) {
-            at = first;
-        } else {
-            let start = text[..at].rfind('\n').map_or(0, |i| i + 1);
-            let end = text[at..].find('\n').map_or(text.len(), |i| at + i);
-            if text[start..end].trim().is_empty() || text[start..end].trim() == "}" {
-                // Reported where the statement would have ended: blank the last non-empty line.
-                let before = text[..start].trim_end();
-                if before.is_empty() {
-                    return None;
-                }
-                at = before.len();
-            }
-        }
-        text = blank_line(&text, at);
-    }
-    semantic::parse_error(&text).is_none().then_some(text)
-}
-
-/// `text` with the line holding `byte` replaced by spaces (byte offsets are kept).
-fn blank_line(text: &str, byte: usize) -> String {
-    let start = text[..byte].rfind('\n').map_or(0, |i| i + 1);
-    let end = text[byte..].find('\n').map_or(text.len(), |i| byte + i);
-    format!(
-        "{}{}{}",
-        &text[..start],
-        " ".repeat(end - start),
-        &text[end..]
-    )
+    let _ = first;
+    // The IDE parser recovers at grammar boundaries, retaining current source spans.
+    Some(text.to_owned())
 }
 
 pub(crate) fn contains(span: Span, byte: usize) -> bool {
