@@ -54,7 +54,7 @@ main :: () {
 
     assert(failed.type == .FAILED_TO_LAUNCH && failed_output.count == 0 && failed_errors.count == 0 && !failed_timeout);
     assert(P.create_process(*child, ..string.[args[1], "exit-high"]));
-    exited, high := P.get_process_result(*child, 5000);
+    exited, high := P.get_process_result(*child, 0x100000001);
 
     assert(exited && high.type == .EXITED && high.exit_code == -1);
     P.deinit(*child);

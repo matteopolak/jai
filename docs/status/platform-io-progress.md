@@ -86,6 +86,22 @@ Final local gates: source-built jaifmt --check, strict jailint on four targets w
 42/42 owned source coverage, all 23 jailint Rust tests, standalone IDE regression,
 scoped rustfmt/clippy with warnings denied, and the complete platform runner above.
 
+Runner/entry-option checkpoint: `556330b`. A final backend audit found that native
+DWORD conversion truncated public 64-bit process waits. The engine now spends the
+full finite budget in real native wait chunks and returns timeout only after all
+chunks actually timed out. Poll/infinite/error/signal outcomes remain native. The
+public quick-exit regression now supplies a value larger than DWORD. Giant elapsed
+durations have not been waited out; no synthetic fast-forward result is counted.
+The first infinite-loop formulation produced a real compiler return-path warning;
+the final bounded budget loop has an explicit derived timeout exit and passes the
+same warning-free source/build and strict-lint gates.
+
+Re-ran the original Unix `file`, `filesystem`, `system`, `thread-condition`,
+`thread-lifetime`, `thread-groups`, `thread-shutdown`, `process`, and `process-io`
+fixtures against the latest runtime/producer compiler: all 27 interpreter/O0/O2
+executions returned exactly ok with no stderr. Detailed evidence is durable in
+target/platform-io-unix-preservation/results.log. Extensions remains unchanged.
+
 Durable producer commits: `eb5d83d` (File), `339a16e` (System/Thread/runtime),
 `fe44299` (private Process engine, native exception diagnostics, SDK checks and
 strict lint/handoff). Work remains at the explicit integration gates below;

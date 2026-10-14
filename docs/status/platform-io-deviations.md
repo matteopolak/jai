@@ -74,6 +74,25 @@
   remain under target/platform-io-runner-negative.log and
   target/platform-io-runtime-contract-backup.jai. This verifies the runner only,
   not any additional Windows functionality.
+- `internal/platform-io/windows-process.jai` previously clamped positive 64-bit
+  timeouts to the maximum finite DWORD value, shortening very long waits. Removed
+  that reduction: a reusable bounded loop repeats real native waits and spends the
+  remaining budget only after actual WAIT_TIMEOUT results. This adds one native
+  call per exhausted chunk, without wall-clock reinterpretation or fake completion.
+  The initial unbounded-loop prototype generated a genuine compiler warning and
+  failed the runner; the bounded budget algorithm passes without suppressing it.
+  Source/cross-build and large-value quick-exit coverage exist; 49-day-plus elapsed
+  exhaustion and Windows runtime behavior have not been executed locally. Proper
+  remaining validation is native Windows CI and review of the budget arithmetic.
+- API-created Process pipes own a private allocation whose first member is the
+  public native OVERLAPPED. Module operations recover its pending/original-allocator
+  fields from that managed pointer. This preserves native pointer/storage identity
+  and copying, but assumes the pointer came from the module constructor; replacing
+  it with an independently allocated SDK-only record is not established supported
+  behavior and could read beyond that foreign record. Recorded the ownership
+  question explicitly. If reviewed interoperability requires foreign allocations,
+  the proper fix is separate private ownership tracking and a defined borrowed-state
+  policy, with native regressions; do not silently accept an incompatible record.
 
 Role: platform-io. Scope: owned File, Windows System/Thread/runtime internals,
 private encoding, original platform I/O fixtures and runner. Updated 2026-10-14.

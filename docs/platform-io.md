@@ -124,6 +124,12 @@ assigned before the suspended child starts. Callers can explicitly opt out.
 Transfer counts always come from GetOverlappedResult, including immediate completion;
 a zero-byte native pipe write is not treated as EOF.
 
+Public 64-bit wait durations are split into finite native DWORD-sized waits,
+repeating only after an actual WAIT_TIMEOUT. Zero polls and negative infinite waits
+retain their native modes. Large finite inputs are not truncated to a single native
+wait. This preserves the OS's wait-time accounting; the only extra work for long
+durations is another native wait at each completed chunk.
+
 Windows verification can be added to the runner with `--windows-process`; cross-build
 fixtures with `--windows-build x64` (or arm64 with that native toolchain installed).
 The tests import the actual public facade; the earlier temporary test module has
@@ -144,6 +150,7 @@ also exercises job ownership on parent exit on a native Windows host.
 - [Condition variable waits](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleepconditionvariablecs)
 - [CRT thread lifecycle](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/beginthread-beginthreadex?view=msvc-170)
 - [Explicit inherited process handles](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute)
+- [Native wait duration and result semantics](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitformultipleobjects)
 - [Asynchronous I/O cancellation](https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-cancelioex)
 - [Job lifetime limits](https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-setinformationjobobject)
 - [Windows stack walking](https://learn.microsoft.com/en-us/windows/win32/api/dbghelp/nf-dbghelp-stackwalk64)
