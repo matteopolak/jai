@@ -135,3 +135,21 @@ SDL_UserEvent is 8 instead of 32. Both failures are reported before the final
 assertion. Direct RWops callback invocation is not validated. The record
 contracts require review; the passing runtime subset does not establish full
 SDL ABI conformance.
+
+Current-foundations tool verification uses the designated NEW foundations
+worker's Basic, String, Hash and File_Utilities over the portable source tree.
+The source-built compiler now builds the actual `jaifmt/main.jai` successfully;
+the previous exit/print blockers no longer apply to this staging route.
+`.work/formatter-current-foundations.json` records the build result.
+All 34 owned module folders, private binding internals and native Jai tests
+were formatted with that executable. `jaifmt --check` and 36 separate
+`jailint -D warnings` invocations passed, without disabling rules; commands,
+scopes and outputs are in `.work/current-owned-quality.json`.
+
+Regenerate checked-in source with
+`python3 tools/native_bindings/generate.py --formatter .work/jaifmt`, then
+repeat with `--check`. Use the same options for `vendor_context.py`.
+Both formatted regeneration checks passed; the 31 generator regressions passed.
+Raw output remains available for bootstrapping tools, but must be normalized
+before committing. See the [deviations report](../status/bindings-deviations.md)
+for staging limits and remaining ABI/runtime failures.

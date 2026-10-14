@@ -8,6 +8,8 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import argparse
+from generate import format_source
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -36,6 +38,10 @@ def c_enums(header):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--formatter', type=Path)
+    parser.add_argument('--check', action='store_true')
+    args = parser.parse_args()
     manifest = json.loads((Path(__file__).with_name('dependencies.json')).read_text())
     header = ROOT/'.work/vendor/mojoshader/mojoshader.h'
     digest = hashlib.sha256(header.read_bytes()).hexdigest()
@@ -43,7 +49,12 @@ def main():
         raise SystemExit('Pinned MojoShader header hash does not match')
     target = ROOT/'stdlib/internal/bindings/vendor/mojoshader-context.jai'
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text('// Generated only from pinned official MojoShader C header.\n// SHA-256: ' + digest + '\n' + c_enums(header.read_text()))
+    source = format_source('// Generated only from pinned official MojoShader C header.\n// SHA-256: ' + digest + '\n' + c_enums(header.read_text()), args.formatter)
+    if args.check:
+        if target.read_text() != source:
+            raise SystemExit('Stale generated file: ' + str(target.relative_to(ROOT)))
+    else:
+        target.write_text(source)
     print(target.relative_to(ROOT))
 
 

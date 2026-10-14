@@ -98044,7 +98044,7 @@
     },
     "Objective_C": {
       "spec": "docs/specs/stdlib/modules/objective-c.md",
-      "spec_sha256": "e05df5ef938a512af587eda06e38c27e6676328595af10bb0afbc82f89435270",
+      "spec_sha256": "4dc3e1156ea16075799a2398e3e8f3237f5b78aca603d920cc9b2cbe63a95235",
       "counts": {
         "implemented": 29,
         "declared": 449,
@@ -101473,11 +101473,11 @@
     },
     "POSIX": {
       "spec": "docs/specs/stdlib/modules/posix.md",
-      "spec_sha256": "b1a7f318d6f75eaeed6630c14320444ba84f989d560785c07cf1d7e398c62e48",
+      "spec_sha256": "a02cd9b2bcf96fc265e1ef8c96d998f77a447fc0aadfaa9336d300983368fad6",
       "counts": {
-        "declared": 9813,
+        "declared": 9814,
         "implemented": 102,
-        "unresolved": 70
+        "unresolved": 69
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -135538,8 +135538,7 @@
           "signature": "ipc_perm :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4871,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "ftok",
@@ -172321,7 +172320,7 @@
     },
     "SDL": {
       "spec": "docs/specs/stdlib/modules/sdl.md",
-      "spec_sha256": "161dc70027f81d7ba227d95624bc60e636f886b13b9b1da325d8550201bdaf5d",
+      "spec_sha256": "09a12c2658b5a379c41af91fa98405523c33798343492130c3c4b85b605e32b1",
       "counts": {
         "declared": 522,
         "implemented": 17

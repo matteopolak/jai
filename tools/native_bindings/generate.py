@@ -7,6 +7,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import subprocess
 
 from spec import parse_spec
 from config import IMPORTS, LIBRARIES, PARAMETERS, PRIVATE, TARGETS
@@ -17,6 +18,15 @@ from spec import Declaration
 from conditions import possible
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def format_source(code, formatter):
+    if not formatter:
+        return code
+    result = subprocess.run([str(formatter.resolve()), '--stdin', '--config',
+                             str(ROOT/'jaifmt.toml')], input=code,
+                            capture_output=True, text=True, check=True)
+    return result.stdout
 MODULES = {
     'Android': 'android', 'Android/AAudio': 'android-aaudio', 'Android/EGL': 'android-egl',
     'Curl': 'curl', 'd3d11': 'd3d11', 'd3d12': 'd3d12', 'd3d_compiler': 'd3d-compiler',
@@ -352,6 +362,7 @@ def generate_facade(module, spec):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
+    parser.add_argument('--formatter', type=Path, help='Own source-built jaifmt; normalize generated sources before comparison/write')
     parser.add_argument('--module', action='append', choices=MODULES)
     args = parser.parse_args()
     all_ledger = {}
@@ -393,6 +404,7 @@ def main():
                 preamble.append(name + ' :: #library,system "' + LIBRARIES.get(name, name) + '";')
         preamble.append('#scope_export')
         code = ('// Generated from ' + str(page.relative_to(ROOT)) + '.\n// Regenerate with tools/native_bindings/generate.py; do not hand-edit.\n\n' + '\n'.join(preamble) + '\n\n' + code).rstrip()+'\n'
+        code = format_source(code, args.formatter)
         if args.check:
             if not path.exists() or path.read_text() != code:
                 stale.append(str(path.relative_to(ROOT)))
@@ -407,6 +419,7 @@ def main():
         wrappers = ROOT / 'stdlib' / module / 'wrappers.jai'
         if wrappers.exists():
             entry_code += '#load "wrappers.jai";\n'
+        entry_code = format_source(entry_code, args.formatter)
         if args.check:
             if not entry.exists() or entry.read_text() != entry_code:
                 stale.append(str(entry.relative_to(ROOT)))

@@ -104,6 +104,7 @@ Implementation work uses the API specification as its compatibility contract. Im
 - [Native SDL2 runtime input identities](native/sdl-sdk-inputs.json)
 - [Native binding verified snapshot evidence](native/bindings-verified-snapshot.json)
 - [Native binding contract questions](specs/stdlib/native-bindings-questions.md)
+- [Native binding implementation deviations](status/bindings-deviations.md)
 - [Jai language guide](specs/jai/README.md)
 
 ## Browser

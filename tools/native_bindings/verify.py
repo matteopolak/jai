@@ -76,6 +76,7 @@ def stage(destination, foundation=None):
         raise SystemExit('The independent foundation bootstrap is not ready')
     shutil.copytree(foundation, destination, dirs_exist_ok=True)
     for worker, modules, internals in [
+        ('foundations',['Basic','String','Hash','File_Utilities'],['basic','string','hash','files']),
         ('numerics',['Math','Sloppy_Math','Float16','Color_Interpolation','GetRect','GetRect_LeftHanded'],['numerics']),
         ('compiler',['Compiler','Jai_Lexer','Code_Visit','Program_Print'],['compiler-api','jai-lexer','code-visit','program-print'])
     ]:

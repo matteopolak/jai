@@ -12,7 +12,10 @@ check_size :: (which: s32) -> u64 #foreign probe "binding_size";
 check_offset :: (which: s32) -> u64 #foreign probe "binding_offset";
 libc :: #library,system "c";
 abort :: () #foreign libc;
-check :: (value: bool) { if !value abort(); }
+
+check :: (value: bool) {
+    if !value abort();
+}
 
 main :: () {
     check(type_info(L.LZ4_stream_t).name == "LZ4_stream_u");
@@ -25,19 +28,24 @@ main :: () {
     check(size_of(L.LZ4HC_CCtx_internal) == check_size(4));
     s: L.LZ4_stream_t_internal;
     h: L.LZ4HC_CCtx_internal;
+
     check(cast(u64) *s.dictionary - cast(u64) *s == check_offset(0));
     check(cast(u64) *h.compressionLevel - cast(u64) *h == check_offset(1));
     check(cast(u64) *h.dictCtx - cast(u64) *h == check_offset(2));
     input := "repeated input repeated input repeated input repeated input";
-    compressed: [256]u8;
-    decoded: [256]u8;
+    compressed: [256] u8;
+    decoded: [256] u8;
     n := L.LZ4_compress_default(input.data, compressed.data, cast(s32) input.count, 256);
+
     check(n > 0);
     count := L.LZ4_decompress_safe(compressed.data, decoded.data, n, 256);
+
     check(count == input.count);
-    for i: 0..input.count-1 check(input[i] == decoded[i]);
+    for i: 0..input.count - 1 check(input[i] == decoded[i]);
+
     check(L.LZ4_decompress_safe(compressed.data, decoded.data, n, 1) < 0);
     hc := L.LZ4_createStreamHC();
+
     check(hc != null);
     defer check(L.LZ4_freeStreamHC(hc) == 0);
     L.LZ4_resetStreamHC_fast(hc, L.LZ4HC_CLEVEL_DEFAULT);
@@ -45,5 +53,5 @@ main :: () {
     check(n > 0);
     count = L.LZ4_decompress_safe(compressed.data, decoded.data, n, 256);
     check(count == input.count);
-    for i: 0..input.count-1 check(input[i] == decoded[i]);
+    for i: 0..input.count - 1 check(input[i] == decoded[i]);
 }
