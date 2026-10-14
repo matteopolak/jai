@@ -174,3 +174,139 @@ fn imported_module_cannot_look_into_importer_scope() {
     );
     rejects(&mut c, "application_only");
 }
+
+#[test]
+fn applications_cannot_import_or_load_library_internals() {
+    for source in [
+        "#import \"internal/Hidden\"; #assert(secret == 31);",
+        "H :: #import,file \"../lib/internal/Hidden/module.jai\"; #assert(H.secret == 31);",
+        "H :: #import,dir \"../lib/internal/Hidden\"; #assert(H.secret == 31);",
+        "#load \"../lib/internal/Hidden/module.jai\"; #assert(secret == 31);",
+        "#load \"../lib/Public/../internal/Hidden/module.jai\"; #assert(secret == 31);",
+    ] {
+        let mut c = compiler(
+            &[
+                ("/lib/prelude/module.jai", ""),
+                ("/lib/internal/Hidden/module.jai", "secret :: 31;"),
+                ("/app/main.jai", source),
+            ],
+            true,
+        );
+        rejects(&mut c, "internal");
+    }
+}
+
+#[test]
+fn library_facades_can_use_private_internals_without_exporting_import_alias() {
+    let mut c = compiler(
+        &[
+            ("/lib/prelude/module.jai", ""),
+            (
+                "/lib/internal/Hidden/module.jai",
+                "Record :: struct { n: int; } secret :: 31;",
+            ),
+            (
+                "/lib/Public/module.jai",
+                "#scope_file Impl :: #import \"internal/Hidden\"; #scope_export Record :: Impl.Record; answer :: Impl.secret;",
+            ),
+            (
+                "/app/main.jai",
+                "P :: #import \"Public\"; #assert(P.answer == 31); #assert(size_of(P.Record) == 8);",
+            ),
+        ],
+        true,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
+fn cached_internal_module_does_not_bypass_origin_check() {
+    let mut c = compiler(
+        &[
+            ("/lib/prelude/module.jai", ""),
+            ("/lib/internal/Hidden/module.jai", "secret :: 31;"),
+            (
+                "/lib/Public/module.jai",
+                "#scope_file I :: #import \"internal/Hidden\"; #scope_export answer :: I.secret;",
+            ),
+            (
+                "/app/main.jai",
+                "P :: #import \"Public\"; #assert(P.answer == 31); H :: #import \"internal/Hidden\"; #assert(H.secret == 31);",
+            ),
+        ],
+        true,
+    );
+    rejects(&mut c, "internal");
+}
+
+#[test]
+fn application_cannot_use_internal_source_as_main() {
+    let mut c = compiler(
+        &[
+            ("/lib/prelude/module.jai", ""),
+            ("/lib/internal/Hidden/module.jai", "value :: 31;"),
+        ],
+        true,
+    );
+    let error = c
+        .compile_program(Path::new("/lib/internal/Hidden/module.jai"))
+        .expect_err("internal entry is private");
+    assert!(error.message.contains("internal"));
+}
+
+#[test]
+fn virtual_path_normalization_preserves_consecutive_parent_components() {
+    use jaic::sema::FileSystem;
+    let fs = VirtualFs::default();
+    assert_eq!(
+        fs.canonical(Path::new("../../lib/internal/Hidden/module.jai")),
+        Path::new("../../lib/internal/Hidden/module.jai")
+    );
+    assert_eq!(
+        fs.canonical(Path::new("../a/../../b")),
+        Path::new("../../b")
+    );
+    assert_eq!(
+        fs.canonical(Path::new("/../../lib/./internal/Hidden/module.jai")),
+        Path::new("/lib/internal/Hidden/module.jai")
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn native_symlink_cannot_expose_internal_source_as_public_module() {
+    use std::os::unix::fs::symlink;
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../target/cleanroom-fixtures")
+        .join(format!("internal-symlink-{}", std::process::id()));
+    std::fs::create_dir_all(root.join("lib/internal/Hidden")).unwrap();
+    std::fs::create_dir_all(root.join("lib/prelude")).unwrap();
+    std::fs::create_dir_all(root.join("app/modules")).unwrap();
+    std::fs::write(root.join("lib/prelude/module.jai"), "").unwrap();
+    std::fs::write(root.join("lib/internal/Hidden/module.jai"), "secret :: 31;").unwrap();
+    let alias = root.join("app/modules/Exposed.jai");
+    if alias.symlink_metadata().is_ok() {
+        std::fs::remove_file(&alias).unwrap();
+    }
+    symlink(root.join("lib/internal/Hidden/module.jai"), &alias).unwrap();
+    for source in [
+        "H :: #import \"Exposed\"; #assert(H.secret == 31);",
+        "#load \"modules/Exposed.jai\"; #assert(secret == 31);",
+    ] {
+        std::fs::write(root.join("app/main.jai"), source).unwrap();
+        let mut options = Options::host();
+        options.runtime_support = false;
+        options.preload = Some(root.join("lib/prelude/module.jai"));
+        options.import_paths = vec![root.join("lib")];
+        let mut c = Compiler::new(options, Rc::new(jaic::sema::NativeFs));
+        let error = c
+            .compile_program(&root.join("app/main.jai"))
+            .expect_err("canonical internal path must be private");
+        assert!(
+            error.message.contains("internal"),
+            "{}",
+            error.render(&c.sources)
+        );
+    }
+    std::fs::remove_dir_all(root).unwrap();
+}

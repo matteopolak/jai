@@ -76,6 +76,7 @@ How `crates/jaic`, the interpreter and the language server work.
 - [Language server refactorings](compiler/language-server-refactorings.md): extract, inline, fill in cases and fields, `ifx` rewrites, call hierarchy, selection ranges
 - [Parser](compiler/parser.md)
 - [Module instance identity](compiler/module-instance-identity.md): ordered module arguments and module specialization identity
+- [Private standard-library source loading](compiler/internal-source-policy.md): canonical import/load provenance and cache checks
 - [Sema: module loading and top-level expansion](compiler/sema-modules.md)
 - [Sema: polymorphism and declarations](compiler/sema-polymorphism-and-declarations.md)
 - [Stack traces (`context.stack_trace`)](compiler/stack-traces.md)

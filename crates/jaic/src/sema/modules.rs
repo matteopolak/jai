@@ -110,7 +110,12 @@ pub fn normalize(path: &Path) -> PathBuf {
             std::path::Component::ParentDir => {
                 // `/..` is `/`, as on a real filesystem; a relative path keeps leading `..`.
                 if out.has_root() && out.parent().is_none() {
-                } else if !out.pop() {
+                } else if out
+                    .components()
+                    .next_back()
+                    .is_none_or(|c| c == std::path::Component::ParentDir)
+                    || !out.pop()
+                {
                     out.push("..");
                 }
             }
@@ -418,8 +423,33 @@ impl Compiler {
         Ok(self.sources.add(path.display().to_string(), text))
     }
 
+    /// Distribution boundary for library-owned helpers, checked before cache hits.
+    /// Canonical paths cover relative traversal and native filesystem aliases alike.
+    fn check_source_access(&self, path: &Path, span: Span) -> Result<()> {
+        let Some(stdlib) = self.options.stdlib_root() else {
+            return Ok(());
+        };
+        let internal = self.fs.canonical(&stdlib.join("internal"));
+        if !self.fs.canonical(path).starts_with(&internal) {
+            return Ok(());
+        }
+        let from_library = self.sources.try_get(span.file).is_some_and(|source| {
+            self.fs
+                .canonical(Path::new(&source.path))
+                .starts_with(self.fs.canonical(stdlib))
+        });
+        if from_library {
+            return Ok(());
+        }
+        err(
+            span,
+            "standard-library internal sources are private; import a public library module",
+        )
+    }
+
     /// Load a file into `module`, declaring its top-level statements.
     pub fn load_file(&mut self, path: &Path, module: ModuleId, span: Span) -> Result<()> {
+        self.check_source_access(path, span)?;
         let path = self.fs.canonical(path);
         if self.file_by_path.contains_key(&(path.clone(), module)) {
             return Ok(()); // `#load` of an already-loaded file is a no-op.
@@ -455,6 +485,7 @@ impl Compiler {
         params: Vec<(Sym, Value, TypeId)>,
         span: Span,
     ) -> Result<ModuleId> {
+        self.check_source_access(entry, span)?;
         // Jai identifies an instance by the argument list as written. Reordering
         // named arguments creates another instance, even when the effective values match.
         // Keep positional names and explicit/default argument differences in the key too.

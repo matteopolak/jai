@@ -56,6 +56,11 @@ verify these boundaries and independent `#load` visibility. The LSP worker shoul
 retain the same boundary when enumerating namespace completion candidates; legacy
 IDE enumeration of non-file-private entities needs alignment with exported entities.
 
+The loader now enforces [private internal source loading](compiler/internal-source-policy.md).
+Facades inside the selected library may import `internal/...`; application imports
+and loads into that canonical directory are rejected, including cache hits and
+symlink aliases. Generated text without source provenance must use public facades.
+
 Core parser/IDE overlap should be integrated through documented changes. This
 worker owns loader/bootstrap and semantic compatibility changes; the LSP worker
 owns partial-edit resilience and keyword navigation. No other checkout is modified.
