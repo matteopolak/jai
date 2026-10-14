@@ -1245,35 +1245,11 @@ impl Compiler {
         }
     }
 
-    /// The default type of a float literal: `float32`, unless the literal has 8 or more
-    /// significant digits (`16777216.0`) or lies outside float32's normal range (`1.0e39`),
-    /// which makes it `float64` as in Jai.
+    /// Default precision follows the reviewed lexer heuristic, including its
+    /// fractional-digit rule and special handling of IEEE bit-pattern spellings.
     fn float_literal_type(&self, v: f64, span: Span) -> TypeId {
-        let text = self.sources.snippet(span);
-        // A `0h` bit pattern is float32 with up to 8 hex digits and float64 with more
-        // (`0h7FEFFFFF_FFFFFFFF`), whatever value it spells.
-        if let Some(hex) = text.strip_prefix("0h").or_else(|| text.strip_prefix("0H")) {
-            let digits = hex.bytes().filter(u8::is_ascii_hexdigit).count();
-            return if digits > 8 {
-                TypeId::F64
-            } else {
-                TypeId::F32
-            };
-        }
-        // Outside float32's normal range (`1.0e39`, `1.0e-40`) the literal is float64.
-        let magnitude = v.abs();
-        if magnitude != 0.0 && (magnitude > f32::MAX as f64 || magnitude < f32::MIN_POSITIVE as f64)
-        {
-            return TypeId::F64;
-        }
-        // Significant digits run from the first nonzero digit to the end of the whole part, then
-        // up to the last nonzero fraction digit: `16777216.0` has 8, `0.30000000` has 1. Eight or
-        // more make the literal float64, even when float32 happens to hold the value exactly.
-        let mantissa = text.split(['e', 'E']).next().unwrap_or("").replace('_', "");
-        let (whole, fraction) = mantissa.split_once('.').unwrap_or((mantissa.as_str(), ""));
-        let digits = format!("{whole}{}", fraction.trim_end_matches('0'));
-        let significant = digits.trim_start_matches('0').len();
-        if significant >= 8 {
+        let precision = crate::lexer::float_literal_precision(self.sources.snippet(span), v);
+        if precision.defaults_to_float64 || precision.requires_float64 {
             TypeId::F64
         } else {
             TypeId::F32

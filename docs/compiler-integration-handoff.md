@@ -68,6 +68,13 @@ erase `only` versus `except`. IDE aggregate completion preserves mapped names an
 original declaration locations. These are compiler-owned parser/sema overlaps for
 the LSP worker to retain during integration.
 
+The public-language runner passed all 11 fixtures against the independently
+implemented foundation in the stdlib worker's checkout (read-only integration
+input) on 2026-10-14. It uses this checkout's `target/debug/jaic` with an explicit
+`--stdlib-root`. Core-only tests also cover literal default precision, valid `0h`
+widths and AST precision/radix/sign flags. Full stdlib and corpus completion is
+not implied by this focused run.
+
 Core parser/IDE overlap should be integrated through documented changes. This
 worker owns loader/bootstrap and semantic compatibility changes; the LSP worker
 owns partial-edit resilience and keyword navigation. No other checkout is modified.

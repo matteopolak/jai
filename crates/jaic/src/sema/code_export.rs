@@ -1324,6 +1324,38 @@ impl Exporter<'_> {
         rec
     }
 
+    fn literal_number_flags(&self, span: Span, float: Option<f64>, negative: bool) -> i64 {
+        let text = self.c.as_ref().map_or("", |c| c.sources.snippet(span));
+        let spelling = text.trim_start_matches('-').trim_start();
+        let mut flags = 0x1
+            | if negative {
+                0x40
+            } else {
+                0
+            };
+        if spelling.starts_with("0x")
+            || spelling.starts_with("0X")
+            || spelling.starts_with("0h")
+            || spelling.starts_with("0H")
+        {
+            flags |= 0x2;
+        }
+        if spelling.starts_with("0b") || spelling.starts_with("0B") {
+            flags |= 0x20;
+        }
+        if let Some(value) = float {
+            flags |= 0x4;
+            let precision = crate::lexer::float_literal_precision(spelling, value);
+            if precision.defaults_to_float64 {
+                flags |= 0x100;
+            }
+            if precision.requires_float64 {
+                flags |= 0x200;
+            }
+        }
+        flags
+    }
+
     fn expr(&mut self, e: &ast::Expr) -> i64 {
         use ast::ExprKind as E;
         let span = e.span;
@@ -1331,7 +1363,8 @@ impl Exporter<'_> {
             E::Ident(name) => return self.ident(*name, span),
             E::Int(v) => {
                 let mut rec = self.literal(span, 1);
-                rec.int("_s64", v.get() as i64).int("value_flags", 0x1);
+                rec.int("_s64", v.get() as i64)
+                    .int("value_flags", self.literal_number_flags(span, None, false));
                 rec
             }
             E::Char(v) => {
@@ -1341,8 +1374,10 @@ impl Exporter<'_> {
             }
             E::Float(v) => {
                 let mut rec = self.literal(span, 1);
-                rec.int("_float64", v.to_bits() as i64)
-                    .int("value_flags", 0x1 | 0x4);
+                rec.int("_float64", v.to_bits() as i64).int(
+                    "value_flags",
+                    self.literal_number_flags(span, Some(*v), false),
+                );
                 rec
             }
             E::Str(s) => {
@@ -1380,13 +1415,15 @@ impl Exporter<'_> {
                     E::Int(v) => {
                         let mut rec = self.literal(span, 1);
                         rec.int("_s64", (v.get() as i64).wrapping_neg())
-                            .int("value_flags", 0x1);
+                            .int("value_flags", self.literal_number_flags(span, None, true));
                         rec
                     }
                     E::Float(v) => {
                         let mut rec = self.literal(span, 1);
-                        rec.int("_float64", (-v).to_bits() as i64)
-                            .int("value_flags", 0x1 | 0x4);
+                        rec.int("_float64", (-v).to_bits() as i64).int(
+                            "value_flags",
+                            self.literal_number_flags(span, Some(-v), true),
+                        );
                         rec
                     }
                     _ => unreachable!(),

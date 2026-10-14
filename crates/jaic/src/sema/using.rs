@@ -184,7 +184,7 @@ impl Compiler {
                 .collect::<Vec<_>>()
                 .join(", ");
             let source = format!(
-                "__mapped :: #run (() -> [{}] string #no_context {{ __names: [{}] string = .[{list}]; __using_mapper(__names); return __names; }})();",
+                "__mapped :: #run (() -> [{}] string {{ __names: [{}] string = .[{list}]; __using_mapper(__names); return __names; }})();",
                 names.len(),
                 names.len()
             );
