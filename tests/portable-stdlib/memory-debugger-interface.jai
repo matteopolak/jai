@@ -29,7 +29,10 @@ Hooks :: struct {
 }
 
 main :: () {
-    assert(type_info(B.Memory_Debugger_Interface) == type_info(Off.Memory_Debugger_Interface));
+    // The contextual constraint is private; the selected public alias retains
+    // the caller's canonical type identity.
+    #assert !#exists(B.Memory_Debugger_Interface);
+    #assert !#exists(Off.Memory_Debugger_Interface);
     assert(type_info(B.Memory_Debugger) == type_info(Hooks));
     memory := B.alloc(16);
 

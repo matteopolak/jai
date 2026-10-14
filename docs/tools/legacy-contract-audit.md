@@ -14,6 +14,7 @@ failure evidence remains in the integration artifacts directory.
 | WASI Basic.exit used by preserved Extensions/Args | Reviewed Basic lists exit only in POSIX/Windows sections. Extensions remain unchanged. This is an integration-contract conflict for coordinator review, not authority to invent an export or omit formatter/browser checks. |
 | Formatted #place aggregate in c_structs_by_value | C values/ABI calculations match, but a placed array prints additionally. Basic omits overlay members; whether #place sets reflected OVERLAY needs a precise decision. Keep the original assertion and investigate metadata rather than blessing output. |
 | Runtime fixture overrides configured bootstrap flags | Startup options must align with executable/embedding configuration. Complete original source remains a required conflict rejection; unchanged storage assertions separately pass against the configured runtime. Alternate-instance behavior remains questioned. |
+| New debugger fixture accessed B.Memory_Debugger_Interface | Latest Basic review explicitly makes it a contextual constraint type, not an ordinary export. That access is replaced by non-export assertions and an explicit rejection case; public selected Hooks identity and all callback/allocation assertions remain. A general declaring-file lookup fix lets the real parameter defaults use the private helper. |
 
 Oracles: [Basic](../specs/stdlib/modules/basic.md),
 [Compiler](../specs/stdlib/modules/compiler.md),

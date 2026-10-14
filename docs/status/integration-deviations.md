@@ -2,6 +2,57 @@
 
 Role: replacement integration worker. This report is open; merged snapshots do not imply completed stdlib support. Producer reports were read for compiler, portable stdlib, foundations, bindings, numerics, window/render, LSP and SDL3. Direct code inspection and combined-tree verification are in progress.
 
+## Production boundary correction and fifth refresh
+
+The crash/startup Python runner still implicitly copied `Compiler` and
+`internal/compiler-api` from a sibling NEW compiler worker when given a production
+stdlib. The isolated sanitized worktree exposed that read/copy assumption. Earlier
+aggregate startup passes are not accepted as proof of a run without overlays.
+The three previously noticed changed files matched approved compiler 890329b when
+audited, but the tool did not pin or hash the sibling snapshot. No quarantined/
+reference source was accessed; this was unapproved NEW-source staging. Both copies
+and the default sibling-path option are removed. A nonmutation regression passes,
+and actual ON/OFF native crash checks pass with the integrated facades alone.
+The complete portable runner then passes 95/95 plus real fault/rejection/SMTP/
+channel/startup checks without overlays. The mocked unit test proves only input
+nonmutation; it is not native/runtime support evidence.
+
+Approved portable c8d1f5d, foundations a11c0c8 and platform-io eb5d83d are merged
+in a second sanitized worktree while the previous 558-file sweep remained frozen.
+The sweep completed 14,835 edits/2,600,590 assertions with the same startup failure.
+
+- Autorun uses real COMPLETE/workspace execution and errors. A transient argv
+  array works around the compiler's lost mixed scalar/spread variadic prefix;
+  original repro remains failing. CLI plugin orchestration calls an unreviewed
+  helper and remains incomplete. Proper fix: general variadic segment binding and
+  separately designed internal plugin orchestration, not invented public exports.
+- Basic has all five parameters, real live allocation/heap ownership and exact
+  replacement hooks. Metadata lookup is linear; raw default allocations avoid
+  recursive instrumentation; temporary bump objects are not individually tracked.
+  Unknown frees from other Basic configurations are allowed. Visualization is a
+  real logger snapshot/counter transport, not a native GUI/remote protocol. Wider
+  leak scanning, raw/runtime allocation coverage and reviewed transport remain open.
+- Module-parameter defaults incorrectly resolved in the module namespace, losing
+  file-private helpers. A new original non-Basic regression fails before and all
+  40 module cases pass after binding expression homes to the declaring file.
+  Basic's contextual constraint alias is now file-private as reviewed. Its old
+  positive fixture incorrectly accessed that private name; privacy assertions and
+  a rejection fixture replace that access while selected public Hooks identity
+  and every allocation/callback assertion remain. Unused structural interface
+  validation is still a real failing mandatory gate; no library-name check added.
+- File has actual Win32 UTF-16 handles, 64-bit seek/read/write, mappings and checked
+  cleanup retry, with shared convenience code over native backends. Host interpreter/
+  O0/O2 and Windows x64/arm64 all-code checks pass. No Windows runtime claim. Native
+  path namespace/length, known-folder identity and borrowed-wrapper policies remain
+  independently chosen as recorded in platform-io questions/deviations.
+- Windows font filename loading now delegates to the real File backend; its stale
+  unsupported guard is removed for Windows. x64/arm64 all-code tests pass; native
+  Windows FreeType/font execution remains required. Window runner now passes all
+  128 source/program invocations; this includes target checks, not 128 native runs.
+- One numerics run used the host's Python 3.9 and could not generate its cbrt oracle.
+  Failure evidence is retained. Rerunning with installed Python 3.15 gives 107/123;
+  no oracle approximation or assertion change was introduced.
+
 Latest checkpoints: compiler 890329b, portable 8a0d40c, foundations 44cca8b,
 bindings a565ab0, numerics 4acc846 and window 7fc1d6a are merged. Generic
 metadata now unblocks all 24 host/19 WASI foundation cases at O0/O2; portable
