@@ -56,6 +56,7 @@ def main():
         host.append("windows-class-parameters")
         host.append("windows-layout-keys")
         host.append("windows-render-lifecycle")
+        host.append("windows-device-notifications")
         host.append("public-window")
     if platform.system() == "Darwin":
         host.append("macos-window")
@@ -93,10 +94,13 @@ def main():
     for os_name in ["linux", "windows"]:
         for cpu in ["x64", "arm64"]:
             cases = ["types", "callback-types", "keycodes", "window-types", "texture-signatures", "simp-none", "public-window", "keymap-behavior"]
-            cases += ["evdev-signatures", "window-invalid", "font-effects"] if os_name == "linux" else ["clipboard-host", "windows-queries", "windows-events", "windows-committed-text", "windows-render-events", "windows-class-parameters", "windows-layout-keys", "windows-render-lifecycle", "font-public", "font-effects"]
+            cases += ["evdev-signatures", "window-invalid", "font-effects"] if os_name == "linux" else ["clipboard-host", "windows-queries", "windows-events", "windows-committed-text", "windows-render-events", "windows-class-parameters", "windows-layout-keys", "windows-render-lifecycle", "windows-device-notifications", "windows-device-decoding", "font-public", "font-effects"]
             for name in cases:
                 run([compiler, ROOT / f"tests/window-render/{name}.jai", "-check", "-os", os_name,
                      "-cpu", cpu, "-I", args.stdlib])
+    for cpu in ["x64", "arm64"]:
+        run([compiler, ROOT / "tests/window-render/windows-device-decoding.jai", "-interp",
+             "-os", "windows", "-cpu", cpu, "-I", args.stdlib], "ok\n")
     for case, member in [("private-helper-negative", "pack_bitmap"), ("private-atlas-negative", "atlas_create_page")]:
         visibility = subprocess.run([str(compiler), str(ROOT / f"tests/window-render/{case}.jai"),
                                      "-check", "-os", "linux", "-I", str(args.stdlib)],

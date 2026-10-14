@@ -1,5 +1,6 @@
 #import "Basic";
 I :: #import "Input";
+WC :: #import "Window_Creation";
 #load "../../stdlib/internal/window/cocoa.jai";
 
 post_key :: (window: *A.NSWindow, down: bool, characters: string, repeat := false) {
@@ -20,11 +21,15 @@ post_key :: (window: *A.NSWindow, down: bool, characters: string, repeat := fals
     Post :: #type (receiver: *void, selector: O.Selector, event: *void, at_start: s8) #c_call;
     post := cast(Post) native_send;
 
-    post(application, O.selector("postEvent:atStart:"), event, 0);
+    app := result_message(native_class("NSApplication"), "sharedApplication", *void);
+
+    assert(app != null);
+    post(app, O.selector("postEvent:atStart:"), event, 0);
 }
 
 main :: () {
-    window := create_content_window(320, 200, "Clean-room native event test", 40, 200);
+    WC.init_mac_app();
+    window := WC.create_window(320, 200, "Clean-room native event test", 40, 200);
 
     assert(window != null);
     I.update_window_events();
@@ -46,6 +51,11 @@ main :: () {
         }
 
         if event.type == .TEXT_INPUT {
+            if event.utf32 != #char "A" || event.text_input_count != 0 || event.window != window {
+                print("unexpected native text: value=%, count=%, target_window=%\n", event.utf32, event.text_input_count, event.window == window);
+                for observed: I.events_this_frame print("frame event: type=%, key=%, value=%, down=%, repeat=%, flags=%\n", observed.type, observed.key_code, observed.utf32, observed.key_pressed, observed.repeat, observed.modifier_flags.packed);
+            }
+
             // AppKit re-translates posted physical A+shift to layout text.
             // The independent Objective-C environment probe confirms this.
             assert(event.utf32 == #char "A" && event.text_input_count == 0);
