@@ -12,9 +12,10 @@ defaults. Bootstrap types are imported from the single prelude, not redefined.
 
 - `Compiler`: optimization presets, common-field copying, allocated integer and
   string literal nodes, source-location/file helpers and operator spellings.
-  The documented AST/message/build-option shapes are present except the run-report
-  aggregate and its containing performance message, whose reviewed nested record
-  shape is incomplete.
+  The documented AST/message/build-option shapes include the newly reviewed
+  run-report aggregate and performance message. Performance intercepts expose
+  measured run/lowering, polymorph and instruction records; see
+  [performance messages](performance-messages.md).
 - `Code_Visit`: direct child collection, breadth/depth traversal and explicit
   pre/post events through `get_values`. Headers include argument nodes and do not
   descend into bodies. Parent/member/overload backreferences are omitted.

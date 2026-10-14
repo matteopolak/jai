@@ -87,3 +87,10 @@ fn explicit_context_blocks_restore_before_outer_exit_cleanup() {
         "observed: int; test :: () -> int { context.marker = 55; defer observed = context.marker; push_context { context.marker = 91; return context.marker; } } #assert(test() == 91); #assert(observed == 55);",
     );
 }
+
+#[test]
+fn context_is_initialized_in_speculative_overload_checking() {
+    check(
+        "value :: () -> int { return context.marker; } take :: (x: int) -> int { return x; } take :: (x: bool) -> int { return 99; } test :: () -> bool { context.marker = 55; return take(value()+1) == 56; } #assert(test()); #assert(!is_constant(value()));",
+    );
+}

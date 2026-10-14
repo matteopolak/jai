@@ -37,3 +37,9 @@ final runtime information, and executes target assertions and output. This check
 compiler-owned browser behavior without claiming broader library integration.
 LSP library/framing suites pass 25 and three tests. Deeper new-library LSP and
 portable browser dependency integration remain coordinator/peer-worker work.
+
+## Fresh foundation overlay verification
+
+The later 28-test run passes 19 and fails nine with all assertions retained. The four File/POSIX browser dependency cases still reject the non-native target. Remaining failures are allocation-failure return expectations, missing exit/log_error support, repeated-source expansion (its child imports Math, absent from this selected overlay), and the bridge format-string/source-organization expectation. Command-line argument support now passes. The default unassembled local tree separately fails 25/28 because prelude/module.jai is absent; that result is dependency staging, not a compiler success claim.
+
+LSP library tests pass 25. The broad auto-import integration suite passes six and fails seven because it hardcodes the incomplete repository stdlib root, rather than the independent overlay. Legacy CLI executable-path verification also requests an unavailable System module. These failures are retained for coordinator/owner integration and public API review; no new facade exports or relaxed assertions were introduced. Focused core/LLVM native and WASM execution passes independently.

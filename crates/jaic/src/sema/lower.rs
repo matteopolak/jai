@@ -155,7 +155,7 @@ pub struct FnCtx {
     pub b: Builder,
     pub proc: Option<ProcId>,
     /// Current `context` pointer (absent in #c_call/#no_context code).
-    pub context: Option<Val>,
+    context: Option<Val>,
     context_slot: Option<Val>,
     pub return_types: Vec<TypeId>,
     /// Out-pointers for aggregate results, by result index.
@@ -228,6 +228,16 @@ pub struct ForBody {
 }
 
 impl FnCtx {
+    pub fn context_binding(&self) -> Option<Val> {
+        self.context
+    }
+
+    /// Restore lexical availability while compiling another control-flow path.
+    /// Runtime restoration is emitted by the cleanup action, not this method.
+    pub fn restore_context_binding(&mut self, binding: Option<Val>) {
+        self.context = binding;
+    }
+
     /// Context selection is runtime state: caller-owned macros can push a
     /// context on only one arm of a branch. SSA pointers chosen while walking
     /// the syntax cannot represent that join.

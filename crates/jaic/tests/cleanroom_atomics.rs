@@ -49,6 +49,30 @@ fn bootstrap_atomics_preserve_scalar_bits_and_previous_values() {
 }
 
 #[test]
+fn atomic_enum_and_procedure_values_keep_their_types_and_identity() {
+    let (c, result) = compile(
+        r#"
+        Token :: enum u32 { FIRST :: 7; SECOND :: 29; }
+        first :: () -> int #no_context { return 13; }
+        second :: () -> int #no_context { return 47; }
+        check :: () -> bool {
+            token: Token = .FIRST;
+            if atomic_exchange(*token, .SECOND) != .FIRST || atomic_load(*token) != .SECOND return false;
+            procedure: () -> int #no_context = first;
+            previous := atomic_exchange(*procedure, second);
+            if previous() != 13 || atomic_load(*procedure)() != 47 return false;
+            ok, old := compare_and_swap(*procedure, second, first);
+            return ok && old() == 47 && procedure() == 13;
+        }
+        #assert(check());
+    "#,
+    );
+    if let Err(e) = result {
+        panic!("{}", e.render(&c.sources));
+    }
+}
+
+#[test]
 fn atomic_aggregate_and_wide_operands_are_rejected() {
     for ty in ["[2]u32", "[16]u8", "string", "Record"] {
         let (c, result) = compile(&format!(

@@ -2929,7 +2929,7 @@ impl Compiler {
                         let p = &self.poly_structs[ps.0 as usize];
                         (p.lit.id, p.name)
                     };
-                    let global = self.generic_struct_info_global(Some(key), name, desc, span)?;
+                    let global = self.generic_struct_info_global(key, name, desc, span)?;
                     let v = f.b.global_addr(global);
                     return Ok(Operand::Value {
                         ty: self.types.pointer(desc),

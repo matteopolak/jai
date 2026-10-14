@@ -700,6 +700,7 @@ impl Parser<'_> {
             let body = Box::new(self.parse_stmt()?);
             return Ok(stmt(
                 StmtKind::PushContext(Box::new(PushContextStmt {
+                    backtick,
                     context,
                     body,
                     bare: true,
@@ -731,6 +732,7 @@ impl Parser<'_> {
         let body = Box::new(self.parse_stmt()?);
         Ok(stmt(
             StmtKind::PushContext(Box::new(PushContextStmt {
+                backtick,
                 context,
                 body,
                 bare: false,

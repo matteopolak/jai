@@ -148,6 +148,8 @@ pub enum EntityKind {
     },
     /// `#placeholder` name awaiting a later definition.
     Placeholder,
+    /// A generic declaration parameter before an instance supplies its value.
+    UnboundGenericParameter,
 }
 
 #[derive(Clone, Debug)]

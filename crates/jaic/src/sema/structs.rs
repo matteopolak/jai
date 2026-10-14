@@ -230,7 +230,7 @@ impl Compiler {
     /// `Table(int, string)`: instantiate a polymorphic struct.
     /// The constant value of a polymorphic struct argument. An aggregate whose type
     /// differs from the parameter's (a fixed array for a `[] T` parameter) is converted.
-    fn struct_arg_value(
+    pub(super) fn struct_arg_value(
         &mut self,
         scope: ScopeId,
         op: Operand,
