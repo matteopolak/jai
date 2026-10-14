@@ -6,138 +6,138 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | Spec | Status |
 | --- | --- |
 | [adpcm](specs/stdlib/modules/adpcm.md) | Implemented fixed tables, nibble and complete-block decoder; saturation and two-channel PCM checks pass interpreter/native; incomplete blocks unsupported per spec |
-| [android-aaudio](specs/stdlib/modules/android-aaudio.md) | Not implemented in this checkout; see ownership exclusions |
-| [android-egl](specs/stdlib/modules/android-egl.md) | Not implemented in this checkout; see ownership exclusions |
-| [android-toolchain](specs/stdlib/modules/android-toolchain.md) | Not implemented in this checkout; see ownership exclusions |
-| [android](specs/stdlib/modules/android.md) | Not implemented in this checkout; see ownership exclusions |
-| [atomics](specs/stdlib/modules/atomics.md) | Not implemented in this checkout; see ownership exclusions |
-| [autorun](specs/stdlib/modules/autorun.md) | Not implemented in this checkout; see ownership exclusions |
+| [android-aaudio](specs/stdlib/modules/android-aaudio.md) | Reserved for bindings worker; not implemented or modified here |
+| [android-egl](specs/stdlib/modules/android-egl.md) | Reserved for bindings worker; not implemented or modified here |
+| [android-toolchain](specs/stdlib/modules/android-toolchain.md) | Owned portable scope; not implemented |
+| [android](specs/stdlib/modules/android.md) | Reserved for bindings worker; not implemented or modified here |
+| [atomics](specs/stdlib/modules/atomics.md) | Owned portable scope; not implemented |
+| [autorun](specs/stdlib/modules/autorun.md) | Owned portable scope; not implemented |
 | [base64](specs/stdlib/modules/base64.md) | Implemented public tables, standard/URL codecs and self-tests; RFC and permissive edge vectors pass interpreter/native |
 | [basic](specs/stdlib/modules/basic.md) | Partial: arrays, allocation, scalar helpers, canonical builder and integer/bool/string formatting; remaining declarations unimplemented |
-| [bindings-generator](specs/stdlib/modules/bindings-generator.md) | Not implemented in this checkout; see ownership exclusions |
+| [bindings-generator](specs/stdlib/modules/bindings-generator.md) | Owned portable scope; not implemented |
 | [bit-array](specs/stdlib/modules/bit-array.md) | Implemented canonical type, bit mutation, padding and logical/selected iteration; interpreter/native cases pass |
 | [bit-operations](specs/stdlib/modules/bit-operations.md) | Implemented width-generic byte swap, scans and population count; interpreter/native cases pass |
 | [bucket-array](specs/stdlib/modules/bucket-array.md) | All reviewed exports implemented; stable pointers, locators, reuse and iteration pass interpreter/native |
-| [buildcpp](specs/stdlib/modules/buildcpp.md) | Not implemented in this checkout; see ownership exclusions |
-| [check](specs/stdlib/modules/check.md) | Not implemented in this checkout; see ownership exclusions |
-| [clipboard](specs/stdlib/modules/clipboard.md) | Not implemented in this checkout; see ownership exclusions |
-| [code-visit](specs/stdlib/modules/code-visit.md) | Not implemented in this checkout; see ownership exclusions |
-| [codex](specs/stdlib/modules/codex.md) | Not implemented in this checkout; see ownership exclusions |
-| [color-interpolation](specs/stdlib/modules/color-interpolation.md) | Not implemented in this checkout; see ownership exclusions |
-| [command-line](specs/stdlib/modules/command-line.md) | Not implemented in this checkout; see ownership exclusions |
-| [compiler](specs/stdlib/modules/compiler.md) | Not implemented in this checkout; see ownership exclusions |
+| [buildcpp](specs/stdlib/modules/buildcpp.md) | Owned portable scope; not implemented |
+| [check](specs/stdlib/modules/check.md) | Owned portable scope; not implemented |
+| [clipboard](specs/stdlib/modules/clipboard.md) | Owned portable scope; not implemented |
+| [code-visit](specs/stdlib/modules/code-visit.md) | Reserved for compiler worker; not implemented or modified here |
+| [codex](specs/stdlib/modules/codex.md) | Owned portable scope; not implemented |
+| [color-interpolation](specs/stdlib/modules/color-interpolation.md) | Reserved for numerics worker; not implemented or modified here |
+| [command-line](specs/stdlib/modules/command-line.md) | Owned portable scope; not implemented |
+| [compiler](specs/stdlib/modules/compiler.md) | Reserved for compiler worker; not implemented or modified here |
 | [crc](specs/stdlib/modules/crc.md) | Implemented CRC-64/WE; empty and check vectors pass interpreter/native |
-| [curl](specs/stdlib/modules/curl.md) | Not implemented in this checkout; see ownership exclusions |
-| [d3d-compiler](specs/stdlib/modules/d3d-compiler.md) | Not implemented in this checkout; see ownership exclusions |
-| [d3d11](specs/stdlib/modules/d3d11.md) | Not implemented in this checkout; see ownership exclusions |
-| [d3d12](specs/stdlib/modules/d3d12.md) | Not implemented in this checkout; see ownership exclusions |
-| [debug-info](specs/stdlib/modules/debug-info.md) | Not implemented in this checkout; see ownership exclusions |
-| [debug](specs/stdlib/modules/debug.md) | Not implemented in this checkout; see ownership exclusions |
-| [deep-copy](specs/stdlib/modules/deep-copy.md) | Not implemented in this checkout; see ownership exclusions |
-| [default-allocator](specs/stdlib/modules/default-allocator.md) | Not implemented in this checkout; see ownership exclusions |
-| [default-metaprogram](specs/stdlib/modules/default-metaprogram.md) | Not implemented in this checkout; see ownership exclusions |
-| [dxc-compiler](specs/stdlib/modules/dxc-compiler.md) | Not implemented in this checkout; see ownership exclusions |
-| [dxgi](specs/stdlib/modules/dxgi.md) | Not implemented in this checkout; see ownership exclusions |
-| [example-plugin](specs/stdlib/modules/example-plugin.md) | Not implemented in this checkout; see ownership exclusions |
-| [executable-formats](specs/stdlib/modules/executable-formats.md) | Not implemented in this checkout; see ownership exclusions |
+| [curl](specs/stdlib/modules/curl.md) | Reserved for bindings worker; not implemented or modified here |
+| [d3d-compiler](specs/stdlib/modules/d3d-compiler.md) | Reserved for bindings worker; not implemented or modified here |
+| [d3d11](specs/stdlib/modules/d3d11.md) | Reserved for bindings worker; not implemented or modified here |
+| [d3d12](specs/stdlib/modules/d3d12.md) | Reserved for bindings worker; not implemented or modified here |
+| [debug-info](specs/stdlib/modules/debug-info.md) | Owned portable scope; not implemented |
+| [debug](specs/stdlib/modules/debug.md) | Owned portable scope; not implemented |
+| [deep-copy](specs/stdlib/modules/deep-copy.md) | Owned portable scope; not implemented |
+| [default-allocator](specs/stdlib/modules/default-allocator.md) | Owned portable scope; not implemented |
+| [default-metaprogram](specs/stdlib/modules/default-metaprogram.md) | Owned portable scope; not implemented |
+| [dxc-compiler](specs/stdlib/modules/dxc-compiler.md) | Reserved for bindings worker; not implemented or modified here |
+| [dxgi](specs/stdlib/modules/dxgi.md) | Reserved for bindings worker; not implemented or modified here |
+| [example-plugin](specs/stdlib/modules/example-plugin.md) | Owned portable scope; not implemented |
+| [executable-formats](specs/stdlib/modules/executable-formats.md) | Owned portable scope; not implemented |
 | [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial paths, Unix metadata, recursive listing/copy and replacement implemented; tree copying, self-copy rejection and metadata pass interpreter/native. Visit aliases missing reviewed signatures |
-| [file-watcher](specs/stdlib/modules/file-watcher.md) | Not implemented in this checkout; see ownership exclusions |
+| [file-watcher](specs/stdlib/modules/file-watcher.md) | Owned portable scope; not implemented |
 | [file](specs/stdlib/modules/file.md) | Partial Unix stdio/file/directory/link helpers; offset, EOF, preserving/truncating writes pass interpreter/native with new POSIX dependency. Seek_Type unresolved; Windows/Android incomplete |
-| [flat-pool](specs/stdlib/modules/flat-pool.md) | Not implemented in this checkout; see ownership exclusions |
-| [float16](specs/stdlib/modules/float16.md) | Not implemented in this checkout; see ownership exclusions |
-| [freetype](specs/stdlib/modules/freetype.md) | Not implemented in this checkout; see ownership exclusions |
-| [gamepad-sdl-input-map](specs/stdlib/modules/gamepad-sdl-input-map.md) | Not implemented in this checkout; see ownership exclusions |
-| [gamepad](specs/stdlib/modules/gamepad.md) | Not implemented in this checkout; see ownership exclusions |
-| [generate-c-header](specs/stdlib/modules/generate-c-header.md) | Not implemented in this checkout; see ownership exclusions |
-| [getrect-lefthanded](specs/stdlib/modules/getrect-lefthanded.md) | Not implemented in this checkout; see ownership exclusions |
-| [getrect](specs/stdlib/modules/getrect.md) | Not implemented in this checkout; see ownership exclusions |
-| [gl](specs/stdlib/modules/gl.md) | Not implemented in this checkout; see ownership exclusions |
+| [flat-pool](specs/stdlib/modules/flat-pool.md) | Owned portable scope; not implemented |
+| [float16](specs/stdlib/modules/float16.md) | Reserved for numerics worker; not implemented or modified here |
+| [freetype](specs/stdlib/modules/freetype.md) | Reserved for bindings worker; not implemented or modified here |
+| [gamepad-sdl-input-map](specs/stdlib/modules/gamepad-sdl-input-map.md) | Owned portable scope; not implemented |
+| [gamepad](specs/stdlib/modules/gamepad.md) | Owned portable scope; not implemented |
+| [generate-c-header](specs/stdlib/modules/generate-c-header.md) | Owned portable scope; not implemented |
+| [getrect-lefthanded](specs/stdlib/modules/getrect-lefthanded.md) | Reserved for numerics worker; not implemented or modified here |
+| [getrect](specs/stdlib/modules/getrect.md) | Reserved for numerics worker; not implemented or modified here |
+| [gl](specs/stdlib/modules/gl.md) | Reserved for bindings worker; not implemented or modified here |
 | [hash-table](specs/stdlib/modules/hash-table.md) | Partial: custom-hash and string-key operations pass interpreter/native collision/growth/tombstone tests. Default scalar fixture fails missing reviewed hash formula; temporary multiple lookup and Walk_Table unfinished |
 | [hash](specs/stdlib/modules/hash.md) | Partial: specified byte/string/array hashes and Knuth implemented. Scalar seed mix and scalar FNV formula unresolved; digest vectors pass interpreter/native |
-| [ico-file](specs/stdlib/modules/ico-file.md) | Not implemented in this checkout; see ownership exclusions |
-| [icon](specs/stdlib/modules/icon.md) | Not implemented in this checkout; see ownership exclusions |
-| [imgui](specs/stdlib/modules/imgui.md) | Not implemented in this checkout; see ownership exclusions |
-| [input](specs/stdlib/modules/input.md) | Not implemented in this checkout; see ownership exclusions |
+| [ico-file](specs/stdlib/modules/ico-file.md) | Owned portable scope; not implemented |
+| [icon](specs/stdlib/modules/icon.md) | Owned portable scope; not implemented |
+| [imgui](specs/stdlib/modules/imgui.md) | Reserved for bindings worker; not implemented or modified here |
+| [input](specs/stdlib/modules/input.md) | Owned portable scope; not implemented |
 | [introsort](specs/stdlib/modules/introsort.md) | Implemented in-place comparison sorts; interpreter/native checks pass |
-| [ios](specs/stdlib/modules/ios.md) | Not implemented in this checkout; see ownership exclusions |
-| [iprof](specs/stdlib/modules/iprof.md) | Not implemented in this checkout; see ownership exclusions |
-| [jai-lexer](specs/stdlib/modules/jai-lexer.md) | Not implemented in this checkout; see ownership exclusions |
-| [keymap](specs/stdlib/modules/keymap.md) | Not implemented in this checkout; see ownership exclusions |
-| [linux-build](specs/stdlib/modules/linux-build.md) | Not implemented in this checkout; see ownership exclusions |
-| [linux](specs/stdlib/modules/linux.md) | Not implemented in this checkout; see ownership exclusions |
-| [lz4](specs/stdlib/modules/lz4.md) | Not implemented in this checkout; see ownership exclusions |
-| [machine-x64](specs/stdlib/modules/machine-x64.md) | Not implemented in this checkout; see ownership exclusions |
-| [macos-bundler](specs/stdlib/modules/macos-bundler.md) | Not implemented in this checkout; see ownership exclusions |
-| [macos](specs/stdlib/modules/macos.md) | Not implemented in this checkout; see ownership exclusions |
-| [mail](specs/stdlib/modules/mail.md) | Not implemented in this checkout; see ownership exclusions |
-| [math](specs/stdlib/modules/math.md) | Not implemented in this checkout; see ownership exclusions |
+| [ios](specs/stdlib/modules/ios.md) | Reserved for bindings worker; not implemented or modified here |
+| [iprof](specs/stdlib/modules/iprof.md) | Owned portable scope; not implemented |
+| [jai-lexer](specs/stdlib/modules/jai-lexer.md) | Reserved for compiler worker; not implemented or modified here |
+| [keymap](specs/stdlib/modules/keymap.md) | Owned portable scope; not implemented |
+| [linux-build](specs/stdlib/modules/linux-build.md) | Owned portable scope; not implemented |
+| [linux](specs/stdlib/modules/linux.md) | Reserved for bindings worker; not implemented or modified here |
+| [lz4](specs/stdlib/modules/lz4.md) | Reserved for bindings worker; not implemented or modified here |
+| [machine-x64](specs/stdlib/modules/machine-x64.md) | Owned portable scope; not implemented |
+| [macos-bundler](specs/stdlib/modules/macos-bundler.md) | Owned portable scope; not implemented |
+| [macos](specs/stdlib/modules/macos.md) | Reserved for bindings worker; not implemented or modified here |
+| [mail](specs/stdlib/modules/mail.md) | Owned portable scope; not implemented |
+| [math](specs/stdlib/modules/math.md) | Reserved for numerics worker; not implemented or modified here |
 | [md5](specs/stdlib/modules/md5.md) | Implemented 32-character digest; empty, abc and message-digest vectors pass interpreter/native |
 | [memory](specs/stdlib/modules/memory.md) | Generic and optional candidate/unwrap exports implemented with portable backend; overlap, widths and mutable capability state checked interpreter/native |
-| [meow-hash](specs/stdlib/modules/meow-hash.md) | Not implemented in this checkout; see ownership exclusions |
-| [meshoptimizer](specs/stdlib/modules/meshoptimizer.md) | Not implemented in this checkout; see ownership exclusions |
-| [metal](specs/stdlib/modules/metal.md) | Not implemented in this checkout; see ownership exclusions |
-| [metaprogram-plugins](specs/stdlib/modules/metaprogram-plugins.md) | Not implemented in this checkout; see ownership exclusions |
-| [minimal-metaprogram](specs/stdlib/modules/minimal-metaprogram.md) | Not implemented in this checkout; see ownership exclusions |
-| [mojoshader](specs/stdlib/modules/mojoshader.md) | Not implemented in this checkout; see ownership exclusions |
-| [nvidia-aftermath](specs/stdlib/modules/nvidia-aftermath.md) | Not implemented in this checkout; see ownership exclusions |
-| [nvtt](specs/stdlib/modules/nvtt.md) | Not implemented in this checkout; see ownership exclusions |
-| [objective-c](specs/stdlib/modules/objective-c.md) | Not implemented in this checkout; see ownership exclusions |
-| [overwriting-allocator](specs/stdlib/modules/overwriting-allocator.md) | Not implemented in this checkout; see ownership exclusions |
+| [meow-hash](specs/stdlib/modules/meow-hash.md) | Owned portable scope; not implemented |
+| [meshoptimizer](specs/stdlib/modules/meshoptimizer.md) | Reserved for bindings worker; not implemented or modified here |
+| [metal](specs/stdlib/modules/metal.md) | Reserved for bindings worker; not implemented or modified here |
+| [metaprogram-plugins](specs/stdlib/modules/metaprogram-plugins.md) | Owned portable scope; not implemented |
+| [minimal-metaprogram](specs/stdlib/modules/minimal-metaprogram.md) | Owned portable scope; not implemented |
+| [mojoshader](specs/stdlib/modules/mojoshader.md) | Reserved for bindings worker; not implemented or modified here |
+| [nvidia-aftermath](specs/stdlib/modules/nvidia-aftermath.md) | Reserved for bindings worker; not implemented or modified here |
+| [nvtt](specs/stdlib/modules/nvtt.md) | Reserved for bindings worker; not implemented or modified here |
+| [objective-c](specs/stdlib/modules/objective-c.md) | Reserved for bindings worker; not implemented or modified here |
+| [overwriting-allocator](specs/stdlib/modules/overwriting-allocator.md) | Owned portable scope; not implemented |
 | [pcg](specs/stdlib/modules/pcg.md) | Implemented all reviewed exports; five-draw vector and bounds pass interpreter/native |
-| [performance-report](specs/stdlib/modules/performance-report.md) | Not implemented in this checkout; see ownership exclusions |
-| [pl-mpeg-public-tables](specs/stdlib/modules/pl-mpeg-public-tables.md) | Not implemented in this checkout; see ownership exclusions |
-| [pl-mpeg](specs/stdlib/modules/pl-mpeg.md) | Not implemented in this checkout; see ownership exclusions |
+| [performance-report](specs/stdlib/modules/performance-report.md) | Owned portable scope; not implemented |
+| [pl-mpeg-public-tables](specs/stdlib/modules/pl-mpeg-public-tables.md) | Owned portable scope; not implemented |
+| [pl-mpeg](specs/stdlib/modules/pl-mpeg.md) | Owned portable scope; not implemented |
 | [pool](specs/stdlib/modules/pool.md) | Default bulk allocator implemented; alignment/accounting/reset pass interpreter/native. USE_UNMAPPING_ALLOCATOR=true explicitly rejected pending native unmapping support |
-| [posix](specs/stdlib/modules/posix.md) | Not implemented in this checkout; see ownership exclusions |
+| [posix](specs/stdlib/modules/posix.md) | Reserved for bindings worker; not implemented or modified here |
 | [preload](specs/stdlib/modules/preload.md) | Canonical declarations implemented; bootstrap layout checks pass |
-| [print-color](specs/stdlib/modules/print-color.md) | Not implemented in this checkout; see ownership exclusions |
-| [print-vars](specs/stdlib/modules/print-vars.md) | Not implemented in this checkout; see ownership exclusions |
-| [process](specs/stdlib/modules/process.md) | Not implemented in this checkout; see ownership exclusions |
-| [program-print](specs/stdlib/modules/program-print.md) | Not implemented in this checkout; see ownership exclusions |
-| [project-generator](specs/stdlib/modules/project-generator.md) | Not implemented in this checkout; see ownership exclusions |
-| [protocol-for-memory-visualization](specs/stdlib/modules/protocol-for-memory-visualization.md) | Not implemented in this checkout; see ownership exclusions |
+| [print-color](specs/stdlib/modules/print-color.md) | Owned portable scope; not implemented |
+| [print-vars](specs/stdlib/modules/print-vars.md) | Owned portable scope; not implemented |
+| [process](specs/stdlib/modules/process.md) | Owned portable scope; not implemented |
+| [program-print](specs/stdlib/modules/program-print.md) | Reserved for compiler worker; not implemented or modified here |
+| [project-generator](specs/stdlib/modules/project-generator.md) | Owned portable scope; not implemented |
+| [protocol-for-memory-visualization](specs/stdlib/modules/protocol-for-memory-visualization.md) | Owned portable scope; not implemented |
 | [radixsort](specs/stdlib/modules/radixsort.md) | Implemented rank buffers, radix passes, reset/resize/reorder and release; numeric/null-input cases pass interpreter/native |
 | [random](specs/stdlib/modules/random.md) | All reviewed exports implemented; recurrence, odd seeds and float ranges checked interpreter/native |
 | [reflection](specs/stdlib/modules/reflection.md) | All reviewed exports implemented; scalar/range/enum/array checks pass interpreter/native; malformed parser edges remain under review |
 | [relative-pointers](specs/stdlib/modules/relative-pointers.md) | Implemented all reviewed exports; null/self/relocated references pass interpreter/native |
-| [remap-context](specs/stdlib/modules/remap-context.md) | Not implemented in this checkout; see ownership exclusions |
-| [rewrite](specs/stdlib/modules/rewrite.md) | Not implemented in this checkout; see ownership exclusions |
-| [rpmalloc](specs/stdlib/modules/rpmalloc.md) | Not implemented in this checkout; see ownership exclusions |
-| [runtime-support-crash-handler](specs/stdlib/modules/runtime-support-crash-handler.md) | Not implemented in this checkout; see ownership exclusions |
-| [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Missing initialization embedding and platform crash-backtrace integration; synchronized output, explicit-Code once and fault hooks now implemented |
-| [sdl](specs/stdlib/modules/sdl.md) | Not implemented in this checkout; see ownership exclusions |
-| [shared-memory-channel](specs/stdlib/modules/shared-memory-channel.md) | Not implemented in this checkout; see ownership exclusions |
-| [simd](specs/stdlib/modules/simd.md) | Not implemented in this checkout; see ownership exclusions |
-| [simp](specs/stdlib/modules/simp.md) | Not implemented in this checkout; see ownership exclusions |
-| [simple-package](specs/stdlib/modules/simple-package.md) | Not implemented in this checkout; see ownership exclusions |
-| [sloppy-math](specs/stdlib/modules/sloppy-math.md) | Not implemented in this checkout; see ownership exclusions |
-| [soa](specs/stdlib/modules/soa.md) | Not implemented in this checkout; see ownership exclusions |
+| [remap-context](specs/stdlib/modules/remap-context.md) | Owned portable scope; not implemented |
+| [rewrite](specs/stdlib/modules/rewrite.md) | Owned portable scope; not implemented |
+| [rpmalloc](specs/stdlib/modules/rpmalloc.md) | Reserved for bindings worker; not implemented or modified here |
+| [runtime-support-crash-handler](specs/stdlib/modules/runtime-support-crash-handler.md) | Owned portable scope; not implemented |
+| [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Embedding initialization, owned scratch lifetime, synchronized output, explicit-Code once and fault hooks implemented; optional crash backtrace/platform startup adaptations unfinished |
+| [sdl](specs/stdlib/modules/sdl.md) | Reserved for bindings worker; not implemented or modified here |
+| [shared-memory-channel](specs/stdlib/modules/shared-memory-channel.md) | Owned portable scope; not implemented |
+| [simd](specs/stdlib/modules/simd.md) | Owned portable scope; not implemented |
+| [simp](specs/stdlib/modules/simp.md) | Owned portable scope; not implemented |
+| [simple-package](specs/stdlib/modules/simple-package.md) | Owned portable scope; not implemented |
+| [sloppy-math](specs/stdlib/modules/sloppy-math.md) | Reserved for numerics worker; not implemented or modified here |
+| [soa](specs/stdlib/modules/soa.md) | Owned portable scope; not implemented |
 | [socket](specs/stdlib/modules/socket.md) | Partial Unix wrappers plus generated native declarations. IPv4 loopback, fd sets and IPv6 formatting pass interpreter/native; Windows wrappers and remaining native/helper gaps recorded separately |
 | [sort](specs/stdlib/modules/sort.md) | Implemented both callback forms and built-in comparators; numeric sorting checks pass interpreter/native |
-| [sound-player](specs/stdlib/modules/sound-player.md) | Not implemented in this checkout; see ownership exclusions |
-| [srgb](specs/stdlib/modules/srgb.md) | Not implemented in this checkout; see ownership exclusions |
-| [stb-image-resize](specs/stdlib/modules/stb-image-resize.md) | Not implemented in this checkout; see ownership exclusions |
-| [stb-image-write](specs/stdlib/modules/stb-image-write.md) | Not implemented in this checkout; see ownership exclusions |
-| [stb-image](specs/stdlib/modules/stb-image.md) | Not implemented in this checkout; see ownership exclusions |
-| [stb-vorbis](specs/stdlib/modules/stb-vorbis.md) | Not implemented in this checkout; see ownership exclusions |
+| [sound-player](specs/stdlib/modules/sound-player.md) | Owned portable scope; not implemented |
+| [srgb](specs/stdlib/modules/srgb.md) | Owned portable scope; not implemented |
+| [stb-image-resize](specs/stdlib/modules/stb-image-resize.md) | Reserved for bindings worker; not implemented or modified here |
+| [stb-image-write](specs/stdlib/modules/stb-image-write.md) | Reserved for bindings worker; not implemented or modified here |
+| [stb-image](specs/stdlib/modules/stb-image.md) | Reserved for bindings worker; not implemented or modified here |
+| [stb-vorbis](specs/stdlib/modules/stb-vorbis.md) | Reserved for bindings worker; not implemented or modified here |
 | [string](specs/stdlib/modules/string.md) | Partial: bytes, paths, split/join/replace, boolean/enum/token parsing; scan, wildcard and numeric parsing not implemented |
-| [subtitles](specs/stdlib/modules/subtitles.md) | Not implemented in this checkout; see ownership exclusions |
-| [system](specs/stdlib/modules/system.md) | Not implemented in this checkout; see ownership exclusions |
-| [telemetry3](specs/stdlib/modules/telemetry3.md) | Not implemented in this checkout; see ownership exclusions |
-| [text-file-handler](specs/stdlib/modules/text-file-handler.md) | Not implemented in this checkout; see ownership exclusions |
-| [thread](specs/stdlib/modules/thread.md) | Not implemented in this checkout; see ownership exclusions |
-| [treemap](specs/stdlib/modules/treemap.md) | Not implemented in this checkout; see ownership exclusions |
+| [subtitles](specs/stdlib/modules/subtitles.md) | Owned portable scope; not implemented |
+| [system](specs/stdlib/modules/system.md) | Owned portable scope; not implemented |
+| [telemetry3](specs/stdlib/modules/telemetry3.md) | Reserved for bindings worker; not implemented or modified here |
+| [text-file-handler](specs/stdlib/modules/text-file-handler.md) | Owned portable scope; not implemented |
+| [thread](specs/stdlib/modules/thread.md) | Partial POSIX release synchronization/lifecycle/work groups implemented and interpreter/native tested. Windows/iOS/console, DEBUG/race detector and automatic workspace metadata unfinished |
+| [treemap](specs/stdlib/modules/treemap.md) | Owned portable scope; not implemented |
 | [unicode](specs/stdlib/modules/unicode.md) | Implemented immutable tables, decoding/encoding and iterator; consumed-tail, strict errors and scalar round trips pass interpreter/native; malformed edges need further coverage |
-| [unmapping-allocator](specs/stdlib/modules/unmapping-allocator.md) | Not implemented in this checkout; see ownership exclusions |
-| [vulkan](specs/stdlib/modules/vulkan.md) | Not implemented in this checkout; see ownership exclusions |
-| [wav-file](specs/stdlib/modules/wav-file.md) | Not implemented in this checkout; see ownership exclusions |
-| [window-creation](specs/stdlib/modules/window-creation.md) | Not implemented in this checkout; see ownership exclusions |
-| [window-type](specs/stdlib/modules/window-type.md) | Not implemented in this checkout; see ownership exclusions |
-| [windows-registry](specs/stdlib/modules/windows-registry.md) | Not implemented in this checkout; see ownership exclusions |
-| [windows-resources](specs/stdlib/modules/windows-resources.md) | Not implemented in this checkout; see ownership exclusions |
-| [windows-utf8](specs/stdlib/modules/windows-utf8.md) | Not implemented in this checkout; see ownership exclusions |
-| [windows](specs/stdlib/modules/windows.md) | Not implemented in this checkout; see ownership exclusions |
-| [x11](specs/stdlib/modules/x11.md) | Not implemented in this checkout; see ownership exclusions |
-| [xar](specs/stdlib/modules/xar.md) | Not implemented in this checkout; see ownership exclusions |
-| [xxhash](specs/stdlib/modules/xxhash.md) | Not implemented in this checkout; see ownership exclusions |
-| [zip-file-directory](specs/stdlib/modules/zip-file-directory.md) | Not implemented in this checkout; see ownership exclusions |
+| [unmapping-allocator](specs/stdlib/modules/unmapping-allocator.md) | Owned portable scope; not implemented |
+| [vulkan](specs/stdlib/modules/vulkan.md) | Reserved for bindings worker; not implemented or modified here |
+| [wav-file](specs/stdlib/modules/wav-file.md) | Owned portable scope; not implemented |
+| [window-creation](specs/stdlib/modules/window-creation.md) | Owned portable scope; not implemented |
+| [window-type](specs/stdlib/modules/window-type.md) | Owned portable scope; not implemented |
+| [windows-registry](specs/stdlib/modules/windows-registry.md) | Owned portable scope; not implemented |
+| [windows-resources](specs/stdlib/modules/windows-resources.md) | Owned portable scope; not implemented |
+| [windows-utf8](specs/stdlib/modules/windows-utf8.md) | Owned portable scope; not implemented |
+| [windows](specs/stdlib/modules/windows.md) | Reserved for bindings worker; not implemented or modified here |
+| [x11](specs/stdlib/modules/x11.md) | Reserved for bindings worker; not implemented or modified here |
+| [xar](specs/stdlib/modules/xar.md) | Owned portable scope; not implemented |
+| [xxhash](specs/stdlib/modules/xxhash.md) | Reserved for bindings worker; not implemented or modified here |
+| [zip-file-directory](specs/stdlib/modules/zip-file-directory.md) | Owned portable scope; not implemented |

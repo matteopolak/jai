@@ -78,7 +78,8 @@ Hash_Table implements open addressing, custom callbacks, string keys, tombstones
 duplicates, growth, removal and reset. Default scalar keys fail specialization
 until the missing hash formula is reviewed; the original scalar-key acceptance
 fixture is retained unchanged and currently fails for that documented reason.
-Temporary multiple lookup and Walk_Table are also unfinished. md5 returns the
+Walk_Table is also unfinished. Temporary multiple lookup now uses the enabled
+scratch allocator. md5 returns the
 32-character digest and passes three standard digest vectors in both modes.
 
 PCG implements the reviewed pre-advance XSH-RR sequence and all state/global
@@ -134,3 +135,28 @@ declaration status separately from runtime and ABI verification. The macOS
 in_addr shape was checked against Apple's public SDK netinet/in.h. The spec
 parser used by the generator is new independent work copied from the bindings
 worker; no other checkout was modified.
+
+Thread implements POSIX release mutexes, condition variables, semaphores,
+suspended startup, per-thread context/scratch ownership, completion and joining.
+Its mutable public initialization handler is read through the actual facade
+entity; assigning it after init but before start is tested. Work groups provide
+queues, stealing, completion retrieval and bounded shutdown. Tests verify actual
+worker execution, recursive mutexes, condition wakeups, copied borrowed storage,
+and a failed zero-timeout shutdown followed by successful completion/cleanup.
+Windows/iOS/console, debug tracking, race-detector and automatic workspace
+metadata remain unfinished. Parameterized records are loaded into the public
+module scope so default-versus-explicit module instances preserve nominal
+identity; Hash_Table and Pool use the same pattern.
+
+Run the focused worker regression set with:
+
+```sh
+python3 -B tools/check_portable_stdlib.py \
+  --posix-root ../bindings/stdlib/POSIX --native \
+  --check-target linux/x64 --check-target windows/x64
+```
+
+The current run passes 40 cases in interpreter/native modes, plus bootstrap
+checks and supported portable target checks. Platform-dependent cases are not
+represented as Windows support. Pending compiler reproducers are stored under
+`tests/portable-stdlib/pending` and are not counted as passing functionality.

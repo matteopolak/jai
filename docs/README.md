@@ -98,6 +98,7 @@ The LLVM backend, C ABI and linking.
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md)
 - [Socket native declaration ledger](socket-native-ledger.json)
+- [Focused portable regression runner](../tools/check_portable_stdlib.py)
 - [Portable implementation plan](plans/portable-stdlib.md)
 - [Unresolved portable contracts](specs/stdlib/questions.md)
 
