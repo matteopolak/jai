@@ -106,10 +106,10 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [runtime-support-crash-handler](specs/stdlib/modules/runtime-support-crash-handler.md) | POSIX public records and real native signal/TLS backend implemented; explicit/protected faults, distinct worker stacks and cleanup pass interpreter/native. Linux native execution and Windows remain unfinished; deployment/lifetime details documented |
 | [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Embedding initialization, owned scratch lifetime, synchronized output, explicit-Code once and fault hooks implemented; POSIX crash backtrace startup ON/OFF verified through source-built Compiler workspace; remaining platform adaptations unfinished |
 | [sdl](specs/stdlib/modules/sdl.md) | Reserved for bindings worker; not implemented or modified here |
-| [shared-memory-channel](specs/stdlib/modules/shared-memory-channel.md) | Owned portable scope; not implemented |
+| [shared-memory-channel](specs/stdlib/modules/shared-memory-channel.md) | Real Unix named-mapping SPSC reserve/commit/poll/done and ownership implemented; wrap/full/corruption and 2,048 packets in all four interpreter/native process pairings. Wire details require review; Windows absent, Linux native unverified |
 | [simd](specs/stdlib/modules/simd.md) | Owned portable scope; not implemented |
 | [simp](specs/stdlib/modules/simp.md) | Reserved for window/render worker by current ownership; not modified here |
-| [simple-package](specs/stdlib/modules/simple-package.md) | Owned portable scope; not implemented |
+| [simple-package](specs/stdlib/modules/simple-package.md) | Not implemented; oracle lacks package/TOC magic values and per-entry wire encoding. Questions recorded; no substitute archive format fabricated |
 | [sloppy-math](specs/stdlib/modules/sloppy-math.md) | Reserved for numerics worker; not implemented or modified here |
 | [soa](specs/stdlib/modules/soa.md) | Generated canonical component arrays, indexed gather/scatter and value/pointer loops implemented; overlay/constant omission, empty extent and writeback on continue/break/return tested. General overlapping-union selection requires review |
 | [socket](specs/stdlib/modules/socket.md) | Partial Unix wrappers plus generated native declarations. IPv4 loopback, fd sets and IPv6 formatting pass interpreter/native; Windows wrappers and remaining native/helper gaps recorded separately |

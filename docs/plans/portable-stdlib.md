@@ -154,3 +154,10 @@ descending sort and cached squarified geometry. Keep Math delegated, call suppli
 border procedures with actual parent display records, and use shared boundaries
 to prevent accumulated row drift. Validate hierarchy/non-overlap/areas/cache and
 growth beyond one bucket; record unresolved border/range/coordinate conventions.
+
+Shared-memory increment: exclusive POSIX objects and captured mapping/name/allocator
+ownership; SPSC packet reservation/publication, validated reads/completion and
+explicit wrap notifications. Query native backing extent instead of assuming the
+requested size. Test full/max-packet/wrap/corruption and mixed interpreter/native
+processes; journal test-owned names and retain historical cleanup limitations.
+Record unresolved wire contracts rather than claiming reference interoperability.
