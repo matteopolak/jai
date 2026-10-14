@@ -167,7 +167,7 @@ def generate(src, plat, work, clang):
              '// Altered translation; original copyright/license retained in LICENSE.txt.',
              '// Do not edit. Regenerate all six targets together.\n']
     checks = []
-    def record(n, indent='', cname=None):
+    def record(n, indent='', cname=None, path=''):
         out = []
         pending = None
         for f in n.get('inner', []):
@@ -177,7 +177,7 @@ def generate(src, plat, work, clang):
             name = f['name']
             if 'unnamed ' in f['type']['qualType']:
                 assert pending is not None
-                typ = pending['tagUsed'] + ' {\n' + '\n'.join(record(pending, indent+'    ')) + '\n' + indent + '}'
+                typ = pending['tagUsed'] + ' {\n' + '\n'.join(record(pending, indent+'    ', cname, path+name+'.')) + '\n' + indent + '}'
                 pending = None
             else:
                 typ = jai_type(f['type']['qualType'])
@@ -187,7 +187,7 @@ def generate(src, plat, work, clang):
                     typ=named_callback(f['type']['qualType'],source,name)
             jai_name = '`'+name if name in {'remove', 'using', 'ifx'} else name
             out.append(indent + f'    {jai_name}: {typ};')
-            if cname: checks.append((f'__builtin_offsetof({cname}, {name})', f'offset_of({cname}.{name})'))
+            if cname: checks.append((f'__builtin_offsetof({cname}, {path}{name})', f'offset_of({cname}, \"{path}{name}\")'))
         return out
     for name,n in records.items():
         lines += [f'{name} :: {n["tagUsed"]} {{', *record(n, cname=name if n.get('completeDefinition') and name in typedefs else None), '}\n']
@@ -203,6 +203,9 @@ def generate(src, plat, work, clang):
         if name in records or name in enums: continue
         t = n['type']['qualType']
         lines.append(f'{name} :: {named_callback(t,preprocessed,name)};')
+        tag=re.sub(r'^(struct|union) ', '', t)
+        if tag not in records or records[tag].get('completeDefinition'):
+            checks += [(f'sizeof({name})',f'size_of({name})'),(f'_Alignof({name})',f'align_of({name})')]
     glue = []
     for name,n in functions.items():
         if name == 'SDL_main':
@@ -272,7 +275,8 @@ def generate(src, plat, work, clang):
     assertions += [f'#assert(size_of(*{name}) == 8);' for name in typedefs if name not in records and name not in enums]
     assertions += [f'#assert(size_of(type_of({name})) == 8);' for name in functions if name not in excluded]
     assertions += [f'#assert({j} == {layouts[i]});' for i,(_,j) in enumerate(checks)]
-    return '\n'.join(lines)+'\n', '\n'.join(assertions)+'\n', glue, {
+    c_assertions=HEADER+'\n#include <stddef.h>\n'+'\n'.join(f'_Static_assert(({c.replace("__builtin_offsetof","offsetof")}) == {layouts[i]}, "SDL3 C layout {i}");' for i,(c,_) in enumerate(checks))+'\n'
+    return '\n'.join(lines)+'\n', '\n'.join(assertions)+'\n', c_assertions, glue, {
         'functions': sorted(set(functions)-set(excluded)), 'excluded_functions': excluded,
         'records': sorted(records), 'enums': sorted(enums), 'typedefs': sorted(typedefs),
         'integer_macros': sorted(consts), 'float_macros': sorted(floats), 'string_macros': sorted(strings),
@@ -281,6 +285,15 @@ def generate(src, plat, work, clang):
         'unsupported_function_macros': sorted(set(functional)-set(functions)-{'SDL_INIT_INTERFACE'}-set(json.loads((ROOT/'tools/native/sdl3/macros.json').read_text()))),
         'layout_assertions': len(checks)}
 
+
+def native_notices(src):
+    notices={}
+    for path in sorted((src/'src').rglob('*')):
+        if path.suffix not in {'.c','.h','.cpp','.m','.mm'}:continue
+        for comment in re.findall(r'/\*.*?\*/',path.read_text(errors='replace'),re.S):
+            if re.search(r'copyright|permission to|license|public domain',comment,re.I):
+                notices.setdefault(comment,[]).append(str(path.relative_to(src)))
+    return 'Original notices from pinned SDL3 native sources (including optional backends).\nHIDAPI is used under its BSD-style license.\n\n'+'\n\n'.join(', '.join(paths)+'\n'+comment for comment,paths in notices.items())+'\n'
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
@@ -301,6 +314,7 @@ def main():
     work=ROOT/'artifacts/sdl3/generator'; work.mkdir(parents=True,exist_ok=True)
     inventory={}
     files={}
+    files[OUT/'THIRD-PARTY-NOTICES.txt']=native_notices(a.source)
     notices=[]
     for header in sorted((a.source/'include/SDL3').glob('*.h')):
         text=header.read_text()
@@ -311,7 +325,7 @@ def main():
     c=['// Altered translation of official SDL3 macros. Copyright/license: stdlib/Extensions/SDL3/LICENSE.txt', '#include <SDL3/SDL.h>']
     j=['// Typed wrappers of official public SDL3 macros. No replacement semantics.']
     for n,(ret,ps) in specs.items():
-        cparams=', '.join(t+' '+('signed_' if name=='signed' else name) for t,name in ps)
+        cparams=', '.join(t+' '+('signed_' if name=='signed' else name) for t,name in ps) or 'void'
         call=', '.join('signed_' if name=='signed' else name for t,name in ps)
         c.append(f'SDL_DECLSPEC {ret} SDLCALL JAI_SDL3_{n}({cparams}) {{ return {n}({call}); }}')
         j.append(n+' :: ('+', '.join(name+': '+jai_type(t) for t,name in ps)+') -> '+jai_type(ret)+' #foreign SDL3 \"JAI_SDL3_'+n+'\";')
@@ -321,9 +335,10 @@ def main():
     files[ROOT/'tools/native/sdl3/macros.c']='\n'.join(c)+'\n'
     files[OUT/'macros.jai']='\n'.join(j)+'\n'
     for plat in TARGETS:
-        data,checks,glue,report=generate(a.source,plat,work,a.clang)
+        data,checks,c_checks,glue,report=generate(a.source,plat,work,a.clang)
         files[OUT/f'{plat}.jai']=data
         files[ROOT/f'tests/sdl3/layout-{plat}.jai']=checks
+        files[ROOT/f'tests/sdl3/c-layout-{plat}.h']=c_checks
         files[ROOT/f'tools/native/sdl3/inline-{plat}.c']='// Generated altered translation. SDL copyright/license: stdlib/Extensions/SDL3/LICENSE.txt\n'+HEADER+'\n'.join(glue)+'\n'
         if not a.check:
             for path,data in files.items():

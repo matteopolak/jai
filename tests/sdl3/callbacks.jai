@@ -49,6 +49,22 @@ main :: () {
     assert(SDL_VERSIONNUM_MINOR(SDL_VERSION) == 4);
     assert(SDL_AUDIO_BYTESIZE(cast(u16) SDL_AUDIO_F32) == 4);
     assert(SDL_BYTESPERPIXEL(cast(u32) SDL_PIXELFORMAT_RGBA32) == 4);
+    assert(SDL_MS_TO_NS(12) == 12000000);
+    assert(SDL_WINDOWPOS_ISCENTERED(SDL_WINDOWPOS_CENTERED_DISPLAY(2)));
+    refs: SDL_AtomicInt;
+    refs.value = 1;
+    assert(SDL_AtomicIncRef(*refs) == 1);
+    assert(!SDL_AtomicDecRef(*refs));
+    assert(SDL_AtomicDecRef(*refs));
+    ucs2 := SDL_iconv_utf8_ucs2("hello".data);
+    assert(ucs2 != null);
+    // The public macro requests "UCS-2", which does not promise native byte order.
+    // Verify the exact documented expansion without imposing a native-endian assumption.
+    expected := SDL_iconv_string("UCS-2".data, "UTF-8".data, "hello".data, 6);
+    assert(expected != null);
+    assert(SDL_memcmp(ucs2, expected, 12) == 0);
+    SDL_free(expected);
+    SDL_free(ucs2);
     assert(SDL_Swap32(0x12345678) == 0x78563412);
     rect: SDL_Rect = .{1, 2, 3, 4};
     point: SDL_Point = .{2, 3};

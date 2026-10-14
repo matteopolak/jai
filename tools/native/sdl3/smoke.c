@@ -1,6 +1,7 @@
 /* Jai SDL3 package smoke test. Uses only official public SDL3 API. */
 #include <SDL3/SDL.h>
 #include <stdio.h>
+#include JAI_SDL3_LAYOUT_HEADER
 #if defined(JAI_SDL3_CPU_ARM64) && !defined(__aarch64__) && !defined(_M_ARM64)
 #error SDL3 arm64 build used a compiler for the wrong CPU
 #endif

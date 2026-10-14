@@ -58,6 +58,24 @@ SDL_DECLSPEC float SDLCALL JAI_SDL3_SDL_SwapFloatLE(float x) { return SDL_SwapFl
 SDL_DECLSPEC float SDLCALL JAI_SDL3_SDL_SwapFloatBE(float x) { return SDL_SwapFloatBE(x); }
 SDL_DECLSPEC SDL_Thread * SDLCALL JAI_SDL3_SDL_CreateThread(SDL_ThreadFunction fn, const char * name, void * data) { return SDL_CreateThread(fn, name, data); }
 SDL_DECLSPEC SDL_Thread * SDLCALL JAI_SDL3_SDL_CreateThreadWithProperties(SDL_PropertiesID props) { return SDL_CreateThreadWithProperties(props); }
+SDL_DECLSPEC Uint64 SDLCALL JAI_SDL3_SDL_SECONDS_TO_NS(Uint64 S) { return SDL_SECONDS_TO_NS(S); }
+SDL_DECLSPEC Uint64 SDLCALL JAI_SDL3_SDL_NS_TO_SECONDS(Uint64 NS) { return SDL_NS_TO_SECONDS(NS); }
+SDL_DECLSPEC Uint64 SDLCALL JAI_SDL3_SDL_MS_TO_NS(Uint64 MS) { return SDL_MS_TO_NS(MS); }
+SDL_DECLSPEC Uint64 SDLCALL JAI_SDL3_SDL_NS_TO_MS(Uint64 NS) { return SDL_NS_TO_MS(NS); }
+SDL_DECLSPEC Uint64 SDLCALL JAI_SDL3_SDL_US_TO_NS(Uint64 US) { return SDL_US_TO_NS(US); }
+SDL_DECLSPEC Uint64 SDLCALL JAI_SDL3_SDL_NS_TO_US(Uint64 NS) { return SDL_NS_TO_US(NS); }
+SDL_DECLSPEC Uint32 SDLCALL JAI_SDL3_SDL_WINDOWPOS_UNDEFINED_DISPLAY(Uint32 X) { return SDL_WINDOWPOS_UNDEFINED_DISPLAY(X); }
+SDL_DECLSPEC Uint32 SDLCALL JAI_SDL3_SDL_WINDOWPOS_CENTERED_DISPLAY(Uint32 X) { return SDL_WINDOWPOS_CENTERED_DISPLAY(X); }
+SDL_DECLSPEC bool SDLCALL JAI_SDL3_SDL_WINDOWPOS_ISUNDEFINED(Uint32 X) { return SDL_WINDOWPOS_ISUNDEFINED(X); }
+SDL_DECLSPEC bool SDLCALL JAI_SDL3_SDL_WINDOWPOS_ISCENTERED(Uint32 X) { return SDL_WINDOWPOS_ISCENTERED(X); }
+SDL_DECLSPEC bool SDLCALL JAI_SDL3_SDL_MUSTLOCK(SDL_Surface * S) { return SDL_MUSTLOCK(S); }
+SDL_DECLSPEC char * SDLCALL JAI_SDL3_SDL_iconv_utf8_locale(const char * S) { return SDL_iconv_utf8_locale(S); }
+SDL_DECLSPEC Uint16 * SDLCALL JAI_SDL3_SDL_iconv_utf8_ucs2(const char * S) { return SDL_iconv_utf8_ucs2(S); }
+SDL_DECLSPEC Uint32 * SDLCALL JAI_SDL3_SDL_iconv_utf8_ucs4(const char * S) { return SDL_iconv_utf8_ucs4(S); }
+SDL_DECLSPEC int SDLCALL JAI_SDL3_SDL_AtomicIncRef(SDL_AtomicInt * a) { return SDL_AtomicIncRef(a); }
+SDL_DECLSPEC bool SDLCALL JAI_SDL3_SDL_AtomicDecRef(SDL_AtomicInt * a) { return SDL_AtomicDecRef(a); }
+SDL_DECLSPEC bool SDLCALL JAI_SDL3_SDL_Unsupported(void) { return SDL_Unsupported(); }
+SDL_DECLSPEC bool SDLCALL JAI_SDL3_SDL_InvalidParamError(const char * param) { return SDL_InvalidParamError(param); }
 SDL_DECLSPEC void SDLCALL JAI_SDL3_SDL_INIT_INTERFACE_SDL_IOStreamInterface(SDL_IOStreamInterface *iface) { SDL_INIT_INTERFACE(iface); }
 SDL_DECLSPEC void SDLCALL JAI_SDL3_SDL_INIT_INTERFACE_SDL_StorageInterface(SDL_StorageInterface *iface) { SDL_INIT_INTERFACE(iface); }
 SDL_DECLSPEC void SDLCALL JAI_SDL3_SDL_INIT_INTERFACE_SDL_VirtualJoystickDesc(SDL_VirtualJoystickDesc *iface) { SDL_INIT_INTERFACE(iface); }

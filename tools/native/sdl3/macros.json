@@ -616,5 +616,162 @@
         "props"
       ]
     ]
+  ],
+  "SDL_SECONDS_TO_NS": [
+    "Uint64",
+    [
+      [
+        "Uint64",
+        "S"
+      ]
+    ]
+  ],
+  "SDL_NS_TO_SECONDS": [
+    "Uint64",
+    [
+      [
+        "Uint64",
+        "NS"
+      ]
+    ]
+  ],
+  "SDL_MS_TO_NS": [
+    "Uint64",
+    [
+      [
+        "Uint64",
+        "MS"
+      ]
+    ]
+  ],
+  "SDL_NS_TO_MS": [
+    "Uint64",
+    [
+      [
+        "Uint64",
+        "NS"
+      ]
+    ]
+  ],
+  "SDL_US_TO_NS": [
+    "Uint64",
+    [
+      [
+        "Uint64",
+        "US"
+      ]
+    ]
+  ],
+  "SDL_NS_TO_US": [
+    "Uint64",
+    [
+      [
+        "Uint64",
+        "NS"
+      ]
+    ]
+  ],
+  "SDL_WINDOWPOS_UNDEFINED_DISPLAY": [
+    "Uint32",
+    [
+      [
+        "Uint32",
+        "X"
+      ]
+    ]
+  ],
+  "SDL_WINDOWPOS_CENTERED_DISPLAY": [
+    "Uint32",
+    [
+      [
+        "Uint32",
+        "X"
+      ]
+    ]
+  ],
+  "SDL_WINDOWPOS_ISUNDEFINED": [
+    "bool",
+    [
+      [
+        "Uint32",
+        "X"
+      ]
+    ]
+  ],
+  "SDL_WINDOWPOS_ISCENTERED": [
+    "bool",
+    [
+      [
+        "Uint32",
+        "X"
+      ]
+    ]
+  ],
+  "SDL_MUSTLOCK": [
+    "bool",
+    [
+      [
+        "SDL_Surface *",
+        "S"
+      ]
+    ]
+  ],
+  "SDL_iconv_utf8_locale": [
+    "char *",
+    [
+      [
+        "const char *",
+        "S"
+      ]
+    ]
+  ],
+  "SDL_iconv_utf8_ucs2": [
+    "Uint16 *",
+    [
+      [
+        "const char *",
+        "S"
+      ]
+    ]
+  ],
+  "SDL_iconv_utf8_ucs4": [
+    "Uint32 *",
+    [
+      [
+        "const char *",
+        "S"
+      ]
+    ]
+  ],
+  "SDL_AtomicIncRef": [
+    "int",
+    [
+      [
+        "SDL_AtomicInt *",
+        "a"
+      ]
+    ]
+  ],
+  "SDL_AtomicDecRef": [
+    "bool",
+    [
+      [
+        "SDL_AtomicInt *",
+        "a"
+      ]
+    ]
+  ],
+  "SDL_Unsupported": [
+    "bool",
+    []
+  ],
+  "SDL_InvalidParamError": [
+    "bool",
+    [
+      [
+        "const char *",
+        "param"
+      ]
+    ]
   ]
 }

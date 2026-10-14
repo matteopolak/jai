@@ -27,5 +27,12 @@ main :: () {
     assert(surface.w == 4 && surface.h == 3);
     assert(SDL_FillSurfaceRect(surface, null, 0));
     SDL_DestroySurface(surface);
+    guid := SDL_StringToGUID("00112233445566778899aabbccddeeff".data);
+    guid_text: [33] u8;
+    SDL_GUIDToString(guid, guid_text.data, 33);
+    assert(SDL_strcmp(guid_text.data, "00112233445566778899aabbccddeeff".data) == 0);
+    assert(!SDL_SetError("value=%d".data, cast(s32) 23));
+    assert(SDL_strcmp(SDL_GetError(), "value=23".data) == 0);
+    assert(SDL_ClearError());
     print("SDL3 headless passed\n");
 }

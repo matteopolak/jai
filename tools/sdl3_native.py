@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import shutil
 import subprocess
 import tarfile
@@ -27,6 +28,7 @@ def checked_archive(cache, offline=False):
     if hashlib.sha256(packed.read_bytes()).hexdigest()!=spec['sha256']: raise RuntimeError(f'cache hash mismatch: {packed}')
     # Validate every extracted file against the verified archive; preserve mtimes when exact.
     src=cache/spec['root']
+    if src.is_symlink(): raise RuntimeError(f'source cache is a symlink: {src}')
     with tarfile.open(packed) as tar:
         members=tar.getmembers()
         for m in members:
@@ -43,7 +45,7 @@ def checked_archive(cache, offline=False):
             tar.extractall(cache)
     version=(src/'include/SDL3/SDL_version.h').read_text()
     for key,n in [('MAJOR',3),('MINOR',4),('MICRO',18)]:
-        if not __import__('re').search(rf'#define SDL_{key}_VERSION\s+{n}\b', version): raise RuntimeError('source version mismatch')
+        if not re.search(rf'#define SDL_{key}_VERSION\s+{n}\b', version): raise RuntimeError('source version mismatch')
     return src,source
 
 def host():
@@ -78,6 +80,22 @@ def configure_options(plat):
                     '-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded','-DSDL_LIBC=ON']
     return options
 
+def check_dependencies(text,plat):
+    """Reject optional packages that became hard static dependencies unexpectedly.
+    The module's system dependencies must cover SDL's actual configured link interface.
+    """
+    module=(ROOT/f'stdlib/Extensions/SDL3/link-{plat.split("-")[0]}.jai').read_text()
+    allowed=set(re.findall(r'#library,system,link_always "([^"]+)"',module))
+    if plat.startswith('macos'):allowed |= {'CoreHaptics','UniformTypeIdentifiers','m','pthread'}
+    for item in text.strip().replace('\n',';').split(';'):
+        if not item or item=='$<TARGET_NAME:SDL3::Headers>':continue
+        if item.startswith('$<LINK_ONLY:'):item=item[len('$<LINK_ONLY:'):-1]
+        framework=re.fullmatch(r'\$<LINK_LIBRARY:(?:WEAK_)?FRAMEWORK,([^>]+)>',item)
+        if framework:item=framework[1]
+        if item=='-pthread':item='pthread'
+        if item.startswith('-l'):item=item[2:]
+        if item not in allowed:raise RuntimeError(f'{plat}: unbound transitive static link dependency: {item}')
+
 def build(out,plat,cache=None,offline=False,jobs=2):
     if plat not in PLATFORMS: raise ValueError(plat)
     if plat.split('-')[0]!=host().split('-')[0]: raise ValueError('build SDL3 on the target OS with its native SDK')
@@ -96,6 +114,8 @@ def build(out,plat,cache=None,offline=False,jobs=2):
             program=builddir/('Release' if plat.startswith('windows') else '')/('jai-sdl3-smoke-'+mode+('.exe' if plat.startswith('windows') else ''))
             subprocess.run([str(program)],check=True)
     subprocess.run(['cmake','--install',str(builddir),'--config','Release'],check=True)
+    dependencies=(builddir/'static-link-libraries-Release.txt').read_text()
+    check_dependencies(dependencies,plat)
     out=out.resolve();out.mkdir(parents=True,exist_ok=True)
     # jaic searches SDL3.lib/libSDL3.a first: these are the actual static archives.
     # Keep the distinct official Windows DLL import library as SDL3-import.lib.
@@ -112,7 +132,10 @@ def build(out,plat,cache=None,offline=False,jobs=2):
             shutil.copy2(f,out/f.name,follow_symlinks=True)
         names=['libSDL3.a']+[f.name for f in out.glob(f'libSDL3*.{ext}*')]
     lic=out/'licenses/sdl3';lic.mkdir(parents=True,exist_ok=True)
-    shutil.copy2(src/'LICENSE.txt',lic/'LICENSE.txt')
+    from build_native_libs import copy_licenses
+    from sdl3_gen import native_notices
+    copy_licenses('sdl3',source,src,out)
+    (lic/'THIRD-PARTY-NOTICES.txt').write_text(native_notices(src))
     metadata=out/'sdl3';metadata.mkdir(exist_ok=True)
     configs=list(builddir.glob('sdl/include-config-release/build_config/SDL_build_config.h'))
     if not configs: raise RuntimeError('missing generated SDL build configuration')
@@ -126,7 +149,7 @@ def build(out,plat,cache=None,offline=False,jobs=2):
     for f in (stage/'lib/pkgconfig').glob('*.pc'):
         text=f.read_text().replace(str(stage),'${pcfiledir}/../../..')
         (metadata/f.name).write_text(text)
-    shutil.copy2(builddir/'static-link-libraries-Release.txt',metadata/'static-link-libraries.txt')
+    (metadata/'static-link-libraries.txt').write_text(dependencies)
     # Package CMake targets for native consumers and dependency auditing.
     shutil.copytree(stage/'lib/cmake/SDL3',metadata/'cmake',dirs_exist_ok=True)
     record={'platform':plat,'version':'3.4.18','source':source,'cmake_options':configure_options(plat),

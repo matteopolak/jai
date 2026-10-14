@@ -10,7 +10,18 @@
         "root": "SDL3-3.4.18"
       },
       "license": [
-        "LICENSE.txt"
+        "LICENSE.txt",
+        {
+          "file": "src/hidapi/LICENSE.txt",
+          "as": "hidapi-LICENSE.txt"
+        },
+        "src/hidapi/LICENSE-bsd.txt",
+        "src/hidapi/LICENSE-orig.txt",
+        "src/hidapi/LICENSE-gpl3.txt",
+        {
+          "file": "src/video/yuv2rgb/LICENSE",
+          "as": "yuv2rgb-LICENSE.txt"
+        }
       ]
     },
     "stb": {

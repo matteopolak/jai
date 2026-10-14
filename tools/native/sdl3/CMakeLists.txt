@@ -22,7 +22,7 @@ if(MSVC)
   target_compile_options(SDL3-static PRIVATE /Zl)
 endif()
 file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/static-link-libraries-$<CONFIG>.txt"
-     CONTENT "$<TARGET_PROPERTY:SDL3-static,INTERFACE_LINK_LIBRARIES>\n")
+     CONTENT "$<TARGET_PROPERTY:SDL3-static,INTERFACE_LINK_LIBRARIES>\n$<TARGET_PROPERTY:SDL3-static,INTERFACE_LINK_OPTIONS>\n")
 
 # Extend SDL's official ELF version script in the build directory, preserving the source.
 if(UNIX AND NOT APPLE)
@@ -36,7 +36,8 @@ endif()
 # Build both linkage modes, with SDL supplying every transitive platform dependency.
 foreach(mode static shared)
   add_executable(jai-sdl3-smoke-${mode} smoke.c)
-  target_compile_definitions(jai-sdl3-smoke-${mode} PRIVATE ${JAI_SDL3_CPU})
+  target_compile_definitions(jai-sdl3-smoke-${mode} PRIVATE ${JAI_SDL3_CPU}
+    JAI_SDL3_LAYOUT_HEADER="${CMAKE_CURRENT_LIST_DIR}/../../../tests/sdl3/c-layout-${SDL_JAI_PLATFORM}.h")
   set_target_properties(jai-sdl3-smoke-${mode} PROPERTIES C_STANDARD 11 C_STANDARD_REQUIRED YES)
   target_link_libraries(jai-sdl3-smoke-${mode} PRIVATE SDL3-${mode})
 endforeach()

@@ -19,6 +19,10 @@ class BuildContract(unittest.TestCase):
         self.assertIn('-DCMAKE_OSX_ARCHITECTURES=x86_64',sdl.configure_options('macos-x64'))
         self.assertIn('ARM64',sdl.configure_options('windows-arm64'))
         with self.assertRaises(ValueError):sdl.configure_options('linux-riscv64')
+    def test_unbound_static_dependencies_fail(self):
+        sdl.check_dependencies('$<LINK_ONLY:m>;$<LINK_ONLY:$<LINK_LIBRARY:WEAK_FRAMEWORK,CoreHaptics>>;$<TARGET_NAME:SDL3::Headers>;\n-lpthread','macos-arm64')
+        with self.assertRaisesRegex(RuntimeError,'unbound transitive'):
+            sdl.check_dependencies('$<LINK_ONLY:PkgConfig::UNEXPECTED>','linux-x64')
     def test_bad_cached_archive_is_rejected_offline(self):
         with tempfile.TemporaryDirectory(dir=sdl.ROOT/'artifacts/sdl3/tmp') as d:
             p=Path(d);(p/'SDL3-3.4.18.tar.gz').write_bytes(b'corrupt')

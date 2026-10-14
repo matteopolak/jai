@@ -6,7 +6,7 @@ The source is **SDL 3.4.18**, the stable release identified by SDL's official re
 
 - Source: <https://github.com/libsdl-org/SDL/releases/download/release-3.4.18/SDL3-3.4.18.tar.gz>
 - SHA256: `9c75cf16330322c217dedd2e0609f1124f1b54b8633e763467b4684d0f4334a3` (also matches the official release asset digest).
-- License: zlib, [unaltered license](../../stdlib/Extensions/SDL3/LICENSE.txt). [NOTICES.txt](../../stdlib/Extensions/SDL3/NOTICES.txt) retains the public headers' original notices. Generated translations are marked as altered. Release native artifacts ship `licenses/sdl3/LICENSE.txt`.
+- License: zlib, [unaltered license](../../stdlib/Extensions/SDL3/LICENSE.txt). [NOTICES.txt](../../stdlib/Extensions/SDL3/NOTICES.txt) retains the public headers' original notices. Generated translations are marked as altered. Release native artifacts ship `licenses/sdl3/LICENSE.txt`, the original HIDAPI and YUV license files, and [embedded third-party notices](../../stdlib/Extensions/SDL3/THIRD-PARTY-NOTICES.txt) extracted from the verified native source. HIDAPI is used under its BSD-style option.
 - API documentation: <https://wiki.libsdl.org/SDL3/FrontPage>. The pinned headers, rather than the moving wiki, determine the declarations.
 
 ## API scope
@@ -17,14 +17,14 @@ C structs/unions retain field order and storage overlap. Opaque C types are empt
 
 SDL3 event `.type` is a `u32`, as in the C header, while `SDL_EventType` is an enum: assign `cast(u32) SDL_EVENT_USER`. This is intentional ABI fidelity. Backtick declaration syntax preserves C field names such as `SDL_StorageInterface.remove` where the statement parser would otherwise consume a keyword; reflected names and storage offsets are unchanged.
 
-Supported macro wrappers execute the official C macro/inline helper in the native library, with `JAI_SDL3_` symbol names: version arithmetic, FourCC, pixel/audio/colorspace packing and queries, endian conversion, thread creation, initialization of the three versioned interface structs, and all public inline helpers reached by the headers. This avoids declaring nonexistent SDL exports such as `SDL_CreateThread`. The wrapper manifest is `tools/native/sdl3/macros.json`. Functions that take `...` use real C variadics (`args: ..Any`), with the compiler's C promotion rules.
+Supported macro wrappers execute the official C macro/inline helper in the native library, with `JAI_SDL3_` symbol names: version arithmetic, FourCC, pixel/audio/colorspace packing and queries, endian conversion, timing/window-position helpers, surface locking, atomic reference counts, UTF-8 conversion helpers, error helpers, thread creation, initialization of the three versioned interface structs, and all public inline helpers reached by the headers. This avoids declaring nonexistent SDL exports such as `SDL_CreateThread`. The wrapper manifest is `tools/native/sdl3/macros.json`. Functions that take `...` use real C variadics (`args: ..Any`), with the compiler's C promotion rules.
 
 Explicitly unsupported surfaces:
 
 - Seven procedures taking platform-specific `va_list`: `SDL_IOvprintf`, `SDL_LogMessageV`, `SDL_SetErrorV`, `SDL_vasprintf`, `SDL_vsnprintf`, `SDL_vsscanf`, `SDL_vswprintf`. Their corresponding variadic procedures are bound. No fake `va_list` layout is supplied.
 - C preprocessor configuration/annotations, compiler intrinsics, generic type-dependent or statement/control-flow macros (including assertion-site macros, stack allocation, array-count/zero/copy macros, and compiler/platform detection). Every observed function-like macro is inventoried. `SDL_INIT_INTERFACE` has typed pointer overloads for `SDL_IOStreamInterface`, `SDL_StorageInterface` and `SDL_VirtualJoystickDesc`; they invoke the official C macro.
 - `SDL_main` is an application entry point, not a foreign library symbol. SDL's exported `SDL_RunApp`, callback-entry and main-ready procedures are available; the module does not rewrite a Jai program's entry point.
-- Platform-specific declarations for Android, iOS, consoles, GDK and WebAssembly, and standalone OpenGL/OpenGL ES/intrinsic headers. These are additional graphics/platform APIs rather than SDL3 library exports. Vulkan integration uses the public forward declarations from `SDL_vulkan.h`; import a Vulkan binding for complete Vulkan definitions.
+- Platform-specific declarations for Android, iOS, consoles, GDK and WebAssembly, and standalone OpenGL/OpenGL ES/intrinsic headers and the separate `SDL3_test` auxiliary testing library. These are additional graphics/platform APIs rather than SDL3 library exports. Vulkan integration uses the public forward declarations from `SDL_vulkan.h`; import a Vulkan binding for complete Vulkan definitions.
 
 ## Regeneration
 
@@ -37,7 +37,7 @@ python3 tools/sdl3_gen.py --source artifacts/sdl3/SDL3-3.4.18 --check
 python3 -m unittest discover -s tools -p 'test_sdl3*.py'
 ```
 
-The generated target files, native inline wrappers, macro wrappers, original notices, inventory and ABI assertions are checked in. Clang evaluates constants and supplies 1,281 aggregate/enum size/alignment/member-offset assertions per target. The layout test also forces every typedef and procedure signature to type-check. All targets are little-endian 64-bit; unsupported target selection fails explicitly. A binding version upgrade requires updating the source pin, generator version checks, wrapper inventory, generated files and runtime expectations together.
+The generated target files, native inline wrappers, macro wrappers, original notices, inventory and ABI assertions are checked in. Clang evaluates constants and supplies 1,486 size/alignment/member-offset assertions per macOS/Linux target and 1,488 per Windows target, covering aggregates, enums and aliases. The C smoke programs compile the same assertions against the real platform SDK headers; Jai checks the translated layouts. The layout test also forces every typedef and procedure signature to type-check. All targets are little-endian 64-bit; unsupported target selection fails explicitly. A binding version upgrade requires updating the source pin, generator version checks, wrapper inventory, generated files and runtime expectations together.
 
 ## Native builds and release packaging
 
@@ -60,4 +60,4 @@ The existing release workflow builds SDL3 on all six current targets and runs `t
 
 ## Evidence
 
-Local validation uses the authorized source-built `../compiler/target/debug/jaic` with a disposable test stdlib assembled from the new independent compiler/stdlib sources. The macOS arm64 headless linked test and Clang-derived ABI assertions have passed. Final validation results and cross-platform CI-pending limits are recorded in the work log; all other platforms require their native runners. These tests do not establish visual rendering, physical gamepad/camera/audio device behavior, GPU availability or operation on the oldest deployment OS.
+Local validation uses the authorized source-built `../compiler/target/debug/jaic` with a disposable test stdlib assembled from the new independent compiler/stdlib sources. macOS arm64 passed both C linkage modes, all 1,486 real-SDK/Jai layout assertions, an audit of all 1,329 declared runtime exports, and linked headless/callback/macro tests (including GUID by-value and C variadics). All six targets passed Jai type/layout checks and reproducible generation. Final validation results and cross-platform CI-pending limits are recorded in the [work log](../plans/sdl3-work-log.md); all other platforms require their native runners. These tests do not establish visual rendering, physical gamepad/camera/audio device behavior, GPU availability or operation on the oldest deployment OS.
