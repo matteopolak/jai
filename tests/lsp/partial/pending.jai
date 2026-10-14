@@ -4,7 +4,9 @@
     helper(null);
     return "";
 }
+
 #poke_name Missing_Module helper;
+
 healthy :: () {
     local := 42;
     result := local + 1;

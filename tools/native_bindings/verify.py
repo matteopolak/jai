@@ -100,6 +100,19 @@ def invoke(command, env, timeout=120):
         return {'exit': None, 'stdout': str(e.stdout or ''), 'stderr': 'Timeout after ' + str(timeout) + ' seconds'}
 
 
+def select_stdlib(work, foundation=None, production=None):
+    if production is not None:
+        if foundation is not None:
+            raise ValueError('production --stdlib cannot be combined with --foundation overlays')
+        root = production.resolve(strict=True)
+        if not (root / 'prelude/module.jai').is_file():
+            raise ValueError('production library requires its canonical prelude/module.jai')
+        return root
+    destination = work / 'stdlib'
+    stage(destination, foundation)
+    return destination
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--compiler', type=Path, required=True)
@@ -107,14 +120,17 @@ def main():
     parser.add_argument('--runtime', action='store_true')
     parser.add_argument('--report', type=Path, default=ROOT/'.work/verification.json')
     parser.add_argument('--foundation', type=Path, help='Explicit previously staged NEW independent foundation sources')
+    parser.add_argument('--stdlib', type=Path, help='Verify this production library directly, without any source overlays')
     args = parser.parse_args()
     compiler = args.compiler.resolve(strict=True)
-    work = ROOT/'.work/runs'/(args.report.stem+'-'+str(os.getpid()))
+    work = args.report.resolve().parent/'runs'/(args.report.stem+'-'+str(os.getpid()))
     work.mkdir(parents=True, exist_ok=True)
-    stdlib = work/'stdlib'
-    stage(stdlib, args.foundation)
-    env = dict(os.environ, JAIC_STDLIB=str(stdlib), JAIC_NATIVE_LIBS=str(ROOT/'.work/native'), TMPDIR=str(ROOT/'.work/tmp'))
+    stdlib = select_stdlib(work, args.foundation, args.stdlib)
+    temporary = work / 'tmp'
+    temporary.mkdir()
+    env = dict(os.environ, JAIC_STDLIB=str(stdlib), JAIC_NATIVE_LIBS=str(ROOT/'.work/native'), TMPDIR=str(temporary))
     report = {'compiler': str(compiler), 'compiler_sha256': hashlib.sha256(compiler.read_bytes()).hexdigest(), 'staging_root': str(work),
+              'stdlib_root': str(stdlib), 'production': args.stdlib is not None,
               'targets': [], 'native': [], 'privacy': []}
     report['staged_sources'] = {str(p.relative_to(stdlib)):hashlib.sha256(p.read_bytes()).hexdigest()
                                 for p in sorted(stdlib.rglob('*.jai')) if 'Extensions' not in p.parts}

@@ -1,0 +1,7 @@
+{
+  "compiler": {
+    "ref": "producer/compiler",
+    "commit": "1d8833b836fd3a89edf379f758587d5a9028cce9",
+    "reason": "new atomic intrinsics and real interpreter/native/WASM atomics, four-worker WASM contention passes"
+  }
+}

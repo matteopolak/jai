@@ -6,16 +6,19 @@ fake_here_string_declaration :: () {}
 END_BANNER
 multiline :: "first line
 second line";
+
 Mode :: enum {
     FIRST;
     SECOND :: 7;
     THIRD;
 }
+
 #if true {
     enabled :: 1;
 } else {
     disabled :: 2;
 }
+
 main :: () {
     word := "😀漢é";
     healthy := 42;

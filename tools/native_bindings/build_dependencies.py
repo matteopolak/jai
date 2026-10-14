@@ -16,6 +16,14 @@ import urllib.request
 
 ROOT = Path(__file__).resolve().parents[2]
 
+INPUTS = {
+    'lz4': {'lz4'}, 'xxhash070': {'xxhash'}, 'meshoptimizer': {'meshoptimizer'},
+    'binding_ffi': set(), 'graphics_macro_probe': set(),
+    'sdl_abi_probe': {'sdl2-oracle'}, 'imgui': {'imgui'},
+    'stb_image': {'stb'}, 'stb_image_resize': {'stb'},
+    'stb_image_write': {'stb'}, 'stb_vorbis': {'stb'}, 'mojoshader': {'mojoshader'},
+}
+
 
 def run(command):
     subprocess.run([str(x) for x in command], check=True)
@@ -24,10 +32,17 @@ def run(command):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT / '.work/native')
+    parser.add_argument('--library', action='append', choices=sorted(INPUTS),
+                        help='Build only selected real native libraries and their pinned inputs')
     args = parser.parse_args()
     vendor = ROOT / '.work/vendor'
     manifest = json.loads((Path(__file__).with_name('dependencies.json')).read_text())
-    for name, source in manifest.items():
+    selected = set(args.library or INPUTS)
+    # Preserve full-manifest validation by default. A scoped build records only
+    # its actual dependency closure; it is not evidence for the other SDK pins.
+    dependencies = set().union(*(INPUTS[name] for name in selected)) if args.library else set(manifest)
+    for name in sorted(dependencies):
+        source = manifest[name]
         for filename, expected in source['files'].items():
             path = vendor / name / filename
             if not path.exists():
@@ -50,7 +65,7 @@ def main():
                 with tarfile.open(archive) as stream:
                     stream.extractall(vendor, filter='data')
     args.output.mkdir(parents=True, exist_ok=True)
-    if platform.system() == 'Darwin':
+    if platform.system() == 'Darwin' and not args.library:
         run(['cc','-dynamiclib',ROOT/'tests/native-bindings/apple_abi_probe.m',
              '-framework','Foundation','-framework','Metal',
              '-o',args.output/'libapple_abi_probe.dylib'])
@@ -76,6 +91,8 @@ def main():
         units[name] = [path]
     units['stb_vorbis'] = [vendor/'stb/stb_vorbis.c']
     for name, sources in units.items():
+        if name not in selected:
+            continue
         compiled = []
         for i, path in enumerate(sources):
             obj = objects / (name + str(i) + '.o')
@@ -88,6 +105,8 @@ def main():
         run(['c++' if name in ('meshoptimizer','imgui') else 'cc', '-dynamiclib' if suffix == '.dylib' else '-shared', *compiled,
              '-lm', *extra, '-o', args.output / ('lib' + name + suffix)])
         print('Built ' + name)
+    if 'mojoshader' not in selected:
+        return
     mojo = vendor/manifest['mojoshader']['archive']['root']
     for shared in (False, True):
         build = args.output/('mojoshader-shared' if shared else 'mojoshader-static')
