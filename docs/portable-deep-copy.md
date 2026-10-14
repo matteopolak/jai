@@ -1,4 +1,4 @@
-# Deep_Copy progress and reflection blocker
+# Deep_Copy graph copying
 
 Canonical public configuration, pointer-map records and mutable diagnostic
 globals are loaded directly into the module. Private operations separate object
@@ -16,17 +16,15 @@ Overlapping unions are also rejected because the contract supplies no active-arm
 policy. Non-struct pointers retain their source identity; struct pointers are
 followed only when the configuration allows it.
 
-General graph support is **not verified or counted complete**. Both interpreter
-and native execution report `Type_Info_Struct.alignment == 0` for a normal struct
-whose `align_of` is 8. The independent reproducer is
-`tests/portable-stdlib/pending/type-info-alignment.jai`. The graph regression
-`pending/deep-copy-graph.jai` retains its real failing alignment assertion; none
-of its cycle/sharing assertions has been disabled. The implementation retains
-alignment validation rather than guessing a layout. The own compiler descriptor
-builder in `sema/typeinfo.rs` currently populates other reflected struct fields
-but does not populate `alignment`; a general computed-layout assignment is needed
-in compiler ownership. After that fix, rerun the graph test in both modes and
-resolve any further failures before promoting it.
+The updated independent compiler populates reflected struct alignment. Original
+`type-info-alignment.jai` and `deep-copy-graph.jai` regressions now pass in
+interpreter/native and are promoted from pending into the positive suite, retaining
+all alignment/cycle/sharing assertions. Graph coverage includes cycles, shared
+struct/string identities, pointer arrays, independent resizable storage, scalar
+referents, reused maps and callback/preallocated roots. Alignment validation stays
+in place, including custom active allocators that provide insufficient alignment.
+This closes the former reflection blocker; it does not resolve the unsupported
+shapes and ownership policies listed below.
 
 Further unresolved contracts: whether default strings must be copied or borrowed,
 scalar-pointer policy, shared array slices of different extents, empty-but-reserved

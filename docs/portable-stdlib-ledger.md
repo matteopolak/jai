@@ -10,8 +10,8 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [android-egl](specs/stdlib/modules/android-egl.md) | Reserved for bindings worker; not implemented or modified here |
 | [android-toolchain](specs/stdlib/modules/android-toolchain.md) | Owned portable scope; not implemented |
 | [android](specs/stdlib/modules/android.md) | Reserved for bindings worker; not implemented or modified here |
-| [atomics](specs/stdlib/modules/atomics.md) | CAS-based arithmetic/bitwise operations implemented and interpreter/native contention tested; exact load/store/exchange aliases declared but execution blocked by missing compiler intrinsic lowering. Scalar domain/conversion details need review |
-| [autorun](specs/stdlib/modules/autorun.md) | Unix native helper and real workspace COMPLETE lifecycle implemented/tested; argument ownership and error/non-executable logs verified. Explicit argv adapts compiler spread bug; CLI orchestration, callback parameter and Windows unfinished |
+| [atomics](specs/stdlib/modules/atomics.md) | CAS arithmetic/bitwise contention and exact bootstrap load/store/exchange aliases execute in interpreter/native after compiler integration. Scalar domain/conversion/ordering details need review |
+| [autorun](specs/stdlib/modules/autorun.md) | Unix native helper and real workspace COMPLETE lifecycle implemented/tested; argument/error/non-executable logs verified. Compiler spread fix permits direct argv call; workaround removed. CLI orchestration, callback parameter and Windows unfinished |
 | [base64](specs/stdlib/modules/base64.md) | Implemented public tables, standard/URL codecs and self-tests; RFC and permissive edge vectors pass interpreter/native |
 | [basic](specs/stdlib/modules/basic.md) | Partial: arrays, allocation, scalar helpers, canonical builder and integer/bool/string formatting; remaining declarations unimplemented |
 | [bindings-generator](specs/stdlib/modules/bindings-generator.md) | Owned portable scope; not implemented |
@@ -33,7 +33,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [d3d12](specs/stdlib/modules/d3d12.md) | Reserved for bindings worker; not implemented or modified here |
 | [debug-info](specs/stdlib/modules/debug-info.md) | Owned portable scope; not implemented |
 | [debug](specs/stdlib/modules/debug.md) | Owned portable scope; not implemented |
-| [deep-copy](specs/stdlib/modules/deep-copy.md) | Partial: scalars/strings/scalar arrays, callback/preallocated roots and reused maps tested; real statistics and conditional debug globals. General graph draft blocked by zero compiler struct-alignment metadata; pending assertions retained, fixed arrays/Any rejected |
+| [deep-copy](specs/stdlib/modules/deep-copy.md) | Graph/cycle/sharing/string/array/pointer-map/preallocated/callback cases now pass interpreter/native with real alignment metadata; original assertions retained. Statistics/debug globals real. Fixed arrays/Any/unions rejected; ownership/slice/statistic policies require review |
 | [default-allocator](specs/stdlib/modules/default-allocator.md) | Documented C fallback allocator_proc/unsafe_reset implemented and interpreter/native tested, with real resize failure preservation and arm64 Linux/Windows checks. Optimized X64/Switch heap API explicitly rejected and remains unimplemented |
 | [default-metaprogram](specs/stdlib/modules/default-metaprogram.md) | Owned portable scope; not implemented |
 | [dxc-compiler](specs/stdlib/modules/dxc-compiler.md) | Reserved for bindings worker; not implemented or modified here |
@@ -100,7 +100,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [random](specs/stdlib/modules/random.md) | All reviewed exports implemented; recurrence, odd seeds and float ranges checked interpreter/native |
 | [reflection](specs/stdlib/modules/reflection.md) | All reviewed exports implemented; scalar/range/enum/array checks pass interpreter/native; malformed parser edges remain under review |
 | [relative-pointers](specs/stdlib/modules/relative-pointers.md) | Implemented all reviewed exports; null/self/relocated references pass interpreter/native |
-| [remap-context](specs/stdlib/modules/remap-context.md) | Both remap procedures implemented with cached validated field-copy plans; interpreter/native tests pass. Lexical expansion withheld pending caller-scope push_context compiler fix |
+| [remap-context](specs/stdlib/modules/remap-context.md) | Both remap procedures plus exact lexical macro implemented; cached validated plans and nested/early-return restoration pass interpreter/native. Duplicate names/stack-trace adjustment need review |
 | [rewrite](specs/stdlib/modules/rewrite.md) | Owned portable scope; not implemented |
 | [rpmalloc](specs/stdlib/modules/rpmalloc.md) | Reserved for bindings worker; not implemented or modified here |
 | [runtime-support-crash-handler](specs/stdlib/modules/runtime-support-crash-handler.md) | POSIX public records and real native signal/TLS backend implemented; explicit/protected faults, distinct worker stacks and cleanup pass interpreter/native. Linux native execution and Windows remain unfinished; deployment/lifetime details documented |

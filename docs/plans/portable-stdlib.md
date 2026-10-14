@@ -207,3 +207,10 @@ Refactor raw quantized decoding from channel reconstruction, avoiding cursor rep
 or ignored right-channel scalefactors. Consult only permitted official native C
 for scaling/CRC facts, preserve reviewed arrays and record provenance. Continue
 protected frames with real checksum validation rather than retaining a CRC skip.
+
+Compiler-refresh increment: source rebuild, then verify original pending atomic,
+caller-scope context, reflected alignment/graph and mixed-spread assertions in both
+modes. Promote only demonstrated passes; enable the reviewed Remap_Context macro
+with nested/early-exit restoration tests and remove Autorun's extra argv array.
+Retain constructor/constant/workspace/bitwise failures. Reclassify the scalar __reg
+probe accurately and verify actual vector operands before any Meow support claim.

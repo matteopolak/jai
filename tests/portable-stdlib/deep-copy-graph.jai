@@ -1,4 +1,3 @@
-// Pending general compiler alignment metadata fix; do not count as a passing graph test.
 #import "Basic";
 D :: #import "Deep_Copy";
 H :: #import "Hash_Table";

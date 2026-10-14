@@ -14,16 +14,15 @@ offset; its intended meaning is absent from the reviewed contract. Trailing junk
 and directory digital-signature records are rejected. These extension policies
 need review. See [directory parsing](portable-zip-directory.md).
 
-Atomics preserves the three exact load/store/exchange aliases, but the source
-compiler lacks the corresponding bootstrap intrinsic dispatch. The original
-`pending/atomic-intrinsics.jai` reproduces the failure. CAS-based arithmetic and
-bitwise updates execute; full scalar-domain/conversion contracts require review.
+Atomics preserves the three exact load/store/exchange aliases, now executing with
+the updated independent compiler. The original intrinsic regression is promoted
+after interpreter/native verification. CAS arithmetic/bitwise operations remain;
+full scalar-domain/conversion and ordering contracts still require review.
 See [Atomics implementation](portable-atomics.md).
 
-Deep_Copy's graph path retains a checked failure because the source compiler
-returns zero struct alignment metadata in both modes. Pending minimal reflection
-and graph tests retain the actual failed assertions. Scalar/string/scalar-array
-copies work; graph conformance is not counted. Ownership, shared-slice extents,
+Deep_Copy's original reflection and graph regressions now pass in both modes after
+the compiler metadata fix. Promoted positives retain all alignment/cycle/sharing
+assertions. Ownership, unsupported shapes, shared-slice extents,
 scalar pointers and diagnostic-statistic policies require review; see
 [Deep_Copy progress](portable-deep-copy.md).
 
@@ -37,12 +36,11 @@ convention, equal-weight order and automatic invalidation after same-count weigh
 changes need review. The current supported squarified layout and unchanged growth
 area regression are described in [Treemap design](portable-treemap.md).
 
-Meow Hash's register macros are blocked by the compiler's register-operand macro
-binding: the canonical distinct-u16 __reg type is rejected for a caller u64 operand.
-`pending/register-macro.jai` retains the original failing call. The compiler's
-current rule recognizes Code parameters; replacing the public register type with
-Code would violate its reviewed identity. General register-operand semantics must
-be fixed at that boundary before counting Meow's macro API as supported. Only the
+The updated compiler supports canonical SIMD __reg expanded operands. The old
+`pending/register-macro.jai` scalar-u64 call now receives the appropriate operand
+category diagnostic; it does not establish a remaining SIMD-binding blocker.
+Valid assembly-vector macro verification and Meow implementation remain unfinished.
+No Code surrogate or invented public register representation was added. Only the
 official public upstream C implementation was consulted for algorithm feasibility;
 no original/upstream Jai implementation was accessed or ported.
 
@@ -68,10 +66,10 @@ generation expects a non-oracle public helper; do not invent that export. See
   no extra final empty line. Diagnostics include file, line and caller location;
   exact wording is not claimed. Public error receives its handler by value, so
   owning parse/load paths explicitly set the sticky failed flag.
-- Remap_Context's lexical expansion is withheld. The pending macro-push-context
-  reproducer retains a failed restoration assertion: caller-scope context push
-  ends at the macro block. Both remap procedures are implemented. Duplicate
-  base/custom names and optional stack-trace adjustment remain unspecified.
+- Remap_Context's lexical expansion is now implemented after the general compiler
+  cleanup fix. The original caller-scope regression and real module macro verify
+  nested/early-exit restoration in both modes. Duplicate base/custom names and
+  optional stack-trace adjustment remain unspecified.
 - pending/widened-bitwise.jai retains the byte-cast/bitwise narrowing failure;
   Wav_File assembles bytes using explicitly widened locals. Duplicate WAV fmt/fact
   policy remains under review; current parser takes first fmt/data and last fact.

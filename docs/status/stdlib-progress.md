@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `413011e`, MPEG trailing B /Users/matthew/projects/jai-reference/AC verification. Earlier
+Latest committed checkpoint: `217eccd`, MPEG joint-stereo reconstruction. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -135,7 +135,7 @@ compile-time rejections and prior integration/target checks. All 254 owned Jai
 files pass jaifmt --check and jailint -D warnings. Inter-predicted B, stereo, CRC,
 format transitions and unresolved public contracts remain; continue these.
 
-Current verified increment: nonzero stereo/dual/joint Layer II fixtures with distinct
+Previously verified increment: nonzero stereo/dual/joint Layer II fixtures with distinct
 channel gains. Fixed joint shared-sample reconstruction to retain both scalefactors;
 raw quantized values are decoded once and scaled separately. The temporary replay
 path is removed. Two frames and rewind pass per mode. Full regression passes
@@ -144,10 +144,17 @@ and prior integration/target checks. File backend formatting is now excluded und
 platform-io ownership; all 254 files in the narrowed scope pass format/lint.
 CRC and remaining codec contracts are next; broader portable scope remains active.
 
-Fresh compiler audit: original atomics, caller-scope context and reflected alignment
-reproducers now pass interpreter execution after the source rebuild. Constructor
-plain-import Buffer failure remains. Native verification and promotion of these
-resolved regressions are pending; no foundation completion is claimed yet.
+Current verified increment: source-compiler integration now runs exact atomic
+aliases, original caller-scope cleanup, reflected alignment and cyclic/shared
+Deep_Copy graphs. Five former pending regressions are promoted, retaining all
+assertions. Remap_Context's exact lexical macro passes nested/early-return checks.
+Mixed spreads pass and Autorun's extra argv allocation is removed. Full regression
+passes 82 interpreter/native cases, 19 faults in both modes, six compile-time
+rejections and prior integration/target checks. All 254 owned Jai files pass
+format/lint. Constructor/constant-index/qualified-array-write/workspace/widened-bitwise
+gaps remain. Scalar register rejection is now a proper category diagnostic, not
+evidence against supported SIMD registers; Meow remains unfinished pending a valid
+probe and implementation. Continue protected MPEG audio and remaining modules.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the
