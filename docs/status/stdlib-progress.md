@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `8c1e0fc`, MPEG Layer II audio reconstruction. Earlier
+Latest committed checkpoint: `31c870a`, MPEG program-stream integration. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -113,7 +113,7 @@ current independent sources with --locked, private target. Full regression passe
 and prior SMTP/IPC/startup/parent/target checks. All 248 owned Jai files pass
 jaifmt --check and jailint -D warnings. Continue demux/Plm.
 
-Current verified increment: MPEG-1 program-stream parsing and canonical Plm/Packet
+Previously verified increment: MPEG-1 program-stream parsing and canonical Plm/Packet
 lifecycle, callbacks, enable/loop flags and real linear seeks. Full clip decodes
 ten video/sixteen audio frames without extracted payloads. Bytewise append input,
 borrowed buffer/file ownership and 240-frame file refills pass in both modes;
@@ -125,6 +125,15 @@ rechecked independently. Existing own MPEG regression passes interpreter/native.
 All 252 owned Jai files pass jaifmt --check and jailint -D warnings.
 Seeking/count/resume policies and bounded buffering require review; MPEG-2,
 unbounded PES, CRC/format changes, macros and compiler constant gaps remain.
+
+Current verified increment: original intra-coded B-order and nonconstant horizontal
+AC fixtures; fixed EOF loss of the pending reference following trailing B output.
+The retained test now yields luma 80/120/160 in display order, with correct times
+and rewind. No-delay B input rejects; real I/P frames pass no-delay mode. Full
+regression passes 76 interpreter/native cases, 19 faults in both modes, six
+compile-time rejections and prior integration/target checks. All 254 owned Jai
+files pass jaifmt --check and jailint -D warnings. Inter-predicted B, stereo, CRC,
+format transitions and unresolved public contracts remain; continue these.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the

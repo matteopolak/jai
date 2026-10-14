@@ -57,6 +57,11 @@ cleared on writes; non-file total_size/resume policy remains unresolved. Bytewis
 input, 240-frame refills, borrowed ownership and loop/callback cases pass, with
 zero tracked allocations. Remaining B/AC/stereo/macro/CRC/compiler gaps are explicit.
 
+Original intra-coded B and horizontal AC fixtures now supplement the red I/P clip;
+broader inter-predicted B and coefficient cases remain unverified. The B EOF case
+fixed a genuine dropped reference without weakening frame-count assertions.
+No-delay mode rejects B input explicitly, and the real I/P clip passes that mode.
+
 Further contract details and risks: [portable gaps](../portable-stdlib-gaps.md),
 [Socket ABI ledger](../socket-native-ledger.json),
 [SMTP choices](../portable-mail.md), [crash backend](../portable-crash-handler.md).

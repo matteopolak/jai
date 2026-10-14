@@ -4,7 +4,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 
 - [Features](features.md): what works, performance and what is missing
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
-- [Portable MPEG](portable-mpeg.md): MPEG-1 program streams, video/Layer II audio and remaining compatibility gaps
+- [Portable MPEG](portable-mpeg.md): MPEG-1 streams/video/audio, independent B/AC fixtures and remaining compatibility gaps
 
 ## Language
 

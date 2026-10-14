@@ -38,8 +38,10 @@ motion vectors, half-pixel compensation, entropy decoding, dequantization, slice
 I/P/B reconstruction and delayed reference-frame ordering are implemented.
 Coverage includes independent constant intra blocks and all ten red I/P frames
 from the authorized synthetic fixture's elementary payload, twice with rewind.
-Forward/backward prediction is tested directly; complete B-picture streams and
-nonconstant AC reconstruction still need additional integration fixtures. The
+Forward/backward prediction is tested directly. Original generated elementary
+fixtures now cover intra-coded B-picture ordering and nonconstant horizontal AC
+reconstruction. Inter-predicted B streams and broader coefficient cases remain
+additional integration scope. The
 tested fixture extraction is explicit test setup, not program-stream demux.
 Truncated fields, bad runs/addresses and incomplete pictures assert. Legitimate
 final slices with fewer than 23 remaining bits use bounded lookahead, so their
@@ -57,6 +59,10 @@ coverage checks reject missing and overlapping slice regions; reaching the final
 macroblock address alone does not establish a completely decoded frame. That
 check adds a temporary allocation and linear pass per picture. Missing reference
 pictures are rejected instead of predicting from initialized placeholder storage.
+The B fixture retained its third-frame assertion and exposed a dropped final
+reference after a trailing B picture. EOF now flushes the pending reference
+regardless of the last coded picture type. No-delay mode rejects B pictures rather
+than returning stale reference content; I/P no-delay decoding is tested.
 
 Layer II audio lifecycle, sync/header parsing, quantizer allocation, grouped/direct
 sample reconstruction, scalefactors, synthesis and interleaved output are implemented

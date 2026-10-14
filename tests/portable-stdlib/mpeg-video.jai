@@ -73,7 +73,11 @@ main :: () {
         }
 
         assert(count == 10 && video.frames_decoded == 10);
-        if round == 0 M.video_rewind(video);
+
+        if round == 0 {
+            M.video_rewind(video);
+            M.video_set_no_delay(video, true);
+        }
     }
 
     M.video_destroy(video);

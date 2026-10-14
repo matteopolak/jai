@@ -194,3 +194,9 @@ bytewise pending headers, larger-than-capacity file refill, borrowed handles,
 loop/tick callbacks, tracked cleanup and linear seek behavior. Preserve retained
 assertions for truncated PES/timestamps and signaled ring compaction. Document
 linear seeks/system-header bounds/buffering and all unsupported formats precisely.
+
+Original MPEG fixture increment: derive valid bitstreams from reviewed VLC data,
+not an encoder/reference binary. Exercise intra-coded B display ordering and a
+nonconstant AC block, preserving all frame/pixel/timing assertions. Fix EOF pending
+reference flush and reject B pictures under the no-delay assumption. Keep direct
+motion tests and expand into nonzero stereo/joint-stereo and CRC coverage next.
