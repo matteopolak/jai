@@ -38,6 +38,18 @@ supersedes its one ordinary warning, not the incomplete-compilation failures.
 
 ## Production boundary correction and fifth refresh
 
+The final numeric failure review caught an incomplete Windows font integration:
+`loaded-fonts.jai` allowed Windows filename loading, but Simp's File import was
+still Unix-only. Both guards now agree, with real File operations preserved.
+The original editor all-code failure is retained; x64/arm64 editor and public
+font all-code regressions now pass. The window runner adds these checks, rather
+than relying on its earlier reachable-code-only source checks. One first runner
+attempt selected the loaded font test fragment directly and failed its missing
+imports; it is corrected to the existing complete font-public wrapper, with the
+failure retained. Complete scoped lint and formatting pass; actual native
+Windows FreeType/font execution is still required. No fixture module replaced
+File/Simp/Input or native metrics/texture storage.
+
 Filtered coordinator CI feedback for candidate 159ca65 records real Windows
 x64/arm64 File interpreter/native O0/O2 and signed-wheel interpreter/native
 passes. The overall Windows workflow failed; Process/Thread/System/crash and

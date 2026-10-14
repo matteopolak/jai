@@ -93,6 +93,9 @@ def main():
             for name in cases:
                 run([compiler, ROOT / f"tests/window-render/{name}.jai", "-check", "-os", os_name,
                      "-cpu", cpu, "-I", args.stdlib])
+            if os_name == "windows":
+                run([compiler, ROOT / "tests/window-render/font-public.jai", "-check", "-no_dce",
+                     "-os", os_name, "-cpu", cpu, "-I", args.stdlib])
     for case, member in [("private-helper-negative", "pack_bitmap"), ("private-atlas-negative", "atlas_create_page")]:
         visibility = subprocess.run([str(compiler), str(ROOT / f"tests/window-render/{case}.jai"),
                                      "-check", "-os", "linux", "-I", str(args.stdlib)],
