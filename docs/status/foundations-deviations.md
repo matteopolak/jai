@@ -4,6 +4,18 @@ Review scope: owned Basic builder/formatter, String utilities, scalar Hash,
 File_Utilities, focused tests and unchanged repository jaifmt integration.
 This is a deviations inventory, not a claim of completed production integration.
 
+- **Alias completion documentation** — the unchanged NEW LSP auto-import suite
+  passes logging ranking and 11 other tests but retains one failure: print's
+  documentation shows its facade alias instead of resolved callable signatures.
+  See foundations-lsp-request.md and original pending alias-signature modules.
+  Proper fix is general LSP alias/overload resolution; no facade wrapper, test
+  weakening or special-case was added. The initial local ranking failure had
+  missing NEW Math and stale producer LSP inputs, now refreshed read-only.
+- **Resolved cross-target dependency** — safe producer POSIX/Windows bindings
+  refresh resolves both recorded macOS x64 declaration errors. The full 30-case
+  run passes all seven unused-code targets. Historical failure evidence below
+  is retained; Windows runtime execution is still pending on a Windows host.
+
 - **Logging policy review** — `internal/basic/logging.jai` now implements all
   four reviewed signatures and real contextual dispatch. The synchronized
   reviewed page lists declarations and contextual types but does not specify

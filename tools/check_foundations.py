@@ -32,6 +32,9 @@ def owned_sources():
     paths.extend((ROOT / "tests/portable-stdlib/negative").glob("format-*.jai"))
     paths.append(ROOT / "tests/portable-stdlib/negative/builder-ensured-range.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/context-overload-probe.jai")
+    paths.append(ROOT / "tests/portable-stdlib/pending/alias-signature-probe.jai")
+    paths.append(ROOT / "tests/portable-stdlib/pending/alias-signature-facade/module.jai")
+    paths.append(ROOT / "tests/portable-stdlib/pending/alias-signature-helper/module.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/interface-parameter-module/module.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/no-parameter-module/module.jai")
     paths.append(ROOT / "tests/portable-stdlib/support/test-heap.jai")
@@ -119,6 +122,9 @@ def main():
     print("passed unsupported-hash and facade-visibility rejection checks", flush=True)
     run([compiler,"-check",ROOT / "tests/portable-stdlib/pending/context-overload-probe.jai"])
     print("passed general context/overload compiler regression", flush=True)
+    run([compiler, "-interp", "-I", ROOT / "tests/portable-stdlib/pending",
+         ROOT / "tests/portable-stdlib/pending/alias-signature-probe.jai"], "ok\n")
+    print("passed general public alias overload/default execution regression", flush=True)
 
     for name, diagnostic in (("format-int-kind", "FormatInt requires an integer value"),
                              ("format-float-kind", "FormatFloat requires an IEEE float32 or float64 value"),

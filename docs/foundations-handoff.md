@@ -4,6 +4,24 @@ This work owns Basic builder/formatting, String utilities, Hash scalars and
 File_Utilities. Inherited spec, argument/runtime and Command_Line edits are
 retained in the worktree and excluded from foundations commits.
 
+Latest stable checkpoint: 9a64f00. The 30-case host/24-case WASI suite, real
+jaifmt CLI/owned check, strict lint and all seven unused-code targets pass.
+Safe producer bindings resolve the earlier recorded macOS x64 failures.
+The actual unchanged NEW LSP logging ranking test passes with NEW numerics Math;
+the complete auto-import file retains one distinct alias signature documentation
+failure (12/13). The original general reproducer and ownership request are in
+status/foundations-lsp-request.md. Full corpus/CI remain coordinator checks.
+
+After refreshing NEW compiler sources, rebuilt jaic/jailint and real jaifmt and
+repeated the full 30 host/24 WASI/seven-target suite successfully. The exact
+2300 normal IEEE power-of-two interval/minimality audit also passes in native
+O0/O2 and WASI O0/O2. Commands:
+
+```sh
+python3 tools/check_foundations.py --jaic target/peer-compiler/debug/jaic --stdlib target/foundation-integration/stdlib --jaifmt target/jaifmt --jailint target/peer-compiler/debug/jailint --wasm --cross
+python3 tools/check_float_power_sweep.py --jaic target/peer-compiler/debug/jaic --stdlib target/foundation-integration/stdlib --wasm
+```
+
 Implemented progress:
 
 - Both reviewed log and log_error overload families use shared private
