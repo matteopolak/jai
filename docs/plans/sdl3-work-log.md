@@ -37,3 +37,5 @@ Final post-review validation (2026-10-14):
 - The unaltered upstream LICENSE.txt intentionally retains its original whitespace. No source/license text was rewritten to silence a whitespace checker.
 
 Review was inline, as explicitly required by the no-subagents constraint. Remaining evidence is CI-pending as listed above; no cross-platform native result is claimed from the type checks. No assertions were skipped and no error was suppressed to obtain passing results.
+
+Integrated package-path verification also passed: `tools/build_native_libs.py SDL3 --platform macos-arm64 --out artifacts/sdl3/package/artifacts/native-libs/macos-arm64`, followed by `tools/test_sdl3.py` against that output with a separate `--work artifacts/sdl3/package-smoke` directory. The pipeline built both linkage modes, copied every native artifact/license and passed the 1,329-export/checksum audit and all linked Jai fixtures.
