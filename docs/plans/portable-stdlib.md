@@ -94,3 +94,9 @@ using real malloc/realloc/free and its capability/lifecycle contract. Preserve
 fallback parameter names and export only allocator_proc/unsafe_reset. Reject the
 optimized X64/Switch branch explicitly until its heap API is implemented. Test
 successful resize, real oversized failure preservation, free and capabilities.
+
+Memory visualization protocol increment: define reviewed packet schemas in a
+private debug subsystem with explicit facade aliases. Preserve every field and
+tag value/order, canonical String_Index metadata and native pointer widths.
+Validate packet size/offsets independently of any client or transport. Withhold
+the comparator until the spec settles equality versus ordering semantics.

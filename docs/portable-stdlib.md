@@ -156,7 +156,7 @@ python3 -B tools/check_portable_stdlib.py \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 55 cases in interpreter/native modes, plus bootstrap
+The current run passes 56 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
@@ -335,3 +335,12 @@ heap behavior remains explicitly unsupported; its failed target check is not
 reported as fallback success or skipped completed functionality.
 The expanded 55-case regression passes in interpreter/native modes, and all
 155 owned Jai files pass source-built jaifmt --check and jailint -D warnings.
+
+Protocol_For_Memory_Visualization defines the version-2 packet records, tags and
+compatibility constants with exact field order/types and canonical String_Index
+metadata. Interpreter/native tests verify packet sizes, selected field offsets,
+using/base identity, immutable constants and reflected type name. The comparator
+is withheld because its signature alone does not settle equality versus ordering;
+no transport or visualizer client implementation is implied by these schemas.
+The current 56-case interpreter/native regression passes, and all 158 owned Jai
+files pass source-built jaifmt --check and jailint -D warnings.
