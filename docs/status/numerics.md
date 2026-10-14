@@ -21,7 +21,24 @@ top-cut conventions, hash wraparound, drawing callbacks, button presses and
 stale-widget deactivation. This is isolated mechanism coverage; canonical peer
 Input/Window_Type/Hash_Table integration is still pending.
 
-Pending: broader numeric oracles, portable-target checks, Color sampling tests,
-color editor/subwindow implementation and integration, declaration audit,
-and final status review. Scalar elementary functions are independently designed
-portable algorithms; no host frexp, ldexp, or cbrt imports are required.
+Color picker/editor state, gradients, interpolation sampling, subwindow callback
+submission, popups, resizing and local clipboard serialization are implemented.
+The headless UI smoke test exercises these using caller drawing/text callbacks.
+The independent Python math/struct oracle supplies 2,415 assertions; interpreter
+and native O2 passed. Core, extended numerics, and UI smoke tests ran successfully
+as actual wasm64 WASI programs under Node 24. Linux and Windows UI type checks
+with unused code included also passed with dependency fixtures.
+
+Scalar elementary functions are independently designed portable algorithms; no
+host frexp, ldexp, or cbrt imports are required. UI float parsing uses a private
+portable decimal parser rather than the foundation's currently unavailable WASM
+strtod binding.
+
+The ignored integration copy removes the foundation's invalid standalone
+`Basic.Buffer` alias (the reviewed type is nested under String_Builder). Neither
+the peer checkout nor this worker's owned production sources were changed for
+that integration correction. With it, full unused-code checking reaches Math
+and both UI modules.
+
+Pending: more IEEE/extreme numeric cases, declaration/parameter review, complete
+native O0/O2 and target matrix reruns, and final honest gap classification.

@@ -61,9 +61,9 @@ for n in [2,3,4]:
                 f'unit_vector :: (v: {T}) -> {T} {{ return normalize(v); }}']
     ops.append(f'distance :: (a: {T}, b: {T}) -> float {{ return length(a-b); }}')
 ops += ['dot :: dot_product;', 'rgb :: xyz;', 'rgba :: xyzw;',
-        'MyVectors :: #type,isa Type;',
-        'normalize :: (v: *$T, epsilon := 0.0, fallback := T.{}) -> float { n := length(v.*); if n <= epsilon v.* = fallback; else { for *x: v.component x.* /= n; } return n; }',
-        'normalize :: (v: $T, epsilon := 0.0, fallback := T.{}) -> T { r := v; normalize(*r, epsilon, fallback); return r; }',
+        'MyVectors :: .[Vector2,Vector3,Vector4,Quaternion];',
+        'normalize :: (v: *$T/MyVectors, epsilon := 0.0, fallback := T.{}) -> float { n := length(v.*); if n <= epsilon v.* = fallback; else { for *x: v.component x.* /= n; } return n; }',
+        'normalize :: (v: $T/MyVectors, epsilon := 0.0, fallback := T.{}) -> T { r := v; normalize(*r, epsilon, fallback); return r; }',
         'make_vector3 :: (c: [3]float) -> Vector3 { return .{c[0],c[1],c[2]}; }',
         'make_vector3 :: (using v: Vector2, z: float) -> Vector3 { return .{x,y,z}; }',
         'xyz :: (c: [3]float) -> Vector3 { return make_vector3(c); }',
@@ -76,7 +76,7 @@ ops += ['dot :: dot_product;', 'rgb :: xyz;', 'rgba :: xyzw;',
         'cross_product :: (a: Vector3, b: Vector3) -> Vector3 { return .{a.y*b.z-a.z*b.y,a.z*b.x-a.x*b.z,a.x*b.y-a.y*b.x}; }',
         'rotate :: (v: Vector2, theta: float) -> Vector2 { c := cos(theta); s := sin(theta); return .{c*v.x-s*v.y,s*v.x+c*v.y}; }',
         'rotate :: (v: *Vector2, theta: float) { v.* = rotate(v.*,theta); }']
-write('math_vectors.jai','\n'.join(ops)+'\n')
+write('math_vectors.jai','\n'.join(ops)+'\n#scope_file\n#import "Basic";\n')
 
 def facade(module,spec,impl):
     text=(ROOT/'docs/specs/stdlib/modules'/spec).read_text().split('## Public type members')[0].split('## Behavioral')[0]
