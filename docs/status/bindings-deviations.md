@@ -8,6 +8,89 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **iOS helper availability and private host testing.** All three facade
+  helpers now obey reviewed iOS-only availability. The old host fixture was
+  an invalid target expectation; its public assertions remain active under
+  required iOS source checks, which fail on the compiler's unsupported OS.
+  An unchanged private unit is placed inside the staged library boundary to
+  test the real native shared implementation, without weakening private import
+  checks or exporting a test backdoor. Native SDK lookups/cache identity and
+  growing-buffer/read-error/process-status behavior are checked independently.
+  See [toolchain details](../native/apple-toolchain.md) for process-lifetime
+  allocations, failed-log abort policy and unsynchronized cache first use.
+  Proper long-term fix: general compiler iOS support and reviewed concurrent
+  cache policy followed by real target verification. A private host pass is
+  not a public iOS execution pass.
+- **NEW File staging and Windows renderer blocker.** Staging now overlays only
+  the platform-io owner's File facade, File implementation, Unix/Windows native
+  files and windows-text dependency, preserving foundations' File_Utilities
+  internals. This removes the stale Unix-only File guard from Windows tests.
+  The actual Windows renderer/event test now fails on a general fixed-array
+  type-literal issue in NEW producer Unicode. A minimal independent example
+  reproduces it; see [compiler blocker](../native/compiler-fixed-array-literal.md).
+  Neither producer source nor local compiler was patched to hide the failure.
+
+- **Android EGL constructor, unverified target.** The new real native route
+  chooses an ES2 RGBA8/depth24 window config, halves requested MSAA toward zero,
+  initializes EGL, creates context/surface and makes it current. Those default
+  profile/format priorities are independent policy; the reviewed interface
+  specifies no version parameter or ranking. Native failure returns the partial
+  `EGL_Info`, retaining any failed-cleanup handles. Display initialization is
+  shared: failure does not call eglTerminate and disrupt another EGL client;
+  caller lifetime management remains necessary. Binding the ES API is a thread
+  side effect even on later failure. `egl_create_surface` uses the official NDK
+  private geometry prototype, preserving the public camera-context alias/enum.
+  The ordinary compiler rejects Android targets, so neither type checking nor
+  device execution is claimed. The device exercise requires a real native
+  window; its invalid-input main alone is not native constructor evidence.
+  Proper long-term fix: reviewed default/failure ownership policy and general
+  compiler Android support, followed by real device/API/ABI tests. No target
+  constant overrides or native SDK mock are used to manufacture a pass.
+
+- **SDL RWops adapters (active implementation).** `SDL/wrappers.jai` now uses
+  complete private desktop `sdl-native.RWops` storage and typed C callbacks for
+  BMP decoding. `SDL_RWFromFile` allocates a public-prefix wrapper with native
+  ownership kept after that prefix; public callbacks independently forward file
+  operations with count/origin/result range checks. No native C code receives
+  the public 48-byte record. Observable tradeoff: each file handle has a small
+  extra wrapper allocation and each callback has an extra forwarding call.
+  A private live-handle registry guarded by real SDL atomics prevents copied
+  public callbacks from reading private storage past a copied record. Copies
+  are rejected with a real SDL error, preserving the original live stream.
+  Lookup is linear in live file handles; a private hash map is the proper
+  performance refinement if high handle counts matter. Closing a handle while
+  another thread uses that same handle remains outside the native file API's
+  lifetime contract; different-handle registry access is synchronized.
+  The original public native entry point is a C function with no hidden Jai
+  context, while public RWops callbacks require one. The adapter deliberately
+  supplies a default `#Context` to those callbacks; a caller's pushed context
+  cannot cross that C ABI. This policy is explicit in the regression and remains
+  a contract question, not claimed reference context behavior. Proper long-term
+  solution: reviewed context/ownership semantics or an explicit context-bearing
+  supported interface, without changing the existing API. Native sizes/offsets,
+  custom streams/canaries, real BMP decoding, file read/write/close and copied
+  callback rejection tests pass on the host. Public RWops/UserEvent mismatch
+  tests remain active failures.
+- **X11 helper policy and native evidence.** The independently authored simple
+  window helper creates an unmapped borderless Xlib window at (0,0), using the
+  parent's screen pixels; parent 0 selects the default root. It sets both the
+  legacy name and explicit-length UTF-8 EWMH name. The attention helper sends
+  the EWMH ADD request to that window's actual screen root; it does not pretend
+  the window manager acknowledged the asynchronous hint. Invalid attention
+  handles / failed native request allocation abort; normal server errors keep
+  the existing handler. Linux source checks pass; a real X server runtime test
+  is supplied but unavailable on this host. Exact toolkit decoration/map policy
+  is unspecified; proper follow-up is reviewed policy plus Linux native CI.
+  Text panels/buttons use independently chosen black/white styling and the
+  server's default core font. Text panels wrap byte characters and newlines,
+  clip to the requested rectangle, and measure each character once; they do
+  not promise Unicode shaping absent a reviewed font/text contract. Buttons
+  invert foreground/background when pressed and center the label. Their GC
+  and queried font information are independently owned/freed, so the default
+  GC is unchanged. Unrepresentable X11 16-bit clip coordinates/dimensions abort.
+  The X-server test now draws both states and reads native pixels; execution
+  still requires Linux/X11 and is not counted as a host pass.
+
 - **2026-10-14 update: formatter dependency resolved.** Refreshing the safe
   producer compiler incorporates its general scratch-context initializer fix.
   The actual formatter now builds unpatched against current NEW foundations;
@@ -146,14 +229,17 @@ correctness. Previously recorded failures remain required work.
   the tested 64-bit host. Public fields remain exact. The active
   `tests/native-bindings/sdl-layout.jai` intentionally reports the actual
   mismatch and fails; it has not been disabled or changed to accept it.
-  SDL-owned RWops pointers have native storage and can be passed back to SDL.
-  Caller-allocated public RWops must not be passed as native records. Whole
+  Native storage now remains behind public callback wrappers; BMP calls marshal
+  both native-file and caller-owned public streams through complete private
+  C records. Public records are never passed as native RWops. Whole
   SDL_Event storage is native sized; tests retain native user-event payload
   bytes through its padding. Risks: caller allocation and callback calling
   conventions cannot be made safe by a cast. Proper fix: private complete
   native storage and explicit callback marshalling where the public contract
-  permits it, with diagnostics for unrepresentable operations. No native
-  undersized-object adapter has yet been claimed implemented.
+  permits it, with diagnostics for unrepresentable operations. The current
+  adapter passes real custom-stream and file-stream tests; default-context
+  policy and copied-record restrictions are documented above. The public
+  shape mismatch itself remains intentionally visible in the original probe.
 - **Other provisional SDK layouts.** D3D anonymous overlays, ray-instance
   packed fields, ImFontGlyph and some Darwin packed records have public shapes
   that are incomplete or conflict with native layouts. Bitfield helpers
@@ -164,14 +250,13 @@ correctness. Previously recorded failures remain required work.
   passed directly. Proper fix: resolve general compiler semantics, compare
   complete pinned native layouts, and marshal incompatible public records;
   never reorder public fields to make a probe pass.
-- **POSIX configuration shapes.** Current reviewed macOS x64 ipc_perm and
-  itimerval are emitted, including newly supplied Android x64 itimerval.
-  Remaining missing shapes are reported individually. The generator deliberately
-  does not assume architecture independence. Evidence:
-  `.work/current-foundations-retry.json`. Risk: incomplete x64 module checks.
-  Proper fix: reviewed missing shape contracts (including remaining ledger
-  entries), then regenerate and run native size/offset probes. No guessed
-  public layout is counted as implemented.
+- **POSIX configuration shapes, corrected.** The distinct-shape association
+  repair emits all macOS x64 reviewed aggregates/enums. Both macOS CPUs now
+  execute source-built C/Jai size/offset/getitimer and ordinary POSIX runtime
+  tests successfully (`.work/posix-sdk-both-cpus.json`); x64 uses OS translation
+  on this ARM64 host. Eight Android declarations still lack a same-OS shape.
+  No cross-OS layout is guessed. Earlier missing-x64-shape assumptions and
+  failure reports are historical; they are not current blockers.
 - **Native dependencies.** `.work/native` contains actual source-built pinned
   libraries, plus documented installed Apple/FreeType/Curl/SDL runtimes. These
   are development inputs, not release packaging. NVTT member declarations
@@ -303,10 +388,16 @@ correctness. Previously recorded failures remain required work.
   callers must not chain it. Runtime object lifetimes remain caller-owned.
   Proper fix: target-complete native method ABI tests and checked selector
   mappings, without substituting private helpers as public exports.
-- **iOS host utilities.** Real xcrun SDK discovery is implemented; public
-  target guards currently hide get_ios_target_triple on macOS despite host
-  tooling use. Existing failing host fixture remains recorded. Proper fix:
-  resolve the reviewed guard contract and test both host tools/mobile targets.
+- **iOS host utilities, corrected.** The reviewed target guard applies to all
+  three exports. The former host public invocation was invalid; native host
+  behavior is now tested through a clearly labeled private implementation unit.
+  The unchanged public fixture remains checked on both required iOS CPUs.
+- **Intermediate matrix snapshot.** `.work/current-owned-full.json` staged
+  source before X11 UI bodies were added while its source-regression fixture
+  was subsequently updated. Its two missing-UI source failures are retained
+  as an incoherent intermediate snapshot; do not treat that report as final
+  current-tree verification. Fresh scoped checks pass both Linux CPUs. Proper
+  workflow is freeze code/fixtures before a fresh complete verification run.
 - **Mobile checks.** Current compiler CLI rejects Android/iOS targets in
   configuration tests. Rejection is recorded as failure, not unsupported
   success. Proper fix belongs to the compiler worker: general target support

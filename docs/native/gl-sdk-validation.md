@@ -1,4 +1,15 @@
-# GL native SDK validation and integration blockers
+# GL native SDK validation
+
+2026-10-14 current producer refresh: both general compiler repairs described
+below are integrated in safe producer sources. The ordinary source-built
+compiler now passes procedure reflection and the real native shader test.
+`.work/gl-sdk-production-current.json` records C oracle compile/archive,
+reflection native/interpreter and real CGL/GL execution passes, without compiler
+proposals or peer staging repairs. Its one remaining non-pass is the driver's
+unavailable core/KHR/ARB debug-output route, confirmed by native extension
+enumeration. This is worker SDK evidence, not full coordinator integration.
+
+## Historical proposal validation
 
 The real macOS SDK program creates a CGL context, loads the native procedure
 table, compiles and links two shaders, reads active attribute/uniform names and

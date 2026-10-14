@@ -1,0 +1,8 @@
+{
+  "scope": "Official native C EGL header; Android constructor source remains unverified on unsupported compiler target",
+  "egl_header": {
+    "url": "https://registry.khronos.org/EGL/api/EGL/egl.h",
+    "sha256": "a7c24c828bf2e1a4dfe6511b4f4812b948a285eb54787074015896976d4da076"
+  },
+  "native_window_documentation": "https://developer.android.com/ndk/reference/group/a-native-window"
+}

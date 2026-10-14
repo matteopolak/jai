@@ -462,7 +462,7 @@ def main():
         else:
             entry.write_text(entry_code)
     path = ROOT / 'docs/native/bindings-coverage.json'
-    serialized = json.dumps({'format': 1, 'note': 'Declared is not ABI or runtime verified. Unresolved entries are not implemented.', 'modules': all_ledger}, indent=2) + '\n'
+    serialized = json.dumps({'format': 1, 'note': 'Statuses describe source dispositions, not native verification. Manual bodies may remain unverified on unavailable targets. Unresolved entries are not implemented.', 'modules': all_ledger}, indent=2) + '\n'
     if args.check:
         if not path.exists() or path.read_text() != serialized:
             stale.append(str(path.relative_to(ROOT)))

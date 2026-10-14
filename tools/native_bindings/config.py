@@ -17,6 +17,8 @@ IMPORTS = {
 # signatures are still matched in full, including argument names and defaults.
 NATIVE_ABI_ADAPTERS = {
     ('SDL', 'SDL_GetWindowWMInfo'): 'SDL_GetWindowWMInfo',
+    ('SDL', 'SDL_RWFromFile'): 'SDL_RWFromFile',
+    ('SDL', 'SDL_LoadBMP_RW'): 'SDL_LoadBMP_RW',
 }
 LIBRARIES = {
     'glx': 'GLX', 'libX11': 'X11',

@@ -1,10 +1,10 @@
 {
-  "scope": "Incomplete bindings-worker progress; broad canonical failures, trial compiler proof and actual current-source tool checks are explicitly separate. Not coordinator integration/release verification.",
+  "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
-    "declared": 28332,
-    "unresolved": 193,
-    "implemented_manual": 36,
-    "implemented": 548,
+    "declared": 28389,
+    "unresolved": 128,
+    "implemented_manual": 45,
+    "implemented": 547,
     "forwarded": 1262,
     "duplicate": 1
   },
@@ -157,5 +157,131 @@
     "General scratch context-slot initialization"
   ],
   "native_debug_driver": "Unavailable; not passed",
-  "new_native_constructors": "Real NSOpenGL core/legacy context creation, MSAA reporting and hidden Cocoa view attachment pass with canonical compiler."
+  "new_native_constructors": "Real NSOpenGL core/legacy context creation, MSAA reporting and hidden Cocoa view attachment pass with canonical compiler.",
+  "current_checkpoint_reports": [
+    {
+      "report": ".work/posix-sdk-both-cpus.json",
+      "sha256": "9425ec5de7b938fdfc5e46fd9f2f24b7d37633d531b231edff329600bb092c0a",
+      "compiler_sha256": "1cf63b50f2c750711d01dab0de2844aa014b087014c2d34ce4143c345787d78c",
+      "scope": "Worker native macOS CPU ABI/runtime tests; not coordinator integration",
+      "results": {
+        "checks": {
+          "passed": 12
+        }
+      }
+    },
+    {
+      "report": ".work/sdl-rwops-native-final.json",
+      "sha256": "c7cb925f22839d742578ed60dc633f148e296838471f6e1a5d0cea642b91ae10",
+      "checks": 2,
+      "failures": 0
+    },
+    {
+      "report": ".work/ios-sdk-paths-current.json",
+      "sha256": "d03b3ba21f4d84405dd5f89e60b62a210108c3be963b696f1bde646429dc0141",
+      "compiler_sha256": "1cf63b50f2c750711d01dab0de2844aa014b087014c2d34ce4143c345787d78c",
+      "scope": null,
+      "results": {
+        "targets": {
+          "passed": 12,
+          "failed": 2
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 2
+        },
+        "privacy": {
+          "passed": 18
+        },
+        "symbols": {}
+      }
+    },
+    {
+      "report": ".work/adapter-privacy-current.json",
+      "sha256": "e8f1d28ee48d5a97fb085e8fbdc55a5430793d946cef25e1ef11ebfb7b8c065c",
+      "compiler_sha256": "1cf63b50f2c750711d01dab0de2844aa014b087014c2d34ce4143c345787d78c",
+      "scope": null,
+      "results": {
+        "targets": {},
+        "native": {},
+        "privacy": {
+          "passed": 32,
+          "unsupported": 4
+        },
+        "symbols": {}
+      }
+    },
+    {
+      "report": ".work/checkpoint-2-production-tools.json",
+      "sha256": "08291f19df668627a30ce66f1064c9357b1c2dcec2b344fa0d93f0e2119fe699",
+      "checks": 40,
+      "failures": 0
+    },
+    {
+      "report": ".work/checkpoint-2-final-changed-scope.json",
+      "sha256": "27e447ab9c1dc58cbc732d7c2778748f1c22988116096597191f6fe52db856b6",
+      "checks": 4,
+      "failures": 0
+    },
+    {
+      "report": ".work/windows-render-current.json",
+      "sha256": "e6dd26ac077f0b6aa8de6ec4868b4931e1d1c7fcb511e279724155cab2eaa07a",
+      "compiler_sha256": null,
+      "scope": "Unmodified NEW window-render test with owned bindings and NEW producer File backend",
+      "results": {
+        "checks": {
+          "failed": 2
+        }
+      }
+    },
+    {
+      "report": ".work/gl-sdk-production-current.json",
+      "sha256": "fe3b0a6ce547ed7dfdc56eddbeae447d3062be9d4a4dea3a92a026bda8399dcd",
+      "compiler_sha256": "1cf63b50f2c750711d01dab0de2844aa014b087014c2d34ce4143c345787d78c",
+      "scope": "Worker SDK verification, not coordinator integration; unmodified current NEW peer staging",
+      "results": {
+        "checks": {
+          "passed": 7,
+          "unavailable": 1
+        }
+      }
+    },
+    {
+      "report": ".work/current-configurations-after-posix-wgl.json",
+      "sha256": "f66754acf447ed07788b0ee9e4f22f195280bb7b219ceb1f513b2d05dd4df62e",
+      "compiler_sha256": "1cf63b50f2c750711d01dab0de2844aa014b087014c2d34ce4143c345787d78c",
+      "scope": null,
+      "results": {
+        "checks": {
+          "passed": 20,
+          "failed": 58
+        }
+      }
+    },
+    {
+      "report": ".work/current-owned-full.json",
+      "sha256": "11670bf0015ef2023ee1ed528eb3ec439f8bf9d88113b638ea547f26ce2f8a78",
+      "compiler_sha256": "1cf63b50f2c750711d01dab0de2844aa014b087014c2d34ce4143c345787d78c",
+      "scope": "INTERMEDIATE snapshot before final X11 UI/iOS availability fixes; two source fixture checks straddled source staging. Preserve evidence, require fresh stable rerun.",
+      "results": {
+        "targets": {
+          "unsupported": 70,
+          "passed": 238,
+          "failed": 36
+        },
+        "native": {
+          "passed": 45,
+          "failed": 2
+        },
+        "privacy": {
+          "passed": 78,
+          "unsupported": 28,
+          "failed": 2
+        },
+        "symbols": {
+          "passed": 1200
+        }
+      }
+    }
+  ]
 }

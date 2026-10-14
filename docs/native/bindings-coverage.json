@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "note": "Declared is not ABI or runtime verified. Unresolved entries are not implemented.",
+  "note": "Statuses describe source dispositions, not native verification. Manual bodies may remain unverified on unavailable targets. Unresolved entries are not implemented.",
   "modules": {
     "Android": {
       "spec": "docs/specs/stdlib/modules/android.md",
@@ -7267,8 +7267,7 @@
       "spec_sha256": "7a1acba6aca794bb0aa3ee01fcd9d1901a23ae3a66b1966384b7f3c66338e26e",
       "counts": {
         "declared": 236,
-        "unresolved": 1,
-        "implemented_manual": 4
+        "implemented_manual": 5
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -8930,8 +8929,8 @@
           "signature": "egl_create_context :: (window: *ANativeWindow, wanted_msaa: s32 = 0) -> EGL_Info, chosen_msaa: s32",
           "condition": "",
           "spec_line": 243,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/EGL/wrappers.jai"
         },
         {
           "name": "egl_create_surface",
@@ -47625,7 +47624,7 @@
     },
     "GL": {
       "spec": "docs/specs/stdlib/modules/gl.md",
-      "spec_sha256": "c4ca5ccdc42205349d86a028a3a1c66ccfd4981e9a4c23a1d143949c76d0a1bd",
+      "spec_sha256": "c6aa400220ad08badf6616fbcd4ae2fa4a351ca21e838a670b9252570c1e2d22",
       "counts": {
         "implemented_manual": 22,
         "declared": 1591,
@@ -68353,8 +68352,7 @@
       "spec": "docs/specs/stdlib/modules/ios.md",
       "spec_sha256": "81fa83688dee1e64d2280901a39d4eed175280b0addc40d9c82bc28ee899485d",
       "counts": {
-        "implemented": 1,
-        "implemented_manual": 2
+        "implemented_manual": 3
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -68364,7 +68362,8 @@
           "signature": "get_ios_target_triple :: (cpu: CPU_Tag) -> string",
           "condition": "OS == .IOS",
           "spec_line": 9,
-          "status": "implemented"
+          "status": "implemented_manual",
+          "artifact": "stdlib/iOS/wrappers.jai"
         },
         {
           "name": "get_ios_sdk_path",
@@ -172353,11 +172352,11 @@
     },
     "SDL": {
       "spec": "docs/specs/stdlib/modules/sdl.md",
-      "spec_sha256": "09a12c2658b5a379c41af91fa98405523c33798343492130c3c4b85b605e32b1",
+      "spec_sha256": "6da7ac5449cc99a4714d4d5d58691978d4e8dcd8d3ade2ec27c745fab220f6da",
       "counts": {
-        "declared": 521,
+        "declared": 519,
         "implemented": 17,
-        "implemented_manual": 1
+        "implemented_manual": 3
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -173172,14 +173171,18 @@
           "signature": "SDL_RWFromFile :: (path: *u8, mode: *u8) -> *SDL_RWops #foreign SDL2",
           "condition": "",
           "spec_line": 132,
-          "status": "declared"
+          "status": "implemented_manual",
+          "artifact": "stdlib/SDL/wrappers.jai",
+          "native_abi_adapter": "SDL_RWFromFile"
         },
         {
           "name": "SDL_LoadBMP_RW",
           "signature": "SDL_LoadBMP_RW :: (src: *SDL_RWops, freesrc: int) -> *SDL_Surface #foreign SDL2",
           "condition": "",
           "spec_line": 133,
-          "status": "declared"
+          "status": "implemented_manual",
+          "artifact": "stdlib/SDL/wrappers.jai",
+          "native_abi_adapter": "SDL_LoadBMP_RW"
         },
         {
           "name": "SDL_FreeSurface",
@@ -211701,8 +211704,8 @@
       "spec_sha256": "4a08c1afb5c9b826afabe65ecca056abd03112b1c4f697afdf4f43a0b33c62bc",
       "counts": {
         "declared": 1248,
-        "unresolved": 9,
-        "implemented_manual": 5,
+        "unresolved": 5,
+        "implemented_manual": 9,
         "implemented": 7
       },
       "member_counts": {},
@@ -212039,8 +212042,8 @@
           "signature": "x_demand_attention :: (display: *Display, win: Window)",
           "condition": "",
           "spec_line": 54,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "x_selection_notify_predicate",
@@ -212063,8 +212066,8 @@
           "signature": "x_toolkit_create_simple_window :: (dpy: *Display, parent: Window, width: s32, height: s32, title: string) -> Window",
           "condition": "",
           "spec_line": 57,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "X_Message_Box_Response",
@@ -212093,8 +212096,8 @@
           "signature": "x_draw_textpanel :: (dpy: *Display, w: Window, x: s32, y: s32, width: s32, height: s32, msg: string)",
           "condition": "",
           "spec_line": 61,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "x_color_to_pixel",
@@ -212109,8 +212112,8 @@
           "signature": "x_draw_button :: (dpy: *Display, w: Window, x: s32, y: s32, width: u32, height: u32, pressed: bool, msg: string)",
           "condition": "",
           "spec_line": 63,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "x_draw_string",
