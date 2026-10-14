@@ -4,8 +4,10 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 
 - [Features](features.md): what works, performance and what is missing
 - [Window/render progress](status/window-render-progress.md): scoped native window,
-  input, Keymap, font-atlas/text, texture, depth/stencil and asynchronous readback evidence;
+  native input and keyboard layouts, Keymap, font-atlas/text, textures, depth/stencil and asynchronous readback evidence;
   [remaining deviations](status/window-render-deviations.md).
+- [Window/render clean-room incident](status/window-render-cleanroom-incident-2026-10-14.md):
+  reviewed metadata-only exposure, clearance and implementation resumption.
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 - [Portable MPEG](portable-mpeg.md): MPEG-1 program streams, video/Layer II audio and remaining compatibility gaps
 

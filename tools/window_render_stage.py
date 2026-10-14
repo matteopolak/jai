@@ -33,6 +33,21 @@ def main():
     # Later producers own their public modules and internal namespaces.
     for producer in ["stdlib", "foundations", "bindings", "numerics", "compiler"]:
         copy_modules(ROOT.parent / producer / "stdlib", destination)
+    # Only the platform-io producer's assigned dependencies override earlier
+    # snapshots. Do not overwrite its inherited Basic/Math/binding modules.
+    platform_io = ROOT.parent / "platform-io/stdlib"
+    for name in ["File", "Process"]:
+        target = destination / name
+        if target.exists():
+            shutil.rmtree(target)
+        shutil.copytree(platform_io / name, target)
+    for name in ["process", "platform-io"]:
+        target = destination / "internal" / name
+        if target.exists():
+            shutil.rmtree(target)
+        shutil.copytree(platform_io / "internal" / name, target)
+    for name in ["file.jai", "native-unix.jai", "native-windows.jai"]:
+        shutil.copy2(platform_io / "internal/files" / name, destination / "internal/files" / name)
     shutil.copytree(ROOT / "stdlib/Extensions", destination / "Extensions")
     for name in sorted(OWNED):
         target = destination / name

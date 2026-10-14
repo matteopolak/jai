@@ -1,5 +1,13 @@
 # Window/render worker handoff
 
+Resumed dependency/OEM batch:155 focused invocations pass with zero failures using
+fresh own compiler sources, latest NEW bindings and platform-io File/Process.
+Owned format/check/lint and generated native declarations pass. macOS x64 POSIX
+and Windows filename-font checks also pass separately. Native Windows runs for
+newer work remain pending. Compiler reflection is now integrated in the producer;
+tools/window_render_compiler.py builds it without the historical patch. The incident
+was cleared as authorized metadata-only integration feedback; no reimplementation.
+
 Latest durable checkpoints `b9e7115` and `31ded39` implement production public fonts/text/GL rendering,
 native window targets/lifecycle and asynchronous readback. Current expanded runner:
 147 passes/six Windows dependency failures (File and WGL). Format/check and warnings-denied lint passed on
