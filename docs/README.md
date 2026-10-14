@@ -99,6 +99,8 @@ The LLVM backend, C ABI and linking.
 Implementation work uses the API specification as its compatibility contract. Implementers do not read the source of a Jai distribution; specification review supplies public declarations and behavior through the documented clean-room workflow.
 
 - [Standard-library public-contract fixtures](../tests/stdlib-contract/README.md)
+- [Native binding implementation coverage](native/bindings-coverage.md)
+- [Native binding contract questions](specs/stdlib/native-bindings-questions.md)
 - [Jai language guide](specs/jai/README.md)
 
 ## Browser
