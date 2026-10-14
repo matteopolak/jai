@@ -13,7 +13,33 @@ preserving other producers' foundations/numerics/bindings. Filename font loading
 now uses canonical File on Windows as well as Unix. Fresh own compiler sources
 already preserve erased-procedure metadata; no compiler patch is applied in the
 current build. Historical failures and patch evidence remain below/in docs/native.
-The new Windows lifecycle batch is not yet verified or counted in these155 passes.
+The subsequent Windows lifecycle batch expands the runner to159 passing invocations
+with zero failures. These include x64/arm64 source checks, not native Windows runs.
+
+Windows WM_DESTROY lifecycle is now implemented for windows using Input.MyWindowProc.
+It retires per-window GL objects, deletes non-root HGLRCs and releases common GetDC
+results; CS_OWNDC/CS_CLASSDC resources remain OS-owned. One unbound root HGLRC is
+retained for native share-group lifetime, without retaining an invalid closed-window
+DC as a usable surface. Pending reader FBOs are deleted and their fields zeroed at
+close; shared PBO/fence resources can later be consumed in a newly opened window.
+No fake surface or window is introduced. Foreign HWNDs that do not use the input
+procedure need separate native destruction notification/subclass integration;
+cross-thread rendering/destruction and varying MSAA pixel-format sharing remain
+native-host verification gaps. Native WGL swap uses the canonical loader's sentinel
+filter instead of the former unchecked raw wglGetProcAddress cast. When swap-control
+is unavailable, buffer swapping still occurs with the platform's existing interval;
+no vsync-control success is claimed for that unavailable capability.
+
+Window retirement now uses glFinish before native context/resource teardown, on
+macOS and Windows, to complete pending writes/readbacks before restoring another
+context. This deliberately blocks the CPU on close, rather than on normal context
+switches (which retain GPU fences). It may delay closing a window with a long GPU
+queue; a future deferred-retirement fence queue could reduce that latency while
+preserving shared-resource and readback lifetime. Native sources for DC/context
+ownership and the private DWORD GetClassLongW query are the official Microsoft
+ReleaseDC, wglDeleteContext and GetClassLongW winuser/wingdi documentation. No class
+pointer is truncated; only GCL_STYLE's32-bit flag value is queried. Native Windows
+runtime remains pending; actual macOS close/reopen passes in all three host modes.
 
 Scope: owned public facades, private window/input/gamepad/rendering/clipboard,
 tests and tools through checkpoint `9254180`, plus the current batch. This is

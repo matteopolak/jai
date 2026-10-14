@@ -1,12 +1,21 @@
 # Window/render worker handoff
 
-Resumed dependency/OEM batch:155 focused invocations pass with zero failures using
+Resumed dependency/OEM/lifecycle batches:159 focused invocations pass with zero failures using
 fresh own compiler sources, latest NEW bindings and platform-io File/Process.
 Owned format/check/lint and generated native declarations pass. macOS x64 POSIX
 and Windows filename-font checks also pass separately. Native Windows runs for
 newer work remain pending. Compiler reflection is now integrated in the producer;
 tools/window_render_compiler.py builds it without the historical patch. The incident
 was cleared as authorized metadata-only integration feedback; no reimplementation.
+
+Windows WM_DESTROY renderer cleanup now has a real native close-all/reopen test,
+including live texture and pending readback preservation. Both Windows CPUs
+source-check it; actual native execution remains pending. A root native HGLRC owns
+the share group while closed-window DCs are not reused. Native class/private DCs
+remain OS-owned and common DCs are released. WGL swap uses canonical loader sentinel
+filtering. Teardown intentionally drains the GPU queue with glFinish; ordinary
+context switches retain server-side fences. Linux teardown and foreign HWND/thread
+notification remain open, documented in the deviations ledger.
 
 Latest durable checkpoints `b9e7115` and `31ded39` implement production public fonts/text/GL rendering,
 native window targets/lifecycle and asynchronous readback. Current expanded runner:

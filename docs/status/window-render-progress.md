@@ -1,5 +1,23 @@
 # Window/render progress
 
+Windows teardown batch after `dfeeb20`: WM_DESTROY now notifies renderer lifecycle
+owners. Window VAO/VBO/FBO records and Window_Info/context entries are retired;
+non-root WGL contexts are deleted, common DCs are released, and native class/private
+DCs stay OS-owned. One unbound native share-owner HGLRC retains live public GPU
+resources across closing all windows and reopening. Pending readback FBOs are
+released in their owner context; buffers/fences survive in the native share group.
+Real-window close/reopen/texture/readback/swap assertions source-check x64/arm64.
+Native Windows execution remains pending. WGL swap now uses canonical GL.gl_load
+procedure resolution, avoiding direct calls to WGL non-null failure sentinels.
+
+Expanded runner: **159 invocations passed, zero failed**, including the added
+Windows lifecycle and filename-font checks; host interpreter/native O0/O2 all pass.
+The later swap-loader change also source-checks both Windows CPUs. Mac teardown
+now drains queued GPU work before context retirement; normal context switches
+still use server-side fences. The general interpreter native-thread-affinity
+reproducer still fails on fresh compiler sources, independently of passing public
+AppKit initialization/driver paths. Its original failure remains documented.
+
 Resumed dependency/OEM verification: **155 focused invocations passed, zero failed**
 with the fresh source-built compiler and NEW bindings/platform-io File/Process.
 Host cases pass interpreter/native O0/O2, including public native windows, text,
