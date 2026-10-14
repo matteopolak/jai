@@ -19,3 +19,5 @@ Add behavior cases under `tests/platform-io` and keep the native runner step in 
 ## Dependencies
 
 The integrated compiler and stdlib, pinned Rust/LLVM toolchain, Visual Studio SDK, and GitHub native runners.
+
+The editor archive-contract test locates the build matrix before searching for its following runner. Earlier metadata jobs can have their own `runs-on`, so searching from the start of the workflow produces an empty matrix and a false archive mismatch. Full editor unit checks still run in CI; local standalone matrix extraction verifies all six entries.
