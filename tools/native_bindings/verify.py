@@ -119,20 +119,24 @@ def main():
     parser.add_argument('--compiler', type=Path, required=True)
     parser.add_argument('--module', action='append', choices=MODULES)
     parser.add_argument('--runtime', action='store_true')
+    parser.add_argument('--native-libs', type=Path, default=ROOT/'.work/native', help='Actual source-built native libraries used by runtime checks')
     parser.add_argument('--privacy-only', action='store_true', help='Run the full target privacy matrix without repeating declaration/runtime suites')
     parser.add_argument('--report', type=Path, default=ROOT/'.work/verification.json')
     parser.add_argument('--foundation', type=Path, help='Explicit previously staged NEW independent foundation sources')
     parser.add_argument('--stdlib', type=Path, help='Verify this production library directly, without any source overlays')
     args = parser.parse_args()
     compiler = args.compiler.resolve(strict=True)
+    if not compiler.is_relative_to(ROOT/'target'):
+        parser.error('compiler must be source-built under this checkout target directory')
+    native_libraries = args.native_libs.resolve()
     work = args.report.resolve().parent/'runs'/(args.report.stem+'-'+str(os.getpid()))
     work.mkdir(parents=True, exist_ok=True)
     stdlib = select_stdlib(work, args.foundation, args.stdlib)
     temporary = work / 'tmp'
     temporary.mkdir()
-    env = dict(os.environ, JAIC_STDLIB=str(stdlib), JAIC_NATIVE_LIBS=str(ROOT/'.work/native'), TMPDIR=str(temporary))
+    env = dict(os.environ, JAIC_STDLIB=str(stdlib), JAIC_NATIVE_LIBS=str(native_libraries), TMPDIR=str(temporary))
     report = {'compiler': str(compiler), 'compiler_sha256': hashlib.sha256(compiler.read_bytes()).hexdigest(), 'staging_root': str(work),
-              'stdlib_root': str(stdlib), 'production': args.stdlib is not None,
+              'stdlib_root': str(stdlib), 'production': args.stdlib is not None, 'native_libraries': str(native_libraries),
               'targets': [], 'native': [], 'privacy': []}
     report['staged_sources'] = {str(p.relative_to(stdlib)):hashlib.sha256(p.read_bytes()).hexdigest()
                                 for p in sorted(stdlib.rglob('*.jai')) if 'Extensions' not in p.parts}
@@ -140,7 +144,7 @@ def main():
     report['symbols'] = []
     report['test_sources'] = {}
     report['native_artifacts'] = {p.name:hashlib.sha256(p.read_bytes()).hexdigest()
-                                  for p in sorted((ROOT/'.work/native').glob('lib*')) if p.is_file()} if args.runtime else {}
+                                  for p in sorted(native_libraries.glob('lib*')) if p.is_file()} if args.runtime else {}
     report['privacy_only'] = args.privacy_only
     for module, slug in ([] if args.privacy_only else MODULES.items()):
         if args.module and module not in args.module:
@@ -151,7 +155,7 @@ def main():
             coverage = json.loads((ROOT/'docs/native/bindings-coverage.json').read_text())['modules'][module]
             members = [Declaration(m['signature'],m['condition']) for d in coverage['declarations'] for m in d.get('members',[])]
             symbols = Spec(declarations=spec.declarations+members)
-            report['symbols'].extend(check_symbols(module, symbols, enabled, ROOT/'.work/native'))
+            report['symbols'].extend(check_symbols(module, symbols, enabled, native_libraries))
         for os_name, cpu in TARGET_CONFIGS:
             file = work/'module-check.jai'
             file.write_text('#import "' + module + '"; main :: () {}\n')
@@ -218,6 +222,8 @@ def main():
             if args.module and not any(m in args.module for m in relevant):
                 continue
             source = ROOT/'tests/native-bindings'/f'{name}.jai'
+            if name == 'sdl-wm':
+                source = ROOT/'stdlib/SDL/tests/sdl-wm.jai'
             if not source.is_file():
                 report['native'].append({'name': name, 'status': 'not_implemented'})
                 continue
@@ -236,8 +242,8 @@ def main():
             source = ROOT/'tests/native-bindings/imgui_ffi.cpp'
             report['test_sources'][str(source.relative_to(ROOT))] = hashlib.sha256(source.read_bytes()).hexdigest()
             command = ['c++','-std=c++17','-Wall','-Wextra','-Werror','-isystem',ROOT/'.work/vendor'/pin['archive']['root'],
-                       ROOT/'tests/native-bindings/imgui_ffi.cpp',ROOT/'.work/native/libimgui.a',
-                       ROOT/'.work/native/libbinding_ffi.a','-lffi','-o',exe]
+                       ROOT/'tests/native-bindings/imgui_ffi.cpp',native_libraries/'libimgui.a',
+                       native_libraries/'libbinding_ffi.a','-lffi','-o',exe]
             result = invoke(command,env)
             result.update(name='imgui-ffi',language='C++',phase='build',header_sha256=pin['files']['imgui.h'],
                           status='passed' if result['exit']==0 else 'failed')

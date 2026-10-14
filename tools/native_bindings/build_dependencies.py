@@ -20,6 +20,7 @@ INPUTS = {
     'lz4': {'lz4'}, 'xxhash070': {'xxhash'}, 'meshoptimizer': {'meshoptimizer'},
     'binding_ffi': set(), 'graphics_macro_probe': set(),
     'sdl_abi_probe': {'sdl2-oracle'}, 'imgui': {'imgui'},
+    'sdl_runtime_abi_probe': {'sdl2-runtime-oracle'},
     'stb_image': {'stb'}, 'stb_image_resize': {'stb'},
     'stb_image_write': {'stb'}, 'stb_vorbis': {'stb'}, 'mojoshader': {'mojoshader'},
 }
