@@ -10,7 +10,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [android-egl](specs/stdlib/modules/android-egl.md) | Reserved for bindings worker; not implemented or modified here |
 | [android-toolchain](specs/stdlib/modules/android-toolchain.md) | Owned portable scope; not implemented |
 | [android](specs/stdlib/modules/android.md) | Reserved for bindings worker; not implemented or modified here |
-| [atomics](specs/stdlib/modules/atomics.md) | Owned portable scope; not implemented |
+| [atomics](specs/stdlib/modules/atomics.md) | CAS-based arithmetic/bitwise operations implemented and interpreter/native contention tested; exact load/store/exchange aliases declared but execution blocked by missing compiler intrinsic lowering. Scalar domain/conversion details need review |
 | [autorun](specs/stdlib/modules/autorun.md) | Owned portable scope; not implemented |
 | [base64](specs/stdlib/modules/base64.md) | Implemented public tables, standard/URL codecs and self-tests; RFC and permissive edge vectors pass interpreter/native |
 | [basic](specs/stdlib/modules/basic.md) | Partial: arrays, allocation, scalar helpers, canonical builder and integer/bool/string formatting; remaining declarations unimplemented |
@@ -18,7 +18,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [bit-array](specs/stdlib/modules/bit-array.md) | Implemented canonical type, bit mutation, padding and logical/selected iteration; interpreter/native cases pass |
 | [bit-operations](specs/stdlib/modules/bit-operations.md) | Implemented width-generic byte swap, scans and population count; interpreter/native cases pass |
 | [bucket-array](specs/stdlib/modules/bucket-array.md) | All reviewed exports implemented; stable pointers, locators, reuse and iteration pass interpreter/native |
-| [buildcpp](specs/stdlib/modules/buildcpp.md) | Owned portable scope; not implemented |
+| [buildcpp](specs/stdlib/modules/buildcpp.md) | Unix native-host C/C++ compile/archive/link/object and macOS universal outputs implemented; artifacts executed/loaded, stale archive members removed, failures preserve output and cleanup. Windows/cross toolchains and documented contract edges unfinished |
 | [check](specs/stdlib/modules/check.md) | Owned portable scope; not implemented |
 | [clipboard](specs/stdlib/modules/clipboard.md) | Reserved for window/render worker by current ownership; not modified here |
 | [code-visit](specs/stdlib/modules/code-visit.md) | Reserved for compiler worker; not implemented or modified here |
@@ -33,7 +33,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [d3d12](specs/stdlib/modules/d3d12.md) | Reserved for bindings worker; not implemented or modified here |
 | [debug-info](specs/stdlib/modules/debug-info.md) | Owned portable scope; not implemented |
 | [debug](specs/stdlib/modules/debug.md) | Owned portable scope; not implemented |
-| [deep-copy](specs/stdlib/modules/deep-copy.md) | Owned portable scope; not implemented |
+| [deep-copy](specs/stdlib/modules/deep-copy.md) | Partial: scalars/strings/scalar arrays, callback/preallocated roots and reused maps tested; real statistics and conditional debug globals. General graph draft blocked by zero compiler struct-alignment metadata; pending assertions retained, fixed arrays/Any rejected |
 | [default-allocator](specs/stdlib/modules/default-allocator.md) | Documented C fallback allocator_proc/unsafe_reset implemented and interpreter/native tested, with real resize failure preservation and arm64 Linux/Windows checks. Optimized X64/Switch heap API explicitly rejected and remains unimplemented |
 | [default-metaprogram](specs/stdlib/modules/default-metaprogram.md) | Owned portable scope; not implemented |
 | [dxc-compiler](specs/stdlib/modules/dxc-compiler.md) | Reserved for bindings worker; not implemented or modified here |
@@ -140,4 +140,4 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [x11](specs/stdlib/modules/x11.md) | Reserved for bindings worker; not implemented or modified here |
 | [xar](specs/stdlib/modules/xar.md) | Reviewed exports implemented: stable exponential chunks, captured allocator, removal, coordinates/iterators, pointer/value loops and in-place sorting. Failure/iterator boundary policy noted; reverse iteration and capacity limits checked |
 | [xxhash](specs/stdlib/modules/xxhash.md) | Reserved for bindings worker; not implemented or modified here |
-| [zip-file-directory](specs/stdlib/modules/zip-file-directory.md) | Owned portable scope; not implemented |
+| [zip-file-directory](specs/stdlib/modules/zip-file-directory.md) | Classic central directory parsing/ownership implemented; bounds, ZIP64/multidisk rejection and specified signature/descriptor assertions tested. position_in_file/extensions require review; current File dependency Unix-only |

@@ -123,3 +123,28 @@ per-thread alternate stack through native TLS ownership. Emit diagnostics withou
 depending on the Jai context/allocator, reset/unblock/re-raise the fatal signal,
 and verify actual SIGSEGV plus native stack text in separate source-built programs.
 Do not interpret the reviewed x64-shaped register prefixes on ARM or claim recovery.
+
+ZIP directory increment: independently decode bounded classic end/central records,
+retain borrowed name views into owned directory storage, preserve the documented
+retained-file ownership, and reject unsupported ZIP64/multidisk cases. Require
+the specified assertions for signatures/descriptors. Verify late parse cleanup
+with allocation accounting, and record unresolved position/extension contracts.
+
+Atomics increment: preserve bootstrap aliases as entities and implement remaining
+integer/pointer arithmetic plus integer/enum bitwise updates with supported CAS.
+Retain a minimal failing canonical-intrinsic compiler reproducer. Verify width
+wrapping, byte pointer steps, negative bit indices and contended prior values;
+do not count missing load/store/exchange lowering as executable alias support.
+
+Deep_Copy increment: preserve public records/globals; register allocation origins
+before recursive traversal, use caller/local maps, and honor callback/preallocated
+roots. Validate reflected layout and reject fixed arrays/Any explicitly. Keep
+the graph regression pending while the compiler emits zero struct alignment;
+count only independently verified scalar/string/scalar-array functionality.
+
+BuildCpp increment: use real Unix compiler/archive commands with explicit argv,
+reserve per-build intermediate directories, stage complete outputs and check
+cleanup before compiler ERROR reporting. Verify static linking, dynamic loading,
+standalone objects, working directories/flags, stale archive removal and macOS
+universal architecture presence. Reject missing/wrong-target tools and record
+unresolved output conventions and unimplemented Windows/cross toolchains.

@@ -9,6 +9,29 @@ described in [crash diagnostics](portable-crash-handler.md) and the mandatory
 [deviations report](status/stdlib-deviations.md). Native best-effort backtraces
 do not establish an exact reference diagnostic format.
 
+Zip_File_Directory.position_in_file currently records the central record's file
+offset; its intended meaning is absent from the reviewed contract. Trailing junk
+and directory digital-signature records are rejected. These extension policies
+need review. See [directory parsing](portable-zip-directory.md).
+
+Atomics preserves the three exact load/store/exchange aliases, but the source
+compiler lacks the corresponding bootstrap intrinsic dispatch. The original
+`pending/atomic-intrinsics.jai` reproduces the failure. CAS-based arithmetic and
+bitwise updates execute; full scalar-domain/conversion contracts require review.
+See [Atomics implementation](portable-atomics.md).
+
+Deep_Copy's graph path retains a checked failure because the source compiler
+returns zero struct alignment metadata in both modes. Pending minimal reflection
+and graph tests retain the actual failed assertions. Scalar/string/scalar-array
+copies work; graph conformance is not counted. Ownership, shared-slice extents,
+scalar pointers and diagnostic-statistic policies require review; see
+[Deep_Copy progress](portable-deep-copy.md).
+
+BuildCpp's Unix host commands work, but Windows/cross-OS toolchains, static-library
+dependency merging and multi-source OBJ_FILE are unfinished. Naming/environment
+parsing, source extension sets and warning forwarding require review. See
+[BuildCpp behavior](portable-buildcpp.md) for actual native tests and cleanup policy.
+
 - Text_File_Handler helpers return independently allocated array strings/table
   keys. Callers free each plus container storage. The spec does not yet settle
   exact helper ownership. With version parsing enabled, startup currently requires
