@@ -26,6 +26,7 @@ def main():
     parser.add_argument("--stdlib", type=Path, required=True)
     parser.add_argument("--native", action="store_true")
     parser.add_argument("--cross-check", action="store_true")
+    parser.add_argument("--wasm", action="store_true", help="execute Wasm interpreter and real WASI O0/O2")
     args = parser.parse_args()
     compiler = args.jaic.resolve(strict=True)
     if not compiler.is_relative_to(ROOT / "target"):
@@ -45,6 +46,14 @@ def main():
                 executable = output / (source.stem + optimization + (".exe" if os.name == "nt" else ""))
                 run([compiler, source, optimization, "-exe", executable], env)
                 run([executable], env, "ok\n")
+        if args.wasm:
+            run([compiler, source, "-check", "-no_dce", "-os", "wasm"], env)
+            run([compiler, source, "-interp", "-os", "wasm"], env, "ok\n")
+            for optimization in ["-O0", "-O2"]:
+                executable = output / (source.stem + optimization + ".wasm")
+                run([compiler, source, "-os", "wasm", optimization, "-exe", executable], env)
+                run(["node", "--no-warnings", ROOT / "tools/wasi_run.mjs", executable], env, "ok\n")
+            print("passed Wasm interpreter and WASI O0/O2", source.relative_to(ROOT), flush=True)
         print("passed", source.relative_to(ROOT), flush=True)
 
 

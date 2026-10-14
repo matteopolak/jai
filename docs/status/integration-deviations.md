@@ -4,6 +4,27 @@ Role: replacement integration worker. This report is open; merged snapshots do n
 
 ## Production boundary correction and fifth refresh
 
+Filtered coordinator CI feedback for candidate 159ca65 records real Windows
+x64/arm64 File interpreter/native O0/O2 and signed-wheel interpreter/native
+passes. The overall Windows workflow failed; Process/Thread/System/crash and
+other module gaps remain. The reviewed CI candidate is merged with each File
+step placed before the broad test commands. No run was dispatched here, and
+these results do not establish native rendering/font/Focus compatibility.
+
+The formatter fuzz replay exposed File selecting POSIX on Wasm. The POSIX guard
+remains strict. `internal/files/wasi-libc/module.jai` declares the existing
+preserved WASI extension's opaque C stream/directory ABI. Shared stream code
+selects that private boundary on Wasm; it uses actual directory open/close to
+verify an already-existing directory without assuming a host stat layout.
+Effect/tradeoff: existence checks require readable directory capabilities and
+one extra open/close, returning false if verification/cleanup fails. This is a
+documented supported capability limit; a direct stat adapter could avoid those
+extra operations if profiling or clarified contracts require it. The unchanged
+File fixture passes Wasm interpreter and actual WASI O0/O2; formatter saved
+regressions pass. New sources pass actual repository format/check and complete
+jailint warnings denied. Normal CI now runs this File Wasm gate; no fake host
+imports, Extensions edits or missing-import traps were used.
+
 The crash/startup Python runner still implicitly copied `Compiler` and
 `internal/compiler-api` from a sibling NEW compiler worker when given a production
 stdlib. The isolated sanitized worktree exposed that read/copy assumption. Earlier

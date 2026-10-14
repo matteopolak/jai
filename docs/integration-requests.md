@@ -83,3 +83,21 @@ SDL2 RWops/UserEvent assertions still fail 48/72 and 8/32. Caller-owned RWops/
 callback conventions need safe private storage/marshalling or explicit unsupported
 diagnostics. No mismatch assertion is waived. The real new SDK probe is now in
 the build selector and its private fixture lives under stdlib/SDL/tests.
+
+20. Fifth refresh merges portable c8d1f5d, foundations a11c0c8 and platform-io
+eb5d83d. Request 17's Windows File gap is resolved: host real tests, Windows
+unused-code checks and coordinator-filtered native x64/arm64 File and wheel
+results pass. The workflow overall remains failed. Platform-io owns remaining
+Windows runtime/Process/System/Thread; retain all failures. Request 18's refreshed
+sweep finishes 558 files/14,835 edits/2,600,590 assertions with the same startup
+failure. Basic's contextual interface helper is now private and selected public
+debugger identity/callback tests pass. General unused module-interface validation
+still incorrectly accepts the invalid fixture; compiler owner should reject it
+without special-casing Basic. Autorun's pending mixed scalar/spread variadic
+reproducer still loses the prefix, so its real argv workaround remains documented.
+
+21. Filtered fuzz CI failure is independently reproduced and fixed here: Wasm
+File now uses private opaque stream C ABI supplied by unchanged Wasi_Runtime,
+with real interpreter/WASI O0/O2 File behavior and formatter saved regressions.
+No POSIX guard was weakened. Integrate this change into the next reviewed CI
+candidate; full workflow/corpus still needs coordinator execution.

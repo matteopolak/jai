@@ -33,11 +33,21 @@ reference compiler.
 
 ## Verification
 
+Wasm File shares the stream operations with Unix while importing the private
+`internal/files/wasi-libc` ABI instead of POSIX. Opaque C streams/directories
+come from the preserved `Extensions/Wasi_Runtime` when compiled, or the
+compiler's sandbox when interpreted. Directory existence uses an actual
+open/close pair, avoiding an invented native `stat` layout. The POSIX platform
+guard is unchanged. `--wasm` runs the unchanged File fixture in the Wasm
+interpreter and real WASI O0/O2, and checks every reachable implementation with
+`-no_dce`; normal CI includes this gate. WASI filesystem capability and rights
+limits are returned as operation failures by the existing runtime.
+
 Use the source-built compiler with a complete independent dependency tree:
 
 ```
 python3 tools/check_platform_io.py --jaic target/debug/jaic \
-  --stdlib target/platform-io-stdlib --cross-check --native
+  --stdlib stdlib --cross-check --native --wasm
 ```
 
 The same command on native Windows x64/arm64 exercises actual Win32 operations
