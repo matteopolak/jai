@@ -3120,7 +3120,7 @@ impl Compiler {
             },
             file,
         );
-        scratch.context = Some(scratch.b.param(0));
+        scratch.set_context(Some(scratch.b.param(0)));
         scratch.type_only = true;
         scratch
     }

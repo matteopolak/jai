@@ -2048,7 +2048,7 @@ impl Compiler {
             file,
         );
         scratch.compile_time = true;
-        scratch.context = Some(scratch.b.param(0));
+        scratch.set_context(Some(scratch.b.param(0)));
         let converted = self.convert(&mut scratch, op, ty, span)?;
         match converted {
             Operand::Const {

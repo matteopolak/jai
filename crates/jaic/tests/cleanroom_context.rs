@@ -17,6 +17,13 @@ fn check(source: &str) {
 }
 
 #[test]
+fn overload_probes_initialize_scratch_context_storage() {
+    check(
+        "consume :: (value: int) #expand {} consume :: (value: string) #expand {} make :: () -> int { return context.marker; } test :: () { consume(ifx true then make() else 0); } #run test();",
+    );
+}
+
+#[test]
 fn caller_scope_macro_context_lives_until_caller_block_exit() {
     check(
         "test :: () -> bool { context.marker = 55; { push_copy(); if context.marker != 55 return false; context.marker = 91; if context.marker != 91 return false; } return context.marker == 55; } #assert(test());",
