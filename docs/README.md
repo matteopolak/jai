@@ -106,6 +106,18 @@ The LLVM backend, C ABI and linking.
 ## Standard library
 
 - [jaic Extensions](extensions/README.md)
+- [Portable implementation module ledger](portable-stdlib-ledger.md)
+- [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
+- [Portable implementation gaps](portable-stdlib-gaps.md): focused pending reproducers and unresolved behavior
+- [Owned source format/lint runner](../tools/format_portable_stdlib.py): explicit scope and source-built jaifmt/jailint
+- [WAV parser design and validation](portable-wav.md)
+- [SMTP/MIME transport and loopback validation](portable-mail.md)
+- [POSIX crash diagnostics and native startup verification](portable-crash-handler.md)
+- [Portable worker progress](status/stdlib-progress.md) and [deviations](status/stdlib-deviations.md)
+- [Socket native declaration ledger](socket-native-ledger.json)
+- [Focused portable regression runner](../tools/check_portable_stdlib.py)
+- [Portable implementation plan](plans/portable-stdlib.md)
+- [Unresolved portable contracts](specs/stdlib/questions.md)
 
 Implementation work uses the API specification as its compatibility contract. Implementers do not read the source of a Jai distribution; specification review supplies public declarations and behavior through the documented clean-room workflow.
 
