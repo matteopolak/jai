@@ -25,6 +25,38 @@ fn reflected_struct_alignment_matches_completed_layout() {
     }
 }
 
+#[test]
+fn hidden_procedure_members_keep_their_reflected_marker_and_storage() {
+    let stdlib = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../stdlib");
+    let mut options = Options::host();
+    options.import_paths = vec![stdlib.clone()];
+    options.preload = Some(stdlib.join(jaic::PRELOAD_ENTRY));
+    let mut c = Compiler::new(options, Rc::new(jaic::sema::NativeFs));
+    let source = r#"
+        Callback :: #type (value: u32) -> u32 #c_call;
+        Hidden :: struct #type_info_procedures_are_void_pointers {
+            callback: Callback;
+            pointer: *void;
+        }
+        Plain :: struct { callback: Callback; }
+        hidden :: type_info(Hidden);
+        plain :: type_info(Plain);
+        #assert(hidden.members[0].type == type_info(*void));
+        #assert((hidden.members[0].flags & .PROCEDURE_WITH_VOID_POINTER_TYPE_INFO) != 0);
+        #assert((hidden.members[0].flags & .CONSTANT) == 0);
+        #assert(hidden.members[0].offset_in_bytes == offset_of(Hidden, "callback"));
+        #assert(hidden.members[1].type == type_info(*void));
+        #assert((hidden.members[1].flags & .PROCEDURE_WITH_VOID_POINTER_TYPE_INFO) == 0);
+        #assert(plain.members[0].type == type_info(Callback));
+        #assert((plain.members[0].flags & .PROCEDURE_WITH_VOID_POINTER_TYPE_INFO) == 0);
+        #assert(type_of(Hidden.callback) == Callback);
+        main :: () {}
+    "#;
+    if let Err(error) = c.compile_sources(&[ProgramSource::String(source.into())]) {
+        panic!("{}", error.render(&c.sources));
+    }
+}
+
 fn compile(source: &str) -> (Compiler, jaic::sema::Result<()>) {
     let mut options = Options::host();
     options.runtime_support = false;
