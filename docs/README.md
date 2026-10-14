@@ -58,12 +58,13 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Independent compiler facades](compiler/compiler-facades.md): current supported helpers, traversal/printing and focused test overlay
 - [Compiler-managed global data](compiler/compiler-global-data.md): registered storage identity, segment handles and compile-time/target runtime records
 - [Bootstrap atomics](compiler/bootstrap-atomics.md): scalar validation, host/native/WASM atomic semantics and contention regressions
-- [Ordered variadics and interfaces](compiler/mixed-variadics-and-interfaces.md): mixed packs, continuation lifetime and binding-time structural checks
+- [Ordered variadics and interfaces](compiler/mixed-variadics-and-interfaces.md): mixed packs, continuation lifetime, binding-time structural checks and loaded-file parameter scope
 - [Register operands](compiler/register-operands.md): canonical SIMD operand identity, generic expansion and scalar lane results
 - [Context cleanup](compiler/context-cleanup.md): conditional caller-scope macro context and lexical exit behavior
 - [Generic default reflection](compiler/generic-default-reflection.md): source identity, evaluated instance defaults and storage contract
 - [Measured performance messages](compiler/performance-messages.md): reviewed run records, actual counters and host timing boundary
 - [Compiler progress](status/compiler-progress.md) and [deviations](status/compiler-deviations.md): producer checkpoints, verification evidence, gaps and required long-term fixes
+- [Completeness follow-up](compiler/completeness-follow-up.md): qualified constant writes, runtime configuration, suspended threads and alias documentation
 - [Literal precision](compiler/literal-precision.md): contextual defaults, required precision, aliases, folding, overloads and module arguments
 - [Browser integration status](compiler/browser-integration-status.md): explicit source-library embedding, supported Compiler regression and remaining integration failures
 - [Using-filter propagation](compiler/using-filter-propagation.md): parameter/macro bindings, embedded filters, mapped storage and safe Code reconstruction

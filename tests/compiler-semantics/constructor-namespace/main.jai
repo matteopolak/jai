@@ -1,5 +1,6 @@
 R :: #import "Record";
 F :: #import "Factory";
+M :: #import "Mutation";
 
 #assert R.Buffer == R.Alias;
 #assert R.Buffer != F.Buffer;
@@ -7,6 +8,11 @@ F :: #import "Factory";
 
 #program_export "namespace_check"
 check :: () -> s32 #c_call {
+    M.values[0] = 9;
+    M.record.value = 7;
+    M.pointer.value += 4;
+    if M.values[0] != 9 || M.record.value != 11 return 3;
+
     push_context {
         value := R.create();
         if value.value != 37 || value.next != null return 1;

@@ -31,6 +31,55 @@ fn rejects(c: &mut Compiler, name: &str) {
 }
 
 #[test]
+fn qualified_constant_aggregate_members_are_not_writable_places() {
+    for target in [
+        "M.values[0]",
+        "M.record.value",
+        "M.records[0].value",
+        "M.Alias.values[0]",
+    ] {
+        let source = format!("M :: #import \"Data\"; main :: () {{ {target} = 9; }}");
+        let mut c = compiler(
+            &[
+                (
+                    "/lib/Data/module.jai",
+                    "R :: struct { value:int; } values :: int.[1,2]; record :: R.{3}; records :: R.[R.{4}]; Alias :: #import \"Data\";",
+                ),
+                ("/app/main.jai", &source),
+            ],
+            false,
+        );
+        rejects(&mut c, "constant");
+    }
+    let mut c = compiler(
+        &[
+            (
+                "/lib/Data/module.jai",
+                "R :: struct { value:int; } record :: R.{3};",
+            ),
+            (
+                "/app/main.jai",
+                "M :: #import \"Data\"; pair :: () -> (bool,int) { return true,9; } main :: () { ok:, M.record.value = pair(); }",
+            ),
+        ],
+        false,
+    );
+    rejects(&mut c, "constant");
+}
+
+#[test]
+fn aggregate_assignment_validation_keeps_macro_caller_scope() {
+    let mut c = compiler(
+        &[(
+            "/app/main.jai",
+            "R :: struct { value:int; } write :: () #expand { `value.value = 9; } check :: () -> int { value:R; write(); return value.value; } #assert(check()==9); main :: () {}",
+        )],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
 fn implicit_runtime_load_passes_only_reviewed_module_parameters() {
     let mut fs = VirtualFs::default();
     fs.insert("/lib/Runtime_Support/module.jai",r#"
@@ -79,6 +128,7 @@ fn library_modules_do_not_ignore_unknown_excess_or_duplicate_arguments() {
         ),
         ("touch::()->int{return 0;}", "UNKNOWN=1"),
         ("#if true { touch::()->int{return 0;} }", "UNKNOWN=1"),
+        ("#module_parameters(N:int); touch::()->int{return 7;}", ""),
     ] {
         let source = format!("M::#import \"Contract\"({args}); main::(){{ n:=M.touch(); }}");
         let mut c = compiler(
@@ -123,6 +173,84 @@ fn loaded_constructor_and_generic_factory_keep_the_declaring_type_namespace() {
             (
                 "/app/main.jai",
                 "R :: #import \"Record\"; F :: #import \"Factory\"; #assert(R.Buffer==R.Alias); #assert(R.Buffer!=F.Buffer); #assert(type_of(R.create())==R.Buffer); #assert(R.create().value==37); main :: () {}",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
+fn loaded_module_parameters_resolve_private_file_types_and_interfaces() {
+    for (declaration, args, assertion) in [
+        (
+            "#module_parameters(N: C.Count = 7); #scope_export touch :: () -> C.Count { return N; }",
+            "",
+            "#assert(M.touch()==7); #assert(type_of(M.N)==D.Count);",
+        ),
+        (
+            "#module_parameters(N: C.Count = 7); #scope_export touch :: () -> C.Count { return N; }",
+            "N=8",
+            "#assert(M.touch()==8); #assert(type_of(M.N)==D.Count);",
+        ),
+        (
+            "#module_parameters(HOOKS: $I/interface C.Required = C.Required); #scope_export touch :: () -> int { return 7; }",
+            "",
+            "#assert(M.HOOKS==D.Required);",
+        ),
+        (
+            "#module_parameters(HOOKS: $I/interface C.Required = C.Required); #scope_export touch :: () -> int { return 7; }",
+            "HOOKS=Good",
+            "#assert(M.HOOKS==Good);",
+        ),
+    ] {
+        let header = format!("#scope_file C :: #import \"Contract\"; {declaration}");
+        let source = format!(
+            "D :: #import \"Contract\"; Good :: struct {{ run :: inline (value:int) {{}} }} M :: #import \"Record\"({args}); {assertion} main :: () {{}}"
+        );
+        let mut c = compiler(
+            &[
+                (
+                    "/lib/Contract/module.jai",
+                    "Count :: #type,distinct s32; Required :: struct { run :: inline (value:int) {} }",
+                ),
+                ("/lib/Record/module.jai", "#load \"parameters.jai\";"),
+                ("/lib/Record/parameters.jai", &header),
+                ("/app/main.jai", &source),
+            ],
+            false,
+        );
+        succeeds(&mut c);
+    }
+    let mut c = compiler(
+        &[
+            (
+                "/lib/Contract/module.jai",
+                "Required :: struct { run :: inline (value:int) {} }",
+            ),
+            ("/lib/Record/module.jai", "#load \"parameters.jai\";"),
+            (
+                "/lib/Record/parameters.jai",
+                "#scope_file C :: #import \"Contract\"; #module_parameters(HOOKS: $I/interface C.Required); #scope_export touch :: () -> int { return 7; }",
+            ),
+            (
+                "/app/main.jai",
+                "Broken :: struct {} M :: #import \"Record\"(HOOKS=Broken); main :: () {}",
+            ),
+        ],
+        false,
+    );
+    rejects(&mut c, "run");
+}
+
+#[test]
+fn unused_program_parameters_can_bind_after_the_initial_import() {
+    let mut c = compiler(
+        &[
+            ("/lib/Record/module.jai", "#module_parameters()(N:int);"),
+            (
+                "/app/main.jai",
+                "A :: #import \"Record\"; B :: #import \"Record\"(N=9); #assert(A.N==9); #assert(B.N==9); main :: () {}",
             ),
         ],
         false,

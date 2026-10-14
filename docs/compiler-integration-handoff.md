@@ -1,11 +1,19 @@
 # Compiler integration handoff
 
 Latest continuation: 5d0bf33 adds ordered mixed/baked variadics, checked dynamic
-frame storage and general binding-time interfaces. Follow-up source adds
+frame storage and general binding-time interfaces. fea1090 adds
 canonical SIMD operand binding, private CLI plugin orchestration, strict module
 arguments and independently reviewed reflection/probe fixes. No library-name or
 fixture exception was added. Original interpreter/native/WASM64 O0/O2 tests cover
 loaded-file constructor type, alias and storage identity.
+
+The lexical-binding follow-up retains a loaded parameter declaration's file
+environment for annotations, defaults, conversions and interface constraints.
+Storage remains module-wide and public types retain canonical identity. Original
+tests cover explicit/default bindings through private imports and invalid unused
+interface replacements. Omitted ordinary arguments now diagnose; second-list
+program parameters still bind later. The selected core/backend suite now passes
+265 cases, including real native/WASM64 O0/O2 execution.
 
 Local staging uses only selected NEW sources:
 

@@ -1092,8 +1092,16 @@ impl Compiler {
                     body,
                 } = &**boxed;
                 let module = self.scope(scope).module;
+                let eval_scope = file_scope_for_eval(self, scope, file_scope);
                 for (position, param) in params.iter().chain(runtime_params).enumerate() {
-                    self.declare_module_parameter(scope, file_scope, module, position, param)?;
+                    self.declare_module_parameter(
+                        scope,
+                        module,
+                        position,
+                        param,
+                        eval_scope,
+                        position >= params.len(),
+                    )?;
                 }
                 self.validate_module_arguments(module, stmt.span)?;
                 let program = runtime_params.iter().filter_map(|p| p.name.map(|n| n.name));
@@ -1138,7 +1146,7 @@ impl Compiler {
                             pattern,
                             actual,
                             &mut bindings,
-                            file_scope,
+                            eval_scope,
                             represented,
                         )?;
                         for (name, value, ty) in bindings {
@@ -1245,10 +1253,11 @@ impl Compiler {
     fn declare_module_parameter(
         &mut self,
         scope: ScopeId,
-        file_scope: ScopeId,
         module: ModuleId,
         position: usize,
         param: &ast::Param,
+        eval_scope: ScopeId,
+        program_parameter: bool,
     ) -> Result<()> {
         let Some(name) = param.name else {
             return err(param.span, "module parameter needs a name");
@@ -1258,6 +1267,14 @@ impl Compiler {
             .iter()
             .find(|(n, ..)| *n == name.name || n.as_str() == format!("${position}"))
             .map(|(_, v, ty)| (v.clone(), *ty));
+        // Ordinary parameters are bound by this import. Program parameters may
+        // still receive a workspace-wide value before their first use.
+        if !program_parameter && provided.is_none() && param.default.is_none() {
+            return err(
+                param.span,
+                format!("missing argument for module parameter `{}`", name.name),
+            );
+        }
         let decl = Rc::new(ast::Decl {
             id: ast::AstId::fresh(),
             names: vec![name],
@@ -1282,9 +1299,9 @@ impl Compiler {
             },
             false,
         );
-        // A parameter is bound in the module, but its annotation/default is
-        // written in this file and may name file-private contextual helpers.
-        self.entity_mut(id).home = file_scope;
+        // Parameter storage belongs to the module; its declaration expressions
+        // retain the lexical file environment, just like ordinary declarations.
+        self.entity_mut(id).home = eval_scope;
         self.modules[module.0 as usize].param_entities.push(id);
         self.modules[module.0 as usize].arguments_validated = false;
         if let Some((Value::String(text), _)) = &provided
@@ -1350,13 +1367,13 @@ impl Compiler {
             // Convert the original constant rather than reconstructing a literal AST:
             // reconstruction loses lexical precision, relocation identity and declared types.
             if let Some(target) = param.ty.as_ref().filter(|t| !procs::has_poly(t)) {
-                let expected = self.eval_type(file_scope, target)?;
+                let expected = self.eval_type(eval_scope, target)?;
                 let actual = if ty == TypeId::VOID {
                     self.type_of_value(&value)
                 } else {
                     ty
                 };
-                let mut f = self.thunk_ctx(ir::FuncOrigin::ConstInit, self.scope_file(file_scope));
+                let mut f = self.thunk_ctx(ir::FuncOrigin::ConstInit, self.scope_file(eval_scope));
                 let op = self.convert(
                     &mut f,
                     lower::Operand::Const {

@@ -3,6 +3,12 @@ pub const SOURCE: &str =
 
 pub const FILES: &[(&str, &str)] = &[
     (
+        "/lib/Mutation/module.jai",
+        include_str!(
+            "../../../../tests/compiler-semantics/constructor-namespace/modules/Mutation/module.jai"
+        ),
+    ),
+    (
         "/lib/Record/module.jai",
         include_str!(
             "../../../../tests/compiler-semantics/constructor-namespace/modules/Record/module.jai"

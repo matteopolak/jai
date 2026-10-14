@@ -1,6 +1,15 @@
 # Compiler progress
 
-Latest continuation (reviewed, awaiting commit): ordered mixed/baked variadics,
+Current continuation: qualified constant aggregate assignment rejects through
+module/type/alias qualifiers and mixed existing-target declarations. Macro caller
+scope and mutable pointer writes remain supported. Original core regressions,
+interpreter/native/WASM64 O0/O2 valid-mutation cases and two exact staged NEW MPEG
+compile-rejection fixtures pass. Scoped rustfmt, core all-target clippy and
+source-built jaifmt/jailint pass; formatter source build also exercises backtick
+assignment. Initial stale-overlay/missing-Math failures are retained separately.
+Next: private runtime configuration, suspended CRT threads, public alias docs.
+
+Committed checkpoints 5d0bf33 and fea1090: ordered mixed/baked variadics,
 persistent continuation allocation, binding-time interfaces, strict module argument
 validation, canonical SIMD operand forwarding, public-Compiler plugin lifecycle,
 hidden-procedure reflection markers/alignment, and guarded compiler-memory copies.
@@ -8,7 +17,14 @@ Loaded-file constructors preserve type, alias and storage identity in original
 interpreter and native/WASM64 O0/O2 tests; existing producer constructor behavior
 also passes. No namespace/module-name exception was introduced.
 
-Evidence: 263 selected core/backend unit/regression cases pass; 25 LSP unit tests
+Lexical-binding checkpoint 02e3de0: loaded module parameter headers retain their
+declaring file environment for defaults, annotations, explicit conversions and
+interface constraints. Original tests cover private imports, canonical distinct
+type identity and unused invalid replacements. Missing ordinary arguments now
+reject even when unused; late binding of second-list program parameters remains
+supported and tested. Broad checks pass and the implementation is committed.
+
+Evidence: 265 selected core/backend unit/regression cases pass; 25 LSP unit tests
 pass. Public compiler-owned runner: 25/25 in interpreter mode and 25/25 in native
 mode, including preserved compile-rejection cases. Positive native cases execute
 their built artifacts. CLI original lifecycle executes a real native child;
@@ -18,6 +34,16 @@ warnings denied pass after output-aware storage validation. Actual wasm32
 compiler-host clippy passes. Positive Jai fixtures and all owned public/private
 facades pass jaifmt --check and verbose jailint -D warnings without incomplete
 compilation reports. Empty null-data views and mixed string packs also execute.
+
+Follow-up commands: the selected `cargo test --locked -p jaic -p jaic-llvm`
+library/focused targets, all-target clippy for core/backend/CLI/LSP, wasm32
+jai-wasm clippy, source-built CLI build, scoped rustfmt/item spacing and
+`git diff --check` pass. Public runner repeats all 25 selected cases in each
+interpreter/native mode. CLI `cleanroom_plugins` passes with JAIC_STDLIB set to
+the own-target independent overlay; its initial unconfigured discovery failure
+is retained separately. Logs: target/compiler-lexical-binding-*.log. Embedded
+original VFS snippets are Rust test inputs, not standalone Jai lint roots; no
+new standalone Jai source was added by this lexical follow-up.
 
 Remaining dependency gaps: actual nondefault target temporary-storage allocation
 needs a private compiler/runtime mechanism (NO_OUTPUT option metadata works).
