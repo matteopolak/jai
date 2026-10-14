@@ -42,9 +42,23 @@ main :: () {
     view: [] int = values;
 
     assert(sprint("%", view) == "[1, 2, 3, 4]");
+    empty_view: [] int;
+    empty_fixed: [0] int;
+
+    assert(sprint("% %", empty_view, empty_fixed) == "[] []");
+    many: [101] int;
+    for *element: many element.* = 42;
+
+    limited := sprint("%", many);
+
+    defer free(limited);
+    assert(limited.count == 403 && limited[397] == 52 && limited[398] == 50);
+    assert(limited[399] == 46 && limited[400] == 46 && limited[401] == 46 && limited[402] == 93);
     formatted: FormatArray;
     formatted.value = view;
     formatted.stop_printing_after_this_many_elements = 2;
+    assert(sprint("%", formatted) == "[1, 2...]");
+    formatted.draw_separator_after_last_element = true;
     assert(sprint("%", formatted) == "[1, 2, ...]");
     formatted.stop_printing_after_this_many_elements = -1;
     formatted.draw_separator_after_last_element = true;
@@ -67,6 +81,19 @@ main :: () {
     none: FormatInt;
 
     assert(sprint("%", none) == "(null Any)");
+    assert(sprint("% % %", FormatFloat.{}, FormatStruct.{}, FormatArray.{}) == "(null Any) (null Any) (null Any)");
+    errors: int;
+
+    push_context {
+        context.logger = count_error;
+        context.logger_data = *errors;
+        assert(sprint("%", formatStruct(7)) == "error");
+        assert(errors == 1);
+        context.print_style.log_runtime_errors = false;
+        assert(sprint("%", formatStruct(7)) == "error");
+        assert(errors == 1);
+    }
+
     nested := Nested.{ formatInt(15, base = 16) };
     text := sprint("%", nested);
 
@@ -102,4 +129,9 @@ custom :: (builder: *String_Builder, any: Any, struct_printer_data: *void) -> bo
     append(builder, "custom");
 
     return true;
+}
+
+count_error :: (message: string, data: *void, info: Log_Info) {
+    assert(message.count > 0 && (info.common_flags & .ERROR) != 0);
+    (cast(*int) data).* += 1;
 }

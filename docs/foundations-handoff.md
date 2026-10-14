@@ -73,7 +73,7 @@ modified. Source snapshots and build outputs are durable under target/.
 Commands:
 
 ```
-python3 tools/check_foundations.py --jaic target/peer-compiler/debug/jaic --stdlib target/foundation-integration/stdlib --jaifmt target/jaifmt --cross
+python3 tools/check_foundations.py --jaic target/peer-compiler/debug/jaic --stdlib target/foundation-integration/stdlib --jaifmt target/jaifmt --jailint target/peer-compiler/debug/jailint --cross
 JAIC_STDLIB=$PWD/target/foundation-integration/stdlib target/peer-compiler/debug/jailint -D warnings [owned paths]
 JAIC_STDLIB=$PWD/target/foundation-integration/stdlib target/peer-compiler/debug/jaic jaifmt/main.jai -O2 -exe target/jaifmt
 target/jaifmt [owned paths]
@@ -122,7 +122,20 @@ with warnings denied over the same scope.
 Assertion messages now format their arguments before dispatching to the
 context callback. A focused regression checks message bytes, caller location,
 callback return and the successful-assert path; the old implementation fails
-that regression with exit 2 because it drops the arguments.
+the original regression with exit 2 because it drops the arguments. The
+portable test now validates all captured results with the default callback
+restored, avoiding an unavailable Wasm exit export.
+
+Four additional runtime rejection programs verify that integer/float formatter
+kind mismatches, base 65 and negative minimum digits assert in the interpreter
+and native O0/O2. Truncated arrays append a separator after the last printed
+element only when requested, including before the early-stop marker; an
+original regression exposed and corrected the extra separator. Shortest float
+round-trip vectors include subnormals, normal boundaries, adjacent values and
+the largest finite positive/negative representations.
+Aggregate checks also cover empty fixed/view arrays, the default 100-element
+limit, null formatter values and incompatible struct formatting with logging
+enabled and disabled.
 
 Remaining formatter compatibility details, ENABLE_ASSERT configuration,
 generic parameter default reflection and the scalar FNV operation's unresolved
@@ -133,11 +146,19 @@ See the
 contracts. Full integration/corpus/release verification remains coordinator work.
 
 The latest formatter work retains the peer POSIX macOS/x64 failure above.
-All seventeen cases passed interpreter/native O0/O2. Six independent
-cross-target checks passed before the final assertion-message regression;
-macOS x64 failed as recorded. Real jaifmt format/check and warnings-denied
+All seventeen cases and four formatter assertion cases passed
+interpreter/native O0/O2. Six independent cross-target checks passed after
+the assertion test was made portable; macOS x64 failed as recorded.
+Real jaifmt format/check and warnings-denied
 jailint passed over Basic's facade, changed formatter/scalar sources, builder,
 integer128/parsing, the Windows filesystem source and all changed positive
 tests. Inherited allocation/time/array/temporary/File code was retained. See
 the deviations report for remaining limits and
 precise exclusions.
+
+The focused runner now exposes `--jailint` and checks the exact owned source
+scope with jaifmt --check and jailint -D warnings, in addition to real CLI
+behavior and execution tests. It excludes inherited allocation/time/array/
+temporary/File/MD5 implementations from owned formatting/lint claims. Pending
+default-metadata reproduction is formatted and linted but deliberately fails
+at runtime until the compiler provides its required data.

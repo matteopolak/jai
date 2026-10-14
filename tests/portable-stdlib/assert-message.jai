@@ -13,19 +13,31 @@ capture :: (location: Source_Code_Location, message: string) -> bool {
 }
 
 main :: () {
+    successful_calls: int;
+    failed_calls: int;
+    first_message: string;
+    first_location: Source_Code_Location;
+    helper_result: bool;
+
     push_context {
         context.assertion_failed = capture;
         assert(true, "must not dispatch %", 7);
-        if calls != 0 exit(1);
+        successful_calls = calls;
 
         assert(false, "value % / %", 7, "text");
-        if calls != 1 || received != "value 7 / text" exit(2);
-        if received_location.line_number <= 0 exit(3);
+        failed_calls = calls;
+        first_message = copy_string(received);
+        first_location = received_location;
 
         answer = true;
-        if !assert_helper("answer %", 9) exit(4);
-        if calls != 2 || received != "answer 9" exit(5);
+        helper_result = assert_helper("answer %", 9);
     }
 
+    defer free(first_message);
+    assert(successful_calls == 0);
+    assert(failed_calls == 1 && first_message == "value 7 / text");
+    assert(first_location.line_number > 0);
+    assert(helper_result);
+    assert(calls == 2 && received == "answer 9");
     print("ok\n");
 }

@@ -18,6 +18,19 @@ main :: () {
     assert(sprint("%", formatFloat(cast(float64) 0.1, mode = .SHORTEST)) == "0.1");
     assert(sprint("%", formatFloat(cast(float32) 0.1, mode = .SHORTEST)) == "0.1");
     assert(sprint("%", formatFloat(cast(float64) 1.23456789012345, mode = .SHORTEST)) == "1.23456789012345");
+    vectors: [8] u64 = .[1, 0x000fffffffffffff, 0x0010000000000000, 0x3fefffffffffffff,
+                          0x3ff0000000000001, 0x7fefffffffffffff, 0x8000000000000001, 0xffefffffffffffff];
+    for bits: vectors {
+        value := (cast(*float64) *bits).*;
+        text := sprint("%", formatFloat(value, mode = .SHORTEST));
+
+        defer free(text);
+        parsed, success, remainder := string_to_float64(text);
+
+        assert(success && remainder.count == 0);
+        assert((cast(*u64) *parsed).* == bits);
+    }
+
     negative_zero_bits: u64 = 0x8000000000000000;
     negative_zero := (cast(*float64) *negative_zero_bits).*;
 

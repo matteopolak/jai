@@ -35,6 +35,8 @@ This is a deviations inventory, not a claim of completed production integration.
   These are independently chosen behavior, not established exact compatibility.
   No special recovery is claimed for may_be_uninitialized. Proper fix needs
   precise reviewed contracts and original regressions for the resolved cases.
+  Decimal argument indices saturate at signed-s64 maximum on overflow, whose
+  behavior is expressly unspecified; this guards arithmetic and indexing.
 - **Native float dependency/performance** — `format-float.jai` uses public C
   snprintf/localeconv and existing strtod parsing. Shortest conversion searches
   up to 9/17 significant precisions, with allocations per candidate. Precision
@@ -69,7 +71,8 @@ This is a deviations inventory, not a claim of completed production integration.
   because no Basic.exit export is reviewed there. No lint suppression or test
   assertion weakening was added. Coordinator owns full corpus/release checks.
 
-Latest evidence: seventeen formatter/core cases passed interpreter/native O0/O2;
+Latest evidence: seventeen formatter/core cases and four formatter-assertion
+cases passed interpreter/native O0/O2;
 unchanged real jaifmt CLI passed check/rewrite/recursion/pruning/stdin/idempotence;
 six unused-code targets passed, macOS x64 failed as recorded. Real jaifmt
 format/check and warnings-denied source-built jailint passed over Basic's facade,
@@ -77,3 +80,12 @@ changed formatter/scalar sources, builder, integer128/parsing, the Windows
 filesystem source and changed positive tests, including the
 assertion-message regression. Pending default-metadata reproduction is formatted
 but deliberately remains a failing compiler handoff, not a runtime-suite pass.
+The four formatter rejection programs compile successfully and were also
+formatted/checked and linted with warnings denied; their assertions execute
+in the focused runner. The final assertion fixture uses ordinary assertions
+after restoring the default callback and passes the Wasm unused-code check.
+The durable focused runner accepts `--jailint` and uses an explicit owned
+source inventory for real jaifmt --check and jailint -D warnings. Both checks
+pass together with the host execution suite. The latest read-only bindings
+source still restricts ipc_perm to Linux/macOS arm64; no peer repair exists
+to integrate for the macOS x64 failure.

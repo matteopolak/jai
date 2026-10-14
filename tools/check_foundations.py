@@ -11,11 +11,28 @@ CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "
          "format-grammar", "format-floats", "format-aggregates", "format-types", "assert-message")
 
 
+def owned_sources():
+    """Exclude inherited runtime/allocation/time/File/MD5 implementation ownership."""
+    paths = [ROOT / f"stdlib/{module}/module.jai"
+             for module in ("Basic", "String", "Hash", "File_Utilities")]
+    paths.extend((ROOT / "stdlib/internal/basic").glob("format*.jai"))
+    paths.extend(ROOT / f"stdlib/internal/basic/{name}.jai"
+                 for name in ("builder", "scalar", "integer128", "parsing", "module"))
+    paths.extend((ROOT / "stdlib/internal/string").glob("*.jai"))
+    paths.append(ROOT / "stdlib/internal/hash/module.jai")
+    paths.extend(path for path in (ROOT / "stdlib/internal/files").glob("*.jai") if path.name != "file.jai")
+    paths.extend(ROOT / f"tests/portable-stdlib/{name}.jai" for name in CASES)
+    paths.extend((ROOT / "tests/portable-stdlib/negative").glob("format-*.jai"))
+    paths.append(ROOT / "tests/portable-stdlib/pending/formatter-parameter-defaults.jai")
+    return sorted(set(paths))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--jaic", required=True, type=Path)
     parser.add_argument("--stdlib", required=True, type=Path)
     parser.add_argument("--jaifmt", type=Path, help="unchanged repository CLI built with the selected library")
+    parser.add_argument("--jailint", type=Path, help="linter built from the selected independent compiler sources")
     parser.add_argument("--cross", action="store_true")
     args = parser.parse_args()
     compiler = args.jaic.resolve(strict=True)
@@ -63,6 +80,16 @@ def main():
         if result.returncode != expected_code or result.stderr != expected_stderr or (expected is not None and result.stdout != expected):
             raise RuntimeError(f"{command}\nexit={result.returncode}\n{result.stdout}{result.stderr}")
 
+    if args.jaifmt:
+        run([formatter, "--check", *owned_sources()], "")
+        print("passed unchanged jaifmt --check on owned sources and tests", flush=True)
+    if args.jailint:
+        linter = args.jailint.resolve(strict=True)
+        if not linter.is_relative_to(ROOT / "target"):
+            parser.error("use a jailint source build under this checkout's target")
+        run([linter, "-D", "warnings", *owned_sources()], "")
+        print("passed source-built jailint -D warnings on owned sources and tests", flush=True)
+
     for name, diagnostic in (("hash-unsupported", "get_hash requires an integer, boolean, enum, pointer, or float"),
                              ("hash-seed-visibility", "no exported member `HASH_INIT`"),
                              ("builder-buffer-visibility", "no exported member `Buffer`")):
@@ -72,6 +99,23 @@ def main():
         if rejected.returncode != 1 or diagnostic not in rejected.stderr:
             raise RuntimeError(f"expected contract rejection {name}: {rejected}")
     print("passed unsupported-hash and facade-visibility rejection checks", flush=True)
+
+    for name, diagnostic in (("format-int-kind", "FormatInt requires an integer value"),
+                             ("format-float-kind", "FormatFloat requires an IEEE float32 or float64 value"),
+                             ("format-int-base", "assertion failed"),
+                             ("format-int-minimum", "assertion failed")):
+        source = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
+        commands = [[compiler, "-interp", source]]
+        for level in ("O0", "O2"):
+            binary = output / f"{name}-{level}"
+            run([compiler, source, f"-{level}", "-exe", binary])
+            commands.append([binary])
+        for command in commands:
+            rejected = subprocess.run(list(map(str, command)), cwd=ROOT, env=env,
+                                      capture_output=True, text=True, timeout=60)
+            if rejected.returncode == 0 or diagnostic not in rejected.stderr:
+                raise RuntimeError(f"expected formatter assertion {name}: {rejected}")
+        print(f"passed interpreter/native O0/O2 assertion: {name}", flush=True)
 
     for name in CASES:
         source = ROOT / f"tests/portable-stdlib/{name}.jai"
