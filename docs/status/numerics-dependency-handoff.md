@@ -1,7 +1,7 @@
 # Current canonical dependency reproducers
 
 No peer checkout was modified. Source-built compiler:
-artifacts/current-target/debug/jaic. artifacts/canonical-final-stable stages new
+artifacts/current-target/debug/jaic. artifacts/canonical-numeric-final stages new
 independent producers and owned numerics, with no fixtures or tool repairs.
 
 `tests/numerics/window_type_reproducer.jai -check` originally failed on macOS:
@@ -55,7 +55,7 @@ full check on macOS x64 reaches missing POSIX.itimerval. Default UI imports on
 WASM reach Window_Type's explicit unsupported-target assertion. See current
 canonical suite logs; these are failures, not skipped supported configurations.
 Window/input-pump behavior and canonical native backend fixes remain owner work.
-The current run is artifacts/canonical-verification-stable/results.json:
-107/123, with sixteen remaining target/dependency failures. Numerical-only
+The current run is artifacts/canonical-verification-numeric-final/results.json:
+126/143, with seventeen remaining target/dependency failures. Numerical-only
 Windows checking succeeds after integrating the real foundation Windows helper
 modules; it is not a substitute for the failed full UI target check.

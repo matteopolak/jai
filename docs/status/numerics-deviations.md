@@ -19,7 +19,7 @@ tests. Deviations remain. This is not complete coordinator acceptance.
 | platform_clipboard | Isolated macOS named-pasteboard OS test oracle only, no production UI import | Two native clients O0/O2 pass; duplicate Windows backend removed. This is not production-global Clipboard proof | Move safe native oracle into canonical owner's suite when an isolation seam exists |
 | platform_cursors | Retained AppKit/shared Windows handles; macOS15 diagonals, earlier macOS/Linux/WASM caller callback | Repeated public initialization/callback precedence pass on macOS; Windows runtime unverified | Canonical native lifetime/artwork integration and Windows CI |
 | GetRect Windows alias | Conditional export because Windows binding rejects other targets | Inventory lists unqualified alias; visibility differs off Windows | Clarify condition or platform-neutral binding namespace |
-| ui_context NSCursor | Private opaque borrowed pointer identity; no canonical defining class shape is supplied | No allocation/dereference is invented; external nominal/reflection identity remains unverified if an AppKit NSCursor type is later provided | Reviewed defining class and canonical alias; retain native retain/release ownership |
+| ui_context NSCursor | Shared private native-helper borrowed pointer identity; no canonical defining class shape is supplied | Variants now share identity, proven by a failing-before/native-passing-after regression. No allocation/dereference; external nominal/reflection identity remains unverified | Reviewed defining class and canonical alias; retain native retain/release ownership |
 | ui_editor augmented sampling | Canonical keyframe copies instead of direct generic augmented pointers | Extra copy/allocation; using-base restriction still rejected | General compiler/spec relation decision without altering reviewed public shape |
 | canonical WASM Input/Window_Type | Default UI has no reviewed native WASM handle | UI builds/full target fail without fixture aliases; numerical WASM now passes with canonical portable Basic | Native window/input owner must define supported WASM contract |
 | cross-target dependencies | Windows Simp filename-font/File gate; macOS x64 POSIX.itimerval | Full no_dce failures retained. Numeric-only Linux/macOS/WASM checks pass; Windows numeric check passes with required foundation helpers | Producer-owned backend/ABI fixes and target reruns |
@@ -31,6 +31,15 @@ tests. Deviations remain. This is not complete coordinator acceptance.
   Window_Creation aliases, real metrics and full initialized Texture storage.
 - Half ties/exact 2^-24 and binary32 oracle inputs cast deliberately. OKLab
   retains float64 intermediates until final components; assertions unchanged.
+- Vector/quaternion normalization no longer divides by a rounded/overflowed
+  binary32 length. Shared private float64 norms retain range and precision;
+  public return/epsilon comparison remains binary32. Zero unit vectors retain
+  their signed-zero bits. Subnormal/max-range/absolute-value tests pass in the
+  interpreter, native O0/O2 and WASM. This intentionally spends wider arithmetic
+  for correctness; optimize only while retaining these IEEE regressions.
+- Shortcut dispatch now reads key_code, not key_pressed as a character.
+  Ctrl/Cmd+A and release/unrelated-flag tests pass. Clipboard shortcut changes
+  are compile-tested without modifying the user's global clipboard.
 - UI 17-digit parser and twelve-decimal cap removed. Canonical conversion now
   preserves rounding/subnormals/signed zero, rejects trailing junk, and honors
   requested formatting precision. Before/after logs: decimal-precision-before,
@@ -47,6 +56,11 @@ tests. Deviations remain. This is not complete coordinator acceptance.
   filters include required windows-text/windows-abi helpers. Copy/hash uses the
   same source bytes; owned directories replaced to remove superseded files.
   Initial bad-stage evidence retained; current manifests have no repairs.
+  A new Basic interface package was initially omitted when its owner added
+  parameters during this pass; that failed 2/81 staging run is retained under
+  canonical-verification-final-checked. The actual new dependency was included,
+  not replaced by a stub or source repair. Final dependencies are frozen and
+  hash-verified between runs, with owned source overlays tracked separately.
 - Window-render owner fixed AppKit during this pass. Independent reproducer now
   passes; no peer checkout changed.
 - Foundation owner supplied portable formatting/parsing during this pass.
