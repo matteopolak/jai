@@ -77,6 +77,33 @@ failures. `quality-refreshed.json` records every command, tool/source hash and
 incomplete compilation. A combined lint run is required to assess fragments in
 their actual loading modules, rather than treating those failures as clean.
 
+## Second approved refresh
+
+Compiler ec7e23e, foundations 44cca8b, portable 04205ed and window e7e719a are
+merged. Context conflict resolution keeps runtime cleanup semantics together with
+IDE statement recovery. Treemap/temporary stamping additions retain production
+runner selection; no automatic peer-source overlay was imported.
+
+Production rebuild succeeds. The unchanged jaifmt O2 build initially reproduced
+the new scratch-context panic; shared initialization at three creation sites fixes
+it. Nine core context, five layout/metadata, 39 module and 20 partial-edit Rust
+tests pass, together with native/Wasm context O0/O2 execution. The hidden-procedure
+reflection marker is fixed generally; actual GL execution remains AppKit-blocked.
+
+All 11 public-language and 41 public stdlib contract cases pass; the latter pass
+both interpreter and native. Canonical numerics is 46/83. Portable production is
+88/91 ordinary cases; the failures are two generic-default reflection cases and
+the explicit runtime configuration case. SMTP/MIME now passes all ten real
+interpreter/native cases after the ordinary runtime import fix. Foundation WASI
+executes 34/38 checks; only the two generic-default cases fail at both O0/O2.
+
+The actual unchanged formatter builds and checks new owned sources. Foundation
+lint's old nonverbose exit-zero claim is superseded: the runner now rejects
+incomplete compilation and reports three Windows-only files checked as host roots.
+Combined/per-directory quality commands retain those diagnostics. Workspace
+clippy --all-targets -D warnings passes. Earlier reports/logs remain evidence,
+not deleted or relabelled as successful production integration.
+
 ## Compiler corrections verified
 
 `cargo test --locked -p jaic --lib --test cleanroom_modules --test cleanroom_literals --test cleanroom_layout` passed: 150 core unit, 39 module, five literal and three layout tests. `cargo clippy --locked -p jaic --lib --tests -- -D warnings` exited zero. Scoped rustfmt ran over the five modified Rust files. Red/green logs are retained for protection-change SIGBUS, bundled parameter checking and IDE entry admission. Runtime_Support retains its exact reviewed three parameters.

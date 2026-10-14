@@ -72,6 +72,59 @@ evidence and are superseded only where stated here.
 
 ## Direct audit findings and corrections
 
+### Second refresh and source audit
+
+- Compiler ec7e23e, foundations 44cca8b, portable 04205ed and window e7e719a
+  are integrated. Context cleanup's runtime slots and stable deferred boundaries
+  replace the earlier compile-time pointer selection. The merge retains IDE-only
+  independent-statement recovery and strict compilation failures; no invalid
+  recovered body becomes executable. Nine core context and one native/Wasm O0/O2
+  backend regressions pass after scratch initialization correction (8cfb5a7).
+- Reflection hiding procedure member types lost the required 0x8 marker. The
+  source/member type is now retained and only the descriptor type is hidden;
+  metadata keeps the marker and real storage offset. Focused red/green regression
+  and the original procedure fixture pass. Canonical GL driver execution is still
+  blocked by AppKit; it is not counted as verified by the marker test.
+- Foundations now implements default ENABLE_ASSERT=true, conditional nested Buffer
+  layout, assert discard and temporary overwrite stamping. Exact original integer
+  arithmetic replaces libc numeric formatting/parsing on all targets. Deliberate
+  shortest-float precision searching and limb allocations cost performance;
+  stamping a retained page's unused tail may add bandwidth. These costs and
+  remaining style-storage/punctuation/scan contracts are preserved in the producer
+  deviations report. REPLACEMENT_INTERFACE/enabled debugging remain unfinished,
+  although the latest contract is specified; the old missing-shape diagnostic is
+  stale and must be replaced by real implementation, not treated as an oracle gap.
+- The foundation checkpoint depends on generic parameter-default metadata absent
+  from the committed compiler checkpoint. Production assertions fail in two
+  positive tests, including native/Wasm. No empty/default metadata is fabricated.
+  WASI executes 34/38 O0/O2 checks with real WASI imports only; the four failures
+  are those two metadata cases. Producer 19/19 staged claims are not production
+  proof for this snapshot.
+- Nonverbose jailint can return zero after incomplete compilation. The foundation
+  runner now requires verbose complete compilation and exposes three Windows-only
+  files compiled as macOS roots. Full integrated lint retains these failures.
+  No tool-only library patch, rule suppression or positive-suite deletion is used.
+- Mail unnecessarily requested a second executable startup configuration just to
+  use one_time_init. It now imports the configured runtime normally. Real loopback
+  SMTP/MIME plain/HTML/auth/reject/TLS cases pass interpreter/native (ten cases).
+  Explicit application runtime-flag conflicts remain diagnosed and questioned.
+- Treemap has real stable buckets, weight traversal and squarified geometry.
+  Zero default borders/east-north/half-open flush policy were chosen before review;
+  latest specs now settle these and require an owner conformance update. Same-count
+  weight changes still require display dirty/force; deep traversal is recursive.
+- Cocoa native event pumping/notification observers are real; observers and
+  cursor-policy registries retain process lifetime without public teardown. Raw
+  committed text is supported policy; IME composition is outside the reviewed API,
+  not a missing compatibility promise. Drag/drop/touch and other platform paths
+  remain unfinished. Glyph-atlas kernel uses actual FreeType coverage/metrics,
+  but public Dynamic_Font ownership/layout and GPU text rendering remain absent.
+- Two additional private-helper fixtures were moved into library-owned test
+  directories. Actual driver tests remain enabled. The production window runner
+  aggregates failures and never executes a stale binary after failed compilation.
+- New scope contains 100 of 135 module/bootstrap facades, 35 absent plus one
+  supporting constant-table page. Presence is only a declaration inventory;
+  it does not count complete modules or imply runtime/ABI conformance.
+
 - Removed the bundled-module unknown-parameter exemption in `crates/jaic/src/sema/modules.rs` and added general named/positional validation, including parameterless modules. Removed the fourth public Runtime_Support parameter; the build option remains a compiler target constant. Explicit runtime arguments no longer disappear. Original regressions failed before correction; all 39 module regressions pass afterward.
 - `interp/probe.rs` cached mapping checks previously preceded raw copies/slice reads. Strengthening the original mmap/mprotect test to omit manual invalidation reproduced SIGBUS. Actual transfers now use Mach APIs, kernel pipe copying, Windows process-memory APIs or bounds-checked Wasm memory. All five probe tests pass. Comparison now snapshots both ranges, with allocation/copy overhead rather than unchecked in-place slices; this is a deliberate safety tradeoff. Windows/Linux native execution remains CI-required; mapping/protection changes may produce partial failed transfers, never a claimed atomic snapshot. Proper optimization: measured fault-safe chunked transfer without losing invalid-range ordering.
 - IDE admission is now restricted to the exact explicitly selected source entry. Application internal imports and strict CLI entry rejection remain tested; no blanket source-policy weakening.

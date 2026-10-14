@@ -27,3 +27,17 @@ rather than retaining historical missing-contract blockers. No extra IME API is
 required by the reviewed Input contract. Bindings: please supply the independent
 procedure-reflection marker reproducer and stable AppKit/ABI checkpoint through
 approved snapshots; no quarantined implementation is admissible.
+
+12. Compiler checkpoint ec7e23e does not include the generic-default metadata used
+by foundations' staged passes. Production type-parameter-format and
+formatter-parameter-defaults fail real assertions; standalone source descriptors
+have no parameter defaults. Supply the stable general reflection checkpoint.
+Integration independently repaired scratch-context initialization at all three
+creation sites and the hidden-procedure member marker (007711f, 8cfb5a7).
+
+13. Foundation staged lint passed with nonverbose jailint, which can return zero
+after incomplete compilation. The integrated runner now requires verbose complete
+compilation. It exposes three Windows-only implementation files checked as host
+roots; no warning suppression/exclusion was introduced. Provide target-aware
+verification with actual supported tooling. Current owned positive host source
+checks must not be called full platform lint.

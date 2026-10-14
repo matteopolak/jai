@@ -1,11 +1,11 @@
 {
   "compiler": {
     "ref": "producer/compiler",
-    "commit": "ec7e23ee379ae0c36a2ede68439557357acc560b"
+    "commit": "890329bbca1c9c03cae737e8a73773e34d018d7c"
   },
   "stdlib": {
     "ref": "producer/stdlib",
-    "commit": "04205ed218e458f23b841759d7c7c46c948e21a3"
+    "commit": "8a0d40c87373eca623ee1578f667723d5ebe4405"
   },
   "bindings": {
     "ref": "producer/bindings",

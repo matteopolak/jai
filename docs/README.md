@@ -109,6 +109,7 @@ The LLVM backend, C ABI and linking.
 
 - [Independent integration commands and limits](tools/cleanroom-integration.md)
 - [Integration deviations audit](status/integration-deviations.md) and [requests](integration-requests.md)
+- [Integration contract questions](specs/questions/cleanroom-integration.md): unresolved runtime instance and ABI labels, distinct from specified implementation gaps
 
 - [Core foundations implementation handoff](foundations-handoff.md)
 - [Core foundations native ABI notes](foundations-native-abi.md)
