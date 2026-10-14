@@ -492,8 +492,12 @@ impl Compiler {
                 span
             },
             message: format!("in call to `{name}`: {}", error.message),
-            // The call's problem now, whatever the argument's was.
-            kind: DiagnosticKind::Other,
+            // Structural binding failures retain their machine-readable contract kind.
+            kind: if error.kind == DiagnosticKind::InterfaceConstraint {
+                error.kind
+            } else {
+                DiagnosticKind::Other
+            },
             ..error
         };
         let header = self.proc(proc).lit.header.span;
@@ -884,6 +888,21 @@ impl Compiler {
 
     /// `macro_call`: a Code parameter of a macro also binds a variable by name.
     fn arg_cost(&mut self, arg: &CallArg, param: TypeId, macro_call: bool) -> Result<u32> {
+        if self.is_register_operand_type(param, arg.span) {
+            if !macro_call {
+                return err(arg.span, "register operands require an expanded procedure");
+            }
+            if let Some(expr) = &arg.expr
+                && let Some((asm::AsmReg::Vec, _)) = self.asm_reg_named(arg.scope, expr)?
+            {
+                return Ok(convert::EXACT);
+            }
+            return err(
+                arg.span,
+                "expected a SIMD register operand, not a scalar or memory value",
+            );
+        }
+
         let Some(op) = &arg.op else {
             if let Some(ast::Expr {
                 kind: E::Lambda {
@@ -1099,7 +1118,7 @@ impl Compiler {
         if self.auto_deref_arg(from, param) {
             return Ok(convert::SUBTYPE);
         }
-        // `__reg` (Code) macro parameters bind to the caller's variable by name.
+        // Code macro parameters may quote a caller variable by name.
         if param == TypeId::CODE
             && macro_call
             && matches!(op, Operand::Place { .. })
@@ -1382,10 +1401,12 @@ impl Compiler {
                 if k > 0 && param.variadic {
                     // Later variadic elements must match the first binding.
                     let mut probe = bindings.clone();
-                    if self
-                        .match_pattern_value(pattern, ty, &mut probe, def_scope, represented)
-                        .is_err()
+                    if let Err(error) =
+                        self.match_pattern_value(pattern, ty, &mut probe, def_scope, represented)
                     {
+                        if error.kind == DiagnosticKind::InterfaceConstraint {
+                            return Err(error);
+                        }
                         continue;
                     }
                 }
@@ -1921,18 +1942,23 @@ impl Compiler {
                 interface,
             } => {
                 if *interface {
-                    let candidate = if ty == TypeId::TYPE {
-                        represented.ok_or_else(|| {
-                            Box::new(Diagnostic::error(
-                                span,
-                                "interface constraint requires a concrete type binding",
-                            ))
-                        })?
-                    } else {
-                        ty
-                    };
-                    let required = self.eval_type(scope, restriction)?;
-                    self.validate_interface(candidate, required, span)?;
+                    let checked = (|| {
+                        let candidate = if ty == TypeId::TYPE {
+                            represented.ok_or_else(|| {
+                                Box::new(Diagnostic::error(
+                                    span,
+                                    "interface constraint requires a concrete type binding",
+                                ))
+                            })?
+                        } else {
+                            ty
+                        };
+                        let required = self.eval_type(scope, restriction)?;
+                        self.validate_interface(candidate, required, span)
+                    })();
+                    checked.map_err(|error| {
+                        Box::new((*error).with_kind(DiagnosticKind::InterfaceConstraint))
+                    })?;
                 }
                 // `$T/Table`: T must be an instance of the polymorphic struct `Table` (or hold one
                 // as an `#as` member).
@@ -3599,6 +3625,32 @@ impl Compiler {
             if param.discard {
                 let e = self.add_const(mscope, name, param.span, Value::Int(0), TypeId::S64);
                 self.discard_params.insert(e);
+                continue;
+            }
+            if self.is_register_operand_type(param.ty, param.span) {
+                let Slot::Arg(a) = slot else {
+                    return err(param.span, "register operands need an explicit argument");
+                };
+                let Some(expr) = &args[*a].expr else {
+                    return err(param.span, "register operands need a caller register");
+                };
+                let Some((asm::AsmReg::Vec, addr)) = self.asm_reg_named(args[*a].scope, expr)?
+                else {
+                    return err(args[*a].span, "expected a SIMD register operand");
+                };
+                let depth = self.scope(mscope).proc_depth;
+                let entity = self.add_entity(
+                    mscope,
+                    name,
+                    param.span,
+                    EntityKind::Local {
+                        ty: param.ty,
+                        addr,
+                        depth,
+                    },
+                    false,
+                );
+                self.asm_regs.insert(entity, asm::AsmReg::Vec);
                 continue;
             }
             if param.ty == TypeId::CODE {

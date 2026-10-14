@@ -142,6 +142,8 @@ pub enum DiagnosticKind {
     UnknownIdentifier { scope: Option<u32> },
     /// A value whose type does not convert to the type expected there.
     TypeMismatch,
+    /// A concrete generic argument fails a structural interface restriction.
+    InterfaceConstraint,
     /// A failed `#assert`.
     StaticAssert,
     /// A `#foreign` procedure names a library no `#library` declares (often one declared only
@@ -174,6 +176,7 @@ impl DiagnosticKind {
                 ..
             } => Some("unknown-identifier"),
             DiagnosticKind::TypeMismatch => Some("type-mismatch"),
+            DiagnosticKind::InterfaceConstraint => Some("interface-constraint"),
             DiagnosticKind::StaticAssert => Some("static-assert"),
             DiagnosticKind::UnknownLibrary => Some("unknown-library"),
             DiagnosticKind::MissingFile => Some("missing-file"),

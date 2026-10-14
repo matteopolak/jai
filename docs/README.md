@@ -57,6 +57,7 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Compiler-managed global data](compiler/compiler-global-data.md): registered storage identity, segment handles and compile-time/target runtime records
 - [Bootstrap atomics](compiler/bootstrap-atomics.md): scalar validation, host/native/WASM atomic semantics and contention regressions
 - [Ordered variadics and interfaces](compiler/mixed-variadics-and-interfaces.md): mixed packs, continuation lifetime and binding-time structural checks
+- [Register operands](compiler/register-operands.md): canonical SIMD operand identity, generic expansion and scalar lane results
 - [Context cleanup](compiler/context-cleanup.md): conditional caller-scope macro context and lexical exit behavior
 - [Generic default reflection](compiler/generic-default-reflection.md): source identity, evaluated instance defaults and storage contract
 - [Measured performance messages](compiler/performance-messages.md): reviewed run records, actual counters and host timing boundary
@@ -78,6 +79,7 @@ How `crates/jaic`, the interpreter and the language server work.
 - [Compiler architecture](compiler/architecture.md)
 - [Owned compiler formatting verification](compiler/formatting-verification.md): source-built formatter/linter and generated-source idempotence
 - [Compiler integration handoff](compiler-integration-handoff.md): source build, canonical bootstrap and runtime contract for independent library workers
+- [Producer integration requests](compiler/producer-integration-requests.md): remaining Autorun path repair and independent safety/reflection review
 - [Clean-room compiler implementation plan](compiler/cleanroom-implementation-plan.md)
 - [Diagnostics](compiler/diagnostics.md): error message style guide, rendering, runtime failures, exit statuses
 - [Format string check](compiler/format-string-check.md): `print` format strings against their argument count

@@ -1,12 +1,14 @@
 //! Binding-time interface validation independent of particular library modules.
 use jaic::sema::{Compiler, Options, VirtualFs};
 use std::{path::Path, rc::Rc};
+
 const MODULE: &str = r#"
 #module_parameters(HOOKS: $I/interface Required = Required) {
     Required :: struct { run :: inline (value: int) {} }
 }
 touch :: () -> int { return 7; }
 "#;
+
 fn compile(body: &str) -> (Compiler, jaic::sema::Result<()>) {
     let mut fs = VirtualFs::default();
     fs.insert("/lib/Contract/module.jai", MODULE.as_bytes());
@@ -18,6 +20,7 @@ fn compile(body: &str) -> (Compiler, jaic::sema::Result<()>) {
     let result = c.compile_program(Path::new("/app/main.jai"));
     (c, result)
 }
+
 #[test]
 fn unused_interface_replacement_is_validated_when_module_binds() {
     for source in [
@@ -35,6 +38,7 @@ fn unused_interface_replacement_is_validated_when_module_binds() {
         );
     }
 }
+
 #[test]
 fn valid_replacements_and_the_declared_sentinel_bind() {
     for source in [
@@ -81,4 +85,45 @@ fn interfaces_apply_to_procedure_and_struct_type_arguments() {
             }
         }
     }
+}
+
+#[test]
+fn later_variadic_arguments_cannot_bypass_interface_validation() {
+    let (c, result) = compile(
+        r#"
+        Required :: struct { run :: inline (value:int) {} }
+        Good :: struct { run :: inline (value:int) {} }
+        Broken :: struct {}
+        accept :: (values: ..$T/interface Required) {}
+        main :: () { accept(Good,Broken); }
+    "#,
+    );
+    let error = result.expect_err("later elements must satisfy the contract too");
+    assert!(
+        error.message.contains("interface") && error.message.contains("run"),
+        "{}",
+        error.render(&c.sources)
+    );
+}
+
+#[test]
+fn unknown_type_values_do_not_silently_bypass_binding_time_validation() {
+    let (c, result) = compile(
+        r#"
+        Required :: struct { run :: inline (value:int) {} }
+        Good :: struct { run :: inline (value:int) {} }
+        accept :: (values: ..$T/interface Required) {}
+        #program_export "interface_runtime_type"
+        check :: (unknown:Type) { accept(Good,unknown); }
+        main :: () {}
+    "#,
+    );
+    let error = result.expect_err("runtime type values cannot prove a binding-time interface");
+    assert_eq!(
+        error.kind,
+        jaic::source::DiagnosticKind::InterfaceConstraint,
+        "{}",
+        error.render(&c.sources)
+    );
+    assert!(error.message.contains("concrete type binding"));
 }

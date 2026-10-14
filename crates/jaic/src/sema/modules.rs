@@ -558,6 +558,9 @@ impl Compiler {
         let id = ModuleId(self.modules.len() as u32);
         let scope = self.new_scope(ScopeKind::Module, Some(self.root_scope), id, None);
         self.modules.push(Module {
+            loading: true,
+            argument_span: span,
+            arguments_validated: false,
             name: name.to_string(),
             path: Some(entry.to_path_buf()),
             scope,
@@ -569,37 +572,68 @@ impl Compiler {
             files: Vec::new(),
         });
         self.module_cache.insert(key, id);
-        if let Err(error) = self
-            .load_file(entry, id, span)
-            .and_then(|()| self.validate_module_arguments(id, span))
-        {
+        let loaded = self.load_file(entry, id, span);
+        self.modules[id.0 as usize].loading = false;
+        if let Err(error) = loaded {
             self.module_failures.insert(id, error.clone());
             return Err(error);
         }
         self.apply_program_params(id);
+        if self
+            .scope(scope)
+            .pending
+            .iter()
+            .all(|p| p.state == PendingState::Done)
+            && let Err(error) = self.validate_module_arguments(id, span)
+        {
+            self.module_failures.insert(id, error.clone());
+            return Err(error);
+        }
         Ok(id)
     }
 
-    fn validate_module_arguments(&self, id: ModuleId, span: Span) -> Result<()> {
+    /// Bind each written argument to one declared slot. Library provenance does
+    /// not relax this contract; excess positions and duplicate bindings are errors.
+    pub(super) fn validate_module_arguments(&mut self, id: ModuleId, span: Span) -> Result<()> {
         let module = &self.modules[id.0 as usize];
+        if module.arguments_validated {
+            return Ok(());
+        }
+        let span = if span == Span::NONE {
+            module.argument_span
+        } else {
+            span
+        };
+        let mut used = HashSet::default();
         for (name, ..) in &module.params {
-            let valid = if let Some(position) = name.as_str().strip_prefix("$") {
+            let position = if let Some(position) = name.as_str().strip_prefix('$') {
                 position
                     .parse::<usize>()
-                    .is_ok_and(|p| p < module.param_entities.len())
+                    .ok()
+                    .filter(|&p| p < module.param_entities.len())
             } else {
                 module
                     .param_entities
                     .iter()
-                    .any(|id| self.entity(*id).name == *name)
+                    .position(|&id| self.entity(id).name == *name)
             };
-            if !valid {
+            let Some(position) = position else {
                 return err(
                     span,
                     format!("argument `{name}` is not a parameter of this module"),
                 );
+            };
+            if !used.insert(position) {
+                return err(
+                    span,
+                    format!(
+                        "module parameter `{}` is supplied more than once",
+                        self.entity(module.param_entities[position]).name
+                    ),
+                );
             }
         }
+        self.modules[id.0 as usize].arguments_validated = true;
         Ok(())
     }
 
@@ -1061,6 +1095,7 @@ impl Compiler {
                 for (position, param) in params.iter().chain(runtime_params).enumerate() {
                     self.declare_module_parameter(scope, file_scope, module, position, param)?;
                 }
+                self.validate_module_arguments(module, stmt.span)?;
                 let program = runtime_params.iter().filter_map(|p| p.name.map(|n| n.name));
                 self.modules[module.0 as usize]
                     .program_params
@@ -1251,6 +1286,7 @@ impl Compiler {
         // written in this file and may name file-private contextual helpers.
         self.entity_mut(id).home = file_scope;
         self.modules[module.0 as usize].param_entities.push(id);
+        self.modules[module.0 as usize].arguments_validated = false;
         if let Some((Value::String(text), _)) = &provided
             && let Some(member) = std::str::from_utf8(text)
                 .ok()
@@ -1643,6 +1679,9 @@ impl Compiler {
         let id = ModuleId(self.modules.len() as u32);
         let scope = self.new_scope(ScopeKind::Module, Some(self.root_scope), id, None);
         self.modules.push(Module {
+            loading: false,
+            argument_span: Span::NONE,
+            arguments_validated: false,
             name: name.into(),
             path,
             scope,
@@ -1761,6 +1800,11 @@ impl Compiler {
             }
             // Resolving a named import may have loaded a module: its scopes come next.
             if self.unsettled.range(ScopeId(next)..).next().is_none() {
+                for index in 0..self.modules.len() {
+                    if !self.modules[index].loading {
+                        self.validate_module_arguments(ModuleId(index as u32), Span::NONE)?;
+                    }
+                }
                 return Ok(());
             }
         }

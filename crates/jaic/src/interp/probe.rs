@@ -586,6 +586,65 @@ mod tests {
 
     #[cfg(unix)]
     #[test]
+    fn stale_mapping_cache_cannot_fault_compiler_memory_transfers() {
+        const CHILD: &str = "JAIC_PROBE_STALE_MAPPING_CHILD";
+        if std::env::var_os(CHILD).is_none() {
+            let status=std::process::Command::new(std::env::current_exe().unwrap())
+                .args(["--exact", "interp::probe::tests::stale_mapping_cache_cannot_fault_compiler_memory_transfers", "--nocapture"])
+                .env(CHILD,"1").status().unwrap();
+            assert!(
+                status.success(),
+                "guarded memory transfer child failed: {status}"
+            );
+            return;
+        }
+        use std::ffi::{c_int, c_void};
+        unsafe extern "C" {
+            fn mmap(
+                addr: *mut c_void,
+                len: usize,
+                prot: c_int,
+                flags: c_int,
+                fd: c_int,
+                off: i64,
+            ) -> *mut c_void;
+            fn mprotect(addr: *mut c_void, len: usize, prot: c_int) -> c_int;
+            fn munmap(addr: *mut c_void, len: usize) -> c_int;
+        }
+        #[cfg(target_os = "linux")]
+        const ANON: c_int = 0x20;
+        #[cfg(not(target_os = "linux"))]
+        const ANON: c_int = 0x1000;
+        const SIZE: usize = 64 << 10;
+        // SAFETY: owned anonymous mapping, released after all probe operations.
+        let base = unsafe { mmap(std::ptr::null_mut(), SIZE, 3, 2 | ANON, -1, 0) };
+        assert_ne!(base as usize, usize::MAX);
+        let addr = base as u64;
+        let probe = Probe::default();
+        let mut bytes = [0u8; 8];
+        assert!(probe.read(addr, &mut bytes));
+        assert!(probe.write(addr, &bytes));
+        std::thread::spawn(move || {
+            // SAFETY: native thread changes the owned mapping while no transfer is active.
+            assert_eq!(unsafe { mprotect(addr as *mut c_void, SIZE, 0) }, 0);
+        })
+        .join()
+        .unwrap();
+        // No epoch invalidation: real native protection changes bypass compiler hooks.
+        assert!(!probe.read(addr, &mut bytes));
+        assert!(!probe.write(addr, &bytes));
+        assert!(probe.read_vec(addr, 8).is_none());
+        assert_eq!(
+            probe.compare(addr, bytes.as_ptr() as u64, 8),
+            std::cmp::Ordering::Less
+        );
+        // SAFETY: the mapping is no longer accessed by any native thread.
+        assert_eq!(unsafe { munmap(base, SIZE) }, 0);
+        assert!(!probe.read(addr, &mut bytes));
+    }
+
+    #[cfg(unix)]
+    #[test]
     fn a_protected_page_in_the_middle_of_a_known_mapping_is_found() {
         use std::ffi::{c_int, c_void};
         unsafe extern "C" {

@@ -722,6 +722,21 @@ pub fn dead_code_setting(shared: &SharedWorkspaces, id: i64) -> Option<DeadCode>
     reg.list.get(id as usize)?.settings.dead_code_elimination
 }
 
+/// Target runtime storage settings, including changes made by the compiling
+/// workspace itself. NO_OUTPUT workspaces have no target runtime to initialize.
+pub(crate) fn runtime_storage_setting(
+    shared: &SharedWorkspaces,
+    id: i64,
+    default_size: i64,
+) -> Option<(bool, i64)> {
+    let reg = shared.borrow();
+    let settings = &reg.list.get(id as usize)?.settings;
+    Some((
+        settings.output_type != OutputType::NoOutput,
+        settings.temporary_storage_size.unwrap_or(default_size),
+    ))
+}
+
 /// The `remap_import` and `provide_import` rules of workspace `id`, for the compiler that is
 /// resolving its imports.
 pub fn import_rules(

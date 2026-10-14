@@ -482,6 +482,14 @@ impl Compiler {
             returns.push(ty);
             return_names.push(None);
         }
+        if !self.proc(id).is_macro {
+            for param in &params {
+                self.ensure_storage_type(param.ty, param.span)?;
+            }
+        }
+        for &ty in &returns {
+            self.ensure_storage_type(ty, self.proc(id).span)?;
+        }
         let c_call = header.flags.c_call || header.flags.cpp_method || header.foreign.is_some();
         let c_varargs = c_call && params.last().is_some_and(|p| p.variadic);
         let has_context = !c_call && !header.flags.no_context && !header.flags.intrinsic;

@@ -558,12 +558,13 @@ impl Compiler {
                         Value::Int(field.offset as i128),
                         span,
                     )?;
-                    let mut flags = 0;
+                    let mut flags = if hidden_procedure {
+                        0x8
+                    } else {
+                        0
+                    };
                     if field.using {
                         flags |= 0x4;
-                    }
-                    if hidden_procedure {
-                        flags |= 0x8;
                     }
                     if field.as_ {
                         flags |= 0x10;

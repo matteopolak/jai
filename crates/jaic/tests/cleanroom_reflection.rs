@@ -6,6 +6,23 @@ use std::{path::Path, rc::Rc};
 mod bootstrap;
 use bootstrap::BOOTSTRAP;
 
+#[test]
+fn hidden_procedure_members_keep_the_marker_and_struct_alignment() {
+    check(
+        r#"
+        Record :: struct #type_info_procedures_are_void_pointers { callback: (int) -> int; n: u8; }
+        info :: type_info(Record);
+        #assert(info.alignment == align_of(Record));
+        #assert(info.members.count == 2);
+        #assert(info.members[0].type == type_info(*void));
+        #assert((info.members[0].flags & 8) != 0);
+        #assert((info.members[1].flags & 8) == 0);
+        #assert(info.members[1].type == type_info(u8));
+        #assert(info.members[1].offset_in_bytes == 8);
+    "#,
+    );
+}
+
 fn check(source: &str) {
     let (c, result) = compile(source);
     if let Err(e) = result {

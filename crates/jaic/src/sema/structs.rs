@@ -797,6 +797,7 @@ impl Compiler {
                     }
                 }
                 FieldItem::Field(d) => {
+                    self.ensure_storage_type(d.ty, d.span)?;
                     let size = self.size_of(d.ty, d.span)?;
                     // A member's `#align N` replaces its natural alignment, also when smaller:
                     // generated bindings use it for fields that C packs (`#pragma pack`).

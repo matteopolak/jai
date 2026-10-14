@@ -1,14 +1,35 @@
 # Compiler progress
 
-Current continuation checkpoint: mixed scalar/spread normalization and baked
-packs retain all values. Dynamic packs use persistent continuation storage when
-rewritten for yielding WASI procedures. Interface constraints validate unused
-module replacements and procedure/struct type arguments. Verification: 170 core/
-LLVM unit tests plus eight original focused cases pass, including actual native
-and WASM64 execution at O0/O2. Scoped Rust formatting and core/backend all-target
-clippy -D warnings pass. Register operands, CLI plugin orchestration and reviewed
-independent reflection/probe fixes remain outstanding. Production integration
-and corpus verification are coordinator gates.
+Latest continuation (reviewed, awaiting commit): ordered mixed/baked variadics,
+persistent continuation allocation, binding-time interfaces, strict module argument
+validation, canonical SIMD operand forwarding, public-Compiler plugin lifecycle,
+hidden-procedure reflection markers/alignment, and guarded compiler-memory copies.
+Loaded-file constructors preserve type, alias and storage identity in original
+interpreter and native/WASM64 O0/O2 tests; existing producer constructor behavior
+also passes. No namespace/module-name exception was introduced.
+
+Evidence: 263 selected core/backend unit/regression cases pass; 25 LSP unit tests
+pass. Public compiler-owned runner: 25/25 in interpreter mode and 25/25 in native
+mode, including preserved compile-rejection cases. Positive native cases execute
+their built artifacts. CLI original lifecycle executes a real native child;
+existing repeated-plugin/order cases and metadata/unsupported-size diagnostics
+pass. Scoped Rust formatting/item spacing and core/backend/CLI/LSP clippy with
+warnings denied pass after output-aware storage validation. Actual wasm32
+compiler-host clippy passes. Positive Jai fixtures and all owned public/private
+facades pass jaifmt --check and verbose jailint -D warnings without incomplete
+compilation reports. Empty null-data views and mixed string packs also execute.
+
+Remaining dependency gaps: actual nondefault target temporary-storage allocation
+needs a private compiler/runtime mechanism (NO_OUTPUT option metadata works).
+Autorun reaches its lifecycle but its producer path joining/PATH search still
+fails to launch the built child. Runtime alternate-instance policy and selected
+AST/visitor/backend contracts remain open. Production corpus/full CI stays with
+coordinator. Filtered Windows/Fuzz feedback was read; no raw vendor logs were read.
+
+Incident: one direct execution of a NEW producer MPEG fixture wrote/deleted its
+source-relative test artifact under the producer target directory. This violated
+no-peer-writes; no peer source was edited. It is disclosed in the deviations report.
+The fixture was subsequently staged under this checkout for further execution.
 
 Producer checkpoints: atomic lowering 1d8833b; caller-owned context cleanup
 ec7e23e; generic defaults/speculative context initialization 5c3846c. The current
@@ -48,6 +69,7 @@ docs/status/compiler-deviations.md. Next owner/coordinator steps: consume instan
 default metadata for dependent Basic formatting, integrate the independent
 portable/numerics/native/browser dependencies, and rerun full platform/corpus gates.
 No quarantined integration/history, vendor source bodies, transcripts, credentials
-or harness auth were read. No subagents, peer writes, reference execution or
-publication occurred; Extensions is untouched. No agent-message tool is available,
+or harness auth were read. No subagents, peer source edits, reference execution or publication occurred;
+Extensions is untouched. The unintended producer-runtime artifact write is
+recorded above and in the deviations report. No agent-message tool is available,
 so commentary and these durable documents provide milestone reporting.
