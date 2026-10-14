@@ -41,7 +41,7 @@ including real callback and directory-copy specializations. It has not run on
 a Windows host. The executable fixture asserts Windows at compile time; no
 non-Windows no-op run is counted as verification.
 
-Floating conversion uses the public C `snprintf` variadic interface with
+The superseded floating conversion used the public C `snprintf` variadic interface with
 float64 promotion and 32-bit precision. `localeconv` supplies its first
 `lconv` member, `decimal_point`, so conversion output is normalized before
 applying the reviewed separator bytes. Only this native prefix is declared;
@@ -49,6 +49,9 @@ no private C library layout is inferred. The official macOS SDK `_locale.h`
 and `_stdio.h` declare these interfaces; the native contracts also appear in
 [POSIX fprintf](https://pubs.opengroup.org/onlinepubs/9799919799/functions/fprintf.html)
 and [Microsoft snprintf](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/snprintf-snprintf-snprintf-l-snwprintf-snwprintf-l).
-This is a deliberate implementation dependency on target libc formatting,
-allocation and locale facilities. Host interpreter/native tests exercise it;
-other target type checks do not establish their link/runtime availability.
+These declarations are now removed from production Basic. The portable
+numeric-conversion implementation uses original arbitrary-precision integer
+arithmetic for exact decimal rendering and binary parsing, eliminating
+snprintf/localeconv/strtod and global locale dependence on every target.
+The earlier missing-import WASI failure is retained as historical evidence in
+the deviations report; no env functions or tool-only substitute are supplied.

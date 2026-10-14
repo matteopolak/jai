@@ -19,4 +19,6 @@ main :: () {
     for parameter: source.parameters {
         assert(parameter.type != null && parameter.offset_into_constant_storage >= 0);
     }
+
+    print("ok\n");
 }

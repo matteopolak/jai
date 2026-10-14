@@ -113,6 +113,7 @@ The LLVM backend, C ABI and linking.
 - [Core foundations implementation handoff](foundations-handoff.md)
 - [Core foundations native ABI notes](foundations-native-abi.md)
 - [Core foundations deviations and remaining limits](status/foundations-deviations.md)
+- [Core foundations live progress](status/foundations-progress.md)
 - [Core foundations contract questions](specs/stdlib/foundations-questions.md)
 - [Numerics implementation status](status/numerics.md)
 - [Numerics current progress](status/numerics-progress.md)

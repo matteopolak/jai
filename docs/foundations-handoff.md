@@ -25,8 +25,9 @@ Implemented progress:
   canonical names, promoted value storage, nested enums and defaults.
   Float rendering supports decimal/scientific/shortest modes, rounding,
   explicit precision padding, zero removal, prefixes, grouping, separators,
-  signed zero, NaN and infinity. Native C conversion supplies rounding;
-  shortest mode searches significant precisions until the source width
+  signed zero, NaN and infinity. Original portable integer arithmetic supplies
+  exact decimal conversion and ties-to-even binary rounding; no numeric libc
+  imports remain. Shortest mode searches significant precisions until the source width
   round-trips. Aggregate rendering supports reflected member filtering,
   long/short forms, doubled name separators, indentation, array truncation,
   nested string quoting, enum flags, variants, pointers and custom printers.
@@ -80,7 +81,9 @@ target/jaifmt [owned paths]
 target/jaifmt --check [owned paths]
 ```
 
-The focused runner checks seventeen real cases in interpreter/native O0/O2.
+The focused runner now contains twenty-four real cases in interpreter/native O0/O2.
+`--wasm` also builds/executes each supported case at O0/O2 under Node WASI,
+rejecting all non-WASI imports instead of supplying fake env functions.
 Unused-code checks pass on Linux x64/arm64, macOS arm64, Windows x64/arm64 and
 wasm64. The Windows-specific fixture is also cross-checked on both Windows
 CPUs, including callback instantiations; it requires an actual Windows host
@@ -90,10 +93,16 @@ wasm because that target has no reviewed Basic.exit export.
 Filesystem coverage uses real files/directories and tests binary content,
 hard-link self-copy protection, truncation, empty-directory preservation,
 destination-inside-source rejection and rename. A root-level
-`-add 'ENABLE_ASSERT :: true;'` does not enable the optional module-local
-Buffer.ensured_count field: a direct field-access check confirms it remains
-absent. The configuration's declaration/propagation contract is unresolved;
-the default layout is tested, but the enabled layout is not claimed verified.
+`-add 'ENABLE_ASSERT :: true;'` does not configure imports. The reviewed Basic
+module parameter now defaults true and propagates through the facade to its
+canonical private instance. Default/on imports share builder type identity;
+off imports omit ensured_count and select the discard assertion declaration.
+Both layouts/capacities and ensured counters are tested. Discarded argument,
+message and variadic expressions have zero side effects. Four reviewed
+parameters propagate; the fifth needs Memory_Debugger_Interface's missing
+defining shape. Enabled memory debugging diagnoses that limit explicitly.
+Temporary overwrite mode stamps rolled-back/reset/freed storage, including
+overflow payloads inspected by a test allocator before release.
 Additional cases cover actual stdout/stderr bytes and returned counts,
 temporary/normal string lifetime, process exit status 17, allocator identity
 during builder transfer, symlink following/filtering and traversal cycles.
@@ -137,8 +146,8 @@ Aggregate checks also cover empty fixed/view arrays, the default 100-element
 limit, null formatter values and incompatible struct formatting with logging
 enabled and disabled.
 
-Remaining formatter compatibility details, ENABLE_ASSERT configuration,
-generic parameter default reflection and the scalar FNV operation's unresolved
+Remaining formatter compatibility details, Memory_Debugger_Interface and
+the scalar FNV operation's unresolved
 byte/word behavior remain incomplete. Windows runtime testing remains required;
 Windows jaifmt also depends on the portable worker's File/runtime backends.
 See the
@@ -160,5 +169,15 @@ The focused runner now exposes `--jailint` and checks the exact owned source
 scope with jaifmt --check and jailint -D warnings, in addition to real CLI
 behavior and execution tests. It excludes inherited allocation/time/array/
 temporary/File/MD5 implementations from owned formatting/lint claims. Pending
-default-metadata reproduction is formatted and linted but deliberately fails
-at runtime until the compiler provides its required data.
+default-metadata reproduction is now promoted to a passing regression using
+NEW compiler default metadata. Generic formatting includes names and values,
+elides matching defaults, retains required parameters and evaluates dependent
+defaults with actual preceding bindings. type_to_string has reviewed temporary
+lifetime. No earlier generic-default blocker remains.
+
+The producer compiler's context-slot regression temporarily blocked real
+jaifmt and jailint. The original pending/context-overload-probe reproduced it
+without Basic. NEW producer sources now initialize all scratch contexts through
+the context-state API; copied read-only and rebuilt in own durable staging.
+Latest real build/lint/runtime outcomes are maintained in foundations-progress
+and foundations-deviations. No compiler or peer source was edited here.
