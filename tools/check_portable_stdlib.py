@@ -81,6 +81,8 @@ def main():
         parser.error("supply the new Curl dependency with --curl-root")
     shutil.copytree(curl_root, root / "Curl", dirs_exist_ok=True)
     shutil.copytree(args.posix_root.parent / "Windows", root / "Windows", dirs_exist_ok=True)
+    for module in ["Compiler", "internal/compiler-api"]:
+        shutil.copytree(ROOT.parent / "compiler/stdlib" / module, root / module, dirs_exist_ok=True)
     shutil.copytree(curl_root.parent / "internal/bindings", root / "internal/bindings", dirs_exist_ok=True)
     env = dict(os.environ, JAIC_STDLIB=str(root))
     output = ROOT / "target/portable-tests"
@@ -140,6 +142,9 @@ def main():
     for name, diagnostic in [
         ("xar-reverse", "reverse Xar iteration is unsupported"),
         ("atomic-byte-bit", "atomic bit test requires a 2-, 4-, or 8-byte target"),
+        ("buildcpp-compile", "BuildCpp tool failed"),
+        ("buildcpp-tool", "BuildCpp tool failed"),
+        ("buildcpp-target", "BuildCpp object target validation failed"),
     ]:
         negative = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
         result = subprocess.run([str(compiler), "-check", str(negative)], cwd=ROOT,
@@ -147,6 +152,11 @@ def main():
         if result.returncode == 0 or diagnostic not in result.stderr:
             raise RuntimeError(f"expected compile-time rejection: {result.stdout}{result.stderr}")
         print("passed compile-time rejection", name, flush=True)
+    if (output / "cpp-failure/old").read_text() != "preserved":
+        raise RuntimeError("failed C compilation replaced the existing output")
+    leftovers = list(output.rglob("*.build-*")) + list(output.rglob("*.universal-*"))
+    if leftovers:
+        raise RuntimeError(f"C helper left intermediate directories: {leftovers}")
     mail = [sys.executable, "-B", str(ROOT / "tools/check_portable_mail.py"),
             "--jaic", str(compiler), "--stdlib", str(root)]
     if args.native:
@@ -155,7 +165,7 @@ def main():
     if args.native:
         subprocess.run([sys.executable, "-B", str(ROOT / "tools/check_portable_crash.py"),
                         "--jaic", str(compiler), "--stdlib", str(root)], cwd=ROOT, env=env, check=True)
-    dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler", "zip-directory"}
+    dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler", "zip-directory", "buildcpp"}
     posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "crash-handler-init", "atomic-cas-threads"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)

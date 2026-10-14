@@ -18,7 +18,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [bit-array](specs/stdlib/modules/bit-array.md) | Implemented canonical type, bit mutation, padding and logical/selected iteration; interpreter/native cases pass |
 | [bit-operations](specs/stdlib/modules/bit-operations.md) | Implemented width-generic byte swap, scans and population count; interpreter/native cases pass |
 | [bucket-array](specs/stdlib/modules/bucket-array.md) | All reviewed exports implemented; stable pointers, locators, reuse and iteration pass interpreter/native |
-| [buildcpp](specs/stdlib/modules/buildcpp.md) | Owned portable scope; not implemented |
+| [buildcpp](specs/stdlib/modules/buildcpp.md) | Unix native-host C/C++ compile/archive/link/object and macOS universal outputs implemented; artifacts executed/loaded, stale archive members removed, failures preserve output and cleanup. Windows/cross toolchains and documented contract edges unfinished |
 | [check](specs/stdlib/modules/check.md) | Owned portable scope; not implemented |
 | [clipboard](specs/stdlib/modules/clipboard.md) | Reserved for window/render worker by current ownership; not modified here |
 | [code-visit](specs/stdlib/modules/code-visit.md) | Reserved for compiler worker; not implemented or modified here |

@@ -27,6 +27,11 @@ copies work; graph conformance is not counted. Ownership, shared-slice extents,
 scalar pointers and diagnostic-statistic policies require review; see
 [Deep_Copy progress](portable-deep-copy.md).
 
+BuildCpp's Unix host commands work, but Windows/cross-OS toolchains, static-library
+dependency merging and multi-source OBJ_FILE are unfinished. Naming/environment
+parsing, source extension sets and warning forwarding require review. See
+[BuildCpp behavior](portable-buildcpp.md) for actual native tests and cleanup policy.
+
 - Text_File_Handler helpers return independently allocated array strings/table
   keys. Callers free each plus container storage. The spec does not yet settle
   exact helper ownership. With version parsing enabled, startup currently requires

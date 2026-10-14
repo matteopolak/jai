@@ -141,3 +141,10 @@ before recursive traversal, use caller/local maps, and honor callback/preallocat
 roots. Validate reflected layout and reject fixed arrays/Any explicitly. Keep
 the graph regression pending while the compiler emits zero struct alignment;
 count only independently verified scalar/string/scalar-array functionality.
+
+BuildCpp increment: use real Unix compiler/archive commands with explicit argv,
+reserve per-build intermediate directories, stage complete outputs and check
+cleanup before compiler ERROR reporting. Verify static linking, dynamic loading,
+standalone objects, working directories/flags, stale archive removal and macOS
+universal architecture presence. Reject missing/wrong-target tools and record
+unresolved output conventions and unimplemented Windows/cross toolchains.

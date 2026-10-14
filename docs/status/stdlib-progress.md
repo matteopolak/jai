@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `b4a7b61`, CAS-based Atomics plus intrinsic handoff. Earlier
+Latest committed checkpoint: `37aad6c`, supported Deep_Copy plus graph blocker. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -33,13 +33,22 @@ modes, two compile-time rejections, all prior SMTP/startup/parent checks and sel
 Linux/Windows checks. All 188 owned Jai files pass format/lint. Four-worker tests
 verify prior-value uniqueness, bit claims and zero-reaching decrement behavior.
 
-Current verified checkpoint: partial Deep_Copy scalar/string/resizable-array
+Previously verified checkpoint: partial Deep_Copy scalar/string/resizable-array
 operations, callback/preallocated/reused-map cases and conditional debug globals.
 General graph support is blocked by reflected struct alignment 0 (versus 8),
 reproduced in interpreter/native with retained assertions. It is not counted as
 completed graph functionality. Full focused regression passes 63 cases in both
 modes, nine expected faults in both modes, two compile-time rejections and prior
 SMTP/startup/parent/target checks. All 197 owned Jai files pass format/lint.
+
+Current verified checkpoint: Unix BuildCpp C/C++ compile/link/archive/object and
+macOS universal outputs. Native executable and dynamically loaded function return
+the expected results; stale archive members disappear on rebuild; missing tool,
+invalid C and wrong-target objects report real errors after cleanup. Full focused
+regression passes 64 interpreter/native cases, nine runtime faults in both modes,
+five compile-time rejections, and prior SMTP/startup/parent/target checks. All
+203 owned Jai files pass format/lint. The runner requires zero C-helper intermediate
+directories and preserves previous output after failed compilation.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the
