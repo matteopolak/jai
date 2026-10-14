@@ -15,18 +15,20 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACTS = [
     "basic", "string", "memory", "pcg", "codec", "bit-array", "reflection",
-    "unicode", "pool", "adpcm", "bucket-array", "file-utils", "socket", "thread", "process",
+    "unicode", "pool", "adpcm", "bucket-array", "file-utils", "socket", "thread", "process", "command-line",
 ]
 EXPECTED = {
     "runtime": "runtime -9223372036854775808 ff\n",
     "foundations": "-42 true text 55\n",
+    "command-help": lambda out: all(text in out for text in ["configuration comment", "last option", "--alpha", "--zeta", "--help"]) and out.index("--alpha") < out.index("--zeta") and out.endswith("ok\n"),
 }
 
 
 def run(command, env, expected=None, cwd=ROOT):
     result = subprocess.run(command, cwd=cwd, env=env, text=True,
                             capture_output=True, timeout=45)
-    if result.returncode or (expected is not None and result.stdout != expected):
+    matches = expected(result.stdout) if callable(expected) else expected is None or result.stdout == expected
+    if result.returncode or not matches:
         print("FAILED:", " ".join(map(str, command)), file=sys.stderr)
         print(result.stdout, end="", file=sys.stderr)
         print(result.stderr, end="", file=sys.stderr)
@@ -60,7 +62,7 @@ def main():
     cases += [(ROOT / f"tests/stdlib-contract/{name}/main.jai", "ok\n") for name in CONTRACTS]
     run([str(compiler), "-check", str(ROOT / "tests/portable-stdlib/bootstrap.jai")], env)
     for index, (source, expected) in enumerate(cases):
-        run([str(compiler), "-interp", str(source)], env, expected)
+        run([str(compiler), "-interp", str(source), "--"], env, expected)
         if args.native:
             executable = output / f"case-{index}"
             run([str(compiler), str(source), "-exe", str(executable)], env)
@@ -78,7 +80,7 @@ def main():
                     run([str(compiler), str(parent_source), *extra, "-exe", str(executable)], env)
                     run([str(executable)], env, "ok\n", parent_source.parent)
                 else:
-                    run([str(compiler), "-interp", str(parent_source), *extra], env, "ok\n")
+                    run([str(compiler), "-interp", str(parent_source), *extra, "--"], env, "ok\n")
                 deadline = time.monotonic() + (2 if keep else 0.5)
                 while time.monotonic() < deadline:
                     if marker.exists():

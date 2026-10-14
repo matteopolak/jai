@@ -97,6 +97,7 @@ The LLVM backend, C ABI and linking.
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md)
+- [WAV parser design and validation](portable-wav.md)
 - [Socket native declaration ledger](socket-native-ledger.json)
 - [Focused portable regression runner](../tools/check_portable_stdlib.py)
 - [Portable implementation plan](plans/portable-stdlib.md)

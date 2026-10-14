@@ -24,7 +24,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [code-visit](specs/stdlib/modules/code-visit.md) | Reserved for compiler worker; not implemented or modified here |
 | [codex](specs/stdlib/modules/codex.md) | Owned portable scope; not implemented |
 | [color-interpolation](specs/stdlib/modules/color-interpolation.md) | Reserved for numerics worker; not implemented or modified here |
-| [command-line](specs/stdlib/modules/command-line.md) | Owned portable scope; not implemented |
+| [command-line](specs/stdlib/modules/command-line.md) | All reviewed exports implemented for flat scalar/fixed-array options; explicit/default argv, duplicates, notes/help and free arguments tested interpreter/native. Recorded nested/overlay/help edges require review |
 | [compiler](specs/stdlib/modules/compiler.md) | Reserved for compiler worker; not implemented or modified here |
 | [crc](specs/stdlib/modules/crc.md) | Implemented CRC-64/WE; empty and check vectors pass interpreter/native |
 | [curl](specs/stdlib/modules/curl.md) | Reserved for bindings worker; not implemented or modified here |
@@ -130,7 +130,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [unicode](specs/stdlib/modules/unicode.md) | Implemented immutable tables, decoding/encoding and iterator; consumed-tail, strict errors and scalar round trips pass interpreter/native; malformed edges need further coverage |
 | [unmapping-allocator](specs/stdlib/modules/unmapping-allocator.md) | Owned portable scope; not implemented |
 | [vulkan](specs/stdlib/modules/vulkan.md) | Reserved for bindings worker; not implemented or modified here |
-| [wav-file](specs/stdlib/modules/wav-file.md) | Owned portable scope; not implemented |
+| [wav-file](specs/stdlib/modules/wav-file.md) | Reviewed exports implemented for PCM/IMA metadata and borrowed data views; bounded/truncated chunk tests pass interpreter/native, Linux/Windows checks and lint. Duplicate chunks require review |
 | [window-creation](specs/stdlib/modules/window-creation.md) | Owned portable scope; not implemented |
 | [window-type](specs/stdlib/modules/window-type.md) | Owned portable scope; not implemented |
 | [windows-registry](specs/stdlib/modules/windows-registry.md) | Owned portable scope; not implemented |

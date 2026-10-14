@@ -156,7 +156,7 @@ python3 -B tools/check_portable_stdlib.py \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 43 cases in interpreter/native modes, plus bootstrap
+The current run passes 46 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
@@ -174,3 +174,25 @@ and consume only a newly generated SIGPIPE, avoiding process termination on
 ordinary EPIPE errors. Windows and the noted interactive/live teardown contracts
 remain unfinished or under review; unknown final status asserts rather than
 fabricating an exit result.
+
+Command_Line generates canonical Is_Set(T) boolean fields from runtime metadata,
+preserves option defaults and explicitness, handles fixed arrays/scalars, rejects
+duplicates and enum flags, and returns caller-owned free arguments. Its default
+argument path acquires/frees the vector while borrowing the OS argument strings.
+Help emits notes/comments and honors sorting/prefix/alignment flags; exact help
+wording and the recorded parser edges remain under review. Interpreter regression
+invocations use the documented trailing -- so argv-dependent tests receive the
+same executable-name convention as native programs; the library does not invent
+an argument when an embedding host explicitly supplies argc=0.
+
+The source-built jailint passes with `-D warnings` on Command_Line, its argument
+acquisition helper and caller tests. The jaifmt build was retried against the new
+integration modules and currently fails at jaifmt/main.jai:53: missing Basic.exit.
+That completion now belongs to the foundations worker. Formatting/check evidence
+remains outstanding; no formatter success is claimed. The Basic print-to-builder
+overload alias was added while attempting that tool build.
+
+Apollo duration arithmetic currently assumes signed integer femtoseconds. The
+reviewed page does not explicitly settle representation and rounding edges;
+round-trip tests are internal arithmetic evidence only. See the questions page
+before relying on compatibility or adding calendar/native-time conversions.

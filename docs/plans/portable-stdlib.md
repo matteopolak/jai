@@ -27,3 +27,10 @@ target checking are separate evidence; do not infer one from the other.
 
 The module ledger lists every spec page, including reserved ownership and
 unimplemented scope. The coordinator owns full integration/corpus/release checks.
+
+Wav_File increment: use byte reads rather than casting potentially unaligned input.
+Keep packed public metadata in internal/audio/wav.jai and explicit facade aliases.
+Check RIFF/WAVE, bound parsing by both input and RIFF length, advance chunks with
+even-byte padding, borrow the first data chunk, and accept PCM/IMA metadata only.
+Test PCM, ADPCM extensions/fact, odd unknown chunks, clamped data, and malformed
+headers before implementation; then run interpreter/native/target checks and lint.
