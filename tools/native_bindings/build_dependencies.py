@@ -50,6 +50,10 @@ def main():
                 with tarfile.open(archive) as stream:
                     stream.extractall(vendor, filter='data')
     args.output.mkdir(parents=True, exist_ok=True)
+    if platform.system() == 'Darwin':
+        run(['cc','-dynamiclib',ROOT/'tests/native-bindings/apple_abi_probe.m',
+             '-framework','Foundation','-framework','Metal',
+             '-o',args.output/'libapple_abi_probe.dylib'])
     objects = args.output / 'objects'
     objects.mkdir(exist_ok=True)
     units = {

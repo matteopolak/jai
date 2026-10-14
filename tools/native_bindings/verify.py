@@ -29,7 +29,7 @@ def enabled(condition, os_name, cpu):
     if not condition:
         return True
     values = {'OS': os_name.upper(), 'CPU': cpu.upper(), 'ENABLED': False,
-              'ENABLE_ALL_EXTENSIONS': False, 'INCLUDE_DEBUG_BINDINGS': False,
+              'ENABLE_ALL_EXTENSIONS': False, 'DUMP_GL_ERRORS': False, 'INCLUDE_DEBUG_BINDINGS': False,
               'INCLUDE_MEDIA_BINDINGS': False, 'INCLUDE_CAMERA_BINDINGS': False,
               'DEFINE_ANDROID_MAIN_AND_CALL_THIS': False, 'ENABLE_STATISTICS': True,
               'RPMALLOC_FIRST_CLASS_HEAPS': True}
@@ -124,6 +124,14 @@ def main():
                         is_variable = any(re.match(r'(?:using )?\w+\s*:(?!:)', d.code) for d in records)
                         expression = 'type_of(M.' + name + ')' if is_variable else 'M.' + name
                         lines.append('visible_' + str(i) + ' :: ' + expression + ';')
+                # A namespace-only check misses absent C++ convenience bodies
+                # and the header-delegated class API. Force member lookup too.
+                coverage = json.loads((ROOT/'docs/native/bindings-coverage.json').read_text())['modules'][module]
+                members = sorted(set((d['name'],m['signature'].split('::',1)[0].strip(),m['condition'])
+                                     for d in coverage['declarations'] for m in d.get('members',[])))
+                for i, (owner, member, condition) in enumerate(members):
+                    if enabled(condition, os_name, cpu):
+                        lines.append('visible_member_'+str(i)+' :: M.'+owner+'.'+member+';')
                 lines.append('main :: () {}')
                 file.write_text('\n'.join(lines))
                 public_result = invoke(command, env)
@@ -143,8 +151,8 @@ def main():
         result['status'] = 'passed' if result['exit'] != 0 and ('has no exported member `'+private+'`') in result['stderr'] else 'failed'
         report['privacy'].append(result)
     if args.runtime:
-        for name in ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'curl', 'ios', 'objective-c', 'mojoshader']:
-            relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'mojoshader':['MojoShader']}.get(name, [name])
+        for name in ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'curl', 'ios', 'objective-c', 'mojoshader', 'macos', 'metal', 'gl']:
+            relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL']}.get(name, [name])
             if args.module and not any(m in args.module for m in relevant):
                 continue
             source = ROOT/'tests/native-bindings'/f'{name}.jai'

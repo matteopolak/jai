@@ -72,7 +72,41 @@
     "repository": "microsoft/win32metadata",
     "revision": "76c04c2021ef4a831a6f1e06d9566002d746139b",
     "files": {
-      "generation/WinSDK/RecompiledIdlHeaders/um/d3d11.h": "ff082b8df5a18dab59939df3b5d041b5abe9206a0d1c8e2e75dc1be1cbe22135"
+      "generation/WinSDK/RecompiledIdlHeaders/um/d3d11.h": "ff082b8df5a18dab59939df3b5d041b5abe9206a0d1c8e2e75dc1be1cbe22135",
+      "generation/WinSDK/RecompiledIdlHeaders/shared/hidclass.h": "6ad68a5d2bfc2c50d59c3dbfc9325d8ac1d7b47e335e0118ccc3743936ee0f7b"
+    }
+  },
+  "imgui": {
+    "repository": "ocornut/imgui",
+    "revision": "5319d1cffafd5045c4742892c38c9e5cfa23d195",
+    "archive": {
+      "url": "https://github.com/ocornut/imgui/archive/5319d1cffafd5045c4742892c38c9e5cfa23d195.tar.gz",
+      "sha256": "b649193495892e199ab6e8a04d281832c96f50afceade461f966ef9bcf20bde2",
+      "root": "imgui-5319d1cffafd5045c4742892c38c9e5cfa23d195"
+    },
+    "files": {
+      "imgui.h": "27ce505daa602cc7cb69345606b14cccd8d4bc8b248c30765093416dead73ec8"
+    }
+  },
+  "nvtt": {
+    "repository": "castano/nvidia-texture-tools",
+    "revision": "fa6ebda53f1be0bb40513057d13b154771344528",
+    "files": {
+      "src/nvtt/nvtt.h": "06bdfde6d3b4b71564c070d3ed47d86cdd40ad54d3279f7b11210cffc755c898",
+      "src/nvtt/nvtt.cpp": "e32a64345c78e4ec79ab00b543bf630edb341e2ffb6764ed534f1e771212dd9f",
+      "LICENSE": "e7de3e03a8ce91832f9fa1edf97e4e4b84b55ff0c30a4676814a11c75a5d6e89"
+    }
+  },
+  "x11": {
+    "repository": "mirror/libX11",
+    "revision": "libX11-1.8.12",
+    "files": {
+      "include/X11/Xlib.h": "7430c535c4e2b0a31d002d5f9d8f21c6b9f7232e9aad2e297662b90c2591f64d"
+    },
+    "archive": {
+      "url": "https://www.x.org/releases/individual/lib/libX11-1.8.12.tar.xz",
+      "sha256": "fa026f9bb0124f4d6c808f9aef4057aad65e7b35d8ff43951cef0abe06bb9a9a",
+      "root": "libX11-1.8.12"
     }
   }
 }

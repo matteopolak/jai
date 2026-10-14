@@ -5,9 +5,9 @@ These are packaging choices. Public ABI declarations come from the specs.
 IMPORTS = {
     'd3d11': ['Windows', 'dxgi'], 'd3d12': ['Windows', 'dxgi', 'd3d11'],
     'd3d_compiler': ['Windows', 'd3d11'], 'dxc_compiler': ['Windows', 'd3d12'],
-    'dxgi': ['Windows'], 'Linux': ['POSIX'], 'Metal': ['Objective_C', 'macOS'],
-    'Objective_C': [], 'macOS': ['POSIX'], 'nvidia_aftermath': ['Windows', 'd3d12'],
-    'nvtt': ['Windows'], 'X11': ['POSIX'], 'Android': ['POSIX'],
+    'dxgi': ['Windows'], 'Linux': ['POSIX'], 'Metal': ['Objective_C'],
+    'Objective_C': [], 'macOS': ['POSIX', 'Objective_C'], 'nvidia_aftermath': ['Windows', 'd3d12'],
+    'X11': ['POSIX'], 'Android': ['POSIX'],
     'Android/AAudio': [], 'Android/EGL': ['Android'],
     'Vulkan': [],
 }
@@ -18,7 +18,8 @@ LIBRARIES = {
     'libnvtt': 'nvtt', 'libSystem': 'System', 'libobjc': 'objc',
     'libc': 'c', 'libm': 'm', 'libdl': 'dl', 'libpthread': 'pthread',
     'liblog': 'log', 'libandroid': 'android', 'libaaudio': 'aaudio',
-    'libEGL': 'EGL', 'libmediandk': 'mediandk', 'libcamera2ndk': 'camera2ndk',
+    'libEGL': 'EGL', 'libegl': 'EGL', 'lib_glue':'android_native_app_glue',
+    'libmediandk': 'mediandk', 'libcamera2ndk': 'camera2ndk',
 }
 PARAMETERS = {
     'd3d11': '#module_parameters(INCLUDE_DEBUG_BINDINGS := false)();',
@@ -28,10 +29,21 @@ PARAMETERS = {
     'telemetry3': '#module_parameters(ENABLED := false)();',
 }
 PRIVATE = {
+    'nvtt': '#if OS == .WINDOWS { #import "Windows"; }',
     'd3d11': '__MIDL___MIDL_itf_d3d11_0000_0034_0001 :: struct { __bitfield: u32; }',
     'X11': 'wchar_t :: s32;',
-    'ImGui': '#import "Math";\nNative :: #import "internal/bindings/native";\nVarargs :: #import "internal/bindings/varargs";',
-    'macOS': 'Boolean :: u8;\nNative :: #import "internal/bindings/native";',
+    'SDL': '#if OS == .LINUX { #import "X11"; }',
+    'ImGui': '#import "Math";',
+    'macOS': '''Boolean :: u8;
+UTF32Char :: u32;
+UTF16Char :: u16;
+StringPtr :: *u8;
+ConstStringPtr :: *u8;
+ConstStr255Param :: *u8;
+LangCode :: s16;
+RegionCode :: s16;
+ScriptCode :: s16;
+Block :: *Objective_C_Block_Basic;''',
     'Vulkan': 'Binding_Arrays :: #import "internal/bindings/arrays";\nbinding_abort :: () #foreign libc "abort";\n#if OS == .WINDOWS { #import "Windows"; }',
     'meshoptimizer': '#if OS != .WINDOWS { #library,system,link_always "c++"; }',
     'xxHash': '''binding_XXH_versionNumber :: () -> u32 #foreign xxh_vendor "XXH_versionNumber";
@@ -84,11 +96,17 @@ uint32_t :: u32;
 int32_t :: s32;
 int64_t :: s64;
 uint16_t :: u16;
+uint8_t :: u8;
+CGColorSpace :: struct {};
+CGColorSpaceRef :: *CGColorSpace;
+CFTimeInterval :: float64;
+__IOSurface :: struct {};
+IOSurfaceRef :: *__IOSurface;
 binding_abort :: () #foreign libc "abort";''',
     'GL': '''#if OS == .WINDOWS { #import "Windows"; }
 #if OS == .LINUX { #import "X11"; }
 #if OS == .MACOS { #import "Objective_C"; #import "macOS"; }
-Native :: #import "internal/bindings/native";''',
+''',
     'POSIX': '''U128 :: [2]u64;
 #if OS == .MACOS || OS == .IOS {
     binding_errno_address :: () -> *s32 #foreign libc "__error";
@@ -105,8 +123,9 @@ TARGETS = {
     'Linux': 'OS == .LINUX', 'X11': 'OS == .LINUX',
     'POSIX': 'OS == .LINUX || OS == .MACOS || OS == .ANDROID || OS == .IOS',
     'Vulkan': 'OS == .WINDOWS || OS == .LINUX',
-    'macOS': 'OS == .MACOS', 'Metal': 'OS == .MACOS',
+    'macOS': 'OS == .MACOS', 'Metal': 'OS == .MACOS || OS == .IOS',
     'Objective_C': 'OS == .MACOS || OS == .IOS',
     'Android': 'OS == .ANDROID', 'Android/AAudio': 'OS == .ANDROID',
     'Android/EGL': 'OS == .ANDROID', 'nvidia_aftermath': 'OS == .WINDOWS',
+    'nvtt': 'OS == .WINDOWS || OS == .LINUX || OS == .MACOS',
 }

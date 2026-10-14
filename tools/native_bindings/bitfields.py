@@ -30,8 +30,10 @@ def body(parts):
         mapping.update({'__pc':(8,2),'__rc':(10,2)} if record.endswith('control') else
                        {'__stkflt':(6,1),'__errsumm':(7,1),'__c0':(8,1),'__c1':(9,1),
                         '__c2':(10,1),'__tos':(11,3),'__c3':(14,1),'__busy':(15,1)})
-    elif record == 'mach_port_qos':
+    elif record in ('mach_port_qos', 'mach_port_qos_t'):
         mapping = {'name':(0,1),'prealloc':(1,1),'pad1':(2,30)}
+    elif record == 'ImFontGlyph':
+        mapping = {'Colored':(0,1),'Visible':(1,1),'Codepoint':(2,30)}
     elif record == 'mach_msg_type_descriptor_t':
         mapping = {'pad3':(0,24),'type':(24,8)}
     elif record == 'mach_msg_port_descriptor_t':
@@ -43,7 +45,9 @@ def body(parts):
     shift, width = mapping[member]
     mask = (1 << width) - 1
     if name.startswith('set_'):
-        return storage+' = ('+storage+' & ~cast('+data_type+') '+str(mask << shift)+') | ((cast('+data_type+') value & '+str(mask)+') << '+str(shift)+');'
+        value_type = params[1].split(':',1)[1].strip()
+        converted = 'value' if value_type == data_type else '(cast('+data_type+') value)'
+        return storage+' = ('+storage+' & ~(cast('+data_type+') '+str(mask << shift)+')) | (('+converted+' & '+str(mask)+') << '+str(shift)+');'
     result = '('+storage+' >> '+str(shift)+') & '+str(mask)
     return_type = re.search(r'->\s*(\w+)',tail)[1]
     return 'return ('+result+') != 0;' if return_type=='bool' else 'return cast('+return_type+') ('+result+');'

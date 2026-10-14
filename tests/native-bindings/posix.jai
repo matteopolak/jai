@@ -26,5 +26,15 @@ main :: () {
     #if OS == .MACOS {
         check(P.WIFCONTINUED(0x137f));
         check(!P.WIFSTOPPED(0x137f));
+        status: P.wait_t;
+        P.set_w_T_w_Termsig(*status, 9);
+        P.set_w_T_w_Coredump(*status, true);
+        P.set_w_T_w_Retcode(*status, 17);
+        check(P.get_w_T_w_Termsig(status) == 9);
+        check(P.get_w_T_w_Coredump(status));
+        check(P.get_w_T_w_Retcode(status) == 17);
+        P.set_w_T_w_Coredump(*status, false);
+        check(!P.get_w_T_w_Coredump(status));
+        check(P.get_w_T_w_Termsig(status) == 9 && P.get_w_T_w_Retcode(status) == 17);
     }
 }

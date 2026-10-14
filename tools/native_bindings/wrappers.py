@@ -144,11 +144,11 @@ def simple_body(module, name, condition=''):
         return 'if cpu == .ARM64 return "arm64-apple-ios"; return "x86_64-apple-ios";'
     if module == 'X11':
         bodies = {
-            'DefaultScreen': 'return display.default_screen;',
-            'ScreenOfDisplay': 'return *display.screens[scr];',
-            'DefaultScreenOfDisplay': 'return ScreenOfDisplay(display, DefaultScreen(display));',
-            'DefaultRootWindow': 'return DefaultScreenOfDisplay(display).root;',
-            'DefaultGC': 'return ScreenOfDisplay(display, scr).default_gc;',
+            'DefaultScreen': 'return XDefaultScreen(display);',
+            'ScreenOfDisplay': 'return XScreenOfDisplay(display, scr);',
+            'DefaultScreenOfDisplay': 'return XDefaultScreenOfDisplay(display);',
+            'DefaultRootWindow': 'return XDefaultRootWindow(display);',
+            'DefaultGC': 'return XDefaultGC(display, scr);',
             'x_rgb_to_color': 'color: XColor; color.red = cast(u16) _r * 257; color.green = cast(u16) _g * 257; color.blue = cast(u16) _b * 257; color.flags = 7; return color;',
             'x_textwidth': 'return XTextWidth(font, msg.data, cast(s32) msg.count);',
         }
@@ -208,7 +208,8 @@ def forwarding_body(module, declaration, declarations, parts, parse):
                 continue
             value = 'cformat' if arg == 'format' else arg
             kind = 4 if arg == 'maxlength' else 6
-            fixed.append('.{kind='+str(kind)+', value=cast(u64) '+value+'}')
+            converted = value if arg == 'maxlength' else 'cast(u64) '+value
+            fixed.append('.{kind='+str(kind)+', value='+converted+'}')
         output = 'cformat := Native.terminated_copy(format); defer Native.release(cformat); '
         output += 'fixed: ['+str(len(fixed))+']Varargs.Argument = .['+', '.join(fixed)+']; '
         invoke = 'invoke_pointer' if name=='curl_maprintf' else 'invoke_int'

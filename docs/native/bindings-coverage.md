@@ -7,13 +7,15 @@ emitted ABI syntax, `forwarded` means a generated wrapper with a real call, and
 `unresolved` means absent implementation. None of these statuses proves target
 compilation, native layout, library symbol availability or runtime behavior.
 
-The generator reads only reviewed spec pages. It retains conditional shapes,
+The generator reads reviewed spec pages and explicitly delegated pinned native
+header inputs described in [generation and tool verification](bindings-generation.md).
+It retains conditional shapes,
 implicit enum members, overloads and complete anonymous overlays. Native C
 implementations, where built, come from pinned official vendor repositories.
 
 ## Validation so far
 
-- Twenty Python parser/generator regressions pass, including configuration
+- Twenty-four Python parser/generator regressions pass, including configuration
   labels between aggregate names and kinds, multi-type fences, GL parent/field
   relationships across metadata sections, and implicit native enum dependencies.
 - lz4, xxHash, meshoptimizer, freetype, stb_image, stb_image_resize,

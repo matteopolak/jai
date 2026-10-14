@@ -100,6 +100,7 @@ Implementation work uses the API specification as its compatibility contract. Im
 
 - [Standard-library public-contract fixtures](../tests/stdlib-contract/README.md)
 - [Native binding implementation coverage](native/bindings-coverage.md)
+- [Native binding generation and tool verification](native/bindings-generation.md)
 - [Native binding verified snapshot evidence](native/bindings-verified-snapshot.json)
 - [Native binding contract questions](specs/stdlib/native-bindings-questions.md)
 - [Jai language guide](specs/jai/README.md)

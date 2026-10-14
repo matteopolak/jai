@@ -2,6 +2,7 @@
 """Generate native ABI facades exclusively from the reviewed public specs."""
 import argparse
 from collections import Counter, defaultdict
+from dataclasses import replace
 import hashlib
 import json
 from pathlib import Path
@@ -85,6 +86,10 @@ def condition_for(module, declaration, spec=None):
             raise ValueError(f'{module}: ambiguous else condition')
     if condition == 'GLX extension':
         condition = 'OS == .LINUX'
+    if module == 'GL' and declaration.name == 'DumpGLErrors':
+        condition = '!DUMP_GL_ERRORS' if '#discard' in declaration.code else 'DUMP_GL_ERRORS'
+    if module == 'Android' and declaration.name in ('android_app_read_cmd','android_app_pre_exec_cmd','android_app_post_exec_cmd'):
+        condition = 'USE_GLUE_NATIVE_PORT' if '#foreign' in declaration.code else '!USE_GLUE_NATIVE_PORT'
     if spec is not None and module in ('d3d11', 'd3d12'):
         debug_types = {s.name for s in spec.shapes if s.condition == 'INCLUDE_DEBUG_BINDINGS'}
         if any(declaration.name == t or declaration.name == t+'_VTable' or declaration.name.startswith(t+'_') or re.search(r'\*'+re.escape(t)+r'\b',declaration.code) for t in debug_types):
@@ -111,13 +116,66 @@ def com_forward(module, declaration):
     return None
 
 
+def declaration_group(declaration):
+    """Choose our facade architecture without changing ABI member order.
+
+    Storage stays in inventory order because initializers can have effects.
+    Same-name overloads stay stable; their resolution may depend on order.
+    """
+    code = declaration.code
+    if re.search(r'::\s*(?:struct|union|enum(?:_flags)?)\b', code):
+        return 0, 'Types and layouts'
+    if procedure_parts(code):
+        return (4, 'Native entry points') if '#foreign' in code else (5, 'Convenience operations')
+    if re.match(r'\w+\s*:(?!:)', code):
+        return 3, 'Native storage'
+    if re.search(r'::\s*(?:#type|\*struct)\b', code):
+        return 1, 'Callback and opaque types'
+    return 2, 'Aliases and constants'
+
+
+def organize_declarations(output):
+    sections = defaultdict(list)
+    for index, (declaration, code) in enumerate(output):
+        rank, title = declaration_group(declaration)
+        key = (index,) if rank == 3 else (declaration.name.casefold(), index)
+        sections[(rank, title)].append((key, code))
+    return '\n'.join('// ' + title + '\n\n' + '\n'.join(
+        code for _, code in sorted(entries))
+        for (_, title), entries in sorted(sections.items()))
+
+
+def supplement_nvtt_members(owner, body, condition):
+    metadata = json.loads((ROOT/'stdlib/internal/bindings/vendor/nvtt-members.json').read_text())
+    target = re.fullmatch(r'OS == \.(WINDOWS|LINUX|MACOS)', condition)
+    if not target:
+        return body, []
+    def key(code):
+        parts = procedure_parts(code)
+        return (parts[0], tuple(p.split(':',1)[1].split('=',1)[0].strip() for p in parts[1])) if parts else None
+    existing = {key(line.strip().rstrip(';')) for line in body.splitlines()}
+    additions, records = [], []
+    for code in metadata['targets'][target[1]].get(owner, []):
+        if key(code) in existing:
+            continue
+        # Keep native const/non-const receiver overloads even when their Jai
+        # parameter types coincide; both declarations have observable symbols.
+        additions.append('    '+code+';')
+        records.append({'signature':code, 'condition':condition, 'status':'declared',
+                        'source':'pinned NVTT public C++ header', 'header_sha256':metadata['header_sha256']})
+    closing = body.rfind('}')
+    return body[:closing]+'\n'+'\n'.join(sorted(additions, key=lambda line:line.split('::',1)[0].strip().casefold()))+'\n'+body[closing:], records
+
+
 def generate_facade(module, spec):
     shapes = defaultdict(list)
     for shape in spec.shapes:
         shapes[shape.name].append(shape)
     ledger, output, emitted = [], [], set()
+    constants_path = ROOT/'stdlib/internal/bindings/vendor/constants.json'
+    native_constants = json.loads(constants_path.read_text()) if constants_path.exists() else {}
     manual_path = ROOT / 'stdlib' / module / 'wrappers.jai'
-    manual_names = set(re.findall(r'^(\w+)\s*::\s*\(', manual_path.read_text(), re.M)) if manual_path.exists() else set()
+    manual_names = set(re.findall(r'^\s*(\w+)\s*::\s*(?:inline\s+)?\(', manual_path.read_text(), re.M)) if manual_path.exists() else set()
     for d in spec.declarations:
         record = {'name': d.name, 'signature': d.code, 'condition': d.condition, 'spec_line': d.line}
         condition = condition_for(module, d, spec)
@@ -134,6 +192,10 @@ def generate_facade(module, spec):
             continue
         emitted.add(key)
         code = d.code.rstrip(';')
+        native_constant = native_constants.get(module+'/'+d.name)
+        if native_constant and (re.search(r'\w+\.$',code) or code.endswith(':: .data')):
+            code = native_constant['code']
+            record['native_initializer'] = native_constant
         if re.search(r'\*struct$', code):
             code += ' {}'
         if re.search(r'\w+\.$', code):
@@ -145,6 +207,11 @@ def generate_facade(module, spec):
             candidates = shapes[d.name]
             exact = [s for s in candidates if s.condition == condition]
             selected = exact or [s for s in candidates if not s.condition]
+            if module == 'nvtt' and not selected and condition == 'OS == .MACOS':
+                # The contract explicitly delegates this target's member API
+                # to the pinned native header. Both Unix targets use its
+                # Itanium object ABI; member linker names come from Clang.
+                selected = [replace(s, condition=condition) for s in candidates if s.condition == 'OS == .LINUX']
             if not selected and not condition and candidates and all(s.condition for s in candidates):
                 selected = candidates
             if not selected and len(candidates) == 1:
@@ -156,19 +223,31 @@ def generate_facade(module, spec):
             blocks = []
             for s in selected:
                 body = s.code
-                if module == 'ImGui':
+                if module in ('ImGui', 'nvtt'):
+                    # Public C++ shapes can put several prototypes on a line.
+                    # Split only at statement boundaries before a procedure;
+                    # aggregate member and overload order remain unchanged.
+                    body = re.sub(r';[ \t]*(?=\w+\s*::\s*(?:inline\s+)?\()', ';\n', body)
+                    if module == 'nvtt':
+                        body, native_members = supplement_nvtt_members(d.name, body, s.condition)
+                        record['native_header_members'] = native_members
                     member_declarations = [Declaration(line.strip().rstrip(' {;'),s.condition)
                                            for line in body.splitlines() if procedure_parts(line.strip().rstrip(' {;'))]
                     lines = []
                     for line in body.splitlines():
                         signature = line.strip().rstrip(' {;')
                         parts = procedure_parts(signature)
-                        if parts and '#foreign' not in signature:
-                            wrapper = forwarding_body(module,Declaration(signature,s.condition),member_declarations,parts,procedure_parts)
-                            if wrapper is not None:
-                                line = '    '+signature+' { '+wrapper+' }'
-                            else:
-                                record.setdefault('unresolved_members',[]).append(signature)
+                        if parts:
+                            member = {'signature': signature, 'condition': s.condition, 'status': 'declared'}
+                            if '#foreign' not in signature:
+                                wrapper = forwarding_body(module,Declaration(signature,s.condition),member_declarations,parts,procedure_parts)
+                                if wrapper is not None:
+                                    line = '    '+signature+' { '+wrapper+' }'
+                                    member['status'] = 'implemented'
+                                else:
+                                    record.setdefault('unresolved_members',[]).append(signature)
+                                    member['status'] = 'unresolved'
+                            record.setdefault('members', []).append(member)
                         lines.append(line)
                     body = '\n'.join(lines)
                 if module == 'd3d11':
@@ -223,9 +302,9 @@ def generate_facade(module, spec):
         else:
             code += ';'
             record['status'] = 'declared'
-        output.append(guard(code, condition))
+        output.append((d, guard(code, condition)))
         ledger.append(record)
-    return '\n'.join(output), ledger
+    return organize_declarations(output), ledger
 
 
 def main():
@@ -241,7 +320,9 @@ def main():
         code, entries = generate_facade(module, spec)
         digest = hashlib.sha256(page.read_bytes()).hexdigest()
         all_ledger[module] = {'spec': str(page.relative_to(ROOT)), 'spec_sha256': digest,
-                              'counts': dict(Counter(e['status'] for e in entries)), 'declarations': entries}
+                              'counts': dict(Counter(e['status'] for e in entries)),
+                              'member_counts':dict(Counter(m['status'] for e in entries for m in e.get('members',[]))),
+                              'declarations': entries}
         if args.module and module not in args.module:
             continue
         path = ROOT / 'stdlib' / module / 'declarations.jai'
