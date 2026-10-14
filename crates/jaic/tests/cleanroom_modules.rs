@@ -31,6 +31,55 @@ fn rejects(c: &mut Compiler, name: &str) {
 }
 
 #[test]
+fn qualified_constant_aggregate_members_are_not_writable_places() {
+    for target in [
+        "M.values[0]",
+        "M.record.value",
+        "M.records[0].value",
+        "M.Alias.values[0]",
+    ] {
+        let source = format!("M :: #import \"Data\"; main :: () {{ {target} = 9; }}");
+        let mut c = compiler(
+            &[
+                (
+                    "/lib/Data/module.jai",
+                    "R :: struct { value:int; } values :: int.[1,2]; record :: R.{3}; records :: R.[R.{4}]; Alias :: #import \"Data\";",
+                ),
+                ("/app/main.jai", &source),
+            ],
+            false,
+        );
+        rejects(&mut c, "constant");
+    }
+    let mut c = compiler(
+        &[
+            (
+                "/lib/Data/module.jai",
+                "R :: struct { value:int; } record :: R.{3};",
+            ),
+            (
+                "/app/main.jai",
+                "M :: #import \"Data\"; pair :: () -> (bool,int) { return true,9; } main :: () { ok:, M.record.value = pair(); }",
+            ),
+        ],
+        false,
+    );
+    rejects(&mut c, "constant");
+}
+
+#[test]
+fn aggregate_assignment_validation_keeps_macro_caller_scope() {
+    let mut c = compiler(
+        &[(
+            "/app/main.jai",
+            "R :: struct { value:int; } write :: () #expand { `value.value = 9; } check :: () -> int { value:R; write(); return value.value; } #assert(check()==9); main :: () {}",
+        )],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
 fn implicit_runtime_load_passes_only_reviewed_module_parameters() {
     let mut fs = VirtualFs::default();
     fs.insert("/lib/Runtime_Support/module.jai",r#"

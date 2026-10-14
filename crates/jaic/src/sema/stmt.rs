@@ -663,7 +663,10 @@ impl Compiler {
                 };
                 // `ok:, t.str = f()` assigns to a member, index or dereference.
                 let place = match decl.targets().get(i) {
-                    Some(Some(e)) => self.check_expr(f, scope, e, None)?,
+                    Some(Some(e)) => {
+                        self.reject_constant_target(f, scope, e)?;
+                        self.check_expr(f, scope, e, None)?
+                    }
                     _ => {
                         let place = self.check_ident(f, scope, name.name, name.span)?;
                         if self.ide.is_some() {
@@ -1151,30 +1154,39 @@ impl Compiler {
         Ok(true)
     }
 
-    /// `arr[0] = 5` or `k.x = 1` where `arr` or `k` is a constant: the element or member
-    /// would be written to a temporary copy, so it is an error.
-    fn reject_constant_target(&mut self, scope: ScopeId, target: &ast::Expr) -> Result<()> {
-        let mut root = target;
-        let mut nested = false;
-        while let E::Index(base, _) | E::Member(base, _) = &root.kind {
-            root = base;
-            nested = true;
-        }
-        if !nested || !matches!(root.kind, E::Ident(_)) {
-            return Ok(());
-        }
-        if let Ok(Operand::Const {
-            value, ..
-        }) = self.check_expr_no_emit(scope, root)
-            && !matches!(value, Value::Type(_) | Value::Null)
-        {
-            return err(
-                target.span,
-                format!(
-                    "cannot assign into the constant `{}`",
-                    self.sources.snippet(root.span).trim()
-                ),
-            );
+    /// A member/index write must not materialize a constant container as a
+    /// writable temporary. Qualifiers may themselves be modules or types;
+    /// pointer indirection instead selects separate pointee storage.
+    fn reject_constant_target(
+        &mut self,
+        f: &FnCtx,
+        scope: ScopeId,
+        target: &ast::Expr,
+    ) -> Result<()> {
+        let mut container = target;
+        while let E::Index(base, _) | E::Member(base, _) = &container.kind {
+            let mut scratch = self.scratch_ctx(scope);
+            scratch.backtick_scope = f
+                .backtick_scope
+                .or_else(|| f.macros.last().map(|frame| frame.caller_scope));
+            let operand = self.check_expr(&mut scratch, scope, base, None)?;
+            if self.types.is_pointer(operand.ty()) {
+                return Ok(());
+            }
+            if let Operand::Const {
+                value, ..
+            } = operand
+                && !matches!(value, Value::Type(_) | Value::Null)
+            {
+                return err(
+                    target.span,
+                    format!(
+                        "cannot assign into the constant `{}`",
+                        self.sources.snippet(base.span).trim()
+                    ),
+                );
+            }
+            container = base;
         }
         Ok(())
     }
@@ -1208,7 +1220,7 @@ impl Compiler {
         span: Span,
     ) -> Result<()> {
         for target in lhs {
-            self.reject_constant_target(scope, target)?;
+            self.reject_constant_target(f, scope, target)?;
         }
         if lhs.len() == 1
             && rhs.len() == 1

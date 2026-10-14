@@ -58,6 +58,7 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Generic default reflection](compiler/generic-default-reflection.md): source identity, evaluated instance defaults and storage contract
 - [Measured performance messages](compiler/performance-messages.md): reviewed run records, actual counters and host timing boundary
 - [Compiler progress](status/compiler-progress.md) and [deviations](status/compiler-deviations.md): producer checkpoints, verification evidence, gaps and required long-term fixes
+- [Completeness follow-up](compiler/completeness-follow-up.md): qualified constant writes, runtime configuration, suspended threads and alias documentation
 - [Literal precision](compiler/literal-precision.md): contextual defaults, required precision, aliases, folding, overloads and module arguments
 - [Browser integration status](compiler/browser-integration-status.md): explicit source-library embedding, supported Compiler regression and remaining integration failures
 - [Using-filter propagation](compiler/using-filter-propagation.md): parameter/macro bindings, embedded filters, mapped storage and safe Code reconstruction

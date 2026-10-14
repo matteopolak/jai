@@ -1,5 +1,13 @@
 # Compiler deviations and implementation gaps
 
+Qualified constant-write gap repaired in sema/stmt.rs: validation follows all
+aggregate containers, preserves pointer boundaries and caller-scope macro names,
+and applies to existing-target declarations. Original invalid and real mutable
+interpreter/native/WASM regressions pass. Exact staged NEW MPEG failures now
+diagnose const writes after refreshing portable/numerics dependencies. This is
+language assignment validation, not a readonly raw-pointer type system; existing
+raw-address semantics and the separate indexed-constant lifetime question remain.
+
 ## Unintended producer-runtime artifact write (2026-10-14)
 
 Running NEW `../stdlib/tests/portable-stdlib/mpeg-buffer.jai` in interpreter mode

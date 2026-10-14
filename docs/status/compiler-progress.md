@@ -1,5 +1,14 @@
 # Compiler progress
 
+Current continuation: qualified constant aggregate assignment rejects through
+module/type/alias qualifiers and mixed existing-target declarations. Macro caller
+scope and mutable pointer writes remain supported. Original core regressions,
+interpreter/native/WASM64 O0/O2 valid-mutation cases and two exact staged NEW MPEG
+compile-rejection fixtures pass. Scoped rustfmt, core all-target clippy and
+source-built jaifmt/jailint pass; formatter source build also exercises backtick
+assignment. Initial stale-overlay/missing-Math failures are retained separately.
+Next: private runtime configuration, suspended CRT threads, public alias docs.
+
 Committed checkpoints 5d0bf33 and fea1090: ordered mixed/baked variadics,
 persistent continuation allocation, binding-time interfaces, strict module argument
 validation, canonical SIMD operand forwarding, public-Compiler plugin lifecycle,
