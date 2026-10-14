@@ -31,10 +31,12 @@ def main():
     parser.add_argument("--native", action="store_true")
     parser.add_argument("--cross-check", action="store_true")
     parser.add_argument("--wasm", action="store_true", help="execute Wasm interpreter and real WASI O0/O2")
+    parser.add_argument("--case", action="append", choices=sorted(p.stem for p in (ROOT / "tests/platform-io").glob("*-contract.jai")),
+                        help="select contract cases; omitted means all cases, argument bridge always runs")
     parser.add_argument("--windows-build", choices=["x64", "arm64"],
                         help="cross-build Windows fixtures; requires the selected native toolchain")
     parser.add_argument("--private-process", action="store_true",
-                        help="test the private engine using an explicitly test-only staged module")
+                        help="test the real private engine from a library-owned test entry")
     parser.add_argument("--windows-crash", action="store_true",
                         help="source-build Windows exception diagnostics and the enabled-startup fault fixture")
     args = parser.parse_args()
@@ -42,9 +44,17 @@ def main():
     if not compiler.is_relative_to(ROOT / "target"):
         parser.error("use the compiler source-built under this checkout target directory")
     env = dict(os.environ, JAIC_STDLIB=str(args.stdlib.resolve(strict=True)))
+    conflict = ROOT / "tests/platform-io/negative/windows-runtime-configuration-conflict.jai"
+    for cpu in ["x64", "arm64"]:
+        rejected = subprocess.run([str(compiler), str(conflict), "-os", "windows", "-cpu", cpu, "-check"],
+                                  cwd=ROOT, env=env, capture_output=True, timeout=60)
+        if rejected.returncode != 1 or b"conflicts with the configured runtime instance" not in rejected.stderr or rejected.stdout:
+            raise RuntimeError(f"expected original runtime configuration conflict: {rejected}")
     output = ROOT / "target/platform-io-tests"
     output.mkdir(parents=True, exist_ok=True)
     fixtures = sorted((ROOT / "tests/platform-io").glob("*-contract.jai"))
+    if args.case:
+        fixtures = [source for source in fixtures if source.stem in args.case]
     for source in fixtures:
         if args.cross_check:
             for system, cpu in [("windows", "x64"), ("windows", "arm64"),
@@ -82,50 +92,45 @@ def main():
                      optimization, "-exe", executable], env)
             print("cross-built", source.relative_to(ROOT), args.windows_build, flush=True)
     if args.private_process:
-        if not args.stdlib.resolve().is_relative_to(ROOT / "target"):
-            parser.error("private engine test requires a staged stdlib in this checkout's target directory")
-        wrapper = args.stdlib.resolve() / "Platform_IO_Process_Test"
-        wrapper.mkdir()
-        module = wrapper / "module.jai"
-        module.write_text('#load "../internal/platform-io/tests/windows-process.jai";\n')
-        try:
-            source = ROOT / "tests/platform-io/windows-process-backend.jai"
-            helper = ROOT / "tests/platform-io/windows-process-child.jai"
-            for cpu in ["x64", "arm64"]:
-                run([compiler, source, "-os", "windows", "-cpu", cpu, "-check", "-no_dce"], env)
-                run([compiler, helper, "-os", "windows", "-cpu", cpu, "-check", "-no_dce"], env)
-            if os.name == "nt" or args.windows_build:
-                target = [] if os.name == "nt" else ["-os", "windows", "-cpu", args.windows_build]
-                for optimization in ["-O0", "-O2"]:
-                    executable = output / ("private-process" + optimization + ".exe")
-                    child = output / ("private-process-child" + optimization + ".exe")
-                    run([compiler, helper, *target, optimization, "-exe", child], env)
-                    run([compiler, source, *target, optimization, "-exe", executable], env)
-                    if os.name == "nt":
-                        run([executable, child], env, "ok\n")
-                        for mode in ["parent-kill", "parent-keep"]:
-                            marker = output / (mode + optimization + ".marker")
+        source = ROOT / "stdlib/Process/tests/windows-private-engine.jai"
+        helper = ROOT / "tests/platform-io/windows-process-child.jai"
+        for cpu in ["x64", "arm64"]:
+            run([compiler, source, "-os", "windows", "-cpu", cpu, "-check", "-no_dce"], env)
+            run([compiler, helper, "-os", "windows", "-cpu", cpu, "-check", "-no_dce"], env)
+        if os.name == "nt" or args.windows_build:
+            target = [] if os.name == "nt" else ["-os", "windows", "-cpu", args.windows_build]
+            for optimization in ["-O0", "-O2"]:
+                executable = output / ("private-process" + optimization + ".exe")
+                child = output / ("private-process-child" + optimization + ".exe")
+                run([compiler, helper, *target, optimization, "-exe", child], env)
+                run([compiler, source, *target, optimization, "-exe", executable], env)
+                if os.name == "nt":
+                    run([executable, child], env, "ok\n")
+                    for mode in ["parent-kill", "parent-keep"]:
+                        marker = output / (mode + optimization + ".marker")
+                        marker.unlink(missing_ok=True)
+                        try:
+                            run([executable, child, mode, marker], env, "")
+                            deadline = time.monotonic() + 2
+                            while time.monotonic() < deadline and not marker.exists():
+                                time.sleep(0.02)
+                            if marker.exists() != (mode == "parent-keep"):
+                                raise RuntimeError(f"parent exit lifetime mismatch: {mode}")
+                        finally:
                             marker.unlink(missing_ok=True)
-                            try:
-                                run([executable, child, mode, marker], env, "")
-                                deadline = time.monotonic() + 2
-                                while time.monotonic() < deadline and not marker.exists():
-                                    time.sleep(0.02)
-                                if marker.exists() != (mode == "parent-keep"):
-                                    raise RuntimeError(f"parent exit lifetime mismatch: {mode}")
-                            finally:
-                                marker.unlink(missing_ok=True)
-            print("private engine checked; public Process adapter still pending reviewed layouts", flush=True)
-        finally:
-            module.unlink()
-            wrapper.rmdir()
+        print("private engine checked without source staging; public Process adapter remains unimplemented", flush=True)
     if args.windows_crash:
         cpu = args.windows_build or ("arm64" if platform.machine().lower() in {"arm64", "aarch64"} and os.name == "nt" else "x64")
+        if cpu != "x64":
+            raise RuntimeError("reviewed native crash backtraces support Windows x64 only")
         subprocess.run([sys.executable, str(ROOT / "tools/build_platform_io_runtime.py"),
                         "--stdlib", str(args.stdlib.resolve()), "--cpu", cpu], cwd=ROOT, check=True)
-        bootstrap = ROOT / "tests/platform-io/windows-runtime-bootstrap.jai"
-        for target_cpu in ["x64", "arm64"]:
-            run([compiler, bootstrap, "-os", "windows", "-cpu", target_cpu, "-check", "-no_dce"], env)
+        bootstrap = ROOT / "stdlib/Runtime_Support/tests/windows-crash-bootstrap.jai"
+        run([compiler, bootstrap, "-os", "windows", "-cpu", "x64", "-check", "-no_dce"], env)
+        rejected = subprocess.run([str(compiler), str(bootstrap), "-os", "windows", "-cpu", "arm64", "-check", "-no_dce"],
+                                  cwd=ROOT, env=env, capture_output=True, timeout=60)
+        if rejected.returncode != 1 or b"Windows crash backtraces require x64" not in rejected.stderr or rejected.stdout:
+            raise RuntimeError(f"expected reviewed ARM64 crash rejection: {rejected}")
         crash_output = output / "windows-crash"
         crash_output.mkdir(exist_ok=True)
         definitions = (f'BACKTRACE_ENABLED :: true; OUTPUT_PATH :: "{crash_output.as_posix()}"; '

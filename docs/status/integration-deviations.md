@@ -2,6 +2,70 @@
 
 Role: replacement integration worker. This report is open; merged snapshots do not imply completed stdlib support. Producer reports were read for compiler, portable stdlib, foundations, bindings, numerics, window/render, LSP and SDL3. Direct code inspection and combined-tree verification are in progress.
 
+## Sixth approved refresh audit
+
+Compiler 5d0bf33, portable 803f84a, foundations 49c937b, bindings b8e492b,
+numerics 441385d, window 31ded39 and platform-io 658498a are merged separately.
+Every changed producer handoff/status/deviation report was read; unchanged LSP/
+SDL3 reports were already reviewed. The safe CI editor fix 767130b is merged.
+New coordinator-reviewed Process/System/runtime contracts are preserved. Prior
+fifth-refresh evidence below is historical, not proof of this combined snapshot.
+
+- New interface validation resolved patterns in module scope, losing private
+  contextual contracts. The actual unchanged formatter failed. An original
+  non-Basic test fails before and passes afterward with default/valid/invalid
+  bindings and preserved privacy. Pattern evaluation now uses declaring file
+  scope; all 41 module and interface/variadic core cases pass. No API helper is
+  exposed or library name checked.
+- New mixed variadic lowering makes the original Process/Autorun prefix reproducer
+  pass. Autorun's temporary argv assembly is removed; direct mixed packs pass
+  real workspace child execution interpreter/native O2. The original assertions
+  are promoted into the ordinary portable runner. Dynamic native packs still
+  use caller storage/continuation retention as reported by the compiler producer;
+  its standalone memcpy harness is not production runtime evidence.
+- Private Windows Process verification formerly wrote a temporary public module
+  into a staged stdlib. It now compiles the real engine through a permanent
+  library-owned Process test entry; the superseded facade fixture is removed.
+  Both Windows CPUs pass all-code checking without source mutation or relaxed
+  application privacy. Public Windows Process adapters remain unimplemented;
+  their newly reviewed shapes are now available to the active platform owner.
+- The old Windows startup positive fixture conflicted with the configured runtime.
+  Its complete source remains a required negative check on both CPUs. A proper
+  library-owned backend entry checks actual startup independently. Latest review
+  makes native crash backtraces x64-only and meaningful for system entry; ARM64
+  now diagnoses that limitation and embedding does not enable a handler. Two
+  production-library compiler tests pass, including explicit initializer use.
+  Private SDK marshalling does not establish completed public crash-handler ABI.
+- Native Windows command-line pointer storage now uses size_of(*u8), removing
+  an unnecessary hardcoded eight-byte allocation multiplier. Wider System/
+  Thread/native SEH behavior needs actual new CI; previous File/wheel CI results
+  are scoped to its older candidate. CRT suspended-thread interpretation and
+  event/OVERLAPPED interoperation remain genuine compiler requests.
+- File's Wasm check remains an explicit File contract CI gate. The expanded
+  platform runner supports selecting contract cases; omitted selection still
+  runs all contracts. Unsupported System/Thread Wasm imports are not silently
+  filtered from an all-case run. This preserves the original File gate while
+  Windows native CI continues to request all platform contracts.
+- MPEG currently supports real buffer/bit/VLC/pixel/IDCT operations only; demux/
+  decode is unfinished. Its official MIT C algorithm input has a pinned SHA256,
+  not a Jai implementation or API oracle. The upstream header remains byte-
+  identical including whitespace; only that third-party header is excluded from
+  owned-source whitespace checks. A qualified Basic constructor workaround,
+  widened checked IDCT arithmetic and native contract questions remain reported.
+  Its Windows test exclusion predates File completion and must be removed here.
+- Native GL/AppKit source pins and context policies, widened IEEE norm arithmetic,
+  font process-lifetime registries/borrowed data, retained root share context,
+  incomplete Windows/Linux close cleanup and unsupported GL texture/debug routes
+  remain as specified in producer reports. No fake metrics, texture or clipboard
+  backend was introduced. Actual new host driver execution is required before
+  accepting their staged results.
+- The first removal of the private-process staging wrapper left a malformed
+  Python finally indentation. py_compile and the runner failed explicitly; the
+  failure is retained. The repaired runner passes host contracts/private source
+  checking. No failed native/interpreter case is counted from the syntax-failing
+  invocation. Lint still rejects incomplete compilation rather than accepting
+  its quiet exit-zero behavior.
+
 The inherited target matrix discovered only top-level modules, omitting four
 nested public facades: Objective_C/AppKit, Android/AAudio, Android/EGL and
 Gamepad/SDL_Input_Map. An original synthetic-directory regression failed before
