@@ -34,7 +34,7 @@ Platform-io now owns Windows File completion; no duplicated implementation begun
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `04205ed`, stable Treemap hierarchy/layout. Earlier
+Latest committed checkpoint: `8a0d40c`, Unix shared-memory transport. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -89,7 +89,7 @@ Jai files pass format/lint; delegated Math is copied only into the integration
 root. Meow is blocked by the canonical register macro compiler reproducer;
 no replacement public type/hash routine was invented.
 
-Current verified checkpoint: Unix Shared_Memory_Channel SPSC transport, ownership,
+Previously verified checkpoint: Unix Shared_Memory_Channel SPSC transport, ownership,
 real wrap/full/corruption/max-packet behavior and captured allocator cleanup.
 Full regression passes 66 interpreter/native cases, ten runtime faults in both
 modes, five compile-time rejections, four interprocess pairings with 2,048 packets
@@ -98,6 +98,14 @@ format/lint; Linux x64/arm64 channel code is separately compile-checked. Wire
 details and Windows/Linux-execution gaps remain explicit. Two early failed runs
 left unjournaled PID-named objects; no global deletion was attempted. Subsequent
 tests journal and check cleanup of only their recorded resources.
+
+Current verified checkpoint: Unix Autorun helpers and real COMPLETE lifecycle,
+including native child argument forwarding, repeated direct execution, NO_OUTPUT
+skip and real runtime launch/exit failure logs. Full regression passes 67 cases
+in both modes plus prior faults/rejections/SMTP/IPC/startup/parent/target checks.
+All 220 owned Jai files pass format/lint. Compiler mixed-spread loss and CLI use
+of a non-oracle helper are retained as pending reproducers; no convenience export
+or surrogate callback module parameter was added.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the

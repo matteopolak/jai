@@ -54,6 +54,12 @@ partial, and early unjournaled resources are honestly recorded in
 TOC magic values and per-entry wire encoding in its current page; do not fabricate
 a replacement archive format to claim conformance.
 
+Autorun callback module parameters and full option grammar are absent. Its real
+lifecycle/helpers use explicit argv assembly while the compiler loses mixed
+scalar/spread prefixes; the failed interpreter/native assertion remains. CLI
+generation expects a non-oracle public helper; do not invent that export. See
+[Autorun integration](portable-autorun.md).
+
 - Text_File_Handler helpers return independently allocated array strings/table
   keys. Callers free each plus container storage. The spec does not yet settle
   exact helper ownership. With version parsing enabled, startup currently requires
