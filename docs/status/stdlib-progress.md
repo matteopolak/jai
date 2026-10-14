@@ -1,5 +1,36 @@
 # Portable stdlib progress
 
+## Replacement integration current checkpoint
+
+All eight initial producers plus approved refreshed compiler 890329b, portable
+8a0d40c, foundations 44cca8b, bindings a565ab0, numerics 4acc846 and window 7fc1d6a
+are merged. Stable source fixes include fault-safe probes, strict module parameters,
+typed array preservation, binary32 intrinsics, reflected alignment/callback markers,
+scratch context initialization and canonical alias completion. No peer writes,
+subagents, reference binaries, corpus vendor reads, push or publication occurred.
+
+Current production evidence: 45 reviewed contract cases pass interpreter/native;
+11 language cases pass; portable 92/92 plus faults/rejections/SMTP/channels/parent/
+startup pass. Foundations 24 host/19 WASI cases pass O0/O2, six unused-code targets
+pass and macOS x64 fails POSIX.timeval. Numerics 107/123. Fourteen macOS window
+cases pass interpreter/O0/O2, including real windows/events/clipboard/fonts and
+actual GL upload/readback/shaders. Windows File-dependent checks still fail.
+SDL WM-info and AppKit native tests pass; RWops/UserEvent mismatch asserts fail.
+
+Full workspace: 612 passed/73 failed/one inherited ignored, 55 suites and 14 failed
+targets. Original stdlib sweep: 479 cases, interpreter 269/210 pass/fail; native
+262/209 plus eight compile-time-only. These failures remain. Source-stable quality
+scope 587 files: formatter/check pass, 33/148 checks fail; combined lint one finding
+and 56 incomplete compilations/396 programs. Rust formatting and native/browser
+clippy warnings denied pass. Full bindings/compiler/lexer/SDL3 regeneration passes.
+
+Broad prior partial edits: 537 files/14,257 edits/2,563,157 assertions, one startup
+recovery failure; focused retry retains it. Latest refreshed 558-file sweep is
+running. Native Windows/macOS x64/Linux/device and full opaque public corpus/Focus
+remain coordinator gates. See cleanroom-integration.md, integration-requests.md,
+integration-deviations.md and legacy-contract-audit.md for exact commands/reasons.
+Platform-io now owns Windows File completion; no duplicated implementation begun.
+
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior implementations used. Extensions and corpus preserved.
 

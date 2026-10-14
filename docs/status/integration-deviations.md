@@ -2,12 +2,15 @@
 
 Role: replacement integration worker. This report is open; merged snapshots do not imply completed stdlib support. Producer reports were read for compiler, portable stdlib, foundations, bindings, numerics, window/render, LSP and SDL3. Direct code inspection and combined-tree verification are in progress.
 
-Latest checkpoint: compiler 890329b and portable 8a0d40c are merged. Generic
+Latest checkpoints: compiler 890329b, portable 8a0d40c, foundations 44cca8b,
+bindings a565ab0, numerics 4acc846 and window 7fc1d6a are merged. Generic
 metadata now unblocks all 24 host/19 WASI foundation cases at O0/O2; portable
 production passes 92/92 ordinary cases plus faults/rejections and real SMTP/
-shared-channel/process/startup integration. AppKit, safe SDL2 record marshalling,
-full lint/platform support, genuine compiler/IDE failures and the opaque external
-corpus remain open. Earlier results below are retained historical evidence.
+shared-channel/process/startup integration. Real AppKit, window/event/clipboard
+and GL texture/shader host tests pass. Safe caller-owned SDL2 RWops marshalling,
+full lint/platform support, genuine compiler/IDE failures and opaque external
+corpus remain open. Earlier rows below describe initial historical findings;
+explicit refresh sections supersede resolved entries.
 
 Correction: Basic.log is explicitly reviewed and missing. Its failing legacy
 tests are genuine coverage; it is not an unreviewed convenience. Only stale
@@ -27,7 +30,7 @@ failure, retained in requests.
 | IDE recovery and verification | Fresh unterminated opaque regions are conservative; malformed statements are omitted only in IDE mode. Producer corpus has baseline errors despite passing edit probes. | `tools/lsp-validation-0171.md`. Recovery success is not application typecheck success. | Preserve strict compiler diagnostics and separate IDE selected-source admission; rerun against combined code. |
 | SDL3 target coverage | Real native arm64 macOS evidence only; five native platforms/device APIs and integrated formatting pending. | `plans/sdl3-work-log.md`. Cross-layout checks are not runtime verification. | Build pinned native dependencies and execute all CI targets; run real integrated tools and normalized regeneration. |
 | Full original public corpus | Local vendor implementations are opaque/forbidden inputs; original full-corpus verification cannot run here. | Explicit isolation instruction. Omitting vendor-free staging or claiming full pass would hide compatibility gaps. | Coordinator runs original corpus externally, returns filtered failures/minimal independent reproducers; local permitted staging records provenance. |
-| Native verification / release | Windows, macOS x64 and hardware runtime unavailable locally; Focus manual acceptance outstanding. | No CI dispatched or releases modified here. | Coordinator reviews temporary `codex/cleanroom-integration` CI, executes real targets and Focus acceptance before v0.17.1. |
+| Native verification / release | Windows, macOS x64 and hardware runtime unavailable locally; coordinator Focus checks outstanding, human review optional. | No CI dispatched or releases modified here; publication is on hold. | Coordinator reviews temporary branch CI, executes real targets and Focus checks before any publication decision. |
 
 Avoidable integration workarounds will be removed and recorded with original reproducer and fresh results. This audit does not claim that no other deviations remain.
 
