@@ -76,7 +76,7 @@ def stage(destination, foundation=None):
         raise SystemExit('The independent foundation bootstrap is not ready')
     shutil.copytree(foundation, destination, dirs_exist_ok=True)
     for worker, modules, internals in [
-        ('foundations',['Basic','String','Hash','File_Utilities'],['basic','string','hash','files']),
+        ('foundations',['Basic','String','Hash','File_Utilities'],['basic','basic-interface','string','hash','files']),
         ('window-render',['Window_Creation','Window_Type','Input','Keymap','Gamepad','Simp','sRGB','Clipboard'],['window','rendering','input','gamepad','clipboard']),
         ('numerics',['Math','Sloppy_Math','Float16','Color_Interpolation','GetRect','GetRect_LeftHanded'],['numerics']),
         ('compiler',['Compiler','Jai_Lexer','Code_Visit','Program_Print'],['compiler-api','jai-lexer','code-visit','program-print'])
@@ -178,6 +178,7 @@ def main():
         ('Objective_C', 'appkit.jai', [('macos','x64'),('macos','arm64')]),
         ('GL', 'gl-output-buffers.jai', TARGET_CONFIGS),
         ('GL', 'glx-context.jai', [('linux','x64'),('linux','arm64')]),
+        ('GL', 'gl-debug-output.jai', TARGET_CONFIGS),
     ]:
         if args.privacy_only:
             continue
@@ -213,12 +214,14 @@ def main():
                 result['reason'] = 'Required privacy diagnostic was not reached; failure is not evidence that privacy passed'
             report['privacy'].append(result)
     if args.runtime and not args.privacy_only:
-        for name in ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'curl', 'ios', 'objective-c', 'appkit', 'mojoshader', 'macos', 'metal', 'gl', 'graphics-math', 'sdl', 'sdl-wm', 'sdl-layout']:
+        for name in ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'curl', 'ios', 'objective-c', 'appkit', 'mojoshader', 'macos', 'metal', 'gl', 'nsgl', 'gl-context', 'reflection-procedure-flags', 'graphics-math', 'sdl', 'sdl-wm', 'sdl-layout']:
             relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
             if name == 'appkit':
                 relevant = ['Objective_C']
             if name == 'sdl-wm':
                 relevant = ['SDL']
+            if name in ('gl-context','reflection-procedure-flags','nsgl'):
+                relevant = ['GL']
             if args.module and not any(m in args.module for m in relevant):
                 continue
             source = ROOT/'tests/native-bindings'/f'{name}.jai'
@@ -230,7 +233,8 @@ def main():
             exe = work/(name+'-test')
             report['test_sources'][str(source.relative_to(ROOT))] = hashlib.sha256(source.read_bytes()).hexdigest()
             result = invoke([compiler, source, '-exe', exe], env)
-            result.update(name=name, phase='build',scope='private_arithmetic' if name=='graphics-math' else 'library_runtime',status='passed' if result['exit']==0 else 'failed')
+            scope = 'private_arithmetic' if name=='graphics-math' else 'compiler_semantics' if name=='reflection-procedure-flags' else 'library_runtime'
+            result.update(name=name, phase='build',scope=scope,status='passed' if result['exit']==0 else 'failed')
             report['native'].append(result)
             if result['exit'] == 0:
                 result = invoke([exe], env)

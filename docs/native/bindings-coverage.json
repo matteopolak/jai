@@ -47627,9 +47627,9 @@
       "spec": "docs/specs/stdlib/modules/gl.md",
       "spec_sha256": "c4ca5ccdc42205349d86a028a3a1c66ccfd4981e9a4c23a1d143949c76d0a1bd",
       "counts": {
-        "implemented_manual": 18,
+        "implemented_manual": 21,
         "declared": 1591,
-        "unresolved": 5,
+        "unresolved": 2,
         "duplicate": 1
       },
       "member_counts": {},
@@ -47758,16 +47758,16 @@
           "signature": "nsgl_create_context :: (win: *NSWindow, major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false) -> *NSOpenGLContext",
           "condition": "OS == .MACOS",
           "spec_line": 22,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/GL/wrappers.jai"
         },
         {
           "name": "nsgl_create_context",
           "signature": "nsgl_create_context :: (major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false, wanted_msaa: s32 = DEFAULT_MSAA) -> *NSOpenGLContext, chosen_msaa: s32",
           "condition": "OS == .MACOS",
           "spec_line": 23,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/GL/wrappers.jai"
         },
         {
           "name": "nsgl_get_proc_address",
@@ -47790,8 +47790,8 @@
           "signature": "gl_enable_debug_output :: (break_on_error: bool = false)",
           "condition": "",
           "spec_line": 26,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/GL/wrappers.jai"
         },
         {
           "name": "gl_label_object",
@@ -101474,7 +101474,7 @@
         {
           "module": "Objective_C/AppKit",
           "artifact": "stdlib/Objective_C/AppKit/module.jai",
-          "artifact_sha256": "c4863909fc8c8b43d7cac4471f02dbc3bbdfa0fa7814944073fce074d181112b",
+          "artifact_sha256": "3ee0918d3791e3a08f7127cd9fb3c89cd22ae279f5c8cc18a57f6cd0be24615c",
           "public_types": [
             "NSBackingStoreType",
             "NSResponder",
@@ -101539,7 +101539,7 @@
             },
             {
               "signature": "setTitle::(self:*NSWindow,title:string)->O.id",
-              "status": "unresolved_return_contract",
+              "status": "implemented",
               "verification": "Source presence only; native tests are recorded separately."
             },
             {
@@ -101561,7 +101561,7 @@
               "status": "implemented"
             }
           ],
-          "note": "Contextual AppKit contract from reviewed prose, not additional root exports. setTitle return remains unresolved."
+          "note": "Contextual AppKit contract from reviewed prose, not additional root exports. The reviewed setTitle id result is unspecified and must be ignored; native dispatch uses void."
         }
       ]
     },

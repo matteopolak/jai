@@ -1,128 +1,161 @@
 {
-  "scope": "Incomplete bindings worker progress against current NEW peer sources; not coordinator integration or release verification. Broad baseline and subsequent scoped reports have distinct source hashes/scopes. All failures remain required work.",
+  "scope": "Incomplete bindings-worker progress; broad canonical failures, trial compiler proof and actual current-source tool checks are explicitly separate. Not coordinator integration/release verification.",
+  "root_declaration_counts": {
+    "declared": 28332,
+    "unresolved": 193,
+    "implemented_manual": 36,
+    "implemented": 548,
+    "forwarded": 1262,
+    "duplicate": 1
+  },
   "reports": [
     {
-      "report": ".work/latest-production-sources-worker.json",
-      "sha256": "9f96872aa1f3f33c8cd88019de87ffdd4cb2a78122c0988d32056b46c3949e27",
-      "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
-      "staging_root": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/latest-production-sources-worker-94044",
+      "report": ".work/latest-current-branches.json",
+      "sha256": "87dbb210d0fc1b2258a6b7ced10ad38087402fc4d44cc38fca6915e8264099e6",
+      "scope": null,
+      "compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",
       "results": {
         "targets": {
           "unsupported": 70,
-          "passed": 177,
-          "failed": 49
+          "passed": 195,
+          "failed": 53
         },
-        "privacy": {
-          "failed": 13
-        },
-        "native": {
-          "passed": 33,
-          "failed": 3
-        },
-        "symbols": {
-          "passed": 1200
-        }
-      },
-      "source_hashes_recorded": true,
-      "native_artifact_hashes_recorded": true
-    },
-    {
-      "report": ".work/current-configurations.json",
-      "sha256": "f7bc641873f4d7ebf26e775d7c8909ab023498dd13ca51790201ea167034756d",
-      "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
-      "staging_root": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/current-configurations-61423",
-      "results": {
-        "checks": {
-          "passed": 14,
-          "failed": 58
-        }
-      },
-      "source_hashes_recorded": true,
-      "native_artifact_hashes_recorded": false
-    },
-    {
-      "report": ".work/platform-wrapper-progress.json",
-      "sha256": "f6f6946b1981afa2ea32c5762a59cae6c5ba2a821186a65a79ff8ce7fe0766a7",
-      "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
-      "staging_root": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/platform-wrapper-progress-99364",
-      "results": {
-        "targets": {
-          "passed": 22,
-          "failed": 12,
-          "unsupported": 4
-        },
-        "privacy": {
-          "failed": 6
-        },
-        "native": {
-          "passed": 9,
-          "failed": 2
-        },
-        "symbols": {
-          "passed": 299
-        }
-      },
-      "source_hashes_recorded": true,
-      "native_artifact_hashes_recorded": true
-    },
-    {
-      "report": ".work/wrapper-final-source-checks.json",
-      "sha256": "8174e9211643d658ac126098aa80398e660e076dddd1523ca03041455d0b69ef",
-      "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
-      "staging_root": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/wrapper-final-source-checks-99954",
-      "results": {
-        "targets": {
-          "passed": 22,
-          "failed": 12,
-          "unsupported": 4
-        },
-        "privacy": {
-          "failed": 6
-        },
-        "native": {},
-        "symbols": {}
-      },
-      "source_hashes_recorded": true,
-      "native_artifact_hashes_recorded": false
-    },
-    {
-      "report": ".work/privacy-desktop-matrix.json",
-      "sha256": "df84f3c2dc9eb7376232549be8937401f47800e63a5bdbc75281d536f4b80027",
-      "compiler_sha256": "ea4150f8e6207f4778e067d6e2cf119c7e4f12ac75ea736e1a0ae7900ed9ba33",
-      "staging_root": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/bindings/.work/runs/privacy-desktop-matrix-514",
-      "results": {
-        "targets": {},
         "privacy": {
           "passed": 40,
           "failed": 14,
           "unsupported": 24
         },
-        "native": {},
-        "symbols": {}
+        "native": {
+          "passed": 36,
+          "failed": 5
+        },
+        "symbols": {
+          "passed": 1200
+        }
       },
-      "source_hashes_recorded": true,
-      "native_artifact_hashes_recorded": false
+      "canonical_restored": null,
+      "source_hashes_recorded": true
     },
     {
-      "report": ".work/wrappers-quality.json",
-      "sha256": "0cc5afa3285631217d0d9dc9030e0cfc7ace02423cbb991002dd8df7f36f2cdb",
-      "scope": "Owned formatting, formatted regeneration, generator regressions and lint",
-      "checks": 40,
+      "report": ".work/latest-current-configurations.json",
+      "sha256": "37bc1baed80641f7ffc330253133e61130be7b70d9ea349c19dc2a45ab0a8716",
+      "scope": null,
+      "compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",
+      "results": {
+        "checks": {
+          "passed": 17,
+          "failed": 58
+        }
+      },
+      "canonical_restored": null,
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/final-platform-scope.json",
+      "sha256": "4000b9d6e89f9c98dd1516dbdc715e429506ef0360ca2041c0bbd2c3b3b25aa5",
+      "scope": null,
+      "compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",
+      "results": {
+        "targets": {
+          "passed": 18,
+          "failed": 12,
+          "unsupported": 4
+        },
+        "privacy": {
+          "unsupported": 20,
+          "failed": 5,
+          "passed": 5
+        },
+        "native": {
+          "passed": 8,
+          "failed": 3
+        },
+        "symbols": {}
+      },
+      "canonical_restored": null,
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/latest-format-regeneration.json",
+      "sha256": "ed3aea96e33b76ff02163bfaf4fdcc84ada08f8c07da77d69a55f191b878f520",
+      "checks": 5,
       "failures": 0
+    },
+    {
+      "report": ".work/latest-current-lint.json",
+      "sha256": "d99d5e0595fdcb9f3cd98865655dd3d945329aacb341bca3ef87b043f7805819",
+      "checks": 36,
+      "failures": 1
+    },
+    {
+      "report": ".work/latest-proposed-context-lint.json",
+      "sha256": "73137446e53d9efdd24ce52316729b4e802594d73d03ce8a4718c334830a9454",
+      "checks": 36,
+      "failures": 0
+    },
+    {
+      "report": ".work/final-changed-scope-lint.json",
+      "sha256": "64bb40c5f155a3aab15bb39c97c787d2da3e7f3ce8ec0a0f409db278ca73a23e",
+      "checks": 4,
+      "failures": 0
+    },
+    {
+      "report": ".work/gl-sdk-current-static-oracle.json",
+      "sha256": "0f13ae20bbc615769dbfcf022a0e42c4d731930b0afec62ed7d225a4918e4c4b",
+      "scope": "Worker SDK verification, not coordinator integration; unmodified current NEW peer staging; explicitly labeled trial compiler proposal remains unintegrated",
+      "compiler_sha256": "1140326378c8a766088fb8d6e537de97934f9eab017e4f97fd9aaa3f1f713048",
+      "results": {
+        "checks": {
+          "passed": 7,
+          "unavailable": 1
+        }
+      },
+      "canonical_restored": null,
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/latest-reflection-proposal-trial.json",
+      "sha256": "8a76aecd155129a769c27f996a1d82a61c3cec54eaabc30786e73ed84926891a",
+      "scope": "Owned latest-source compiler proposal trial; canonical source/binary restored in finally",
+      "compiler_sha256": null,
+      "results": {
+        "checks": {}
+      },
+      "canonical_restored": true,
+      "source_hashes_recorded": false
+    },
+    {
+      "report": ".work/scratch-context-trial-evidence.json",
+      "sha256": "95b4d6d67cf86115004fed82c22cb8669c90a0799dfcd17c82fccd87010bed20",
+      "scope": "General compiler scratch-initialization proposal; standalone native/interpreter proof and actual current formatter build",
+      "compiler_sha256": "2320c3266f0d118914939e30b1ccb71a0b0755c3d9c9cc05f98372bd5348c83a",
+      "results": {
+        "checks": {}
+      },
+      "canonical_restored": null,
+      "source_hashes_recorded": false
+    },
+    {
+      "report": ".work/jailint-scratch-trial-build.json",
+      "sha256": "bf1e68e94308e5f9747eb38d847e7896938841b6b3618a22ddcffb1735fd8282",
+      "scope": "Actual jailint with general scratch-initialization proposal; canonical compiler and linter rebuilt after trial",
+      "compiler_sha256": null,
+      "results": {
+        "checks": {}
+      },
+      "canonical_restored": true,
+      "source_hashes_recorded": false
     }
   ],
-  "root_declaration_counts": {
-    "declared": 28330,
-    "unresolved": 198,
-    "implemented_manual": 33,
-    "implemented": 548,
-    "forwarded": 1262,
-    "duplicate": 1
-  },
-  "supplemental_appkit_return_contract_unresolved": true,
+  "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",
   "required_sdl_public_layout_failures": [
     "SDL_RWops: 48 vs native 72",
     "SDL_UserEvent: 8 vs native 32"
   ],
-  "native_wm_adapter": "Real Cocoa window, error propagation, canaries and actual native/private size+offset+union checks pass; other platform runtime checks remain required."
+  "required_compiler_proposals": [
+    "General erased-procedure reflection marker",
+    "General scratch context-slot initialization"
+  ],
+  "native_debug_driver": "Unavailable; not passed",
+  "new_native_constructors": "Real NSOpenGL core/legacy context creation, MSAA reporting and hidden Cocoa view attachment pass with canonical compiler."
 }

@@ -171,6 +171,8 @@ Implementation work uses the API specification as its compatibility contract. Im
 - [Native binding verified snapshot evidence](native/bindings-verified-snapshot.json)
 - [Native binding contract questions](specs/stdlib/native-bindings-questions.md)
 - [Native binding implementation deviations](status/bindings-deviations.md)
+- [Real GL SDK validation and reviewable integration fixes](native/gl-sdk-validation.md)
+- [Current compiler context-probing regression](native/compiler-context-probe.md)
 - [Jai language guide](specs/jai/README.md)
 
 ## Browser

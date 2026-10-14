@@ -201,11 +201,12 @@ AppKit ledger excludes every file-private declaration. Thirty-three generator
 regressions now pass. This correction does not count a prototype as an
 implemented wrapper or conceal missing implementations.
 
-Latest owned quality evidence is `.work/wrappers-quality.json`: 40 passing
+Earlier owned quality evidence is `.work/wrappers-quality.json`: 40 passing
 checks covering jaifmt --check, both formatted regeneration checks, 33 Python
 regressions and warnings-as-errors lint on every owned folder and native test.
 GL was linted again after adding the server-version query. Rust/compiler
-sources were not modified; no Rust formatting exclusions are needed.
+source proposals introduced subsequently are described below; no warnings or
+formatting rules were suppressed.
 The scoped native report `.work/platform-wrapper-progress.json` retains real
 AppKit/SDL/WM-info successes and the still-failing SDL layout assertion.
 `.work/wrapper-final-source-checks.json` records the final no-DCE GLX source
@@ -213,3 +214,25 @@ checks. The full privacy matrix is `.work/privacy-desktop-matrix.json` (40
 passes, 14 failures, 24 explicit target exclusions). Privacy failures mean the
 required diagnostic was not reached; they are not treated as successful scope
 enforcement. The configuration sweep still has 58 required failures.
+
+Latest current-source formatting is `.work/latest-format-regeneration.json`:
+the actual formatter, formatted regeneration and 33 Python regressions pass.
+The latest upstream compiler introduces a context-probing ICE that blocks
+rebuilding that formatter and crashes canonical lint on the general reproducer
+directory. A general three-site scratch-context initialization proposal fixes
+the cause; the actual newly built jaifmt and jailint then check every owned
+module/internal/test directory successfully, without exclusions. Canonical
+and trial evidence remain separate in `.work/latest-current-lint.json`,
+`.work/latest-proposed-context-lint.json` and
+`.work/final-changed-scope-lint.json`. See
+[the context regression](compiler-context-probe.md) for the reproducer,
+reviewable patch, scoped Rust checks and canonical restoration.
+
+Both NSOpenGL constructor overloads now execute real AppKit/CGL calls and pass
+the native `nsgl.jai` suite with the canonical compiler. The SDK class/profile
+attributes are pinned in NSOpenGL.h; contexts preserve caller ownership of
+making current and return actual sample counts. Native core/legacy creation,
+hidden-window view attachment, canonical type identity, UTF-8 title forwarding
+and unsupported-request diagnostics are tested. WGL and generic dispatch
+remain unresolved. Default/fallback profile policies are documented as
+independent choices requiring review if stricter equivalence is intended.
