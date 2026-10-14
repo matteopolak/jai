@@ -840,6 +840,9 @@ impl Compiler {
             .exported_using_imports
             .clone()
         {
+            if filter_hides(&self.scope(scope).imports[index].filter, name) {
+                continue;
+            }
             let ids = match self.import_module(scope, index) {
                 Ok(Some(inner)) => self.module_declarations(inner, name),
                 Ok(None) => continue,
@@ -909,6 +912,9 @@ impl Compiler {
             .exported_using_imports
             .clone()
         {
+            if filter_hides(&self.scope(scope).imports[index].filter, name) {
+                continue;
+            }
             match self.import_module(scope, index) {
                 Ok(Some(inner)) => match self.module_using_member(inner, name) {
                     Ok(None) => {}

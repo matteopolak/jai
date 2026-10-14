@@ -75,7 +75,7 @@ impl PartialEq for Value {
             (Type(a), Type(b)) => a == b,
             (Null, Null) | (Void, Void) => true,
             (Proc(a), Proc(b)) => a == b,
-            (Bytes(a), Bytes(b)) => a.bytes == b.bytes && a.relocs.len() == b.relocs.len(),
+            (Bytes(a), Bytes(b)) => a == b,
             (Code(a), Code(b)) => a == b,
             _ => false,
         }
@@ -95,7 +95,10 @@ impl std::hash::Hash for Value {
             Value::String(v) => v.hash(state),
             Value::Type(v) => v.hash(state),
             Value::Proc(v) => v.hash(state),
-            Value::Bytes(v) => v.bytes.hash(state),
+            Value::Bytes(v) => {
+                v.bytes.hash(state);
+                v.relocs.hash(state);
+            }
             Value::Code(v) => v.hash(state),
             Value::Null | Value::Void => {}
         }
@@ -131,5 +134,61 @@ impl Value {
             Value::Code(_) => "#code".into(),
             Value::Void => "void".into(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::ir::{ForeignId, FuncId, GlobalId, RelocTarget};
+    use std::collections::HashSet;
+
+    #[test]
+    fn aggregate_identity_includes_every_relocation_component() {
+        let base = Reloc {
+            offset: 0,
+            target: RelocTarget::Global(GlobalId(1)),
+            addend: 0,
+        };
+        let relocations = [
+            base.clone(),
+            Reloc {
+                target: RelocTarget::Global(GlobalId(2)),
+                ..base.clone()
+            },
+            Reloc {
+                target: RelocTarget::Func(FuncId(1)),
+                ..base.clone()
+            },
+            Reloc {
+                target: RelocTarget::Foreign(ForeignId(1)),
+                ..base.clone()
+            },
+            Reloc {
+                offset: 8,
+                ..base.clone()
+            },
+            Reloc {
+                addend: 1,
+                ..base
+            },
+        ];
+        let values: Vec<Value> = relocations
+            .into_iter()
+            .map(|r| {
+                Value::Bytes(Rc::new(Aggregate {
+                    bytes: vec![0; 16],
+                    relocs: vec![r],
+                }))
+            })
+            .collect();
+        for (i, a) in values.iter().enumerate() {
+            assert_eq!(a, &a.clone());
+            for b in &values[i + 1..] {
+                assert_ne!(a, b);
+            }
+        }
+        let keys: HashSet<_> = values.iter().chain(values.iter()).cloned().collect();
+        assert_eq!(keys.len(), values.len());
     }
 }

@@ -4,7 +4,7 @@ Jai treats a module import's written argument list as part of its instance ident
 
 ## How it works
 
-`Compiler::load_module` keys the instance cache by the canonical entry path and its ordered `(name, value, type)` arguments. Repeating exactly the same ordered list shares an instance. Reordering named arguments creates a distinct instance, including independent mutable module globals. An omitted ordinary argument remains different from an explicitly supplied default.
+`Compiler::load_module` keys the instance cache by the canonical entry path and its ordered `(name, value, type)` arguments. Repeating exactly the same ordered list shares an instance. Reordering named arguments creates a distinct instance, including independent mutable module globals. An omitted ordinary argument remains different from an explicitly supplied default. Aggregate argument identity includes its bytes and every relocation's offset, target kind/identity and addend; pointers to different globals do not collapse merely because their serialized pointer slots are both zero before relocation.
 
 ```jai
 A :: #import "Counters"(LABEL = "jobs", LIMIT = 4);
@@ -24,4 +24,4 @@ There is no compatibility flag. This is the documented compatibility rule record
 
 ## Dependencies and verification
 
-The module loader relies on semantic constant evaluation, module argument types and canonical filesystem paths. No external service is involved. The regression expectation was updated without executing tests or compiled programs.
+The module loader relies on semantic constant evaluation, module argument types and canonical filesystem paths. No external service is involved. Original tests in `crates/jaic/tests/cleanroom_modules.rs` verify ordered/default argument identity and pointer relocation identity without library dependencies. `sema::value` unit tests distinguish global/function/foreign targets, offsets and addends. These tests pass alongside the core unit suite.

@@ -310,3 +310,118 @@ fn native_symlink_cannot_expose_internal_source_as_public_module() {
     }
     std::fs::remove_dir_all(root).unwrap();
 }
+
+#[test]
+fn named_filtered_reexport_preserves_qualified_alias_and_filter() {
+    let mut c = compiler(
+        &[
+            ("/lib/Impl/module.jai", "shown :: 7; hidden :: 9;"),
+            (
+                "/lib/Facade/module.jai",
+                "using,only(shown) Impl :: #import \"Impl\";",
+            ),
+            (
+                "/app/main.jai",
+                "F :: #import \"Facade\"; #assert(F.shown == 7); #assert(F.Impl.hidden == 9); #assert(F.hidden == 9);",
+            ),
+        ],
+        false,
+    );
+    rejects(&mut c, "hidden");
+}
+
+#[test]
+fn named_except_reexport_hides_excluded_name() {
+    let mut c = compiler(
+        &[
+            ("/lib/Impl/module.jai", "shown :: 7; hidden :: 9;"),
+            (
+                "/lib/Facade/module.jai",
+                "using,except(hidden, nonexistent) Impl :: #import \"Impl\";",
+            ),
+            (
+                "/app/main.jai",
+                "F :: #import \"Facade\"; #assert(F.shown == 7); #assert(F.hidden == 9);",
+            ),
+        ],
+        false,
+    );
+    rejects(&mut c, "hidden");
+}
+
+#[test]
+fn facade_procedure_alias_preserves_full_overload_set_and_defaults() {
+    let mut c = compiler(
+        &[
+            (
+                "/lib/Impl/module.jai",
+                "choose :: (x: int, increment: int = 4) -> int #no_context { return x + increment; } choose :: (x: bool) -> int #no_context { if x return 11; return 13; }",
+            ),
+            (
+                "/lib/Facade/module.jai",
+                "#scope_file I :: #import \"Impl\"; #scope_export choose :: I.choose;",
+            ),
+            (
+                "/app/main.jai",
+                "F :: #import \"Facade\"; #assert(F.choose(3) == 7); #assert(F.choose(true) == 11); #assert(F.choose(3, increment=8) == 11);",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
+fn unfiltered_reexport_preserves_mutable_storage() {
+    let mut c = compiler(
+        &[
+            (
+                "/lib/Impl/module.jai",
+                "state: int; Record :: struct { value: int; }",
+            ),
+            ("/lib/Facade/module.jai", "using I :: #import \"Impl\";"),
+            (
+                "/app/main.jai",
+                "I :: #import \"Impl\"; F :: #import \"Facade\"; #assert(*I.state == *F.state); #assert(I.Record == F.Record);",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
+fn module_pointer_arguments_preserve_relocation_identity() {
+    let mut c = compiler(
+        &[
+            (
+                "/lib/M/module.jai",
+                "#module_parameters(P: *int); state: int; pointer :: P;",
+            ),
+            (
+                "/app/main.jai",
+                "a: int; b: int; A :: #import \"M\"(P=*a); B :: #import \"M\"(P=*b); Again :: #import \"M\"(P=*a); #assert(A.pointer == *a); #assert(B.pointer == *b); #assert(*A.state != *B.state); #assert(*A.state == *Again.state);",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
+fn module_argument_order_and_omitted_defaults_are_distinct() {
+    let mut c = compiler(
+        &[
+            (
+                "/lib/M/module.jai",
+                "#module_parameters(A: int = 2, B: int = 3); state: int;",
+            ),
+            (
+                "/app/main.jai",
+                "Default :: #import \"M\"; Explicit :: #import \"M\"(A=2, B=3); Reordered :: #import \"M\"(B=3, A=2); Again :: #import \"M\"(A=2, B=3); #assert(*Default.state != *Explicit.state); #assert(*Reordered.state != *Explicit.state); #assert(*Again.state == *Explicit.state);",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+}

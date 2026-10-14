@@ -21,6 +21,7 @@ This is deliberate. Separate per-path lookups once diverged: `GL.glViewport` fai
 - A module-level `using global;` outside `#scope_file` is recorded in `Module.exported_usings`. An exported `using X :: #import "Y";` re-exports `Y`'s names (`Module.exported_using_imports`, followed with a cycle guard).
 - `module_declarations` sees only the module's own declarations and re-exports. Use it only for fixed compiler names (`Context`, `__arithmetic_overflow`), never for user-written names.
 - File-local imports participate only in lookup from that file. Excluded import names and sibling-file private imports are never consulted as a fallback.
+- Reexport lookup applies the originating import's `only`/`except` filter to both declarations and exported aggregate members. A separately exported named alias retains qualified access to all of its module's exports. Explicit procedure aliases preserve their overload set and default/named arguments; unfiltered reexports preserve mutable storage and nominal type identity. Merging separate filtered overload sources remains unspecified by the reviewed guide.
 
 ### Top-level expansion
 
