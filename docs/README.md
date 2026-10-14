@@ -227,6 +227,8 @@ Scripts, CI and project policies.
 ## Plans
 
 - [Window/render progress](status/window-render-progress.md) and [deviations](status/window-render-deviations.md): production gaps, staged evidence and next verification steps.
+- [Window/render compiler build](../tools/window_render_compiler.py): NEW compiler sources with the reviewed general procedure-reflection metadata patch, isolated in worker staging.
+- [Window/render coverage](window-render-coverage.md): public native windows, Keymap and renderer contracts, with verification limits.
 
 Agreed designs that are not built yet.
 

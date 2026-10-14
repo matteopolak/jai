@@ -6,6 +6,29 @@ an incomplete implementation. Existing evidence remains in
 [handoff](../window-render-handoff.md) and [questions](../specs/stdlib/window-render-questions.md).
 No blanket diagnostic/check suppression or Extensions modification is intended.
 
+Synchronized-contract update supersedes historical unresolved-default/grammar/
+shader/font/mip entries below: public native window creation and complete Keymap
+operations are now implemented. General compiler reflection is fixed only in local
+compiler staging using the durable producer patch; no GL-specific table patch.
+Actual texture-driver interpreter/O0/O2 passes. Production integration is pending.
+
+Current Windows Keymap dependency failure: File unconditionally asserts OS_IS_UNIX.
+The original import/reset reproducer is recorded; no substitute handler type,
+altered public signature or tool-only import repair was introduced.
+
+Linux source uses actual GLX framebuffer configs/visuals and Xlib colors/events,
+sharing canonical X11.x_global_display. Private CWBackPixel (1<<1), absent from
+the binding inventory, is an SDK window-attribute ABI constant. Native X server
+execution remains unverified; legacy XLookupString text is supported, UTF-8 input
+contexts are not yet integrated. Default asynchronous Xlib error handling remains.
+UI-thread/process native resource lifetimes, Windows shared-class specialization
+collisions and Linux cleanup need native host regressions. The superseded copied
+font backing/destruction and R8 atlas paths still need the reviewed retained-face
+and RGBA alpha-atlas implementation before public font support is claimed.
+
+IME composition is not a missing compatibility requirement: the updated Input
+contract exposes committed text only. Prior IME gap entries are historical.
+
 | Location | Observable effect and rationale | Evidence and risk | Long-term resolution |
 | --- | --- | --- | --- |
 | Window_Creation | create_window absent; reviewed background default lacks value/type | Reviewed inventory references DEFAULT_WINDOW_CREATION_COLOR; callers cannot compile | Obtain reviewed contextual default and implement real native construction, never invent an overload |

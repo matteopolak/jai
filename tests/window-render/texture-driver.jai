@@ -85,6 +85,15 @@ main :: () {
     S.backend_realloc_texture(*texture, *bitmap);
     assert(texture.gl_handle == original_name && texture.width == 5 && texture.height == 3);
     verify_pixels(*texture, *bitmap);
+    S.bitmap_build_mipmaps(*bitmap);
+    assert(S.texture_load_from_bitmap(*texture, *bitmap));
+    assert(texture.mipmap_count == bitmap.mipmap_count && texture.mipmap_count == 3);
+    GL.gl.glBindTexture(GL.GL_TEXTURE_2D, texture.gl_handle);
+    mip_width: s32;
+
+    GL.gl.glGetTexLevelParameteriv(GL.GL_TEXTURE_2D, 2, GL.GL_TEXTURE_WIDTH, *mip_width);
+    assert(mip_width == 1 && GL.gl.glGetError() == GL.GL_NO_ERROR);
+    original_name = texture.gl_handle;
     S.texture_destroy(*texture);
     assert(texture.gl_handle == 0);
     assert(!GL.gl.glIsTexture(original_name));
