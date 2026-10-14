@@ -85,3 +85,28 @@ event generation is disabled, and preserving an existing caller SDL event queue/
 Fresh privately initialized SDL polling disables only its own unused native event stream;
 pre-existing SDK event ownership is retained. SDL_SetMainReady is a private SDK bridge for
 standalone non-SDL-main programs. Physical controller coverage remains outstanding.
+
+2026-10-14 resumed batch: canonical Objective_C/AppKit imports now unblock public
+Simp host bitmap/font interpreter/native O0/O2 tests; obsolete CPU substitute
+modules removed. Source-built jaifmt rebuilt using NEW producer dependencies and
+unchanged local Extensions. Owner-aware staging is `python3 tools/window_render_stage.py`.
+The runner uses staging alone, eliminating inherited Basic precedence.
+
+Issue #1 has exhaustive native-field decoding and an expected-failing original
+checked-narrowing regression. MyWindowProc decodes signed wheel words before checked
+arithmetic and propagates native modifier/button states and wheel events through
+PeekMessageW/DispatchMessageW. tests/window-render/windows-events.jai posts native
+messages into a real registered HWND and checks both axes, extrema, zero, modifier
+bits, upper WPARAM bits and repeated -120 frames. Windows x64/arm64 source checks
+pass, including arm64 no_dce; native Windows execution is still pending.
+
+Real private AppKit construction/lifecycle plus public queries pass host interpreter
+and native O0/O2; arm64 no_dce passes. Public create_window still needs the reviewed
+background default/type. The test's private native constructor is not public API
+completion. macOS x64 currently fails in NEW POSIX itimerval availability, with
+an original compile-only reproducer. Native AppKit probes built with clang
+-Wall -Wextra -Werror confirmed redundant activation-policy failure and Dock window
+position constraints; neither native failure was ignored or replaced by fake values.
+
+Full deviations/progress live in docs/status. Native Windows/X11/GPU/physical
+devices/Focus acceptance and combined production corpus remain coordinator gates.

@@ -171,6 +171,8 @@ Scripts, CI and project policies.
 
 ## Plans
 
+- [Window/render progress](status/window-render-progress.md) and [deviations](status/window-render-deviations.md): production gaps, staged evidence and next verification steps.
+
 Agreed designs that are not built yet.
 
 - [Async IO, HTTP and JSON](plans/async-io.md): fibers over io_uring/epoll/kqueue/IOCP, typed JSON, and an HTTP server and client
