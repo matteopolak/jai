@@ -31,6 +31,9 @@ FAULT_EXPECTATIONS = {
     "deep-copy-any": ("assertion failed", "Deep_Copy does not support this reflected value kind"),
     "treemap-dirty": ("assertion failed", "Treemap display requires clean weights"),
     "mpeg-vlc-truncated": ("assertion failed", "truncated MPEG VLC code"),
+    "mpeg-motion-bounds": ("assertion failed", "MPEG motion region out of bounds"),
+    "mpeg-sequence-change": ("assertion failed", "MPEG sequence dimension/rate changes are unsupported"),
+    "mpeg-picture-hole": ("assertion failed", "incomplete MPEG picture coverage"),
     "overwriting-double-free": ("assertion failed", "invalid overwriting-allocator pointer"),
     "xar-capacity": ("assertion failed", "Xar configured capacity exceeded"),
     "crash-handler": ("crash signal 11", "native stack:"),
@@ -175,7 +178,7 @@ def main():
         subprocess.run([sys.executable, "-B", str(ROOT / "tools/check_portable_crash.py"),
                         "--jaic", str(compiler), "--stdlib", str(root)], cwd=ROOT, env=env, check=True)
     dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler", "zip-directory", "buildcpp", "shared-channel", "autorun", "mpeg-buffer"}
-    posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "crash-handler-init", "atomic-cas-threads", "mpeg-pixels", "mpeg-idct"}
+    posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "crash-handler-init", "atomic-cas-threads", "mpeg-pixels", "mpeg-idct", "mpeg-sequence", "mpeg-motion", "mpeg-video"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)
         for source, _ in cases:

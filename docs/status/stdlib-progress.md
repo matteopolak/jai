@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `c8d1f5d`, Unix Autorun lifecycle. Earlier
+Latest committed checkpoint: `803f84a`, MPEG buffers/tables/pixels/IDCT. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -68,7 +68,7 @@ details and Windows/Linux-execution gaps remain explicit. Two early failed runs
 left unjournaled PID-named objects; no global deletion was attempted. Subsequent
 tests journal and check cleanup of only their recorded resources.
 
-Current verified checkpoint: Unix Autorun helpers and real COMPLETE lifecycle,
+Previously verified checkpoint: Unix Autorun helpers and real COMPLETE lifecycle,
 including native child argument forwarding, repeated direct execution, NO_OUTPUT
 skip and real runtime launch/exit failure logs. Full regression passes 67 cases
 in both modes plus prior faults/rejections/SMTP/IPC/startup/parent/target checks.
@@ -76,7 +76,7 @@ All 220 owned Jai files pass format/lint. Compiler mixed-spread loss and CLI use
 of a non-oracle helper are retained as pending reproducers; no convenience export
 or surrogate callback module parameter was added.
 
-New verified increment ready for checkpoint: MPEG canonical buffers, checked
+Previously verified checkpoint: MPEG canonical buffers, checked
 bit/VLC/start-code/file helpers, all reviewed immutable tables, six pixel aliases
 and integer IDCT. Full focused regression passes 70 interpreter/native cases,
 11 expected runtime faults in both modes, five compile-time rejections, ten SMTP
@@ -84,8 +84,21 @@ scenarios, four 2,048-packet process pairings and prior startup/parent checks.
 Linux and selected Windows checks pass; Windows MPEG is explicitly excluded after
 an observed failure at the existing File Unix guard. All 230 owned Jai files pass
 source-built jaifmt --check and jailint -D warnings; table regeneration is byte
-idempotent. New sequence-header tests are in development and not part of these
-passes. Continue header/frame storage, demux and audio/video decoding.
+idempotent.
+
+Current verified increment: canonical Video lifecycle/frame storage, transactional
+headers/matrices and allocation retry/lifetime checks; motion/vector wrapping and
+half-pixel prediction; entropy/dequantization/slice/frame reconstruction. Independent
+constant intra stream and all ten red I/P frames in the authorized fixture's
+elementary payload decode, including rewind and pixel checks, in both modes.
+Full regression passes 73 cases in both modes, 13 runtime faults in both modes,
+five compile-time rejections and prior SMTP/IPC/startup/parent/target checks.
+Final review then added missing/overlapping coverage and reference validation:
+all six MPEG positives and four MPEG faults pass interpreter/native, with Linux
+x64 checks. The new missing-region fault retains its completeness assertion.
+All 239 owned Jai files pass format/lint. B-picture prediction is directly tested;
+full B/AC stream fixtures and dimension/rate transitions remain incomplete.
+Continue program-stream demux, audio and Plm before remaining owned modules.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the
