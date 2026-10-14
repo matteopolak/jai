@@ -123,3 +123,5 @@ compatibility. Coordinator owns complete project integration and release checks.
 See [open questions](../specs/lsp-questions.md) for remaining ambiguity and core
 overlap. Correctness reports are durable under `artifacts/lsp-edits/`; these runs
 are regression checks, not the deferred benchmark phase.
+The [worker validation record](lsp-validation-0171.md) records the completed
+corpus sweeps, focused checks, baseline gaps and integration/tooling limits.

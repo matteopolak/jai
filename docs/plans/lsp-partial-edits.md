@@ -37,11 +37,11 @@ target.
   symbols, type hover, definition, completion, document features and incremental
   edits including Unicode; retain local syntax diagnostics. Commit reviewed progress.
 - [x] Check IDE semantic continuation with no invented locals or swallowed errors.
-- [ ] Add a deterministic suffix-edit corpus harness using baseline IDE coverage,
+- [x] Add a deterministic suffix-edit corpus harness using baseline IDE coverage,
   varied byte/UTF-16 boundaries, explicit assertions, process timeouts and reports.
   Exercise original fixtures first, then all available public application and NEW
   stdlib sources. Record corpus availability and baseline gaps honestly.
-- [ ] Run appropriate compiler and LSP tests, review the diff, update docs/README.md
+- [x] Run appropriate compiler and LSP tests, review the diff, update docs/README.md
   and questions, commit clean logical changes. Coordinator owns full integration,
   corpus and release checks. Do not benchmark.
 
