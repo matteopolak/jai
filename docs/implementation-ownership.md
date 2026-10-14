@@ -7,3 +7,5 @@
 - lsp: partial-edit resilience and for-keyword navigation; LSP source/tests/docs and minimal IDE-only core parser/sema changes as needed. Keep these separate for compiler release0.17.1, after current library/history/release work0.17.0. Core overlap will be integrated by coordinator; avoid bootstrap changes already owned by compiler.
 
 Never modify another checkout. New independent code is permitted integration input. Preserve Extensions. Single bootstrap prelude/module.jai, public Preload import aliases same entry/storage/types; no legacy module.jai or second root prelude. Private helpers do not become facade exports.
+
+Platform-io worker now owns File publicfacade/internalfile backend completion (especially Windows), and dedicated Windows backends for Process/System/Thread/Runtime_Support as time permits. Primary stdlib worker excludes File implementation and Windows backend work, continues remaining portable modules. Foundations retains File_Utilities, Basic/String/Hash. Separateworktrees only; coordinatorresolvescommonOStarget glue. Nopeermodification.
