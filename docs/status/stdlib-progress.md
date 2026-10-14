@@ -2,6 +2,29 @@
 
 ## Replacement integration current checkpoint
 
+Fifth refresh: approved c8d1f5d portable, a11c0c8 foundations and eb5d83d
+platform-io are merged, together with reviewed CI candidate 159ca65. Latest
+general integration fix 2fff11c supplies the real private WASI file ABI; the
+POSIX guard and Extensions are intact. All ten fuzz regression targets pass;
+unchanged File contracts pass host interpreter/native O0/O2 and Wasm interpreter/
+real WASI O0/O2. Portable production 95/95 plus faults/SMTP/channels/startup passes
+without the removed implicit sibling compiler overlay. The overlay discovery is
+fully disclosed in integration-deviations.md. Foundations 26 host/21 WASI cases
+pass O0/O2; macOS x64 timeval and unused-interface validation still fail gates.
+All 45 public contracts pass interpreter/native. Verbose scoped File lint and
+format/check, workspace clippy warnings denied and Rust formatting pass.
+
+Coordinator-filtered real Windows x64/arm64 File and signed-wheel native checks
+pass; overall CI fails other runtime/platform/module checks. No full Windows
+rendering or Focus claim. Full LSP sweep finishes 558 files/14,835 edits/2,600,590
+assertions with one startup recovery failure. New affected-source sweep and broad
+current production checks continue; exact final results will be recorded in
+tools/cleanroom-integration.md. Inventory is 102/135 facades, 33 missing plus one
+supporting table; no module is certified exhaustively complete.
+
+The paragraphs below retain previous checkpoint evidence, superseded where the
+current fifth-refresh report states a new result.
+
 All eight initial producers plus approved refreshed compiler 890329b, portable
 8a0d40c, foundations 44cca8b, bindings a565ab0, numerics 4acc846 and window 7fc1d6a
 are merged. Stable source fixes include fault-safe probes, strict module parameters,

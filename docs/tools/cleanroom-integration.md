@@ -1,6 +1,56 @@
 # Clean-room integration verification
 
-## Current integrated evidence
+## Current fifth refresh
+
+Approved compiler 890329b, portable c8d1f5d, foundations a11c0c8, bindings
+a565ab0, numerics 4acc846, window 7fc1d6a, LSP e3ec426, SDL3 bb3eaaa and
+platform-io eb5d83d are merged. Reviewed CI candidate 159ca65 is also merged;
+the worker never pushed or dispatched it. Producer handoffs/status/deviations
+were read, including the new platform I/O and debugger/Autorun reports.
+
+The following are production runs in this checkout, with `JAIC_STDLIB` selecting
+its actual library and source-built tools under its own target directory:
+
+| Command / scope | Result / evidence under `artifacts/integration-clean` |
+| --- | --- |
+| `cargo build --locked -p jaic-cli -p jailint -p jai-language-server` with pinned LLVM | Pass, `build-refresh5.log` |
+| Unchanged `jaifmt/main.jai -O2` build | Pass, `formatter-refresh5.log` |
+| `tools/check_portable_stdlib.py --jaic target/debug/jaic --stdlib stdlib --native --keep-going` | 95/95 ordinary cases; faults/rejections, ten SMTP cases, four 2,048-packet interprocess combinations and actual startup ON/OFF pass, `portable-refresh5.log` |
+| `tools/check_foundations.py --jaic target/debug/jaic --stdlib stdlib --wasm --cross` | All 26 host and 21 WASI cases pass O0/O2, including selected debugger type identity/hooks. Six profiles pass; macOS x64 POSIX.timeval and invalid unused-interface acceptance remain failures, `foundations-refresh5.log` |
+| `tools/check_platform_io.py --jaic target/debug/jaic --stdlib stdlib --native --cross-check --wasm` | Host interpreter/native O0/O2; Windows x64/arm64, Linux x64 and macOS arm64 all-code checking; Wasm all-code/interpreter and real WASI O0/O2 pass, `platform-io-refresh5-wasi.log` |
+| `cargo test --locked --manifest-path fuzz/harness/Cargo.toml` | All ten regression targets pass, `fuzz-refresh5.log`; formatter failure before the WASI boundary fix retained in `fuzz-formatter-red.log` |
+| Public contract runner, interpreter/native | All 45 reviewed fixtures pass in each mode, `contracts-refresh5-{interp,native}.log` |
+| Workspace clippy all targets, warnings denied; repository Rust format check | Pass, `clippy-refresh5.log`, `rustfmt-refresh5.log` |
+| File shared/WASI implementation and unchanged File fixture, actual jaifmt check and verbose jailint warnings denied | Complete pass, `file-wasi-{format,lint}.log` |
+| `python3 -m unittest discover -s tools -p test_portable_crash.py` | One nonmutation property test passes, `startup-harness-unit.log`; subprocess is mocked only here, never in runtime evidence |
+
+`tools/check_portable_crash.py` previously copied sibling compiler facades even
+with an explicit production library. Those implicit copies/default sibling paths
+are removed. Earlier aggregate startup passes below do not establish a run without
+overlays; the current 95-case run and native startup rerun do. The mock regression
+is input-integrity coverage only. The discovery, scope and original failures are
+retained in [the deviations audit](../status/integration-deviations.md).
+
+The frozen 558-file LSP sweep completed 14,835 edits/2,600,590 assertions, with
+one runtime-startup recovery failure (`lsp-final.json`). A focused fifth-refresh
+sweep covers the newly changed facade/backend/debugger sources. Full opaque
+public application corpus and Focus remain coordinator work; no local full
+application corpus pass is claimed.
+
+Filtered coordinator native CI candidate 159ca65 results: real Windows x64 AND
+arm64 File interpreter/native O0/O2 and signed-wheel interpreter/native pass.
+The overall workflow failed on runtime/platform/missing-module gaps. The feedback
+does not certify native fonts, GL, full Process/Thread/System, or Focus. The
+independent formatter fuzz failure is reproduced and fixed through a private
+WASI C file ABI; POSIX guards and Extensions remain unchanged. Native macOS x64,
+Linux/device and further Windows execution still require CI. Release workflows
+and publication remain held.
+
+Inventory: 102/135 module facades, plus contextual AppKit, 33 absent and one
+supporting table page. Integration-certified complete modules: zero. Presence
+and supported passing subsets are distinct from full contract/platform coverage.
+
+## Previous fourth-refresh evidence
 
 Exact approved heads are in `docs/integration-refresh.json`, integrated with
 separate logical merges. The current source-built compiler/LSP/jailint and

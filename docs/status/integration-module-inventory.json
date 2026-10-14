@@ -38,8 +38,8 @@
   {
     "spec": "docs/specs/stdlib/modules/autorun.md",
     "module": "Autorun",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Autorun/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/base64.md",
