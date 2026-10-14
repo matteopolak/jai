@@ -12,7 +12,17 @@ CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "
          "basic-configuration", "temporary-stamping", "float-parsing", "type-parameter-format",
          "formatter-parameter-defaults", "wasm-basic-minimal", "float-roundtrip",
          "memory-debugger-interface", "memory-debugger-default", "filesystem-invalid-paths",
-         "basic-logging", "basic-logging-output", "basic-reflection")
+         "basic-logging", "basic-logging-output", "basic-reflection",
+         "basic-helpers", "basic-print-bytes", "basic-stack-traces", "basic-stack-output")
+
+
+def expected_output(name):
+    return {
+        "basic-output": ("out 7++", "err true", 17),
+        "basic-logging-output": ("out 7", "err true", 0),
+        "basic-print-bytes": ("0 1 127 255 \n[0][1]\n", "", 0),
+        "basic-stack-output": ("OUT walk (tree.jai:3)\n", "ERR walk (tree.jai:3)\n", 0),
+    }.get(name, ("ok\n", "", 0))
 
 
 def owned_sources():
@@ -21,7 +31,7 @@ def owned_sources():
              for module in ("Basic", "String", "Hash", "File_Utilities")]
     paths.extend((ROOT / "stdlib/internal/basic").glob("format*.jai"))
     paths.extend(ROOT / f"stdlib/internal/basic/{name}.jai"
-                 for name in ("builder", "scalar", "integer128", "parsing", "numeric-conversion", "temporary", "allocation", "arrays", "memory-debugger", "logging", "reflection", "module"))
+                 for name in ("builder", "scalar", "integer128", "parsing", "numeric-conversion", "temporary", "allocation", "arrays", "memory-debugger", "logging", "reflection", "stream-helpers", "stack-traces", "module"))
     paths.append(ROOT / "stdlib/internal/basic-interface/module.jai")
     paths.append(ROOT / "stdlib/internal/native-path/module.jai")
     paths.append(ROOT / "stdlib/internal/basic/filesystem.jai")
@@ -31,6 +41,7 @@ def owned_sources():
     paths.extend(ROOT / f"tests/portable-stdlib/{name}.jai" for name in CASES)
     paths.extend((ROOT / "tests/portable-stdlib/negative").glob("format-*.jai"))
     paths.append(ROOT / "tests/portable-stdlib/negative/builder-ensured-range.jai")
+    paths.append(ROOT / "tests/portable-stdlib/negative/stack-trace-cycle.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/context-overload-probe.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/alias-signature-probe.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/alias-signature-facade/module.jai")
@@ -130,7 +141,8 @@ def main():
                              ("format-float-kind", "FormatFloat requires an IEEE float32 or float64 value"),
                              ("format-int-base", "assertion failed"),
                              ("format-int-minimum", "assertion failed"),
-                             ("builder-ensured-range", "assertion failed")):
+                             ("builder-ensured-range", "assertion failed"),
+                             ("stack-trace-cycle", "a stack trace must not contain a cycle")):
         source = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
         commands = [[compiler, "-interp", source]]
         for level in ("O0", "O2"):
@@ -146,7 +158,7 @@ def main():
 
     for name in CASES:
         source = ROOT / f"tests/portable-stdlib/{name}.jai"
-        expected = ("out 7++", "err true", 17) if name == "basic-output" else (("out 7", "err true", 0) if name == "basic-logging-output" else ("ok\n", "", 0))
+        expected = expected_output(name)
         run([compiler, "-interp", source], *expected)
         for level in ("O0", "O2"):
             binary = output / f"{name}-{level}"
@@ -161,7 +173,7 @@ def main():
             for level in ("O0", "O2"):
                 binary = output / f"{name}-{level}.wasm"
                 run([compiler, source, "-os", "wasm", f"-{level}", "-exe", binary])
-                expected = ("out 7", "err true", 0) if name == "basic-logging-output" else ("ok\n", "", 0)
+                expected = expected_output(name)
                 run(["node", "--no-warnings", ROOT / "tools/run_foundations_wasm.mjs", binary], *expected)
             print(f"passed production WASI O0/O2: {name}", flush=True)
     failures = []

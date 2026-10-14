@@ -4,6 +4,33 @@ Review scope: owned Basic builder/formatter, String utilities, scalar Hash,
 File_Utilities, focused tests and unchanged repository jaifmt integration.
 This is a deviations inventory, not a claim of completed production integration.
 
+- **New helper policy confirmation** — stream-helpers.jai concatenates top-level
+  rendered sequence arguments, prints each u8 through the given format (no
+  implicit newline), and consumes a matching prefix only on success. Reflection
+  returns null/-1 for a field miss and asserts on an empty enum range, ordering
+  enum values as the reviewed s64 reflection storage. These are real tested
+  implementations, but synchronized declarations do not yet specify those
+  exact edge choices. Dirty review confirmation is requested, not fabricated.
+- **Slice growth cost** — arrays.jai allocates/copies/frees on slice growth,
+  initializes new elements, and changes only count on shrink. A slice has no
+  capacity/allocator fields, so this avoids guessing retained capacity or
+  passing an incorrect old allocation size to RESIZE after shrink. Growth may
+  move storage (per reviewed array invalidation contract); cost is O(count).
+  The caller's active allocator must own its input, as with array_free(slice).
+  Reviewed explicit retained-capacity behavior would require a general
+  ownership/capacity mechanism rather than hidden guessed bookkeeping.
+- **Stack presentation/sampling policy** — stack-traces.jai owns copied nodes
+  and normal-allocator strings, preserves info pointers, and renders
+  `name (filename:line)` with caller prefix. Missing info renders an explicit
+  unknown-procedure marker. Cycles assert rather than hang. Context samplers
+  use #no_debug and snapshot the active head before helper calls update its
+  line. An initial test incorrectly expected a manually set active frame line
+  to remain unchanged through ordinary compiler-instrumented calls; explicit
+  detached-node tests now check exact line preservation, while contextual
+  tests check actual caller frames. No assertion was suppressed. Exact text,
+  helper-frame inclusion and default/null semantics await dirty confirmation;
+  original host/WASI/output/cycle tests cover the real implemented behavior.
+
 - **Alias completion documentation** — the unchanged NEW LSP auto-import suite
   passes logging ranking and 11 other tests but retains one failure: print's
   documentation shows its facade alias instead of resolved callable signatures.

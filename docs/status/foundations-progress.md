@@ -1,5 +1,16 @@
 # Foundations progress
 
+Continuing all owned Basic scope: sequence/byte output, prefix consumer,
+using-member field lookup, reflected enum ranges/highest, slice array_resize,
+and all five stack-trace declarations now have real independent implementations.
+The expanded 34-case host interpreter/native O0/O2 and 28-case production WASI
+O0/O2 suite passes, including six runtime assertion cases, all seven unused-code
+targets, unchanged real jaifmt CLI/owned format check and strict lint. No tests
+or errors were skipped. Precise pending edge/presentation contracts are in the
+questions/deviations docs. Next: real leak-report service and remaining scalar,
+allocator and visualization APIs. The NEW Compiler already supplies reviewed
+get_runtime_info/global data segments, allowing real global-root scanning.
+
 Stable checkpoint: 9a64f00 contains logging, numeric/enum reflection, original
 regressions and the Basic API audit. Actual unchanged NEW producer auto-import
 ranking now PASSES: Basic and Math are both found in the required order.

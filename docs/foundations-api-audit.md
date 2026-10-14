@@ -7,6 +7,10 @@ API inputs. This is a declaration/signature audit, not proof of all behavior.
 
 ## Closed in the current batch
 
+These entries have real implementations and behavior tests. Unresolved exact
+edge/presentation policies are retained below and in the questions document;
+this does not declare full Basic compatibility complete.
+
 - `log` and `log_error`: both format-first and section-first overloads, exact
   parameter names/defaults, contextual source identifier and logger data,
   caller or explicit location, flag bits/user flags, original section pointer,
@@ -17,6 +21,14 @@ API inputs. This is a declaration/signature audit, not proof of all behavior.
 - `enum_names`, `enum_values_as_s64`, `enum_values_as_enum`: reflected order and
   values. Name and s64 views alias canonical reflection storage; typed values
   need width-correct materialization and currently use temporary storage.
+- Builder sequence output, byte output and prefix consumption now execute
+  through shared rendering/native output; field lookup follows using members,
+  enum ranges inspect actual reflected values, and slice array resizing grows
+  real storage while preserving live elements and running initializers.
+- Both stack-trace packing overloads copy node storage and repair its links;
+  string/print/log helpers render actual frame metadata and contextual logging.
+  Sampling hides its own helper frame and snapshots the caller head before
+  allocations/calls can alter the active line number.
 
 Original regressions exercise callback effects, nested context restoration,
 default stdout/stderr routing, temporary message storage, numeric boundaries,
@@ -30,11 +42,10 @@ Missing exports are not replaced with inert bodies.
 
 | Responsibility | Outstanding declarations / contracts |
 | --- | --- |
-| Builder output helpers | `print_sequence_to_builder`, `print_bytes`, `consume_u8_and_length`; sequence separators, byte interpretation/output and consume semantics need review. |
-| Reflection | `get_field`, `IsScalar`, `enum_highest_value`, `enum_range`, `enum_range_given_info`; using-member lookup/miss behavior, scalar membership, empty/unsigned enum ranges need review. |
-| Allocation/arrays | `get_capabilities`, `remember_allocators`, `resizable`; allocator name protocol and traversal/ownership rules need review. Slice-pointer `array_resize` is absent although the resizable-array overload exists. |
+| Reflection | `IsScalar`; type membership needs review. Field/range helpers now exist, with exact miss/empty/unsigned policies awaiting confirmation. |
+| Allocation/arrays | `get_capabilities`, `remember_allocators`, `resizable`; allocator name protocol and traversal/ownership rules need review. Both array_resize overloads now execute. |
 | Scalar overloads | Variadic `min`/`max` are absent; two-argument overloads exist. Preserve the reviewed `#modify` contract and supported kinds when implemented. |
-| Stack traces | Both `pack_stack_trace` overloads, `print_stack_trace`, `log_stack_trace`, `get_stack_trace_strings`; frame order, text and storage lifetime need review. |
+| Stack traces | No missing names; exact text, helper-frame inclusion and returned storage lifetime still need confirmation. Current implementation has real owned nodes/strings and preserves linked-frame order. |
 | Leak reporting | `Procedure_To_Elide`, `Leak_Report_Options`, `Leak_Report`, `Leak_Summary`, `Group_Info`, `Preamble`, bookkeeping/table/frame helpers, baseline/exemption/ownership helpers, `report_memory_leaks`, `make_leak_report`, `log_leak_report`, report `deinit`. Baseline/exemption effects are now specified; full report/table/pool/trace integration is not implemented. Live-allocation checking is distinct from leak scanning. |
 | Visualization | `vis_init`, `maybe_add_string`, `vis_update_if_it_has_been_long_enough`, `vis_update`, `vis_fini`; per-frame textual snapshots do not supply these missing APIs or establish the native visualization protocol. |
 

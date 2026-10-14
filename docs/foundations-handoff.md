@@ -4,6 +4,14 @@ This work owns Basic builder/formatting, String utilities, Hash scalars and
 File_Utilities. Inherited spec, argument/runtime and Command_Line edits are
 retained in the worktree and excluded from foundations commits.
 
+The continuing completion batch adds real sequence/byte/prefix helpers,
+using-member lookup, enum ranges/highest, slice resizing, and all five stack
+trace helpers. Original tests pass in all three host modes and both WASI modes;
+34 host cases, 28 WASI cases, six runtime rejection checks and seven unused-code
+targets pass, along with owned real jaifmt check/strict lint. Presentation/edge
+choices awaiting dirty confirmation are explicit in deviations/questions.
+Leak reporting, remaining scalar/allocator APIs and visualization work continue.
+
 Latest stable checkpoint: 9a64f00. The 30-case host/24-case WASI suite, real
 jaifmt CLI/owned check, strict lint and all seven unused-code targets pass.
 Safe producer bindings resolve the earlier recorded macOS x64 failures.
