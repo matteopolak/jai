@@ -115,6 +115,12 @@ The LLVM backend, C ABI and linking.
 - [Numerics implementation and verification](numerics.md)
 - [Numerics implementation plan](status/numerics-plan.md)
 - [Numerics contract questions](specs/stdlib/numerics-questions.md)
+- [Window/render worker coverage and verification](window-render.md)
+- [Window/render API coverage ledger](window-render-coverage.md)
+- [Window/render worker handoff and integration gates](window-render-handoff.md)
+- [Native GL format mapping ledger](window-render-gl-formats.json)
+- [Focused window/render verification runner](../tools/check_window_render.py)
+- [Window/render contract questions](specs/stdlib/window-render-questions.md)
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
