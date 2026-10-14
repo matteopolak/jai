@@ -33,10 +33,13 @@ Basic integer parsing supports signed limits, overflow rejection and bases 2–3
 floating parsing uses the native C `strtod` ABI. Its locale/error-range behavior
 still needs contract review. Numeric String token parsers consume extracted tokens.
 
-Temporary-storage implementation is pending a compiler inherited-overlay gap.
-Its exact public type declaration and algorithms are retained in
-`internal/basic/temporary.jai`, which is deliberately not loaded or exported.
-The associated test is a pending reproducer, not a passing functionality claim.
+The compiler worker resolved inherited overlay layout. Temporary storage is now
+enabled with its exact public record, aligned scratch allocation, overflow pages,
+marks, resize copying and caller-scope release. Interpreter/native tests verify
+that restoring a mark releases overflow pages and restores byte accounting.
+Runtime startup now creates owned scratch storage and embedding contexts;
+teardown frees its own storage even when a client replaces the active scratch
+pointer. Context records honor their required alignment.
 
 ## Verification
 
@@ -104,6 +107,21 @@ only that generated program. The bootstrap, runtime, array, overlapping-memory,
 String and builder tests are separate cases; their passing does not establish
 full module or target conformance.
 
-Remaining runtime work includes synchronized output, embedding initialization,
-temporary-storage lifetime, one-time synchronization, platform startup and fault
-hooks. Windows/WASI native libc adaptation has not been implemented.
+Remaining runtime work includes optional crash backtraces and platform startup
+adaptation. Windows/WASI native libc adaptation has not been implemented.
+
+RadixSort implements stable byte passes for u32/u64/float rank arrays, retained
+capacity, invalidation, reordering and resource release. Relative_Pointers
+implements signed-width XOR encoding, null/self references and relocation.
+File_Utilities adds Unix metadata, recursive enumeration and copying with cycle
+detection, and rejects copying a file onto itself or a directory into itself.
+
+Socket exposes reviewed native declarations generated from specs, plus Unix
+blocking/keepalive, formatting, accept/bind/close and fd-set helpers. Focused IPv4
+loopback and numeric IPv6 formatting pass interpreter/native tests. Windows
+wrappers, iOS/console targets, some native shapes and ancillary-data helpers
+remain incomplete; [native declaration ledger](socket-native-ledger.json) records
+declaration status separately from runtime and ABI verification. The macOS
+in_addr shape was checked against Apple's public SDK netinet/in.h. The spec
+parser used by the generator is new independent work copied from the bindings
+worker; no other checkout was modified.

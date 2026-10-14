@@ -6,6 +6,7 @@ main :: () {
     ts.size = bytes.count;
     context.temporary_storage = *ts.base;
     mark := get_temporary_storage_mark();
+    allocator := context.allocator;
     {
         push_allocator(temp);
         a := cast(*u8)alloc(16);
@@ -16,9 +17,16 @@ main :: () {
         big[8191] = 55;
         assert(a[0] == 99);
     }
+    assert(context.allocator.proc == allocator.proc && context.allocator.data == allocator.data);
     assert(ts.total_bytes_occupied >= 8208);
     assert(ts.overflow_pages != null);
     set_temporary_storage_mark(mark);
+    assert(ts.total_bytes_occupied == 0 && ts.overflow_pages == null);
+    {
+        auto_release_temp();
+        talloc(8192);
+        assert(ts.total_bytes_occupied >= 8192);
+    }
     assert(ts.total_bytes_occupied == 0 && ts.overflow_pages == null);
     reset_temporary_storage();
     print("ok\n");

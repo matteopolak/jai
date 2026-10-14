@@ -40,7 +40,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [dxgi](specs/stdlib/modules/dxgi.md) | Not implemented in this checkout; see ownership exclusions |
 | [example-plugin](specs/stdlib/modules/example-plugin.md) | Not implemented in this checkout; see ownership exclusions |
 | [executable-formats](specs/stdlib/modules/executable-formats.md) | Not implemented in this checkout; see ownership exclusions |
-| [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial: canonical Path, reduction/search/format/copy/free; focused path fixture passes interpreter/native. Filesystem traversal/metadata/copy not yet implemented |
+| [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial paths, Unix metadata, recursive listing/copy and replacement implemented; tree copying, self-copy rejection and metadata pass interpreter/native. Visit aliases missing reviewed signatures |
 | [file-watcher](specs/stdlib/modules/file-watcher.md) | Not implemented in this checkout; see ownership exclusions |
 | [file](specs/stdlib/modules/file.md) | Partial Unix stdio/file/directory/link helpers; offset, EOF, preserving/truncating writes pass interpreter/native with new POSIX dependency. Seek_Type unresolved; Windows/Android incomplete |
 | [flat-pool](specs/stdlib/modules/flat-pool.md) | Not implemented in this checkout; see ownership exclusions |
@@ -96,10 +96,10 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [program-print](specs/stdlib/modules/program-print.md) | Not implemented in this checkout; see ownership exclusions |
 | [project-generator](specs/stdlib/modules/project-generator.md) | Not implemented in this checkout; see ownership exclusions |
 | [protocol-for-memory-visualization](specs/stdlib/modules/protocol-for-memory-visualization.md) | Not implemented in this checkout; see ownership exclusions |
-| [radixsort](specs/stdlib/modules/radixsort.md) | Not implemented in this checkout; see ownership exclusions |
+| [radixsort](specs/stdlib/modules/radixsort.md) | Implemented rank buffers, radix passes, reset/resize/reorder and release; numeric/null-input cases pass interpreter/native |
 | [random](specs/stdlib/modules/random.md) | All reviewed exports implemented; recurrence, odd seeds and float ranges checked interpreter/native |
 | [reflection](specs/stdlib/modules/reflection.md) | All reviewed exports implemented; scalar/range/enum/array checks pass interpreter/native; malformed parser edges remain under review |
-| [relative-pointers](specs/stdlib/modules/relative-pointers.md) | Not implemented in this checkout; see ownership exclusions |
+| [relative-pointers](specs/stdlib/modules/relative-pointers.md) | Implemented all reviewed exports; null/self/relocated references pass interpreter/native |
 | [remap-context](specs/stdlib/modules/remap-context.md) | Not implemented in this checkout; see ownership exclusions |
 | [rewrite](specs/stdlib/modules/rewrite.md) | Not implemented in this checkout; see ownership exclusions |
 | [rpmalloc](specs/stdlib/modules/rpmalloc.md) | Not implemented in this checkout; see ownership exclusions |
@@ -112,7 +112,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [simple-package](specs/stdlib/modules/simple-package.md) | Not implemented in this checkout; see ownership exclusions |
 | [sloppy-math](specs/stdlib/modules/sloppy-math.md) | Not implemented in this checkout; see ownership exclusions |
 | [soa](specs/stdlib/modules/soa.md) | Not implemented in this checkout; see ownership exclusions |
-| [socket](specs/stdlib/modules/socket.md) | Not implemented in this checkout; see ownership exclusions |
+| [socket](specs/stdlib/modules/socket.md) | Partial Unix wrappers plus generated native declarations. IPv4 loopback, fd sets and IPv6 formatting pass interpreter/native; Windows wrappers and remaining native/helper gaps recorded separately |
 | [sort](specs/stdlib/modules/sort.md) | Implemented both callback forms and built-in comparators; numeric sorting checks pass interpreter/native |
 | [sound-player](specs/stdlib/modules/sound-player.md) | Not implemented in this checkout; see ownership exclusions |
 | [srgb](specs/stdlib/modules/srgb.md) | Not implemented in this checkout; see ownership exclusions |
