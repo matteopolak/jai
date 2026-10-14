@@ -9,17 +9,18 @@ compilation, native layout, library symbol availability or runtime behavior.
 
 The current supplemental AppKit facade is recorded separately under the
 Objective_C ledger entry, with its namespace, nominal public types, private
-opaque context and member dispositions. Its setTitle result contract remains
-unresolved. It does not add root exports or erase the eight unresolved root
+opaque context and member dispositions. Current review specifies that the
+setTitle result is unused/unspecified; native dispatch uses void. It does not add root exports or erase the eight unresolved root
 Objective_C helpers. The explicit SDL WM-info adapter is recorded as a manual
 implementation with its original native symbol and full matched signature;
 its safety evidence does not resolve RWops/UserEvent layout mismatches.
 
-Current root ledger counts are 28,330 declared, 1,262 forwarded, 548 generated
-implementations, 33 manual implementations, 198 unresolved and one exact
+Current root ledger counts are 28,332 declared, 1,262 forwarded, 548 generated
+implementations, 36 manual implementations, 193 unresolved and one exact
 duplicate. These counts measure source dispositions, not completed binding
 scope. Remaining declared ABI discrepancies and unverified native platforms
-remain required work, alongside the supplemental AppKit return-contract gap.
+remain required work; newly resolved AppKit return semantics do not establish
+complete AppKit lifecycle support.
 Actual failures, scope and hashes are in the [verified evidence index](bindings-verified-snapshot.json)
 and [deviations report](../status/bindings-deviations.md).
 

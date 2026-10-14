@@ -403,7 +403,7 @@ def main():
                     # Read only the public section; helper names do not need
                     # to be guessed or enumerated to preserve privacy.
                     methods.append({'signature':signature,
-                                    'status':'unresolved_return_contract' if signature.startswith('setTitle::') else 'implemented',
+                                    'status':'implemented',
                                     'verification':'Source presence only; native tests are recorded separately.'})
                 all_ledger[module]['supplemental_facades'] = [{
                     'module':'Objective_C/AppKit', 'artifact':str(appkit.relative_to(ROOT)),
@@ -412,7 +412,7 @@ def main():
                     'private_pointer_only_types':['NSView','NSScreen'],
                     'members':methods,
                     'aliases':[{'name':'NSWindow.frame','signature':'(self: *NSView) -> NSRect','target':'private NSView.frame','status':'implemented'}],
-                    'note':'Contextual AppKit contract from reviewed prose, not additional root exports. setTitle return remains unresolved.'}]
+                    'note':'Contextual AppKit contract from reviewed prose, not additional root exports. The reviewed setTitle id result is unspecified and must be ignored; native dispatch uses void.'}]
         if args.module and module not in args.module:
             continue
         path = ROOT / 'stdlib' / module / 'declarations.jai'

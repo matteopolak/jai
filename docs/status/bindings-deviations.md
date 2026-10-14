@@ -8,6 +8,44 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Current formatter compiler regression.** After refreshing the latest NEW
+  compiler and foundations, building the actual formatter ICEs because three
+  scratch contexts bypass the new context-slot initializer. This is distinct
+  from the resolved print/exit blockers. A general original reproducer and
+  three-site setter patch are in `docs/native`; the trial passes native and
+  interpreter checks, scoped rustfmt/clippy, and builds the actual formatter
+  against current foundations. All owned Jai formatting/regeneration checks
+  then pass with that formatter. The canonical compiler and source were
+  restored; its current hash is recorded in the regression document. This is
+  an explicit compiler proposal dependency, not a fixture formatter or an
+  unreported production compiler fix. Proper fix: integrate the general
+  initialization invariant and rerun the ordinary formatter build. Evidence:
+  [context-probing regression](../native/compiler-context-probe.md) and
+  `.work/latest-format-regeneration.json`. Staging also now includes the
+  foundation-owned `internal/basic-interface` dependency introduced by the
+  current Basic module parameters; no facade aliases or bootstrap copies were
+  invented to bypass it.
+
+- **Staged GL SDK integration repairs.** The real CGL/GL program was initially
+  blocked by two peer AppKit imports and missing compiler reflection flags.
+  Current NEW window sources now contain the correct imports, so that staging
+  repair and its active patch were removed. The general compiler proposal is
+  supplied under `docs/native`, with an original standalone reproducer. Only
+  owned test copies were changed. The trial compiler passed
+  scoped rustfmt/clippy, native/interpreter metadata checks and real OpenGL
+  shader/buffer checks. This is SDK validation, not production integration.
+  The default compiler source and binary were restored, its exact original
+  hash checked, and its failing reproducer rerun. Restoration required updating
+  the restored source mtime before rebuilding, since copy2's older mtime let
+  Cargo initially reuse the trial artifact; the final restored failure proves
+  that stale reuse is no longer present. No successful default integration is
+  inferred from the trial. Evidence and long-term fixes:
+  [GL SDK validation](../native/gl-sdk-validation.md). Coordinator must review
+  and integrate the general fix and actual peer imports. The proposed compiler
+  temporarily tracks one erasure boolean per reflected field while generating
+  metadata; it adds no program runtime cost. Future compiler metadata transforms
+  should carry their semantic flags alongside transformed fields.
+
 - **Current verification scope.** The broad current-foundations report is
   `.work/latest-production-sources-worker.json`: 65 failed/unimplemented
   checks, including 13 privacy checks blocked before their required diagnostic.
@@ -102,9 +140,9 @@ correctness. Previously recorded failures remain required work.
   passed directly. Proper fix: resolve general compiler semantics, compare
   complete pinned native layouts, and marshal incompatible public records;
   never reorder public fields to make a probe pass.
-- **POSIX configuration shapes.** Current reviewed macOS x64 ipc_perm is
-  emitted. The next x64 failure is itimerval: its public inventory includes
-  x64 but its reviewed shape is labeled ARM64 only. The generator deliberately
+- **POSIX configuration shapes.** Current reviewed macOS x64 ipc_perm and
+  itimerval are emitted, including newly supplied Android x64 itimerval.
+  Remaining missing shapes are reported individually. The generator deliberately
   does not assume architecture independence. Evidence:
   `.work/current-foundations-retry.json`. Risk: incomplete x64 module checks.
   Proper fix: reviewed missing shape contracts (including remaining ledger
@@ -128,6 +166,29 @@ correctness. Previously recorded failures remain required work.
 
 ## Reduced or unresolved behavior
 
+- **NSOpenGL constructors.** Both overloads now allocate real AppKit pixel
+  formats/contexts, report actual native samples, preserve the caller's current
+  context and attach a supplied window's native content view. The internal
+  pointer-only NSOpenGLContext type has one canonical identity across GL module
+  configurations and is not a facade export. Versionless core creation prefers
+  4.1 then 3.2; pre-3.0 requests use the legacy profile; 3.1/3.2 use the 3.2
+  profile; 3.3/4.0/4.1 use the 4.1 profile. MSAA is reduced toward zero if a
+  format is unavailable. These selection priorities are independent policies
+  where the reviewed declaration does not specify exact fallback order.
+  Pixel formats request 24 color bits, 8 alpha bits, 24 depth bits and double
+  buffering; these are explicit native format requirements, not fabricated
+  reported values, but exact default-format policy still needs contract review.
+  Unsupported profile/version combinations and debug-context creation
+  diagnose and return null; NSOpenGL exposes no debug creation attribute.
+  This is a genuine native API limitation, not an ignored debug flag. Proper
+  fix: review exact default/fallback policy and validate other Mac hardware.
+  Evidence: real core/legacy contexts, CGL sample-count comparison, hidden
+  Cocoa window attachment, context-current preservation, canonical type
+  identity, unsupported-request assertions and SDK resource teardown in
+  `tests/native-bindings/nsgl.jai`, run with the unpatched current compiler.
+  NSOpenGL.h is pinned in the native SDK identity document. The earlier staged
+  AppKit import repair is no longer needed with current NEW peer sources.
+
 - **GLX context creation.** The GL wrapper now implements real legacy and ARB
   creation, chooses an RGBA window configuration matching the existing native
   window visual, reports its actual sample count, and releases enumeration
@@ -143,23 +204,23 @@ correctness. Previously recorded failures remain required work.
   explicit reviewed global-display initialization/error/lifecycle contracts.
   Private missing GLX C prototypes come from the pinned complete official
   libglvnd v1.7.0 header; corrected X11 library spellings are GLX and X11.
-  WGL, NSOpenGL and generic context dispatch still remain required gaps.
+  WGL and generic context dispatch still remain required gaps.
 
 - **AppKit contextual facade.** `Objective_C/AppKit/module.jai` implements the
   newly reviewed window enums, nominal prefixes and typed messages. NSView and
   NSScreen are private opaque pointer types, with no asserted instance layout.
-  `setTitle` preserves the reviewed id result signature although native
-  setTitle: returns void; its value is not validated or promised. This is an
-  unresolved return-contract discrepancy, not a fabricated stable value.
-  Proper fix: review that result contract, then use the matching native void
-  message signature and explicitly specified wrapper result. The NSView frame
-  alias is tested against a real initialized AppKit NSView; no window-server
-  or displayed-window runtime behavior is claimed. Window-render currently
-  imports these contextual names from root Objective_C; it needs the reviewed
-  submodule import. No root exports or peer files were changed to bypass that.
+  Current review resolved setTitle: its id result is intentionally unspecified
+  and must be ignored. The wrapper now dispatches the actual native void ABI
+  and returns the existing receiver under that unspecified signature, rather
+  than reading an undefined return register. Real UTF-8 title assignment is
+  checked against the Cocoa getter. The NSView frame alias is tested on a real
+  NSView, including procedure identity. Current NEW window sources use the
+  correct AppKit import; no root exports or peer files were changed here.
+  Hidden-window/context attachment is tested, but displayed rendering and
+  full interactive window lifecycle remain coordinator integration work.
 
 - **Open wrappers.** Android glue/assets/context lifecycle, EGL context
-  creation, remaining GL platform context creation/debug, X11 global
+  creation, remaining WGL/generic GL context creation, X11 global
   display/clipboard/DnD/widgets, Objective-C class generation/encoding,
   D3D/DXC convenience compilation, rpmalloc rewrite/raw paths and enabled
   telemetry still contain unresolved ledger entries. No placeholder body is
@@ -187,6 +248,21 @@ correctness. Previously recorded failures remain required work.
   semantics and test real contexts on each platform. Current version parsing
   uses native sscanf and accepts suffixes; strict trailing-text behavior is
   still an open question.
+- **GL debug output.** The helper implements real core/KHR/ARB installation,
+  synchronous output, all-message controls, checked native logging and native
+  break-on-error traps. Unsupported/missing loaded debug implementations
+  diagnose and abort rather than silently succeeding. This failure policy and
+  exact diagnostic text remain independently chosen where review supplies no
+  more specific behavior. Synchronous callbacks and flushing each message
+  trade performance for immediate diagnostics. Context flags travel as a
+  stable valid private object address, with no heap allocation or mutable
+  global mode. Source checks pass on Linux/Windows; the host driver's native
+  enumeration lacks these debug extensions, so callback runtime evidence is
+  unavailable, not passed. Proper fix: reviewed diagnostics policy and native
+  supported-driver tests, including actual trap/resume behavior. Extension
+  detection currently rescans the native extension list for each reflected
+  flag; this may slow large-table startup. A private per-load token index can
+  improve it while retaining the public loader's existing-storage semantics.
 - **GL output strings.** `_glGetActiveAttrib` and `_glGetActiveUniform` forward
   a string's data as caller-owned writable storage, preserving all native
   output parameters and the requested buffer size. Oversized requests abort

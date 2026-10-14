@@ -51,6 +51,10 @@ def main():
                     stream.extractall(vendor, filter='data')
     args.output.mkdir(parents=True, exist_ok=True)
     if platform.system() == 'Darwin':
+        apple_object = args.output/'apple_abi_probe.o'
+        run(['cc','-Wall','-Wextra','-Werror','-c',ROOT/'tests/native-bindings/apple_abi_probe.m',
+             '-o',apple_object])
+        run(['ar','rcs',args.output/'libapple_abi_probe.a',apple_object])
         run(['cc','-dynamiclib',ROOT/'tests/native-bindings/apple_abi_probe.m',
              '-framework','Foundation','-framework','Metal',
              '-o',args.output/'libapple_abi_probe.dylib'])
