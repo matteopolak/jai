@@ -34,7 +34,7 @@ FAULT_EXPECTATIONS = {
     "mpeg-motion-bounds": ("assertion failed", "MPEG motion region out of bounds"),
     "mpeg-sequence-change": ("assertion failed", "MPEG sequence dimension/rate changes are unsupported"),
     "mpeg-picture-hole": ("assertion failed", "incomplete MPEG picture coverage"),
-    "mpeg-audio-crc": ("assertion failed", "CRC-protected MPEG audio is unsupported"),
+    "mpeg-audio-crc": ("assertion failed", "MPEG audio checksum mismatch"),
     "mpeg-audio-quantizer": ("assertion failed", "invalid MPEG grouped quantizer value"),
     "mpeg-program-pts": ("assertion failed", "invalid MPEG timestamp marker"),
     "mpeg-program-truncated": ("assertion failed", "truncated MPEG PES packet"),

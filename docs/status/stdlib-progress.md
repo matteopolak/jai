@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `217eccd`, MPEG joint-stereo reconstruction. Earlier
+Latest committed checkpoint: `cc45c4f`, compiler-refresh foundation integration. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -144,7 +144,7 @@ and prior integration/target checks. File backend formatting is now excluded und
 platform-io ownership; all 254 files in the narrowed scope pass format/lint.
 CRC and remaining codec contracts are next; broader portable scope remains active.
 
-Current verified increment: source-compiler integration now runs exact atomic
+Previously verified increment: source-compiler integration now runs exact atomic
 aliases, original caller-scope cleanup, reflected alignment and cyclic/shared
 Deep_Copy graphs. Five former pending regressions are promoted, retaining all
 assertions. Remap_Context's exact lexical macro passes nested/early-return checks.
@@ -155,6 +155,17 @@ format/lint. Constructor/constant-index/qualified-array-write/workspace/widened-
 gaps remain. Scalar register rejection is now a proper category diagnostic, not
 evidence against supported SIMD registers; Meow remains unfinished pending a valid
 probe and implementation. Continue protected MPEG audio and remaining modules.
+
+Current verified increment: protected Layer II frames compute/validate actual
+header/allocation/scfsi CRC, preserving canonical Audio ABI with private captured
+metadata. Two protected joint-stereo frames plus rewind pass; flipping the wire
+checksum produces a checked mismatch before synthesis. Tracking verifies metadata
+cleanup. Parsed-header identity is required for frame decoding; copied/manual
+records and registry cost are explicit deviations awaiting contract review.
+Full regression passes 82 interpreter/native cases, 19 faults in both modes,
+six compile-time rejections and all prior worker integration/target checks.
+All 254 owned Jai files pass source-built jaifmt --check and jailint -D warnings.
+Continue valid SIMD register verification, Meow/SIMD and remaining owned modules.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the

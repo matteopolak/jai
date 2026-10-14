@@ -161,9 +161,10 @@ or external recipients.
 ## MPEG increment
 
 Buffers, immutable tables, pixels/IDCT and elementary video decoding have real
-focused coverage, as do unprotected Layer II audio, MPEG-1 program streams and Plm
-lifecycle/linear seeks. B-stream/nonconstant AC/stereo fixtures, CRC and format
-changes remain limitations. Seek/macro/stream-bound contracts remain unresolved. Exact unknown
+focused coverage, as do CRC-checked Layer II audio, MPEG-1 program streams and Plm
+lifecycle/linear seeks. Original B-order/AC/nonzero stereo/protected fixtures pass;
+inter-predicted B/richer content and format changes remain limitations. Seek/macro/
+stream-bound/copy contracts remain unresolved. Exact unknown
 contracts and general import-resolution reproducer are documented in
 [portable MPEG](portable-mpeg.md). Windows checking fails at the separately owned
 File guard and is not counted as MPEG support. No empty decoder bodies or guessed

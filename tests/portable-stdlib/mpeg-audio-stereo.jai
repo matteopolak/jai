@@ -2,13 +2,40 @@
 M :: #import "pl_mpeg";
 S :: #import "String";
 
+Tracking :: struct {
+    base: Allocator;
+    live: s64;
+}
+
+tracked :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {
+    state := cast(*Tracking) allocator_data;
+    result := state.base.proc(mode, requested_size, old_size, old_memory, state.base.data);
+
+    if mode == .ALLOCATE && result state.live += 1;
+    if mode == .RESIZE && !old_memory && result state.live += 1;
+    if mode == .FREE && old_memory state.live -= 1;
+
+    return result;
+}
+
 main :: () {
+    state := Tracking.{ base = context.allocator };
+    scoped := context;
+    scoped.allocator = .{ tracked, *state };
+    push_context scoped run_cases();
+    assert(state.live == 0);
+    print("ok\n");
+}
+
+run_cases :: () {
     #assert !#exists(M.read_quantized);
     #assert !#exists(M.scale_samples);
+    #assert !#exists(M.Audio_Private);
+    #assert !#exists(M.crc_bits);
     root := sprint("%/../../target/portable-tests/mpeg/", S.path_strip_filename(#file));
 
     defer free(root);
-    names := string.["stereo", "dual", "joint"];
+    names := string.["stereo", "dual", "joint", "joint-crc"];
     for names {
         filename := sprint("%%.mp2", root, it);
         buffer := M.buffer_create_with_filename(filename);
@@ -49,5 +76,4 @@ main :: () {
         M.audio_destroy(audio);
     }
 
-    print("ok\n");
 }

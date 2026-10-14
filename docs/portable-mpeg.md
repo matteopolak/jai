@@ -66,7 +66,7 @@ than returning stale reference content; I/P no-delay decoding is tested.
 
 Layer II audio lifecycle, sync/header parsing, quantizer allocation, grouped/direct
 sample reconstruction, scalefactors, synthesis and interleaved output are implemented
-for unprotected MPEG-1 Layer II frames. A valid zero-allocation frame reconstructs
+for MPEG-1 Layer II frames. A valid zero-allocation frame reconstructs
 silence. The authorized fixture's two explicitly extracted PES payloads yield sixteen
 mono frames (18,432 samples), with real amplitude, channel equality, frequency and
 rewind checks. Frequency uses the steady interior; diagnostics showed extra
@@ -80,8 +80,26 @@ the licensed C factorization. `python3 -B tools/check_portable_mpeg_matrix.py` b
 only the permitted public C input and compares all 2,048 basis results with the
 direct mathematical matrix (observed maximum absolute difference below 9.5e-7).
 It is algorithm verification, not a Jai API oracle. No supplied binary is used.
-CRC-protected frames and changing bitrate/sample-rate/mode assert explicitly and
-remain unsupported. Original nonzero stereo, dual-channel and joint-stereo fixtures
+Protected frames validate the real MSB-first 0x8005 CRC from an all-ones initial
+state over the final sixteen header bits and allocation/scalefactor-selector bits.
+Mismatch asserts before sample reconstruction. The protected joint-stereo fixture
+has two frames and rewind; a corrupted transmitted checksum is rejected in both
+modes. This replaces the earlier explicit unsupported-CRC guard, not a checksum
+skip. Coverage boundaries are corroborated by the official FFmpeg C source linked
+below; public compatibility declarations still come only from reviewed specs.
+
+Checksum state is private and does not enlarge/change the canonical Audio record.
+A CAS-protected registry uses one allocator-captured node per parsed Audio and
+releases it in audio_destroy. Lookup is linear in live decoders and adds a lock
+per header/frame; this cost is unbenchmarked. Tracking verifies node cleanup.
+Callers synchronize each decoder's lifetime. Frame decoding requires a header
+parsed for that exact object; shallow Audio copies/hand-marked has_header values
+are explicitly unsupported rather than silently bypassing checksum validation.
+Manual/copy lifecycle semantics require review. Normal buffer/object allocations
+still require the active allocator lifetime described above.
+
+Changing bitrate/sample-rate/mode remains explicitly unsupported. Original nonzero
+stereo, dual-channel and joint-stereo fixtures
 now check distinct left/right gains, two consecutive frames and rewind. Shared
 sample codes are decoded once, then reconstructed with each channel's own
 scalefactor. This fixes the real joint-stereo failure where the right channel

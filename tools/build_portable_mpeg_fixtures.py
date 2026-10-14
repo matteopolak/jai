@@ -103,7 +103,7 @@ output.mkdir(parents=True, exist_ok=True)
 (output / "ac.m1v").write_bytes(SEQUENCE + picture(1, 128, 0, ac=True))
 
 
-def audio_frame(mode, selected_subband):
+def audio_frame(mode, selected_subband, protected=False):
     # MPEG-1, 128 kbit/s stereo: reviewed table A, 27 subbands. Joint stereo
     # extension zero shares sample codes from subband four onward.
     widths = [4] * 11 + [3] * 12 + [2] * 4
@@ -115,6 +115,7 @@ def audio_frame(mode, selected_subband):
             payload.put(1 if sb == selected_subband else 0, width)
     for _ in range(2):
         payload.put(2, 2)  # One scalefactor for all three parts.
+    protected_bits = payload.bits
     payload.put(3, 6)  # Leave headroom for synthesis ringing.
     payload.put(9, 6)  # Two octave steps: right channel gain is one quarter.
     for _ in range(12):
@@ -122,12 +123,25 @@ def audio_frame(mode, selected_subband):
         if selected_subband < bound:
             payload.put(21, 5)
     body = payload.finish()
-    assert len(body) <= 413
-    return bytes([0xff, 0xfd, 0x80, mode << 6]) + body + bytes(413 - len(body))
+    header = bytes([0xff, 0xfc if protected else 0xfd, 0x80, mode << 6])
+    if protected:
+        crc = 0xffff
+        control = "".join(format(b, "08b") for b in header[2:]) + protected_bits
+        for bit in control:
+            feedback = (crc >> 15) ^ int(bit)
+            crc = (crc << 1) & 0xffff
+            if feedback:
+                crc ^= 0x8005
+        header += crc.to_bytes(2, "big")
+    size = 417 - len(header)
+    assert len(body) <= size
+    return header + body + bytes(size - len(body))
 
 
 for name, mode, sb in [("stereo", 0, 0), ("dual", 2, 0), ("joint", 1, 5)]:
     frame = audio_frame(mode, sb)
     assert len(frame) == 417
     (output / (name + ".mp2")).write_bytes(frame * 2)
+frame = audio_frame(1, 5, protected=True)
+(output / "joint-crc.mp2").write_bytes(frame * 2)
 print("Built independent MPEG B/AC and nonzero stereo fixtures")

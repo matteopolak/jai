@@ -214,3 +214,10 @@ modes. Promote only demonstrated passes; enable the reviewed Remap_Context macro
 with nested/early-exit restoration tests and remove Autorun's extra argv array.
 Retain constructor/constant/workspace/bitwise failures. Reclassify the scalar __reg
 probe accurately and verify actual vector operands before any Meow support claim.
+
+Protected audio increment: retain canonical Audio layout while owning private
+checksum state by object identity. Capture its allocator and release metadata in
+audio_destroy. Validate the real header/control CRC before reconstruction; test
+protected joint stereo, corruption, rewind and tracked cleanup. Reject missing
+parsed-header identity instead of silently bypassing CRC; record manual/copy
+lifetime and linear registry costs as unresolved contracts/performance limits.
