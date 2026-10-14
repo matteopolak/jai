@@ -2,7 +2,7 @@
 
 ## What it is
 
-`crates/jai-wasm` compiles the compiler core `crates/jaic` (lexer, parser, sema, interpreter) and the shared language server to `wasm32-unknown-unknown`. The full `stdlib/` are embedded in the module, so `#import "Basic"` and friends work offline.
+`crates/jai-wasm` compiles the compiler core `crates/jaic` (lexer, parser, sema, interpreter) and the shared language server to `wasm32-unknown-unknown`. The full `stdlib/` (including `stdlib/prelude/`) are embedded in the module, so `#import "Basic"` and friends work offline.
 
 This repository ships the module and a small JavaScript glue file, not a UI. The hosted playground at https://matteopolak.com/playground/jai lives in the portfolio repository (`matteopolak/portfolio`), which has its own editor, worker and engine wrapper. From a bundle it uses `jai_wasm.wasm`, `jaifmt-playground.jai` and the [language tour](tour.md) (`tour.json`, `tour/`); it can use `jaifmt.wasm` for the Format button. The tour's later stops exercise the browser host itself: runtime safety checks, threads, the in-memory file system, `#asm` and `Long_Double`.
 
@@ -21,7 +21,7 @@ A bundle (`tools/build_scripting_wasm.py --output <dir>`) holds:
 
 ## How it works
 
-1. `crates/jai-wasm/build.rs` walks `stdlib/` and generates `$OUT_DIR/stdlib_files.rs`
+1. `crates/jai-wasm/build.rs` walks `stdlib/` (including `stdlib/prelude/`) and generates `$OUT_DIR/stdlib_files.rs`
    (`BUNDLED: &[(&str, &[u8])]` of `include_bytes!`). `stdlib/prelude/module.jai` does `#load "../stdlib/prelude/module.jai"`,
    hence both trees. On wasm32 the script also links with a 256 MiB shadow stack (`-zstack-size`), because
    the compiler recurses deeply.

@@ -122,7 +122,7 @@ pub(crate) fn virtual_fs(files: &BTreeMap<String, Vec<u8>>) -> VirtualFs {
     fs
 }
 
-fn options(main: &str) -> Options {
+fn options(main: &str, fs: &dyn FileSystem) -> Options {
     let mut options = Options::host();
     options.os = TargetOs::Wasm;
     options.cpu = TargetCpu::Wasm;
@@ -133,7 +133,10 @@ fn options(main: &str) -> Options {
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from(WORKSPACE_ROOT));
     options.import_paths = vec![main_dir.join("modules"), PathBuf::from(STDLIB_ROOT)];
-    options.preload = Some(PathBuf::from(format!("{STDLIB_ROOT}/module.jai")));
+    options.preload = Some(
+        jaic::find_preload(fs, std::path::Path::new(STDLIB_ROOT))
+            .unwrap_or_else(|| PathBuf::from(STDLIB_ROOT).join(jaic::PRELOAD_ENTRY)),
+    );
     options
 }
 
@@ -274,7 +277,7 @@ fn run_styled(
     let workspaces = Workspaces::new(BuildEnv {
         unwritten_output_hint: None,
         fs: fs.clone(),
-        options: options(main),
+        options: options(main, &*fs),
         backend: None,
         command_line: Vec::new(),
         make_host: Box::new(move |_| Box::new(SharedHost(workspace_host.clone()))),
@@ -285,7 +288,7 @@ fn run_styled(
         }),
         observer: None,
     });
-    let mut compiler = Compiler::new(options(main), fs);
+    let mut compiler = Compiler::new(options(main, &*fs), fs);
     compiler.interp.host = Box::new(crate::host_bridge::PlayHost::new(
         SharedHost(host.clone()),
         limits.budget,

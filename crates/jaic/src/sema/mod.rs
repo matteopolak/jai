@@ -116,7 +116,7 @@ pub struct Options {
     pub cpu: TargetCpu,
     /// Directories searched by `#import "Name"`, in order.
     pub import_paths: Vec<PathBuf>,
-    /// Path of the bootstrap module (loaded into every program).
+    /// Bootstrap entry loaded into every program (see `crate::PRELOAD_ENTRY`).
     pub preload: Option<PathBuf>,
     /// Load Runtime_Support (entry point, context initialization) for programs.
     pub runtime_support: bool,
@@ -197,6 +197,13 @@ mod long_double_tests {
 }
 
 impl Options {
+    /// Standard-library root for bootstrap layouts and explicitly supplied preload files.
+    pub fn stdlib_root(&self) -> Option<&std::path::Path> {
+        self.preload
+            .as_deref()
+            .and_then(crate::stdlib_root_from_preload)
+    }
+
     pub fn host() -> Self {
         let os = if cfg!(target_os = "windows") {
             TargetOs::Windows

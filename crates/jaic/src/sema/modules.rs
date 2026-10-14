@@ -121,6 +121,7 @@ pub fn normalize(path: &Path) -> PathBuf {
 }
 
 /// Find `Name.jai` or `Name/module.jai` in `from_dir/modules`, then on `import_paths`.
+/// The public `Preload` protocol name also aliases the single bootstrap entry.
 pub fn find_module_in(
     fs: &dyn FileSystem,
     import_paths: &[PathBuf],
@@ -129,7 +130,7 @@ pub fn find_module_in(
 ) -> Option<PathBuf> {
     let mut dirs: Vec<PathBuf> = vec![from_dir.join("modules")];
     dirs.extend(import_paths.iter().cloned());
-    for dir in dirs {
+    for dir in &dirs {
         let file = dir.join(format!("{name}.jai"));
         if fs.is_file(&file) {
             return Some(file);
@@ -139,7 +140,11 @@ pub fn find_module_in(
             return Some(entry);
         }
     }
-    None
+    if name == "Preload" {
+        dirs.iter().find_map(|dir| crate::find_preload(fs, dir))
+    } else {
+        None
+    }
 }
 
 /// The entry file an `#import` written in a file of `dir` loads: a module found on the import
@@ -188,7 +193,7 @@ impl Compiler {
         span: Span,
     ) -> std::result::Result<Diagnostic, Diagnostic> {
         let folder = crate::STDLIB_EXTENSIONS_DIR;
-        let Some(stdlib) = self.options.preload.as_deref().and_then(Path::parent) else {
+        let Some(stdlib) = self.options.stdlib_root() else {
             return Err(d);
         };
         if name == folder {
@@ -260,7 +265,7 @@ impl Compiler {
         };
         // A misspelled `Extensions/Name`: the closest extension module.
         if name.starts_with(&format!("{}/", crate::STDLIB_EXTENSIONS_DIR))
-            && let Some(stdlib) = self.options.preload.as_deref().and_then(Path::parent)
+            && let Some(stdlib) = self.options.stdlib_root()
         {
             available.extend(
                 self.stdlib_modules_under(stdlib, crate::STDLIB_EXTENSIONS_DIR)
@@ -450,11 +455,10 @@ impl Compiler {
         params: Vec<(Sym, Value, TypeId)>,
         span: Span,
     ) -> Result<ModuleId> {
-        // Named arguments in any order pick the same instance; positional ones (`$0`, ...)
-        // keep their own names, so sorting never mixes the two.
-        let mut key_params = params.clone();
-        key_params.sort_by(|a, b| a.0.as_str().cmp(b.0.as_str()));
-        let key = (self.fs.canonical(entry), key_params);
+        // Jai identifies an instance by the argument list as written. Reordering
+        // named arguments creates another instance, even when the effective values match.
+        // Keep positional names and explicit/default argument differences in the key too.
+        let key = (self.fs.canonical(entry), params.clone());
         if let Some(&id) = self.module_cache.get(&key) {
             return Ok(id);
         }
@@ -631,6 +635,13 @@ impl Compiler {
 
     /// Find `Name.jai` or `Name/module.jai` on the import path (and next to `from_dir`).
     pub fn find_module(&self, name: &str, from_dir: &Path) -> Option<PathBuf> {
+        // The public protocol name denotes the selected bootstrap even when a local
+        // module happens to have that name. Otherwise its types and storage diverge.
+        if name == "Preload"
+            && let Some(preload) = &self.options.preload
+        {
+            return Some(preload.clone());
+        }
         find_module_in(&*self.fs, &self.options.import_paths, name, from_dir)
     }
 

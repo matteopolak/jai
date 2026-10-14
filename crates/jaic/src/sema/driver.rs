@@ -28,7 +28,7 @@ impl Compiler {
     pub fn load_bootstrap(&mut self) -> Result<()> {
         let span = Span::NONE;
         if let Some(preload) = self.options.preload.clone() {
-            let m = self.load_module("Preload", &preload, Vec::new(), span)?;
+            let m = self.load_module("prelude", &preload, Vec::new(), span)?;
             self.preload = Some(m);
         }
         if self.options.runtime_support {
