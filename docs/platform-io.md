@@ -12,6 +12,9 @@ bounded DWORD transfers, positions and lengths are signed 64-bit, and no text
 newline conversion occurs. Native errors propagate as failure results; close
 failures are logged and retain the handle for retry.
 
+Native end-of-file and closed-pipe read statuses become successful short/empty reads;
+other failures preserve the bytes already read and return failure.
+
 The private encoding bridge rejects malformed UTF-8 and embedded NULs before
 calling the wide Win32 APIs. Paths use native Windows namespace/length rules;
 explicit extended paths are accepted. Recursive directory creation recognizes
@@ -56,10 +59,79 @@ workflow is dispatched by the worker. Host cross-checks establish source support
 and cross-linking establishes executable generation, but neither proves Windows
 runtime correctness. See the [progress](status/platform-io-progress.md) and
 [deviations](status/platform-io-deviations.md) for executed evidence and gaps.
+Unresolved contracts are recorded in the [platform I/O questions](specs/stdlib/platform-io-questions.md).
+The [compiler/tool handoff](platform-io-compiler-handoff.md) records remaining
+interpreter and semantic-lint requirements. The scoped format/lint runner is
+`tools/format_platform_io.py`; its strict lint mode currently fails on incomplete
+coverage instead of treating the underlying tool's quiet exit zero as a full pass.
+
+## System, Thread and runtime
+
+Windows System converts native wide account and path strings into temporary UTF-8
+storage. Current-user profiles use GetUserProfileDirectoryW; named accounts resolve
+their SID and registered ProfileImagePath. A missing account/profile returns failure.
+CPU queries enumerate variable-size processor-core records across processor groups;
+logical counts count affinity bits, physical counts count cores, and performance
+queries select the highest EfficiencyClass reported by Windows. Native error strings
+use FormatMessageW and release its LocalAlloc storage after conversion.
+
+Windows Thread uses critical sections, condition variables and counted semaphores.
+Thread creation uses `_beginthreadex` with CREATE_SUSPENDED; ResumeThread starts the
+callback with its captured context and temporary storage. Completion is observed on
+the actual thread handle before teardown. The unusual reviewed Windows public
+thread_is_done behavior (any wait result except TIMEOUT reports true) is preserved;
+internal teardown additionally requires successful completion. CRT suspended-thread
+interpreter support remains a compiler integration gap with an original reproducer.
+
+Runtime byte output uses WriteFile on GetStdHandle, preserving binary bytes and LF.
+Native Windows process entry parses GetCommandLineW with CommandLineToArgvW and
+strictly converts to UTF-8; the allocations outlive the runtime context and are freed
+after its finalization. Direct initialization calls retain their supplied argc/argv.
+Fatal Jai checks still terminate through the CRT. Optional Windows hardware exception
+diagnostics use a private source-built C backend with SDK-native contexts, bypassing
+no public ABI. The public crash-handler facade still needs its outstanding review.
+
+Build the DLL and import library with `tools/build_platform_io_runtime.py --stdlib
+target/platform-io-stdlib --cpu x64` (or arm64). The runner's `--windows-crash` option
+builds this dependency and an enabled-startup access-violation fixture, checking the
+native exception code and emitted diagnostics when run on Windows. This is a real
+production dependency requiring coordinator native CI/package integration. The
+diagnostic handler prints up to 64 actual frames and resolves available symbols;
+missing unwind/symbol information is not synthesized.
+
+## Private process engine awaiting public ABI review
+
+`internal/platform-io/windows-process.jai` implements actual native process and pipe
+mechanisms. It is intentionally not attached to the public Process facade until the
+missing Windows record shapes are reviewed. Launch uses Unicode command lines and
+an explicit inherited-handle list. Named byte pipes use overlapped I/O and kernel
+events; reads wait on stdout and stderr together and drain canceled operations
+before returning caller buffers. Job objects provide parent-exit cleanup and are
+assigned before the suspended child starts. Callers can explicitly opt out.
+Transfer counts always come from GetOverlappedResult, including immediate completion;
+a zero-byte native pipe write is not treated as EOF.
+
+Private verification can be added to the runner with `--private-process`; cross-build
+fixtures with `--windows-build x64` (or arm64 with that native toolchain installed).
+The private test uses a temporary module only in the checkout's target stdlib,
+removed after compilation. It is white-box testing, not public Process support.
+The generated native `private-process-O0.exe`/`private-process-O2.exe` take the child
+fixture executable as their argument; real Windows execution is required. The runner
+also exercises job ownership on parent exit on a native Windows host.
 
 ## Native API sources
 
 - [CreateFileW](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew)
+- [ReadFile completion and pipe semantics](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile)
 - [MapViewOfFile](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile)
 - [MultiByteToWideChar](https://learn.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-multibytetowidechar)
 - [SHGetKnownFolderPath](https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/nf-shlobj_core-shgetknownfolderpath)
+- [Processor topology](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getlogicalprocessorinformationex)
+- [Processor efficiency classes](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_relationship)
+- [User profile directory](https://learn.microsoft.com/en-us/windows/win32/api/userenv/nf-userenv-getuserprofiledirectoryw)
+- [Condition variable waits](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-sleepconditionvariablecs)
+- [CRT thread lifecycle](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/beginthread-beginthreadex?view=msvc-170)
+- [Explicit inherited process handles](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute)
+- [Asynchronous I/O cancellation](https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-cancelioex)
+- [Job lifetime limits](https://learn.microsoft.com/en-us/windows/win32/api/jobapi2/nf-jobapi2-setinformationjobobject)
+- [Windows stack walking](https://learn.microsoft.com/en-us/windows/win32/api/dbghelp/nf-dbghelp-stackwalk64)
