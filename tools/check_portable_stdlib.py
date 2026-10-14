@@ -24,6 +24,10 @@ EXPECTED = {
     "command-help": lambda out: all(text in out for text in ["configuration comment", "last option", "--alpha", "--zeta", "--help"]) and out.index("--alpha") < out.index("--zeta") and out.endswith("ok\n"),
 }
 EXPECTED_STDERR = {"print-color": "\x1b[0;44merror\x1b[0m"}
+FAULT_EXPECTATIONS = {
+    "overwriting-double-free": "invalid overwriting-allocator pointer",
+    "xar-capacity": "Xar configured capacity exceeded",
+}
 
 
 def run(command, env, expected=None, cwd=ROOT, expected_stderr=""):
@@ -109,9 +113,15 @@ def main():
         for command in commands:
             result = subprocess.run(command, cwd=ROOT, env=env, text=True,
                                     capture_output=True, timeout=45)
-            if result.returncode == 0 or "assertion failed" not in result.stderr or "invalid overwriting-allocator pointer" not in result.stderr:
+            if result.returncode == 0 or "assertion failed" not in result.stderr or FAULT_EXPECTATIONS[source.stem] not in result.stderr:
                 raise RuntimeError(f"expected checked allocator fault: {result.returncode}: {result.stdout}{result.stderr}")
         print("passed expected allocator fault", source.name, flush=True)
+    negative = ROOT / "tests/portable-stdlib/negative/xar-reverse.jai"
+    result = subprocess.run([str(compiler), "-check", str(negative)], cwd=ROOT,
+                            env=env, text=True, capture_output=True, timeout=45)
+    if result.returncode == 0 or "reverse Xar iteration is unsupported" not in result.stderr:
+        raise RuntimeError(f"expected compile-time reverse iteration rejection: {result.stdout}{result.stderr}")
+    print("passed compile-time Xar reverse rejection", flush=True)
     dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler"}
     posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator"}
     for target in args.check_target:

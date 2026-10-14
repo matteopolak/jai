@@ -156,7 +156,7 @@ python3 -B tools/check_portable_stdlib.py \
   --check-target linux/x64 --check-target windows/x64
 ```
 
-The current run passes 56 cases in interpreter/native modes, plus bootstrap
+The current run passes 57 cases in interpreter/native modes, plus bootstrap
 checks and supported portable target checks. Platform-dependent cases are not
 represented as Windows support. Pending compiler reproducers are stored under
 `tests/portable-stdlib/pending` and are not counted as passing functionality.
@@ -344,3 +344,19 @@ is withheld because its signature alone does not settle equality versus ordering
 no transport or visualizer client implementation is implied by these schemas.
 The current 56-case interpreter/native regression passes, and all 158 owned Jai
 files pass source-built jaifmt --check and jailint -D warnings.
+
+Xar implements stable chunks with capacities a,a,2a,4a,..., allocator capture,
+bulk release, unordered removal, real iterator coordinates/chunk-pointer identity,
+forward/previous traversal and value/pointer loops. Both reviewed sorting entry
+points sort the chunk-backed values in place; quick_sort aliases quick_sort_iter.
+Tests traverse growth boundaries, sort both ways, verify captured allocator/free
+accounting and pointer stability, and check all reverse iterator steps. Capacity
+overflow asserts in interpreter/native tests; reverse custom loops are rejected
+at compile time. Callback type references use an equivalent type-parameter spelling
+to retain the exact element types/parameter names with the current compiler loader.
+Failure/boundary policy and that compiler limitation are recorded in the gap ledger.
+The 57-case regression passes in interpreter/native modes, plus both expected
+allocator faults, compile-time Xar reverse rejection, four parent-lifetime checks
+and selected portable target checks. All 163 owned Jai files pass jaifmt --check
+and jailint -D warnings. The latest ownership excludes the window/render worker's
+modules and internals from implementation and source-check mutation scope.

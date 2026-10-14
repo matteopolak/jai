@@ -20,7 +20,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [bucket-array](specs/stdlib/modules/bucket-array.md) | All reviewed exports implemented; stable pointers, locators, reuse and iteration pass interpreter/native |
 | [buildcpp](specs/stdlib/modules/buildcpp.md) | Owned portable scope; not implemented |
 | [check](specs/stdlib/modules/check.md) | Owned portable scope; not implemented |
-| [clipboard](specs/stdlib/modules/clipboard.md) | Owned portable scope; not implemented |
+| [clipboard](specs/stdlib/modules/clipboard.md) | Reserved for window/render worker by current ownership; not modified here |
 | [code-visit](specs/stdlib/modules/code-visit.md) | Reserved for compiler worker; not implemented or modified here |
 | [codex](specs/stdlib/modules/codex.md) | Owned portable scope; not implemented |
 | [color-interpolation](specs/stdlib/modules/color-interpolation.md) | Reserved for numerics worker; not implemented or modified here |
@@ -46,8 +46,8 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [flat-pool](specs/stdlib/modules/flat-pool.md) | Owned portable scope; not implemented |
 | [float16](specs/stdlib/modules/float16.md) | Reserved for numerics worker; not implemented or modified here |
 | [freetype](specs/stdlib/modules/freetype.md) | Reserved for bindings worker; not implemented or modified here |
-| [gamepad-sdl-input-map](specs/stdlib/modules/gamepad-sdl-input-map.md) | Owned portable scope; not implemented |
-| [gamepad](specs/stdlib/modules/gamepad.md) | Owned portable scope; not implemented |
+| [gamepad-sdl-input-map](specs/stdlib/modules/gamepad-sdl-input-map.md) | Reserved for window/render worker by current ownership; not modified here |
+| [gamepad](specs/stdlib/modules/gamepad.md) | Reserved for window/render worker by current ownership; not modified here |
 | [generate-c-header](specs/stdlib/modules/generate-c-header.md) | Owned portable scope; not implemented |
 | [getrect-lefthanded](specs/stdlib/modules/getrect-lefthanded.md) | Reserved for numerics worker; not implemented or modified here |
 | [getrect](specs/stdlib/modules/getrect.md) | Reserved for numerics worker; not implemented or modified here |
@@ -57,12 +57,12 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [ico-file](specs/stdlib/modules/ico-file.md) | Owned portable scope; not implemented |
 | [icon](specs/stdlib/modules/icon.md) | Owned portable scope; not implemented |
 | [imgui](specs/stdlib/modules/imgui.md) | Reserved for bindings worker; not implemented or modified here |
-| [input](specs/stdlib/modules/input.md) | Owned portable scope; not implemented |
+| [input](specs/stdlib/modules/input.md) | Reserved for window/render worker by current ownership; not modified here |
 | [introsort](specs/stdlib/modules/introsort.md) | Implemented in-place comparison sorts; interpreter/native checks pass |
 | [ios](specs/stdlib/modules/ios.md) | Reserved for bindings worker; not implemented or modified here |
 | [iprof](specs/stdlib/modules/iprof.md) | Owned portable scope; not implemented |
 | [jai-lexer](specs/stdlib/modules/jai-lexer.md) | Reserved for compiler worker; not implemented or modified here |
-| [keymap](specs/stdlib/modules/keymap.md) | Owned portable scope; not implemented |
+| [keymap](specs/stdlib/modules/keymap.md) | Reserved for window/render worker by current ownership; not modified here |
 | [linux-build](specs/stdlib/modules/linux-build.md) | Owned portable scope; not implemented |
 | [linux](specs/stdlib/modules/linux.md) | Reserved for bindings worker; not implemented or modified here |
 | [lz4](specs/stdlib/modules/lz4.md) | Reserved for bindings worker; not implemented or modified here |
@@ -108,14 +108,14 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [sdl](specs/stdlib/modules/sdl.md) | Reserved for bindings worker; not implemented or modified here |
 | [shared-memory-channel](specs/stdlib/modules/shared-memory-channel.md) | Owned portable scope; not implemented |
 | [simd](specs/stdlib/modules/simd.md) | Owned portable scope; not implemented |
-| [simp](specs/stdlib/modules/simp.md) | Owned portable scope; not implemented |
+| [simp](specs/stdlib/modules/simp.md) | Reserved for window/render worker by current ownership; not modified here |
 | [simple-package](specs/stdlib/modules/simple-package.md) | Owned portable scope; not implemented |
 | [sloppy-math](specs/stdlib/modules/sloppy-math.md) | Reserved for numerics worker; not implemented or modified here |
 | [soa](specs/stdlib/modules/soa.md) | Generated canonical component arrays, indexed gather/scatter and value/pointer loops implemented; overlay/constant omission, empty extent and writeback on continue/break/return tested. General overlapping-union selection requires review |
 | [socket](specs/stdlib/modules/socket.md) | Partial Unix wrappers plus generated native declarations. IPv4 loopback, fd sets and IPv6 formatting pass interpreter/native; Windows wrappers and remaining native/helper gaps recorded separately |
 | [sort](specs/stdlib/modules/sort.md) | Implemented both callback forms and built-in comparators; numeric sorting checks pass interpreter/native |
 | [sound-player](specs/stdlib/modules/sound-player.md) | Owned portable scope; not implemented |
-| [srgb](specs/stdlib/modules/srgb.md) | Owned portable scope; not implemented |
+| [srgb](specs/stdlib/modules/srgb.md) | Reserved for window/render worker by current ownership; not modified here |
 | [stb-image-resize](specs/stdlib/modules/stb-image-resize.md) | Reserved for bindings worker; not implemented or modified here |
 | [stb-image-write](specs/stdlib/modules/stb-image-write.md) | Reserved for bindings worker; not implemented or modified here |
 | [stb-image](specs/stdlib/modules/stb-image.md) | Reserved for bindings worker; not implemented or modified here |
@@ -131,13 +131,13 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [unmapping-allocator](specs/stdlib/modules/unmapping-allocator.md) | Unix guarded mappings, read-only retained frees, resize/failure preservation and exact metadata shape implemented; interpreter/native guards and stale writes checked using actual child signal termination. Windows/console and lifecycle policy incomplete or under review |
 | [vulkan](specs/stdlib/modules/vulkan.md) | Reserved for bindings worker; not implemented or modified here |
 | [wav-file](specs/stdlib/modules/wav-file.md) | Reviewed exports implemented for PCM/IMA metadata and borrowed data views; bounded/truncated chunk tests pass interpreter/native, Linux/Windows checks and lint. Duplicate chunks require review |
-| [window-creation](specs/stdlib/modules/window-creation.md) | Owned portable scope; not implemented |
-| [window-type](specs/stdlib/modules/window-type.md) | Owned portable scope; not implemented |
+| [window-creation](specs/stdlib/modules/window-creation.md) | Reserved for window/render worker by current ownership; not modified here |
+| [window-type](specs/stdlib/modules/window-type.md) | Reserved for window/render worker by current ownership; not modified here |
 | [windows-registry](specs/stdlib/modules/windows-registry.md) | Owned portable scope; not implemented |
 | [windows-resources](specs/stdlib/modules/windows-resources.md) | Owned portable scope; not implemented |
 | [windows-utf8](specs/stdlib/modules/windows-utf8.md) | Owned portable scope; not implemented |
 | [windows](specs/stdlib/modules/windows.md) | Reserved for bindings worker; not implemented or modified here |
 | [x11](specs/stdlib/modules/x11.md) | Reserved for bindings worker; not implemented or modified here |
-| [xar](specs/stdlib/modules/xar.md) | Owned portable scope; not implemented |
+| [xar](specs/stdlib/modules/xar.md) | Reviewed exports implemented: stable exponential chunks, captured allocator, removal, coordinates/iterators, pointer/value loops and in-place sorting. Failure/iterator boundary policy noted; reverse iteration and capacity limits checked |
 | [xxhash](specs/stdlib/modules/xxhash.md) | Reserved for bindings worker; not implemented or modified here |
 | [zip-file-directory](specs/stdlib/modules/zip-file-directory.md) | Owned portable scope; not implemented |

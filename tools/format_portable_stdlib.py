@@ -18,15 +18,18 @@ RESERVED = {
     "Metal", "MojoShader", "nvidia_aftermath", "nvtt", "Objective_C", "POSIX",
     "rpmalloc", "SDL", "stb_image", "stb_image_resize", "stb_image_write",
     "stb_vorbis", "telemetry3", "Vulkan", "Windows", "X11", "xxHash",
+    "Window_Creation", "Window_Type", "Input", "Keymap", "Gamepad", "Simp", "Srgb", "Clipboard",
 }
-RESERVED_INTERNAL = {"bindings", "numerics", "compiler-api", "jai-lexer", "code-visit", "program-print"}
+RESERVED_FOLDED = {name.casefold() for name in RESERVED}
+RESERVED_INTERNAL = {"bindings", "numerics", "compiler-api", "jai-lexer", "code-visit", "program-print",
+                     "window", "rendering", "input", "gamepad", "clipboard"}
 
 
 def owned_paths():
     paths = []
     for path in (ROOT / "stdlib").rglob("*.jai"):
         relative = path.relative_to(ROOT / "stdlib")
-        if relative.parts[0] in RESERVED:
+        if relative.parts[0].casefold() in RESERVED_FOLDED:
             continue
         if relative.parts[0] == "internal" and relative.parts[1] in RESERVED_INTERNAL:
             continue

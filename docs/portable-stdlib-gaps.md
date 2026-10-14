@@ -78,3 +78,14 @@ Protocol_For_Memory_Visualization's compare_alloc_and_free_traces signature does
 not establish equality versus ordering semantics. It is withheld, rather than
 inferred from its name. The packet layouts, tags and version/channel constants
 are implemented and tested independently of any transport/receiver.
+
+Xar returns null on backing allocation failure without changing count, and
+captures the allocator before the first attempt. The exact allocation-failure
+policy is not specified. End/zero iterator operations return null and keep their
+iterator unchanged; that side effect is likewise not settled. Comparator callbacks
+currently use a negative/zero/positive result convention. Equivalent T.Element_Type
+references preserve the public callback types while resolving exported generic
+headers; spelling those as array.Element_Type currently fails in this module's
+compiler loading path. A simple same-file procedure does not reproduce it, so no
+general compiler root cause is claimed. The public types/parameter names are
+unchanged. Max_chunks/overflowing-shift invalid configurations are rejected.

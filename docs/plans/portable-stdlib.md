@@ -100,3 +100,10 @@ private debug subsystem with explicit facade aliases. Preserve every field and
 tag value/order, canonical String_Index metadata and native pointer widths.
 Validate packet size/offsets independently of any client or transport. Withhold
 the comparator until the spec settles equality versus ordering semantics.
+
+Xar increment: map indexes onto fixed exponentially sized chunks (a,a,2a,...),
+capture/reuse the first allocator and keep chunk addresses stable. Populate real
+iterator coordinates/pointers, implement forward/previous and unordered removal,
+and sort in place over indexed chunk pointers. Preserve the quick_sort alias.
+Test growth boundaries, lifetime accounting, pointer loops, iterators and sorts;
+verify reverse custom iteration is rejected at compile time.
