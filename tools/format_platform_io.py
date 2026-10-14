@@ -8,6 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 OWNED = [
+    "stdlib/Process/module.jai", "stdlib/internal/process/windows.jai", "stdlib/internal/process/windows-types.jai",
     "stdlib/File/module.jai", "stdlib/internal/files/file.jai",
     "stdlib/internal/files/native-unix.jai", "stdlib/internal/files/native-windows.jai",
     "stdlib/internal/platform-io", "stdlib/System/module.jai", "stdlib/internal/system/windows.jai",

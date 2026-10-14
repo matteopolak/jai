@@ -89,11 +89,12 @@ production dependency requiring coordinator native CI/package integration. The
 diagnostic handler prints up to 64 actual frames and resolves available symbols;
 missing unwind/symbol information is not synthesized.
 
-## Private process engine awaiting public ABI review
+## Public Windows Process
 
 `internal/platform-io/windows-process.jai` implements actual native process and pipe
-mechanisms. It is intentionally not attached to the public Process facade until the
-missing Windows record shapes are reviewed. Launch uses Unicode command lines and
+mechanisms over the canonical reviewed public records in `internal/process/windows-types.jai`.
+The public facade selects `internal/process/windows.jai`, retaining all names,
+overloads, parameter names and defaults. Launch uses Unicode command lines and
 an explicit inherited-handle list. Named byte pipes use overlapped I/O and kernel
 events; reads wait on stdout and stderr together and drain canceled operations
 before returning caller buffers. Job objects provide parent-exit cleanup and are
@@ -101,11 +102,10 @@ assigned before the suspended child starts. Callers can explicitly opt out.
 Transfer counts always come from GetOverlappedResult, including immediate completion;
 a zero-byte native pipe write is not treated as EOF.
 
-Private verification can be added to the runner with `--private-process`; cross-build
+Windows verification can be added to the runner with `--windows-process`; cross-build
 fixtures with `--windows-build x64` (or arm64 with that native toolchain installed).
-The private test uses a temporary module only in the checkout's target stdlib,
-removed after compilation. It is white-box testing, not public Process support.
-The generated native `private-process-O0.exe`/`private-process-O2.exe` take the child
+The tests import the actual public facade; the earlier temporary test module has
+been removed. The generated native `windows-process-O0.exe`/`windows-process-O2.exe` take the child
 fixture executable as their argument; real Windows execution is required. The runner
 also exercises job ownership on parent exit on a native Windows host.
 
