@@ -23,6 +23,14 @@ pub trait FileSystem {
 
 pub struct NativeFs;
 
+/// A cached source request may be in a recursive load, complete, or failed.
+/// Failure must never be mistaken for an already-loaded successful file.
+pub(super) enum FileLoadState {
+    Loading,
+    Ready,
+    Failed(Box<Diagnostic>),
+}
+
 impl FileSystem for NativeFs {
     fn read(&self, path: &Path) -> Option<Vec<u8>> {
         std::fs::read(path).ok()
@@ -454,19 +462,33 @@ impl Compiler {
     pub fn load_file(&mut self, path: &Path, module: ModuleId, span: Span) -> Result<()> {
         self.check_source_access(path, span)?;
         let path = self.fs.canonical(path);
-        if self.file_by_path.contains_key(&(path.clone(), module)) {
-            return Ok(()); // `#load` of an already-loaded file is a no-op.
+        let key = (path.clone(), module);
+        if let Some(state) = self.file_by_path.get(&key) {
+            return match state {
+                FileLoadState::Loading | FileLoadState::Ready => Ok(()),
+                FileLoadState::Failed(error) => Err(error.clone()),
+            };
         }
-        let file = self.read_source(&path, span)?;
         self.file_by_path
-            .insert((path.clone(), module), self.files.len());
+            .insert(key.clone(), FileLoadState::Loading);
+        let result = self.load_file_inner(&path, module, span);
+        let state = match &result {
+            Ok(()) => FileLoadState::Ready,
+            Err(error) => FileLoadState::Failed(error.clone()),
+        };
+        self.file_by_path.insert(key, state);
+        result
+    }
+
+    fn load_file_inner(&mut self, path: &Path, module: ModuleId, span: Span) -> Result<()> {
+        let file = self.read_source(&path, span)?;
         let text = self.sources.get(file).text.clone();
         let ast = crate::parser::parse_file(file, &text).map_err(Box::new)?;
         let module_scope = self.modules[module.0 as usize].scope;
         let file_scope = self.new_scope(ScopeKind::File, Some(module_scope), module, Some(file));
         self.files.push(FileInfo {
             id: file,
-            path,
+            path: path.to_path_buf(),
             module,
             scope: file_scope,
         });
@@ -494,14 +516,14 @@ impl Compiler {
         // Keep positional names and explicit/default argument differences in the key too.
         let key = (self.fs.canonical(entry), params.clone());
         if let Some(&id) = self.module_cache.get(&key) {
-            return Ok(id);
+            return self.module_load_result(id);
         }
         // Program parameters (`#import "Basic"()(MEMORY_DEBUGGER=true)`) configure the
         // one instance every importer shares.
         if !params.is_empty()
             && let Some(id) = self.program_instance(&key.0, &params, span)?
         {
-            return Ok(id);
+            return self.module_load_result(id);
         }
         // A plain `#import "M"` joins an instance already configured elsewhere
         // (`#import "Basic"()(MEMORY_DEBUGGER=true)` in the program applies to all), but not
@@ -518,7 +540,7 @@ impl Compiler {
                 })
                 .min_by_key(|id| id.0)
         {
-            return Ok(id);
+            return self.module_load_result(id);
         }
         let id = ModuleId(self.modules.len() as u32);
         let scope = self.new_scope(ScopeKind::Module, Some(self.root_scope), id, None);
@@ -534,9 +556,19 @@ impl Compiler {
             files: Vec::new(),
         });
         self.module_cache.insert(key, id);
-        self.load_file(entry, id, span)?;
+        if let Err(error) = self.load_file(entry, id, span) {
+            self.module_failures.insert(id, error.clone());
+            return Err(error);
+        }
         self.apply_program_params(id);
         Ok(id)
+    }
+
+    fn module_load_result(&self, id: ModuleId) -> Result<ModuleId> {
+        match self.module_failures.get(&id) {
+            Some(error) => Err(error.clone()),
+            None => Ok(id),
+        }
     }
 
     /// Record the named parameters of an import so a program parameter among them reaches
@@ -637,6 +669,7 @@ impl Compiler {
         {
             return Ok(None);
         }
+        self.module_load_result(id)?;
         for (name, value, ty) in params {
             let entity = self.modules[id.0 as usize]
                 .param_entities

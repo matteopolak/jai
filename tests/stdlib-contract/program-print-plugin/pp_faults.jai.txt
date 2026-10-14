@@ -1,8 +1,0 @@
-__array_bounds_check_fail:: (index: s64, limit: s64, line_number: s64, filename: *u8) #no_context;
-__cast_bounds_check_fail:: (pre_value: s64, pre_flags: u32, post_value: s64, post_flags: u32, fatal: u8, line_number: s64, filename: *u8) #no_context;
-__null_pointer_check_fail:: (index: s64, line_number: s64, filename: *u8) #no_context;
-__arithmetic_overflow:: (left: s64, right: s64, type_code: u16, line_number: s64, filename: *u8) #no_context;
-one_time_init:: (synch_value: *s32, to_insert: Code) #expand;
-libc::  /* expression not printed */;
-c_abort:: ();
-report_location:: (filename: *u8, line: s64) #no_context;

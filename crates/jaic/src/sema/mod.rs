@@ -351,11 +351,12 @@ pub struct Compiler {
     /// Lexical provenance of scoped/generated sources, for relative source loads
     /// and the distribution boundary around library-owned internals.
     source_origins: HashMap<FileId, FileId>,
-    file_by_path: HashMap<(PathBuf, ModuleId), usize>,
+    file_by_path: HashMap<(PathBuf, ModuleId), modules::FileLoadState>,
     /// Whether each source file is the stdlib's, for trap reports (a `#run` can trap often).
     library_files: std::cell::RefCell<HashMap<u32, bool>>,
     pub modules: Vec<Module>,
     module_cache: HashMap<(PathBuf, Vec<ConstArg>), ModuleId>,
+    module_failures: HashMap<ModuleId, Box<Diagnostic>>,
     pub scopes: Vec<scope::Scope>,
     pub entities: Vec<scope::Entity>,
     pub procs: Vec<procs::ProcInfo>,
@@ -616,6 +617,7 @@ impl Compiler {
             file_by_path: HashMap::default(),
             modules: Vec::new(),
             module_cache: HashMap::default(),
+            module_failures: HashMap::default(),
             scopes: Vec::new(),
             entities: Vec::new(),
             procs: Vec::new(),

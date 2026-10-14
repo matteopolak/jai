@@ -242,8 +242,13 @@ impl Compiler {
         }
         if self.export.system_dir.is_none() {
             let dir = self
-                .find_module("Runtime_Support", std::path::Path::new(""))
-                .and_then(|p| p.parent().map(|d| self.fs.canonical(d)));
+                .options
+                .stdlib_root()
+                .map(|root| self.fs.canonical(root))
+                .or_else(|| {
+                    self.find_module("Runtime_Support", std::path::Path::new(""))
+                        .and_then(|p| p.parent().map(|d| self.fs.canonical(d)))
+                });
             self.export.system_dir = Some(dir);
         }
         if let Some(&system) = self.export.system_modules.get(&m) {

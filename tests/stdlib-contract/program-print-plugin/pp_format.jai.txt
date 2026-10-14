@@ -1,7 +1,0 @@
-get_u64_from_void_pointer:: (pointer: *void, size_in_bytes: int) -> (: u64);
-get_s64_from_void_pointer:: (pointer: *void, size_in_bytes: int) -> (: s64);
-print_item_to_builder:: (builder: *String_Builder, item: Any, inside_struct_or_array: = true, may_be_uninitialized: = false);
-print_to_builder:: (builder: *String_Builder, format_string: string, args: Any) -> (: bool);
-sprint:: (format_string: string, args: Any) -> (: string);
-print_character:: (_c: u8);
-append_unsigned_decimal:: (builder: *String_Builder, value: u64);

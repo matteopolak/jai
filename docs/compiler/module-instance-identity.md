@@ -18,6 +18,11 @@ Program parameters continue configuring a shared instance through the existing s
 
 The cache key is constructed in `crates/jaic/src/sema/modules.rs`. Preserve argument order there and when collecting arguments. Sorting names or filling omitted defaults before forming the key would change the specified identity rule. The regression fixture is `tests/stdlib/module-parameter-argument-order.jai`.
 
+Source-cache entries distinguish recursive loading, successful completion and
+failure. Repeating a failed parse/load returns its original diagnostic; neither
+file deduplication nor module/program-parameter deduplication turns failure into
+an empty successful module. A new compilation creates a fresh loader cache.
+
 ## Configuration
 
 There is no compatibility flag. This is the documented compatibility rule recorded in the [language guide](../specs/jai/modules-workspaces-and-examples.md#imports-and-modules).

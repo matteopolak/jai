@@ -557,3 +557,68 @@ fn import_message_records_describe_actual_source_entry() {
         matches!(records.field(record, "fully_pathed_filename"), Some(FieldRef::Str(s)) if &**s == b"/lib/M/module.jai")
     );
 }
+
+#[test]
+fn typechecked_events_use_selected_bootstrap_library_root() {
+    use jaic::records::{FieldRef, Item, Records};
+    let mut c = compiler(
+        &[
+            ("/lib/prelude/module.jai", ""),
+            ("/lib/M/module.jai", "library_value :: 47;"),
+            (
+                "/app/main.jai",
+                "M :: #import \"M\"; application_value :: M.library_value;",
+            ),
+        ],
+        true,
+    );
+    succeeds(&mut c);
+    let mut records = Records::default();
+    let message = c.export_typechecked(&mut records).unwrap();
+    let Some(FieldRef::List(items)) = records.field(message, "declarations") else {
+        panic!("missing declarations");
+    };
+    let names: Vec<Vec<u8>> = items
+        .iter()
+        .map(|item| {
+            let Item::Ref(typed) = item else {
+                panic!("invalid typechecked record");
+            };
+            let Some(FieldRef::Ref(decl)) = records.field(typed, "expression") else {
+                panic!("missing expression");
+            };
+            let Some(FieldRef::Str(name)) = records.field(decl, "name") else {
+                panic!("missing declaration name");
+            };
+            name.to_vec()
+        })
+        .collect();
+    assert_eq!(names, vec![b"application_value".to_vec()]);
+}
+
+#[test]
+fn failed_source_loads_cannot_become_successful_cache_hits() {
+    let mut c = compiler(&[("/lib/Broken/module.jai", "value :: ;")], false);
+    for _ in 0..2 {
+        assert!(
+            c.load_module(
+                "Broken",
+                Path::new("/lib/Broken/module.jai"),
+                vec![],
+                jaic::source::Span::NONE
+            )
+            .is_err()
+        );
+    }
+    let module = c.new_module("direct", None, vec![]);
+    for _ in 0..2 {
+        assert!(
+            c.load_file(
+                Path::new("/lib/Broken/module.jai"),
+                module,
+                jaic::source::Span::NONE
+            )
+            .is_err()
+        );
+    }
+}

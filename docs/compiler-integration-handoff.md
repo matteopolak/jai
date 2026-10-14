@@ -95,6 +95,12 @@ copies only the new POSIX/Linux/macOS/Windows bindings and their private helpers
 This enables the Program_Print plugin's real file-output fixture while preserving
 every other checkout. Full integration remains coordinator-owned.
 
+AST user-declaration events now classify system modules from the selected
+bootstrap's library root, rather than the Runtime_Support module folder. This
+retains the compiler's user-only typechecked event policy under the new layout.
+FILE/IMPORT events still describe actual loaded sources. Failed file/module loads
+remain failed on cache hits instead of becoming empty successes.
+
 Core parser/IDE overlap should be integrated through documented changes. This
 worker owns loader/bootstrap and semantic compatibility changes; the LSP worker
 owns partial-edit resilience and keyword navigation. No other checkout is modified.

@@ -1,9 +1,0 @@
-runtime_support_default_allocator_proc:: (mode: Allocator_Mode, size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> (: *void);
-Allocation_Header::  /* expression not printed */;
-libc::  /* expression not printed */;
-c_malloc:: (size: u64) -> (: *void);
-c_realloc:: (memory: *void, size: u64) -> (: *void);
-c_free:: (memory: *void);
-allocation_alignment:: (size: s64) -> (: s64);
-align_address:: (address: *u8, alignment: s64) -> (: *u8);
-allocate_block:: (size: s64) -> (: *void);
