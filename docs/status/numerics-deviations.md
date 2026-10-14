@@ -37,6 +37,10 @@ tests. Deviations remain. This is not complete coordinator acceptance.
   their signed-zero bits. Subnormal/max-range/absolute-value tests pass in the
   interpreter, native O0/O2 and WASM. This intentionally spends wider arithmetic
   for correctness; optimize only while retaining these IEEE regressions.
+  The first regeneration audit exposed an outdated vector template that would
+  overwrite the fix; that template was updated, then exact regeneration and
+  equality with the verified staged source passed. No generated-file exemption
+  or hand-maintained override remains.
 - Shortcut dispatch now reads key_code, not key_pressed as a character.
   Ctrl/Cmd+A and release/unrelated-flag tests pass. Clipboard shortcut changes
   are compile-tested without modifying the user's global clipboard.

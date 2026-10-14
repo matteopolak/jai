@@ -6,7 +6,11 @@ The current follow-up removes superseded fixtures/tool repairs, fixes UI decimal
 rounding/format precision and ignored capacity failures, adds real alternate
 Type_Indicator coverage, handles canonical signed/fractional wheel events once
 per eligible region/frame, and expands the independent oracle to 3,572 assertions.
-These changes are reviewed and locally verified; the cleanup commit is pending.
+Committed checkpoints: ee5c32a (canonical types/precision), 4acc846 (cleanup,
+decimal/capacity/wheel integration), 9fb8bfe (IEEE normalization, shortcuts and
+shared cursor identity). All code changes are reviewed and locally verified.
+Final documentation records those implementation commits; no code work is
+silently left pending.
 
 Latest actual evidence:
 - Canonical suite 126/143: all twenty programs pass interpreter/native O0/O2;
@@ -38,3 +42,9 @@ run native window/input/GPU acceptance plus full corpus/CI externally. Issue1
 event-pump work is explicitly not owned here. No quarantined integration data,
 vendored library bodies, reference sources/binaries, auth, subagents or publication
 were used.
+
+Additional before/after evidence: keyboard-shortcuts-before/after,
+cursor-identity-before/after and normalization-ieee-before/after. Wide norm
+intermediates preserve subnormal/max-range unit vectors and quaternions; the
+returned length/epsilon comparison remains binary32. The vector generator now
+emits that implementation, and repeated regeneration is byte-idempotent.
