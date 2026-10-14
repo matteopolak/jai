@@ -5,7 +5,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [Features](features.md): what works, performance and what is missing
 - [Window/render progress](status/window-render-progress.md): scoped native window,
   native input and keyboard layouts, Keymap, window lifecycle, original native-font
-  feature regressions and real font-atlas/text rendering,
+  feature regressions, real font-atlas/text rendering and texture color-space transitions,
   textures, depth/stencil and asynchronous readback evidence;
   [remaining deviations](status/window-render-deviations.md).
 - [Window/render clean-room incident](status/window-render-cleanroom-incident-2026-10-14.md):

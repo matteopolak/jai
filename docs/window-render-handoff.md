@@ -1,5 +1,7 @@
 # Window/render worker handoff
 
+Texture color-space checkpoint:174 focused invocations pass, zero fail. The real-driver regression covers public bitmap load, reallocation and same-size update with repeated linear/sRGB transitions, preserved unrelated flags/native identity, queried GL storage formats and exact raw pixels. Both storage and public state follow incoming Bitmap.IS_SRGB. All owned Jai formatting/check and warnings-denied lint pass. Additional macOS x64 public window, text-renderer and color-space source checks pass. Native Windows execution remains pending.
+
 Latest font regression batch fixes a production GSUB endian-decoding bug; typed widened operands preserve high bytes without disabling checked casts. New original TrueType/GSUB/GDEF assets exercise real FreeType single1/2, alternate, extension, coverage1/2, ordered substitutions, digit effect precedence and glyph advances. Public GL text renders all four effect combinations with distinct actual framebuffer coverage. Generator: python3 tools/window_render_feature_font.py --check. No external font asset was copied. Full verification count follows in progress; Windows native execution and general sequence shaping remain unclaimed.
 
 Resumed dependency/OEM/lifecycle batches:159 focused invocations pass with zero failures using

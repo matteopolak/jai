@@ -62,6 +62,7 @@ def main():
         host.append("macos-events")
         host.append("public-window")
         host.append("texture-driver")
+        host.append("texture-colorspace")
         host.append("shader-driver")
         host.append("depth-driver")
         host.append("window-render-host")
