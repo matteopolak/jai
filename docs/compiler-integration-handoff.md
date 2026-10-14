@@ -185,3 +185,10 @@ dropping them. The new Code-copy fixture passes in both modes. Segment handles
 also survive a separate #run and aliases: their opaque allocations participate in
 the same real-global relocation map as registered data. Focused facade fixtures
 now total 21.
+
+Bootstrap atomics now lower through common validated IR. See
+[atomic semantics and regressions](compiler/bootstrap-atomics.md) and the mandatory
+[deviations report](status/compiler-deviations.md). Native O0/O2, interpreter host
+contention, and actual shared-memory WASM worker contention pass; these are
+focused compiler/backend verification, not a production integration claim.
+Progress and next tasks are maintained in [compiler progress](status/compiler-progress.md).

@@ -125,7 +125,7 @@ impl Probe {
     /// Can every page of `addr..addr + len` be read (or written)? Asks the system about the
     /// pages not known already.
     #[inline(always)]
-    fn accessible(&self, addr: u64, len: usize, write: bool) -> bool {
+    pub(super) fn accessible(&self, addr: u64, len: usize, write: bool) -> bool {
         // The usual access is one more field of a record just read: inside one known page.
         // Addresses below 4 KiB are never mapped (and are how null dereferences show).
         if addr >= PAGE && len != 0 && (len as u64) <= PAGE - addr % PAGE {

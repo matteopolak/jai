@@ -2476,7 +2476,10 @@ impl Compiler {
             "memcpy" => ir::Intrinsic::Memcpy,
             "memset" => ir::Intrinsic::Memset,
             "memcmp" => ir::Intrinsic::Memcmp,
-            "compare_and_swap" => ir::Intrinsic::CompareAndSwap,
+            "compare_and_swap" => ir::Intrinsic::AtomicCas(ir::ORDER_SEQ_CST, ir::ORDER_SEQ_CST),
+            "atomic_load" => ir::Intrinsic::AtomicLoad(ir::ORDER_SEQ_CST),
+            "atomic_store" => ir::Intrinsic::AtomicStore(ir::ORDER_SEQ_CST),
+            "atomic_exchange" => ir::Intrinsic::AtomicRmw(ir::AtomicOp::Xchg, ir::ORDER_SEQ_CST),
             "atomic_load_order"
             | "atomic_store_order"
             | "atomic_exchange_order"
@@ -2489,7 +2492,9 @@ impl Compiler {
                 // The last parameter is the memory order, a compile-time constant that the IR
                 // op carries (a compare-exchange packs success | failure << 4).
                 let mode = self.const_int_arg(f, slots, &args, name.as_str(), span)?;
-                values.pop();
+                if !header.params.last().is_some_and(|p| p.baked) {
+                    values.pop();
+                }
                 self.atomic_intrinsic(name.as_str(), mode, span)?
             }
             "debug_break" => ir::Intrinsic::DebugBreak,
@@ -2533,12 +2538,67 @@ impl Compiler {
         if (op == ir::Intrinsic::CompareAndSwap && values.len() == 3) || atomic {
             // The interpreter needs the operand width: 1, 2, 4 or 8 bytes. A load has only the
             // pointer; the other operations take the value as their second parameter.
-            let pointee = if matches!(op, ir::Intrinsic::AtomicLoad(_)) {
-                sig.returns[0]
-            } else {
-                sig.params[1].ty
-            };
+            let pointee = sig
+                .params
+                .first()
+                .and_then(|p| self.types.pointee(p.ty))
+                .ok_or_else(|| {
+                    Box::new(Diagnostic::error(
+                        span,
+                        "an atomic operation requires a pointer to an atomic scalar",
+                    ))
+                })?;
+            let repr = self.types.repr(pointee);
             let width = self.size_of(pointee, span)?;
+            if !matches!(
+                self.types.kind(repr),
+                TypeKind::Int { .. }
+                    | TypeKind::Float { .. }
+                    | TypeKind::Bool
+                    | TypeKind::Pointer(_)
+                    | TypeKind::Proc(_)
+            ) || !matches!(width, 1 | 2 | 4 | 8)
+            {
+                return err(
+                    span,
+                    "an atomic scalar must be an integer, enum, bool, float, pointer or procedure of 1, 2, 4 or 8 bytes",
+                );
+            }
+            let (arguments, expected_returns) = match op {
+                ir::Intrinsic::AtomicLoad(_) => (1, vec![pointee]),
+                ir::Intrinsic::AtomicStore(_) => (2, vec![]),
+                ir::Intrinsic::AtomicCas(..) | ir::Intrinsic::CompareAndSwap => {
+                    (3, vec![TypeId::BOOL, pointee])
+                }
+                _ => (2, vec![pointee]),
+            };
+            if values.len() != arguments
+                || sig.returns != expected_returns
+                || sig
+                    .params
+                    .iter()
+                    .take(arguments)
+                    .skip(1)
+                    .any(|p| p.ty != pointee)
+            {
+                return err(
+                    span,
+                    "atomic intrinsic signature must preserve its pointer's scalar type and documented results",
+                );
+            }
+            let address = f.b.conv(ir::ConvOp::Bitcast, Ty::Ptr, Ty::I64, values[0]);
+            let required = f.b.iconst(Ty::I64, width);
+            let mask = f.b.iconst(Ty::I64, width - 1);
+            let low = f.b.bin(ir::BinOp::And, Ty::I64, address, mask);
+            let zero = f.b.iconst(Ty::I64, 0);
+            let bad = f.b.cmp(ir::CmpOp::Ne, Ty::I64, low, zero);
+            let fail = f.b.new_block();
+            let ready = f.b.new_block();
+            f.b.branch(bad, fail, ready);
+            f.b.switch_to(fail);
+            self.emit_check_failed(f, ir::TRAP_ATOMIC_ALIGNMENT, address, required, true, span);
+            f.b.jump(ready);
+            f.b.switch_to(ready);
             values.push(f.b.iconst(Ty::I64, width));
         }
         let results = f.b.intrinsic(op, values, &returns);
@@ -2588,7 +2648,15 @@ impl Compiler {
                 _ => err(span, format!("`{name}` was given an unknown memory order")),
             }
         };
-        let (first, second) = (order(mode & 15)?, order((mode >> 4) & 15)?);
+        let cas = name == "atomic_compare_exchange_order";
+        if cas && !(0..=0xff).contains(&mode) {
+            return err(span, format!("`{name}` was given an unknown memory order"));
+        }
+        let (first, second) = if cas {
+            (order(mode & 15)?, order(mode >> 4)?)
+        } else {
+            (order(mode)?, ir::ORDER_RELAXED)
+        };
         let released = |o: u8| o == ir::ORDER_RELEASE || o == ir::ORDER_ACQ_REL;
         Ok(match name {
             "atomic_load_order" => {
@@ -2620,6 +2688,12 @@ impl Compiler {
                     return err(
                         span,
                         "the failure ordering of a compare-exchange cannot be release or acq_rel",
+                    );
+                }
+                if !matches!((first, second), (0..=4, 0) | (1 | 3 | 4, 1) | (4, 4)) {
+                    return err(
+                        span,
+                        "compare-exchange failure ordering cannot be stronger than success ordering",
                     );
                 }
                 ir::Intrinsic::AtomicCas(first, second)
