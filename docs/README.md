@@ -52,7 +52,7 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Independent compiler facades](compiler/compiler-facades.md): current supported helpers, traversal/printing and focused test overlay
 - [Compiler-managed global data](compiler/compiler-global-data.md): registered storage identity, segment handles and compile-time/target runtime records
 - [Bootstrap atomics](compiler/bootstrap-atomics.md): scalar validation, host/native/WASM atomic semantics and contention regressions
-- [Ordered variadics and interfaces](compiler/mixed-variadics-and-interfaces.md): mixed packs, continuation lifetime and binding-time structural checks
+- [Ordered variadics and interfaces](compiler/mixed-variadics-and-interfaces.md): mixed packs, continuation lifetime, binding-time structural checks and loaded-file parameter scope
 - [Register operands](compiler/register-operands.md): canonical SIMD operand identity, generic expansion and scalar lane results
 - [Context cleanup](compiler/context-cleanup.md): conditional caller-scope macro context and lexical exit behavior
 - [Generic default reflection](compiler/generic-default-reflection.md): source identity, evaluated instance defaults and storage contract

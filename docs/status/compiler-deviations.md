@@ -29,6 +29,12 @@ Discovered legacy deviation: module parameter checking exempted system/library
 modules, allowing unknown arguments to be silently ignored. Original library-root
 regressions reproduced this. The exemption is removed; binding now rejects unknown,
 excess and duplicate arguments, including modules without a parameter header.
+Ordinary missing arguments previously escaped validation when unused; these now
+reject at binding. Second-list program parameters still permit a later shared
+binding. Loaded parameter declarations now retain the defining file's private
+namespace for defaults, conversions and constraints while keeping module-wide
+storage. Original default/explicit/invalid and late-binding regressions cover
+these general fixes; no library-name exception or new public API is involved.
 Bootstrap loading passes only reviewed Runtime_Support flags. Nondefault temporary
 target storage allocation needs a private compiler/runtime mechanism instead of
 the old unreviewed TEMPORARY_STORAGE_SIZE import argument; it diagnoses explicitly.

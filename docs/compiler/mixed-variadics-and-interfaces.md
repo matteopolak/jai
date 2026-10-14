@@ -30,6 +30,15 @@ Unknown, excess positional and duplicate module arguments now reject equally
 for application and library modules. This removes a legacy system-module
 exception. Successful argument validation is cached and invalidated when new
 parameter declarations are registered; recursive loading remains explicit.
+Missing ordinary arguments also reject even when their parameters are unused.
+Second-list program parameters retain their later program-wide binding behavior.
+
+Module parameter storage remains module-wide, while annotations, defaults,
+provided-value conversions and interface constraints resolve in the declaring
+file's lexical environment. A loaded parameter header can therefore use a
+file-private import without exporting it or changing the canonical public type.
+Original tests cover default and explicit bindings, distinct type identity,
+unused invalid interface replacements and late program-parameter binding.
 
 Original tests: `cleanroom_variadics` in core and LLVM, and
 `cleanroom_interfaces` in core. Backend tests execute native and WASM64 code at
