@@ -18,6 +18,47 @@ Role: replacement integration worker. This report is open; merged snapshots do n
 
 Avoidable integration workarounds will be removed and recorded with original reproducer and fresh results. This audit does not claim that no other deviations remain.
 
+## Refreshed production checkpoints
+
+The compiler, portable, numerics and window/render checkpoints in
+`docs/integration-refresh.json` are merged. Earlier findings below remain historical
+evidence and are superseded only where stated here.
+
+- Binary32 intrinsic interpretation was decoding operands as binary64. A direct
+  `sqrt(float32(9))` reproducer failed before the fix. Interpreter operations now
+  use the IR result width; semantic checking rejects inconsistent unary signatures.
+  Five Math promotion wrappers were removed in favor of real float32 intrinsics.
+  The direct test passes interpreter/native O0/O2. This removes the precision and
+  performance workaround without inventing an additional public intrinsic name.
+- Reflected struct alignment was zero although layout knew the correct value.
+  `sema/typeinfo.rs` now exports completed layout alignment; ordinary, packed,
+  aligned and generic regression cases pass. Original Deep_Copy graph assertions
+  pass interpreter/native O0/O2 and are promoted into the ordinary portable suite.
+  Deep_Copy policy gaps in `docs/portable-deep-copy.md` still apply.
+- Numerics now uses canonical Simp font/texture/effect identities, real font fields
+  and texture storage, and implements Type_Indicator alternatives. Canonical
+  production checks improve from 8/60 to 40/83; the expanded suite still fails for
+  absent AppKit, unsupported target backends and Wasm libc formatting imports.
+  Its native NSCursor identity and platform paths require further binding audit.
+- Real compiler atomics replace the prior integration gap. Five focused core and
+  four LLVM tests pass, including native O0/O2 and Wasm shared-memory contention.
+  Sequentially consistent implementations may exceed requested weaker ordering;
+  this is a documented performance policy, not a lock-free guarantee on every ABI.
+- Public Windows wheel propagation now passes Windows x64 all-code typechecking.
+  Native execution on x64/arm64 remains required. New private helper fixtures
+  outside library-owned test directories fail strict privacy; move those tests or
+  exercise public APIs rather than weakening imports.
+- Reviewed POSIX.itimerval macOS x64/Android x64 shapes were regenerated with the
+  actual formatter. macOS x64 then fails unknown timeval: its inventory says x64
+  but the supplied shape section is ARM64-only. No cross-architecture layout is
+  guessed. AppKit remains absent from the committed bindings snapshot.
+- Four new portable modules increase declaration presence; Atomics, BuildCpp,
+  Deep_Copy and Zip_File_Directory are not counted complete merely by presence.
+- The original full-corpus and unavailable native/device verification remain
+  coordinator work. Latest guidance makes human Focus acceptance optional;
+  coordinator Focus build/launch and signed-wheel testing are still required.
+  Release workflow execution/publication remains on hold.
+
 ## Direct audit findings and corrections
 
 - Removed the bundled-module unknown-parameter exemption in `crates/jaic/src/sema/modules.rs` and added general named/positional validation, including parameterless modules. Removed the fourth public Runtime_Support parameter; the build option remains a compiler target constant. Explicit runtime arguments no longer disappear. Original regressions failed before correction; all 39 module regressions pass afterward.

@@ -26,6 +26,36 @@ Coordinator must run full original public corpus with opaque vendored sources an
 
 See [integration audit](../status/integration-deviations.md), [plan](../plans/cleanroom-integration.md) and [requests](../integration-requests.md).
 
+Latest coordinator guidance supersedes the human acceptance sentence above:
+human Focus review is optional while the user is away. Coordinator still builds,
+launches and tests Focus after the full corpus. All release builds/publication
+remain on hold; no release or CI dispatch is performed by this worker.
+
+## Refreshed checkpoint verification
+
+Four newer approved OIDs in `docs/integration-refresh.json` are merged with
+separate commits. Source-built compiler atomics pass five focused core and four
+LLVM tests, including native O0/O2 and shared-memory Wasm contention.
+
+`tests/numerics/intrinsic_f32_reproducer.jai`, the reflected-alignment reproducer
+and the original Deep_Copy graph fixture pass interpreter and native O0/O2.
+Results: `artifacts/integration-clean/f32-alignment-native.json`. Compiler fixes
+use IR floating width and completed struct layout rather than library guesses.
+The alignment and graph fixtures are promoted from pending into the portable
+runner. Remaining Deep_Copy contracts are documented separately.
+
+`python3 tests/numerics/run.py --compiler target/debug/jaic --stdlib stdlib --canonical-dependencies`
+reports 40/83 checks passed. Failures remain real: absent AppKit, unsupported
+platform backends and Wasm formatting imports. `cargo clippy --locked --workspace
+--all-targets -- -D warnings` passes after the floating/alignment changes.
+
+`JAIC_STDLIB="$PWD/stdlib" target/debug/jaic tests/window-render/signed-wheel-windows.jai
+-check -no_dce -os windows -cpu x64` passes. Actual Windows execution remains pending.
+
+`python3 tools/native_bindings/generate.py --module POSIX --formatter target/jaifmt`
+regenerates the newly reviewed itimerval shapes. The next macOS x64 error is
+unknown timeval; this shape-selection contradiction is retained for review.
+
 ## Compiler corrections verified
 
 `cargo test --locked -p jaic --lib --test cleanroom_modules --test cleanroom_literals --test cleanroom_layout` passed: 150 core unit, 39 module, five literal and three layout tests. `cargo clippy --locked -p jaic --lib --tests -- -D warnings` exited zero. Scoped rustfmt ran over the five modified Rust files. Red/green logs are retained for protection-change SIGBUS, bundled parameter checking and IDE entry admission. Runtime_Support retains its exact reviewed three parameters.

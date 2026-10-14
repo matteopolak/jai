@@ -1,7 +1,34 @@
 {
   "compiler": {
     "ref": "producer/compiler",
-    "commit": "1d8833b836fd3a89edf379f758587d5a9028cce9",
-    "reason": "new atomic intrinsics and real interpreter/native/WASM atomics, four-worker WASM contention passes"
+    "commit": "1d8833b836fd3a89edf379f758587d5a9028cce9"
+  },
+  "stdlib": {
+    "ref": "producer/stdlib",
+    "commit": "33173e0eb58d838905e65319a681f58031206fec"
+  },
+  "bindings": {
+    "ref": "producer/bindings",
+    "commit": "16124141104f34476efbc019b4668c149db5a4e3"
+  },
+  "numerics": {
+    "ref": "producer/numerics",
+    "commit": "ee5c32a572b49aece38a6fc1b8754b1c87a94fc1"
+  },
+  "lsp": {
+    "ref": "producer/lsp",
+    "commit": "e3ec42657e645e674593c14ef6d87a7d197ef21a"
+  },
+  "sdl3": {
+    "ref": "producer/sdl3",
+    "commit": "bb3eaaa32c129f3ef161466a4e1f9527f02a3ce2"
+  },
+  "foundations": {
+    "ref": "producer/foundations",
+    "commit": "2db13bf6eb6f7ea05ac8ed8be28090856f58c20f"
+  },
+  "window-render": {
+    "ref": "producer/window-render",
+    "commit": "a41ae76f3545b7fcf54476a84513cfa2db7d2625"
   }
 }

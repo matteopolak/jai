@@ -98044,7 +98044,7 @@
     },
     "Objective_C": {
       "spec": "docs/specs/stdlib/modules/objective-c.md",
-      "spec_sha256": "4dc3e1156ea16075799a2398e3e8f3237f5b78aca603d920cc9b2cbe63a95235",
+      "spec_sha256": "e02767bf55fa0c1a53c7473aa4d15b8303c1b7405d3c46df1bdc76b078a2da8b",
       "counts": {
         "implemented": 29,
         "declared": 449,
@@ -101473,11 +101473,11 @@
     },
     "POSIX": {
       "spec": "docs/specs/stdlib/modules/posix.md",
-      "spec_sha256": "a02cd9b2bcf96fc265e1ef8c96d998f77a447fc0aadfaa9336d300983368fad6",
+      "spec_sha256": "66fedef8804852fff84f2a7af77c8a8e64d539f5c8a500b9040f5ceba062a6ef",
       "counts": {
-        "declared": 9814,
+        "declared": 9816,
         "implemented": 102,
-        "unresolved": 69
+        "unresolved": 67
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -135751,8 +135751,7 @@
           "signature": "itimerval :: struct",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 4901,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "timezone",
@@ -162332,8 +162331,7 @@
           "signature": "itimerval :: struct",
           "condition": "OS == .ANDROID && CPU == .X64",
           "spec_line": 8694,
-          "status": "unresolved",
-          "reason": "No unambiguous shape for this configuration"
+          "status": "declared"
         },
         {
           "name": "timezone",
