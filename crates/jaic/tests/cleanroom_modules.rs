@@ -31,6 +31,24 @@ fn rejects(c: &mut Compiler, name: &str) {
 }
 
 #[test]
+fn module_parameter_defaults_use_the_declaring_private_file_namespace() {
+    let mut c = compiler(
+        &[
+            (
+                "/lib/Config/module.jai",
+                "#module_parameters(value: int = hidden_default, Record: Type = Hidden_Record) { #scope_file hidden_default :: 37; Hidden_Record :: struct { value: u64; } } exposed :: value; record_size :: size_of(Record);",
+            ),
+            (
+                "/app/main.jai",
+                "M :: #import \"Config\"; #assert(M.exposed == 37); #assert(M.record_size == 8); #assert !#exists(M.hidden_default); #assert !#exists(M.Hidden_Record);",
+            ),
+        ],
+        false,
+    );
+    succeeds(&mut c);
+}
+
+#[test]
 fn bundled_modules_reject_unknown_and_excess_positional_arguments() {
     for arguments in ["misspelled = true", "true, false"] {
         let main = format!("M :: #import \"Config\"({arguments});");

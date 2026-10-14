@@ -105,7 +105,8 @@ def main():
                              ("hash-seed-visibility", "no exported member `HASH_INIT`"),
                              ("builder-buffer-visibility", "no exported member `Buffer`"),
                              ("basic-replacement-interface", "check_"),
-                             ("basic-interface-import-visibility", "no exported member `Interface_Definition`")):
+                             ("basic-interface-import-visibility", "no exported member `Interface_Definition`"),
+                             ("basic-parameter-interface-visibility", "no exported member `Memory_Debugger_Interface`")):
         source = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
         if args.jaifmt:
             run([formatter,"--check",source], "")

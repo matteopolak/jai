@@ -1059,7 +1059,7 @@ impl Compiler {
                 } = &**boxed;
                 let module = self.scope(scope).module;
                 for (position, param) in params.iter().chain(runtime_params).enumerate() {
-                    self.declare_module_parameter(scope, module, position, param)?;
+                    self.declare_module_parameter(scope, file_scope, module, position, param)?;
                 }
                 let program = runtime_params.iter().filter_map(|p| p.name.map(|n| n.name));
                 self.modules[module.0 as usize]
@@ -1168,6 +1168,7 @@ impl Compiler {
     fn declare_module_parameter(
         &mut self,
         scope: ScopeId,
+        file_scope: ScopeId,
         module: ModuleId,
         position: usize,
         param: &ast::Param,
@@ -1204,6 +1205,9 @@ impl Compiler {
             },
             false,
         );
+        // A parameter is bound in the module, but its annotation/default is
+        // written in this file and may name file-private contextual helpers.
+        self.entity_mut(id).home = file_scope;
         self.modules[module.0 as usize].param_entities.push(id);
         if let Some((Value::String(text), _)) = &provided
             && let Some(member) = std::str::from_utf8(text)
@@ -1268,13 +1272,13 @@ impl Compiler {
             // Convert the original constant rather than reconstructing a literal AST:
             // reconstruction loses lexical precision, relocation identity and declared types.
             if let Some(target) = param.ty.as_ref().filter(|t| !procs::has_poly(t)) {
-                let expected = self.eval_type(scope, target)?;
+                let expected = self.eval_type(file_scope, target)?;
                 let actual = if ty == TypeId::VOID {
                     self.type_of_value(&value)
                 } else {
                     ty
                 };
-                let mut f = self.thunk_ctx(ir::FuncOrigin::ConstInit, self.scope_file(scope));
+                let mut f = self.thunk_ctx(ir::FuncOrigin::ConstInit, self.scope_file(file_scope));
                 let op = self.convert(
                     &mut f,
                     lower::Operand::Const {
