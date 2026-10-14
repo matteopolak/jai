@@ -12,7 +12,16 @@ workspace's ignored `artifacts/`; all builds and integration writes occur there.
 `-no_dce` currently fails in the staged foundation at `Basic.Buffer`, unrelated
 to the numeric API. Targeted test compilation remains usable.
 
+Both GetRect facades now have canonical record shapes, geometry, rounded drawing,
+callback registration, frame/input handling, active-widget lifecycle, occlusion,
+state lookup, theme storage, buttons, controls and UTF-8 text editing. The UI
+contract test passed in interpreter and native O0 using explicitly marked
+dependency fixtures. It checks inclusive edges, margin arithmetic, opposite
+top-cut conventions, hash wraparound, drawing callbacks, button presses and
+stale-widget deactivation. This is isolated mechanism coverage; canonical peer
+Input/Window_Type/Hash_Table integration is still pending.
+
 Pending: broader numeric oracles, portable-target checks, Color sampling tests,
-GetRect and GetRect_LeftHanded implementation and integration, declaration audit,
+color editor/subwindow implementation and integration, declaration audit,
 and final status review. Scalar elementary functions are independently designed
 portable algorithms; no host frexp, ldexp, or cbrt imports are required.
