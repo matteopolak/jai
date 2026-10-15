@@ -2003,3 +2003,8 @@ The isolated full workspace found two debug-tool failures: llvm-dwarfdump verifi
 ## Filtered parameter serializer repair
 
 The full catalogue exposed a stale static-using expected-failure assertion after supported syntax printing landed. A positive exact spelling/roundtrip assertion replaces that obsolete expectation while preserving every public filter and body check. That revealed a genuine production defect: procedure() printed both parameter_usings filter syntax and the argument IS_USING flag, producing using,except(...) using item and losing EXCEPT during parsing. It now emits one authoritative explicit prefix, retaining bare-using fallback when no explicit record exists. Actual interpreter/native compile-time contract checks and strict production Program_Print lint pass. No assertion is ignored, public schema/export changes or source-text fallback added.
+
+
+## rpmalloc generated-domain build cost
+
+tools/native_bindings/rpmalloc_profiles.py currently defines96 combinations, each with SDK/callback libraries and static/dynamic outputs. This expands native build cost and does not mean96 configurations were tested. The integration runner builds only the four required diagnostic combinations using selected profiles. Retain actual supported-configuration selection for application/baseline builds; do not run the full optional cross-product before the primary Mac baseline or label generated declarations as verified behavior. Existing rpmalloc-no-thread-cache.jai contains now-reviewed invalid global=true/thread=false positive imports; owner reconciliation must preserve valid both-off ownership/layout assertions and precise rejection checks.

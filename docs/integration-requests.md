@@ -782,4 +782,3 @@ in the shared pending fixture directory and ignored
 loop-condition binding and labelled-control identity; no Hash_Table-specific
 exception, invented public helper or removed assertion is acceptable. Portable
 owner retains the real table-slot/tombstone/continue/break regression.
-

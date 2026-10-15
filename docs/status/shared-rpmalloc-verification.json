@@ -3,7 +3,7 @@
   "candidate_path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
   "ref": "codex/stdlib-shared",
   "measured_parent": "b3483477cfe5179ef5062dd27cab1053b25ad29f",
-  "source_state": "immutable current production capture; scoped changes pending checkpoint",
+  "source_state": "Scoped production/test/tool source committed in fad75f237cd2f9691b3cba9f287c7d71a0b32705; unchanged captured identity verified before staging.",
   "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/rpmalloc-required/bindings-inputs-q7a17qeu",
   "command": "python3 -B tools/native_bindings/verify_rpmalloc_diagnostics.py --compiler <integration-target>/debug/jaic --jailint <integration-target>/debug/jailint --formatter artifacts/shared-integration/jaifmt --vendor <integration>/native-inputs/rpmalloc-original --output-root <integration>/rpmalloc-required --native-compiler /opt/homebrew/opt/llvm/bin/clang",
   "passed": 25,
@@ -177,5 +177,17 @@
     "field_probes": 40,
     "C_header_targets": 6,
     "earlier_attempt": "Immutable diagnostic capture omits generated test files; generation --check there failed at absent rpmalloc_sdk_probe.c. Classified test construction omission; rerun read-only against unchanged live generated outputs passed."
-  }
+  },
+  "committed_in": "fad75f237cd2f9691b3cba9f287c7d71a0b32705",
+  "official_sdk": {
+    "repository": "mjansson/rpmalloc",
+    "revision": "e4393ff85585d91400bcbad2e7266c011075b673",
+    "files": {
+      "rpmalloc/rpmalloc.c": "f9005d0e75ab052063ed8f574661557df56c161dba75277e700f1aee445a222a",
+      "rpmalloc/rpmalloc.h": "a45bfebb3122146c23b564f510d8605d32e201789e4668ea1a054da1b36f8ab1",
+      "LICENSE": "992dc09524f6c215f1ae0ff7d26e8ce548b7212df65a09919dbafc98e2323b41"
+    }
+  },
+  "generated_profile_definitions": 96,
+  "executed_profile_definitions": 4
 }

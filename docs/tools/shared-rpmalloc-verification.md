@@ -27,6 +27,12 @@ execution counts. The fixture checks real aligned allocation, resize/data
 retention, import storage isolation, failure rollback and caller callback context.
 It also checks the reviewed CAPS name `rpmalloc 1.4.4`.
 
+The generator currently defines 96 combinations, each with SDK and callback
+libraries. Building every combination increases native build cost; this focused
+verification selects only the four required diagnostic combinations. Broader
+builds should select the actual supported application/test configurations rather
+than treating all generated variants as mandatory execution coverage.
+
 The local receipt is
 `/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/rpmalloc-required/rpmalloc-diagnostics-k38yn_xb/verification.json`.
 The compact durable result is [shared-rpmalloc-verification.json](../status/shared-rpmalloc-verification.json).
