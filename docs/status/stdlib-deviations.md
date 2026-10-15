@@ -1,5 +1,33 @@
 # Portable stdlib worker deviations
 
+Default build partial dependency: Default_Check.get_plugin is required by the
+generic plugin workflow but absent from the reviewed Check inventory and NEW
+producer. No fake plugin/body/check success is supplied; default builds and full
+strict lint fail explicitly, while real -no_check/custom-plugin runs pass. Binding
+configuration is not claimed implemented; get_plugin shape/config needs producer
+review. Default_Metaprogram build remains inventory-incomplete. Compiler wrapper
+stores but does not forward target CLI/context/diagnostic fields; original target
+CLI assertion fails. X64 backend/debugger flags project correctly but compiler
+rejects unavailable implementations. Proper fix is reviewed Check factory/config
+and general compiler workspace forwarding, not facade/CLI exceptions. Details and
+evidence: default-metaprogram-dependency-request.md and portable-default-metaprogram.md.
+The generated unreachable disabled-Check branch diagnoses accidental invocation;
+it is not a check implementation. Plugin grouping uses ordinary generated static
+imports with real module parameters; dynamic names are not runtime-loaded.
+
+Current compiler1929d5a corrects the constant-alias problem below: assignment now
+rejects with cannot-assign-to-constant. Old acceptance evidence retained. Build
+uses only assigned per-worker T7 output; authoritative reports/sources remain local.
+
+Historical source-built compiler audit limitation:784415f implements live named ::
+storage aliasing rejected by refreshed public constant contract. Original pending
+constant-alias-immutability.jai is wrongly accepted (-check exit0). No program
+execution or library workaround used to manufacture a result. Resolver/enum
+diagnostics are separate unaffected paths; wider compiler semantic compatibility
+not claimed. Compiler owner must restore immutable bindings and fix type-query
+initialization separation, retaining legitimate declaration reexports. Evidence:
+target/constant-alias-contract-conflict.log; no producer Rust changes or peer writes.
+
 ZIP wire supported policy: version minor0..9 and low byte<=255; complete correctly
 signed EOCD input, writable setter backing; invalids log/assert with no mutation.
 Finer reference recovery policy unestablished, documented portable-zip-wire.md.

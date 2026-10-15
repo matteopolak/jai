@@ -1,5 +1,40 @@
 # Portable stdlib progress
 
+Default_Metaprogram workspace checkpoint: actual Mac target executables, inferred
+and explicit outputs, relative import directories, add/run input, options,
+parameterized plugin imports, two-plugin callback ordering, help/version and
+genuine error paths pass with explicit -no_check. Path predicate interpreter/native
+O0/O2 passes. Format/--check passes all new source/tests. Full strict lint FAILS
+because delegated NEW Check exports no Mac get_plugin; ordinary default builds
+therefore remain incomplete. Immediate coordinator request:
+docs/default-metaprogram-dependency-request.md (Check factory/config contract and
+general compiler target command-line forwarding). Original general
+pending/workspace-target-command-line.jai fails the real target assertion.
+Corrected compiler1929d5a built in assigned T7 target; immutable-alias probe now
+rejects correctly, superseding adoption warning below. No peer writes or CLI
+bypass. Evidence: target/default-metaprogram-workflow.log,
+default-metaprogram-format.log, workspace-target-command-line.log,
+constant-alias-corrected-compiler.log. New inventory130 missing rows; build remains
+listed incomplete. Stable combined baseline822/7 has not been rerun here.
+
+The old socket-resolver AF.INET expectation correction remains a separate dirty
+test change; excluded provisional Performance_Report paths are untouched. ZIP
+wire source remains durable at d1e6880. Next: dependency follow-through and the
+newly reviewed real ZIP writer/APK workflow, rather than optional profile matrices.
+
+Historical compiler adoption audit (corrected above): rebuilt own jaic/jailint from authorized current
+Rust sources (target/forward-enum-compiler-build.log). Forward enum repair is now
+ready for exact resolver retry. Current compiler also includes784415f live named
+storage aliases, conflicting with refreshed :: immutability review. Minimal
+tests/portable-stdlib/pending/constant-alias-immutability.jai assignment compiles
+successfully (target/constant-alias-contract-conflict.log), expected rejection.
+This remains a genuine compiler gate; no stdlib live-:: workaround is introduced
+or broader compiler integration claim made. Constant/type query separation must
+be corrected by compiler owner while preserving proper filtered reexports.
+Mailbox newly prioritizes reviewed Default_Metaprogram/plugin implementation;
+switching there instead of optional archive/color work. Native Windows color
+SAVE_RESTORE semantics still need finer review; no guessed backend committed.
+
 ZIP wire batch:12 public declarations implemented, including canonical version,
 exact constants, CRC32, observable EOCD backing mutation and single-evaluation unit
 macros.65536 words/264 native-zlib vectors/5 diagnosed invalid cases pass15

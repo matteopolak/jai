@@ -122,24 +122,19 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `zip_init_writer :: (using w: *Zip_Writer, do_crcs := true, max_alignment := 0)` | All reviewed hosts |
 | `Zip_Local_File_Header :: struct` | All reviewed hosts |
 | `ZIP_LOCAL_HEADER_SIZE :: size_of(Zip_Local_File_Header)` | All reviewed hosts |
-| `ZIP_VERSION_DEFAULT : u16` | All reviewed hosts |
+| `ZIP_VERSION_DEFAULT : u16 : 0x0014` | All reviewed hosts |
 | `zip_write_central_directory :: (using w: *Zip_Writer)` | All reviewed hosts |
 | `Zip_Writer :: struct` | All reviewed hosts |
 
 ### Default_Metaprogram
 
-Build orchestration and option/message behavior remain implementation work; exact help text/option grammar require further review.
+Real workspace builds, options, plugin imports/callback ordering, paths, help/version and failures are implemented and tested with explicit -no_check. build remains incomplete: the delegated Check producer/reviewed page supplies no Mac plugin factory or binding-check configuration; compiler target command-line forwarding is separately defective. Full strict lint and ordinary default builds remain blocked, not counted complete.
 
 Reviewed contract: [module page](specs/stdlib/modules/default-metaprogram.md).
 
 | Missing public declaration | Condition |
 | --- | --- |
 | `build :: ()` | All reviewed hosts |
-| `HELP_STRING :: #string DONE` | All reviewed hosts |
-| `is_absolute_path :: (path: string) -> bool` | All reviewed hosts |
-| `message_loop :: (w: Workspace)` | All reviewed hosts |
-| `plugins: [..] *Metaprogram_Plugin` | All reviewed hosts |
-| `verbose := false` | All reviewed hosts |
 
 ### Example_Plugin
 
@@ -194,7 +189,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 135 missing reviewed declaration/overload/nested-operation rows
+Total: 130 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

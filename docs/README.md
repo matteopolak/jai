@@ -139,6 +139,7 @@ The LLVM backend, C ABI and linking.
 - [Socket ancillary helpers and actual native SDK vectors](portable-socket-cmsg.md)
 - [Windows Registry native APIs and unresolved pseudo-handle ABI](portable-windows-registry.md)
 - [Android toolchain ABI naming, OID identity, digests and remaining APIs](portable-android-toolchain.md)
+- [Default metaprogram build workflow](portable-default-metaprogram.md): real workspaces and plugin lifecycle, focused Mac evidence and explicit Check/compiler dependency requests
 - [Android SDK ADB command subsystem](portable-adb.md): native host CLI protocol tests, canonical records and live configuration
 - [ASN.1 primitive parsing and byte cursors](portable-asn1.md): canonical tags, signed integers, full-width OIDs and unresolved value/printer contracts
 - [Exact missing owned public declarations](portable-missing-surface.md)
