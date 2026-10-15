@@ -434,3 +434,24 @@ Removed portable runner's default-allocator/x64 target exclusion. Its optimized
 implementation gap is now a required failure rather than an omitted selected
 case; do not add a libc fallback or change API/capabilities to hide it. Other
 platform-only fixture classifications remain disclosed/require review.
+
+## Real configured assertion tests without copied production libraries
+
+For Thread/audio optional-assert proof, use reviewed Compiler.remap_import on a
+real childworkspace before loading Thread/Sound_Player: map their Basic import
+to a NEW testmodule that only reexports canonical Basic(ENABLE_ASSERT=false).
+The wrapper imports only publicBasic and introduces no bootstrap/types/algorithm.
+Actual stdlib source remains untouched; canonical bodies execute under the
+configured import. Keep test-oracle Basicasserts enabled separately. A real
+--context program can then supply this configuration to target-aware lint.
+This is a proposed production-source verification architecture, not an executed
+pass or requirement to infer new API. It avoids replacing text/copying library
+facades used by current audio_no_assert staging. Verify correct host_module_name
+from normal loader metadata, public privacy and negativebaseline before credit.
+
+Remaining WASI fixtures depend on native-only reviewed Thread and POSIX/Windows
+Basic.exit; original compiler scheduler coverage must migrate to independent
+own compiler protocol tests while keeping genuine Thread platform rejection.
+Do not add extra standard-library exports merely to satisfy old own conveniences,
+nor change public applicationcorpus. Proper ownWASI tool/backend extension needs
+documented architecture; unchanged jaifmt native build already passes.

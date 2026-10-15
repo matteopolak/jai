@@ -291,3 +291,10 @@ injected-failure modes and relocated ARM64 packages. Full 52-binary packages wer
 rebuilt for both Mac CPUs and Windows x64; 56 exact-host ARM64 and 56 translated
 x64 Mac executions passed again. Windows remains link-only, not native runtime.
 
+Windows ABI follow-up: actual public SDK C headers passed format/buffer size and
+offset assertions plus COM-prefix method slots on x64 and ARM64. The Windows Jai
+ABI case now cross-links O0/O2 in the self-contained package (54 Windows binaries
+instead of 52). The reviewed eleven-slot IDirectSound8 prefix is preserved;
+the test does not fabricate full SDK-interface equivalence. ARM64 is still SDK
+object-only; Windows x64 is link-only. No Windows runtime is claimed.
+

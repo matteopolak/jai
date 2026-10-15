@@ -1164,3 +1164,51 @@ Original explicit-null guard tests/protected mmap/mprotect regressions remain.
 The old expected 'fatal runtime signal' wording belonged to replaced private
 reporting; current native stack assertions test observable behavior, not a fake
 signal/no_abc bypass. Cross-native Windows/Linux gate remains required.
+
+## Refresh19 audit and exact remaining gates
+
+At7dc08ed reviewed fullworkspace:767aggregatePASS16FAIL/oneinheritedignored,
+fourfailedtargets. Partial-edit1086ownfiles finished28772edits3285512assertions,
+two reproducible recovery failures (SDLwrappers tailtyping and valid changed
+#add_context scope); full ownreport retained and precise requests supplied.
+No public corpus/vendor directories were read. Actual source-built RustWASM
+modulebuildPASS; realNode scripting gateFAIL at tour's native-only Thread import.
+ReferenceThread targetguard remains strict. Basic.exit is reviewed POSIX/Windows,
+so unchanged Extensions.Args/Io have a WASI integration dependency; do not invent
+prelude/global exports or weaken POSIXguards to hide it. Proper own-WASI extension/
+backend or supported tool integration requires an explicit reviewed design.
+
+Independent compiler ISA audit confirms severe preexisting substitutes in
+crates/jaic/src/sema/asm.rs: RDRAND andRDSEED share scrambled CycleCounter output
+and fabricate CF=1; RDTSCP AUX is hardcoded0. These are not real instructions/
+entropy/serialization and cannot count as support. Risk: false entropy/status,
+wrong CPU-ID/timing and ordering. Proper fix: separate actual ISA IR/backend/
+interpreter operations with CPUfeature checks/carry failure/realTSC_AUX and honest
+unsupported diagnostics. Compiler owner is actively implementing this general
+fix; CPUID's separate real implementation remains tested. No new workaround
+accepted or synthetic instruction credited. Await stable committed replacement.
+
+Target/context compiler4de36d6 integrated with one shared Options clone/target
+selector; obsolete parallel target fields removed. Existing --os/--cpu aliases,
+WasmCPU spelling, additional programsource injection and checked-files output
+remain supported. --manifest records complete/incomplete contexts and actual
+visited/unvisitedfiles. All jailint unit/CLI/rule/newtarget cases PASS aftermerge;
+38 producer cases plus preserved root features, no incomplete-check success.
+Root runtime-configuration regression still selects production library when
+available, preserving isolatedfallback only for producer-only dependencies.
+Strictprivate imports/configuredmodule bindings and childworkspaces remain.
+Full lint runner must adopt these contexts; old56/190failure report remains,
+no green whole-tree claim from scoped tests.
+
+FSEvents verifier source-placement fix preserved private imports, then actual
+native build caught producer .work-relative testlibrary dependency. Fixture now
+uses system-library lookup via explicitrealSDK directory. Original failure
+retained; corrected native rerun pending. This is private ABI test input placement,
+not a repaired productionlibrary overlay or completed public watcher proof.
+
+Pool reviewed refinement now rejects set_allocators based solely on non-null
+block_allocator.proc and preserves descriptor/options across reset/release.
+Earlier first-use-history interpretation/addressregistry is superseded and
+avoidable; portableowner must remove it at the representation layer, preserving
+by-value returns and publiclayout. Original leakreport fault retained. No fresh
+caller-address registry or extra public marker accepted.

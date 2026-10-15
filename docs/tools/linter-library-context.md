@@ -32,6 +32,7 @@ CARGO_TARGET_DIR=target RUSTC_WRAPPER= cargo clippy --locked -p jailint --all-ta
 
 Strict bootstrap preparation and public alias searches add checking work. A
 cached identity graph is a future optimization if profiling warrants it. Other
-NEW platform producer features, including target-selection and checked-file
-manifests, are not all integrated by this scoped repair. No Windows-specific lint
-coverage is claimed from this host-only tool run.
+NEW platform producer features were not all integrated by that scoped repair.
+The subsequent [target-aware checking](jailint-targets.md) batch adds real target
+selection, per-context manifests and original target source regressions. Actual
+native Windows execution and full stdlib runner integration remain separate gates.
