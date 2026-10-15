@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "candidate_path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "ref": "codex/stdlib-shared",
+  "measured_parent": "b3483477cfe5179ef5062dd27cab1053b25ad29f",
+  "source_state": "immutable current production capture; scoped changes pending checkpoint",
+  "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/rpmalloc-required/bindings-inputs-q7a17qeu",
+  "command": "python3 -B tools/native_bindings/verify_rpmalloc_diagnostics.py --compiler <integration-target>/debug/jaic --jailint <integration-target>/debug/jailint --formatter artifacts/shared-integration/jaifmt --vendor <integration>/native-inputs/rpmalloc-original --output-root <integration>/rpmalloc-required --native-compiler /opt/homebrew/opt/llvm/bin/clang",
+  "passed": 25,
+  "failed": 0,
+  "ignored": 0,
+  "checks": [
+    {
+      "name": "native context dependency",
+      "status": "passed"
+    },
+    {
+      "name": "public interpreter behavior",
+      "status": "passed"
+    },
+    {
+      "name": "public native build",
+      "status": "passed",
+      "mode": "O0"
+    },
+    {
+      "name": "public native behavior",
+      "status": "passed",
+      "mode": "O0"
+    },
+    {
+      "name": "public native build",
+      "status": "passed",
+      "mode": "O2"
+    },
+    {
+      "name": "public native behavior",
+      "status": "passed",
+      "mode": "O2"
+    },
+    {
+      "name": "native context dependency",
+      "status": "passed"
+    },
+    {
+      "name": "instrumented native build",
+      "status": "passed"
+    },
+    {
+      "name": "instrumented public and SDK behavior",
+      "status": "passed"
+    },
+    {
+      "name": "required desktop source",
+      "status": "passed",
+      "target": "macos-x64"
+    },
+    {
+      "name": "required desktop source",
+      "status": "passed",
+      "target": "macos-arm64"
+    },
+    {
+      "name": "required desktop source",
+      "status": "passed",
+      "target": "linux-x64"
+    },
+    {
+      "name": "required desktop source",
+      "status": "passed",
+      "target": "linux-arm64"
+    },
+    {
+      "name": "required desktop source",
+      "status": "passed",
+      "target": "windows-x64"
+    },
+    {
+      "name": "required desktop source",
+      "status": "passed",
+      "target": "windows-arm64"
+    },
+    {
+      "name": "reviewed invalid configuration",
+      "status": "passed",
+      "expected_diagnostic": "ENABLE_GLOBAL_CACHE requires ENABLE_THREAD_CACHE"
+    },
+    {
+      "name": "reviewed invalid configuration",
+      "status": "passed",
+      "expected_diagnostic": "ENABLE_UNLIMITED_CACHE requires ENABLE_GLOBAL_CACHE"
+    },
+    {
+      "name": "reviewed invalid configuration",
+      "status": "passed",
+      "expected_diagnostic": "DISABLE_UNMAP requires global and unlimited caches"
+    },
+    {
+      "name": "reviewed invalid configuration",
+      "status": "passed",
+      "expected_diagnostic": "ENABLE_ADAPTIVE_THREAD_CACHE requires ENABLE_THREAD_CACHE"
+    },
+    {
+      "name": "reviewed invalid configuration",
+      "status": "passed",
+      "expected_diagnostic": "HEAP_ARRAY_SIZE must be positive"
+    },
+    {
+      "name": "reviewed invalid configuration",
+      "status": "passed",
+      "expected_diagnostic": "DEFAULT_SPAN_MAP_COUNT must be positive"
+    },
+    {
+      "name": "reviewed invalid configuration",
+      "status": "passed",
+      "expected_diagnostic": "GLOBAL_CACHE_MULTIPLIER must be positive"
+    },
+    {
+      "name": "strict complete-context lint",
+      "status": "passed"
+    },
+    {
+      "name": "production format check",
+      "status": "passed"
+    },
+    {
+      "name": "immutable source and SDK inputs",
+      "status": "passed"
+    }
+  ],
+  "failure_names": [],
+  "native_target": "macos-arm64",
+  "tested_diagnostic_combinations": 4,
+  "native_cache_settings": "global=true/thread=true only",
+  "other_platform_execution": "unverified; six desktop source checks only",
+  "whole_workspace_status": "red; see shared-integration-baseline.json",
+  "source_sha256": {
+    "docs/specs/stdlib/modules/rpmalloc.md": "0f892ce9f18880ce24766cad8f32e06db131ce417fbd9b99e7e53eab13082b5d",
+    "stdlib/internal/bindings/rpmalloc-build/module.jai": "bf56f86c7ced7bacec7f92b37ba7d452a4841c67ef137979354ddadcd2bcc775",
+    "stdlib/internal/bindings/rpmalloc-callbacks/bridge.c": "8b6476dd20ce5249d271f133e49656911e528eeff720be93e4628b16d2aff964",
+    "stdlib/internal/bindings/rpmalloc-callbacks/module.jai": "932661c816d74a14a449eec58b2b9ea969301ac722f28096db772eaaf4d9fc1e",
+    "stdlib/internal/bindings/rpmalloc-checked/module.jai": "684faa7210a5cbde9a4df92c8b0cdd7905a601c6f230a2c0903818dce7119c19",
+    "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "5d6000688d057bacf23d9f547333f7acd2bfaf7630183769f48a96080126a49c",
+    "stdlib/internal/bindings/rpmalloc-heaps/heap-snapshot.inc": "924de912ceae68dc7a9e3f850fe9c6cd378c8a0284ffa3c134590e34d2019dac",
+    "stdlib/internal/bindings/rpmalloc-heaps/layout-probes.inc": "840ba9929bf90075a9c02627de6d2b654ec44a30efe6b86f7df359dd66d317a1",
+    "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "7ec153db9253114f3287e233a99ebe3366c2634277762fee060731b4e355b3aa",
+    "stdlib/internal/bindings/rpmalloc-heaps/public-layout.h": "626ba6cefda0f83aa139209d929e1fa1f5408747c0410f6c0d570227a9737b4a",
+    "stdlib/internal/bindings/rpmalloc-heaps/sdk-page-granularity.patch": "4ee8af6bc941251310da5ccea8810c158eeb8152b6960923a9d5a9e5a05394ff",
+    "stdlib/internal/bindings/rpmalloc-sdk/module.jai": "335f2d8862fbbf89485c24f7b8f0cbebe68585a08927a77b5c052cc933d1806d",
+    "stdlib/internal/bindings/rpmalloc-sdk/provenance.json": "878041db0b316ab0c8d9fbd9fbd9e23fdace4f12bd2ead9248d19390c665c723",
+    "stdlib/internal/bindings/rpmalloc-storage/module.jai": "e39767cae766550a60d5658467fb804a2b0086624b8d5172e051121e8c6c276b",
+    "stdlib/internal/bindings/rpmalloc-storage/provenance.json": "be611207db7d7e5ff061eb763664455fab56969854ff38dcd1e5029a37e03ae5",
+    "stdlib/rpmalloc/allocator.jai": "7134d17c59210fd60d3e0ab74a007b821387d5a60bdb420ff2a0ba50c165c228",
+    "stdlib/rpmalloc/configuration.jai": "c477c89253c63210120426514bba28ebc534676dd32c0677c1f8d16753d4ebd6",
+    "stdlib/rpmalloc/context.jai": "a99f638e075e0bd907ff78153102e4fb4ec2218b45e531f5c6ceb85dffdc0402",
+    "stdlib/rpmalloc/declarations.jai": "56cd165e55cdecec17fadd321befbd0e9f67e63be91aac493c8387db2d8476d5",
+    "stdlib/rpmalloc/module.jai": "4edfd6a6734a53d56be975ddeea044ea1d703724710d97b887f1f5cb40a5def6",
+    "stdlib/rpmalloc/statistics.jai": "d15245e833e2bc31a946bf37314fbe3e28494daf7df48cd522585ae042e64f5b",
+    "stdlib/rpmalloc/wrappers.jai": "03ed199005e2cc27c72564ee7694291c6bc63096467f170ac6474b2c6bf75f57",
+    "tests/native-bindings/rpmalloc-diagnostic-options.jai": "ce43d38674fa599e67d0f2e19214573f94c50da29a50523ea9243323046d94a5",
+    "tools/native_bindings/build_rpmalloc.py": "46ada2f0c2a23b9f87d3749ff0a62667a4da9c7d9b823c00e721fefff19759ab",
+    "tools/native_bindings/configure_rpmalloc.py": "ef4e823c73f7ebc4b379415b1d5a5603372a6d8e5b6f56f4f3f7260b09741f27",
+    "tools/native_bindings/prepare_rpmalloc.py": "ac3dd812b03736b4415109ca70350c15a28c4d0fcbbb190dfb49a6e3bba75e5f",
+    "tools/native_bindings/rpmalloc_context.py": "98fa111b5d7dfe645ec218adce5c09bd1623c8f0b70ed2cf3ce09e5025a6437e",
+    "tools/native_bindings/rpmalloc_heap_facade.py": "61b78e25544468d9250ec2fbc364ac866ed2cbdccd9b188524c70d020a8b34e2",
+    "tools/native_bindings/rpmalloc_profiles.py": "521faac961d05883a9c23d1b4bc5c12e3b5407c6ad5b3ee45a3cfc5d8e26cf14",
+    "tools/native_bindings/rpmalloc_tests.py": "b22867b1ad07b0ed628ed740fb441ed5bc778d1fd0daa0aa180e4929a10700a8",
+    "tools/native_bindings/shared_snapshot.py": "ccd889b6e89e9a2e915169b2f17830b6af89e982a84354d089eedc5ac95c291a",
+    "tools/native_bindings/vendor_rpmalloc.py": "06747afa25d124fb1aa05d2c091250d6cd5baa454be76098d3a174f7c4e839a4",
+    "tools/native_bindings/verify_rpmalloc_diagnostics.py": "d453a296127a0faec2dedf33c65d2d2a5b71c09d13f3fa43cf773b6609443b0e",
+    "tools/native_bindings/verify_rpmalloc_heaps.py": "403459898e82c247cfa4c1e0f3747a93c1d11a537fd13973f19d391ce9440d24"
+  },
+  "generation_check": {
+    "command": "python3 -B tools/native_bindings/vendor_rpmalloc.py --check --formatter artifacts/shared-integration/jaifmt --vendor <integration>/native-inputs/rpmalloc-original --work <integration>/rpmalloc-required/live-sdk-generation-check",
+    "status": "passed",
+    "sdk_functions": 35,
+    "field_probes": 40,
+    "C_header_targets": 6,
+    "earlier_attempt": "Immutable diagnostic capture omits generated test files; generation --check there failed at absent rpmalloc_sdk_probe.c. Classified test construction omission; rerun read-only against unchanged live generated outputs passed."
+  }
+}
