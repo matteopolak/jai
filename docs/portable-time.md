@@ -15,7 +15,7 @@ adds no public helper types. Native conversions use the NEW POSIX types directly
 | to_calendar; calendar_to_apollo | NEW reentrant native UTC/local conversions on macOS/Linux/Android, exact zero-based fields and millisecond resolution. Invalid calendar inputs return invalid sentinel; unrepresentable calendar output asserts |
 | ConvertToApollo | Expansion caller-local requirements remain unspecified; not exported |
 | calendar_to_string; calendar_to_iso_string | Exact text/zone/fraction formats unresolved; not exported |
-| filetime_to_apollo; to_filetime | Windows platform integration unfinished; not exported |
+| filetime_to_apollo; to_filetime | NEW exact Windows FILETIME wrappers, two-word integer scaling and bounded unsigned100ns conversion. Production arithmetic source executes interpreter/native O0/O2 on host; public canonical Windows ABI/body checks pass both CPUs, actual Windows execution unverified |
 | seconds_since_init | Required initialization origin and interpreter/native startup integration unresolved; not exported. A first-query baseline would give misleading elapsed time and is not substituted |
 
 The reviewed constants and existing duration conversions establish the working
@@ -42,3 +42,30 @@ overlaps must be merged by coordinator; that worker's checkout was not modified.
 This remains staged NEW producer verification, not full corpus/platform release.
 
 Android source branches are not validated: compiler CLI rejects -os android and lists only linux/windows/macos/wasm. No Android native or target-check claim is made.
+
+
+FILETIME conversion uses native DWORD fields separately, preserving the canonical
+NEW Windows type and four-byte alignment rather than aliasing an unaligned u64.
+Private arithmetic uses the reviewed Apollo Unix epoch and Gregorian1601 UTC
+offset11644473600 seconds, exactly100000000 femtoseconds per tick. All unsigned
+ticks round-trip; timestamps before1601, reserved invalid and out-of-range values
+return failure. Sub-tick precision is truncated; that fine rounding policy remains
+independent pending review. Existing explicit widened field locals also avoid the
+recorded generic compiler cast/bitwise narrowing issue; no symbol-specific fix.
+
+Original unit tests load the exact private production arithmetic source and check
+Unix epoch, native UTC1601 Monday, word boundaries/fullu64 range, invalid/pre-epoch/
+overflow cases and sub-tick truncation. This verifies the real arithmetic rather
+than a duplicate fixture implementation. Public Windows fixture bodies separately
+check native FILETIME8-byte/four-byte alignment and canonical field round trips.
+Both Windows CPUs type-check; these checks are not Windows runtime execution.
+
+Official native C contract:
+[FILETIME](https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime).
+No native timestamp pointer is reinterpreted as an aligned64-bit pointer.
+
+Full focused suite now passes96 positive cases and23 checked faults in both modes,
+eight compile rejections and prior integration/Linux+Windows checks. The production
+arithmetic unit also executes native O2;297 owned Jai files pass source-built
+jaifmt --check and jailint -D warnings. Red missing-source evidence remains at
+target/filetime-kernel-red.log; no assertion was disabled.

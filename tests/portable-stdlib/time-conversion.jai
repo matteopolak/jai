@@ -92,8 +92,29 @@ main :: () {
         assert(now_ts.tv_sec <= native_now && native_now - now_ts.tv_sec <= 1);
     }
 
+    #if OS == .WINDOWS {
+        #assert size_of(Native_Filetime.FILETIME) == 8;
+        #assert align_of(Native_Filetime.FILETIME) == 4;
+
+        for ticks: u64.[0, 1, 0xffffffff, 0x100000000, 116444736000000000, 0xffffffffffffffff] {
+            ft: Native_Filetime.FILETIME;
+            ft.dwLowDateTime = cast(u32) (ticks & 0xffffffff);
+            ft.dwHighDateTime = cast(u32) (ticks >> 32);
+            at := filetime_to_apollo(ft);
+            encoded, valid := to_filetime(at);
+
+            assert(valid && encoded.dwLowDateTime == ft.dwLowDateTime && encoded.dwHighDateTime == ft.dwHighDateTime);
+            if ticks == 116444736000000000 assert(compare_apollo_times(at, APOLLO_TIME_FOR_JAN_1_1970) == 0);
+        }
+
+        invalid_ft, valid_ft := to_filetime(APOLLO_TIME_INVALID);
+
+        assert(!valid_ft);
+    }
+
     print("ok\n");
 }
 
 #scope_file
 #if OS == .MACOS || OS == .LINUX || OS == .ANDROID Native_Time :: #import "POSIX";
+#if OS == .WINDOWS Native_Filetime :: #import "Windows";
