@@ -87,6 +87,23 @@ def main():
                         "--stdlib", str(args.stdlib.resolve()), "--cpu", cpu], cwd=ROOT, check=True)
         shutil.copy2(args.stdlib.resolve() / "internal/runtime/crash-native/platform_io_windows_crash.dll",
                      output / "platform_io_windows_crash.dll")
+    if cpu == "x64" and (os.name == "nt" or args.windows_build or args.windows_crash):
+        # This SDK oracle supplies real host-image probes for the test only.
+        # It neither replaces nor links into the production crash backend.
+        sdk_dll = output / "platform_io_section_sdk.dll"
+        sdk_library = output / ("platform_io_section_sdk.lib" if os.name == "nt" else "libplatform_io_section_sdk.dll.a")
+        sdk_dll.unlink(missing_ok=True)
+        sdk_library.unlink(missing_ok=True)
+        if os.name == "nt":
+            c_compiler = "clang"
+            c_target = ["--target=x86_64-pc-windows-msvc"]
+            c_linker = [f"-Wl,/IMPLIB:{sdk_library}"]
+        else:
+            c_compiler = shutil.which("x86_64-w64-mingw32-clang") or "x86_64-w64-mingw32-gcc"
+            c_target = []
+            c_linker = [f"-Wl,--out-implib,{sdk_library}"]
+        attempt([c_compiler, *c_target, "-std=c11", "-shared", "-O2", "-Wall", "-Wextra", "-Werror",
+                 ROOT / "tests/platform-io/windows-section-sdk.c", "-o", sdk_dll, *c_linker, "-ldbghelp"], env)
     helper = output / "process-helper.exe"
     if os.name == "nt":
         helper.unlink(missing_ok=True)
@@ -167,6 +184,17 @@ def main():
                         finally:
                             marker.unlink(missing_ok=True)
         report(before, "public Windows Process", "native execution" if os.name == "nt" else "source/cross-build only")
+    native_sections = ROOT / "tests/platform-io/windows-crash-native-sections.jai"
+    if args.cross_check:
+        attempt([compiler, native_sections, "-os", "windows", "-cpu", "x64", "-check", "-no_dce"], env)
+    if cpu == "x64" and ((os.name == "nt" and (args.native or args.windows_crash)) or args.windows_build == "x64"):
+        before = len(failures)
+        target = [] if os.name == "nt" else ["-os", "windows", "-cpu", "x64"]
+        for optimization in ["-O0", "-O2"]:
+            executable = output / ("windows-crash-native-sections" + optimization + ".exe")
+            if attempt([compiler, native_sections, *target, optimization, "-exe", executable], env) and os.name == "nt":
+                attempt([executable], env, "ok\n")
+        report(before, "native compiled-symbol PE sections", "execution" if os.name == "nt" else "cross-build only")
     if args.windows_crash:
         if os.name == "nt" and cpu == "arm64":
             # Native SDK lifecycle assertions execute only on an actual ARM64 OS.

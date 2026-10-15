@@ -162,6 +162,7 @@ The LLVM backend, C ABI and linking.
   interface registration, bounded payload decoding, callbacks and native verification limits.
 
 - [Windows startup CI regressions and native verification](platform-io-startup-regressions.md)
+- [Interpreter/native Windows section queries and 0100a1f CI](platform-io-section-query-regression.md)
 - [Private ARM64 exception backend design and checks](platform-io-arm64-crash-plan.md)
 - [Native WGL investigation](native/window-render-wgl-investigation.md): filtered CI
   failure evidence, production diagnostics, actual driver probe and explicit real-driver CI deployment.
