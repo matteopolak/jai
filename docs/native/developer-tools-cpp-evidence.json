@@ -1,0 +1,20 @@
+{
+  "scope": "host official SDK C++17 AST queries and independent C visitor return/count oracle; C++ method bodies not executed",
+  "native_c_results": {
+    "fields_return": 1,
+    "fields_count": 1,
+    "bases_return": 1,
+    "bases_count": 1,
+    "methods_return": 1,
+    "methods_count": 10,
+    "stopped_return": 1,
+    "stopped_count": 1
+  },
+  "return_comment_discrepancy": "Installed public Index.h describes nonzero only for early termination; this SDK returns1 for complete and stopped visits. Direct Jai bindings preserve raw native returns.",
+  "sdk_evidence": "developer-tools-clang-evidence.json",
+  "original_fixture_sha256": {
+    "bindings-clang-cpp.h": "1d98c72fffd9d8c74225c8b368da892f41c978d610d7fab4e36bfc7b73f6c34e",
+    "bindings-cpp-visitors.c": "fe3d21ccda0eb085451e96952372cd0a3805c4a64b2e738764ba803e568c3c6f",
+    "bindings-clang-cpp.jai": "bfd8ae13968fe6f0e09db2e182d6403f2c8026621e1bf21fa7a21fe2ab89f353"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "integration_status": "owned proposal; shared coordinator manifest not modified",
+  "dependencies": [
+    {
+      "module": "Bindings_Generator",
+      "supported_build_hosts": ["macos", "linux"],
+      "sdk_configuration": "DEVELOPER_TOOLS_LLVM_PREFIX or --llvm-prefix",
+      "build_script": "tools/build_developer_bindings.py",
+      "source": "stdlib/internal/developer-tools/clang-bindings/main.c",
+      "sdk_public_headers": ["clang-c/Index.h", "clang-c/CXString.h", "clang-c/BuildSystem.h"],
+      "sdk_library": "libclang",
+      "helper_install_path": "stdlib/internal/developer-tools/clang-bindings/developer-tools-clang",
+      "native_library_link_directory": "stdlib/internal/developer-tools/clang-bindings",
+      "runtime_requirement": "configured official SDK remains installed; regenerate private symlink on destination",
+      "verification": "python3 tools/check_developer_tools.py"
+    },
+    {
+      "module": "Debug",
+      "build_script": "tools/build_developer_debug.py",
+      "source_directory": "stdlib/internal/developer-tools/debug-native",
+      "native_library_install_directory": "stdlib/internal/developer-tools/debug-native",
+      "windows_shared_dependency": "DbgHelp serialization across all process clients",
+      "verification": "python3 tools/check_developer_tools.py",
+      "windows_runtime_status": "cross-built only; native execution pending coordinator job"
+    }
+  ]
+}
