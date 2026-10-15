@@ -1,5 +1,22 @@
 # Metaprogram_Plugins public contract and compiler handoff
 
+CURRENT reviewed capability: #placeholder Generated_Name; a typed procedure with
+#insert Generated_Name has an available signature/value while its body waits.
+Scoped add_build_string in the same workspace supplies its string declaration;
+INDIRECT compile-time invocation then waits/resumes for that body. No undeclared
+callee, message interception/pump/yield or exported macro attribute is involved.
+The new independent compiler-plugin-evaluation producer probe was confirmed by
+the filtered reference oracle. Only its NEW source was read, not reference logs.
+
+Independent proper initializer is pending/metaprogram-plugins-deferred-init.jai;
+run tools/check_portable_metaprogram_plugins.py --deferred-candidate. Current own
+compiler reports Generated_Initialization placeholder never defined, matching the
+confirmed peer probe failure. New worker reports local capability fix passes,
+checkpoint not yet committed/integrated. Keep init_plugins pending until actual
+computed-name factory/options/workspace and mismatch tests execute with the proper
+compiler and full context-aware lint. Parser remains verified. The old direct-call
+draft below remains rejected; no request to relax ordinary unknown/duplicate errors.
+
 CORRECTION17:45: filtered coordinator oracle confirms the continuation probe also
 fails official Jai0.2.030 with undeclared continuation. The timing probe is invalid
 because it mutates build options after the workspace starts. The proposed

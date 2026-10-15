@@ -14,6 +14,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dynamic-candidate", action="store_true",
                         help="run the rejected dynamic-call draft as a diagnostic, never an acceptance gate")
+    parser.add_argument("--deferred-candidate", action="store_true",
+                        help="run the reviewed typed-placeholder initializer; missing capability remains a failure")
     args = parser.parse_args()
     library = default.compose()
     shutil.copytree(ROOT / "stdlib/Metaprogram_Plugins", library / "Metaprogram_Plugins", dirs_exist_ok=True)
@@ -35,14 +37,15 @@ def main():
     subprocess.run([str(binaries / "jailint"), "-D", "warnings", str(library / "Metaprogram_Plugins/module.jai"),
                     str(library / "internal/build/plugin-arguments.jai"), str(source)], env=env, check=True)
     print("Metaprogram_Plugins parser: borrowed names/options, canonical record, no-plugin identity, grouping/terminator/ordinary arguments, empty names and safe invalid-index policy pass interpreter/native O0/O2 and strict lint; init_plugins NOT completed")
-    if args.dynamic_candidate:
+    if args.dynamic_candidate or args.deferred_candidate:
         candidate = library / "Metaprogram_Plugins/dynamic-init.jai"
-        shutil.copyfile(ROOT / "pending/metaprogram-plugins-init.jai", candidate)
+        filename = "metaprogram-plugins-deferred-init.jai" if args.deferred_candidate else "metaprogram-plugins-init.jai"
+        shutil.copyfile(ROOT / "pending" / filename, candidate)
         facade = library / "Metaprogram_Plugins/module.jai"
         facade.write_text(facade.read_text() + '\n#load "dynamic-init.jai";\n')
         dynamic = ROOT / "tests/portable-stdlib/metaprogram-plugins/dynamic.jai"
         modules = ROOT / "tests/portable-stdlib/metaprogram-plugins/modules"
-        result = subprocess.run([compiler, str(dynamic), "-import_dir", str(modules)], env=env,
+        result = subprocess.run([compiler, str(dynamic), "-exe", str(output / "dynamic-root"), "-import_dir", str(modules)], env=env,
                                 capture_output=True, text=True, timeout=60)
         if result.returncode or result.stdout != "initialized 41\nok\n" or result.stderr:
             raise RuntimeError(f"positive dynamic plugin test remains blocked: {result.stdout}{result.stderr}")
