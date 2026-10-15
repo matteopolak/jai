@@ -667,12 +667,11 @@ fn unreferenced_struct_constant_names_a_member() {
     }
 }
 
-/// Build_Options jaic does not act on are reported where the metaprogram sets them, once; the
 /// SKIP_ intercept flags leave those kinds out of TYPECHECKED messages; ERROR_CONTINUABLE lets
 /// the metaprogram go on but fails the build.
 // rules: bo.1 bo.2 bo.3 bo.4
 #[test]
-fn ignored_build_options_are_reported() {
+fn intercept_flags_and_continuable_reports_are_preserved() {
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("cli-build-options-reported");
     std::fs::create_dir_all(&dir).unwrap();
     let source = dir.join("meta.jai");
@@ -685,25 +684,31 @@ fn ignored_build_options_are_reported() {
     w := compiler_create_workspace("prog");
     options := get_build_options(w);
     options.output_type = .NO_OUTPUT;
-    options.backend = .X64;
-    options.use_natvis_compatible_types = true;
+    options.backend = .LLVM;
+    options.use_natvis_compatible_types = false;
     options.text_output_flags = 0;
     options.enable_bytecode_inliner = true;
-    options.llvm_options.command_line = .["-x"];
+    options.llvm_options.command_line = .[];
     set_optimization(*options, .OPTIMIZED_SMALL);
     set_build_options(options, w);
     set_build_options(options, w);
     compiler_begin_intercept(w, .SKIP_DECLARATIONS | .SKIP_PROCEDURE_BODIES | .SKIP_OTHERS);
     add_build_string("main :: () { x := 1; } S :: struct { a: int; }", w);
+    totals: [5] s64;
     while true {
         message := compiler_wait_for_message();
         if message.kind == .TYPECHECKED {
             tc := cast(*Message_Typechecked) message;
-            print("% % % % %\n", tc.declarations.count, tc.procedure_headers.count, tc.procedure_bodies.count, tc.structs.count, tc.all.count);
+            totals[0] += tc.declarations.count;
+            totals[1] += tc.procedure_headers.count;
+            totals[2] += tc.procedure_bodies.count;
+            totals[3] += tc.structs.count;
+            totals[4] += tc.all.count;
         }
         if message.kind == .COMPLETE break;
     }
     compiler_end_intercept(w);
+    print("% % % % %\n", totals[0], totals[1], totals[2], totals[3], totals[4]);
     compiler_report("continuing", mode = .ERROR_CONTINUABLE);
     print("still running\n");
 }
@@ -726,17 +731,13 @@ fn ignored_build_options_are_reported() {
         .map(|line| {
             line.rsplit_once("/meta.jai:")
                 .map_or(line, |(_, rest)| rest)
+                .splitn(3, ':')
+                .nth(2)
+                .unwrap_or(line)
+                .trim()
         })
         .collect();
-    let warning = |what: &str| format!("14:5: warning: jaic ignores Build_Options.{what}");
-    let expected = [
-        warning("backend: jaic always generates code with LLVM, and x64_options do not apply"),
-        warning(
-            "use_natvis_compatible_types: debug information describes types as they are declared",
-        ),
-        warning("llvm_options.command_line: jaic does not pass options to LLVM"),
-        "27:5: error: continuing".to_string(),
-    ];
+    let expected = ["error: continuing"];
     assert_eq!(lines, expected, "{stderr}");
 }
 
@@ -747,6 +748,21 @@ fn unsupported_compiler_requests_are_errors() {
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("cli-compiler-unsupported");
     std::fs::create_dir_all(&dir).unwrap();
     let cases = [
+        (
+            "backend",
+            "options := get_build_options(w); options.backend = .X64; set_build_options(options, w);",
+            "this compiler has no alternate X64 backend",
+        ),
+        (
+            "raw-llvm-options",
+            "options := get_build_options(w); options.llvm_options.command_line = .[\"-x\"]; set_build_options(options, w);",
+            "raw LLVM command-line options are unavailable",
+        ),
+        (
+            "natvis",
+            "options := get_build_options(w); options.use_natvis_compatible_types = true; set_build_options(options, w);",
+            "Natvis-compatible type emission is unavailable",
+        ),
         (
             "os",
             "options := get_build_options(w); options.os_target = .PS5; set_build_options(options, w);",

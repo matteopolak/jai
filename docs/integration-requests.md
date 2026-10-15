@@ -1,5 +1,36 @@
 # Integration requests
 
+## Current native Mac candidate, 2026-10-15
+
+Candidate path remains `artifacts/integration-clean/thread-fixtures`, branch
+`integration/thread-fixtures`; latest committed head `d30311a5` plus a focused
+reviewable compiler-options repair in progress. Frozen source90fea8ab measurement
+is committed in `docs/status/mac-integration-baseline.json`: workspace822/7/1;
+catalogue interpreter327/76/5negative, native320/76/7compile-only/5negative.
+Original thread/backtrace/sandbox regressions now pass focused verification.
+No aggregate green or Windows/Linux native claim. No remote operations.
+
+Producer ownership inbox is acknowledged: do not duplicate Extensions Json/Http/
+Byte_Search/Io-test repair or the assigned clipboard/window/Objective-C fixture
+repairs. Their original failures remain in the frozen report until stable approved
+commits are supplied. Integrator retains production Io, compiler and routing work.
+
+Default_Metaprogram review request: the page defines `build` and lifecycle, but does
+not establish import-time automatic invocation. Integration will use explicit
+`#run { build(); }` in positive fixtures unless that side effect is reviewed.
+Legacy `-os`, `-cpu`, `-no_output` are not in the reviewed option list and cannot
+justify exports/options. More materially: default Check loading is required by
+the page, but Check's public inventory has no `get_plugin`, and listed callbacks
+are Windows-conditional. Clarify default Check construction/availability on Mac
+and how `-no_check_bindings` configures it through the reviewed public API. Do not
+supply private procedure bodies. Until resolved, a no-op Check plugin or silently
+omitted default check would be an unsupported workaround, not completed behavior.
+
+Root tracking branch has not been moved by this candidate. Preserve synchronized
+guidance/spec edits before a safe fast-forward; current exact handoff will be
+recorded after the scoped repair commit. Coordinator owns opaque full public
+corpus, Focus launch/signed-wheel acceptance, and later ordinary native CI.
+
 Requests are read by coordinator; this worker cannot send messages to the desktop thread.
 
 Current refresh23 updates (supersede historical requests below):

@@ -445,3 +445,6 @@ and unresolved old negative assumptions. Full baseline remains red.
 
 The three original sandbox deadlock/timed-wake scenarios also pass through the
 compiler's actual private provider; native-only public Thread remains guarded.
+
+The full CLI suite now reports17 passes/one missing-Default_Metaprogram failure.
+Unsupported Natvis emission is explicitly diagnosed; it remains unimplemented.

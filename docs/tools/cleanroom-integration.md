@@ -698,6 +698,15 @@ All seven workspace failures remain enabled. Failure classifications are triage,
 not expected-failure exemptions. No original application/vendor source was read.
 # Focused repairs after the frozen measurement
 
+Compiler-options follow-up: full `cargo test --locked -p jaic-cli --test cli`
+reports17 passed/one failed/zero ignored; only Default_Metaprogram remains in
+that suite. Original interception totals and continuable-error behavior pass;
+alternate backend, raw LLVM and Natvis requests have precise rejection tests.
+Natvis implementation is still missing and now diagnosed rather than ignored.
+Scoped production Compiler lint, jaifmt, Rustfmt and workspace warnings-denied
+Clippy pass. The frozen full-workspace totals are not arithmetically rewritten
+from focused tests.
+
 The original `sandbox_threads_wake_waiters_and_report_deadlocks` test now passes
 all three scenarios against the actual private SandboxHost pthread/condition
 provider. Returned-worker and blocked-worker cases still require the precise

@@ -1476,6 +1476,19 @@ expectation correction; the normal packaged false selector is restored byte for
 byte. This does not add further option coverage or native platform claims.
 # Native Mac measurement limitations, 2026-10-15
 
+Compiler options follow-up: `stdlib/internal/compiler-api/workspaces.jai` now
+rejects `use_natvis_compatible_types = true` explicitly. The independent backend
+has no Natvis-specific type emitter; accepting this flag silently was reduced
+semantics. A failing negative test demonstrated that acceptance before the fix.
+This is an honest unsupported diagnostic, not completed Natvis support. Proper
+completion requires target/debugger-specific type emission and native debugger
+consumer tests. Alternate X64 backend and raw LLVM command lines remain explicit
+unsupported requests. The positive intercept/continuable-report fixture now uses
+supported settings, accumulates all message batches (including empty batches),
+and retains exact totals and failure/continuation checks. Unsupported requests
+have separate precise negatives. No diagnostic or message-kind assertion is
+ignored. Full CLI suite now reports17 passed/one failed (Default_Metaprogram).
+
 The frozen `90fea8ab` workspace/catalogue measurements remain red; exact evidence
 is in `docs/status/mac-integration-baseline.json`. `Debug` native helper was not
 built in this candidate, so `backtrace_sees_compiled_callers` fails to link rather
