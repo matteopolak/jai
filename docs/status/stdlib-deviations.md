@@ -143,3 +143,198 @@ Flat_Pool initialization rerun complete:95 cases/23 faults both modes plus eight
 Windows_Utf8: native code not executed on this macOS worker; x64/ARM64 target checks verify bodies/ABI only, no fake native success. Host fixture explicitly fails if executed outside Windows; --native runner refuses that host. Zero conversion flags delegate malformed replacement to Kernel32, explicit wide length0 fails, oversized input/result lengths reject before narrowing, active allocator owns results; fine policies need review. Actual production dependency is Windows Kernel32 and NEW bindings, not a mocked backend. Proper next gate is actual Windows interpreter/native O0/O2 using the supplied fixture/runner. Initial fixture used invalid block-form push_allocator; corrected to exact expansion-call syntax, no API shortcut. See portable-windows-utf8.md.
 
 Flat_Pool Windows backend increment: private generic virtual-memory operations preserve POSIX calls and add genuine Windows GetSystemInfo/VirtualAlloc/VirtualFree using NEW ABI bindings and official native C documentation. Windows x64/ARM64 full fixture bodies type-check but do not execute on this host. No fake backend or platform pass; actual Windows allocation/failure verification remains coordinator gate. POSIX readonly-mapping failure branch is platform-specific; all ordinary public init/default/overwrite/lifecycle tests now compile for Windows too. Console and Android validation gaps remain, and superseded default questions are edited to resolved status.
+
+FILETIME increment: production private arithmetic is host-executed through exact source loading, while canonical Windows ABI wrappers only type-check both CPUs. This is genuine arithmetic coverage, not a substitute Windows integration pass. Sub100ns fractions truncate, pre1601/invalid/overflow fail; detailed range/rounding policy needs review. Unsigned native DWORD fields are read separately with explicit widened locals (existing compiler narrowing regression remains); no unaligned u64 pointer alias. General Basic unsigned128 division costs128 bit steps per reverse conversion; performance optimization may follow measured correctness. Public Basic facade/load overlap requires coordinator merge with foundations. Proper remaining gate: actual Windows interpreter/native and policy review; no private helper export. See portable-time.md.
+
+Windows clocks: real typed Kernel32 code is type-checked both CPUs, with host-executed exact production counter arithmetic; native Windows calls/frequency-cache concurrency remain unexecuted. No native pass claimed. Cache uses general committed64-bit CAS and boot-fixed frequency; independent arbitrary counter origin and femtosecond truncation need review. GetSystemTimeAsFileTime provides ordinary system resolution; no precision claim. Reverse scaling uses general128-bit division at128 bit steps, a deliberate correctness-first performance cost. Proper long-term gate: actual Windows interpreter/native threaded clock tests and measured optimization; no source/compiler shortcut. seconds_since_init still withheld pending real initialization-origin integration, not replaced with first-query zero. Details/native-doc provenance in portable-time.md.
+
+Machine_X64 remains withheld: source compiler Op::Cpuid hardcodes all outputs0. Both actual interpreter/native reproducer fail; real SDK C query succeeds. This compiler behavior is not counted as CPU detection or wrapped in fake get_cpu_info. Proper generic IR/interpreter/native lowering required across ownership, described in portable-machine-gaps.md. Native focused probe disables crash-handler installation only to isolate CPU assertion; all assertions remain active and existing crash coverage intact. Rdrand/Rdseed opcode conflation and synthetic timestamp-ID docs are additional unverified audit risks, not supported exports.
+
+Elapsed API resolved: the inbox/refreshed Basic page explicitly requires lazy FIRST CALL, so older statements calling that origin a workaround or withholding it are superseded. Exact public seconds_since_init now captures/publishes a real monotonic origin with existing general CAS, subtracts timestamps before float conversion and shares the same private storage across aliases. First return0 is the capture instant; private synchronization strengthens the source's first-use concurrency guarantee. Eight-thread and compile-time/reset fixtures execute genuine behavior, no fake clock/reset hook; the latter uses actual macOS ABI and diagnoses execution on another host rather than claiming portability. Windows clocks/elapsed code type-check but native execution remains a platform gate.
+
+
+Parameterized Basic fixes: no type-coercion workaround; private Windows arithmetic returns primitive words and wrappers construct their actual module instance's canonical Apollo_Time. NEW foundation composition is staging only, with explicit current facade/load-list merge and normalized regeneration, not production integration. Initial tool substring/stale-kernel failures fixed and retained. Native actions no longer occur only inside discardable assertions. Operational failure callback is unconditional, guarded by context.handling_assertion_failure; if caller continues, invalid timestamps/negative calendar fields/NaN are explicit failure markers. Failed first origin remains unavailable; this error-continuation policy and context guard require review. No native failure-success result invented. Actual Windows calls still unexecuted.
+
+Rebuilt jailint provenance repair: exact owned library bytes must match staged paths under JAIC_STDLIB; tests keep their real app paths. This preserves private-import rejection rather than bypassing it. Old all-input-original-path invocation failed and is retained. Scalar Hash/shared facade belongs to foundations and is excluded from this worker's lint mutation; portable MD5/Meow remain owned and explicitly restored after peer Hash staging (peer MD5 copy differed only by old formatting). No peer write or blanket diagnostic suppression. Final mapped verification pending at this update.
+
+Current mapped verification: full strict lint still fails, not a completed gate.
+Exact categories/evidence and proper remedies are in portable-verification.md:
+eager Random Context/Socket type checks, enum forward resolution, compile-time
+tools, required fixture flags, intentional negative fixtures and workspace hook.
+No categories are silently excluded; no allow-incomplete/suppression was added.
+Configured time roots pass strict lint separately. Risk: unlinted failed bodies
+may hide further findings; proper long-term fix is general compiler/linter and
+configured-fixture support plus a reviewed negative-fixture policy. Real Unicode
+literal/facade errors were fixed, not reclassified as tool failures. Meow runner
+now executes NEW public-contract/vector fixtures rather than the obsolete inherited
+test. Full99 host positives/23 faults pass; that does not establish full portable
+API completeness or native Windows correctness.
+
+Machine_X64 CPUID blocker is now resolved by the NEW compiler producer. Portable
+CPU/feature/options records and three mask operations plus get_cpu_info execute
+real CPUID, with independently built C/native O0/O2 comparisons. Missing
+instruction macros/get_machine_options_x86 remain explicit per-API gaps; no
+synthetic random/timestamp/fence exports are supplied. Raw feature bits and invalid
+index assertion are independent policies awaiting fine oracle review. Actual
+execution here uses macOS x64 translation, not physical ARM64 CPU information;
+Windows/Linux runtime remains unverified. x64 source-built jailint runs pure
+CPUID/mask compile-time assertions and strict lint; its initial full file-reading
+fixture aborted in SandboxHost. Native C comparisons retain all assertions and
+run separately, not counted as linter file-I/O support. Initial Windows body check
+failed at existing File's Unix guard; the native-oracle fixture now imports File
+only on its supported Unix hosts and explicitly fails runtime elsewhere. Common
+CPU/mask bodies still check Windows, without claiming Windows native coverage.
+Generator emits explicit independently grouped values, normalizes/checks source
+and regenerates identically. Whole strict lint remains failed; architecture-specific
+machine checks use an actual source-built x64 linter, never a fabricated target.
+
+Pool checked-extents batch: positive sizes whose private total cannot fit s64
+return null before invoking the signed-size allocator; invalid extents no longer
+wrap negative. This is independent allocation-safety policy rather than an
+asserted reference boundary result. Interpreter/native O0/O2 and focused strict
+lint verify genuine failure preservation and cleanup. No mock production allocator
+or fabricated success; the test's supplied allocator deliberately returns null
+above its budget to exercise failure. USE_UNMAPPING_ALLOCATOR specialization
+remains rejected and unfinished pending exact reviewed retention/ownership
+contract. Details/risk/evidence and long-term review need: portable-pool.md.
+
+Windows calendar batch: real Kernel32 UTC/local conversions are implemented and
+both CPU bodies/configured Basic instances check, but native Windows execution is
+unverified. Dynamic-zone Ex APIs require Windows7/Server2012; older support is
+unfinished. Private ABI completions take an opaque dynamic-zone pointer that is
+always null, never allocated/dereferenced, plus actual NEW SYSTEMTIME pointers
+and s32 BOOL result. No peer edit or guessed struct layout. Local ambiguity follows
+native selection; gap detection/invalid-date rejection are independent policies
+needing review. Pure Gregorian production validation executes a400-year cycle
+on host. Focused host strict lint passes but Windows branches are inactive; the
+current linter lacks target selection, so active Windows lint is a genuine gap.
+Proper long-term gates are target-aware lint support, actual Windows interpreter/
+native error/DST testing and reviewed minimum-version/ambiguity policy. No fake
+platform constants, native mocks or assertion weakening. Details/native ABI
+sources and supported range: portable-time.md.
+
+Machine options projection: resolved using reviewed Compiler.Build_Options
+machine_options:[128]u8 and canonical44-byte Machine_Options_X86 shape. Real
+#modify struct constraint, byte-array/extent checks and actual reflected alignment
+guard precede the in-place pointer cast. No separate storage, snapshot or guessed
+field offset. Pointer lifetime is caller-owned; native/interpreter tests verify
+two-way edits and trailing bytes. Actual instruction macros remain absent while
+compiler fences/random/processor-ID behavior is unsupported. No new workaround
+or blanket diagnostic suppression in this batch.
+
+Windows shared-channel backend: actual named mapping/view/extent/status calls
+and retryable teardown are implemented; both CPU lifecycle/packet/IPC fixtures
+check but native Windows execution and active Windows lint remain pending.
+Private failed-construction cleanup retains ownership in a pending retry queue;
+future lifecycle calls retry it, while final unrecoverable resources can remain
+until process exit. No background retry guarantee. Existing independent framing,
+OS-header magic/name/logical-capacity/reconnect policies still need reference
+review; no cross-reference wire interoperability claim. Native VirtualQuery
+extent replaces guessed page sizes. Registry validation retains existing lock/
+linear lookup cost per packet. Windows tests include a genuine protected-handle
+close failure with logged status and retry; not executed or mocked on this host.
+IPC driver uses cross-platform pipe handshake and real named-object absence
+checks on Windows, preserving real POSIX unlink. Full101 host cases/23 faults/14
+negatives and four2048-packet process pairings pass, not Windows runtime success.
+Proper remaining gate: actual Windows interpreter/native error/lifetime/concurrency
+tests and target-aware strict lint. See portable-windows-channel.md.
+
+Windows Socket: real Winsock source paths implemented and both CPU bodies check;
+actual Windows/active Windows strict lint remain pending. Pure production ioctl/
+descriptor kernels execute host tests, not a simulated Winsock backend. Explicit
+u32 locals accommodate the still-failing general widening-cast/shift compiler
+semantics; original FIONBIO failure0x8004007e versus SDK0x8004667e and existing
+widened-bitwise reproducer remain. Proper long-term fix is general compiler width
+propagation, followed by regression rerun; no Native status/instruction is faked.
+The generator's wildcard Windows import caused GUI MSG to capture Socket foreign
+flags. Explicit qualified reviewed dependencies fix that source namespace defect,
+without changing signatures to raw integers. Native keepalive units/ignored
+attempt count are reviewed compatibility, not a workaround. Startup refs remain
+caller-balanced with WSACleanup. Negative timing inputs diagnose checked casts;
+close failure logs then resets the handle, with retry/resource risk awaiting
+review. Missing CMSG/bitfield/shape APIs are explicitly inventoried and not counted
+complete. See portable-windows-socket.md for locations, evidence and SDK provenance.
+
+Native TCP fields: no new production workaround. Explicit ABI offsets come only from official Apple C declarations and are measured by independent C record output on host/x64. Values truncate to native bitfield width; whole-record comparisons verify neighboring data preservation. Unsupported big-endian/other-platform behavior is not claimed. Source-generated C includes SDK headers, with no header/library body copied. Initial nested fixture used process-relative file path; #file anchoring repairs test staging only, with original failure retained. Active scoped strict lint passes; whole strict lint remains failed. Public CMSG/other field/shape inventory is still incomplete and separately named. Details/evidence/risks: portable-socket-fields.md.
+
+Windows scope-ID: unsigned bitfield truncation is explicit in internal/net/scope-word.jai, not a compiler workaround. Public pure-record #run tests execute on the host interpreter, without native Windows C layout validation. Native Windows and target-aware strict lint remain required; no fake native functions or platform substitution.
+
+Pool lifecycle state: internal/allocation/pool.jai adds one C-allocated private
+record per used pool, a256-bucket address table and short CAS lock. Necessary to
+retain first-use state across reset without adding public fields; C allocation
+prevents recursion through a Pool context allocator. Records are freed at release,
+not reset; omitting release leaks this metadata along with ordinary pool resources.
+Bump calls with existing storage skip the table. Risks: first-use malloc failure,
+registry contention with many independent instances, caller reuse without release.
+A reviewed explicit lifecycle-state field would permit simpler lower-overhead
+state, but changing the exact public layout is not authorized. Post-release/new
+lifetime and failed-first-attempt policy remain narrow questions. No selected
+Unmapping_Allocator is destroyed by Pool. Pointer-to-integer bucketing uses a typed
+u64 local: the direct widening-cast shift still triggers the generic compiler
+cast/shift typing defect; target/pool-policy-full.log preserves its diagnostic.
+
+Linux TCP accessors: little-endian current x64/ARM64 only. Cross-target public
+#run execution is real interpreter behavior; Linux native and SDK C ABI tests
+remain pending, Android APIs are not completed. Initial test-only narrowing/import
+errors are retained, corrected without lowering coverage. No target substitution,
+native-call emulation, blanket lint exclusion or ABI-layout relaxation.
+
+Pool test platform classification: pool-unmapping depends on currently Unix-only Unmapping_Allocator. Added that fixture to the existing explicit Unix target-check list after the real Windows availability diagnostic (target/pool-policy-full2.log). Host interpreter/native assertions and Linux checking remain required; no Windows pass or completed Windows unmapping backend is claimed.
+
+Calendar policy adoption: removed this producer's stricter POSIX round-trip
+validation and Windows local DST round-trip rejection; refreshed specs delegate
+to native normalization/rules. Changed POSIX -1 result to zero, output error to
+ERROR log plus zero record, Windows input failures to assertion handling. These
+are production compatibility fixes, with old policy-test corrections separately
+recorded in portable-time.md. Continuing Windows assertion handlers get explicit
+invalid sentinel, not a valid fabricated timestamp. Native Windows pending.
+
+Calendar text uses a128-byte private bounded scratch buffer and real temporary
+copy. All public fields fit this bound; decimal padding/English month names are
+private calendar responsibilities, not duplicate public formatter APIs. An
+initial minimum-length test oracle was wrong for May; replaced with exact twelve
+reviewed English outputs, failure logs preserved. ConvertToApollo is NOT exported:
+the exact reviewed no-result header cannot currently yield a value in the compiler.
+Minimal original language reproducer is pending/expand-return-inference.jai;
+do not classify its failed check as completed functionality or silently add an
+unreviewed return annotation. Remaining native/target-lint gates are unchanged.
+
+Windows Registry:23 real reviewed bindings implemented, ten pseudo-handles omitted
+because reviewed positive casts conflict with official signed-LONG64-bit SDK
+extension. No guessed ABI constants or extra public convenience exports.
+All seven native call bodies/source constants check both Windows CPUs; actual
+interpreter/native Windows execution and active target-aware strict lint pending.
+Fixture uses private SDK setup only, a PID-specific volatile HKCU Software test
+key, checked native statuses and explicit cleanup; abort can leave this test-only
+key until cleanup/reboot. It never reads unrelated registry/credential data.
+Initial UTF conversion return-shape error belongs to the fixture and is fixed
+using reviewed pointer/success/byte-count, without changing production APIs.
+Generated declarations are normalized/idempotent; no copied Jai bodies.
+
+Android TCP accessors share actual tested Linux bodies only after official bionic
+public C header verification.22 reviewed Android exports, four Linux-only scales
+remain conditional, no invented Android APIs. Actual header C layout probes pass
+host ARM64/translated x64; these are NOT Android runtime/SDK execution. Compiler
+rejects -os android, so Android body/native validation remains blocked. No target
+constant overrides or fake backend. Old Linux-only implementation/facade files
+are removed. Public-header SHA/provenance and initial manual include-path staging
+error are documented in portable-socket-fields.md; no assertions skipped.
+
+Ancillary helpers: four real functions match native SDK vectors, CMSG_SIZE omitted
+pending exact relationship to native SPACE/LEN. CMSG_ALIGN uses native macOS4/
+Linux-Android64-bit8 boundary, not a universal guessed pointer-size rule. Negative
+sizes and unrepresentable alignment/u32 result diagnose; this is an independent
+safety policy for unspecified invalid inputs, not claimed reference wrapping.
+Live-record/control-storage preconditions remain with caller. Native Linux/
+Android still pending despite Linux pure #run execution. Initial signed/unsigned
+test mismatch fixed by explicit boundary conversions; no signature/assertion
+change. No copied Jai bodies, fake kernel calls or test/lint suppressions.
+
+Android JNI ABI helper: static immutable native directory strings for the only
+reviewed real CPU targets X64/ARM64. Other tags diagnose explicitly; fine
+invalid-tag behavior remains independent. This is host tooling functionality,
+not evidence of an Android backend/device integration. No ADB/auth/credential
+action executed. Parent Android bindings untouched; formatting ownership exception
+is scoped only to Android/Toolchain, not a lint suppression. All other toolchain
+APIs remain missing, now explicitly listed with other untouched portable modules
+in portable-missing-surface.md (253 rows, no functionality credited).

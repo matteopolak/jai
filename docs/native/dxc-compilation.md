@@ -44,7 +44,8 @@ not public DXC runtime evidence. Complete official SDK C++ header layout probes
 pass both host CPU compilations. SDK option documentation and native option
 definitions are pinned with the headers in dependencies.json.
 
-Full public DXC source/reflection tests still stop at D3D12 forward overlays;
+Full public DXC source/reflection tests now pass both Windows CPU checks after
+safe producer forward-overlay support and corrected canonical D3D imports.
 Windows native compilation, invalid-HLSL diagnostics, reflection and SPIR-V
 executions remain required. All real executable tests are registered, including
 an independent private SDK-route program and the public facade program. Private

@@ -285,3 +285,152 @@ tests/portable-stdlib/pending/hash-scalar-fnv.jai and basic-division-exercise.ja
 Foundation runner keeps them red. Portable owns the lazy clock helper;
 foundations owns the others. Integration independently fixed clock_gettime and
 Flat_Pool release side effects inside optional assertions; preserve those fixes.
+
+
+## Portable calendar/Pool contract follow-through (integration, 2026-10-15)
+
+Latest authorized portable snapshot0c09ce4 has actual clocks/CPU/Windows channel
+code, but reviewed basic.md line565 establishes POSIX normalization/DST delegation
+and -1 seconds -> zero Apollo, while internal/basic/clock-calendar.jai rejects
+components/normalized output and uses APOLLO_TIME_INVALID. Minimal public repro:
+ct: Basic.Calendar_Time = .{year=2024,month_starting_at_0=12,
+day_of_month_starting_at_0=0,time_zone=.UTC}; calendar_to_apollo(ct) must delegate
+normalization, not reject month12. Separately valid1969-12-31 23:59:59 UTC reaches
+the documented -1 collision and returns zero. Windows invalid conversions are
+asserted per reviewed prose; current prevalidation silently returns invalid.
+
+Reviewed pool.md line66 now resolves USE_UNMAPPING_ALLOCATOR default selection:
+absent explicit allocator selects public global Unmapping_Allocator and sets
+free_memblocks_on_reset=true; explicit allocator wins unchanged; pool never owns/
+destroys allocator. Existing specialization rejection is unfinished, not an
+acceptable fallback. Reconfiguration after first use must log/retain prior choice.
+
+Producer ownership remains portable; coordinator please relay exact current
+spec updates and request focused original public regressions. Integration retains
+these as production gaps and continues other stable scopes. No legacy oracle or
+unsafe platform mock is requested.
+
+
+## Audio operational checks/ownership (integration audit11bc663)
+
+Please move real actions out of optional assertions: player.jai line78 output
+worker join; decode-queue.jai line121 join/line155 semaphore wait; vorbis.jai
+line93 open/line95 seek. Check stored results, preserve diagnostics and keep
+live resources owned if shutdown/seek fails and an assertion handler returns.
+Backend shutdown/lose_output_device nulls output_handle before checking native
+close status: C correctly keeps live callback storage on disposal failure, but
+a continuing handler loses the retry handle. Do not free possible callback state
+or fabricate shutdown success. Add original failure/state-preservation coverage
+at the proper native boundary. Native default assertion behavior passes do not
+prove this error continuation path.
+
+Integration keeps private VBAP helper private; moved valid selected-pair public
+behavior assertion to actual initialized6/8channel controlled-output test.
+Producer panning.jai had directly called an unreviewed helper. Preserve public
+coverage and report native opened/unavailable counts independently.
+
+
+## Refresh17 compiler/regression follow-through (integration, 2026-10-15)
+
+Fullworkspace7aec510:742aggregatepass/32fail/oneignored across85summaryrows;
+all failing evidence retained artifacts/integration-clean/workspace-refresh17.log.
+Integration OWNS the new optional interpreter assertion transport and related
+runtime_config/procs paths; defaultC.abort hosttermination reproduced and fixed
+locally, preserving customcallback/nativebody/privacy. Compilerowner avoid
+duplicating that pending change. Other concrete semantic concerns:
+- field_type_queries_infer_values_select_branches_and_reject_real_cycles:
+  Record::{COUNT::size_of(type_of(value));value:[COUNT]u8;} gives truefieldcycle;
+  audit test oracle before change (dependency may actuallybe cyclic).
+- compiler-workspace-ids native builds execute get_current_workspace as runtime
+  primitive inside a function-local #run; compare exact languagecontract and
+  preserve compile-time-only behavior, no function-name/path bypass.
+- objc_selectors test finds0calls/table entries, optimized_split finds0kept-out
+  functions; inspect actualIR/observability before altering compiler/tests.
+- LSP Math namespace quickfix nowalsooffers newlyreviewed Codex.Math reexport.
+  Valid alternative is not an implementation defect; preserve meaningful import/
+  resolution assertions rather than an unsupported exactcandidatecount.
+Integration triages remaining legacy API Rustfixtures separately, preserving
+compiler/safety/Extensions/ABI/issue coverage. Threaddeinit tests must establish
+completion per reviewed Threadcontract; thread_startreturnsvoid. No ThreadWASM
+facade promised; preserve core sandbox scheduler via independent compiler/native
+ABI tests rather than adding unreviewed platformexports. PublicExtensions still
+call old Basic.free(ptr,allocator); APIs maynotbeexpanded forlegacy conveniences,
+so a supported compatibility architecture needs coordinatorreview while existing
+Extensions bodies remain intact. No assertions or coverage disabled.
+
+## Refresh18 foundations/portable: Pool lifetime registry breaks returned reports
+
+Owners foundations + portable (active). Production command:
+JAIC_STDLIB=$PWD/stdlib target/debug/jaic -interp
+tests/portable-stdlib/basic-leak-reports.jai
+fails at second make_leak_report(for_visualizer=true): twice logs Pool allocator
+cannot change after first use, then null procedure call at pool.jai:allocate_block.
+First report is returned by value and deinitialized through its moved Pool.
+Pool's new Use_Record registry keys only the original Pool address; release at
+the returned address cannot retire that original lifetime. Reusing the callee's
+stack slot for a fresh zero Pool then rejects set_allocators and calls null.
+This is an integration defect, not an invalid leak-report oracle. Preserve every
+leak/count/cleanup assertion. Proper solution must support value-return ownership
+in public Leak_Report without stale address-only lifecycle state, canonical
+layout changes or private module/name compiler special cases. Add an independent
+Pool value-return/reuse/release regression, plus keep this public foundations
+fixture. Original log: artifacts/integration-clean/production-suites-refresh18.log.
+Foundation run stops at this case after earlier positives; later cases unverified.
+
+## Refresh18 portable reviewed refinements
+
+Registry positive zero-extended HKEY values and caller-return ConvertToApollo
+are settled by latest authoritative module specs. eab3383 still omits the ten
+HKEY values and ConvertToApollo. Implement exact public forms and safe private
+SDK handle translation where needed, with a typed containing Apollo_Time
+procedure regression. Do not add a procedure result annotation or silently
+sign-extend public constants. Native Windows evidence remains mandatory.
+
+## Refresh18 production audio provenance/scope integration corrections
+
+Integration corrected add_vbap_gain_for_direction visibility to the reviewed
+public scope (sound-player.md explicitly lists it), alongside prior publicskip
+helper. The earlier helper relocation was an integration mistake. Full production
+27-case audio suite now passes host interpreter/nativeO0/O2, six-target source,
+strict format/lint/private rejections and required actual2/6/8logicalstreams.
+Additional integration-authored perceptual-volume.jai is recorded explicitly in
+the manifest; producer26-case declaration alone had correctly rejected mismatch.
+Disabled-global-assert Thread dependency remains open; copied audio facades in
+test-stage are not production proof and must stay labeled/cleaned up.
+
+## Refresh18 completed gates and precise partial-edit recovery failures
+
+Whole workspace at7dc08ed:767aggregatepasses/16failures/oneinheritedignored;
+fourfailedtargets. Detailed own log workspace-refresh18-reviewed.log retained.
+Partial edits completed1086ownedfiles/28772edits/3285512assertions/twofailedfiles;
+report artifacts/integration-clean/partial-edits-refresh18.json. No vendor or
+opaque public corpus files selected. Failures are not crashes/incomplete workers.
+
+1. stdlib/SDL/wrappers.jai last conditional import (source line51, augmentedline55)
+   suffix cutbyte15: independent tail's literal23 loses typed hover/completion/
+   inferred hint, falling back to Source syntax declaration. Head remains typed.
+2. tests/compiler-regressions/modules/Rules_Scoping/context_part.jai
+   #add_context rules_scoping_level :=5; suffix cutbyte12 (augmentedline7).
+   Tail becomes part of a different valid current statement; strict scope oracle
+   already records this, but anchors still require tail as a top-level symbol and
+   typed locals. Review actual Context-extension syntax scope versus the harness
+   oracle before changing production semantics or weakening assertions.
+   Preserve unchanged source edits; no symbol-name special cases. Baseline
+   semanticerrors SDL2/context0, both baseline syntax0. Re-run exacttwofiles
+   after approved compiler4de36d6; then generalLSP/context fix or justified
+   oracle repair with original evidence, not wholesale exclusions.
+
+Full public binding source matrix:350passed18failed70unsupported declarations/
+sourcechecks; privacy216passed72unsupported. FSEvents private-source test was
+outside its legitimate boundary and embedded a producer .work library path:
+verifier now uses general private placement/cleanup and fixture system-library
+lookup through explicit native SDK directory. This is private ABI evidence,
+not a promoted public export. Mobile CLI targets Android/iOS still unsupported;
+remaining missing DXC/Objective_C/rpmalloc/X11 public names are genuine required
+work. Full SDK dependency retry plus two official X.org transports again timed
+out/reset with all hashes retained; scoped nativebuilds are not a full-pin pass.
+
+Removed portable runner's default-allocator/x64 target exclusion. Its optimized
+implementation gap is now a required failure rather than an omitted selected
+case; do not add a libc fallback or change API/capabilities to hide it. Other
+platform-only fixture classifications remain disclosed/require review.

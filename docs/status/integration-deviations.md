@@ -789,3 +789,378 @@ foreign/native SDK cases separately, never passed. Root contract coverage is
 bounded, not equivalent to deleted suite or complete reviewed API coverage.
 Coordinator alone runs opaque original public corpus, Focus and ordinary native
 CI. Release/publication remains held. No push/dispatch performed.
+
+
+Portable0c09ce4 audited/merged as5eb5149: primitive private clock kernels preserve
+configured Basic canonical Apollo_Time; real first-call CAS elapsed storage,
+native CPUID/mask queries and actual Windows mapping/extent/cleanup bodies.
+Preserved prior Windows thread completion/readback/assertions and production-only
+test drivers over incoming staging overlays. Retained old native Meow regression
+plus both NEW producer vectors against production (no peer copies). Public Basic
+Buffer remains removed; nested builder type retained. Calendar normalization/
+sentinel/assertion and Pool unmapping-option gaps have precise public reproducers
+in integration-requests.md. Windows native runtime remains unverified.
+
+New independently spec-authored storage-time and scalar-Hash nativeO0 cases PASS.
+Formatter case initially FAIL only because its manifest still expected ok after
+reviewer added print_bytes: actual4 ab newline agrees exactly with basic.md line521.
+Manifest now includes those bytes, retaining all formatter assertions. This is a
+test harness oracle correction, no production change. Original failure log is
+artifacts/integration-clean/reviewed-foundations-O0.log. Complete rerun pending.
+
+
+Audio11bc663 source audit/integration: real SDK-owned C output/byte accounting,
+queue/seek decode, phase-independent locks and bounded256frame mixing are
+present. Existing canonical records/topology/accumulator retained over duplicate
+producer types/storage; retired decoder list now lives only with synchronized
+cache. Private VBAP helper remains file-local, using reviewed greatest-minimum
+selection; superseded first-containing-arc path removed. Gain step reads actual
+initialized backend sampling rate and asserts positive, with no invented1Hz
+fallback. Producer verifier accepts explicit production compiler/linter/library/
+native paths and performs actual Windows target lint.
+
+Panning test setup correction: producer test called a nonpublic helper; earlier
+integration adapted it to a public helper before a backend existed. With real
+backend, that helper correctly routes an uninitialized output as stereo, so the
+old isolated6channel expectation is invalid setup. Exact unit-direction VBAP
+assertion is moved (and strengthens other-channel-zero assertions) into the
+existing controlled-output fixture only after actual6/8channel native init.
+No private export invented; stereo panning/topology identity tests remain. Actual
+multichannel execution is still required, never counted from this source edit.
+
+Detected operational-assertion risk: player.jai shutdown join, decode-queue.jai
+join/wait, vorbis.jai open/seek actions occur inside assertion arguments. Sound
+currently imports default asserted Basic, but this pattern risks disappearing
+actions under future/default check changes and unsafe continuation on join/seek
+failure. Exact owner follow-through requested in integration-requests.md; not
+called completed error-path support. Native close failure retains C callback
+storage but Jai can drop its handle if caller assertion handling continues:
+potential resource leak; proper retryable ownership or unconditional fatal
+diagnostic needed. Audio's source-present213rows are not integration-certified
+complete. OS hardware/focus/hotplug, Linux/Windows execution, spatial numeric
+choices, one-worker throughput, per-device snapshot retention and package
+adoption limits remain as enumerated in producer audio-deviations.md. No fake
+audio/clipboard/font/native success substituted.
+
+
+Bindingsa476d25 audit/merge: FSEvents public context order is marshalled to a
+complete SDK Context (s64version theninfo andCcallbacks); SDK copies synchronously,
+native retain/release manage info. Public signatures/types unchanged. D3D canonical
+dependency imports replace wrong d3d_compiler direction; no compiler symbol/path
+bypass. rpmalloc has separate generated pinned native SDK records and reviewed
+private contextual Heap/Span records; default-profile wrappers call actual native
+alloc/realloc/free and copy full native statistics field-by-field into public
+layouts.14 procedures are partial across configurations, not80 complete APIs.
+Unsupported raw/heaps/callback/config/profiles still diagnose rather than silently
+using the default archive. Native global state across module instances remains a
+lifecycle/isolation gap; only default profile MacCPU execution reported by producer,
+not Windows/Linux. Pending callback crash repair is not in this stable checkpoint.
+
+Incoming native-bindings/sdl-layout fixture duplicates our relocated canonical
+stdlib/SDL/tests/sdl-layout.jai. Keep the canonical fixture: every new public/native
+field offset/size assertion is already covered there, with additional native
+alignment and guarded payload writes. Remove duplicate stale relative .work probe
+path; actualSDK event push/poll payload canaries from producer sdl.jai retained.
+Public48/8byte prefixes and complete private native sizes are distinct reviewed
+contracts. Scalar64bitclose normalization/factory identity remains. Historical
+invalid full-size oracle evidence stays; no undersized Ccall or public ABI change
+substituted. Actual combined native SDK rerun remains required.
+
+Producer status tail still lists older116unresolved/80rpmalloc, while new coverage
+ledger marks partial default wrappers; source inventory is not functionality
+certification. Strict target lint/configuration/native execution gaps remain.
+Private test placement must remain byte-identical inputs and not library repair;
+production-source stability/cleanup and bindings generator idempotence need rerun.
+
+
+Tooling9b6c482 audited/merged scope: source-built official libclang C/Jai ABI,
+CXIndexOptions u16bitfield/size24/pointer8,16, cursor/types/strings/callback models,
+finite numeric macro probes and enum groups, CodeView/DWARF subsets, kernel-
+mediated Debug readability. No reference compiler/std bodies used. Public native
+model ordering comes from independent responsibility groups; aggregate/enum/ABI
+order preserved. Public version21 remains reviewed compatibility constant while
+actual official SDK23 supplies the supported native backend; exact header/native
+source hashes are recorded, not full21SDK conformance.
+
+Removed avoidable host-specific test/build setup: official SDK prefix now uses
+explicit DEVELOPER_TOOLS_LLVM_PREFIX, compiler LLVM_SYS_231_PREFIX or actual
+llvm-config; missing SDK diagnoses. Shared native fixtures use real macOS dylib/
+Linux PICso flags/names, retaining identical C ABI/behavior assertions. No hardcoded
+Homebrew path or Linux-as-macOS command remains. Native Windows tooling is still
+unsupported, explicit builder diagnostic; source target checks are separate.
+
+Unfinished/reduced behavior remains producer-reported: Bindings_Generator supports
+one C header/library, rejects unsupported C++bridges/bitfields/variadic callback
+mutations/string/function/nonfinite macros and options; macro probes reparse per
+macro (callbacks can double cost), include snapshots not atomic; no fabricated
+constants. Header generation rejects unsupported overlays/multiple returns/etc,
+layout mismatch may surface at Ccompile rather than pregeneration. Its runtime
+support-descriptor fixtures still use reviewed test-only records and are not
+production bootstrap identity proof. Rewrite uses byte coordinates/quadratic
+sorting, skips unwritable string inputs and has non-atomic write TOCTOU risk.
+Print_Vars byte widths/eager temporary storage and Performance_Report quadratic
+sorting are deliberate. Debug has bounded little-endian DWARF32 subset, real
+readability kernel syscalls, unsupported architectures/backends remain explicit.
+Iprof has caller-supplied reports only, no fabricated instrumentation/samples;
+Codex metadata and Check semantics remain subsets. Full1630declaration inventory
+is not full behavior support. Producer tests independently authored but separate
+root review remains pending. All current production/Jai/native/ABI/regeneration/
+lint verification remains required; no staged producer pass counts integrated.
+
+
+Window1f66dc1 integrated as8e920639. Real Meson child-discovery and LLVMcache
+receipt/configuration/corruption/partial-install tests:8PASS in prepared local
+venv with Meson1.8.3/Mako1.3.10/MarkupSafe3.0.3/packaging25.0/PyYAML6.0.3.
+First invocation with bare systemPython failed because Meson was absent;
+dependency setup corrected and original failure retained, no assertion weakened.
+This is host build-tool regression evidence, not ARM64Windows driver execution.
+Cache hashes selected public SDK/compiler/tool binaries and installed LLVM tree,
+rejects symlinks/stale/partial changes, persists completedLLVM before Mesa; no
+driver cache reused. Hashing full SDK/tool trees costs startupI/O deliberately.
+
+Filtered coordinatorCI9d87e76 reports fuzzPASS and SDL3Linux/macOSfourCPUsPASS.
+WindowsSDL3 stops beforeCcompile at hardcodedVSdiscovery (SDLowner fixing).
+Windowscompilerlink stops at kernelbase.lib SDKattribute (compilerowner fixing),
+so follow-onruntime steps are not independent behavior failures. ARM64Mesa source
+download timed out beforebuild; no native driver evidence from that attempt.
+No rawvendorCIlogs read and no release/push/dispatch performed.
+
+
+Portable41a015a source audit/integration: actual Winsock startup/error/option/
+keepalive/close calls, correct native millisecond policy, direct foreignFD_ISSET
+identity and descriptor-array semantics. Preserved existing POSIX nullcheck safety
+in moved backend; no lost FD_CLR/word-width assertions. Windows helper drivers
+now accept explicit actualcompiler/productionstdlib and do not copy partial
+producer overlays. Native Windows execution remains required; no runtime success
+from body checks. Signed ioctl output uses realu32encoding thenuncheckedbitcast
+tos32; typed wordlocals avoid producer-reported cast/shift-width observation,
+whose exact language precedence needs oracle review before calling it a compiler
+defect. No special symbol/path lowering. Missing CMSG/bitfield/native shape families
+remain explicit. Native close failure is logged then invalidates caller handle,
+with documented resource risk per wrapperpolicy; not silently counted success.
+
+
+Refresh17 production verification completed against7aec510: fullworkspace85
+result summaries742aggregatepass/32fail/one inheritedignored, ninefailedtargets;
+counts include child-process summaries, not unique tests.1052ownedJai format/
+check PASS; strictlint58/187checksFAIL, source_stable=true. Full root contract
+batch52/54PASS initially: duplicateBase64local(valid) is a fixture syntax error,
+and Sound.skip_this_output_channel was accidentally moved into file-private scope
+during integrationhelper relocation. Both corrected without changing assertions
+or addingexports; original failures retained. DuplicatecompleteSDL.User_Event from
+two independent ABI patches caused SDLsource checks to fail; one identical layout
+now retained. Root implementation regression, not an invalid ABI oracle.
+
+Default assertion CLI reproducer exitsSIGABRT under-interp because NEW runtime
+calls realC.abort while the old compiler hook expected an obsolete private name.
+Proper correction: optional file-private runtime assertion transport selects the
+actual callback procedure by identity and validates exact canonical location/
+string/bool/Jai-context signature plus ordinary native body. Interpreter installs
+its existing structured fault operation for that procedure; native code retains
+the real Jai body. Custom callbacks execute unchanged; no public export/module
+parameter or filename/symbol-specific library bypass. Native reporter discovery
+shares the general private-extension resolver; obsolete name-based assertion
+hook removed. Private runtime_entry is #no_debug, suppressing only bootstrap
+frames through existing semantic metadata, not display-name filtering. Source
+CLI regression (default/compile-time assertions and custom continuation) PASS;
+three protocolprivacy/validation cases plus51module/two nativehook/fourruntime
+configuration cases PASS. Full diagnostic/native regression rerun pending.
+
+NativeSDK fulldependencysetup FAIL at stale GitHub X11mirror tag404. Manifest
+already pins officialX.org1.8.12 release+header hashes; builder now verifies/
+extracts release beforeusing per-file bytes, preserving both hashes and all-input
+validation. Three transport/cache/corruption units PASS. Full retry hit official
+server connectionreset: stillFAILED, not called a productiondependency pass.
+Scoped actualSDLprobe builds PASS; scoped actualrpmallocSDK/statlayout/FSEvents
+probe builds PASS. One ownedFSEventsprobe warning uses deprecated but public
+ScheduleWithRunLoop API; no warning suppression applied, not a-Werror pass.
+FutureSDK removal risk remains; retain ABIcoverage and add modern dispatch-path
+coverage with an explicit narrow deprecation policy. Source archive cache also
+needs complete transitive-header tree integrity validation beyond current pinned
+primary files; no source-wide SDKconformance inferred from scoped builds.
+
+Refresh17 final focused results: four private interpreter protocol tests now
+include proof that the native callback body still typechecks; four CLI scenarios
+cover default/compile-time faults, explicit #no_debug unwinding and custom
+continuation. Existing module/native-hook/runtime-config60 tests passed before
+the fourth protocol case was added. Workspace clippy warnings-denied PASS.
+All54 public contracts PASS interpreter/nativeO0/nativeO2, including precise
+negative checks (not54 distinct native runtime effects). Scoped formatter/check
+PASS after rebuilding actual unchanged jaifmt. A fragment-only audio lint attempt
+failed missing its loaded-module constants; failure retained and context-complete
+run required. No incomplete lint is called success.
+
+Native verifier found stale relocated SDLfixture paths before execution.
+General canonical module-owned test resolution replaces filename-specific routing;
+three input-placement tests prove fixture ownership and exception-safe restoration
+of existing sources/removal of temporary dependency directories. Runtime checks
+now restore private placement on failure/success; no private exports promoted,
+fixture bytes unchanged. RealSDLverify PASS30target/24privacy/299symbol/nine
+native-interpreter phases using actualproductionstdlib/source-builtSDK. Full
+all-dependency validation remains blocked by officialX.org connectionreset.
+
+Root Audio contract setup was corrected to provide actual loaded in-memory PCM
+when testing successful buffer bounds, as required by reviewed Sound_Player:
+default UNINITIALIZED/no-storage data cannot establish successful buffer bounds.
+Default-value assertions remain before the mutation; bounds checks now assert
+actual backing-storage identity. Original failure evidence retained.
+
+Follow-up to refresh17 SDK/cache and audio lint entries: avoidable transitive
+archive cache gap removed by extracting the entire hash-verified archive afresh
+on each preparation, then replacing the cache tree. Modified transitive headers
+and injected extras are covered by a regression. Deliberate extractionI/O
+tradeoff; future optimization can compare complete verified manifests, never
+only primary headers. Seven transport/placement regressionsPASS. OfficialX.org
+network failure remains; no full-pin build success.
+
+Context-complete audio lint exposed duplicate get_magic4 implementations from
+integration, with identical signature/bounds/encoding; retained samples.jai
+version with stronger diagnostic and removed loading.jai duplicate. Actual
+scoped loaded-fragment/runtime/SDL/contract lint nowPASS with warnings denied.
+Whole-tree58failedlintgates remain historical/currentuntilrerun, not declared
+resolved. Default Audio publicskip helper visibility andSDLUser_Event duplicate
+are included in the integration correction checkpoint, not producer blame.
+
+## Refresh18 producer and independent integration audit
+
+Consumed source snapshots: portable eab3383, bindings fc6c681, audio498046b,
+developer-tools af8b5f4, SDL3 0b2dc3c, coordinator CI e223538. Compiler native
+repairs6904b4a/049e997 and cast observations were integrated through approved CI
+cherry-picks, retaining our private assertion transport29ec8f9. Every producer
+progress/deviation/handoff report was read; implementation inspection additionally
+found the following integration defects or limits. Later ready checkpoints are
+queued, not credited here. Extensions outside SDL3 remain byte-identical.
+
+- internal/audio/panning.jai: integration had also privatized reviewed public
+  add_vbap_gain_for_direction while moving its body. Restored the existing
+  signature/body to public scope; no new API. Source/signature fixtures now
+  execute. Audio manifest now explicitly includes our perceptual power-law
+  regression, rather than bypassing strict discovery. Actual27cases PASS
+  interpreter/nativeO0/O2, six-target bodies, owned format/lint and three privacy
+  checks. Real silent SDK2/6/8streams opened in all required modes; no physical
+  channel placement/latency or Linux/Windows runtime claim.
+- audio lifecycle/native adapters: essential waits/seeks/joins are unconditional,
+  failed close ownership retained/retried and unavailable state no longer
+  reports initialized. Injected failures surround genuine SDK resources, distinct
+  from OS-generated failure/hotplug proof. Owned-audio assertion-disabled copy
+  staging does not establish a globally configured production library; real
+  Thread assertion dependency remains open with active owners.
+- rpmalloc callback-context/rpmalloc-callbacks: per-call TLS context frames,
+  copied native names and synchronized signed-offset mapping metadata are real
+  adapters; no public record cast into C. Process-global SDK, spin-lock/linear
+  registry/malloc per mapping and two C frame calls per operation are deliberate
+  lifetime/performance costs. Error-location policy/profile isolation remain
+  limited. Full canonical public heap/span operations remain missing; native
+  field-layout probes are not API completion. Production scoped SDK build PASS;
+  verifier36source/96privacy/tennative phases PASS plus six missing-public-name
+  failures retained. Nondefault/raw configurations remain required gaps.
+- developer-tools clang/model/MSF/debug: actual39fixtures/C/C++ consumers PASS
+  on host, real MSF stream tools and Windows cross-built Debug ABI separate.
+  Hardcoded producer LLVM prefix replaced with existing general configured LLVM
+  discovery; new shared C fixtures use platform shared-library flags. Windows
+  Debug cross helper remains macOS-hosted MinGWx64 only; Linux/Windows fullhost
+  orchestration not certified. Scalar aliases/locations/null-C++ diagnostics do
+  not establish full1630-declaration support. MSF wire subset supports only
+  validated sizes/streams; staged byte-copy wire tests are private-unit evidence.
+- SDL3 generated files: narrow LF attributes and UTF8byte writes remove actual
+  CRLFhash failure, not a platform hash exemption. 31generator/nativehelper
+  unitsPASS locally; prior real sixprofile/SDK producer evidence distinct.
+  Native Windows compile/runtime and all95GPU operations remain CI gates.
+- portable Pool registry: active source keys first-use by Pool address; returning
+  Leak_Report by value leaves a stale record and later allocator-null fault.
+  Original foundations assertions retained; exact active-owner request supplied.
+  No caller-address patch/layout change/value-return prohibition accepted.
+  Calendar native normalization/text and Socket CMSG/TCP/Windows scope bodies
+  integrated, but selected Unix test classification is not Windows runtime proof.
+  Registry constants/ConvertToApollo remain missing despite settled review.
+  Android ABI naming is tooling only; compiler Android target unavailable.
+  Full source/native/strictlint coverage for253 missing public rows is absent.
+- jaic-llvm/partition.rs: address escape prevented counting single-caller bodies
+  in inline-growth estimates, exposed by unchanged optimized_split regression
+  after runtime procedure metadata gained address references. Conservatively
+  account for sole direct callers regardless of additional address references;
+  noinline cuts now bound that expansion. Existing two optimizer result/IR
+  regressionsPASS. Possible extra conservative noinline cuts are a performance
+  tradeoff; benchmark after correctness, do not infer native speedup.
+- Objective_C forwarding: general scanner now follows explicit native #foreign
+  aliases and checks every discovered literal, replacing obsolete old-layout
+  count thresholds. This exposed genuine NSThread native selector typo.
+  Generator uses official Foundation header spelling, retaining public API;
+  three alias/arity/runtime tests PASS with805 distinct native method pairs.
+  No baseline exception added. Dynamic selectors/local receiver class inference
+  remain explicit test limitations, not full Objective_C completion.
+- corrected compiler test oracles: LSP accepts both direct Math namespace import
+  and reviewed Codex.Math reexport, applies both edits and checks no errors.
+  Null Any boxing now tests compiler address/type representation directly rather
+  than obsolete printer abort behavior; explicit null read still diagnoses.
+  CLI color tests remove inherited NO_COLOR before forcing color; actual NO_COLOR
+  precedence test retained. New private allocation path and actual cycle/assertion
+  diagnostics replace old path/wording expectations. Full diagnostics25PASS,
+  LSP namespace PASS, IDElayout4PASS and browser assertion transport PASS.
+  No compiler error relaxed or production fake default introduced.
+
+Actual broad evidence retained: workspace755aggregatePASS/27FAIL/one inherited
+ignored, sevenfailedtargets. Production quality1107formatted/checkPASS,
+strictlint56/190failed, source_stable=true. Catalogue394cases: interpreter306/
+83pass-fail, native300/82 plus7compile-only, WASMinterp237/130, WASInative230/130
+plus7compile-only; eachmode five precise negatives separate. WASM native-only22
+unavailable each, not passes. Catalogue dependencies were incomplete; specialized
+SDK/font runners are required and many compiler/stdlib gaps remain real. Window
+first158/18failed because real test probes not built; after source-building own
+window-native, production188invocationsPASS with real hostGL/clipboard/fonts.
+No failed initial run hidden. New fullpartial-edit sweep1086ownfiles running,
+excluding all public corpus/vendor directories. Opaque applicationcorpus/Focus/
+crosshardware remain coordinator gates; no publication/push/dispatch occurred.
+
+Refresh18 retained regression migration follow-up:
+- tests/extensions/extensions-long-double.jai explicitly casts only presentation
+  arguments to float64 and checks type identity directly. All wide arithmetic,
+  mantissa/rounding/range/reflection/C-varargs assertions remain; four wide target
+  interpreter scenarios PASS. Basic's current formatter supports IEEE32/64
+  rather than arbitrary extension floats; this is an explicit capability gap,
+  not a production narrowing implementation or full wide-formatting claim.
+- c-callback-threads fixtures follow reviewed thread_deinit completion precondition
+  for positive lifecycle calls. The compiler deadlock fixture now uses direct
+  documented SDK thread create/join signatures and condition-variable waits:
+  public thread_is_done is timed polling and macOS public Semaphore uses opaque
+  libdispatch waits, so those do not prove scheduler-blocked-state diagnostics.
+  Two attempted polling/dispatch variants stalled and were terminated explicitly;
+  original logs retained. Neither is a passed test. Actual kernel-wait variant
+  PASS preserves both immediate Jai join deadlock and C-callback grace timing,
+  exact positive outputs and native callback execution. A60-second watchdog
+  now kills/states a hard failure on reporting stalls, never accepting timeout.
+  Missing C compilers fail both touched Ccallback tests instead of optional skip.
+  Native Windows/Linux execution of the new SDK fixture remains CI-required;
+  current supported hosts/targets are64bit, pthread_t/uintptr ABI accordingly.
+  No fake handle, unreviewed Thread export or native callback adapter added.
+- backtrace caller regression removes unreviewed Debug.USE_GRAPHICS parameter;
+  exact same frame-depth/deallocation assertions PASS nativeO0/O2.
+- unsupported Compiler requests use current precise scope/user-segment/type-table/
+  custom-link precondition diagnostics and reviewed one-argument link completion
+  signature, still require every case to fail. Six-case CLI test PASS.
+- broad source compile/lint/matrix failures remain. The25diagnostics,4IDElayout,
+  namespace edit resolution, browser negative assertion, two optimizer tests,
+  three selector tests and focused native callbacks/backtrace are actual focused
+  results only. No new all-workspace total inferred from them.
+
+All private source/header/probe substitutions remain labeled. Source pins,
+C ABI guards, native foreign errors, public visibility and old failure evidence
+are retained. No global lint suppression, test disable or release action.
+
+Native custom-link/crash gate follow-up: retained two actual custom-link cases
+now set the reviewed Message_Phase.linker_exit_code then call the one-argument
+completion API. All original object-count/path/IR/frame-pointer/native execution/
+missing-completion/failure assertions remain; failure runs a real child exit3
+rather than inventing a native linker result. Both tests PASS. Variadic array
+append/spread is retained unchanged; an attempted ordinary slice append was
+correctly rejected because the reviewed overload is variadic, not a slice API.
+No compiler workaround or unreviewed overload was introduced.
+
+Crash-option/minimum-OS fixture now raises actual POSIX SIGSEGV through the SDK,
+rather than assuming a guarded constant null store reaches the OS signal handler.
+It checks native stack presence exactly when enabled, actual frame addresses and
+crash message, plus unchanged Mach-O minimum12.0. Native host gatePASS.
+Original explicit-null guard tests/protected mmap/mprotect regressions remain.
+The old expected 'fatal runtime signal' wording belonged to replaced private
+reporting; current native stack assertions test observable behavior, not a fake
+signal/no_abc bypass. Cross-native Windows/Linux gate remains required.

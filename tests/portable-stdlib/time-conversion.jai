@@ -72,10 +72,15 @@ main :: () {
         assert(roundtrip.year == 2000 && roundtrip.month_starting_at_0 == 1 && roundtrip.day_of_month_starting_at_0 == 28);
         assert(roundtrip.day_of_week_starting_at_0 == 2 && roundtrip.hour == 12 && roundtrip.minute == 34 && roundtrip.second == 56 && roundtrip.millisecond == 789);
         calendar.year = 2100;
-        assert(compare_apollo_times(calendar_to_apollo(calendar), APOLLO_TIME_INVALID) == 0);
+        // Refreshed review delegates invalid components to native normalization.
+        normalized := to_calendar(calendar_to_apollo(calendar));
+
+        assert(normalized.year == 2100 && normalized.month_starting_at_0 == 2 && normalized.day_of_month_starting_at_0 == 0);
         prior := timespec_to_apollo(.{ -1, 0 });
 
-        assert(compare_apollo_times(calendar_to_apollo(to_calendar(prior)), prior) == 0);
+        collision := calendar_to_apollo(to_calendar(prior));
+
+        assert(collision.low == 0 && collision.high == 0);
         local := to_calendar(leap, .LOCAL);
 
         assert(local.time_zone == .LOCAL && compare_apollo_times(calendar_to_apollo(local), leap) == 0);
@@ -92,8 +97,44 @@ main :: () {
         assert(now_ts.tv_sec <= native_now && native_now - now_ts.tv_sec <= 1);
     }
 
+    #if OS == .WINDOWS {
+        #assert size_of(Native_Filetime.FILETIME) == 8;
+        #assert align_of(Native_Filetime.FILETIME) == 4;
+
+        for ticks: u64.[0, 1, 0xffffffff, 0x100000000, 116444736000000000, 0xffffffffffffffff] {
+            ft: Native_Filetime.FILETIME;
+            ft.dwLowDateTime = cast(u32) (ticks & 0xffffffff);
+            ft.dwHighDateTime = cast(u32) (ticks >> 32);
+            at := filetime_to_apollo(ft);
+            encoded, valid := to_filetime(at);
+
+            assert(valid && encoded.dwLowDateTime == ft.dwLowDateTime && encoded.dwHighDateTime == ft.dwHighDateTime);
+            if ticks == 116444736000000000 assert(compare_apollo_times(at, APOLLO_TIME_FOR_JAN_1_1970) == 0);
+        }
+
+        invalid_ft, valid_ft := to_filetime(APOLLO_TIME_INVALID);
+
+        assert(!valid_ft);
+        start := current_time_monotonic();
+        finish := current_time_monotonic();
+
+        assert(compare_apollo_times(start, APOLLO_TIME_INVALID) != 0 && compare_apollo_times(finish, start) >= 0);
+        now := current_time_consensus();
+        now_ft, now_valid := to_filetime(now);
+
+        assert(now_valid);
+        native_now: Native_Filetime.FILETIME;
+
+        Native_Filetime.GetSystemTimeAsFileTime(*native_now);
+        actual_seconds, actual_valid := to_float64_seconds(now);
+        native_seconds, native_valid := to_float64_seconds(filetime_to_apollo(native_now));
+
+        assert(actual_valid && native_valid && native_seconds - actual_seconds >= -2 && native_seconds - actual_seconds <= 2);
+    }
+
     print("ok\n");
 }
 
 #scope_file
 #if OS == .MACOS || OS == .LINUX || OS == .ANDROID Native_Time :: #import "POSIX";
+#if OS == .WINDOWS Native_Filetime :: #import "Windows";

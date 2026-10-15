@@ -453,3 +453,100 @@ foreign/native SDK cases separately, never passed. Root contract coverage is
 bounded, not equivalent to deleted suite or complete reviewed API coverage.
 Coordinator alone runs opaque original public corpus, Focus and ordinary native
 CI. Release/publication remains held. No push/dispatch performed.
+
+## Production refresh17 validation and scoped repairs
+
+At combined producer head7aec510, cargo test --locked --workspace --all-targets
+recorded85 summaries742 aggregatepasses32 failures/one inheritedignored result.
+The raw own-source log is retained under ignoredartifacts/integration-clean.
+Do not interpret those aggregates as distinct tests or green integration.
+Production jaifmt/check covered1052 files; quality-refresh17.json records
+58/187 failed strictlint gates and source_stable=true.
+
+Assertion transport correction is committed29ec8f9. Exact focused commands:
+LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm RUSTC_WRAPPER= cargo test --locked
+-p jaic --test cleanroom_interpreter_hook (fourPASS), and cargo test --locked
+-p jaic-cli --test cleanroom_interpreter_assertions (one test/four scenariosPASS).
+The existing module/native-check/runtime-configuration batch passed57 tests.
+Workspace clippy --all-targets -- -D warnings PASS. Diagnostics25cases now22PASS/
+threeFAIL; remaining failures are retained, not hidden.
+
+python3 tests/stdlib-contract/run.py --jaic "$PWD/target/debug/jaic"
+--stdlib-root "$PWD/stdlib" --mode native --opt O0, repeatedO2:54PASS each.
+Interpreter54PASS. Counts include declared precise negative checks; these are
+bounded spec contracts, not54 distinct native behavior executions.
+
+python3 tools/native_bindings/verify.py --compiler "$PWD/target/debug/jaic"
+--stdlib "$PWD/stdlib" --native-libs "$PWD/artifacts/integration-clean/native-sdk"
+--module SDL --runtime --report artifacts/integration-clean/sdl-sdk-refresh17.json:
+zero failures,30targets24privacy299symbols/nine native-interpreter phases.
+Canonical module-owned fixture discovery fixes stale migration paths. Temporary
+private test placement restores preexisting bytes/modes and removes added files/
+directories even on exceptions; original fixture bytes remain unchanged.
+
+Integration duplicate get_magic4 and User_Event declarations were removed,
+retaining the stronger existing magic bounds check and identical SDL layout.
+Public skip_this_output_channel restored to its reviewed visibility. Scoped
+real jailint -v -D warnings --config jailint.toml on Sound_Player/module.jai plus
+changed loaded fragments, Runtime_Support, SDLnative and correctedAudio/codec
+contracts PASS; earlier contextless/duplicate-helper failures retained.
+Scoped actualjaifmt formatting/check PASS, unchangedjaifmt rebuilt against
+production tree. Audio contract successful-buffer test now supplies valid
+loaded PCM and asserts actual pointer identity. No default-value assertion lost.
+
+Native source builder now extracts complete verified archives afresh, restoring
+transitive headers and removing injected cached files as well as validating
+primary pinned files. This deliberately costs extractionI/O per build for
+integrity; no nativepin weakened. Seven builder/verifier input regressionsPASS.
+Full SDK dependency setup still fails officialX.org connectionreset; scopedSDL,
+rpmalloc andFSEvents probes source-build successfully, not all-dependency proof.
+
+## Refresh18 merged production checkpoint and actual gates
+
+Available implementation source head8e561e0 includes reviewed CIe223538 and
+SDL3/audio/bindings/tools/portable merges; private assertion fix29ec8f9 retained.
+Current focused follow-up repairs are separately committed. Commands/results:
+
+- cargo test --locked --workspace --all-targets --no-fail-fast:
+  755aggregatepasses27failures/one inheritedignored; sevenfailedtargets. An
+  earlier command without --no-fail-fast stopped after LSP and is not full proof.
+- python3 tools/check_cleanroom_quality.py --baseline e1e8d19d0e6792ebc895c12fabe49ba919ef0226
+  --format --report artifacts/integration-clean/quality-refresh18.json:
+  1107format/checkPASS,56/190strictlintgatesFAIL,source_stable=true.
+- python3 tools/audio_build_native.py then audio_verify.py --jaic <ownjaic>
+  --stdlib <productionstdlib> --jaifmt <unchangedformatter> --jailint <ownlint>
+  --require-device --require-multichannel:27fixturesPASS interpreter/nativeO0/O2,
+  six desktop source targets/strictformatlint/privacy, real silent2/6/8SDKstreams.
+- python3 tools/check_developer_tools.py:39fixtures/C/C++consumers PASS, real
+  native Debug and MSF tool outputs; Windows cross-build distinct from execution.
+- python3 tools/native_bindings/build_dependencies.py --output artifacts/integration-clean/native-sdk
+  --library binding_rpmalloc_callbacks --library binding_callback_context
+  --library rpmalloc_callback_probe --library rpmalloc_sdk_probe
+  --library rpmalloc_storage_probe: real scopedsourcebuildPASS. verify.py
+  --module rpmalloc --runtime with explicit productionroot/compiler/SDKpath:
+  36source96privacy10nativephasesPASS, sixmissingpublicnamesFAIL.
+- python3 tools/window_render_native.py then check_window_render.py --jaic <ownjaic>
+  --stdlib <productionstdlib> --native-libs <root>/target/window-native
+  --font /System/Library/Fonts/Supplemental/Arial.ttf:188invocationsPASS including
+  actual hostGL/clipboard/fonts and requiredsource/privacy checks. Prior missing
+  test-probe run158PASS18FAIL retained.
+- python3 tools/check_stdlib_suites.py with --suite foundations --suite portable
+  --suite platform --suite numerics --suite numerics-native and explicit real
+  productiontools/native directory: only numerics-native PASS25/25; otherfour
+  fail. Foundations stops on actual returnedPool lifetime fault, not an invalid
+  expected-output change. Portable failures retained with keep-going. No whole
+  producer success from each owner's staged historical results.
+- stdlib_runtime.py --modes interp,native,wasm-interp,wasm-native --jobs4 --timeout60
+  --verbose:394cases, results detailed in integration-deviations. Dependencies
+  incomplete and realAPI/compiler errors remain. Five expectednegativechecks
+  and22WASMunavailableSDKcases reported separately, not passed.
+- lsp_partial_edits.py stdlib tests/stdlib-contract tests/compiler-regressions
+  --stdlib <productionstdlib> --max-lines8 --jobs2 --timeout60
+  --report artifacts/integration-clean/partial-edits-refresh18.json: running
+  1086ownfiles, no corpus/vendor imports/fetchers. No success claim yet.
+
+Module inventory now135 modulepages plus one constant-table supplement:124
+facadespresent,11missing. Presence does not certify bodies/API completion; all
+remain unverified as whole modules. Portable alone has253missingpublicrows.
+Original corpus opaque input and Focus remain coordinator-owned; no fetch of
+vendored Jai bodies or access to original/quarantined histories. Release HOLD.

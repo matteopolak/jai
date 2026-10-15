@@ -1,12 +1,13 @@
 {
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
-    "declared": 28398,
-    "unresolved": 116,
-    "implemented_manual": 51,
+    "declared": 28397,
+    "unresolved": 100,
+    "implemented_manual": 52,
     "implemented": 544,
     "forwarded": 1262,
-    "duplicate": 1
+    "duplicate": 1,
+    "partially_implemented": 16
   },
   "reports": [
     {
@@ -278,6 +279,472 @@
           "failed": 40
         }
       }
+    },
+    {
+      "report": ".work/fsevents-native-current.json",
+      "sha256": "0e24e3e7b8401250e63b3ea901299d8c28314ad7788b75101ab2ea30de9a6373",
+      "scope": "FSEvents/macOS source matrix, private export checks and real host native tests",
+      "compiler_sha256": "75fd6e23452c090761d90352a00e786439d0971895c6c1708c7ba4bfdf2219ff",
+      "results": {
+        "targets": {
+          "unsupported": 4,
+          "passed": 6
+        },
+        "privacy": {
+          "unsupported": 4,
+          "passed": 2
+        },
+        "native": {
+          "passed": 4
+        }
+      },
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/fsevents-both-cpus-tools.json",
+      "sha256": "03274e4409d5b5883a208b3ed6bdf197e12277d6f078394a25c7209360679521",
+      "scope": "Real macOS x64 (OS translation) and ARM64 event/lifetime/ABI execution; production formatter, strict lint, regeneration and 45 generator tests",
+      "command_exits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "report": ".work/sdl-policy-native-current.json",
+      "sha256": "a9c838a086d96835ba19643bab01f90583a74cc7231842de6cbaa6b9aa95d8ed",
+      "scope": "Corrected reviewed public-prefix/full-private SDL oracle, six desktop source checks and real host pointer/event/lifetime/WM safety execution",
+      "compiler_sha256": "75fd6e23452c090761d90352a00e786439d0971895c6c1708c7ba4bfdf2219ff",
+      "results": {
+        "targets": {
+          "passed": 30
+        },
+        "privacy": {
+          "passed": 24
+        },
+        "native": {
+          "passed": 8
+        }
+      },
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/sdl-policy-production-tools.json",
+      "sha256": "7d8ddbf4c2ebbc6e8f48b38ce1a0c6bfe44e17a4f1d310d8ec530f531d6808fa",
+      "scope": "Production formatting, strict lint, regeneration and 45 generator tests for exact SDL prefix/native storage batch",
+      "command_exits": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "report": ".work/d3d-forward-overlay-producer-refresh.json",
+      "sha256": "77b820d36924dcbae8af2101e9033b6e3ed6d360400efaf2f9e9b2a6c0688525",
+      "scope": "Historical initial canonical dependency failures after safe producer forward-overlay fix",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "unsupported": 20,
+          "failed": 12,
+          "passed": 4
+        },
+        "privacy": {
+          "unsupported": 20,
+          "failed": 10
+        },
+        "native": {}
+      }
+    },
+    {
+      "report": ".work/d3d-dependencies-current.json",
+      "sha256": "967ee1bc814b2e1b4ac48dad706729d6189ff52564f5e6192accac08b88df613",
+      "scope": "Historical remaining alias mismatch before removing unnecessary D3D11 import",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "unsupported": 20,
+          "passed": 22,
+          "failed": 4
+        },
+        "privacy": {
+          "unsupported": 20,
+          "passed": 10
+        },
+        "native": {}
+      }
+    },
+    {
+      "report": ".work/d3d-dependencies-final.json",
+      "sha256": "75e9a55379de031feabbc2eb62ae5101df101460a4ebbc74215bd9e037d18738",
+      "scope": "Windows x64/ARM64 canonical D3D/DXC source, public aliases and private-export checks; no Windows native runtime",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "unsupported": 20,
+          "passed": 32,
+          "failed": 2
+        },
+        "privacy": {
+          "unsupported": 32,
+          "passed": 16
+        },
+        "native": {}
+      }
+    },
+    {
+      "report": ".work/configurations-after-d3d-refresh.json",
+      "sha256": "3a95c9ea41faf03663c09db436cba463619330b2f48d565a668322ba2e61b127",
+      "scope": "Real D3D debug config repairs; 36 failures remain active",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "checks": {
+          "passed": 46,
+          "failed": 36
+        }
+      }
+    },
+    {
+      "report": ".work/d3d-compiler-and-window-repros.json",
+      "sha256": "71ec7d422e7fe66b9d529e350de030993e03d24934528bf4365b32c028e1be21",
+      "scope": "General forward-overlay native storage regression, active alias compiler repro and strict producer Unicode failure",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "checks": {
+          "0": 2,
+          "1": 3
+        }
+      }
+    },
+    {
+      "report": ".work/d3d-production-tools-current.json",
+      "sha256": "28b4c2539888d6fcf54043cb1ba35696e45d6b8037e9feca38b14d84cbc662f2",
+      "scope": "Production formatting/regeneration/46 tests and independent overlay strict lint pass; Windows target-context and alias-repro strict lint failures remain; ordinary Windows render source checks pass",
+      "command_exits": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "report": ".work/checkpoint-8-full.json",
+      "sha256": "09cf31a0c15a0137d709958e4895ec118a652f7c4084ccc8ad0f1167e131c5ed",
+      "scope": "Full owned snapshot after FSEvents/SDL/D3D repair, before private rpmalloc backend; not coordinator integration",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "unsupported": 70,
+          "passed": 316,
+          "failed": 16
+        },
+        "privacy": {
+          "passed": 120,
+          "unsupported": 72
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 56
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-sdk-before-universal-archive.json",
+      "sha256": "6d0604cad9e333427f60d02f0eb77c3fbcac835a7fa269bfe2045fb14f9a1b07",
+      "scope": "Historical host-only archive rejected for x64; later corrected with real universal SDK archive",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "checks": {
+          "1": 1,
+          "None": 1,
+          "0": 6
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-sdk-alignment-before-guard.json",
+      "sha256": "0d09cd776e22a44920faea9dabdb970cf7f1ea6cbf524e75f4b84553a39389c3",
+      "scope": "Historical invalid native alignment experiment failure; actual checked boundary added with failure assertions retained",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "checks": {
+          "0": 6,
+          "-6": 2
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-sdk-both-cpus-tools.json",
+      "sha256": "5051420f1b16367b072f3e058bac760241668ad7f0e2ebc25a55a8967448eaba",
+      "scope": "Private native SDK only: real macOS x64/ARM64 calls, every SDK entry, ABI field probes, checked failure output, formatter/strict lint/regeneration; latest scoped follow-up includes strengthened nonzero thread statistics and explicit 64-bit ABI guard",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "checks": {
+          "0": 8
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-sdk-private-current.json",
+      "sha256": "bffadb18b3ce2b678e92f1c6f9da1a52096b42e8a7c0e22699a6f2333ea2e0fd",
+      "scope": "Six public module failures remain; separately passing private SDK source checks and real host allocation behavior",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "failed": 6,
+          "passed": 6
+        },
+        "privacy": {},
+        "native": {
+          "passed": 2
+        }
+      }
+    },
+    {
+      "report": ".work/native-dependency-production-build.json",
+      "sha256": "d5da8d419617996f41f28c95b30dfe032784102d838c79c532a6ff7daee2e72c",
+      "scope": "Actual full pinned native dependency builder, including new SDK/probes; no final stdlib integration claim",
+      "compiler_sha256": null,
+      "results": {},
+      "exit": 0
+    },
+    {
+      "report": ".work/rpmalloc-production-sdk-unit.json",
+      "sha256": "5db85eb14b83ef965f837c8606953b58fb356a58454e5585b951c9ed0f9c7d05",
+      "scope": "Real private SDK program against production-builder outputs; regeneration and generator tests; latest scoped follow-up includes strengthened nonzero thread statistics and explicit 64-bit ABI guard",
+      "command_exits": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "report": ".work/checkpoint-9-full.json",
+      "sha256": "622fe43206717c314f475f4b23168801fa44a626a1c8745a9f5455bb37eef5e1",
+      "scope": "Full owned snapshot after private SDK and general unit placement; subsequent SDK-only stronger statistics/ABI guard checks are indexed separately",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "unsupported": 70,
+          "passed": 322,
+          "failed": 16
+        },
+        "privacy": {
+          "passed": 120,
+          "unsupported": 72
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 58
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-sdk-private-final.json",
+      "sha256": "732cd4942af6631ad6dc800cdd1cc618cd48ba93abc037d8848545a5bf17309b",
+      "scope": "Latest private SDK checks after stronger counters/64-bit guard; all six public module failures retained",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "failed": 6,
+          "passed": 6
+        },
+        "privacy": {},
+        "native": {
+          "passed": 2
+        }
+      }
+    },
+    {
+      "report": ".work/checkpoint-9-owned-format.json",
+      "sha256": "f18c4da16a8c4600aeafeae3391f60d62fd1b93de6401cfc12985c110bb5f3de",
+      "scope": "Actual rebuilt production formatter checks all 34 owned module roots, private bindings and tests; both generators idempotent",
+      "command_exits": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "report": ".work/rpmalloc-public-allocation-verification.json",
+      "sha256": "40f3f884d81c391d5c062e4c6ab024b727df26787bdf7eeabc3ed414912d26fc",
+      "scope": "Public default rewrite lifecycle/allocation/statistics; callback/config/heaps and nondefault profiles incomplete",
+      "checks": 14,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-10.json",
+      "sha256": "bf0efabb57ab41a04c5cdea756ddff2aa3314d6ce964b130ef6a00fcb97a7fe9",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 18,
+          "failed": 6
+        },
+        "native": {
+          "passed": 4
+        },
+        "privacy": {
+          "passed": 30
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-11.json",
+      "sha256": "08d7ad92428bcc53acd7f16601a66e6dccf9f1bc622271e40a8c9d9987ceccba",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 30,
+          "failed": 6
+        },
+        "native": {
+          "passed": 8
+        },
+        "privacy": {
+          "passed": 66
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-public-callbacks-verification.json",
+      "sha256": "98686f22f364f5fb833c0057e3b217053ec5cfee83b31f8ddc3801c6e471e6c4",
+      "scope": "Public default and configurable rewrite callbacks/lifetime/failure/concurrency; remaining profiles and raw/heaps incomplete",
+      "checks": 31,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-12.json",
+      "sha256": "4291a572e7c652f5b84cd10561a3e6a812bcded815ac94b33fabc8839a68f23a",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 30,
+          "failed": 6
+        },
+        "native": {
+          "passed": 8
+        },
+        "privacy": {
+          "passed": 96
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/checkpoint-12-owned-format.json",
+      "sha256": "43df88d6d377bf101d54f78cd104ead9ad99d531b5f53f522dde982f593cc353",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 4,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-13.json",
+      "sha256": "9849273abc9cc38452a5c6f6ed5893599b71aa77d728aa3b9e747478e096b66f",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 36,
+          "failed": 6
+        },
+        "native": {
+          "passed": 10
+        },
+        "privacy": {
+          "passed": 96
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/checkpoint-13-owned-format.json",
+      "sha256": "dbaec53bec59d5d6aad19f1b5fec8f1476a182863e07f4caffc7958d466fc5c9",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 4,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-configurations-checkpoint-13.json",
+      "sha256": "299770d260393bf8ca2a8375ce4a02727ce1ba91b5092c77e93ee7aa1a3d71a5",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "checks": 24,
+      "failures": 18
+    },
+    {
+      "report": ".work/rpmalloc-native-storage-verification.json",
+      "sha256": "d61d7eb77876b53d14e3a650356083e14736ff7fced4814d704afb5f23c7e5d3",
+      "scope": "Private native SDK storage ABI and reviewed public storage separation; public heap API remains unfinished",
+      "checks": 14,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-native-storage-before-export-scan.json",
+      "sha256": "c46c32a4eaa752757b2e13ef87e9ba2204c64cc2790ceddf761f6b5341610104",
+      "scope": "Private native SDK storage ABI and reviewed public storage separation; public heap API remains unfinished",
+      "checks": 14,
+      "failures": 4
+    },
+    {
+      "report": ".work/rpmalloc-native-storage-before-span-oracle-correction.json",
+      "sha256": "f3e4b305c29831c416b3ce76f09faae6e625ea6085e6baa3d51e642dba03d245",
+      "scope": "Private native SDK storage ABI and reviewed public storage separation; public heap API remains unfinished",
+      "checks": 14,
+      "failures": 2
+    },
+    {
+      "report": ".work/rpmalloc-production-callbacks-verification.json",
+      "sha256": "550657bcefacc2299f49ba7cc5eabf3f3f7138e0b5ad7d44d9cbd9af3fcd66ab",
+      "scope": "Actual production native dependency builder and host public callback program",
+      "checks": 3,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-callbacks-build.json",
+      "sha256": "c1378406c75309c6189ac1b40bcacb442783c3c96cb3aa053c09efb5247300fd",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 20,
+      "failures": 0
+    },
+    {
+      "report": ".work/checkpoint-11-owned-format.json",
+      "sha256": "43df88d6d377bf101d54f78cd104ead9ad99d531b5f53f522dde982f593cc353",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 4,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-callbacks-before-context.json",
+      "sha256": "c332a8705e412cfac79cf309c5e4a3206b29b8ffaa32b33097fd050894919a53",
+      "scope": "Observed first native callback execution before establishing a Jai context in C thunks",
+      "observed_failure": 139
+    },
+    {
+      "report": ".work/rpmalloc-callbacks-before-context-inheritance.json",
+      "sha256": "d5f6f7da97b308fae5e489ce7674132f7c18220045e5697ddb1844b8847b87a3",
+      "scope": "Observed regression with fresh-only callback contexts before synchronous context borrowing",
+      "observed_failure": 134
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

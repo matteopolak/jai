@@ -6,6 +6,7 @@ checks, public-surface checks, and native executions. A declaration import that
 passes while a required wrapper is missing does not count as a complete module.
 """
 import argparse
+from contextlib import ExitStack
 import hashlib
 import json
 import os
@@ -23,9 +24,60 @@ from conditions import evaluate
 
 ROOT = Path(__file__).resolve().parents[2]
 TARGET_CONFIGS = [(os_name, cpu) for os_name in ('linux', 'macos', 'windows') for cpu in ('x64', 'arm64')]
-PRIVATE_UNITS = {'ios-sdk-host':'iOS/sdk-host-unit.jai',
+PRIVATE_UNITS = {'fsevents-context':'macOS/sdk-fsevents-context-unit.jai',
+                 'ios-sdk-host':'iOS/sdk-host-unit.jai',
                  'dxc-wide':'dxc_compiler/sdk-wide-unit.jai',
-                 'dxc-compile-unit':'dxc_compiler/sdk-compile-unit.jai'}
+                 'dxc-compile-unit':'dxc_compiler/sdk-compile-unit.jai',
+                 'rpmalloc-native-sdk':'rpmalloc/sdk-native-unit.jai',
+                 'rpmalloc-native-storage':'rpmalloc/sdk-storage-unit.jai'}
+PRIVATE_UNIT_DEPENDENCIES = {
+    'rpmalloc-native-sdk': {
+        'tests/native-bindings/generated/rpmalloc-sdk-layout.jai': 'rpmalloc/generated/rpmalloc-sdk-layout.jai',
+    },
+    'rpmalloc-native-storage': {
+        'tests/native-bindings/generated/rpmalloc-storage-layout.jai': 'rpmalloc/generated/rpmalloc-storage-layout.jai',
+    },
+}
+
+
+def regression_source(modules, filename):
+    """Prefer the canonical module-owned fixture; never restore moved copies."""
+    owned = [ROOT/'stdlib'/module/'tests'/filename for module in modules]
+    existing = [source for source in owned if source.is_file()]
+    if len(existing) > 1:
+        raise ValueError('ambiguous module-owned regression: '+filename)
+    return existing[0] if existing else ROOT/'tests/native-bindings'/filename
+
+
+def place_private_unit(name, source, stdlib, hashes, cleanup):
+    def copy_temporarily(original, target):
+        missing = []
+        directory = target.parent
+        while not directory.exists():
+            missing.append(directory)
+            directory = directory.parent
+        for directory in reversed(missing):
+            directory.mkdir()
+            cleanup.callback(directory.rmdir)
+        if target.exists():
+            contents = target.read_bytes()
+            mode = target.stat().st_mode
+            def restore():
+                target.write_bytes(contents)
+                target.chmod(mode)
+            cleanup.callback(restore)
+        else:
+            cleanup.callback(target.unlink, missing_ok=True)
+        shutil.copy2(original,target)
+
+    placed = stdlib/PRIVATE_UNITS[name]
+    copy_temporarily(source,placed)
+    hashes[str(placed.relative_to(stdlib))] = hashlib.sha256(placed.read_bytes()).hexdigest()
+    for relative, destination in PRIVATE_UNIT_DEPENDENCIES.get(name,{}).items():
+        target = stdlib/destination
+        copy_temporarily(ROOT/relative,target)
+        hashes[destination] = hashlib.sha256(target.read_bytes()).hexdigest()
+    return placed
 
 
 def enabled(condition, os_name, cpu, parameters=None):
@@ -127,7 +179,7 @@ def select_stdlib(work, foundation=None, production=None):
     return destination
 
 
-def main():
+def verify(cleanup):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--compiler', type=Path, required=True)
     parser.add_argument('--module', action='append', choices=MODULES)
@@ -188,6 +240,17 @@ def main():
                 report['targets'].append(public_result)
             print(module, os_name+'-'+cpu, result['status'])
     for module, filename, configs in [
+        ('macOS', 'fsevents-context.jai', [('macos','x64'),('macos','arm64')]),
+        ('rpmalloc', 'rpmalloc-native-sdk.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-native-storage.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-allocation.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-callbacks.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-configurable.jai', TARGET_CONFIGS),
+        ('d3d11', 'forward-overlay.jai', TARGET_CONFIGS),
+        ('d3d12', 'd3d-interface-identity.jai', [('windows','x64'),('windows','arm64')]),
+        ('SDL', 'sdl-layout.jai', TARGET_CONFIGS),
+        ('SDL', 'sdl-rwops.jai', TARGET_CONFIGS),
+        ('SDL', 'sdl-wm.jai', TARGET_CONFIGS),
         ('Objective_C', 'appkit.jai', [('macos','x64'),('macos','arm64')]),
         ('GL', 'gl-output-buffers.jai', TARGET_CONFIGS),
         ('GL', 'glx-context.jai', [('linux','x64'),('linux','arm64')]),
@@ -207,13 +270,10 @@ def main():
             continue
         if args.module and module not in args.module:
             continue
-        source = ROOT/'tests/native-bindings'/filename
+        source = regression_source([module],filename)
         report['test_sources'][str(source.relative_to(ROOT))] = hashlib.sha256(source.read_bytes()).hexdigest()
         if source.stem in PRIVATE_UNITS:
-            placed = stdlib/PRIVATE_UNITS[source.stem]
-            shutil.copy2(source, placed)
-            source = placed
-            report['staged_sources'][str(source.relative_to(stdlib))] = hashlib.sha256(source.read_bytes()).hexdigest()
+            source = place_private_unit(source.stem,source,stdlib,report['staged_sources'],cleanup)
         for os_name, cpu in configs:
             result = invoke([compiler,source,'-check','-no_dce','-os',os_name,'-cpu',cpu],env)
             result.update(module=module, os=os_name, cpu=cpu, check='source_regression',
@@ -232,7 +292,17 @@ def main():
                             ('X11', 'Binding_Message_Choices'), ('X11', 'binding_message_event'),
                             ('X11', 'binding_message_button'), ('dxc_compiler', 'ID3D12ShaderReflection'),
                             ('dxc_compiler', 'Win'), ('dxc_compiler', 'D3D'),
-                            ('dxc_compiler', 'NativeCompile')]:
+                            ('dxc_compiler', 'NativeCompile'), ('macOS', 'NativeEvents'),
+                            ('d3d11', 'ID3DBlob'), ('d3d11', 'ID3D11ModuleInstance'),
+                            ('d3d12', 'ID3DBlob'), ('rpmalloc','Heap'),
+                            ('rpmalloc','Span'), ('rpmalloc','Native'),
+                            ('rpmalloc','initialized'), ('rpmalloc','Native_Profile_Matches'),
+                            ('rpmalloc','Callbacks'), ('rpmalloc','active_config'),
+                            ('rpmalloc','callback_map'), ('rpmalloc','callback_unmap'),
+                            ('rpmalloc','callback_failure'), ('rpmalloc','callback_error'),
+                            ('rpmalloc','NativeContext'), ('rpmalloc','invoke_map'),
+                            ('rpmalloc','invoke_unmap'), ('rpmalloc','invoke_failure'),
+                            ('rpmalloc','invoke_error')]:
         if args.module and module.split('/')[0] not in args.module and module not in args.module:
             continue
         for os_name, cpu in TARGET_CONFIGS:
@@ -270,10 +340,17 @@ def main():
             runtime_tests.append('dxc-reflect')
             runtime_tests.append('dxc-wide')
             runtime_tests.append('dxc-compile-unit')
+        if sys.platform == 'darwin':
+            runtime_tests.append('fsevents-context')
         runtime_tests.append('sdl-rwops')
         runtime_tests.append('imgui-nested')
         runtime_tests.append('posix-stat')
         runtime_tests.append('dxc-options')
+        runtime_tests.append('rpmalloc-native-sdk')
+        runtime_tests.append('rpmalloc-native-storage')
+        runtime_tests.append('rpmalloc-public-allocation')
+        runtime_tests.append('rpmalloc-public-callbacks')
+        runtime_tests.append('rpmalloc-public-configurable')
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
             runtime_tests.append('x11-message-box')
@@ -281,6 +358,8 @@ def main():
             relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
             if name == 'appkit':
                 relevant = ['Objective_C']
+            if name == 'fsevents-context':
+                relevant = ['macOS']
             if name == 'sdl-wm':
                 relevant = ['SDL']
             if name == 'posix-abi':
@@ -294,37 +373,45 @@ def main():
             if name in ('x11-window-helpers','x11-message-box'):
                 relevant = ['X11']
             if name in PRIVATE_UNITS:
-                relevant = ['iOS']
+                relevant = [Path(PRIVATE_UNITS[name]).parts[0]]
             if name == 'imgui-nested':
                 relevant = ['ImGui']
             if name == 'posix-stat':
                 relevant = ['POSIX']
+            if name in ('rpmalloc-native-sdk','rpmalloc-native-storage','rpmalloc-public-allocation','rpmalloc-public-callbacks','rpmalloc-public-configurable'):
+                relevant = ['rpmalloc']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']
             if args.module and not any(m in args.module for m in relevant):
                 continue
-            source = ROOT/'tests/native-bindings'/f'{name}.jai'
-            if name in ('sdl-wm', 'sdl-rwops', 'sdl-layout'):
-                source = ROOT/'stdlib/SDL/tests'/f'{name}.jai'
+            source = regression_source(relevant,f'{name}.jai')
             if not source.is_file():
                 report['native'].append({'name': name, 'status': 'not_implemented'})
                 continue
             exe = work/(name+'-test')
             report['test_sources'][str(source.relative_to(ROOT))] = hashlib.sha256(source.read_bytes()).hexdigest()
             compiled_source = source
-            if name == 'ios-sdk-host':
+            if name in PRIVATE_UNITS:
                 # A private unit belongs inside the staged library boundary.
                 # Copy bytes unchanged; do not expose a public testing backdoor
                 # or disable the compiler's private-import guard.
-                compiled_source = stdlib/PRIVATE_UNITS[name]
-                shutil.copy2(source, compiled_source)
-                report['staged_sources'][str(compiled_source.relative_to(stdlib))] = hashlib.sha256(compiled_source.read_bytes()).hexdigest()
+                compiled_source = place_private_unit(name,source,stdlib,report['staged_sources'],cleanup)
             result = invoke([compiler, compiled_source, '-exe', exe], env)
             scope = 'private_arithmetic' if name=='graphics-math' else 'private_toolchain_host' if name=='ios-sdk-host' else 'compiler_semantics' if name=='reflection-procedure-flags' else 'library_runtime'
             if name in ('dxc-wide','dxc-options'):
                 scope = 'private_argument_conversion' if name=='dxc-wide' else 'private_argument_serialization'
             if name == 'dxc-compile-unit':
                 scope = 'private_native_compile_route'
+            if name == 'rpmalloc-native-sdk':
+                scope = 'private_native_allocator_sdk'
+            if name == 'rpmalloc-native-storage':
+                scope = 'private_native_allocator_storage_abi'
+            if name == 'rpmalloc-public-allocation':
+                scope = 'public_default_allocator_lifecycle_allocation_statistics'
+            if name == 'rpmalloc-public-callbacks':
+                scope = 'public_default_allocator_callbacks_lifetime_failure_concurrency'
+            if name == 'rpmalloc-public-configurable':
+                scope = 'public_configurable_allocator_initialization'
             result.update(name=name, phase='build',scope=scope,status='passed' if result['exit']==0 else 'failed')
             if compiled_source != source:
                 result['private_unit_placement'] = str(compiled_source)
@@ -358,6 +445,11 @@ def main():
     failures = [x for category in ['targets','privacy','native','symbols'] for x in report[category] if x['status'] in ['failed','not_implemented','unavailable']]
     print(str(len(failures))+' failed or unimplemented checks; report: '+str(args.report))
     return 1 if failures else 0
+
+
+def main():
+    with ExitStack() as cleanup:
+        return verify(cleanup)
 
 
 if __name__ == '__main__':

@@ -8,6 +8,114 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Native rpmalloc storage views are not canonical public heaps.** Complete
+  SDK source-derived records and all 66 field probes now pass both Mac CPUs;
+  six desktop Jai source checks are separate evidence. Public Heap/Span remain
+  independently generated reviewed layouts. Heap sizes match but cache/deferred
+  offsets differ; public Span is 96 bytes versus native 88. No cross-layout
+  pointer cast or fake snapshot is used. Atomic members in private storage
+  views are layout-only scalar representations, not atomic operations. A
+  header-only SDK export inventory caused duplicate main-thread setter symbols
+  in the probe; scanning complete source definitions resolves the cause and
+  also enables the real public setter. A new Span-size equality test was an
+  incorrect oracle and was corrected using actual C evidence, preserving all
+  native field assertions. Both original failures remain indexed. Proper
+  remaining fix: canonical field/identity/lifetime marshalling with reviewed
+  live-metadata semantics. See [ABI evidence](../native/rpmalloc-heap-abi.md).
+
+- **Public rpmalloc callback bridge and policies needing review.**
+  `internal/bindings/rpmalloc-callbacks/bridge.c` owns copied names and mapping
+  metadata; public config/ordinary callbacks never alias SDK storage. Full
+  signed offset bits round-trip in an owned registry, avoiding native 32-bit
+  truncation. Each C thunk establishes an active Jai context. The first
+  run without that context genuinely crashed (exit 139); this is repaired and
+  preserved in `.work/rpmalloc-callbacks-before-context.json`. Public tests now
+  execute four concurrent native threads, retry/decline, config/name stack
+  overwrite, wide/signed offsets, matching release and real init failure on both
+  Mac CPUs. A subsequent caller-context regression failed with exit 134; a
+  reusable TLS bridge now preserves caller fields/writes and nested calls,
+  restoring the pointer on return. Native-only callbacks get a fresh default;
+  no initializer context survives its frame. Actual thread identity is checked
+  across four threads. Configurable size settings are checked against the actual SDK;
+  nonconfigurable overrides are ignored as reviewed. Enabled callbacks are
+  actual calls, not no-ops. Risks/remaining policies: error locations identify
+  the real thunk, pending reference provenance review. Mapping metadata adds one libc
+  allocation and spin-lock/linear lookup per native map/unmap. SDK remains
+  process-global; overlapping imported owners return EINVAL rather than replacing
+  active callbacks. Concurrent imported-profile isolation is incomplete. Context
+  enter/restore adds two C calls per native operation. Proper
+  fix: reviewed location policy, profile isolation, indexed registry
+  optimization after correctness, and canonical heap representation. Callback
+  initialization is partial in the ledger, not full rpmalloc completion.
+
+- **Default public rpmalloc profile, incomplete option matrix.**
+  `stdlib/rpmalloc/wrappers.jai` now implements real default rewrite lifecycle,
+  allocation, thread status and fieldwise statistics conversion. A private
+  profile predicate prevents other cache/statistics/assertion options from
+  silently executing this native build. Missing implementations remain source
+  diagnostics; there is no unsupported assertion or success-returning stub.
+  The initial fourteen ledger entries were explicitly partial, with their implemented
+  condition, rather than complete across imports. Actual public-only programs
+  run on both Mac CPUs; six desktop source checks and scoped strict lint pass.
+  That allocation-only checkpoint credited no callback/config/heap behavior;
+  the subsequent callback evidence is separately recorded above. The native SDK remains
+  process-global, so concurrent distinct import instances are not established;
+  lifecycle state is serialized, not an atomic cross-thread initialization API.
+  Risks: unsupported nondefault configurations and missing callback ownership,
+  no runtime Windows/Linux evidence. Proper fix: profile-isolated native builds
+  or a reusable independently authored allocator backend honoring every option,
+  plus canonical contextual heap representation and safe callback ownership.
+  See [public adapter scope](../native/rpmalloc-public-adapter.md).
+
+- **Private rpmalloc SDK, public implementation still incomplete.** Generated
+  all native C functions and full SDK config/statistics storage from complete
+  pinned official input. Native heaps are opaque private pointers, never aliases
+  of reviewed Jai records. The fixed private C build profile is explicitly
+  separate from public module defaults/options. [Details](../native/rpmalloc-native-backend.md)
+  record both-CPU SDK execution, all field probes, untouched public failures,
+  custom-callback/concurrency coverage limits and the proper remaining public
+  implementation. No 80-declaration completion credit is assigned to this work.
+  A real alignment experiment failed; the private checked boundary now rejects
+  invalid SDK preconditions and preserves output on actual allocation failure.
+  Long-term: use/review that validation in real public wrappers and implement
+  the distinct Jai context/callback/config/heap semantics without native casts.
+  The initial host-only x64 archive failure is fixed by a real universal archive,
+  not a search-path/compiler override. General private-unit staging now copies
+  dependent test sources without editing bytes/facades or bypassing visibility.
+  The pinned SDK's native `thread_collect` body is empty; calling that real
+  symbol proves forwarding only, not deferred-collection behavior. Its native
+  linker-reference hook is intentionally empty. Neither receives public
+  implementation credit. Public collection semantics require proper completion.
+  The invalid-alignment raw SDK experiment is classified as an incorrect oracle
+  outside its documented caller precondition, not a public compatibility defect;
+  the checked helper's safety contract is separate. SDK configuration pointers
+  remain borrowed/read-only despite Jai's lack of const qualification. Windows
+  SDK/CRT/advapi32 packaging and Linux/Windows runtime evidence remain missing.
+
+- **D3D dependency and compiler staging repair.** Refreshed only safe NEW
+  producer compiler sources. Its general forward-overlay fix now passes our
+  original storage-sharing regression; no local compiler patch remains.
+  Removed unnecessary/inverted module imports and used the existing canonical
+  shader-compiler COM definitions, preserving all public types/aliases/vtables.
+  [Details](../native/d3d-source-dependencies.md) record the independent general
+  imported/local alias lookup bug, real source/privacy improvements, the two
+  unresolved convenience overloads, remaining aggregate ABI risks and unavailable
+  Windows runtime. The dependency cleanup is permanent architecture, not a
+  special-case workaround. The general alias bug still requires compiler repair;
+  its assertions stay active. Host strict lint cannot fully compile Windows-only
+  roots while the linter lacks target selection; do not count that as a pass.
+
+- **FSEvents public/native field-order mismatch, corrected.** The exact public
+  40-byte record remains unchanged. `macOS.FSEventStreamCreate` now copies into
+  complete SDK-correct private storage; the function address necessarily differs
+  from the native symbol. No heap registry or callback convention conversion is
+  introduced. All offset/canary/retain/release/null-context tests and real event
+  delivery are active. [Details](../native/fsevents-context.md) record ownership,
+  the corrected native-control test assumption, the narrow C SDK scheduling
+  deprecation exclusion and optional description-callback coverage limits.
+  Long-term: preserve the private adapter unless a reviewed public ABI change
+  becomes authorized; audit any newly inventoried context-taking entry point.
+
 - **Linux ARM64 public/kernel stat mismatch.** The three named wrappers now
   preserve the public x64 record/constants while using generated pinned native
   ARM64 syscall definitions and complete private storage, with explicit field
@@ -94,7 +202,8 @@ correctness. Previously recorded failures remain required work.
   lifetime on success/failure and both freesrc modes. Historical custom-table
   passes are retained as historical evidence only. Proper long-term resolution
   of standalone public record mismatch requires a reviewed API change; no
-  public fields/signatures are changed here and mismatch tests remain active.
+  public fields/signatures are changed here. Exact public-prefix and complete
+  private native layout tests remain active under the corrected reviewed oracle.
 - **X11 helper policy and native evidence.** The independently authored simple
   window helper creates an unmapped borderless Xlib window at (0,0), using the
   parent's screen pixels; parent 0 selects the default root. It sets both the
@@ -246,13 +355,16 @@ correctness. Previously recorded failures remain required work.
   does not create public facade exports. Runtime build/run succeeded; Windows
   and Linux runtime coverage remains required. Stack storage adds a bounded
   72-byte native record per call; no heap allocation or global registry is
-  introduced. RWops/UserEvent discrepancy tests remain unchanged and failing.
+  introduced. Historical RWops/UserEvent full-size failures remain in prior
+  evidence; current tests distinguish public prefixes from complete native ABI.
 
 - **SDL public prefixes (`stdlib/SDL/declarations.jai`).** Reviewed RWops is
   48 bytes and UserEvent 8; pinned SDL 2.0.1 native records are 72 and 32 on
-  the tested 64-bit host. Public fields remain exact. The active
-  `tests/native-bindings/sdl-layout.jai` intentionally reports the actual
-  mismatch and fails; it has not been disabled or changed to accept it.
+  the tested 64-bit host. Public fields remain exact. Per refreshed
+  `docs/sdl-layout-verification-policy.md`, `sdl-layout.jai` now asserts exact
+  public sizes/offsets separately from complete private native sizes/all offsets.
+  The prior full-size equality oracle was invalid; its failing evidence is
+  preserved, not counted as a repaired native-value interchangeability contract.
   Refreshed review explicitly supports SDK-owned pointers and does not support
   constructed/copied Jai callback tables. The factory preserves SDK pointer and
   symbol identity; the BMP scalar adapter preserves stream identity. No public record is allocated/passed
@@ -260,7 +372,10 @@ correctness. Previously recorded failures remain required work.
   payload bytes retain genuine native round-trip coverage. Risk: dereferencing
   public callback fields as Jai procedures is incompatible with native C.
   Proper long-term fix for standalone shape mismatch requires a reviewed API
-  change; existing mismatch failures remain required and visible.
+  change. Full-value interchangeability remains unsupported. Private C storage
+  includes native-only fields; real event window ID/code/two-pointer round trips
+  now also retain surrounding canary coverage. Current host checks pass; six
+  desktop source checks remain distinct from pending Linux/Windows runtime.
 - **Other provisional SDK layouts.** D3D anonymous overlays, ray-instance
   packed fields, ImFontGlyph and some Darwin packed records have public shapes
   that are incomplete or conflict with native layouts. Bitfield helpers

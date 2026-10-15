@@ -16,9 +16,10 @@
     "System/Library/Frameworks/OpenGL.framework/Headers/OpenGL.h": "875e10229940be9cbb2c8186829c92d2d22108514bdb6fd67ad20746dd1f94c5",
     "System/Library/Frameworks/OpenGL.framework/Headers/CGLTypes.h": "6e7f302c334dbb33790df6a42c184b380585ffab12768fd54be3d04075f0a9ce",
     "System/Library/Frameworks/OpenGL.framework/Headers/CGLCurrent.h": "e8930268ae3caa5079441b2880e78cd2bf2f398c37ea00d7ba0b28fff7273fa2",
-    "System/Library/Frameworks/AppKit.framework/Headers/NSOpenGL.h": "48a0456928b5fe7fe5c6f34a266921f9ddf5e6351a6141498b5b13cf3c934926"
+    "System/Library/Frameworks/AppKit.framework/Headers/NSOpenGL.h": "48a0456928b5fe7fe5c6f34a266921f9ddf5e6351a6141498b5b13cf3c934926",
+    "System/Library/Frameworks/CoreServices.framework/Frameworks/FSEvents.framework/Headers/FSEvents.h": "493ab211ffd5683e83b3ec77b9924730a7df44a39738b560b8a28465b1c48a90"
   },
-  "usage": "Private contextual scalar typedefs and CF byte conversion contract; public exports come from reviewed specs.; CGL native test signatures and pixel-format tokens.",
+  "usage": "Private contextual scalar typedefs and CF byte conversion contract; public exports come from reviewed specs.; CGL native test signatures and pixel-format tokens.; FSEvents private context order, synchronous copy and native callback lifetime contract.",
   "curl_runtime_version": "libcurl/8.7.1 SecureTransport (LibreSSL/3.3.6) zlib/1.2.12 nghttp2/1.69.0",
   "freetype_installed_inputs": {
     "/opt/homebrew/Cellar/freetype/2.14.3/include/freetype2/freetype/freetype.h": "fd45e7ee01c8f0f2419186d3fc9dd58e25cd866ef0c49f0b347c2d141665a364",

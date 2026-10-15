@@ -1,5 +1,148 @@
 # Bindings worker progress
 
+Native storage/source-export follow-up after `d8c9eb4`: all seven native
+heap/span/cache/counter records and 66 field offsets/widths now pass actual C
+ABI programs on both Mac CPUs, plus six desktop Jai source checks. Complete C
+source scanning retains SDK exports omitted from its header; the real public
+set_main_thread wrapper now executes in both public CPU programs. SDK native
+test invokes all 35 actual entry points. Separate heap-disabled/enabled record
+and export profiles are preserved. Heap has equal public/native size with
+different offsets; public Span is 96 bytes versus native 88. An incorrect new
+Span equality oracle and the initial probe duplicate-symbol failure are
+preserved and separately classified. No public fields were changed and no
+public heap crosses C ABI. Reviewed mode-specific procedure views are now
+guarded by USE_RAW, preventing raw-only names from becoming rewrite requirements.
+Current ledger: 64 unresolved + 16 partial rpmalloc entries, other 36 unresolved.
+60 generator/staging tests pass; source/native/tool evidence remains separate.
+Checkpoint-13 scoped result: 36 source passed, six missing-public-name failures,
+96 privacy passed and ten native build/run checks passed, including two explicitly
+private SDK/ABI programs. All 18 rpmalloc configuration failures remain active
+(raw default heap flag and nondefault statistics implementation); no failure
+baseline was reduced. All owned formatter/regeneration checks and supported
+scoped strict lint pass. Current native SDK/public allocation programs execute
+the source-only main-thread setter on both CPUs. Full integration and other
+modules' remaining failures are not retested or declared complete by this scope.
+
+Callback/configuration follow-up after `a476d25`: public initialize_config now
+marshals to a private SDK-correct config, owns copied native naming bytes and
+retains full signed offset bits in a synchronized private mapping registry.
+No public C-incompatible record is cast. A genuine first callback crash was
+diagnosed and fixed by establishing a Jai context in every C thunk. A further
+field-preservation regression led to a reusable TLS native-call frame: callbacks
+inherit the actual active caller context, nested frames restore it, and native-only
+entries get a fresh default. Four-thread identity and caller writes are tested.
+NEW callback tests cover retry/decline, failed init, stack/name overwrite,
+config canaries, wide/signed offsets, real error callback and four concurrent
+native threads. A separate CONFIGURABLE test verifies native size settings.
+Both programs execute on both Mac CPUs; all six desktop source checks, scoped
+strict lint, formatting and regeneration pass. Production dependency builder
+and actual host archive also execute callbacks. Complete rewrite AND raw
+contextual records now generate from reviewed prose, preserving distinct cache
+order and conditions; 56 generator/staging tests pass. Raw default remains
+blocked by the omitted first-class-heap flag; generated raw records are not
+raw runtime evidence. Ledger: 65 unresolved + 15 partial rpmalloc entries;
+other 36 unresolved declarations remain. Exact error-location policy,
+profile isolation, raw/heaps/nondefault options remain open. Full integration,
+Linux/Windows native and release verification are not claimed.
+Latest scoped checkpoint-12: 30 source passed/six missing-public-name failures,
+96 privacy passed and eight native build/run checks passed (including private
+SDK). Caller-context helper compiles for all six C desktop targets. Actual
+production formatter rebuilt on current NEW foundations; all owned roots,
+internals/tests and both regeneration checks pass. Supported scoped strict lint
+and C warnings/formatting pass. The earlier exit-139 and exit-134 regressions
+remain indexed separately; neither assertion was removed.
+
+Previous 2026-10-15 public implementation after `dd4dfcb`: default rewrite now has 14
+real lifecycle/allocation/statistics entries, classified **partial** because
+nondefault profiles and raw mode remain unfinished. The new public-only test
+uses public initialization and teardown, preserved ordinary/aligned realloc
+bytes, matching frees, actual nonzero counters and canaries. Both Mac CPUs run
+successfully; six desktop source configurations, actual formatter, scoped
+strict lint and regeneration pass. Generator tests: 53 passed. Complete reviewed
+rewrite Heap/Span/context records stay private; no native heap pointer is cast
+to them. Raw-only aliases are now mode-guarded. Current rpmalloc ledger: 66
+unresolved + 14 partial; other unresolved scope remains 36. This is real public
+progress, not completion or a reduction of the remaining configuration gate.
+New test is discovered by standard native verification; independent review
+remains pending. Nonmatching profiles intentionally remain missing code rather
+than receiving default native semantics. Next: safe callback/config lifetime,
+profile isolation/options, and proper canonical heap adapters. New detailed
+scope is `docs/native/rpmalloc-public-adapter.md`.
+
+Previous 2026-10-15 verification checkpoint: `1ef2ea6` contains the complete private SDK
+backend and checked boundary. Stronger follow-up tests require nonzero actual
+thread allocation/free totals and valid per-class current/peak counters; both
+Mac CPUs and the production-builder archive pass. Latest full owned matrix:
+322 source checks passed / 16 failed / 70 unsupported; privacy 120 passed /
+72 unsupported; 58 native build/run checks passed / one unsupported; symbols
+1200 passed. Counts include explicit private/compiler units. Configuration
+failures remain 36; public unresolved declarations remain 116, including all
+80 rpmalloc public entries. Complete owned formatting and regeneration pass;
+scoped supported strict lint passes, Windows target-context and active alias
+compiler repro lint failures remain documented. Generator tests: 52 passed.
+All original failing evidence remains separately classified. Extensions unchanged.
+
+Next required work: implement both public allocator variants/callback/heap/config
+semantics and options; resolve enabled telemetry's matching SDK acquisition ABI;
+remaining X11 ownership/state helpers, Objective-C helper contracts, D3D shader
+convenience overloads and DXC version helper; compiler mobile-target and strict
+Unicode/alias blockers; real Linux/Windows SDK/runtime and other aggregate ABI
+verification. Filtered questions are in the role's questions document. The fresh
+official telemetry lookup did not establish a loader prototype; no SDK version
+substitution, contact/authentication or enabled no-op body was introduced.
+
+Private rpmalloc SDK batch: generated all 34 real native C entry points and
+complete config/statistics records from the pinned official header; native heap
+types stay private and never alias public Jai records. Six desktop C/header and
+private Jai source checks are separate from actual x64/ARM64 host execution.
+The private unit exercises every SDK function, allocation/data/alignment/heap
+lifecycle/statistics I/O and 40 field probes. An invalid-alignment failure led
+to a real private checked adapter with unchanged-output/error tests, not a
+disabled assertion. Production native dependency build, scoped formatter and
+strict lint pass. Public rpmalloc's 80 unresolved declarations and all its
+configuration failures remain open. See `docs/native/rpmalloc-native-backend.md`.
+
+Stable preceding checkpoints: `d12f302` FSEvents native marshalling;
+`3afe321` SDL public-prefix/private-native oracle; `ea57dd9` canonical D3D imports.
+Broader checkpoint-8 verification before this private SDK batch: 316 source
+checks passed, 16 failed, 70 unsupported; 56 native build/run checks passed,
+one mobile public facade unsupported; privacy 120 passed/72 unsupported;
+1200 symbols resolved. Configuration failures: 36, down from 40 by real D3D
+debug repairs. Native counts include explicitly labeled private/compiler units,
+not that many native public programs. 116 public declarations remain unresolved.
+
+Direct3D batch: safe producer refresh resolves general forward overlays; the
+independent storage-sharing regression builds/runs. Corrected acyclic canonical
+interface imports unblock D3D11/12, D3D compiler, DXC and Aftermath Windows source
+checks, including full public DXC compile/reflection. D3D11/12 debug configurations
+now pass: configuration failures reduced from 40 to 36 by actual code/dependency
+repairs. No public records/types changed, no compiler patches/peer edits.
+The 116 unresolved declarations remain required. Windows native runtime is not
+claimed. A separate general imported/local alias-resolution failure has an
+active minimal repro; strict whole Windows render source still hits producer
+Unicode's fixed-array literal bug. See `docs/native/d3d-source-dependencies.md`.
+
+SDL policy batch: exact public 48/8-byte prefix contracts are now independently
+asserted, alongside complete private native RWops/User_Event sizes and all
+top-level field offsets. No public layout or callback ABI changed. Native event
+push/poll now checks window ID, code, two distinct data pointers and surrounding
+canaries. Pointer identity, file/BMP/close/freesrc/WM canary tests remain active;
+current scoped host verification has zero failures. Historical full-size
+comparison failures remain in prior evidence and are classified as invalid
+oracles, distinct from real safety bugs. Linux/Windows native execution remains
+required. Evidence: `.work/sdl-policy-native-current.json`.
+
+Latest FSEvents batch: exact public context layout retained; all fields marshal
+into private SDK order at `FSEventStreamCreate`. Real host lifetime/canary/null
+context and filesystem callback delivery pass. Producer FileWatcher is untouched.
+Both supported macOS source configurations and private-export checks pass;
+the scoped matrix has zero failures (`.work/fsevents-native-current.json`).
+Two-CPU native execution and production tool results are recorded separately in
+`.work/fsevents-both-cpus-tools.json`. Generator regression suite now has 45 tests.
+This is an ABI repair, not a reduction of the 116 unresolved declaration or 40
+configuration-failure inventories. Next: apply reviewed SDL prefix/native-record
+verification policy, then remaining supported desktop wrappers and D3D repro.
+
 Active implementation; full integration/corpus/release verification remains
 coordinator-owned. POSIX/WGL checkpoint: `79af73e`; safe SDL/iOS/X11 checkpoint:
 `fddae00`.

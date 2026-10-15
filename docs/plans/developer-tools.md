@@ -8,7 +8,7 @@ Keep canonical reflected records in each public module. Load independently organ
 
 ## Ordered checkpoints
 
-- [ ] Audit each public signature, overload, default, type shape and target condition into `docs/developer-tools-api.json`.
+- [x] Audit each public signature, overload, default, type shape and target condition into `docs/developer-tools-api.json` (1,630 reviewed variants; implementation status is separate from ABI certification).
 - [ ] Generate_C_Header: add a failing original reflected-record/header fixture; implement declarators, dependency ordering, procedure projection, diagnostics and output; compile emitted C and compare layout/native calling effects.
 - [ ] Bindings_Generator: audit full libclang/native surface and unresolved defaults; implement independent declaration model, parsing, visitors and rendering; test original C headers and generated Jai round trips.
 - [ ] Implement Performance_Report and Print_Vars on supported producer reflection APIs; retain measured report semantics and caller code expansion.
@@ -17,3 +17,5 @@ Keep canonical reflected records in each public module. Load independently organ
 - [ ] For each checkpoint run actual source-built jaifmt, `--check`, jailint `-D warnings`, interpreter and native O0/O2 effects, plus applicable cross-target checks. Record source-only and staged evidence separately; commit stable owned paths only.
 
 Unfinished APIs stay absent rather than acquiring fake success bodies. Contract ambiguity goes into precise reviewed-spec questions. Every staged dependency, workaround, performance tradeoff and failed gate is recorded in the worker deviations file.
+
+Current checkpoints provide real supported paths across all ten owned modules; see status for exact limits. Reviewed refinement has been applied to binding constants/defaults/literal conversion and C-header enum/support/procedure projection. Full module scope is still open. Next work is public declaration-tree traversal/mutation and broader C parsing/options, followed by remaining debugger/debug-info, profiler runtime and Codex/checker mechanisms after precise contracts are supplied.

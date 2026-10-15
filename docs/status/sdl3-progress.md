@@ -1,6 +1,12 @@
 # SDL3 progress — 2026-10-15
 
-## Current correction: clean CI candidate 7350b86
+## Current narrow correction: e223538 checkout bytes
+
+Coordinator reports ordinary native CI `e223538` passes Linux and macOS both CPUs. Windows both CPUs fail the generator/build-contract gate on the ledger byte hash. Converting the unchanged LF payload to CRLF reproduces the exact digest pair (`ae2a4818…198829` versus `3339502c…3f230f`); no metadata/API change is involved. Root attributes now keep only owned SDL3 module/generated native/ABI assets as LF. Generation writes/checks explicit UTF-8 bytes; CRLF remains a stale-file error, and stored hashes are unchanged. Packaged SDL3 notices follow the same byte/encoding/path-order contract. [Exact scope, hashes, regressions and commands](../extensions/sdl3-generated-bytes.md) are documented.
+
+Actual verification: 35 Python tests, including a real fresh Git `core.autocrlf=true` checkout and proof that SDL2 defaults are untouched; all-six-target exact-byte regeneration with wrapper compilation; Python compilation; local macOS arm64 static/shared C smoke and export/license/hash audit. No generated source, Jai test, ledger, inventory, public API or GPU coverage changed. Windows artifact success is **not established**: the failing test gate precedes native build stages in the inspected workflow. Coordinator ordinary CI rerun remains necessary. Release hold and no-dispatch/no-issue-comment restrictions are preserved.
+
+## Earlier correction: clean CI candidate 7350b86
 
 Candidate `7350b86` gets past installed VS discovery. Coordinator reports native macOS both CPUs and Linux arm64 pass, Windows both CPUs fail shared linking on Clang-only builtin overflow helpers, and Linux x64 fails stale canonical ledger regeneration. Both are genuine generator defects. [The full repair report](../extensions/sdl3-ci-repairs.md) records exact approved clean input URLs/hashes, canonical output hashes, header conditions and test provenance.
 

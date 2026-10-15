@@ -1,5 +1,67 @@
 # Portable stdlib progress
 
+## Integration refresh18: durable verified checkpoint
+
+Reviewable combined source/test head1f2a3e02e36dfb0be6e19275b24dad14435aef94.
+Private assertion transport29ec8f9, merge corrections and production VBAP scope
+5dc7b14 retained. Approved CIe223538, SDL30b2dc3c, audio498046b, bindingsfc6c681,
+toolingaf8b5f4 and portableeab3383 are merged. Exact consumed source/provenance in
+integration-refresh.json; newer ready heads remain queued, not counted consumed.
+
+Actual production results:54publiccontracts interpreter/nativeO0/O2 PASS;
+audio27fixtures allthreehostmodes/sixdesktopbodychecks/strictformatlint/privacy
+PASS with real silent2/6/8SDKstreams; tooling39fixtures/C/C++consumers PASS;
+window188invocations PASS after actual source-built GL/clipboard probes.
+Focused compiler/native migrations PASS: diagnostics25, IDElayout4, optimizer2,
+selector3/805runtimepairs, browser assertion1, namespace fix1, callback/deadlock1,
+native stored-Cprocedure1 and caller-backtrace1. Optimizer address-escape growth
+fix and native NSThread selector forwarding are proper production fixes.
+Workspace Rustfmt and warnings-denied clippy PASS after this batch.
+
+Broad immutable prior run755aggregatePASS27FAIL/one inheritedignored, sevenfailed
+targets. Quality1107format/checkPASS but56/190strictlintgatesFAIL,source_stable=true.
+Four producer gates foundations/portable/platform/numerics FAIL; corrective
+numerics-native25/25PASS. Pool value-return lifetime registry is a genuine
+foundations/portable blocker with active-owner reproducer; no assertions weakened.
+Full binding source matrix18failures retained; actual scopedrpmalloc native
+programs pass but public heaps/raw/options incomplete. All-dependencySDKretry
+againfails officialX.org connectionreset; pinned hashes unchanged.
+
+Current partial-edit run1086ownfiles is still running; no corpus/vendor sources
+selected and no success claim. Compiler's proper target/context lint checkpoint
+4de36d6 is now ready; integration will consume it and classify real positive,
+negative, platform and loaded-fragment contexts without skip baselines. Newer
+stable producer heads and local reviewedCIcache change are queued. Native
+ARM64WindowsMesa build remains coordinator-owned/active; no overlapping push.
+Release HOLD; no publishing/push/dispatch by this worker. Remaining module
+inventory135modulepages:124facadespresent/11missing plus one supplement,
+zero whole-module certification. Full opaque public corpus/Focus remain external.
+
+
+## Integration refresh17: production fixes under review
+
+Committed combined producer head: 7aec510. The integration assertion transport
+fix is verified and ready for a scoped checkpoint: four private protocol/body
+cases and four CLI scenarios pass; existing 51 module, two native-check and four
+runtime-configuration tests pass. Whole-workspace clippy with warnings denied
+passes. All 54 reviewed public fixtures pass interpreter/native O0/native O2
+(including declared precise negative cases, not 54 native runtime effects).
+Actual SDL verification: 30 target, 24 privacy, 299 symbol checks and nine
+native/interpreter phases pass against the production library and source-built
+SDK probes. No source overlays were used.
+
+The prior broad run retains 742 aggregate passes/32 failures/one inherited
+ignored result. Jaifmt/check passed for 1052 owned files; strict lint failed
+58/187 gates. Those are not green integration results. New scoped formatting
+passes; full-fragment-context audio lint remains under investigation. Windows
+x64/ARM64 compiler builds now pass in filtered coordinator CI e223538; downstream
+native platform/window checks and SDL3 newline reproducibility remain red.
+Full opaque public corpus and Focus execution remain coordinator responsibilities.
+No publishing, push, dispatch or release action was performed. Next: commit
+reviewed general fixes, merge approved native repair checkpoints, run all new
+producer suites and resolve remaining compiler/ABI/lint failures.
+
+
 ## Replacement integration: combined refresh-nine checkpoint
 
 Reviewable implementation head: `9cd757a` (no push/dispatch/publication by this
@@ -108,10 +170,28 @@ Platform-io now owns Windows File completion; no duplicated implementation begun
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `846781b`, protected MPEG audio checksums. Earlier
-checkpoints cover foundations, Unix process/thread/files/system, codecs,
-allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
-[module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
+Current durable checkpoint:c4d6a4f, native ancillary helpers. Current host-tooling
+increment adds exact Android JNI ABI naming and a253-row missing public-surface
+inventory. Full109 positives/26 checked faults in both modes/14 compile negatives
+plus existing integration and Linux/Windows target checks pass
+(target/android-abi-name-full.log).363 owned files pass format/check. Focused new
+roots pass strict lint; whole strict lint still fails for documented compiler/
+configuration/intentional-negative categories, with all groups attempted.
+Native Windows/Linux/Android gates remain distinct. Exact partial-module gaps and
+all largely unimplemented portable APIs are linked from the module ledger and
+portable-missing-surface.md; the full task is unfinished. Next: retain reviewed
+native/resource ownership behavior while continuing portable platform/toolchain
+work, and use named questions for precise missing contracts rather than fake APIs.
+
+Post-f044252 work: get_machine_options_x86 now implements the reviewed generic
+#modify API as a checked in-place projection of actual Compiler.Build_Options
+byte storage. Interpreter/native O0/O2 verify storage identity, live feature edits
+and untouched trailing bytes; focused strict x64 lint passes. No synthetic
+instruction wrappers added. Windows shared-channel backend has
+actual native-call source/body checks and Unix
+regression evidence; no native Windows pass claimed. Latest rebuilt compiler
+still rejects the original general field-array element-type, forward-enum and
+workspace-hook reproducers. Continue Windows Socket and remaining public APIs.
 
 Previously verified checkpoint: POSIX native crash diagnostics and runtime startup
 flag integration. Native C builds with `-Wall -Wextra -Werror`. Actual protected
@@ -525,6 +605,25 @@ Windows_Utf8 checkpoint: both reviewed procedures have real Kernel32 conversion,
 
 Virtual-memory backend checkpoint: shared private reservation/commit/release/page-size operations preserve real POSIX execution and add Windows VirtualAlloc/VirtualFree. Full Flat_Pool fixture now type-checks Windows x64/ARM64 including initialization/default/overwrite/lifecycle, rather than record-only checks. Actual Windows execution remains unverified. Full95-case/23-fault interpreter/native suite and prior eight rejections/integration/target checks pass; dedicated native O2 passes; all294 owned files pass format/check/strict lint. Continue portable time gaps and remaining modules after inbox review.
 
+FILETIME checkpoint: exact canonical Windows wrappers call real private two-word arithmetic. Production-source unit executes host interpreter/native O0/O2 across Unix/1601 epochs, unsigned64 boundaries, invalid/pre-epoch/overflow and sub-tick cases. Windows x64/ARM64 wrappers/ABI fixtures type-check; actual Windows runtime still unverified. Full96-case/23-fault both-mode suite plus prior rejection/integration/target checks passes;297 owned files pass formatting/check/strict lint. Continue native Windows clock exports and remaining portable APIs after inbox review.
+
+Windows clocks checkpoint: public realtime uses actual Kernel32 FILETIME, monotonic uses typed QPC with atomic frequency caching and exact private integer scaling. Both Windows CPU fixture bodies type-check. Production-source counter unit executes host interpreter/native O0/O2 including full signed64/fractional/invalid/monotonic vectors. Actual Windows calls/cache race remain unverified. Full97 positive/23 fault both-mode suite plus eight rejections/prior integration/target checks passes;300 owned files pass format/check/strict lint. Remaining time gaps: seconds_since_init origin/hook, calendar text/ConvertToApollo caller scope and native Windows calendars. Continue remaining portable scope with inbox checks.
+
+Machine_X64 blocker confirmed: original leaf0 vendor assertion fails interpreter and native x64. Independently compiled C SDK counterpart executes real CPUID and returns vendor/maxleaf. No Machine module fake0 fallback added; minimal reproducer and generic lowering handoff in portable-machine-gaps.md. All301 owned Jai files still pass format/check/lint, pending case explicitly failing not counted green. New inbox resolves seconds_since_init as first-call baseline; implement next, superseding prior origin questions.
+
+Elapsed checkpoint verified: exact seconds_since_init lazily captures the FIRST CALL origin per refreshed oracle, with private CAS-safe shared publication. Ordinary before/after sleep, eight-thread first-use and actual-macOS compile-time-to-runtime reset all execute interpreter/native O0/O2. Windows ARM64 body checks pass, with actual Windows execution unclaimed. Full98-case/23-fault both-mode suite plus eight rejections/prior integration/target checks passes;305 owned files pass format/check/strict lint. Prior origin questions now resolved. Next review remaining portable contracts/Basic numeric guard updates without duplicating peer work.
+
+
+Parameterized time integration in progress: NEW foundation integer guards already exist and remain that producer's work. Focused composition exposed/fixed default-vs-configured Apollo_Time nominal return mismatch using primitive private word pairs. It also exposed real native clock queries disappearing inside ENABLE_ASSERT=false discarded assertions; queries now always execute, with independent operational diagnostics and explicit invalid results for continuing handlers. Configured real wall-clock/delayed-elapsed tests pass NEW composition interpreter/native O0/O2 and Windows body checks. Full own suite99 cases/23 faults passes both modes. Rebuilt strict jailint correctly rejects inputs outside configured library root; runner now maps byte-identical owned files into staged root. Shared Hash facade/scalar file is excluded by ownership, current portable MD5/Meow retained over peer snapshot. Final mapped lint pending; old failure logs retained.
+
+Machine CPU-query increment verified: canonical records and200 reviewed feature values, all352 mask positions, real vendor/eleven-register CPUID and unknown-vendor fallback execute. Native O0/O2 matches official-header C oracle; original vendor probe now passes both optimizations and is promoted unchanged. Actual x64 compile-time interpreter assertions and strict lint pass using a newly source-built x64 jailint. macOS/Linux/Windows x64 body checks pass; ARM64 interpreter explicitly diagnoses. All313 owned files format/check; full strict lint still fails (all three configured groups attempted), with genuine general field-array/enum-forward compiler reproducers retained. Runtime settled root0/65536/131072 and child0/131072 allocation rerun also passes actual interpreter/native checks. Details and exact remaining instruction/options exports: portable-machine-gaps.md. Next: remaining portable scope and general compiler/linter integration; no full completion claim.
+
+Pool safety increment: original positive-INT64_MAX request reached backing allocator as negative; checked private/public overhead now rejects unrepresentable extents before forwarding. Real supplied-allocator failure preserves live contents/cursor/bookkeeping and release reaches zero live blocks. Interpreter/native O0/O2 and focused strict lint pass. Full100 positives/23 faults both modes/ten compile negatives plus integration/target checks pass; four new Unicode/ADPCM typed-constant write rejections pass separately and enter required list (now14). All318 owned files format/check; full strict lint remains failed for recorded compiler/configuration/intentional-negative categories, no suppression. Exact Pool API inventory and unmapping specialization question are in portable-pool.md. Next: continue owned backlog and coordinator-facing semantic/dependency gaps.
+
+Windows calendar increment: exact to_calendar/calendar_to_apollo now use real Kernel32 UTC and dynamic-DST Ex APIs; both CPU bodies and configured Basic instances check. Native Windows execution remains unverified, and host lint leaves Windows branches inactive because jailint has no target selector. Production Gregorian validation executes a400-year cycle plus native O2. Full101 positives/23 faults both modes/all14 compile negatives and prior integration/target checks pass;322 owned files format/check. NEW foundation regeneration/interpreter/native O0/O2 and configured strict lint pass; full strict lint still fails with preserved diagnostics and no suppressions. Native ABI/minimum-Windows/ambiguity policies and precise remaining time APIs are documented in portable-time.md/deviations. Next: remaining owned backlog and general target-aware lint/compiler integration; no task-completion claim.
+
+## Integrated safety/test migration evidence (historical checkpoint)
+
 Refresh14 integrated source checkpoint ee4de74 includes all five updated stable
 producer snapshots. Rebuilt production compiler/lint/LSP and unchanged jaifmt;
 860Jai format/check and full Rust formatting pass. SDL SDK/prefix/high-bit lifetime
@@ -602,3 +701,56 @@ foreign/native SDK cases separately, never passed. Root contract coverage is
 bounded, not equivalent to deleted suite or complete reviewed API coverage.
 Coordinator alone runs opaque original public corpus, Focus and ordinary native
 CI. Release/publication remains held. No push/dispatch performed.
+Native TCP accessor increment after41a015a:36 reviewed macOS getters/setters now execute against actual Apple SDK C bitfield layouts. All256 whole-record pairs match interpreter and actual host/x64 native O0/O2; x64 C output independently matches host C output. Active implementation/fixture strict lint passes, generation is stable and334 owned files format/check. Full102-case/23-fault/14-negative suite plus prior integration/target checks passes; whole strict lint remains failed. Fixture source-relative path repair preserves failure evidence and all assertions. Exact completed/missing public families and SDK provenance: portable-socket-fields.md. Continue Windows scope and Linux/Android native field helpers, then remaining portable modules.
+
+Windows scope-ID increment: four exact accessors implement 28/4-bit overlay semantics. Public #run assertions pass Windows x64/ARM64; production word kernels pass host interpreter/native O2 and strict lint. Full103 positives/23 faults/14 negatives and integration/target checks pass (target/socket-scope-full-regression.log);339 owned files pass formatting/check. Native Windows remains pending; whole strict lint remains failed, including target configuration for the Windows-only fixture. Widening-shift compiler reproducer: tests/portable-stdlib/pending/widened-bitwise.jai expected8000; shifted high byte lost. SDK FIONBIO expected0x8004667e, original actual0x8004007e; assertion retained.
+
+Pool/Linux increment:104-case full regression passes after classifying the Windows unmapping fixture failure as an unavailable platform backend. Only this genuinely Unix-only test joins the existing platform scope list; every host assertion and Linux check remains. Original target failure retained at target/pool-policy-full2.log. Native Windows allocator support is not claimed. Whole strict lint fails at target/pool-socket-whole-lint.log; focused Pool passes target/pool-policy-final-strict.log.
+
+Calendar increment: two exact public text APIs now use real temporary storage;
+POSIX normalization/-1 collision/output error and Windows input/DST policies
+follow refreshed review. Full106 positives/23 checked faults in both modes/14
+compile negatives plus prior integration and target checks pass
+(target/calendar-complete-suite.log). NEW foundation stable regeneration and five
+time roots pass interpreter/native O0/O2 (target/calendar-foundation-final.log).
+Both Windows CPU body checks pass (target/calendar-windows-final.log); native
+Windows remains unverified. Active calendar implementation/test strict lint
+passes (target/calendar-active-strict.log);347 owned Jai files format/check.
+Whole strict lint remains failed at target/calendar-whole-strict.log.
+ConvertToApollo alone remains the named time API gap: exact no-result #expand
+header conflicts with value contract/current compiler. Original general
+reproducer and precise reviewer/compiler question recorded; no fake export.
+
+Windows Registry increment: seven native procedures/two scalar aliases/fourteen
+access constants source-check both CPUs and regenerate byte-identically.
+Non-Windows public import/privacy test passes actual interpreter/native.
+Full107 positives/23 faults/14 negatives plus prior integration/target checks pass
+(target/registry-full.log).352 owned Jai files pass format/check. Native Registry
+execution and active Windows strict lint remain unexecuted/blocked; private ABI
+lint fails honest Windows requirement, CLI has no target selector. Ten predefined
+pseudo-handles remain absent pending reviewed64-bit extension conflict with SDK.
+Exact API list, test-only setup/cleanup and failures: portable-windows-registry.md.
+
+Shared TCP increment:22 Android accessors now share actual Linux implementation,
+with per-platform export validation and four Linux-only scale helpers. Official
+bionic header65536-word C probes pass host ARM64/translated x64; Android CLI still
+rejects target selection, so no Android Jai/native pass. Linux x64/ARM64 public
+#run bodies pass; macOS36 native SDK record pairs rerun host+x64 O0/O2 successfully.
+Full107 positives/23 faults/14 negatives and integration/target checks pass
+(target/socket-tcp-unix-full.log).352 owned files format/check; whole strict lint
+still fails (target/socket-tcp-unix-whole-lint.log). Superseded Linux-only files
+removed. All reviewed bitfield variants now have real source bodies; remaining
+Socket CMSG algorithms/native shapes/reflection and native platform gates remain.
+
+Ancillary increment: four exact CMSG procedures match4097 actual host native SDK
+vectors in interpreter/native O0/O2 (host ARM64/translated x64). Linux/macOS both
+CPU public #run assertions pass. Root layout/extreme-size/privacy regression plus
+two checked size faults added. Full108 positives/25 checked faults in both modes/
+14 compile negatives plus prior integration/target checks pass
+(target/socket-cmsg-full.log).359 owned files format/check; active CMSG roots and
+positive fixtures strict lint pass. Whole strict lint still fails at
+target/socket-cmsg-whole-lint.log. Only CMSG_SIZE remains the missing ancillary
+helper, with fine invalid-extent semantics still questioned; native Linux/
+Android and target-aware lint remain pending. Exact inventory: portable-socket-cmsg.md.
+
+Android host tooling increment: exact x64/ARM64 JNI directory names pass host interpreter/native, Linux/Windows checks and focused strict lint. Unsupported custom CPU diagnostics pass both modes.109 positives/26 faults/14 negatives and integration checks pass;363 owned files format/check, whole strict lint still fails. Missing API inventory regenerates identically with253 declaration/overload/nested rows; no functionality credited to those rows. Parent Android/native bindings and excluded modules are untouched.

@@ -12,7 +12,9 @@ import platform
 import subprocess
 import shutil
 import tarfile
+import tempfile
 import urllib.request
+from config import RPMALLOC_SDK_BUILD_OPTIONS
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -23,11 +25,73 @@ INPUTS = {
     'sdl_runtime_abi_probe': {'sdl2-runtime-oracle'},
     'stb_image': {'stb'}, 'stb_image_resize': {'stb'},
     'stb_image_write': {'stb'}, 'stb_vorbis': {'stb'}, 'mojoshader': {'mojoshader'},
+    'binding_rpmalloc_sdk': {'rpmalloc'}, 'rpmalloc_sdk_probe': {'rpmalloc'},
+    'binding_callback_context': set(),
+    'binding_rpmalloc_callbacks': {'rpmalloc'},
+    'rpmalloc_callback_probe': {'rpmalloc'}, 'rpmalloc_storage_probe': {'rpmalloc'},
+    'fsevents_context_probe': set(),
 }
+
+LIBRARY_DEPENDENCIES = {
+    'binding_rpmalloc_callbacks': {'binding_rpmalloc_sdk'},
+    'rpmalloc_callback_probe': {'binding_rpmalloc_sdk'},
+}
+
+
+def library_closure(selected):
+    selected = set(selected)
+    pending = list(selected)
+    while pending:
+        for dependency in LIBRARY_DEPENDENCIES.get(pending.pop(), ()):
+            if dependency not in selected:
+                selected.add(dependency)
+                pending.append(dependency)
+    return selected
 
 
 def run(command):
     subprocess.run([str(x) for x in command], check=True)
+
+
+def prepare_source(name, source, vendor):
+    """Validate a pinned release before using its files; otherwise use pinned raw inputs."""
+    archive_root = None
+    if 'archive' in source:
+        pin = source['archive']
+        archive = vendor / (name + '.tar.gz')
+        if not archive.exists():
+            archive.parent.mkdir(parents=True, exist_ok=True)
+            archive.write_bytes(urllib.request.urlopen(pin['url'], timeout=60).read())
+        if hashlib.sha256(archive.read_bytes()).hexdigest() != pin['sha256']:
+            raise RuntimeError('Archive hash mismatch: ' + name)
+        archive_root = vendor / pin['root']
+        # Recreate the complete tree from the verified archive. Checking only
+        # listed primary headers leaves cached transitive headers/source mutable.
+        with tempfile.TemporaryDirectory(prefix=name+'-extract-',dir=vendor) as fresh:
+            with tarfile.open(archive) as stream:
+                stream.extractall(fresh, filter='data')
+            extracted = Path(fresh)/pin['root']
+            if not extracted.is_dir() or extracted.is_symlink():
+                raise RuntimeError('Archive source root is missing or invalid: '+name)
+            if archive_root.is_symlink():
+                raise RuntimeError('Archive source root cannot be a symlink: '+name)
+            if archive_root.exists():
+                shutil.rmtree(archive_root)
+            extracted.rename(archive_root)
+    for filename, expected in source['files'].items():
+        path = vendor / name / filename
+        if not path.exists():
+            if archive_root is not None:
+                data = (archive_root / filename).read_bytes()
+            else:
+                url = 'https://raw.githubusercontent.com/' + source['repository'] + '/' + source['revision'] + '/' + filename
+                data = urllib.request.urlopen(url, timeout=60).read()
+            if hashlib.sha256(data).hexdigest() != expected:
+                raise RuntimeError('Native source hash mismatch: ' + name + '/' + filename)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+        if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+            raise RuntimeError('Native source hash mismatch: ' + str(path))
 
 
 def main():
@@ -38,33 +102,12 @@ def main():
     args = parser.parse_args()
     vendor = ROOT / '.work/vendor'
     manifest = json.loads((Path(__file__).with_name('dependencies.json')).read_text())
-    selected = set(args.library or INPUTS)
+    selected = library_closure(args.library or INPUTS)
     # Preserve full-manifest validation by default. A scoped build records only
     # its actual dependency closure; it is not evidence for the other SDK pins.
     dependencies = set().union(*(INPUTS[name] for name in selected)) if args.library else set(manifest)
     for name in sorted(dependencies):
-        source = manifest[name]
-        for filename, expected in source['files'].items():
-            path = vendor / name / filename
-            if not path.exists():
-                url = 'https://raw.githubusercontent.com/' + source['repository'] + '/' + source['revision'] + '/' + filename
-                data = urllib.request.urlopen(url, timeout=60).read()
-                if hashlib.sha256(data).hexdigest() != expected:
-                    raise SystemExit('Hash mismatch: ' + url)
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes(data)
-            if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
-                raise SystemExit('Hash mismatch: ' + str(path))
-        if 'archive' in source:
-            pin = source['archive']
-            archive = vendor/(name+'.tar.gz')
-            if not archive.exists():
-                archive.write_bytes(urllib.request.urlopen(pin['url'], timeout=60).read())
-            if hashlib.sha256(archive.read_bytes()).hexdigest() != pin['sha256']:
-                raise SystemExit('Archive hash mismatch: '+name)
-            if not (vendor/pin['root']).is_dir():
-                with tarfile.open(archive) as stream:
-                    stream.extractall(vendor, filter='data')
+        prepare_source(name, manifest[name], vendor)
     args.output.mkdir(parents=True, exist_ok=True)
     if platform.system() == 'Darwin':
         apple_object = args.output/'apple_abi_probe.o'
@@ -81,14 +124,22 @@ def main():
         'xxhash070': [vendor/'xxhash/xxhash.c'],
         'meshoptimizer': sorted((vendor/'meshoptimizer/src').glob('*.cpp')),
         'binding_ffi': [ROOT/'stdlib/internal/bindings/varargs/bridge.c'],
+        'binding_callback_context': [ROOT/'stdlib/internal/bindings/callback-context/bridge.c'],
         'graphics_macro_probe': [ROOT/'tests/native-bindings/generated/d3d12_macro_probe.c'],
         'sdl_abi_probe': [ROOT/'tests/native-bindings/sdl_abi_probe.c'],
         'sdl_runtime_abi_probe': [ROOT/'tests/native-bindings/sdl_runtime_abi_probe.c'],
         'posix_abi_probe': [ROOT/'tests/native-bindings/posix_abi_probe.c'],
+        'binding_rpmalloc_sdk': [vendor/'rpmalloc/rpmalloc/rpmalloc.c'],
+        'binding_rpmalloc_callbacks': [ROOT/'stdlib/internal/bindings/rpmalloc-callbacks/bridge.c'],
+        'rpmalloc_sdk_probe': [ROOT/'tests/native-bindings/generated/rpmalloc_sdk_probe.c'],
+        'rpmalloc_callback_probe': [ROOT/'tests/native-bindings/rpmalloc_callback_probe.c'],
+        'rpmalloc_storage_probe': [ROOT/'tests/native-bindings/generated/rpmalloc_storage_probe.c'],
         'imgui_abi_probe': [ROOT/'tests/native-bindings/imgui_abi_probe.cpp'],
         'imgui': [vendor/manifest['imgui']['archive']['root']/name for name in
                   ('imgui.cpp','imgui_draw.cpp','imgui_tables.cpp','imgui_widgets.cpp','imgui_demo.cpp')],
     }
+    if platform.system() == 'Darwin':
+        units['fsevents_context_probe'] = [ROOT/'tests/native-bindings/fsevents_context_probe.c']
     macros = {'stb_image': 'STB_IMAGE_IMPLEMENTATION',
               'stb_image_resize': 'STB_IMAGE_RESIZE_IMPLEMENTATION',
               'stb_image_write': 'STB_IMAGE_WRITE_IMPLEMENTATION'}
@@ -109,11 +160,20 @@ def main():
                 includes = ['-isystem',vendor/manifest['sdl2-runtime-oracle']['archive']['root']/'include/SDL2']
             if name == 'imgui_abi_probe':
                 includes = ['-isystem',vendor/manifest['imgui']['archive']['root']]
+            if name in ('binding_rpmalloc_sdk', 'binding_rpmalloc_callbacks', 'rpmalloc_sdk_probe', 'rpmalloc_callback_probe', 'rpmalloc_storage_probe'):
+                includes = ['-isystem', vendor/'rpmalloc/rpmalloc']
+                includes += ['-D'+name+'='+str(value) for name,value in RPMALLOC_SDK_BUILD_OPTIONS.items()]
             run(['c++' if path.suffix == '.cpp' else 'cc', '-O2', '-fPIC', '-I', vendor/'stb', *includes, '-c', path, '-o', obj])
             compiled.append(obj)
         run(['ar', 'rcs', args.output / ('lib' + name + '.a'), *compiled])
         suffix = '.dylib' if platform.system() == 'Darwin' else '.so'
         extra = ['-lffi'] if name == 'binding_ffi' else []
+        if name == 'fsevents_context_probe':
+            extra = ['-framework', 'CoreServices']
+        if name in ('binding_rpmalloc_callbacks','rpmalloc_callback_probe'):
+            # Shared adapters must use the same SDK instance as allocations.
+            # Statically embedding a second allocator would split ownership.
+            extra = ['-L', args.output, '-lbinding_rpmalloc_sdk']
         run(['c++' if name in ('meshoptimizer','imgui') else 'cc', '-dynamiclib' if suffix == '.dylib' else '-shared', *compiled,
              '-lm', *extra, '-o', args.output / ('lib' + name + suffix)])
         print('Built ' + name)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify original x64 Meow assertions against the selected production library.
+"""Verify own x64 Meow regressions and reviewed vectors against production.
 """
 import argparse
 import os
@@ -21,13 +21,15 @@ elif platform.system() == "Linux" and platform.machine().lower() in {"x86_64", "
     native_target = ["-cpu", "x64"]
 else:
     raise RuntimeError("this focused legacy native-x64 check needs macOS x64 execution or Linux x64")
-fixture = ROOT / "tests/native-regressions/meow-hash.jai"
-executable = ROOT / "target/portable-tests/meow-existing-x64"
-executable.parent.mkdir(parents=True, exist_ok=True)
-subprocess.run([str(compiler), *native_target, str(fixture), "-exe", str(executable)],
-               cwd=ROOT, env=env, check=True, timeout=60)
-for command in [[str(compiler), "-cpu", "x64", "-interp", str(fixture), "--"], [str(executable)]]:
-    result = subprocess.run(command, cwd=ROOT, env=env, check=True,
-                            text=True, capture_output=True, timeout=45)
-    assert result.stdout == "ok\n" and result.stderr == "", result
-print("Existing own Meow assertions passed interpreter/native x64 against the selected production library")
+fixtures = [ROOT / "tests/native-regressions/meow-hash.jai"]
+fixtures += [ROOT / f"tests/portable-stdlib/{name}.jai" for name in ("meow", "meow-vectors")]
+for fixture in fixtures:
+    executable = ROOT / "target/portable-tests" / (fixture.stem + "-production-x64")
+    executable.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run([str(compiler), *native_target, str(fixture), "-exe", str(executable)],
+                   cwd=ROOT, env=env, check=True, timeout=60)
+    for command in [[str(compiler), "-cpu", "x64", "-interp", str(fixture), "--"], [str(executable)]]:
+        result = subprocess.run(command, cwd=ROOT, env=env, check=True,
+                                text=True, capture_output=True, timeout=45)
+        assert result.stdout == "ok\n" and result.stderr == "", result
+    print(f"Own {fixture.name} assertions passed interpreter/native x64 against production")

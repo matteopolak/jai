@@ -1,7 +1,13 @@
 # Developer documentation
 
 - Sound_Player: [plan](status/audio-plan.md), [progress](status/audio-progress.md),
-  [deviations](status/audio-deviations.md), [questions](specs/questions/sound-player.md)
+  [deviations](status/audio-deviations.md), [questions](specs/questions/sound-player.md),
+  [playback and independent entity phases](features/sound-player.md)
+- [Audio native integration](features/audio-native-integration.md): relocatable
+  static linkage, six desktop SDK/CI recipes, focus and device recovery evidence.
+- [Audio testing](features/audio-testing.md): assertion-disabled and real-resource
+  close-failure tests, NEW spec provenance, independent
+  review request, hardware/source distinctions and legacy-gate migration.
 
 Current replacement integration: [commands and results](tools/cleanroom-integration.md), [deviations](status/integration-deviations.md), [module inventory](status/integration-module-inventory.json).111/135 reviewed module facades are present; presence does not establish complete functionality. Native CI and opaque public corpus/Focus remain coordinator work; publication is held.
 
@@ -15,6 +21,17 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
   [remaining deviations](status/window-render-deviations.md).
 - [Window/render clean-room incident](status/window-render-cleanroom-incident-2026-10-14.md):
   reviewed metadata-only exposure, clearance and implementation resumption.
+
+- [FSEvents context adapter](native/fsevents-context.md): exact public order,
+  private SDK marshalling, callback lifetime and native canary/event checks
+- [Direct3D canonical interface dependencies and compiler repros](native/d3d-source-dependencies.md)
+- [Private rpmalloc SDK backend](native/rpmalloc-native-backend.md): complete
+  native forwarding, checked alignment boundary and remaining public work
+- [Public rpmalloc adapter progress](native/rpmalloc-public-adapter.md): actual
+  lifecycle/allocation/statistics and callback/configuration/lifetime tests,
+  generated contextual layouts and remaining profile/heap work
+- [rpmalloc heap ABI evidence](native/rpmalloc-heap-abi.md): complete pinned
+  native storage probes and required separation from canonical public records
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 - [SDL native ABI and prefix safety](native/sdl-native-abi.md): exact public layouts, complete private C records, native pointers, field probes and canaries
 - [Portable MPEG](portable-mpeg.md): MPEG-1 streams/video/CRC-checked audio, independent fixtures and remaining gaps
@@ -204,7 +221,17 @@ The LLVM backend, C ABI and linking.
 - [Portable implementation gaps](portable-stdlib-gaps.md): focused pending reproducers and unresolved behavior
 - [Runtime configuration adoption](portable-runtime-configuration.md): actual settled allocations, CAPS and ownership handoff
 - [Time and calendar API inventory](portable-time.md): real POSIX clocks, epoch/calendar conversions and remaining contracts
+- [Machine_X64 compiler gaps](portable-machine-gaps.md): original interpreter/native CPUID failure and genuine native C comparison
 - [Flat_Pool core and container audit](portable-flat-pool.md): real initialization, lazy page commitment, parameterized overwrite and lifecycle
+- [Pool behavior and checked allocation extents](portable-pool.md)
+- [Windows calendar verification](../tools/check_portable_windows_calendar.py): source/ABI checks, explicit native-host requirement
+- [Windows shared-memory backend and remaining gates](portable-windows-channel.md)
+- [Windows Socket wrappers, native ABI evidence and remaining public gaps](portable-windows-socket.md)
+- [Native Socket field accessors and independent SDK record oracles](portable-socket-fields.md)
+- [Socket ancillary helpers and actual native SDK vectors](portable-socket-cmsg.md)
+- [Windows Registry native APIs and unresolved pseudo-handle ABI](portable-windows-registry.md)
+- [Android toolchain ABI naming and remaining APIs](portable-android-toolchain.md)
+- [Exact missing owned public declarations](portable-missing-surface.md)
 - [Windows UTF-8 helpers](portable-windows-utf8.md): real Kernel32 conversion code, ABI checks and outstanding native execution
 - [Owned source format/lint runner](../tools/format_portable_stdlib.py): explicit scope and source-built jaifmt/jailint
 - [WAV parser design and validation](portable-wav.md)
@@ -220,12 +247,15 @@ The LLVM backend, C ABI and linking.
 - [Portable worker progress](status/stdlib-progress.md) and [deviations](status/stdlib-deviations.md)
 - [Socket native declaration ledger](socket-native-ledger.json)
 - [Focused portable regression runner](../tools/check_portable_stdlib.py)
+- [Portable test provenance and current verification gaps](portable-verification.md)
+- [Focused real x64 CPU-query verification](../tools/check_portable_machine.py)
 - [Portable implementation plan](plans/portable-stdlib.md)
 - [Unresolved portable contracts](specs/stdlib/questions.md)
 - [SDL3 desktop bindings, generation and native packaging](extensions/sdl3.md)
 - [SDL3 comprehensive header/GPU coverage, organization and verification](extensions/sdl3-coverage.md)
 - [SDL3 current native CI corrections and verification](status/sdl3-progress.md)
 - [SDL3 MSVC header profiles, canonical ledger hashes and clean CI repairs](extensions/sdl3-ci-repairs.md)
+- [SDL3 deterministic generated bytes and Windows CRLF checkout regression](extensions/sdl3-generated-bytes.md)
 - [SDL3 implementation deviations and remaining limits](status/sdl3-deviations.md)
 
 Implementation work uses the API specification as its compatibility contract. Implementers do not read the source of a Jai distribution; specification review supplies public declarations and behavior through the documented clean-room workflow.
@@ -242,7 +272,8 @@ Implementation work uses the API specification as its compatibility contract. Im
 - [Windows render integration fixed-array literal blocker](native/compiler-fixed-array-literal.md)
 - [iOS helper availability and private native host verification](native/apple-toolchain.md)
 - [Android EGL native header input and verification boundary](native/egl-sdk-inputs.json)
-- [SDL native RWops pointer forwarding and contract limits](native/sdl-rwops.md)
+- [SDL native pointers, exact public prefixes and complete private SDK records](native/sdl-rwops.md):
+  ownership, adapter extension/probe instructions and corrected layout oracle
 - [Explicit Android POSIX C header delegates](native/android-posix-delegates.md)
 - [ImGui nested member scopes and real native C++ calls](native/imgui-nested-methods.md)
 - [Safe Linux ARM64 stat syscall and record marshalling](native/linux-arm64-stat.md)
@@ -265,7 +296,7 @@ The WebAssembly compiler bundle and its releases. The hosted playground UI lives
 
 ## Tools and workflow
 
-- [Developer tooling](developer-tools.md): reflected C header generation, original C/Jai round trips, API audit and outstanding tooling scope; [progress](status/developer-tools-progress.md) and [deviations](status/developer-tools-deviations.md).
+- [Developer tooling](developer-tools.md): reflected C headers, libclang builds/callbacks/location helpers, debug bit sets and staged native MSF parsing; [test provenance and commands](developer-tools-testing.md), [progress](status/developer-tools-progress.md) and [deviations](status/developer-tools-deviations.md).
 
 Scripts, CI and project policies.
 
@@ -330,3 +361,6 @@ Agreed designs that are not built yet.
 - [Private native check transport and safety regressions](compiler/private-native-checks.md)
 
 - [Stdlib test migration manifest](status/stdlib-test-migration.json): per-file retirement/move decisions and preserved regression provenance.
+
+- Sound_Player [per-public-API inventory](status/audio-api-inventory.md) and
+  [minimal dependency requests](status/audio-dependency-requests.md)
