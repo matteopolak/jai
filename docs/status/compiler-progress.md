@@ -1,5 +1,9 @@
 # Compiler progress
 
+Stable instruction checkpoint: 75e8fd6, `feat(compiler): execute architectural x64
+machine instructions`. All owned batch paths are committed; no publication.
+Next dependency: explicitly named original portable generic-pointer reduction.
+
 Architectural x64 batch: real RDTSC/RDTSCP (including AUX), distinct RDRAND/RDSEED
 single-attempt value/CF and flag/partial-write semantics, real LFENCE/SFENCE/MFENCE,
 PAUSE and four prefetch hints now have typed IR/interpreter/LLVM support. Invalid

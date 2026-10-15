@@ -1,5 +1,11 @@
 # Compiler integration handoff
 
+Architectural instruction implementation checkpoint: 75e8fd6. Canonical own
+compiler executable: target/debug/jaic, built using
+`LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm CARGO_TARGET_DIR=target RUSTC_WRAPPER= cargo build --locked -p jaic-cli --bin jaic`.
+Current source-built jailint includes target-aware checking from 4de36d6. Preserve
+CPUID 44ed369, overlays 3aab9d1 and the Windows CRT/runtime fixes when adopting.
+
 Machine_X64 instruction mechanisms are ready for portable adoption: #asm rdtsc hi,lo;
 rdtscp hi,lo[,aux]; rdrand/rdseed register (.w/.d/.q) with actual setc; zero-argument
 mfence/lfence/sfence/pause; prefetcht0/1/2 and prefetchnta memory operands. Typed IR
