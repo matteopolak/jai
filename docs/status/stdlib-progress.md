@@ -1,5 +1,14 @@
 # Portable stdlib progress
 
+Coordinator14:34 request completed: public compare_alloc_and_free_traces compares
+both opaque pointer identities, preserving exact signature/canonical type and
+never dereferencing.2401 symmetric pairs inclnull/highbits pass #run/interpreter/
+native O0/O2; existing packet layouts, Linux/Windows both-CPU source checks,
+format/--check and strict lint pass. Evidence target/memory-protocol-compare-final.log;
+original missing-export red retained. See docs/portable-memory-protocol.md. No
+workaround/test exclusion. The protocol's historical comparator question is
+resolved. Refreshed mixed questions.md remains unstaged for selective handling.
+
 Project_Generator all seven public state/method rows implemented with real owned
 collection/reset, compiler workspace/complete handling and four actual scaffold
 files. Interpreter/native collection and real target O0/O2, defaults/persistence,

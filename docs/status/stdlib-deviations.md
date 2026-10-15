@@ -1,5 +1,11 @@
 # Portable stdlib worker deviations
 
+Memory protocol comparator review scope: no workaround, reduced semantics,
+allocation/dereference, disabled assertion or lint exclusion remains. Both opaque
+pointer identifiers are compared exactly. Compile-time/interpreter/native O0/O2
+and required source/lint/layout gates executed. External visualizer integration
+and native other-OS execution are not claimed from this focused completion.
+
 Project_Generator verification limits: required compile-time real executable path
 default is unavailable in jailint SandboxHost (_NSGetExecutablePath); strict lint
 remains failed, original generic reproducer supplied, no default/tool exception.
