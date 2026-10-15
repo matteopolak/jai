@@ -15,8 +15,8 @@ Objective_C helpers. The explicit SDL WM-info adapter is recorded as a manual
 implementation with its original native symbol and full matched signature;
 its safety evidence does not resolve RWops/UserEvent layout mismatches.
 
-Current root ledger counts are 28,389 declared, 1,262 forwarded, 547 generated
-implementations, 45 manual implementations, 128 unresolved and one exact
+Current root ledger counts are 28,397 declared, 1,262 forwarded, 547 generated
+implementations, 45 manual implementations, 120 unresolved and one exact
 duplicate. These counts measure source dispositions, not completed binding
 scope. Remaining declared ABI discrepancies and unverified native platforms
 remain required work; newly resolved AppKit return semantics do not establish
@@ -29,6 +29,10 @@ Android EGL's new body is explicitly unverified while the compiler rejects its
 target. iOS host behavior is tested privately with exact public target absence;
 no desktop convenience export is added. All unresolved/configuration/ABI gaps
 remain required work. See [worker progress](../status/bindings-progress.md).
+Eight additional Android POSIX records now have explicit pinned native header
+delegates; both target C layout assertions pass. All POSIX source declarations
+are emitted, without claiming Android Jai/runtime validation. ImGui's qualified
+nested member checks and a real Jai-to-C++ constructor/split ABI test now pass.
 Actual failures, scope and hashes are in the [verified evidence index](bindings-verified-snapshot.json)
 and [deviations report](../status/bindings-deviations.md).
 
@@ -40,7 +44,7 @@ implementations, where built, come from pinned official vendor repositories.
 
 ## Validation so far
 
-- Thirty-five Python parser/generator regressions pass, including configuration
+- Forty-one Python parser/generator regressions pass, including configuration
   labels between aggregate names and kinds, multi-type fences, GL parent/field
   relationships across metadata sections, and implicit native enum dependencies.
 - lz4, xxHash, meshoptimizer, freetype, stb_image, stb_image_resize,

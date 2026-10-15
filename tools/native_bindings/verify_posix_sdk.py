@@ -67,7 +67,7 @@ def main():
         if result['exit'] != 0:
             continue
         report.setdefault('native_oracles',{})[cpu] = {'path':str(archive),'sha256':digest(archive)}
-        for name in ('posix-abi','posix'):
+        for name in ('posix-abi','posix','posix-stat'):
             source = ROOT/'tests/native-bindings'/(name+'.jai')
             report['test_sources'][str(source.relative_to(ROOT))] = digest(source)
             exe = native/name

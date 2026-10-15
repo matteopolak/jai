@@ -1,7 +1,8 @@
 # Bindings worker progress
 
 Active implementation; full integration/corpus/release verification remains
-coordinator-owned. POSIX/WGL checkpoint: `79af73e`.
+coordinator-owned. POSIX/WGL checkpoint: `79af73e`; safe SDL/iOS/X11 checkpoint:
+`fddae00`.
 
 2026-10-14 current batch:
 
@@ -56,8 +57,8 @@ rpmalloc, enabled telemetry, Objective-C class helpers, D3D/DXC convenience
 wrappers and X11 helpers remain required. See deviations/questions for exact
 limitations; declaration counts are not a claim of native completeness.
 
-Current source ledger: 28,389 declared, 1,262 forwarded, 547 generated bodies,
-45 manual bodies, 128 unresolved, one duplicate. Manual includes unverified
+Current source ledger: 28,397 declared, 1,262 forwarded, 547 generated bodies,
+45 manual bodies, 120 unresolved, one duplicate. Manual includes unverified
 Android code; no native completion is inferred. Configurations still have 58
 required failures. The intermediate broad matrix recorded 1,200 symbols passed,
 45 native checks passed and two native failures (invalid host iOS expectation
@@ -70,3 +71,82 @@ Current reports: `.work/checkpoint-2-production-tools.json` (40 passed),
 `.work/adapter-privacy-current.json`, `.work/windows-render-current.json`.
 The actual Windows renderer remains blocked by the independent fixed-array
 literal reproducer in NEW producer Unicode, after integrating the File owner.
+
+Subsequent reviewed progress:
+
+- Eight Android POSIX records now come from complete pinned official Bionic
+  headers, with all field sizes/offsets and record sizes/alignments asserted
+  for both C targets. Explicit reviewed target shapes always take precedence;
+  no new names or cross-OS guessed layouts. POSIX has zero unresolved source
+  declarations; Android Jai/device verification remains unavailable/required.
+- Fixed generic nested C++ member ownership tracking. `TextFilter.TextRange.split`
+  replaces the invalid flattened verifier expectation, preserving the API.
+  Added a real Jai-to-SDK native constructor/split test with three sizes/five
+  offsets checked first. Added the missing C++ runtime dependency, shared by
+  ImGui/NVTT/meshoptimizer with platform-correct default native runtimes.
+- SDK-focused matrix: 50 source checks, 10 native checks, 549 symbols passed;
+  zero failures. Both macOS CPU ABI/runtime probes still pass. All 41 current
+  production tool checks and 41 Python regressions pass.
+
+Evidence: `.work/sdk-delegates-and-cpp-current.json`,
+`.work/posix-sdk-delegates-both-cpus.json`, `.work/checkpoint-3-production-tools.json`,
+`.work/android-posix-header-regeneration.json`.
+Stable checkpoint-2 full report is `.work/stable-checkpoint-2-full.json`:
+240 source checks passed/36 failed, 47 native passed/one retained SDL ABI failure,
+96 privacy passed/two blocked by D3D, 1,200 symbols passed. It predates the six
+corrected ImGui namespace checks, which now pass in the scoped report.
+
+Next stable checkpoint: Linux ARM64 `stat`, `lstat`, and `fstat` now use a
+private 128-byte kernel record and real target syscall numbers from pinned
+official Linux UAPI headers, then copy successful results into the unchanged
+144-byte public record. Null buffers and failures retain native error behavior;
+failed operations leave the public output unchanged. General LP64 C record
+translation is shared with the Android delegate instead of duplicated.
+
+Evidence: `.work/checkpoint-4-tool-checks.json` has six successful production
+format/strict-lint/regeneration/regression commands, including 43 Python tests.
+`.work/posix-stat-current-foundations.json` passes four Unix source targets and
+host native regressions. `.work/posix-stat-sdk-both-cpus.json` passes all 16
+macOS C-oracle/build/runtime checks on both CPUs. Linux ARM64 headers/layouts
+are cross-compiled and every field asserted; Linux ARM64 execution is still
+required and is not inferred from macOS execution. The current NEW foundations
+dependency `internal/basic-context` is staged; the actual formatter was rebuilt
+successfully against it without a compiler patch.
+
+Ledger: 28,397 declared, 1,262 forwarded, 544 generated bodies, 48 manual
+bodies, 120 unresolved and one duplicate. This reclassifies three existing
+unsafe stat forwarders as real adapters; it does not manufacture a coverage
+increase. The 58 configuration failures and retained SDL public ABI mismatch
+remain required work. Next: remaining reviewed wrappers and refreshed compiler
+configuration verification.
+
+Refreshed reviewed GL behavior now supports the exact generic current-context
+wrapper. It creates real WGL/GLX/NSOpenGL contexts, attaches the macOS view and
+makes the context current, retaining the reviewed native caller lifetime model.
+Six desktop source targets, all eighteen GL alternative configurations, and
+eight host native build/run checks pass (`.work/gl-dispatch-current.json`,
+`.work/gl-dispatch-configurations.json`). The complete configuration matrix now
+has **40 failures**, reduced from 58 by actual GL implementation. D3D forward
+overlay, rpmalloc, enabled telemetry and mobile target failures remain required.
+
+Refreshed SDL review explicitly requires actual SDK-owned RWops pointer
+identity and does not support Jai-created callback tables. Removed the prior
+custom owner/registry/context adapter, restored real native foreign symbols,
+and replaced unsupported custom-table tests with symbol identity, genuine file
+operations, BMP success/failure, exact native close counts and both freesrc
+modes. `.work/sdl-native-pointer-current.json`: twelve source, seven native,
+twenty-four privacy and 299 symbol checks pass. The one retained native failure
+is the unchanged public RWops/UserEvent ABI mismatch test.
+
+Current producer compiler and linter were rebuilt from safe NEW sources.
+Production formatter rebuilt unchanged and complete owned formatting/regeneration
+and 43 Python tests pass. Refreshed jailint now rejects incomplete roots rather
+than reporting a misleading pass. The broad retry records 25 successful commands
+and 16 incomplete lint scopes (native target guards, private-root import context,
+and real declaration gaps). Fresh-staged host GL/SDL/POSIX and changed native
+tests pass strict lint. Full target-aware lint is still required; no suppression
+or alternate target constant was introduced. See native/lint-target-context.md.
+
+Source ledger: 28,399 declared, 1,262 forwarded, 544 generated bodies, 47 manual,
+119 unresolved, one duplicate. Broad source/native matrix is running against a
+stable staged snapshot; scoped results above are not full integration evidence.

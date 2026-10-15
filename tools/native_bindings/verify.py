@@ -48,7 +48,7 @@ def public_source(module, spec, os_name, cpu, parameters=None, arguments=''):
             expression = 'type_of(M.'+name+')' if variable else 'M.'+name
             lines.append('visible_'+str(i)+' :: '+expression+';')
     coverage = json.loads((ROOT/'docs/native/bindings-coverage.json').read_text())['modules'][module]
-    members = sorted(set((d['name'],m['signature'].split('::',1)[0].strip(),m['condition'])
+    members = sorted(set((m.get('owner',d['name']),m['signature'].split('::',1)[0].strip(),m['condition'])
                          for d in coverage['declarations'] for m in d.get('members',[])))
     for i, (owner, member, condition) in enumerate(members):
         if enabled(condition,os_name,cpu,parameters):
@@ -76,7 +76,7 @@ def stage(destination, foundation=None):
         raise SystemExit('The independent foundation bootstrap is not ready')
     shutil.copytree(foundation, destination, dirs_exist_ok=True)
     for worker, modules, internals in [
-        ('foundations',['Basic','String','Hash','File_Utilities'],['basic','basic-interface','string','hash','files','native-path']),
+        ('foundations',['Basic','String','Hash','File_Utilities'],['basic','basic-interface','basic-context','string','hash','files','native-path']),
         ('window-render',['Window_Creation','Window_Type','Input','Keymap','Gamepad','Simp','sRGB','Clipboard'],['window','rendering','input','gamepad','clipboard']),
         ('numerics',['Math','Sloppy_Math','Float16','Color_Interpolation','GetRect','GetRect_LeftHanded'],['numerics']),
         ('compiler',['Compiler','Jai_Lexer','Code_Visit','Program_Print'],['compiler-api','jai-lexer','code-visit','program-print'])
@@ -192,6 +192,8 @@ def main():
         ('X11', 'x11-window-helpers.jai', [('linux','x64'),('linux','arm64')]),
         ('Android/EGL', 'android-egl-context.jai', [('android','x64'),('android','arm64')]),
         ('iOS', 'ios.jai', [('ios','x64'),('ios','arm64')]),
+        ('ImGui', 'imgui-nested.jai', TARGET_CONFIGS),
+        ('POSIX', 'posix-stat.jai', [('linux','x64'),('linux','arm64'),('macos','x64'),('macos','arm64')]),
         ('GL', 'gl-debug-output.jai', TARGET_CONFIGS),
     ]:
         if args.privacy_only:
@@ -248,6 +250,8 @@ def main():
         if sys.platform == 'win32':
             runtime_tests.append('wgl-context')
         runtime_tests.append('sdl-rwops')
+        runtime_tests.append('imgui-nested')
+        runtime_tests.append('posix-stat')
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
         for name in runtime_tests:
@@ -266,6 +270,10 @@ def main():
                 relevant = ['X11']
             if name == 'ios-sdk-host':
                 relevant = ['iOS']
+            if name == 'imgui-nested':
+                relevant = ['ImGui']
+            if name == 'posix-stat':
+                relevant = ['POSIX']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']
             if args.module and not any(m in args.module for m in relevant):
