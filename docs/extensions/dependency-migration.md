@@ -35,11 +35,8 @@ The WASI import names its real host module; no libc exit import, fake return,
 new public API or compiler special case is introduced. Help/version still exit
 0 and parser errors exit 2 after producing their normal output.
 
-Initial verification (2026-10-15): reproduced the original two compile failures;
-fiber context passed interpreter/native O0/O2; the original native overflow test
-passed, including its interpreted failure assertion; the actual WASI formatter
-passed all 24 goldens and its 414-line input. Broader focused ownership, argument,
-target and strict lint checks are ongoing. This is not full integration acceptance.
+Verification is recorded in [the scoped status report](../status/extensions-dependencies.md).
+This is not full integration acceptance.
 
 Run the durable focused matrix with:
 

@@ -23,7 +23,7 @@ def main():
     env.pop("EXTENSIONS_ARGS_COUNT", None)
     results = []
 
-    def run(name, command, *, code=0, stdout=None, stderr=None, contains=None, extra_env=None, stdin=None):
+    def run(name, command, *, code=0, stdout=None, stderr=None, contains=None, absent=None, extra_env=None, stdin=None):
         try:
             process = subprocess.run(command, cwd=ROOT, env=env | (extra_env or {}),
                                      input=stdin, capture_output=True, text=True, timeout=90)
@@ -34,6 +34,8 @@ def main():
                 passed &= process.stderr == stderr
             if contains is not None:
                 passed &= contains in process.stdout + process.stderr
+            if absent is not None:
+                passed &= absent not in process.stdout + process.stderr
             record = dict(name=name, command=command, passed=passed,
                           code=process.returncode, stdout=process.stdout, stderr=process.stderr)
         except (OSError, subprocess.TimeoutExpired) as error:
@@ -45,7 +47,7 @@ def main():
         return record["passed"]
 
     fibers = ["io-fibers-context", "io-fibers-many", "io-fibers-channels",
-              "io-fibers-sleep-cancel", "io-allocator-ownership", "io-dependency-workers"]
+              "io-fibers-sleep-cancel", "io-allocator-ownership", "io-allocator-zero", "io-dependency-workers"]
     args_suites = [f"stdlib/Extensions/Args/tests/{name}.jai"
                   for name in ["parse", "help", "completions"]]
     sources = [f"tests/extensions/{name}.jai" for name in fibers] + args_suites
@@ -93,7 +95,9 @@ def main():
             command = ["node", "--no-warnings", str(ROOT / "tools/wasi_run.mjs"), exe] if mode.startswith("wasm") else [exe]
         for index, (argv, code, expected, needle, variables) in enumerate(cases):
             run(f"args-{mode}-{index}", command + argv, code=code, stdout=expected,
-                contains=needle, extra_env=variables)
+                stderr="" if code == 0 else None, contains=needle,
+                absent="count=" if argv in [["--help"], ["--version"]] else None,
+                extra_env=variables)
 
     for os_name in ["linux", "windows", "macos"]:
         for cpu in ["x64", "arm64"]:

@@ -1,7 +1,8 @@
 # Developer documentation
 
 - [Extensions Io/Args dependency migration](extensions/dependency-migration.md):
-  allocator ownership, fiber scratch lifecycle and actual WASI termination.
+  allocator ownership, fiber scratch lifecycle and actual WASI termination;
+  [measured status and remaining dependency handoff](status/extensions-dependencies.md).
 
 - Sound_Player: [plan](status/audio-plan.md), [progress](status/audio-progress.md),
   [deviations](status/audio-deviations.md), [questions](specs/questions/sound-player.md),
