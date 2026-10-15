@@ -73,3 +73,27 @@ missing-data silence, outside-coverage VBAP selection, locked/music coefficients
 borrowed regions and callbacks outside both private locks. Review numeric spatial
 choices only against the prose actually supplied; unavailable original private
 behavior is not a prerequisite. Record missing coverage as missing.
+
+`python3 tools/audio_verify_no_assert.py` stages a copy of the NEW owned audio
+facade with `Basic(ENABLE_ASSERT=false)` and loads the actual production units.
+It checks nonsequential Vorbis requests against an independently opened decoder,
+drains queued work before shutdown, and runs interpreter/native O0/O2 plus six
+desktop source checks. Its checks use explicit branches/exit, never assertions.
+The staged facade is inside the owned Sound_Player subtree because internal
+imports require stdlib origin; it is removed on exit. No peer files are edited.
+Thread keeps assertions enabled: disabling them globally currently exposes a
+separate NEW Thread dependency defect recorded in dependency requests.
+The minimal `audio_reproduce_thread_dependency.py` command reproduces that defect
+as a failure, with an enabled-assertions baseline first; it is not a passing gate.
+
+`python3 tools/audio_verify_failures.py` requires an actual host SDK device,
+submits only zero PCM and injects one close error at the owned adapter boundary.
+With audio assertions disabled, it checks retained ownership, unsuccessful
+reinit, retrying shutdown and exactly-once disposal in interpreter/native O0/O2.
+Its error logger starts a second thread to prove private locks are released.
+A separate C harness injects an SDK cleanup error and verifies wrapper retry,
+compiled with NDEBUG and always-active checks. ALSA consumes its PCM even on a
+close error; only the wrapper is retained for retry, avoiding a second PCM close.
+These are controlled failures around real resources, not OS-generated failures,
+physical hotplug, or physical-speaker verification. The SDK build tool links
+this C harness on each configured platform; runtime metadata remains separate.

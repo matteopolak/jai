@@ -208,3 +208,22 @@ without claiming ARM64 CRT libraries, a linked DLL/executable or runtime. This
 check exposed inconsistent DLL-export attributes between declarations/definitions;
 the header now consistently marks producer exports and leaves static consumers
 unmarked. Clang warnings remain denied; no suppression was added.
+# Close-failure ownership validation
+
+The six-platform SDK builder also compiles/links `failure-injection/sdk-close.c`
+with NDEBUG. On a host run with a real opened device, it injects a cleanup error,
+checks wrapper ownership, then performs real SDK cleanup on retry. Its metadata
+is `audio-close-runtime.json`, separate from ordinary device runtime. Windows
+reset/header cleanup errors leave ownership intact. Mac disposal errors retain
+callback state. ALSA consumes the PCM even when closing reports an error, so our
+wrapper clears that pointer and a retry frees only the wrapper; it never closes
+the consumed PCM again. This follows the official
+[ALSA close implementation](https://github.com/alsa-project/alsa-lib/blob/master/src/pcm/pcm.c).
+
+`python3 tools/audio_verify_failures.py` additionally checks Sound_Player's
+shutdown retry, initialization rejection, callback lock release and exactly-once
+stream disposal, using a real SDK device with an explicitly injected adapter
+error. It disables audio assertions and runs interpreter/native O0/O2. These
+tests require a real device or documented real dummy backend and are controlled
+failure injection, not native OS-generated failure or physical event evidence.
+

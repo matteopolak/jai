@@ -5,7 +5,8 @@
   [playback and independent entity phases](features/sound-player.md)
 - [Audio native integration](features/audio-native-integration.md): relocatable
   static linkage, six desktop SDK/CI recipes, focus and device recovery evidence.
-- [Audio testing](features/audio-testing.md): NEW spec provenance, independent
+- [Audio testing](features/audio-testing.md): assertion-disabled and real-resource
+  close-failure tests, NEW spec provenance, independent
   review request, hardware/source distinctions and legacy-gate migration.
 
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).

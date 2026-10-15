@@ -201,3 +201,30 @@ JAIC_CROSS_LIBS rather than host native search variables. These failed attempts
 were corrected without changing compiler source or introducing a linker shim.
 Linux SDK/native execution, Windows native execution/ARM64 CRT, Android target
 and independent test review remain pending; the whole audio scope is not complete.
+# Integrated assertion/error-path audit — active follow-up
+
+Validated coordinator feedback against current NEW source and the refreshed
+reviewed spec. Nonsequential Vorbis comparisons failed with optional assertions
+disabled before the owned fix. Moved essential open/seek/wait/join operations
+outside assertions, made decode nonprogress fatal, and retained failed output
+ownership through shutdown/recovery retries. Logger dispatch now respects nested
+producer calls and runs outside the outer private lock.
+
+Host real-device silent SDK harness and controlled SDK-close error/retry (NDEBUG)
+passed after rebuilding owned C. Audio-only assertion-disabled interpreter/native
+O0/O2 passed, and real-device injected close failure passed those three modes,
+including a second-thread logger probe. Full suite and cross-target checks are
+being refreshed. Thread-wide disabled assertions are a separate genuine NEW
+dependency defect; peer sources were not changed. These checks do not establish
+OS-generated failure, physical focus/hotplug, or whole-scope completion.
+
+Refreshed verification finished: 25 common NEW fixtures passed interpreter/native
+O0/O2 and 150 desktop source checks, with two additional Windows ABI source checks
+and three private-name rejections. Host formatter/lint and logical 6/8-channel
+real SDK streams passed. Both disabled-audio-assert runners passed their three
+execution modes and six source targets. ARM64 relocation plus all six source
+groups passed; macOS x64/Windows x64 SDK libraries and the NDEBUG fault-injection
+C harness linked without claiming Windows runtime. Minimal Thread handoff now
+reproduces SUCCESS enabled versus ERROR disabled at semaphore init/signal/wait,
+exit 1, with original global-configuration failure preserved in dependency docs.
+

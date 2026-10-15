@@ -279,6 +279,18 @@
         "source-windows-arm64"
       ],
       "hardware": "none"
+    },
+    {
+      "path": "tests/audio/assertion-independent.jai",
+      "provenance": "Compressed page seeking, shutdown drain/join and independent safety with optional assertions disabled",
+      "modes": [
+        "interpreter",
+        "native-host-O0",
+        "native-host-O2",
+        "source-desktop-six-targets",
+        "staged-audio-assertions-disabled"
+      ],
+      "hardware": "none"
     }
   ],
   "negative": [
@@ -306,5 +318,19 @@
       "native exact-host silent runtime optional --require-device"
     ],
     "physical_events": "Not tested; controlled pause/resume and reopen only"
+  },
+  "failure_injection": {
+    "paths": [
+      "tests/audio/failure-injection/lifetime.jai",
+      "tests/audio/failure-injection/adapter.c",
+      "tests/audio/failure-injection/sdk-close.c"
+    ],
+    "provenance": "Official SDK cleanup ownership plus independently safe failure handling; real devices with explicitly injected errors",
+    "modes": [
+      "native SDK NDEBUG",
+      "audio assertions disabled interpreter/native O0/O2",
+      "source-desktop-six-targets"
+    ],
+    "limitation": "Controlled errors, not OS-generated faults or physical device event evidence"
   }
 }

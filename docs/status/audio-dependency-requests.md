@@ -26,3 +26,23 @@ No peer sources or shared manifest files were changed.
   android` check currently exits 2 (unknown OS); Linux is not counted as Android.
   Native Android/Windows ARM64 SDKs and native Linux/Windows execution remain
   coordinator validation dependencies; no peer toolchain changes are made here.
+
+- Thread owner: NEW `internal/thread/synchronization.jai` places essential
+  mutex/condition/semaphore SDK operations inside `Basic.assert` arguments;
+  `lifecycle.jai` similarly guards Windows ResumeThread/CloseHandle this way.
+  Basic(ENABLE_ASSERT=false) discards those arguments. A staged global-default
+  experiment failed audio's decode join with `thread completion wait failed`.
+  This is a genuine dependency safety defect, not a legacy test expectation.
+  Please move essential SDK operations outside optional assertions and provide
+  assertion-disabled lifecycle tests. Audio does not edit those peer sources.
+  Audio's own disabled-assert regression deliberately leaves Thread's default
+  assertion configuration intact to isolate owned evidence.
+  Exact minimal reproducer: `tests/audio/dependencies/thread-no-assert.jai`;
+  run `python3 tools/audio_reproduce_thread_dependency.py` (currently exits 1).
+  Action: `init(Semaphore)`, `signal`, then `wait_for(..., 0)` must yield SUCCESS.
+  Native ARM64 macOS interpreter baseline yields SUCCESS; staged default-off
+  Thread yields ERROR. Original full configuration was
+  `tests/audio/assertion-independent.jai` with a staged NEW Basic facade defaulting
+  ENABLE_ASSERT=false globally: exit -6, Thread diagnostic `thread completion wait
+  failed`, followed by audio fatal `audio decode worker join failed`. This failure
+  is preserved here; the narrower audio-only configuration is not its resolution.

@@ -136,3 +136,29 @@ untouched. Native SDK/public C inputs are linked in the integration documentatio
   instead of losing ownership of possibly retained callback state. Unsupported
   Android C targets fail explicitly; no ALSA substitute is built. These exceptional
   cleanup paths are source-checked, not physically fault-injected.
+# Assertion and cleanup audit follow-up
+
+The integrated audit identified genuine owned defects: optional assertions
+contained Vorbis open/seek, decode semaphore wait and both worker joins. Those
+operations now execute unconditionally; fatal decode/join failures cannot
+continue through a returning assertion callback. Decode nonprogress is an
+unconditional error instead of an assertion-disabled infinite loop.
+
+Failed device closes retain their reachable wrapper/handle and mark output
+unavailable. Shutdown preserves its remaining ownership and synchronization
+until a later shutdown retries cleanup. Reinit does not report success for the
+retained failed handle. This is an independently designed recovery policy;
+the reviewed public API has no shutdown status return. Device discovery/start
+failures are reported outside private locks, with nested producer calls tracked
+until the outer lock is released. Windows cleanup stops before disposing live
+headers after a reset/unprepare failure. ALSA's SDK consumes its PCM on close
+even on errors, so its pointer is cleared while our wrapper remains retryable.
+Official SDK input: https://github.com/alsa-project/alsa-lib/blob/master/src/pcm/pcm.c
+(`snd_pcm_close`). Native OS-generated close failures remain unexercised.
+
+NEW tests inject explicit errors around real SDK resources and label injection
+separately. Global assertion-disabled verification is staged by a genuine NEW
+Thread defect, reported in dependency requests; owned audio assertions are
+disabled independently without changing peer sources. No assertion callback
+is accepted as a successful recovery signal.
+

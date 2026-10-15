@@ -21,8 +21,8 @@ Reviewed declaration rows: 213. Missing names: none.
 | CACHED_OGG_DECODE_NUM_THREADS | common | cache.jai | no direct genuine-test reference |
 | CACHED_OGG_DECODE_THREADED | common | cache.jai | no direct genuine-test reference |
 | CONFIG | OS == .WINDOWS | windows-abi.jai | windows-abi; signature/link probe (not behavioral evidence); Windows branch checked only (no Windows native execution) |
-| Cached_Decoder | common | types.jai | concurrent-render-stop, decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
-| Cached_Decoder_Page | common | types.jai | concurrent-render-stop, decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
+| Cached_Decoder | common | types.jai | assertion-independent, concurrent-render-stop, decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
+| Cached_Decoder_Page | common | types.jai | assertion-independent, concurrent-render-stop, decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
 | Cached_Ogg_Decoder | common | types.jai | identity; signature/link probe (not behavioral evidence) |
 | DELTA_RATE_MAX | common | mixer.jai | no direct genuine-test reference |
 | DELTA_RATE_MIN | common | mixer.jai | no direct genuine-test reference |
@@ -92,7 +92,7 @@ Reviewed declaration rows: 213. Missing names: none.
 | SPEAKER_TOP_FRONT_RIGHT | OS == .WINDOWS | windows-abi.jai | no direct genuine-test reference; Windows branch checked only (no Windows native execution) |
 | Scale_Mapping | common | types.jai | controlled-output, panning, reviewed-edges; signature/link probe (not behavioral evidence) |
 | Sound_Category | common | types.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
-| Sound_Data | common | types.jai | cache-pages, compressed-stream, concurrent-render-stop, controlled-output, entity-lifecycle, entity-phase, identity, ogg-pages, pcm-mixing, reviewed-edges, reviewed-gain, silence-cursors, streams; signature/link probe (not behavioral evidence) |
+| Sound_Data | common | types.jai | assertion-independent, cache-pages, compressed-stream, concurrent-render-stop, controlled-output, entity-lifecycle, entity-phase, identity, ogg-pages, pcm-mixing, reviewed-edges, reviewed-gain, silence-cursors, streams; signature/link probe (not behavioral evidence) |
 | Sound_Player_Config | common | types.jai | compressed-stream, concurrent-render-stop, controlled-output, device-lifecycle, entity-lifecycle, entity-phase, failed-init, identity, region-lifetime, streams, verbose-config; signature/link probe (not behavioral evidence) |
 | Sound_Stream | common | types.jai | compressed-stream, concurrent-render-stop, controlled-output, entity-lifecycle, entity-phase, identity, panning, pcm-mixing, reviewed-edges, reviewed-gain, silence-cursors, streams; signature/link probe (not behavioral evidence) |
 | Source_Direction | common | types.jai | controlled-output; signature/link probe (not behavioral evidence) |
@@ -109,7 +109,7 @@ Reviewed declaration rows: 213. Missing names: none.
 | accumulate_stream | common | mixer.jai | pcm-mixing, reviewed-edges, silence-cursors; signature/link probe (not behavioral evidence) |
 | accumulator_element_size | common | mixer.jai | no direct genuine-test reference |
 | add | common | samples.jai | sample-math; signature/link probe (not behavioral evidence) |
-| add_decode_queue_item | common | decode-queue.jai, types.jai | decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
+| add_decode_queue_item | common | decode-queue.jai, types.jai | assertion-independent, decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
 | add_vbap_gain_for_direction | common | panning.jai | panning, reviewed-edges; signature/link probe (not behavioral evidence) |
 | adjust_stereo_dots_by_closeness | common | panning.jai | reviewed-edges; signature/link probe (not behavioral evidence) |
 | advance_history_cursor | common | history.jai | history; signature/link probe (not behavioral evidence) |
@@ -147,18 +147,18 @@ Reviewed declaration rows: 213. Missing names: none.
 | completed_queue_lock | common | decode-queue.jai | no direct genuine-test reference |
 | count_retired_decoders | common | cache.jai | compressed-stream, concurrent-render-stop; signature/link probe (not behavioral evidence) |
 | create_adpcm_decoder | common | adpcm.jai | cache-pages; signature/link probe (not behavioral evidence) |
-| create_ogg_decoder | common | vorbis.jai | ogg-pages; signature/link probe (not behavioral evidence) |
+| create_ogg_decoder | common | vorbis.jai | assertion-independent, ogg-pages; signature/link probe (not behavioral evidence) |
 | decode_queue | CACHED_OGG_DECODE_THREADED | decode-queue.jai | no direct genuine-test reference |
-| decode_queue_initted | common | decode-queue.jai | concurrent-render-stop, decode-queue, entity-lifecycle, failed-init, identity, streams |
+| decode_queue_initted | common | decode-queue.jai | assertion-independent, concurrent-render-stop, decode-queue, entity-lifecycle, failed-init, identity, streams |
 | decode_queue_lock | CACHED_OGG_DECODE_THREADED | decode-queue.jai | no direct genuine-test reference |
 | decode_queue_semaphore | CACHED_OGG_DECODE_THREADED | decode-queue.jai | no direct genuine-test reference |
 | decode_queue_thread | CACHED_OGG_DECODE_THREADED | decode-queue.jai | no direct genuine-test reference |
-| deinit | common | cache.jai | cache-pages, ogg-pages, queue-retirement; signature/link probe (not behavioral evidence) |
+| deinit | common | cache.jai | assertion-independent, cache-pages, ogg-pages, queue-retirement; signature/link probe (not behavioral evidence) |
 | deinit_proc_ogg | common | vorbis.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | fill_sample_buffer | common | player.jai | compressed-stream, concurrent-render-stop, controlled-output, entity-lifecycle; signature/link probe (not behavioral evidence) |
 | find | common | player.jai | concurrent-render-stop, entity-lifecycle, entity-phase, streams; signature/link probe (not behavioral evidence) |
 | find_page_by_base_address | common | cache.jai | cache-pages; signature/link probe (not behavioral evidence) |
-| find_page_containing_cursor | common | cache.jai | cache-pages; signature/link probe (not behavioral evidence) |
+| find_page_containing_cursor | common | cache.jai | assertion-independent, cache-pages; signature/link probe (not behavioral evidence) |
 | free_unmarked_pages | common | cache.jai | cache-pages, ogg-pages; signature/link probe (not behavioral evidence) |
 | get_audio_sampling_rate | common | player.jai | concurrent-render-stop, entity-lifecycle, entity-phase, failed-init, streams; signature/link probe (not behavioral evidence) |
 | get_base_address | common | cache.jai | cache-pages; signature/link probe (not behavioral evidence) |
@@ -174,7 +174,7 @@ Reviewed declaration rows: 213. Missing names: none.
 | get_plane_dir | common | panning.jai | panning, reviewed-edges; signature/link probe (not behavioral evidence) |
 | get_target_2_closeness | common | panning.jai | reviewed-edges; signature/link probe (not behavioral evidence) |
 | init_KSDATAFORMAT_SUBTYPE_PCM | OS == .WINDOWS | windows-abi.jai | windows-abi; signature/link probe (not behavioral evidence); Windows branch checked only (no Windows native execution) |
-| init_sound_player_decode_queue | common | decode-queue.jai | decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
+| init_sound_player_decode_queue | common | decode-queue.jai | assertion-independent, decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
 | init_wave_format | OS == .WINDOWS | windows-abi.jai | windows-abi; signature/link probe (not behavioral evidence); Windows branch checked only (no Windows native execution) |
 | invert | common | panning.jai | panning; signature/link probe (not behavioral evidence) |
 | load_audio_data | common | loading.jai | loading; signature/link probe (not behavioral evidence) |
@@ -182,7 +182,7 @@ Reviewed declaration rows: 213. Missing names: none.
 | make_page_adpcm | common | adpcm.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | make_page_ogg | common | vorbis.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | make_stream | common | player.jai | compressed-stream, controlled-output, entity-lifecycle, entity-phase, streams; signature/link probe (not behavioral evidence) |
-| mark_relevant_pages | common | cache.jai | cache-pages, ogg-pages, queue-retirement; signature/link probe (not behavioral evidence) |
+| mark_relevant_pages | common | cache.jai | assertion-independent, cache-pages, ogg-pages, queue-retirement; signature/link probe (not behavioral evidence) |
 | maybe_wrap_play_cursor | common | mixer.jai | pcm-mixing; signature/link probe (not behavioral evidence) |
 | mix_sample_into_output_streams | common | mixer.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | multiply | common | samples.jai | sample-math; signature/link probe (not behavioral evidence) |
@@ -202,7 +202,7 @@ Reviewed declaration rows: 213. Missing names: none.
 | set_repeating | common | player.jai | controlled-output, entity-lifecycle, entity-phase, reviewed-gain, streams; signature/link probe (not behavioral evidence) |
 | skip_this_output_channel | common | panning.jai | reviewed-edges; signature/link probe (not behavioral evidence) |
 | sound_player_init | common | player.jai | compressed-stream, concurrent-render-stop, controlled-output, entity-lifecycle, entity-phase, failed-init, region-lifetime, streams, verbose-config; signature/link probe (not behavioral evidence) |
-| sound_player_shutdown | common | player.jai | compressed-stream, concurrent-render-stop, controlled-output, decode-queue, entity-lifecycle, entity-phase, failed-init, queue-retirement, region-lifetime, streams, verbose-config; signature/link probe (not behavioral evidence) |
+| sound_player_shutdown | common | player.jai | assertion-independent, compressed-stream, concurrent-render-stop, controlled-output, decode-queue, entity-lifecycle, entity-phase, failed-init, queue-retirement, region-lifetime, streams, verbose-config; signature/link probe (not behavioral evidence) |
 | source_dir_to_target_dir | common | panning.jai | controlled-output, panning, reviewed-edges; signature/link probe (not behavioral evidence) |
 | start_playing | common | player.jai | compressed-stream, concurrent-render-stop, controlled-output, entity-lifecycle, entity-phase, streams; signature/link probe (not behavioral evidence) |
 | start_vorbis_file | common | vorbis.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
