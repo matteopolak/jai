@@ -10,23 +10,21 @@ consecutive matching/null root suffix. The old module-ID diagnostic is removed.
 Report-owned node/group/table resources survive tracked allocation cleanup and
 are released by deinit; the refined contract permits the private pool/lock design.
 
-- **Audit-discovered genuine API gaps** — Hash's scalar fnv1a_hash overload and
-  Basic.test_unsigned_division are absent. Original pending public-call sources
-  reject; the driver now records them as positive required-API failures and
-  continues independent tests. Word/byte FNV semantics and division-exercise
-  platform/random callback contracts need review. No fake bodies/default values,
-  expected-negative reclassification or test/lint exclusion hides these gaps.
+- **Audit-discovered API gaps resolved** — scalar FNV and the all-OS x64 public
+  division exercise now implement the refined contracts. Original probes pass;
+  independent scalar vectors and a Python integer oracle validate real results.
+  Division diagnostic formatting/deterministic samples are independently chosen
+  because the reviewed behavior does not fix their exact bytes/set. There is no
+  callback substitute, iteration clamp, ignored parameter or fabricated result.
 
 Latest resolution: NEW producer compiler_host semantics fix BUILD_* generally.
 Preamble cross early return now passes the genuine WASI test and independent
 predicate. The historical failure below is retained, not still treated as a gap.
 
-- **Wide integer conversion guard gap** — integer128.jai implements real wide
-  arithmetic and scalar conversion bodies, but to_s128/to_u128 lack the
-  inventory's #modify guard. Accepted source kinds, negative unsigned extension
-  and unsigned-to-signed overflow policy are not specified. Risk: unsupported
-  kinds may be accepted or produce misleading diagnostics. The precise contract
-  request is in foundations-questions.md; no arbitrary guard is invented.
+- **Wide conversion guards resolved** — integer128.jai now has the exact reviewed
+  #modify guards and conversions, including signed-64 extension of high-bit u64
+  inputs. Thirteen unsupported-kind specializations reject. Signed division uses
+  explicit private bit conversions; no public convenience overload was retained.
 - **Array aliasing safety resolved** — bulk append formerly read stale source
   storage after growth when given its own slice. The original moving allocator
   regression failed before the fix and now passes. A single reserve/rebase and
@@ -54,7 +52,9 @@ predicate. The historical failure below is retained, not still treated as a gap.
 - **Real visualization backend** — the previous text-only transport is removed.
   Production macOS/Linux uses the NEW peer shared-memory producer and reviewed
   version-2 record layouts, with real timing, reconnect/reset, acknowledgements,
-  retained unsent packets and owned event traces. Windows/WASI lack a supported
+  retained unsent packets and owned event traces. Runtime channel tests execute
+  on macOS; Linux has unused-code cross-checks, not Linux runtime evidence.
+  Windows/WASI lack a supported
   producer channel and log explicit first connection failure; no fake channel
   success or env import is used. Native-only channel/timing cases are excluded
   on those targets for this exact missing dependency; disabled hooks and the
@@ -77,10 +77,25 @@ predicate. The historical failure below is retained, not still treated as a gap.
   extension and scoped default logger prevent recursive accounting/lock inversion.
 - **CAPS provider coverage** — the owned getter uses exact name-out ABI and
   the temporary allocator fills a truthful static `Basic temporary storage`
-  name. NEW peer runtime/pool allocators still need that name-out contract
-  audited; Basic does not fabricate names on their behalf. The getter regression
-  proves zero sizes/null data and borrowed name identity with a CAPS-only fixture;
-  this is not claimed as a complete allocator implementation.
+  name. NEW runtime producer now supplies its actual name-out value; only its
+  unchanged heap source was integrated read-only into own selected staging.
+  Normalized diff isolates the CAPS change, preserving bootstrap parameters.
+  Original real-runtime regression failed before integration and checks nonempty
+  name plus repeat-call borrowed identity afterward. Refreshed NEW Pool handles
+  CAPS before dereferencing data and supplies its name; its original real
+  positive interpreter gate now passes. Historical assertion evidence is retained
+  in prior checkpoints. Basic never
+  fabricates provider names. The CAPS-only callback additionally tests exact
+  zero sizes/null data and borrowed name identity, not an allocator substitute.
+- **Preamble provider integration** — NEW Flat_Pool and its private virtual-memory
+  source are now copied read-only into selected staging. The old simulated flat-
+  family callback was removed from basic-preamble.jai; the native test uses the
+  actual allocator's zero-data CAPS name and verifies the real early return.
+  WASI correctly excludes this unavailable native API and still tests Preamble's
+  cross early return. The provisional modules/Pool string heuristic was removed:
+  canonical Pool uses procedure identity, and Flat_Pool uses its documented
+  version string. Canonical Pool/temp and real Flat_Pool behavior are tested;
+  no broader unspecified wrapper-family compatibility is claimed.
 
 Current follow-up supersedes the historical helper-policy entries below:
 new reviewed behavior now defines sequence quoting, hex bytes/newlines, copying
@@ -123,6 +138,38 @@ those contracts; the earlier choices are retained only as checkpoint history.
   Real protocol/channel lifecycle/backpressure tests are being implemented.
   NEW producer transport currently supports macOS/Linux; Windows/WASI native
   transports remain pending and must report connection limitations explicitly.
+
+- **Remaining formatting/parser policies** — format-support.jai uses an optional
+  caller context.print_style extension, otherwise a local default; no reviewed
+  active-style storage declaration exists. Rendering questions include the
+  contradictory positional example, generic punctuation, unknown enum/procedure
+  spelling and may_be_uninitialized; current independently chosen behavior is
+  detailed in foundations-questions.md. String scan2 currently rejects integer
+  destinations outside parsed signed-s64 range; exact conversions and malformed
+  wildcard rules need review. File visitation order/pruning/symlink behavior and
+  metadata sentinel policy are implemented independently and recorded there.
+  Risk is compatibility at unspecified edges; proper fix is reviewed contracts
+  plus focused regressions, not invented public storage or guessed behavior.
+- **Deliberate numeric/stamping costs** — numeric-conversion.jai uses exact
+  arbitrary-precision arithmetic and shortest-candidate reparsing, with dynamic
+  limbs and repeated allocations. All 2300 power-boundary intervals were checked
+  independently; cached powers/buffer reuse can improve cost without reducing
+  accuracy. temporary.jai may stamp unused retained-page tail bytes when freeing
+  later pages because public records lack earlier occupancy. Live bytes are
+  preserved; a private occupancy index could reduce debug-option bandwidth.
+- **Native runtime coverage** — filesystem/channel execution here is macOS arm64.
+  Linux and Windows unused-code checks do not establish target-native runtime
+  passes; Windows/WASI channel transport is absent. Coordinator owns full corpus
+  and target-native integration. No unsupported target is counted as executed.
+
+## Historical checkpoints and superseded policies
+
+The entries below retain earlier implementation/failure evidence. Their old
+status, algorithm and policy statements are superseded by the current inventory
+above, the refined specifications and the current API audit. In particular,
+helper outputs, slice reallocations, stack text/lifetime, logging, reflection,
+indexed tracking, visualization, alias documentation and producer constraints
+have since been resolved; the former text transport is not production support.
 
 - **New helper policy confirmation** — stream-helpers.jai concatenates top-level
   rendered sequence arguments, prints each u8 through the given format (no

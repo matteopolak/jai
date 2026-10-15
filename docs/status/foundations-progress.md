@@ -1,5 +1,72 @@
 # Foundations progress
 
+Stable API completion checkpoint: f972441. The independent shortest-float audit
+has been rerun after the current numeric/Pool changes: all 2300 normal power
+intervals and minimal precisions pass native O0/O2 and production WASI O0/O2.
+The NEW real Flat_Pool producer is now available and integrated read-only with
+its private virtual-memory source; the Preamble test no longer uses a simulated
+flat-family callback. Actual zero-data CAPS and early-return behavior pass
+interpreter, native O0/O2, WASI O0/O2, strict focused lint and all six native
+unused-code targets. The unreviewed modules/Pool name heuristic was removed;
+canonical Pool procedure identity and documented Flat_Pool CAPS are sufficient
+for the actual providers. No producer checkout or bootstrap parameter changed.
+
+Final owned export batch implements the resolved scalar FNV overload, exact
+to_s128/to_u128 #modify guards/conversions, and public all-OS CPU.X64 division
+exercise. No genuine reviewed API name/overload remains missing in the owned
+Basic/String/Hash/File_Utilities scope; portable time/native responsibility and
+unspecified edge policies are separately documented. Signed division now uses
+private bit conversions, preserving the public guard boundaries.
+
+Verified 47 host cases in interpreter/native O0/O2 and 39 supported WASI cases
+in O0/O2. Thirteen inadmissible conversion sources reject specialization.
+The x64 diagnostic also passes interpreter and actual x64 native O0/O2 execution,
+with independent Python divmod checks on all printed samples and exact callback
+count/order assertions. Six native unused-code scopes pass, including the
+diagnostic on Linux/macOS/Windows x64. Real unchanged jaifmt CLI/owned check and
+focused changed-code/positive-test -D warnings pass.
+
+Refreshed NEW portable Pool into selected staging read-only; the original null-
+data CAPS call and mandatory provider gate now pass. Scalar FNV/division original
+public-call gates also pass. The full driver exits 1 solely for the preserved
+WASI unused File/POSIX.FILE dependency. Current File producer still loads its
+Unix FILE backend for WASI; the original minimal ABI-guard request remains.
+Latest linter main/driver match the NEW producer byte-for-byte and still provide
+only host context. Full lint exits 1 on 20 target-specific/intentional-negative
+roots, with no rule findings; no exclusions or configured-bootstrap/private-
+import changes hide them. See foundations-lint-request.md for proper owner work.
+
+Earlier checkpoint evidence follows; current resolutions above supersede its
+old missing-API/provider statements.
+
+Latest stable checkpoints: ad84008 implements refined leak filters; e3d9052
+verifies the real runtime CAPS provider and retains the Pool failure. Current
+supported execution is 45 host / 37 WASI cases as detailed below. Remaining
+owned contract gaps and producer/lint dependencies are explicit in the audit;
+this is not a completed-all-APIs or full-lint success claim.
+
+Stable implementation checkpoint: ad84008, conventional fix(basic) commit for
+refined leak matching/trim/lifetime and the four-facade audit. Its full driver
+completed all six native unused-code targets; overall status remains failure
+for two actual owned API gaps plus the File/POSIX.FILE WASI dependency.
+
+Following checkpoint: the NEW portable runtime CAPS name-out fix was integrated
+read-only in selected staging. Normalizing the prior heap source with real
+jaifmt proves its only semantic difference is the name-out block; bootstrap
+configuration and allocation logic are preserved. Added real default-allocator
+borrowed-name/identity assertions, first observed their failure, then verified
+interpreter and focused warnings-denied lint success after integration.
+The real Pool CAPS source still asserts on null data; its original public-call
+reproducer now also runs as a positive failing integration gate in the driver.
+Post-integration verification completed: all 45 host interpreter/native O0/O2
+and 37 supported WASI O0/O2 cases pass, including the real runtime CAPS check.
+Real jaifmt CLI/owned check and focused warnings-denied lint pass. All six native
+unused-code target checks pass for the expanded real-provider test. The full
+runtime run retains the two required-API failures; Pool was separately rerun
+and failed its original assertion before being added to the driver's ledger.
+The earlier full cross run additionally retains the unrelated WASI File ABI
+failure. No full success is claimed for those failing gates or complete lint.
+
 Refined leak batch: exact name plus case-sensitive source-path matching is now
 implemented for leaves, roots and grouping. Root trimming removes only a matching
 or null suffix; leaf trimming retains the first matching node. Report-owned

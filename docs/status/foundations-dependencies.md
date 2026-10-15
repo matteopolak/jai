@@ -31,13 +31,18 @@ compiler bypass or fabricated FILE layout is requested; no peer file is edited.
 
 The new sync supplies the exact name-out ABI: CAPS receives zero sizes, *string
 as old_memory, and null allocator_data; its return encodes flags. Basic now
-implements it and the owned temporary allocator supplies a name. NEW runtime
-and Pool providers still require audit: the runtime returns flags without a
-name, and the snapshot Pool asserts allocator_data is non-null before handling
-CAPS even though get_capabilities passes null. Correct their producer bodies
-without changing Basic's reviewed ABI. Basic must not manufacture their names.
-Original pending/pool-capabilities-name.jai reproduces the Pool failure using
-only public APIs; it is not counted as a completed runtime case.
+implements it and the owned temporary allocator supplies a name. The NEW portable
+runtime producer now writes its truthful static name. Its heap.jai was copied
+read-only into own selected staging; normalized diff contains only the CAPS
+name-out change, preserving selected bootstrap parameters and all allocation
+logic. The real-provider test first failed on the old staged heap, then passed
+after integration, checking nonempty borrowed name and repeat-call identity.
+Refreshed NEW portable Pool now handles CAPS before dereferencing allocator_data
+and supplies its name. Its complete producer pool.jai was copied read-only into
+selected staging, and the original public-call reproducer now passes. The real
+positive provider gate remains mandatory in the driver. Basic did not change
+the reviewed ABI or manufacture provider names. The earlier failing assertion
+is historical evidence, not a current producer limitation.
 
 Preamble native scoped effects and cross early return now pass with the NEW
 compiler general BUILD_OS/BUILD_CPU host fix. The separate predicate request

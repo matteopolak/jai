@@ -10,7 +10,9 @@ API inputs. This is a declaration/signature audit, not proof of all behavior.
 
 These entries have real implementations and behavior tests. The newest review
 batch resolves their ordinary and edge contracts; remaining precise questions
-are recorded separately. Full Basic completion is still in progress.
+are recorded separately. No reviewed declaration or overload is missing from
+the owned core scope; portable ownership and remaining behavior questions are
+kept separate from that export audit.
 
 - `log` and `log_error`: both format-first and section-first overloads, exact
   parameter names/defaults, contextual source identifier and logger data,
@@ -50,33 +52,52 @@ are recorded separately. Full Basic completion is still in progress.
 - All reviewed visualization hook names now have the real version-2 channel
   implementation, with initialization/retry timing, deduplication, definition
   packets, live/alloc/free snapshots, queue-full retry and reader reconnection.
-  macOS/Linux shared-memory transport is tested; other producer transports are
-  explicitly unavailable. The old textual snapshot path is removed.
+  macOS/Linux shared-memory transport is implemented, with macOS runtime tests
+  and Linux unused-code cross-checks. Other producer transports are explicitly
+  unavailable. The old textual snapshot path is removed.
 - get_capabilities follows the exact zero-size/name-out/null-data convention
   and returns the allocator-owned name view. The owned temporary allocator
   supplies its real static name. Preamble has real native caller-scope flags,
   logger defers, allocator-family exclusions and first-use initialization;
   NEW compiler host/target metadata now makes the cross-compilation early
   return pass the genuine predicate and production WASI regression.
+  The NEW portable runtime name-out fix is integrated read-only in selected
+  staging and tested through the real default allocator, including borrowed
+  storage identity. Refreshed NEW Pool now also passes its original null-data
+  CAPS call; the positive provider gate remains active.
+- Scalar fnv1a_hash performs one whole-u64 XOR/multiply, while its byte overload
+  applies that shared step per byte. Vectors verify wrapping, explicit/default
+  seeds, named arguments and the deliberate scalar/byte distinction.
+- to_s128 and to_u128 now have the exact reviewed #modify guards. Signed
+  conversion uses signed-64 sign extension even for high-bit unsigned inputs;
+  unsigned conversion accepts only the four built-in unsigned types. Thirteen
+  compile-time regressions reject unsupported kinds; signed division uses its
+  own private bit conversions instead of widening these public contracts.
+- test_unsigned_division is public on CPU.X64 for every OS. Its independently
+  chosen deterministic checks always print and verify real divisions; positive
+  iterations consume exactly three callback operands. Original tests verify
+  zero/negative iteration behavior and an independent Python integer oracle
+  checks every printed result in interpreter and native x64 O0/O2 execution.
 
 Original regressions exercise callback effects, nested context restoration,
 default stdout/stderr routing, temporary message storage, numeric boundaries,
 and reflection storage identity. The runner includes them in host/WASI and
 unused-code checks alongside the formatter/configuration suite.
 
-## Genuine outstanding owned gaps
+## Owned export audit result and dependencies
 
-These are reviewed public declarations, not invalid legacy conveniences.
-Missing exports are not replaced with inert bodies.
+All reviewed owned core names and overloads now have real implementations.
+This does not claim complete native platform coverage or settle unspecified
+formatting/parser policies. No missing export is replaced with an inert body.
 
 | Responsibility | Outstanding declarations / contracts |
 | --- | --- |
 | Debugger macro | No missing name or cross gap: NEW compiler host constants resolve the earlier failure, and the genuine WASI predicate/Preamble tests pass. Exact allocator-family matching is still a review question. |
-| Wide integer conversions | to_s128/to_u128 exist, but their reviewed #modify source-kind and conversion policies are unspecified. The current cast-based bodies have no guard; precise questions are recorded rather than calling them exact signatures. |
-| Division exercise | test_unsigned_division is genuinely missing. Inventory gives parameters/defaults but no random-callback/null policy or platform-condition detail beyond its Windows section and CPU.X64 label. Original public-call repro is retained. |
-| Hash scalar FNV | fnv1a_hash has a byte overload but lacks the reviewed scalar u64 overload. The exact word-versus-byte operation remains unspecified; original public-call repro rejects. Scalar get_hash and Hash_Table integration are implemented/tested. |
+| Wide integer conversions | Resolved, implemented and tested with exact guards and casts. |
+| Division exercise | Resolved, public for all x64 OS targets, executed in interpreter/native O0/O2 with callback-count and independent arithmetic checks. |
+| Hash scalar FNV | Resolved whole-value scalar overload, shared byte step, vectors and real Hash_Table integration. |
 | Leak reporting | Reviewed matching, trimming and report-owned lifetime are implemented. No module-ID metadata dependency remains. |
-| Visualization | No missing names. Native macOS/Linux channel is real and tested; Windows/WASI shared-memory producers remain unavailable and are diagnosed explicitly. |
+| Visualization | No missing names. Native macOS/Linux channel is real, executed on macOS and cross-checked for Linux. Windows/WASI shared-memory producers remain unavailable and are diagnosed explicitly. |
 
 ## Preserved portable responsibility
 
@@ -93,8 +114,8 @@ checkout was modified.
 The latest logging paragraph confirms the implemented contextual dispatch,
 temporary lifetime, no extra verbosity filtering/newline/null-logger check,
 and suppression of empty messages. Typed enum-array lifetime is also resolved.
-Remaining review questions concern wide conversions, scalar FNV, the division
-exercise and exact allocator-family matching. Preamble requires
+Remaining review questions concern unspecified rendering/parser/filesystem edges
+and exact allocator-family matching. Preamble requires
 a real host/target compiler distinction, now provided by the NEW producer.
 Conservative scanner
 and ownership heuristics are implementation policy under the reviewed contract.
@@ -112,9 +133,9 @@ append, empty append and overlapping/self copy.
 
 ## Other owned facades
 
-String and File_Utilities have all reviewed ordinary declaration names, including
-conditional aliases; Hash has every reviewed name but the scalar overload gap
-above. This audit checks overload bodies as well as facade aliases. String
+String, Hash and File_Utilities have all reviewed ordinary declaration names and
+overloads, including conditional aliases. This audit checks overload bodies as
+well as facade aliases. String
 signatures/defaults and observed reviewed quirks are covered by original token,
 search/split/path/scan tests, including view identity and partial failure effects.
 Its unspecified wildcard/scan conversion edges remain questions, not invented
@@ -125,6 +146,7 @@ not executed. WASI supports portable path operations; native filesystem/channel
 runtime coverage is not claimed. File visitation edge policies remain explicitly
 documented while review is pending. Private aliases/helpers are not facade exports.
 
-The driver positively checks the two unresolved public-call reproducers and
-retains their failure in its overall result. They are not classified as expected
-negative API tests or included in completed functionality counts.
+The driver retains the original public-call reproducers as positive API checks;
+both now pass. The Pool CAPS integration gate also passes after safe producer
+refresh. Complete lint and WASI unused-File dependency remain explicit failures,
+not weakened gates or fabricated ABI support.

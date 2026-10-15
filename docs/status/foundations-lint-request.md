@@ -3,9 +3,12 @@
 Rebuilt from the latest NEW compiler/linter sources after the refined leak spec
 sync. CLI still exposes no target selection; driver.rs still creates host
 CompilerOptions. The selected bootstrap and private import rules are preserved;
-no alternate prelude or fake public wrapper is used. The two positive pending
-API-gap probes are included in the lint inventory too; incomplete bodies there
-are genuine missing APIs, not expected-negative fixtures or completed coverage.
+no alternate prelude or fake public wrapper is used. Scalar FNV now passes its
+original positive probe. The public division API is correctly x64-conditional:
+both its original probe and diagnostic regression need x64 semantic context,
+which the host-only CLI cannot select on this ARM host. This is a target-workflow
+limit, not a missing export. Thirteen genuine negative conversion-guard tests
+also require the explicit negative-source workflow below; no exclusions hide them.
 
 After refreshing the NEW compiler to its general BUILD_* host fix, jailint now
 reports incomplete semantic coverage instead of silently falling back. That is
@@ -30,6 +33,7 @@ Remaining producer workflow requests:
    accepts import dirs but always builds host Options. Host analysis of
    internal/files/windows-{abi,text}.jai and filesystem-windows.jai correctly
    fails on unavailable Windows declarations; hiding those failures is wrong.
+   The same general mechanism must select CPU.X64 for the division diagnostic.
 2. Provide an explicit mode/workflow for deliberately type-invalid regression
    sources: style/syntax checks still apply, but expected check failure must be
    asserted separately with its exact diagnostic. Current negative scalar and

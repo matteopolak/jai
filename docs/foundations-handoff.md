@@ -4,6 +4,38 @@ This work owns Basic builder/formatting, String utilities, Hash scalars and
 File_Utilities. Inherited spec, argument/runtime and Command_Line edits are
 retained in the worktree and excluded from foundations commits.
 
+Stable API completion checkpoint is f972441. The shortest-digit audit was rerun
+on the current composition: all 2300 intervals/minimum precisions pass native
+and production WASI O0/O2. The current NEW Flat_Pool producer was also integrated
+read-only with its virtual-memory helper; basic-preamble now uses its actual CAPS
+procedure rather than a simulated allocator-family callback. Canonical Pool,
+Flat_Pool and temporary exclusions are tested; exact wrapper-family matching
+remains a narrow question, explicitly distinct from missing exports.
+The unreviewed modules/Pool string heuristic is removed. After that removal,
+real-provider Preamble checks pass interpreter/native O0/O2, WASI O0/O2,
+warnings-denied focused lint and six native unused-code targets.
+
+Current owned export audit has no genuine missing names/overloads. Resolved
+whole-value scalar FNV, exact wide-conversion guards and all-OS x64 division
+diagnostic are implemented and tested. The diagnostic always runs real fixed
+checks, prints results and consumes exactly three callback operands per positive
+iteration, with no callback for zero/negative counts. Signed division's private
+bit conversions preserve the stricter public guard contract.
+
+Final batch verification: 47 host interpreter/native O0/O2 cases, 39 supported
+WASI O0/O2 cases, thirteen compile-time guard rejections, separate x64 diagnostic
+interpreter/native O0/O2 with independent integer oracle, and six native unused-
+code scopes pass. Unchanged real jaifmt CLI/check and focused changed code/tests
+warnings-denied lint pass. Refreshed NEW Pool CAPS now passes its original gate.
+Full driver remains nonzero solely for the File producer's WASI POSIX.FILE ABI;
+full lint remains incomplete on target-specific/negative roots with its host-only
+CLI. Latest linter sources were compared against NEW producer and match exactly.
+No producer files, bootstrap parameters, private rules or exclusions were changed.
+See foundations-wide-integers.md, the API audit, deviations and owner requests.
+
+The following paragraphs retain earlier checkpoint evidence; current resolutions
+above supersede their old missing-API/provider statements.
+
 Latest continuation implements the refined leak name/source-path predicate and
 exact leaf/root boundaries, removes the false module-ID dependency, and verifies
 report-owned lifetime with original regressions. All 45 host cases pass
@@ -15,9 +47,19 @@ two genuine required-public-API gaps; no exclusion is called full coverage.
 Scalar fnv1a_hash and test_unsigned_division calls now have positive failing
 API gates/reproducers; exact unresolved contracts are in the questions document.
 The four-facade audit distinguishes these from portable calendar/native ownership.
-Native visualization is real on macOS/Linux; Windows/WASI transport remains
+Native visualization is implemented for macOS/Linux, executed on macOS and
+cross-checked for Linux; Windows/WASI transport remains
 unavailable, with explicit connection diagnostics. The File/integration owner
 has the minimal original WASI -no_dce repro and a proper private ABI-guard request.
+
+Portable runtime CAPS follow-up: the NEW producer heap now supplies its actual
+name. The exact source file was integrated read-only into selected staging;
+normalized comparison shows only the CAPS name-out block changed, preserving
+configured bootstrap parameters and allocation logic. Original real-provider
+checks failed before integration and now pass interpreter/native O0/O2 and
+WASI O0/O2 within the full 45/37-case rerun, plus six native unused-code checks.
+Pool still aborts on null CAPS data; its original positive public-call gate fails
+and is now retained in the driver's integration failure ledger.
 
 The following paragraph records the previous stable checkpoint before this batch.
 
