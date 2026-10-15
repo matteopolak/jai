@@ -1,5 +1,41 @@
 # Compiler deviations and implementation gaps
 
+Relative include lookup: no caller absolute-path workaround or warning relaxation.
+Location: jailint/driver.rs canonical fallback and configured import-root anchoring.
+Source/generated relative paths retain RootedFs behavior; invocation configuration
+is absolute before rebasing. Nonexistent roots stay missing and invalid bodies stay
+fatal. One filesystem normalization per root/path adds small unbenchmarked overhead;
+canonicalization retains existing symlink policy. Original failure and independent
+negative shadows are preserved. First full jailint run lacked JAIC_STDLIB and three
+CLI tests failed for missing prelude; configured rerun passes all 39, with no test
+edits/suppression. Staged producer checks are source-only, not native API execution.
+Exact evidence and rationale: tools/jailint-targets.md. No production workaround
+remains in the reviewed relative-import scope.
+
+Raw pointer scope: no Registry-specific branch, allocated handle storage, suppressed
+error, mutable constant replacement or SDK sign-extension. Locations: sema/convert.rs
+and consteval.rs. Scalar folding uses target width and existing checked-cast rules;
+opaque results remain raw values and actual globals relocate. Non-global opaque
+#run addresses gain no ownership/lifetime or native relocation guarantee. Existing
+typed snapshot capture and numeric/procedure handle heuristics outside this scope
+are retained. All production program targets remain 64-bit; 32-bit outputs reject
+and actual wasm32 compiler hosting is tested separately. Interpreter arbitrary
+non-low invalid raw loads/stores can still host-fault: no complete memory-safety
+claim or unchecked fallback is added; existing low checks and safe compiler capture
+remain tested. Proper long-term work is general fault containment/provenance and
+coherent 32-bit ABI/layout/backend support under reviewed contracts, not special
+cases. Initial test assumed data #program_export support; corrected to supported
+procedure observation with independent exact initializer checks and failure log
+retained. Standalone native/WASM/staged-bootstrap passes are not full Registry
+integration. Exact effects/evidence/risk/follow-up: compiler/raw-pointer-constants.md.
+Follow-up identity regression required general typed baked binding and typed
+procedure/struct specialization keys in calls/procs/structs/mod. Each key now stores
+the canonical TypeId as well as its value; storage/hash overhead grows by one
+TypeId per binding, not benchmarked. Metadata argument values/order and variadic
+view relocations remain intact. No source field/drop-order or optimizer change.
+Draft unnamed-bake/Type-descriptor test setup errors are retained and corrected
+separately from the genuine typed baked-pointer failure; details in the same doc.
+
 Default generic pointer scope: no workaround, nominal matcher relaxation, module
 exception, fabricated binding or unsafe operation. Locations: sema/expr.rs,
 decls.rs, structs.rs. Default pointees reuse canonical instance binding; unused

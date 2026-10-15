@@ -1,5 +1,40 @@
 # Compiler progress
 
+Verified checkpoints: babb2fd (raw pointer constants/typed bindings) and 2676b02
+(invocation-relative jailint imports). Source, regressions and handoffs committed;
+no publication. Platform Registry integration and the documented unsupported
+32-bit program/fault-containment/lifetime cases remain separate gates.
+
+Registry/raw-pointer checkpoint committed: babb2fd, with 332 available core/backend
+passes and final scoped formatting/strict lint/clippy/wasm32 checks. Mailbox's next
+relative-import lint defect also repaired: driver anchors configured import roots
+to invocation cwd before RootedFs source rebasing, including missing roots to
+prevent accidental source-local shadows. Original independent relative/absolute/
+no-I controls, loaded fragments and invalid-body checks pass; all 39 jailint cases
+pass with the configured independent prelude. Initial missing-prelude suite failure
+retained; no assertions changed. Staged NEW producer source passes own jaic -check
+and jailint -D warnings with identical relative -I arguments; source-check evidence
+only. Rust format/item spacing and jailint all-target clippy pass. See
+tools/jailint-targets.md; no peer writes or integration runtime/optimizer/LSP overlap.
+
+Raw pointer/Registry blocker repaired generally in sema/convert.rs and consteval.rs:
+nonzero integer pointer constants retain target-width scalar bits; opaque #run
+results/fields need no invented bounds or pointee capture. Known globals still
+relocate. Immutable positive HKEY-shaped aliases, globals/defaults/comparisons,
+round trips and checked-cast failures pass original regressions. Five core/two
+LLVM cases pass; actual native ARM64/WASM64 O0/O2 and wasm32 compiler-host execution
+pass. Full available core/backend: 332 pass, zero fail, one inherited corpus sweep
+ignored. Scoped Rust formatting/item spacing, Jai format/strict rebuilt-tool lint
+and host core/LLVM all-target clippy pass. 32-bit program targets explicitly reject;
+no 32-bit backend claim. Low-address accesses trap and unreadable view capture
+diagnoses; existing arbitrary non-low interpreter faults remain a bounded runtime
+gap, not claimed safe. No runtime/optimizer/assert-hook/LSP feature edits, peer
+writes or publication. Exact evidence/limits: compiler/raw-pointer-constants.md.
+Additional original baked-pointer regression repaired type loss in inferred
+procedure/struct bindings; semantic instance keys now include canonical type and
+value, retaining alias identity while separating equal-bit pointer/int arguments.
+These changes do not touch optimizer or Compiler field/drop order.
+
 Verified generic-pointer checkpoint: 6abf47a,
 `fix(sema): canonicalize default generic pointees before binding`. Implementation,
 original regressions and documentation are committed. Producer restored-fixture/
