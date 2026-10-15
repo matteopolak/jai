@@ -1,5 +1,66 @@
 # WGL failure investigation and native CI handoff
 
+## a6371ec: optional VS2026 search entry is not a required SDK input
+
+Authorized filtered CIa6371ec fails in cache configuration before LLVM build on
+`C:\Program Files\Microsoft Visual Studio\18\Enterprise\VC\Auxiliary\VS\include`.
+The configured entry does not exist. Both Windows CPUs now pass headless/windowed
+WebGPU; this does not establish WGL support. No raw CI/vendor Jai logs were read.
+
+Classification: genuine infrastructure preflight defect. MSVC searches INCLUDE
+and LIB in order; an absent optional search directory supplies no header/library
+files. The helper had conflated every configured entry with a required existing
+selected SDK directory. The fix records each configured path, its resolved path
+and explicit state. Missing entries are retained deterministically, not dropped.
+Every present directory is still fully content-fingerprinted; creating a missing
+directory (even empty), adding inputs, or changing their content changes the key.
+Inputs are re-fingerprinted before publishing a new LLVM completion receipt, so
+creating a search directory or changing SDK/tools during the build cannot stamp
+the completed installation with the earlier input identity.
+Search order is preserved. Existing non-directory entries are recorded as
+not-directory; replacing them with a searchable directory changes the key too.
+Non-absence search-entry stat errors propagate rather than being marked missing.
+
+Real auxiliary native inputs may live under explicitly selected VSINSTALLDIR or
+VCINSTALLDIR, in addition to VCToolsInstallDir/WindowsSdkDir, UniversalCRTSdkDir
+and NETFXSDKDir. These roots come from the native vcvars environment, not guessed
+alternate SDK installations. Present unselected directories remain rejected;
+absent unselected entries are recorded without traversing their contents. If
+created later they must pass native-root authorization before any cache reuse.
+
+Separate minimum-input checks require the selected ARM64 toolchain/SDK, reachable
+MSVC vcruntime.h/vector, selected Windows/UCRT Windows.h/SDKDDKVer.h/stdio.h, static
+/MT libcmt/libcpmt/libvcruntime/libucrt, and ARM64 kernel32/user32/gdi32/ws2_32
+import libraries. WindowsSDKVersion and UCRTVersion select the actual versions;
+UniversalCRTSdkDir is honored when provided. Each required file must exist and
+be the first matching file in the real configured search list, preventing an
+unreachable or wrong-SDK/architecture shadow from being accepted. Missing compiler
+and SDK tools remain errors. These metadata checks are a necessary minimum, not
+proof that a complete native compiler/driver build will succeed.
+
+Cache configuration is now schema2 to describe absence states and required-input
+identity explicitly. Full completed LLVM receipt/file verification is unchanged;
+old keys are retained, but there is no unverifiable automatic migration to the new
+configuration key. Currenta6371ec never reached a valid key/LLVM build. Once a
+schema2 cache is populated it is reusable across fresh Mesa retries; Mesa-only
+options still do not invalidate LLVM. No integrity check or WGL assertion is removed.
+
+Local regressions reproduce the VS18 auxiliary paths in an independently authored
+SDK-layout fixture. Coverage includes optional missing INCLUDE and LIB entries,
+stable repeated absence, later empty-directory creation, later content creation,
+header/library/tool changes, missing required headers/libraries/ARM64 SDK tree,
+wrong target architecture, missing compiler, required library shadowing, and
+unselected real directories. Fixtures are metadata-only, never runnable SDKs or
+native graphics evidence. Ten source/cache tests, eight installer/identity tests
+and one real Meson prepared-Python test pass (19 total). Native VS2026/MSVC build,
+cache reuse and WGL probe/draw/readback/lifecycle/Windows lint remain pending CI.
+The normal commands below remain applicable with the selected vcvars environment.
+Release publication remains held.
+
+Native oracles: [MSVC environment/search variables](https://learn.microsoft.com/en-us/cpp/build/reference/cl-environment-variables?view=msvc-170),
+[include search ordering](https://learn.microsoft.com/en-us/cpp/build/reference/i-additional-include-directories?view=msvc-170),
+[Microsoft static CRT/STL libraries](https://learn.microsoft.com/en-us/cpp/c-runtime-library/crt-library-features?view=msvc-170).
+
 ## e223538 install failure: validated expectation and configuration fix
 
 Authorized filtered evidence: native ARM64 LLVM/Mesa compilation reached install,
