@@ -297,6 +297,47 @@ fn invalid_module_argument_labels_keep_failed_context_without_fabricated_targets
 }
 
 #[test]
+fn malformed_c_variadic_call_diagnoses_and_valid_edit_restores_navigation() {
+    let uri = DocumentUri::parse("file:///ide-audit/main.jai").unwrap();
+    let bad = "broken :: (items: ..int, tail:int) #c_call {}\nmain :: () {broken(1,tail=2);}\n";
+    let mut s = session();
+    s.open(uri.clone(), 1, bad.into()).unwrap();
+    let diagnostics = s.diagnostics(&uri).unwrap();
+    assert!(
+        diagnostics
+            .iter()
+            .any(|d| d.severity == DiagnosticSeverity::Error
+                && d.message.contains("variadic")
+                && d.message.contains("last")),
+        "{diagnostics:?}"
+    );
+    // Querying either a valid binding or the failed call must never panic.
+    let _ = s.hover(&uri, at(bad, "broken(1")).unwrap();
+    let _ = s.definition(&uri, at(bad, "broken(1")).unwrap();
+    let good = "sum :: (items: ..int, tail:int=4) -> int {value:=tail; for items value+=it; return value;}\nmain :: () {value:=sum(1,tail=2);}\n";
+    s.change(
+        &uri,
+        2,
+        &[TextChange {
+            range: None,
+            range_length: None,
+            text: good.into(),
+        }],
+    )
+    .unwrap();
+    assert!(
+        s.diagnostics(&uri)
+            .unwrap()
+            .iter()
+            .all(|d| d.severity != DiagnosticSeverity::Error)
+    );
+    let targets = s.definition(&uri, at(good, "sum(1")).unwrap();
+    assert_eq!(targets.len(), 1, "{targets:?}");
+    assert_eq!(targets[0].range.start, at(good, "sum ::"));
+    assert!(s.hover(&uri, at(good, "sum(1")).unwrap().is_some());
+}
+
+#[test]
 fn configured_bootstrap_type_uses_keep_semantic_hovers() {
     let uri = DocumentUri::parse("file:///ide-audit/main.jai").unwrap();
     let text = "value: int;\nmain :: () { other: s32; }\n";
