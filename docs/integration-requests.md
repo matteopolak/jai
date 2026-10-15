@@ -19,6 +19,15 @@ justify negative entries; actual missing behavior remains failed. All Mac ARM64
 differences are platform/CPU guard diagnostics or stale passing entries; the
 cross-target failures remain part of the complete command.
 
+All 80 exact new module/target diagnostics, mechanical cause classifications and
+provisional owners are published in [mac-target-failures.json](status/mac-target-failures.json).
+No assertion in that inventory is accepted as passing functionality. Full opaque
+public-project corpus compilation remains coordinator-owned because vendor
+library bodies are sandboxed; its denominator is separate from the 414-case
+local behavior catalogue. Please run originals externally and return filtered
+results/minimal independent reproducers. Full corpus compilation is the current
+publication gate; no remote operation is authorized here.
+
 ## Current native Mac candidate, 2026-10-15
 
 Shared clean baseline7467b49d is ready for worker dependency adoption: compiler,

@@ -1,5 +1,30 @@
 # Independent integration deviations audit
 
+## Combined ad575d16 measurement limits
+
+The stable workspace command completes with 840 passed/two failed/one inherited
+ignore across 98 Cargo binaries. Four nested fault-safety summaries are printed
+separately; all 102 summaries total 844, not 844 distinct suite tests. Machine
+counts explicitly exclude those repeats. `tests/stdlib-targets.txt` has 186
+differences, including genuine unsupported platform backends: no blanket
+acceptance is used. Exact 80 new failures are in `mac-target-failures.json`;
+72 mechanically contain guards, six API/body errors and two unavailable
+compile-time native calls. Intentional guards require reviewed target evidence.
+
+`tools/jaic-sweep.py::make_workdir` copies whole upstream trees and symlinks
+siblings, potentially exposing vendored implementations. It is not an allowed
+local public-corpus stager under this session's isolation rules and was not run.
+Full original application corpus is coordinator-owned; its denominator remains
+separate from the 414 local catalogue cases. A safe local stager must omit vendor
+module/stdlib/prelude directories before access, preserve unchanged application
+entries, and select the NEW library. No alternate vendor access was attempted.
+
+Unchanged `jaifmt/main.jai` rebuilt against production ad575d16; all 845 production
+Jai sources pass format checking. This proves format/build, not complete lint:
+actual Http client strict lint still fails Context registration ordering. The
+approved general compiler repair is queued until the frozen catalogue completes;
+no module-specific bypass is used.
+
 ## Refresh-ten rejected SDL adapter
 
 Bindings `fddae00` was inspected directly. Its RWFromFile proxy changes SDL-owned
