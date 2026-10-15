@@ -91,3 +91,67 @@ present partial output as successful assertion serialization.
 Initial and focused reports are stored locally under artifacts/compiler-mac-repairs.
 The assigned T7 compiler target holds reproducible build output only. Native
 execution is distinguished from source checking and compile-time-only workspaces.
+
+## Typed member paths and late record links
+
+Typed fields are now collected as deferred Declaration items for forward layout.
+The struct using-path classifier previously recognized only already-expanded
+Field items, mistakenly treating a field name as a global type expression. It now
+recognizes both declaration forms without changing layout/reflection order. The
+original pointer-path fixture passes; a new core test verifies actual read/write
+identity and exclusion of filtered members. All 11 layout tests pass.
+
+Records preserve identity while their materialized pointer fields can initially
+be null. A published procedure header's body becomes available later, but its
+cached object was never linked. Records now journal mutated identities across
+temporary lends; each builder revisits only changed records with pending null
+references. Newly ready targets are queued/materialized and linked into the same
+object. Other fields and metaprogram-supplied non-null pointers are preserved.
+Failed fills roll back new links and cached allocations before retrying. The
+original notes/header-identity/body assertion passes unchanged. A separate core
+regression checks cyclic links, edits, failed target fill/repair and pointer
+identity; 165 library, 11 layout and 8 reflection tests pass.
+
+This deliberately handles null-to-ready references, not arbitrary changes to
+already populated scalar/list/non-null fields. No record/type/field-name exception
+exists. The journal and pending-link index live for the compilation's lifetime;
+work is proportional to mutations and affected pending fields, without scanning
+every previously built record for each message. No benchmark claim is made.
+
+## Final focused result and oracle reasons
+
+Machine-readable scope/result ledger: [compiler-mac-repairs.json](../status/compiler-mac-repairs.json).
+Stable source checkpoints: b377ed7c (public-contract migrations), 427fbfdc
+(statement/compound Code printing and reconstruction), 6d5e2172 (typed using
+member paths), 9e527a22 (late metadata links and rollback).
+
+Fresh normal interpreter replay: **18 of the original 22 now pass**. Existing
+runner verification at O0/O2 records **16 cases executing natively** at each
+optimization level; resolved-nodes and typechecked-notes are **compile-time-only**
+at each level. The original round-trip fixture additionally executes native
+O0/O2. Scoped Rust/Jai formatting, strict positive lint, core clippy and the
+negative debugger capability regression pass. This is not a full baseline rerun.
+
+Additional oracle migrations retain the useful public behavior:
+
+- modern-metaprogramming requires successful printing for supported nodes and
+  explicit false for unsupported Run/assert printing, with real ASSERTION flags;
+  it retains macro scope, Code values, typechecked expression and code_of checks.
+- rules-compiler-module tests the configured directory through an actual child
+  workspace module import and error-checked completion; it no longer assumes
+  relative/absolute readback spelling based on #file formatting.
+- rules-enums preserves numeric/flag/reflection assertions and requires both
+  the out-of-range marker and numeric value, without unreviewed punctuation.
+- print-null-pointer-union-forms preserves pointer formatting and using offsets,
+  checks callable/null-procedure behavior and union storage, without unreviewed
+  non-null procedure prefixes, union fallback spelling or type-name spacing.
+- void-values-print formats two real void values plus a null pointer. It does not
+  manufacture a second void value by dereferencing a null pointer.
+
+Four retained red cases require outside input: compiler-reflection-pure (missing
+reviewed public portable export), custom-link-library-lists (native prerequisite),
+float-literal-precision and rules-numbers (literal inference review). Full details
+are in ../status/compiler-mac-owner-requests.md and the questions document. No
+numeric assertion or missing public comparison is removed, and no prerequisite
+is disabled. Program_Print's explicit Run/assert limitation is still a limitation,
+not implemented functionality or a reference round-trip guarantee.

@@ -1,5 +1,25 @@
 # Compiler progress
 
+Verified stable Mac source checkpoints: b377ed7c, 427fbfdc, 6d5e2172, 9e527a22.
+Exact 22-case focused replay and per-case native/compile-only status are recorded
+in status/compiler-mac-repairs.json. Remaining four owner/review requests are in
+status/compiler-mac-owner-requests.md; original baseline JSON is untouched.
+
+Fresh Mac follow-up: 18/22 original unresolved compiler fixtures now pass normal
+interpreter replay. At both O0/O2 the existing runner executes16 natively and
+records2 compile-time-only (resolved-nodes/typechecked-notes), not fake runtime
+passes. General pointer member-path classification and null-to-ready record
+linking fix the unchanged member-path and notes/header-body assertions. Core:
+165 library +11 layout +8 reflection pass; new late-link regression preserves
+identity/user edits, cycles and rollback after invalid target fill. Normalized
+inspection/type-name oracles, real configured import lookup and proper void/null
+values preserve useful behavior without unreviewed exact text. Modern tests the
+explicit unsupported Run/assert return; that printer feature is not implemented.
+Remaining4: public Protocol comparison (portable), custom-link portable_crash
+prerequisite (integrator), two unchanged numeric inference fixtures (spec review).
+No route/setup/Default_Metaprogram/Extensions edits, no profiles/benchmarks. See
+compiler/mac-catalogue-repairs.md and status/compiler-mac-owner-requests.md.
+
 First Mac catalogue checkpoint b377ed7c is committed. Further verified printing
 batch resolves compiler-resolved-nodes, rules-code-values-and-insertion,
 poly-struct-type-names, rules-structs and type-of-polymorphic-template. Actual

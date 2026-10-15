@@ -1,5 +1,27 @@
 # Compiler deviations and implementation gaps
 
+## Late record links and final Mac scope
+
+records.rs journals mutated identities; record_build.rs indexes pending null
+references and links newly available metadata without reallocating objects or
+overwriting other metaprogram edits. This is a general null-to-ready reference
+mechanism, not a procedure/header/field-name shortcut. It does not synchronize
+arbitrary scalar/list or already non-null field changes. Pending indices/journal
+retain linear metadata state until compilation teardown; failed arena allocations
+remain owned until teardown as before, while cached IDs and published links roll
+back. Regression covers failed-fill repair/cycles/edit preservation. Long-term
+wider synchronization needs a reviewed ownership/update contract, not replay of
+whole records that destroys user edits. No performance claim or benchmark added.
+
+Member using-path recognition now accepts deferred typed declarations as well as
+expanded field items. Existing layout/reflection order and privacy/filter checks
+remain intact. Fresh focused checks:165 library,11 layout,8 reflection; 18/22
+catalogue interpreter passes,16 actual native cases per O0/O2 plus2 compile-time
+only. Four remaining errors are recorded rather than hidden. The missing public
+Protocol comparator remains required, numeric assertions remain unchanged, and
+native crash helper setup remains integrator-owned. Explicit unsupported Run
+printing is a negative capability test, not claimed complete serialization.
+
 ## Program_Print and Code reconstruction bounds
 
 Supported compound/comma/exists/backtick output uses reviewed record fields and
