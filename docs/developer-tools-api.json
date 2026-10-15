@@ -24768,14 +24768,14 @@
         "declaration": "Codeview_Symbol_Type :: enum u16",
         "section": "Public declaration inventory",
         "spec_line": 91,
-        "implementation": "reviewed u16 enum/data subset; four dependent member aliases lack reviewed RECTYPE_MAX/TYPE_LAST/ID_LAST values (question11); no guessed values or added dependency exports"
+        "implementation": "reviewed u16 enum names/values/sentinels/aliases implemented; current reviewed RECTYPE_MAX/TYPE_LAST/ID_LAST and all dependent aliases verified; no guessed exports"
       },
       {
         "name": "Codeview_Leaf_Type",
         "declaration": "Codeview_Leaf_Type :: enum u16",
         "section": "Public declaration inventory",
         "spec_line": 92,
-        "implementation": "reviewed u16 enum/data subset; four dependent member aliases lack reviewed RECTYPE_MAX/TYPE_LAST/ID_LAST values (question11); no guessed values or added dependency exports"
+        "implementation": "reviewed u16 enum names/values/sentinels/aliases implemented; current reviewed RECTYPE_MAX/TYPE_LAST/ID_LAST and all dependent aliases verified; no guessed exports"
       },
       {
         "name": "Codeview_Access",
@@ -33164,32 +33164,7 @@
         "spec_line": 1787
       }
     ],
-    "pending_public_member_dependencies": [
-      {
-        "enum": "Codeview_Leaf_Type",
-        "member": "ID_MAX",
-        "expression": "ID_LAST - 1",
-        "missing_reviewed_dependency": "ID_LAST"
-      },
-      {
-        "enum": "Codeview_Leaf_Type",
-        "member": "TYPE_MAX",
-        "expression": "TYPE_LAST - 1",
-        "missing_reviewed_dependency": "TYPE_LAST"
-      },
-      {
-        "enum": "Codeview_Symbol_Type",
-        "member": "RECTYPE_LAST",
-        "expression": "RECTYPE_MAX- 1",
-        "missing_reviewed_dependency": "RECTYPE_MAX"
-      },
-      {
-        "enum": "Codeview_Symbol_Type",
-        "member": "RECTYPE_PAD",
-        "expression": "RECTYPE_MAX+ 0x100",
-        "missing_reviewed_dependency": "RECTYPE_MAX"
-      }
-    ]
+    "pending_public_member_dependencies": []
   },
   "Print_Vars": {
     "spec": "docs/specs/stdlib/modules/print-vars.md",

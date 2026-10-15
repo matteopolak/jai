@@ -485,13 +485,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `set_all` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `verify_integrity` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 
-| Pending public member | Reviewed expression | Missing reviewed dependency |
-| --- | --- | --- |
-| `Codeview_Leaf_Type.ID_MAX` | `ID_LAST - 1` | `ID_LAST`; Debug_Info question11 |
-| `Codeview_Leaf_Type.TYPE_MAX` | `TYPE_LAST - 1` | `TYPE_LAST`; Debug_Info question11 |
-| `Codeview_Symbol_Type.RECTYPE_LAST` | `RECTYPE_MAX- 1` | `RECTYPE_MAX`; Debug_Info question11 |
-| `Codeview_Symbol_Type.RECTYPE_PAD` | `RECTYPE_MAX+ 0x100` | `RECTYPE_MAX`; Debug_Info question11 |
-
 ## Print_Vars
 
 0 function names have pending declarations; 0 native function names still lack invocation fixtures.

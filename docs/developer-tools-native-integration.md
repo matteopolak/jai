@@ -12,8 +12,6 @@ This worker owns the native sources/build scripts below. Shared manifest and pac
 
 `tools/check_developer_sdk_configuration.py` stages an owned nondefault SDK layout pointing to the installed official SDK. It verifies the production helper's library and runtime search path, native facade consumer links and actual configured compiler invocation during include discovery. Original C bindings execute through the interpreter and native O0/O2 consumers. The test restores the primary SDK configuration afterward. [Host evidence](native/developer-tools-configured-sdk-evidence.json) certifies this host SDK23 configuration; Linux execution and SDK21 remain pending. Source-build packaging must regenerate both the private symlink and compiler path on the destination.
 
-## Debug native runtime
-
 ## Iprof native clocks
 
 The measured manual core uses existing canonical POSIX/Windows dependencies directly; there is no new private clock binary to package. Preserve normal libc/kernel32 linkage through those facades. Host interpreter/native O0/O2 verifies actual monotonic-clock spans, counts, lifetime and measured CSV. `tools/check_developer_profiler_windows.py` separately checks public SDK counter-record ABI, x64 O0/O2 kernel32 imports and arm64 compilation. Its [evidence](native/developer-tools-profiler-windows-evidence.json) does not certify Windows execution. Coordinator jobs must execute the original manual-clock fixture on Windows/Linux before promoting those branches to native coverage. Automatic instrumentation/frame history/report creation remain implementation work.
