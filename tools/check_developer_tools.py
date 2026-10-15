@@ -10,6 +10,7 @@ import shutil
 import platform
 import csv
 import check_developer_bindings
+import check_developer_cpp_custom
 import build_developer_debug
 import check_developer_debug_windows
 import check_developer_msf
@@ -119,6 +120,7 @@ def check_profiler_client_children():
 
 def main():
     check_developer_bindings.main()
+    check_developer_cpp_custom.main()
     configured_cases = check_developer_sdk_configuration.main()
     build_developer_debug.main()
     check_developer_debug_windows.main()

@@ -2,6 +2,8 @@
 
 These fixtures were independently authored in this clean worktree from reviewed module specifications, NEW public producer APIs and official C/OS SDK contracts. They are not inherited replaced-stdlib tests and do not use corpus/vendor source, reference binaries, transcripts or another Jai implementation. Their presence is not evidence of full module coverage. Separate coordinator/spec-reviewer review remains pending; this document supplies the provenance and remaining gaps for that review.
 
+Run `python3 tools/check_developer_cpp_custom.py` for original overloaded functions, repeated prototypes, renamed POD fields/reference identity, both argument callback modes, omissions and destination-preserving duplicate-name failures. Emitters execute interpreter/native Mac O0/O2; adapters compile using configured LLVM C++ O0/O2 and real consumers execute interpreter/native modes. Existing C visitor/type/macro regressions exercise the changed model. Generated Jai passes formatting and warnings-denied lint. The standard focused suite invokes this workflow; this is not combined Mac or complete public helper coverage.
+
 ## Run and dependencies
 
 Run `python3 tools/check_developer_instrumentation_mechanisms.py` for the original general producer probes: procedure enter/deferred-exit counter effects and late-source registration plus explicit helper liveness/body replacement, each in actual O0/O2 child programs. The main module suite also formats these sources; this separate command records mechanism evidence without labeling them completed public profiler APIs. The late-source probe's original no-liveness variant completed building but failed native42 assertions with the old0; that phase assumption and its correction are recorded separately in deviations.
