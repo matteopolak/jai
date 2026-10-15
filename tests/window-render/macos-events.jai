@@ -90,7 +90,11 @@ main :: () {
 
     assert(resizes.count > 0);
     assert(resizes[resizes.count - 1].width == 360 && resizes[resizes.count - 1].height == 240);
+    // Close with the native cursor-policy retain still active. Removal must
+    // finish before release; re-enabling afterward must not touch a dead window.
+    I.set_custom_cursor_handling(true);
     close_window(window);
+    I.set_custom_cursor_handling(false);
     found_close := false;
     for event: I.events_this_frame if event.type == .QUIT && event.window == window found_close = true;
 
