@@ -43,6 +43,15 @@ reduction is claimed from these staged runs. Stable coordinator baseline remains
 822 passed / 7 failed until rerun. Inventory credits five public entries; build
 is retained as incomplete among 130 missing rows.
 
+Parser audit correction: plugin import generation must parse grouping without
+performing user-facing actions. A new regression first observed duplicate release
+warnings (target/default-deprecation-red.log). The private parser now separates
+action reporting/global verbose mutation from its generation pass; each deprecated
+alias warns once and invalid context sizes report only during the actual build.
+The complete -no_check behavior gate reruns successfully; the strict lint stage
+still fails exclusively on the missing Check factory. No test expectation was
+weakened or compiler/module exception introduced.
+
 Public Example_Plugin is now implemented, including canonical My_Plugin, initial
 some_state=0 / init=33, repeated option/value parsing, all lifecycle callbacks,
 phase/typecheck/completion reporting and allocation ownership through shutdown.

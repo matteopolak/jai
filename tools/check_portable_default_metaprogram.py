@@ -92,6 +92,9 @@ def main():
         assert build([*common, *flags, *plugin_args], optimization=optimization) == callbacks
         assert run([str(target)]) == "target ok\n"
     build([*common, "-context_size", "invalid"], contains="Ignoring invalid context size")
+    for alias in ["-release", "-release_debug"]:
+        warning = build([*common, alias])
+        assert warning.count("is deprecated;") == 1, warning
     build(["-no_check", "-add", 'main :: () {}', "-exe", "added", "-output_path", str(OUTPUT)])
     build(["-no_check", "-run", 'print("run ok\\n")', "-add", 'using #import "Basic"',
            "-add", 'main :: () {}', "-exe", "run-added", "-output_path", str(OUTPUT)], contains="run ok")

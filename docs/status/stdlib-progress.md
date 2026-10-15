@@ -1,5 +1,11 @@
 # Portable stdlib progress
 
+Default parser audit fixed real duplicate warnings: generator now disables parser
+reporting/global actions, and actual build performs them once. New release-alias
+regression reproduced two warnings before the fix, then both aliases pass once.
+Full focused no_check workflow rerun passes; strict lint remains explicitly red
+on Check.get_plugin only (dependency request unchanged). Format/--check pass.
+
 APK batch completed7 public entries: canonical whole-file/entry records, loader,
 deinit, value/reverse iterator, section reporting and immutable signing marker.
 Six interpreter/native Mac O0/O2 real-file runs, nine malformed/missing failures,

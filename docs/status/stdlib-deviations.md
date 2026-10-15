@@ -1,5 +1,10 @@
 # Portable stdlib worker deviations
 
+Default plugin-generation pass now suppresses parser reporting/global actions;
+duplicate deprecated-option/context diagnostics removed through a general private
+parser phase parameter. No public API change or test exclusion. Full lint remains
+blocked on the documented Check dependency rather than marked green.
+
 APK safety scope: loader/iterator explicitly check sizes, leading/trailing signing
 block lengths, signatures and bounds rather than reproduce unsafe unchecked reads.
 Malformed files assert; no recoverable success or valid-signature claim. Fixtures
