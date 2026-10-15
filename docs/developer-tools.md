@@ -6,21 +6,23 @@ Implementation follows the reviewed public contracts, with canonical records in 
 
 `Header_Info` retains every reviewed public field and zero/default initialization. Populate `exported_types` with reflected types and their C names, or feed `handle_message` compiler TYPECHECKED messages containing PROGRAM_EXPORT declarations. `generate_header` gathers dependencies, forwards struct/union tags, orders by-value definitions, emits C declarators and checks errors before writing. It excludes `main`.
 
-The supported projection is C11 scalar types, fixed arrays, recursive pointers, ordinary structs/unions, exact-width enums/variants and C-call procedures with zero or one return. Procedure values become C function pointers. Every record includes static assertions for reflected runtime size, alignment and field offsets; compiling the generated header is required validation. Unsupported ABI categories produce diagnostics and false instead of dropping declarations.
+The supported projection includes scalar types, fixed arrays, recursive pointers, ordinary structs/unions, variants, C-call procedures and runtime support records discovered through Header_Info. Enum output defaults to normal C enums; enum_internal_types selects C23 fixed-underlying syntax. Enum member prefixes use uppercase letters from the emitted type name, and type clashes receive numeric suffixes. Procedure values become void pointers. Every record includes C/C++ static assertions for reflected runtime size, alignment and field offsets; compiling the generated header is required validation. Non-C-call procedures, polymorphic structs and imported/constant/void fields are omitted as reviewed. Other unsupported ABI categories produce errors.
 
-Original tests generate a header from real type descriptors, compile a C helper against that header, then call it through Jai FFI and verify both its return and field mutation. A rejection case proves implicit-context procedures fail while an existing output file remains unchanged. `python3 tools/check_developer_tools.py` runs interpreter/native O0/O2, formatting/lint and target checks using this worktree's source-built tools. Host dylib construction currently targets macOS; Linux runner adaptation is unfinished.
+Original tests generate headers from real type descriptors, compile C11/C23/C++17 consumers, and call native helpers through Jai FFI. Tests cover field mutation, enum modes, opaque callbacks, support layouts, collision suffixes, non-C-call omission and multiple-return rejection preserving existing output. Support-layout fixtures use test-only records following reviewed bootstrap shapes, not duplicate production prelude definitions. `python3 tools/check_developer_tools.py` runs interpreter/native O0/O2, formatting/lint and target checks using this worktree's source-built tools. Host dylib construction currently targets macOS; Linux runner adaptation is unfinished.
 
-The module is a supported subset. See deviations before using complex ABI support types, explicit alignment/packing, C++ or transactional output requirements.
+The module is a supported subset. See deviations for production support-descriptor availability, reserved names, explicit alignment/packing and transactional output limits.
 
 ## Performance_Report
 
 `+Performance_Report` requests compiler timing, bytecode counters, run-directive records and polymorph records. It buffers a textual summary, sorts run records by elapsed time, and writes on plugin finish. Counters and durations come from Compiler messages. A missing message produces a compiler warning; missing per-category flags are explicitly identified in the summary. Shutdown frees owned state. There are no public configuration options in the reviewed contract.
 
-## Staged C binding parser
+## Bindings_Generator and staged C parser
 
 `tools/check_developer_bindings.py` builds an independently authored private C generator against the installed official libclang C API. It parses original C headers, emits real Jai bindings with layout assertions, compiles the original native implementation, and exercises generated bindings in interpreter/native O0/O2. Malformed headers and unsupported constructs fail with source diagnostics while preserving existing output. The two-target test verifies LP64/LLP64 C `long` differences and checks generated declarations under matching Jai targets.
 
-The [official libclang C API documentation](https://clang.llvm.org/doxygen/group__CINDEX.html) and installed public headers are the only native parser compatibility inputs. The [SDK evidence](native/developer-tools-clang-evidence.json) identifies those headers. This private tool stages real parsing/generation work while the public declaration model is refined; it does not expose replacement public compatibility names. Public Bindings_Generator remains incomplete. See deviations for C11 subset, version, memory, performance and platform limits.
+The public facade now retains reviewed option/model shapes and defaults, exact compatibility arrays, target parameter and literal conversion rules. Both generate_bindings overloads validate a supported one-header/one-library configuration and invoke the source-built backend. It discovers official Clang include paths, unwraps reviewed typedefs, preserves named C parameters/documentation, supports common enum prefixes/aliases and outputs real callable bindings. Malformed input and unsupported callbacks/options fail with diagnostics and preserve existing output. Returned builders are caller-owned.
+
+The [official libclang C API documentation](https://clang.llvm.org/doxygen/group__CINDEX.html) and installed public headers are the only native parser compatibility inputs. The [SDK evidence](native/developer-tools-clang-evidence.json) identifies them. Public native round trips cover records, callbacks, named arguments and SDK stdint aliases. This is a staged backend dependency, with process startup costs and libclang 23 evidence against the reviewed version-21 constant. Full visitor/model parsing, C++ bridges, helpers/reexports and coordinator packaging remain incomplete; see deviations.
 
 ## Print_Vars
 
@@ -37,3 +39,13 @@ The initial subset decodes DWARF call-frame instructions and common information 
 ## Debug native helpers
 
 The macOS/Linux subset captures and symbolizes native stacks, checks debugger presence, probes one byte through kernel copy APIs, writes diagnostic text, aborts with reviewed exit codes and traps only when a debugger is present. Symbol text and the returned string array share a native allocation; release the original complete array with `free_backtrace`. The high-level capture uses 256 slots and the low-level helper caps physical capture at 4096 frames. Pointer probes never directly dereference the candidate address. The original protection fixture covers mmap, mprotect and unmap transitions. Actual macOS interpreter/native O0/O2 evidence is separate from Linux source-only support and Android/WASM false-presence target checks. Signal/assert/dialog/minidump/attachment paths remain unfinished.
+
+## Iprof report output and Codex inspection
+
+Iprof's initial subset writes caller-supplied report rows to logs or properly quoted CSV. It omits zero-call rows and uninitialized zones in manual mode, retains conditional zone-history storage, and applies requested text-report minimums. The actual runtime profiler and graphics are unfinished; report tests supply original explicit values rather than claim measured zones.
+
+Codex's initial helpers retrieve a code node's file/import and inspect a resolved declaration's IS_GLOBAL flag. Its public Math import retains canonical module/type identity. The binary metadata format and metrics semantics require refinement before the remaining APIs can be implemented without invented compatibility answers.
+
+## Check
+
+The Windows-only subset exposes the reviewed settings and checks compiler records for array/pointer misuse and small-operand integer promotion risks. It supports manual body invocation and compiler messages, follows module skip settings, and reports continuable compiler errors. Original tests include a real intercepted small-integer procedure and manual array-assignment records. Native binding/symbol and print-format checks remain pending. Two general producer/contract observations are preserved under compiler-requests and listed in progress/questions, separate from the supported passing suite.

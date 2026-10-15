@@ -64,7 +64,7 @@ def main():
     run([ROOT / "target/debug/jailint", "-D", "warnings", "-I", ROOT / "target", output, fixture])
     inputs = {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
               for path in [prefix / "include/clang-c/Index.h", prefix / "include/clang-c/CXString.h"]}
-    metadata = {"scope": "private staged pipeline, not public Bindings_Generator compatibility",
+    metadata = {"scope": "staged libclang backend used by the supported public Bindings_Generator facade; full compatibility remains pending",
                 "sdk_headers_sha256": inputs, "clang_version": run([prefix / "bin/clang", "--version"], expected=None),
                 "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
                 "tests": "interpreter/native O0/O2 call and mutation, callbacks, enum and record layout; rejection preserves output; Linux/Windows target-dependent long"}

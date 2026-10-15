@@ -8,70 +8,70 @@
         "declaration": "TARGET_OS : type_of(OS)",
         "section": "Public declaration inventory",
         "spec_line": 7,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "DO_DEBUG",
         "declaration": "DO_DEBUG :: false",
         "section": "Public declaration inventory",
         "spec_line": 8,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "DEBUG_ALIGNMENT",
         "declaration": "DEBUG_ALIGNMENT :: false",
         "section": "Public declaration inventory",
         "spec_line": 9,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "DEBUG_BITFIELDS",
         "declaration": "DEBUG_BITFIELDS :: false",
         "section": "Public declaration inventory",
         "spec_line": 10,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "LIBCLANG_VERSION",
         "declaration": "LIBCLANG_VERSION :: 21",
         "section": "Public declaration inventory",
         "spec_line": 11,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Library",
         "declaration": "Library :: struct",
         "section": "Public declaration inventory",
         "spec_line": 12,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Generate_Bindings_Options",
         "declaration": "Generate_Bindings_Options :: struct #type_info_none",
         "section": "Public declaration inventory",
         "spec_line": 13,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Declaration_Visit_Result",
         "declaration": "Declaration_Visit_Result :: enum",
         "section": "Public declaration inventory",
         "spec_line": 14,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Declaration_Visitor",
         "declaration": "Declaration_Visitor :: #type (decl: *Declaration, parent_decl: *Declaration) -> Declaration_Visit_Result",
         "section": "Public declaration inventory",
         "spec_line": 15,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Declaration_Visitor_With_Data",
         "declaration": "Declaration_Visitor_With_Data :: #type (decl: *Declaration, parent_decl: *Declaration, user_data: *void) -> Declaration_Visit_Result",
         "section": "Public declaration inventory",
         "spec_line": 16,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "ensure_local_libclang_exists",
@@ -92,105 +92,105 @@
         "declaration": "RESERVED_NAMES :: string",
         "section": "Public declaration inventory",
         "spec_line": 19,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "RESERVED_TYPE_NAMES",
         "declaration": "RESERVED_TYPE_NAMES :: string",
         "section": "Public declaration inventory",
         "spec_line": 20,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "TYPEDEFS_TO_UNWRAP",
         "declaration": "TYPEDEFS_TO_UNWRAP :: string",
         "section": "Public declaration inventory",
         "spec_line": 21,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "TYPEDEF_PREFIXES_TO_UNWRAP",
         "declaration": "TYPEDEF_PREFIXES_TO_UNWRAP :: string",
         "section": "Public declaration inventory",
         "spec_line": 22,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "MACROS_TO_IGNORE",
         "declaration": "MACROS_TO_IGNORE :: string",
         "section": "Public declaration inventory",
         "spec_line": 23,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Mimic_Spacing_Flags",
         "declaration": "Mimic_Spacing_Flags :: enum_flags",
         "section": "Public declaration inventory",
         "spec_line": 24,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Library_Info",
         "declaration": "Library_Info :: struct",
         "section": "Public declaration inventory",
         "spec_line": 25,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Strip_Flags",
         "declaration": "Strip_Flags :: enum_flags",
         "section": "Public declaration inventory",
         "spec_line": 26,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Get_Function_Arguments_For_Printing_Func",
         "declaration": "Get_Function_Arguments_For_Printing_Func :: #type (func: *Function, type: *Function_Type, mode: Arg_Print_Mode) -> []*Declaration",
         "section": "Public declaration inventory",
         "spec_line": 27,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "TOKENS_TO_REPLACE",
         "declaration": "TOKENS_TO_REPLACE :: #insert #run generate_replacements_array()",
         "section": "Public declaration inventory",
         "spec_line": 28,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "generate_replacements_array",
         "declaration": "generate_replacements_array :: () -> string",
         "section": "Public declaration inventory",
         "spec_line": 29,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "normalize_options",
         "declaration": "normalize_options :: (original_options: Generate_Bindings_Options) -> Generate_Bindings_Options, bool",
         "section": "Public declaration inventory",
         "spec_line": 30,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "generate_bindings",
         "declaration": "generate_bindings :: (options: Generate_Bindings_Options, filename: string, log_results := true) -> success: bool",
         "section": "Public declaration inventory",
         "spec_line": 31,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "generate_bindings",
         "declaration": "generate_bindings :: (_options: Generate_Bindings_Options, log_results := false) -> generated_result: String_Builder, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 32,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "Bridge_Data",
         "declaration": "Bridge_Data :: struct",
         "section": "Public declaration inventory",
         "spec_line": 33,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "generate_bridge",
@@ -211,7 +211,7 @@
         "declaration": "Cpp_Functions_Visitor_Data :: struct",
         "section": "Public declaration inventory",
         "spec_line": 36,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "omit_cpp_functions_visitor",
@@ -274,7 +274,7 @@
         "declaration": "get_default_system_include_paths :: (os := OS, cpu := CPU) -> [] string",
         "section": "Public declaration inventory",
         "spec_line": 45,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "get_libc_paths",
@@ -414,7 +414,7 @@
         "declaration": "ComUuid :: struct",
         "section": "Public declaration inventory",
         "spec_line": 65,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Generator",
@@ -435,14 +435,14 @@
         "declaration": "Number_Flags :: enum_flags u8",
         "section": "Public declaration inventory",
         "spec_line": 68,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CType",
         "declaration": "CType :: struct",
         "section": "Public declaration inventory",
         "spec_line": 69,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "is_void_type",
@@ -463,7 +463,7 @@
         "declaration": "Function_Type :: struct",
         "section": "Public declaration inventory",
         "spec_line": 72,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "is_same_type",
@@ -484,28 +484,28 @@
         "declaration": "C_Kind :: enum",
         "section": "Public declaration inventory",
         "spec_line": 75,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Expression",
         "declaration": "Expression :: struct",
         "section": "Public declaration inventory",
         "spec_line": 76,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Type_Reference",
         "declaration": "Type_Reference :: struct",
         "section": "Public declaration inventory",
         "spec_line": 77,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Literal",
         "declaration": "Literal :: struct",
         "section": "Public declaration inventory",
         "spec_line": 78,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "is_same_literal",
@@ -519,49 +519,49 @@
         "declaration": "Macro_Value :: struct",
         "section": "Public declaration inventory",
         "spec_line": 80,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Unary_Operator",
         "declaration": "Unary_Operator :: struct",
         "section": "Public declaration inventory",
         "spec_line": 81,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Binary_Operator",
         "declaration": "Binary_Operator :: struct",
         "section": "Public declaration inventory",
         "spec_line": 82,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Struct_Literal",
         "declaration": "Struct_Literal :: struct",
         "section": "Public declaration inventory",
         "spec_line": 83,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Paren_Expression",
         "declaration": "Paren_Expression :: struct",
         "section": "Public declaration inventory",
         "spec_line": 84,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Location",
         "declaration": "Location :: struct",
         "section": "Public declaration inventory",
         "spec_line": 85,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Comment",
         "declaration": "Comment :: struct",
         "section": "Public declaration inventory",
         "spec_line": 86,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "prepend_comment",
@@ -582,49 +582,49 @@
         "declaration": "Declaration :: struct",
         "section": "Public declaration inventory",
         "spec_line": 89,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Declaration_Flags",
         "declaration": "Declaration_Flags :: enum_flags",
         "section": "Public declaration inventory",
         "spec_line": 90,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Function",
         "declaration": "Function :: struct",
         "section": "Public declaration inventory",
         "spec_line": 91,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Typedef",
         "declaration": "Typedef :: struct",
         "section": "Public declaration inventory",
         "spec_line": 92,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Enum",
         "declaration": "Enum :: struct",
         "section": "Public declaration inventory",
         "spec_line": 93,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Bitfield",
         "declaration": "Bitfield :: struct",
         "section": "Public declaration inventory",
         "spec_line": 94,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Bitfield_Status",
         "declaration": "Bitfield_Status :: struct",
         "section": "Public declaration inventory",
         "spec_line": 95,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "maybe_unwrap_bitfield_declaration",
@@ -638,14 +638,14 @@
         "declaration": "Declaration_Overlay :: struct",
         "section": "Public declaration inventory",
         "spec_line": 97,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Struct",
         "declaration": "Struct :: struct",
         "section": "Public declaration inventory",
         "spec_line": 98,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "is_struct_field",
@@ -659,42 +659,42 @@
         "declaration": "Struct_Extra_Info :: struct",
         "section": "Public declaration inventory",
         "spec_line": 100,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Namespace",
         "declaration": "Namespace :: struct",
         "section": "Public declaration inventory",
         "spec_line": 101,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Block",
         "declaration": "Block :: struct",
         "section": "Public declaration inventory",
         "spec_line": 102,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "TAB_STRING",
         "declaration": "TAB_STRING :: \" \"",
         "section": "Public declaration inventory",
         "spec_line": 103,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "Arg_Print_Mode",
         "declaration": "Arg_Print_Mode :: enum",
         "section": "Public declaration inventory",
         "spec_line": 104,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "_default_get_func_args_for_printing",
         "declaration": "_default_get_func_args_for_printing :: (func: *Function, type: *Function_Type, mode: Arg_Print_Mode) -> []*Declaration",
         "section": "Public declaration inventory",
         "spec_line": 105,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "maybe_add_spacing",
@@ -813,7 +813,7 @@
         "declaration": "looks_like_valid_identifier :: (identifier: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 122,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "should_unwrap_typedef",
@@ -1240,35 +1240,35 @@
         "declaration": "convert_float_literal :: (c_value: string) -> value: string, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 183,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "convert_literal_value",
         "declaration": "convert_literal_value :: (c_value: string) -> value: string, success: bool, was_string := false",
         "section": "Public declaration inventory",
         "spec_line": 184,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "is_hex_digit",
         "declaration": "is_hex_digit :: (c: u32) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 185,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "is_valid_int_literal_suffix",
         "declaration": "is_valid_int_literal_suffix :: (suffix: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 186,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "is_valid_float_literal_suffix",
         "declaration": "is_valid_float_literal_suffix :: (suffix: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 187,
-        "implementation": "pending"
+        "implementation": "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
       },
       {
         "name": "create_objc_interface",
@@ -1436,7 +1436,7 @@
         "declaration": "Print_Decl_Flags :: enum_flags",
         "section": "Public declaration inventory",
         "spec_line": 211,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "print_declaration_to_builder",
@@ -1674,7 +1674,7 @@
         "declaration": "Generate_Bindings_Options :: struct #type_info_none",
         "section": "Public declaration inventory",
         "spec_line": 245,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "handle_toplevel_cursors",
@@ -1709,7 +1709,7 @@
         "declaration": "Location :: struct",
         "section": "Public declaration inventory",
         "spec_line": 250,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "fill_location",
@@ -1926,7 +1926,7 @@
         "declaration": "CXFile :: *void",
         "section": "Unix-specific declarations",
         "spec_line": 321,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_getFileName",
@@ -3452,7 +3452,7 @@
         "declaration": "CXTypeLayoutError :: enum s32",
         "section": "Unix-specific declarations",
         "spec_line": 539,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_Type_getAlignOf",
@@ -3585,7 +3585,7 @@
         "declaration": "CX_StorageClass :: enum u32",
         "section": "Unix-specific declarations",
         "spec_line": 558,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CX_BinaryOperatorKind",
@@ -4229,7 +4229,7 @@
         "declaration": "CXToken :: struct",
         "section": "Unix-specific declarations",
         "spec_line": 650,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_getToken",
@@ -5300,7 +5300,7 @@
         "declaration": "CXFile :: *void",
         "section": "Windows-specific declarations",
         "spec_line": 806,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_getFileName",
@@ -6826,7 +6826,7 @@
         "declaration": "CXTypeLayoutError :: enum s32",
         "section": "Windows-specific declarations",
         "spec_line": 1024,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_Type_getAlignOf",
@@ -6959,7 +6959,7 @@
         "declaration": "CX_StorageClass :: enum s32",
         "section": "Windows-specific declarations",
         "spec_line": 1043,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CX_BinaryOperatorKind",
@@ -7603,7 +7603,7 @@
         "declaration": "CXToken :: struct",
         "section": "Windows-specific declarations",
         "spec_line": 1135,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_getToken",
@@ -23155,7 +23155,7 @@
         "declaration": "DEBUG_BINDINGS :: false",
         "section": "Windows-specific declarations",
         "spec_line": 10,
-        "implementation": "pending"
+        "implementation": "Windows-only porting subset; actual typed-message and manual diagnostic fixtures"
       },
       {
         "name": "verify_elsewhere_binding",
@@ -23176,42 +23176,42 @@
         "declaration": "C_Porting_Check_Settings :: struct",
         "section": "Windows-specific declarations",
         "spec_line": 13,
-        "implementation": "pending"
+        "implementation": "Windows-only porting subset; actual typed-message and manual diagnostic fixtures"
       },
       {
         "name": "check_c_porting",
         "declaration": "check_c_porting :: (message: *Message, settings: C_Porting_Check_Settings)",
         "section": "Windows-specific declarations",
         "spec_line": 14,
-        "implementation": "pending"
+        "implementation": "Windows-only porting subset; actual typed-message and manual diagnostic fixtures"
       },
       {
         "name": "check_c_porting",
         "declaration": "check_c_porting :: (tc: Typechecked(Code_Procedure_Body), settings: C_Porting_Check_Settings)",
         "section": "Windows-specific declarations",
         "spec_line": 15,
-        "implementation": "pending"
+        "implementation": "Windows-only porting subset; actual typed-message and manual diagnostic fixtures"
       },
       {
         "name": "should_skip",
         "declaration": "should_skip :: (node: *Code_Node, settings: C_Porting_Check_Settings) -> bool",
         "section": "Windows-specific declarations",
         "spec_line": 16,
-        "implementation": "pending"
+        "implementation": "Windows-only porting subset; actual typed-message and manual diagnostic fixtures"
       },
       {
         "name": "is_of_fixed_array_type",
         "declaration": "is_of_fixed_array_type :: (node: *Code_Node) -> bool",
         "section": "Windows-specific declarations",
         "spec_line": 17,
-        "implementation": "pending"
+        "implementation": "Windows-only porting subset; actual typed-message and manual diagnostic fixtures"
       },
       {
         "name": "do_error_checking",
         "declaration": "do_error_checking :: (p: *Metaprogram_Plugin, message: *Message)",
         "section": "Windows-specific declarations",
         "spec_line": 18,
-        "implementation": "pending"
+        "implementation": "Windows-only porting subset; actual typed-message and manual diagnostic fixtures"
       },
       {
         "name": "finish_error_checking",
@@ -23264,21 +23264,21 @@
         "declaration": "get_file_and_module :: (node: *Code_Node) -> (file: *Message_File, import: *Message_Import)",
         "section": "Public declaration inventory",
         "spec_line": 8,
-        "implementation": "pending"
+        "implementation": "inspection subset; real producer code records and canonical Math identity verified"
       },
       {
         "name": "is_global_ident",
         "declaration": "is_global_ident :: (ident: *Code_Ident) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 9,
-        "implementation": "pending"
+        "implementation": "inspection subset; real producer code records and canonical Math identity verified"
       },
       {
         "name": "Math",
         "declaration": "Math :: #import \"Math\"",
         "section": "Public declaration inventory",
         "spec_line": 10,
-        "implementation": "pending"
+        "implementation": "inspection subset; real producer code records and canonical Math identity verified"
       },
       {
         "name": "Header_Record",
@@ -33466,14 +33466,14 @@
         "declaration": "log_text_report :: (report: *Report, min_self_time := 0., min_hier_time := 0.)",
         "section": "Public declaration inventory",
         "spec_line": 40,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "save_csv_report",
         "declaration": "save_csv_report :: (report: *Report, filename: string)",
         "section": "Public declaration inventory",
         "spec_line": 41,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "MAX_DEPTH",
@@ -33501,14 +33501,14 @@
         "declaration": "Zone_History :: struct",
         "section": "Public declaration inventory",
         "spec_line": 45,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "Zone",
         "declaration": "Zone :: struct",
         "section": "Public declaration inventory",
         "spec_line": 46,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "Zone_Profiling_Data",
@@ -33536,49 +33536,49 @@
         "declaration": "NUM_VALUES :: 4",
         "section": "Public declaration inventory",
         "spec_line": 50,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "NUM_TITLE",
         "declaration": "NUM_TITLE :: 2",
         "section": "Public declaration inventory",
         "spec_line": 51,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "NUM_HEADER",
         "declaration": "NUM_HEADER :: NUM_VALUES+1",
         "section": "Public declaration inventory",
         "spec_line": 52,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "Report_Row",
         "declaration": "Report_Row :: struct",
         "section": "Public declaration inventory",
         "spec_line": 53,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "Report",
         "declaration": "Report :: struct",
         "section": "Public declaration inventory",
         "spec_line": 54,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "Report_Mode",
         "declaration": "Report_Mode :: enum u8",
         "section": "Public declaration inventory",
         "spec_line": 55,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "NUM_FRAME_SLOTS",
         "declaration": "NUM_FRAME_SLOTS :: 128",
         "section": "Public declaration inventory",
         "spec_line": 56,
-        "implementation": "pending"
+        "implementation": "reporting subset; CSV/text, manual/history conditions verified"
       },
       {
         "name": "MAX_PROFILING_ZONES_FOR_MANUAL_MODE",

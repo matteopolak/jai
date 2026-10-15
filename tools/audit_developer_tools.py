@@ -48,6 +48,18 @@ def main():
         if module == "Generate_C_Header":
             for item in declarations:
                 item["implementation"] = "supported subset; see developer-tools-deviations.md"
+        if module == "Bindings_Generator":
+            models = set()
+            for path in (ROOT / "stdlib/Bindings_Generator").glob("*.jai"):
+                models.update(re.findall(r"^([A-Za-z_][A-Za-z_0-9]*)\s*::", path.read_text().split("#scope_file")[0], re.MULTILINE))
+            for item in declarations:
+                if item["name"] in models or item["name"] == "TARGET_OS":
+                    item["implementation"] = "reviewed data/defaults/constants implemented; native parser model traversal pending"
+                if item["name"] in {"generate_bindings", "normalize_options", "get_default_system_include_paths",
+                                     "_default_get_func_args_for_printing", "looks_like_valid_identifier",
+                                     "is_hex_digit", "is_valid_int_literal_suffix", "is_valid_float_literal_suffix",
+                                     "convert_float_literal", "convert_literal_value", "generate_replacements_array"}:
+                    item["implementation"] = "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
         if module == "Performance_Report":
             for item in declarations:
                 item["implementation"] = "implemented; measured native compiler plugin fixture"
@@ -70,6 +82,21 @@ def main():
             for item in declarations:
                 if item["name"] in supported:
                     item["implementation"] = "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        if module == "Iprof":
+            supported = {"Report", "Report_Row", "Report_Mode", "Zone", "Zone_History", "NUM_VALUES", "NUM_TITLE",
+                         "NUM_HEADER", "NUM_FRAME_SLOTS", "save_csv_report", "log_text_report"}
+            for item in declarations:
+                if item["name"] in supported:
+                    item["implementation"] = "reporting subset; CSV/text, manual/history conditions verified"
+        if module == "Codex":
+            for item in declarations:
+                if item["name"] in {"Math", "get_file_and_module", "is_global_ident"}:
+                    item["implementation"] = "inspection subset; real producer code records and canonical Math identity verified"
+        if module == "Check":
+            for item in declarations:
+                if item["name"] in {"DEBUG_BINDINGS", "C_Porting_Check_Settings", "check_c_porting", "should_skip",
+                                     "is_of_fixed_array_type", "do_error_checking"}:
+                    item["implementation"] = "Windows-only porting subset; actual typed-message and manual diagnostic fixtures"
         inventory[module] = {"spec": str(spec.relative_to(ROOT)),
                              "spec_sha256": hashlib.sha256(contents.encode()).hexdigest(),
                              "declarations": declarations, "reviewed_members": members}

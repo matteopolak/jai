@@ -1,6 +1,7 @@
 typedef long long Counter;
 typedef long NativeLong;
 enum Mode { MODE_ADD = 3, MODE_SUBTRACT = 7 };
+/** Original SDK-style record documentation. */
 struct Sample {
   int x;
   double y;
