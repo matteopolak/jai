@@ -760,3 +760,26 @@ Full unchanged coverage command completed with183 ledger differences:141 first e
 ## Developer native package closure audit
 
 tools/developer_native_runtime.py::stage_macos_sdk currently copies/relocates/signs libclang,LLVM,zstd,z3 with exact source/output hashes, but has no license/notices copy step. Actual loader closure is verified, not redistribution-license closure. compiler-path.txt still requires configured compiler/resources; Linux retains SDK symlinks/rpaths. Tools/package owner: finish pinned resource/license packaging plus actual SDK-prefix-removal consumers before claiming distribution self-containment. Existing development/native test success does not close this release gate.
+## Shared named-while expansion hygiene blocks Walk_Table
+
+Compiler owner: the reviewed Walk_Table contract now has a real portable-owned
+body, but exported named-while condition identity/value is lost through
+`#expand`/`#insert`. Integration independently reproduced on source-built compiler
+at shared `fad75f23`:
+
+```
+JAIC_STDLIB="$PWD/stdlib" <integration-target>/debug/jaic \
+  tests/portable-stdlib/pending/macro-while-condition-value-binding.jai -check
+```
+
+The minimal library-independent expansion declares
+`while `condition_value := cast(u32) 3`, then inserts caller code reading that
+name and using `break condition_value`. It fails `unknown identifier
+condition_value` at caller line 12. The ordinary nonmacro
+`while-condition-value-binding.jai` control passes. Source and outputs are retained
+in the shared pending fixture directory and ignored
+`artifacts/shared-integration/named-while-hygiene.json`. Fix the general exported
+loop-condition binding and labelled-control identity; no Hash_Table-specific
+exception, invented public helper or removed assertion is acceptable. Portable
+owner retains the real table-slot/tombstone/continue/break regression.
+

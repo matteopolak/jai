@@ -1,5 +1,33 @@
 # Independent integration deviations audit
 
+## Current shared source reconciliation: fad75f23
+
+The active tree is `stdlib-shared`, branch `codex/stdlib-shared`, production
+snapshot `fad75f237cd2f9691b3cba9f287c7d71a0b32705`. Earlier entries below are
+historical evidence, not proof that their fixes exist in this snapshot. In
+particular the older filtered-parameter serializer repair has not been adopted
+into current compiler-owned Program_Print; the independent roundtrip still
+fails and is requested in integration-requests.md. Current whole workspace and
+catalogue results remain the failed exact6295584c measurements.
+
+`tools/native_bindings/rpmalloc_profiles.py` generates cache and diagnostic
+domains; the current integration run executed only four diagnostic combinations
+with both caches enabled. Generation is not runtime coverage. The new
+`build_flags` ABI intentionally requires rebuilding native libraries using the
+binding builder, rather than reusing legacy artifacts. All25 scoped checks pass
+with real C SDK instrumentation; Windows/Linux have only source checks. The
+first independent generation check used a capture omitting generated test
+files, failed at the absent probe and was rerun read-only on actual unchanged
+shared outputs. No fixture or declaration repair was used. Remaining numerical,
+adaptive-cache/page/unmap options retain explicit restrictions; proper closure
+requires real corresponding C configurations and ownership/ABI/runtime tests.
+
+`internal/collections/hash-table.jai` has an uncommitted real Walk_Table body;
+exported named-while condition values are not visible in inserted caller code.
+The ordinary named-while and macro label-only controls pass. No helper export,
+shadow variable or symbol-specific compiler exception was introduced. General
+compiler hygiene repair and the unchanged table-slot assertions are required.
+
 ## Shared portable transition, 2026-10-15
 
 - Optional-assert fixes in `internal/input/keymap-text.jai`,

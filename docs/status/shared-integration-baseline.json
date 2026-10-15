@@ -92,10 +92,6 @@
       "classification": "historical genuine failure; cause not reproduced or waived"
     },
     {
-      "name": "bindings-aggregate.jai:83",
-      "classification": "producer aggregate negative-cycle assertion failure; owner repairing"
-    },
-    {
       "name": "compiler-using-records-preserve-filters",
       "classification": "retained independent regression needs compiler-owned Program_Print production checkpoint"
     },
@@ -106,6 +102,10 @@
     {
       "name": "WASI tour / stdlib target ledger",
       "classification": "previous complete workspace red; current result not yet measured"
+    },
+    {
+      "name": "Walk_Table exported named-while condition binding",
+      "classification": "new supported production body blocked by general compiler macro hygiene; ordinary while and label-only controls pass; exported condition-value expansion fails"
     }
   ],
   "external_corpus": {
@@ -162,7 +162,8 @@
       "historical_partial": 391,
       "historical_missing": 14,
       "note": "historical retained scope only; current per-API audit separate"
-    }
+    },
+    "scope_note": "Historical inventories retained from the first complete measurement; superseded scoped checkpoints are enumerated separately, never added into a whole-library completion percentage."
   },
   "catalogue": {
     "status": "finished",
@@ -353,6 +354,35 @@
       "jai_documents_executed": false,
       "phases": 40,
       "processes": 4
+    }
+  },
+  "current_candidate": {
+    "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+    "ref": "codex/stdlib-shared",
+    "production_snapshot": "fad75f237cd2f9691b3cba9f287c7d71a0b32705",
+    "whole_workspace_green": false,
+    "pending_shared_edits": "producer-owned batches remain uncommitted; not measured as part of this committed snapshot"
+  },
+  "committed_followups": {
+    "generator": {
+      "snapshot": "b3483477cfe5179ef5062dd27cab1053b25ad29f",
+      "model_names": 58,
+      "model_signatures": 63,
+      "model_supported_host_rows": 52,
+      "model_partial_rows": 6,
+      "model_missing_bodies": 0,
+      "model_commands": 138,
+      "macro_supported_commands": 59,
+      "native_other_platforms": "unverified; source checks only",
+      "report": "tools/shared-generator-checkpoint.md"
+    },
+    "rpmalloc": {
+      "snapshot": "fad75f237cd2f9691b3cba9f287c7d71a0b32705",
+      "passed": 25,
+      "failed": 0,
+      "ignored": 0,
+      "diagnostic_combinations_executed": 4,
+      "report": "status/shared-rpmalloc-verification.json"
     }
   }
 }
