@@ -598,3 +598,34 @@ the separately scheduled follow-up. Broad quality finishes833files with52/171
 failed checks and source_stable=true: ordinary target/body failures remain,
 including actual unused results in UI/archive. Those source cleanups are being
 verified in the own secondary worktree. No blanket lint suppression was added.
+
+## Refresh13 reviewed merge
+
+Compiler995685c adds general Windows asynchronous unwind attributes and LLVM
+synthesis defaults before/after optimization for all definitions. Two linear
+sweeps add unbenchmarked compile overhead; no fake frame or optimization disabling.
+Real Windows unwind/stack execution is pending. The platform named-fault fixture's
+unconditional lookup assertion for a genuine O2 leaf needs ABI-aware correction;
+do not manufacture a nonleaf to satisfy it.
+
+Portable2355943 now matches settled SIMD truth-based comparison/mask, byte-offset
+load/gather/scatter, looping indices and full horizontal pairs. It preserves
+reviewed source defects in docs rather than emulating uninitialized results.
+Scalar-left noncommutative symmetric policy remains unresolved. Pool CAPS and
+runtime heap static names follow the reviewed null-data query contract. Adopted
+private runtime transport matches the integration protocol; kept our canonical
+initializer and deleted startup wrapper rather than reintroducing superseded
+paths. New standalone runtime test runner now selects production --stdlib and
+source-built --jaic, without repaired overlays or byte-equality staging demands.
+
+Nine existing UI suites pass45 interpreter/nativeO0/O2 invocations after unused
+result cleanup; archive original behavior and strict lint pass. UI has no remaining
+ordinary lint finding but its pre-existing circular global diagnostic remains.
+LSP parse-refactor test referenced three absent legacy flat library paths.
+It now scans actual independent autorun/plugin/bundle implementation units with
+the same every-line/range edit parsing assertions and >10 offered actions.
+All21 refactor tests pass; no missing Example_Plugin export was invented.
+
+Authorized candidatea78721d only changes native ARM64 Mesa developer-shell/isolated
+pinned Python setup and documentation. Integrated those workflow changes without
+push/dispatch or superseding coordinator's long-running native build.

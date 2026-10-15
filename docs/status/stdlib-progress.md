@@ -492,3 +492,12 @@ secondary verification. Publication held, nativeCI/corpus/Focus coordinator-only
 Current verified SIMD oracle increment: all reviewed exports now execute scalar value kernels. Added unaligned contiguous load, byte gather/scatter (negative/repeated offsets and later-lane overwrite), i*STEP indexes and complete interleaved pair sums. Corrected prior all-ones/MSB choices to the updated oracle's 1/0 comparison values and truth masks; source defects remain documented. Interpreter/native focused tests and byte-identical regeneration pass. Full worker regression again passes 90 cases in both modes, 22 faults, eight compile rejections and prior SMTP/IPC/startup/parent/Linux+Windows target checks. All 289 owned Jai files pass format/lint. Watcher focused native/sanitizer checks remain separately verified. Continue compiler performance/report and remaining portable scope.
 
 Runtime/CAPS checkpoint: exact three-boolean Runtime_Support now consumes the private settled compiler configuration. Actual root allocations 0/65536/131072 pass interpreter/native O0/O2; independent child 0/131072 native executions pass. Pool CAPS accepts required null data, delivers persistent name and exact flags; runtime heap name delivered. Full suite passes 92 cases in both modes, 22 faults/eight rejections and prior integration/target checks; 283 narrowed owned files pass format/lint. Audio/tools ownership excluded. Three provisional Performance_Report files remain uncommitted, enumerated in portable-runtime-configuration.md; no completion claim. Continue public time/calendar and containers; Flat_Pool defaults still missing from oracle.
+
+Refresh13 source milestone: compiler995685c async Windows unwind, portable2355943
+settled SIMD/PoolCAPS/runtime adoption and foundation3d218cb reports are merged,
+plus authorized native ARM64 CI environment fixes. UI/archive unused bindings
+removed with calls/result positions preserved; nine UI suites45invocations and
+archive behavior pass. All21 LSP refactor tests pass against current independent
+implementation paths. UI strict lint still has a genuine circular initialization
+diagnostic; minimal related self-address repro and lifecycle request recorded.
+New production builds/unwind/runtime/SIMD/regeneration/quality checks are next.
