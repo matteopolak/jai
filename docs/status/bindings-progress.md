@@ -1,5 +1,18 @@
 # Bindings worker progress
 
+Post-`0488c78` focused checkpoint: no new public helper is counted complete.
+Current reviewed pages/inbox still omit ten helper behavior contracts; the
+question ledger now has ten narrow per-procedure requests. X11 three, Android
+seven and enabled telemetry fourteen remain missing. The verifier gained an
+existing-local-stage path that never discovers peer checkouts, and a real
+private runtime owner-selection bug was fixed. Focused checks retain two Linux
+X11 missing-export failures; 14 source and ten privacy checks pass. Clipboard
+ownership/canary/idempotence executes successfully on both Mac CPUs. All71
+Python regressions, owned formatting, strict X11 lint and regeneration pass.
+Android CLI target is still rejected, not verified. See
+[current evidence](../native/x11-android-contract-status.md). No optional
+rpmalloc profile/performance work, guessed helper ABI or public stub was added.
+
 Combined worker Mac baseline is green: `.work/bindings-mac-combined-current.json`
 has zero failures, with 146 source, 98 native build/run and 116 privacy passes.
 Unavailable target/iOS cases are separate, not passed. This stages current NEW

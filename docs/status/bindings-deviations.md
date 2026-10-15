@@ -8,6 +8,20 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Focused verification ownership bug, repaired.** The private runtime-test
+  fallback assigned clipboard and shader byte-copy units to DXC despite their
+  X11/D3D placements. A module-filtered run could omit real ownership tests.
+  `verify.py` now derives the facade from the private placement, with a
+  regression over every registration. Current X11 selection executes the
+  clipboard test; both Mac CPU native executions also pass independently.
+  `--existing-stdlib` reuses the local independent baseline without discovering
+  peer checkouts. This is worker staging, not fresh coordinator integration.
+  The ten requested X11/Android public helpers remain missing for the precise
+  contracts in the question ledger. Two current X11 export failures remain
+  active; Android source/runtime and native Linux remain unverified. No helper
+  policy was fabricated to change the ledger count. See
+  [focused report](../native/x11-android-contract-status.md).
+
 - **X11 clipboard and combined Mac evidence.** Clipboard buffers are freed
   through canonical Basic hooks in the calling allocator domain under native
   Display locking. The private generic operation is tested with real allocator

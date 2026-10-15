@@ -36,6 +36,10 @@ PRIVATE_UNITS = {'ios-sdk-host':'iOS/sdk-host-unit.jai',
 PRIVATE_UNITS['rpmalloc-no-thread-cache'] = 'rpmalloc/sdk-no-thread-cache-unit.jai'
 PRIVATE_UNITS['shader-bytes'] = 'd3d_compiler/sdk-shader-bytes-unit.jai'
 PRIVATE_UNITS['clipboard-owned-data'] = 'X11/sdk-clipboard-owned-data-unit.jai'
+
+
+def private_unit_module(name):
+    return Path(PRIVATE_UNITS[name]).parts[0]
 PRIVATE_UNIT_DEPENDENCIES = {
     'rpmalloc-no-thread-cache': {
         **{'tests/native-bindings/generated/rpmalloc-no-thread-cache-'+label+'-layout.jai': 'rpmalloc/generated/rpmalloc-no-thread-cache-'+label+'-layout.jai' for label in ('rewrite', 'raw-base', 'raw')},
@@ -151,6 +155,27 @@ def stage(destination, foundation=None):
     shutil.copytree(ROOT/'stdlib/internal/bindings', destination/'internal/bindings', dirs_exist_ok=True)
 
 
+def stage_for_checks(destination, existing_stdlib=None, foundation=None):
+    if existing_stdlib is None:
+        stage(destination, foundation)
+        return
+    baseline = existing_stdlib.resolve()
+    if not (baseline/'prelude/module.jai').is_file():
+        raise SystemExit('Existing independent stage has no canonical bootstrap')
+    if destination.resolve().is_relative_to(baseline):
+        raise SystemExit('Verification output must be outside the existing stage')
+    shutil.copytree(baseline, destination)
+    # Refresh only this producer's sources. This path never discovers or reads
+    # another checkout, even if the old default staging path would be available.
+    for module in MODULES:
+        if (destination/module).exists():
+            shutil.rmtree(destination/module)
+        shutil.copytree(ROOT/'stdlib'/module, destination/module)
+    if (destination/'internal/bindings').exists():
+        shutil.rmtree(destination/'internal/bindings')
+    shutil.copytree(ROOT/'stdlib/internal/bindings', destination/'internal/bindings')
+
+
 def invoke(command, env, timeout=120):
     try:
         p = subprocess.run([str(x) for x in command], env=env, capture_output=True, text=True, timeout=timeout)
@@ -170,14 +195,17 @@ def main():
     parser.add_argument('--rpmalloc-first-class-heaps', action='store_true',
                         help='Supply the missing raw heap compile-time selection through the private build configuration')
     parser.add_argument('--report', type=Path, default=ROOT/'.work/verification.json')
-    parser.add_argument('--foundation', type=Path, help='Explicit previously staged NEW independent foundation sources')
+    staging = parser.add_mutually_exclusive_group()
+    staging.add_argument('--foundation', type=Path, help='Explicit previously staged NEW independent foundation sources')
+    staging.add_argument('--existing-stdlib', type=Path,
+                         help='Reuse an independent local stage and refresh only owned bindings; never access peer checkouts')
     args = parser.parse_args()
     selected_configs = [config for config in TARGET_CONFIGS if not args.target_os or config[0] in args.target_os]
     compiler = args.compiler.resolve(strict=True)
     work = ROOT/'.work/runs'/(args.report.stem+'-'+str(os.getpid()))
     work.mkdir(parents=True, exist_ok=True)
     stdlib = work/'stdlib'
-    stage(stdlib, args.foundation)
+    stage_for_checks(stdlib, args.existing_stdlib, args.foundation)
     if args.rpmalloc_first_class_heaps:
         from configure_rpmalloc import configure
         configure(stdlib, True)
@@ -192,6 +220,7 @@ def main():
     report['native_artifacts'] = {p.name:hashlib.sha256(p.read_bytes()).hexdigest()
                                   for p in sorted((ROOT/'.work/native').glob('lib*')) if p.is_file()} if args.runtime else {}
     report['privacy_only'] = args.privacy_only
+    report['existing_stdlib'] = str(args.existing_stdlib.resolve()) if args.existing_stdlib else None
     for module, slug in ([] if args.privacy_only else MODULES.items()):
         if args.module and module not in args.module:
             continue
@@ -379,7 +408,7 @@ def main():
             if name in ('x11-window-helpers','x11-message-box'):
                 relevant = ['X11']
             if name in PRIVATE_UNITS:
-                relevant = ['iOS'] if name=='ios-sdk-host' else ['rpmalloc'] if name.startswith('rpmalloc-') else ['dxc_compiler']
+                relevant = [private_unit_module(name)]
             if name == 'imgui-nested':
                 relevant = ['ImGui']
             if name == 'posix-stat':

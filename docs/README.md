@@ -7,6 +7,8 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
   string ownership and DXC version text, with separate native/source evidence
 - [X11 clipboard ownership](native/x11-clipboard-ownership.md): real cleanup,
   allocator tracking and separate native/source verification
+- [Remaining X11/Android contracts and focused verification](native/x11-android-contract-status.md):
+  precise missing policies, isolated staging and preserved export failures
 - [Current combined worker Mac evidence](native/bindings-mac-current.md):
   current producer staging, zero failures and explicit remaining gates
 - [Objective-C runtime helpers](native/objc-runtime-helpers.md): real encoding,
