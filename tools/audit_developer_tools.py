@@ -57,11 +57,7 @@ def main():
                     item["implementation"] = "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
                 if item["name"].startswith("clang_") and item["name"] in models:
                     item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
-                    if item["name"] in {"clang_getDiagnosticNumFixIts", "clang_getDiagnosticFixIt",
-                                         "clang_getDiagnosticNumRanges", "clang_getDiagnosticRange",
-                                         "clang_getCursorSemanticParent", "clang_getCursorExtent",
-                                         "clang_getRangeStart", "clang_getRangeEnd", "clang_getTypeSpelling",
-                                         "clang_getEnumConstantDeclValue"}:
+                    if item["name"] in {"clang_getDiagnosticNumRanges", "clang_getDiagnosticRange"}:
                         item["implementation"] = "reviewed native signature implemented; direct invocation remains source-only"
                 if item["name"] in {"set_ExcludeDeclarationsFromPCH", "get_ExcludeDeclarationsFromPCH",
                                      "set_DisplayDiagnostics", "get_DisplayDiagnostics",

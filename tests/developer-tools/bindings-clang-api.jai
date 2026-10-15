@@ -5,6 +5,7 @@ State :: struct {
     records: s64;
     functions: s64;
     record_size: s64;
+    correct_type_name: bool;
 }
 
 visit :: (cursor: B.CXCursor, _parent: B.CXCursor, data: B.CXClientData) -> B.CXChildVisitResult #c_call {
@@ -17,7 +18,12 @@ visit :: (cursor: B.CXCursor, _parent: B.CXCursor, data: B.CXClientData) -> B.CX
         name := to_string(B.clang_getCString(spelling));
         if name == "Sample" {
             type := B.clang_getCursorType(cursor);
+
             state.record_size = B.clang_Type_getSizeOf(type);
+            type_name := B.clang_getTypeSpelling(type);
+
+            defer B.clang_disposeString(type_name);
+            state.correct_type_name = to_string(B.clang_getCString(type_name)) == "struct Sample";
             state.records += 1;
         }
     }
@@ -50,6 +56,6 @@ main :: () {
     root := B.clang_getTranslationUnitCursor(unit);
 
     assert(B.clang_visitChildren(root, visit, *state) == 0);
-    assert(state.records == 1 && state.functions == 2 && state.record_size == 32);
+    assert(state.records == 1 && state.functions == 2 && state.record_size == 32 && state.correct_type_name);
     print("ok\n");
 }

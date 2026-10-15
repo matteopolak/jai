@@ -2087,14 +2087,14 @@
         "declaration": "clang_getRangeStart :: (range: CXSourceRange) -> CXSourceLocation #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 344,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getRangeEnd",
         "declaration": "clang_getRangeEnd :: (range: CXSourceRange) -> CXSourceLocation #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 345,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXSourceRangeList",
@@ -2269,14 +2269,14 @@
         "declaration": "clang_getDiagnosticNumFixIts :: (Diagnostic: CXDiagnostic) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 370,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getDiagnosticFixIt",
         "declaration": "clang_getDiagnosticFixIt :: (Diagnostic: CXDiagnostic, FixIt: u32, ReplacementRange: *CXSourceRange) -> CXString #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 371,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXIndex",
@@ -2990,7 +2990,7 @@
         "declaration": "clang_getCursorSemanticParent :: (cursor: CXCursor) -> CXCursor #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 473,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getCursorLexicalParent",
@@ -3039,7 +3039,7 @@
         "declaration": "clang_getCursorExtent :: (unknown0: CXCursor) -> CXSourceRange #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 480,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXTypeKind",
@@ -3074,7 +3074,7 @@
         "declaration": "clang_getTypeSpelling :: (CT: CXType) -> CXString #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 485,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTypedefDeclUnderlyingType",
@@ -3095,7 +3095,7 @@
         "declaration": "clang_getEnumConstantDeclValue :: (C: CXCursor) -> s64 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 488,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getEnumConstantDeclUnsignedValue",
@@ -5461,14 +5461,14 @@
         "declaration": "clang_getRangeStart :: (range: CXSourceRange) -> CXSourceLocation #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 829,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getRangeEnd",
         "declaration": "clang_getRangeEnd :: (range: CXSourceRange) -> CXSourceLocation #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 830,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXSourceRangeList",
@@ -5643,14 +5643,14 @@
         "declaration": "clang_getDiagnosticNumFixIts :: (Diagnostic: CXDiagnostic) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 855,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getDiagnosticFixIt",
         "declaration": "clang_getDiagnosticFixIt :: (Diagnostic: CXDiagnostic, FixIt: u32, ReplacementRange: *CXSourceRange) -> CXString #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 856,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXIndex",
@@ -6364,7 +6364,7 @@
         "declaration": "clang_getCursorSemanticParent :: (cursor: CXCursor) -> CXCursor #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 958,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getCursorLexicalParent",
@@ -6413,7 +6413,7 @@
         "declaration": "clang_getCursorExtent :: (unknown0: CXCursor) -> CXSourceRange #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 965,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXTypeKind",
@@ -6448,7 +6448,7 @@
         "declaration": "clang_getTypeSpelling :: (CT: CXType) -> CXString #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 970,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTypedefDeclUnderlyingType",
@@ -6469,7 +6469,7 @@
         "declaration": "clang_getEnumConstantDeclValue :: (C: CXCursor) -> s64 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 973,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getEnumConstantDeclUnsignedValue",
