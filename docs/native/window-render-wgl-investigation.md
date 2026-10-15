@@ -128,3 +128,7 @@ must still run after this targeted diagnostic, without test exclusions.
 - [ReleaseDC](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-releasedc) and [private DC ownership](https://learn.microsoft.com/en-us/windows/win32/gdi/private-display-device-contexts): only common DCs need release; class/private DCs remain OS-owned.
 - [WGL context/profile attributes](https://registry.khronos.org/OpenGL/extensions/ARB/WGL_ARB_create_context.txt): version/profile requests and failure conditions.
 - [Mesa build prerequisites](https://docs.mesa3d.org/install.html), [Windows Meson configuration](https://docs.mesa3d.org/meson.html), [LLVMpipe application-local Windows deployment](https://docs.mesa3d.org/drivers/llvmpipe.html).
+
+## Integrated CI invocation
+
+The Windows workflow builds `jailint` alongside `jaic` and runs this probe on both native CPUs. x64 explicitly deploys the existing pinned Mesa distribution beside the interpreter and test executables; ARM64 records the installed native driver without substituting x64 DLLs. Both CPU platform runners enable `--windows-crash` for actual default/ON/OFF faults, trace and cleanup checks. A missing modern driver remains a failed rendering gate.
