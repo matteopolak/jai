@@ -95,3 +95,27 @@ Stable checkpoint-2 full report is `.work/stable-checkpoint-2-full.json`:
 240 source checks passed/36 failed, 47 native passed/one retained SDL ABI failure,
 96 privacy passed/two blocked by D3D, 1,200 symbols passed. It predates the six
 corrected ImGui namespace checks, which now pass in the scoped report.
+
+Next stable checkpoint: Linux ARM64 `stat`, `lstat`, and `fstat` now use a
+private 128-byte kernel record and real target syscall numbers from pinned
+official Linux UAPI headers, then copy successful results into the unchanged
+144-byte public record. Null buffers and failures retain native error behavior;
+failed operations leave the public output unchanged. General LP64 C record
+translation is shared with the Android delegate instead of duplicated.
+
+Evidence: `.work/checkpoint-4-tool-checks.json` has six successful production
+format/strict-lint/regeneration/regression commands, including 43 Python tests.
+`.work/posix-stat-current-foundations.json` passes four Unix source targets and
+host native regressions. `.work/posix-stat-sdk-both-cpus.json` passes all 16
+macOS C-oracle/build/runtime checks on both CPUs. Linux ARM64 headers/layouts
+are cross-compiled and every field asserted; Linux ARM64 execution is still
+required and is not inferred from macOS execution. The current NEW foundations
+dependency `internal/basic-context` is staged; the actual formatter was rebuilt
+successfully against it without a compiler patch.
+
+Ledger: 28,397 declared, 1,262 forwarded, 544 generated bodies, 48 manual
+bodies, 120 unresolved and one duplicate. This reclassifies three existing
+unsafe stat forwarders as real adapters; it does not manufacture a coverage
+increase. The 58 configuration failures and retained SDL public ABI mismatch
+remain required work. Next: remaining reviewed wrappers and refreshed compiler
+configuration verification.

@@ -102547,7 +102547,8 @@
       "spec_sha256": "66fedef8804852fff84f2a7af77c8a8e64d539f5c8a500b9040f5ceba062a6ef",
       "counts": {
         "declared": 9883,
-        "implemented": 102
+        "implemented": 99,
+        "implemented_manual": 3
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -111783,21 +111784,24 @@
           "signature": "stat :: (path: *u8, buf: *stat_t) -> s64",
           "condition": "OS == .LINUX",
           "spec_line": 1326,
-          "status": "implemented"
+          "status": "implemented_manual",
+          "artifact": "stdlib/POSIX/wrappers.jai"
         },
         {
           "name": "fstat",
           "signature": "fstat :: (fd: s32, buf: *stat_t) -> s64",
           "condition": "OS == .LINUX",
           "spec_line": 1327,
-          "status": "implemented"
+          "status": "implemented_manual",
+          "artifact": "stdlib/POSIX/wrappers.jai"
         },
         {
           "name": "lstat",
           "signature": "lstat :: (path: *u8, buf: *stat_t) -> s64",
           "condition": "OS == .LINUX",
           "spec_line": 1328,
-          "status": "implemented"
+          "status": "implemented_manual",
+          "artifact": "stdlib/POSIX/wrappers.jai"
         },
         {
           "name": "getenv",

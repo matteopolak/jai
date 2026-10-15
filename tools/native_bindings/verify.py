@@ -76,7 +76,7 @@ def stage(destination, foundation=None):
         raise SystemExit('The independent foundation bootstrap is not ready')
     shutil.copytree(foundation, destination, dirs_exist_ok=True)
     for worker, modules, internals in [
-        ('foundations',['Basic','String','Hash','File_Utilities'],['basic','basic-interface','string','hash','files','native-path']),
+        ('foundations',['Basic','String','Hash','File_Utilities'],['basic','basic-interface','basic-context','string','hash','files','native-path']),
         ('window-render',['Window_Creation','Window_Type','Input','Keymap','Gamepad','Simp','sRGB','Clipboard'],['window','rendering','input','gamepad','clipboard']),
         ('numerics',['Math','Sloppy_Math','Float16','Color_Interpolation','GetRect','GetRect_LeftHanded'],['numerics']),
         ('compiler',['Compiler','Jai_Lexer','Code_Visit','Program_Print'],['compiler-api','jai-lexer','code-visit','program-print'])
@@ -173,6 +173,7 @@ def main():
         ('Android/EGL', 'android-egl-context.jai', [('android','x64'),('android','arm64')]),
         ('iOS', 'ios.jai', [('ios','x64'),('ios','arm64')]),
         ('ImGui', 'imgui-nested.jai', TARGET_CONFIGS),
+        ('POSIX', 'posix-stat.jai', [('linux','x64'),('linux','arm64'),('macos','x64'),('macos','arm64')]),
         ('GL', 'gl-debug-output.jai', TARGET_CONFIGS),
     ]:
         if args.privacy_only:
@@ -230,6 +231,7 @@ def main():
             runtime_tests.append('wgl-context')
         runtime_tests.append('sdl-rwops')
         runtime_tests.append('imgui-nested')
+        runtime_tests.append('posix-stat')
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
         for name in runtime_tests:
@@ -250,6 +252,8 @@ def main():
                 relevant = ['iOS']
             if name == 'imgui-nested':
                 relevant = ['ImGui']
+            if name == 'posix-stat':
+                relevant = ['POSIX']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']
             if args.module and not any(m in args.module for m in relevant):

@@ -8,6 +8,23 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Linux ARM64 public/kernel stat mismatch.** The three named wrappers now
+  preserve the public x64 record/constants while using generated pinned native
+  ARM64 syscall definitions and complete private storage, with explicit field
+  marshalling. [Full details](../native/linux-arm64-stat.md) cover failure/null
+  pointer semantics, zero reserved fields, raw-syscall limitations, fixed stack/
+  copy overhead and missing Linux runtime evidence. GNU ARM64 C ABI assertions,
+  four Unix source configurations and both macOS runtime programs pass. Proper
+  follow-up is real Linux ARM64 execution and continued audit of other raw
+  x64 Linux ABI constants/records; no public layout is altered to pass a probe.
+- **Current foundation dependency.** NEW foundations now uses a separate
+  `internal/basic-context` for its debugger context extension. Staging copies
+  that actual producer module; no substitute definition/bootstrap is created.
+  The intermediate missing-module failures remain in
+  `.work/posix-stat-adapter-final.json`. Current-source retry and actual formatter
+  build pass. The earlier invalid octal spelling in the new test was corrected
+  to reviewed POSIX permission constants; its failure report is retained.
+
 - **Android POSIX records, resolved source association.** Complete pinned
   official Bionic headers now supply eight target declarations for four
   inventoried records, with per-field and complete C layout assertions on both

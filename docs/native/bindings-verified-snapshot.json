@@ -3,8 +3,8 @@
   "root_declaration_counts": {
     "declared": 28397,
     "unresolved": 120,
-    "implemented_manual": 45,
-    "implemented": 547,
+    "implemented_manual": 48,
+    "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1
   },
@@ -145,6 +145,21 @@
       },
       "canonical_restored": true,
       "source_hashes_recorded": false
+    },
+    {
+      "report": ".work/checkpoint-4-tool-checks.json",
+      "sha256": "2a4f163597dd4eb1bdb7787e74930134f4a9df7ab3fa292313189bbd115e5765",
+      "scope": "Linux ARM64 adapter source/header checks; host macOS native regression checks. No Linux ARM64 execution claim."
+    },
+    {
+      "report": ".work/posix-stat-current-foundations.json",
+      "sha256": "1acad0ed3d70586012cef071704622c9b61f77d0d874db2bfc0801a26673ddaf",
+      "scope": "Linux ARM64 adapter source/header checks; host macOS native regression checks. No Linux ARM64 execution claim."
+    },
+    {
+      "report": ".work/posix-stat-sdk-both-cpus.json",
+      "sha256": "e7d88e16f6aa95f77de4dc8047168fae408a72a477489be63b1614cb8363e039",
+      "scope": "Linux ARM64 adapter source/header checks; host macOS native regression checks. No Linux ARM64 execution claim."
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",
