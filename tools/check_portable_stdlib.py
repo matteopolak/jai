@@ -271,8 +271,6 @@ def main():
         before = len(failures)
         target_cases = cases + ([(ROOT / "tests/portable-stdlib/windows-foundations.jai", "ok\n")] if os_name == "windows" else [])
         for source, _ in target_cases:
-            if source.stem == "default-allocator" and cpu == "x64":
-                continue  # Optimized heap branch is explicitly unsupported, not fallback coverage.
             if source.parent.name != "portable-stdlib" or source.stem in dependent or (os_name == "windows" and source.stem in posix_only):
                 continue
             try:

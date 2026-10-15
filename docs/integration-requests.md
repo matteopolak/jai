@@ -397,3 +397,40 @@ Additional integration-authored perceptual-volume.jai is recorded explicitly in
 the manifest; producer26-case declaration alone had correctly rejected mismatch.
 Disabled-global-assert Thread dependency remains open; copied audio facades in
 test-stage are not production proof and must stay labeled/cleaned up.
+
+## Refresh18 completed gates and precise partial-edit recovery failures
+
+Whole workspace at7dc08ed:767aggregatepasses/16failures/oneinheritedignored;
+fourfailedtargets. Detailed own log workspace-refresh18-reviewed.log retained.
+Partial edits completed1086ownedfiles/28772edits/3285512assertions/twofailedfiles;
+report artifacts/integration-clean/partial-edits-refresh18.json. No vendor or
+opaque public corpus files selected. Failures are not crashes/incomplete workers.
+
+1. stdlib/SDL/wrappers.jai last conditional import (source line51, augmentedline55)
+   suffix cutbyte15: independent tail's literal23 loses typed hover/completion/
+   inferred hint, falling back to Source syntax declaration. Head remains typed.
+2. tests/compiler-regressions/modules/Rules_Scoping/context_part.jai
+   #add_context rules_scoping_level :=5; suffix cutbyte12 (augmentedline7).
+   Tail becomes part of a different valid current statement; strict scope oracle
+   already records this, but anchors still require tail as a top-level symbol and
+   typed locals. Review actual Context-extension syntax scope versus the harness
+   oracle before changing production semantics or weakening assertions.
+   Preserve unchanged source edits; no symbol-name special cases. Baseline
+   semanticerrors SDL2/context0, both baseline syntax0. Re-run exacttwofiles
+   after approved compiler4de36d6; then generalLSP/context fix or justified
+   oracle repair with original evidence, not wholesale exclusions.
+
+Full public binding source matrix:350passed18failed70unsupported declarations/
+sourcechecks; privacy216passed72unsupported. FSEvents private-source test was
+outside its legitimate boundary and embedded a producer .work library path:
+verifier now uses general private placement/cleanup and fixture system-library
+lookup through explicit native SDK directory. This is private ABI evidence,
+not a promoted public export. Mobile CLI targets Android/iOS still unsupported;
+remaining missing DXC/Objective_C/rpmalloc/X11 public names are genuine required
+work. Full SDK dependency retry plus two official X.org transports again timed
+out/reset with all hashes retained; scoped nativebuilds are not a full-pin pass.
+
+Removed portable runner's default-allocator/x64 target exclusion. Its optimized
+implementation gap is now a required failure rather than an omitted selected
+case; do not add a libc fallback or change API/capabilities to hide it. Other
+platform-only fixture classifications remain disclosed/require review.
