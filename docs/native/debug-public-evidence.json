@@ -56,5 +56,6 @@
     "stdlib/internal/developer-tools/debug-native/windows-command.h": "bcfa0d7e1846d2fa141871a9ed7844129fc80a5e04c3ef66626308d8ecf62d17",
     "stdlib/internal/developer-tools/debug-native/windows-dumps.h": "2b366b2e4e7734b294860d788c0577c72896e74f7fd9fd34f281b6301f7e781d",
     "stdlib/internal/developer-tools/debug-native/windows-launch.h": "4f2b60d9aa18357a14539c2b3f5f28dd76cf8b9ca0aa841f56b43ae1fd509729"
-  }
+  },
+  "tested_worktree_committed_as": "85c4501d67ca2c6038482941cda51c65209d5c9c"
 }

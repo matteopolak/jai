@@ -1,7 +1,7 @@
 {
   "module": "Debug",
-  "timestamp": "2026-10-15T16:41:50.431701+00:00",
-  "head": "e288a74804cc534bf3e85939d323399056deb3af",
+  "timestamp": "2026-10-15T16:50:45.642887+00:00",
+  "head": "85c4501d67ca2c6038482941cda51c65209d5c9c",
   "counts": {
     "complete": 2,
     "partial": 28,
@@ -43,9 +43,7 @@
     "trace_assert"
   ],
   "missing": [],
-  "draft": [
-    "Final reviewed assertion/configuration/Unix and Windows launch/minidump functionality: available Mac/SDK checks pass; combined runner and commit checkpoint pending"
-  ],
+  "draft": [],
   "committed_prior_scope": "Debug_Info complete at 530aee67; preserved",
   "classification": "Source scope is complete, including reviewed conditional absence; partial retains real platform execution boundaries, not missing functionality.",
   "verification_gaps": [
@@ -88,14 +86,15 @@
         "set_report_mode",
         "trace_assert"
       ],
-      "effort": "Final reviewed source scope implemented; available checks pass; preparing combined evidence and commit",
-      "dependency": "No unresolved function contract; native Windows/Linux evidence external"
+      "effort": "Source scope complete and committed 85c4501d67ca2c6038482941cda51c65209d5c9c",
+      "dependency": "No unresolved function contract; Windows/Linux native execution external"
     }
   ],
   "committed": {
     "break_once": "b6d52ef6: actual SDK Mac traced/untraced interpreter/native O0/O2, ownership, format/strict lint",
     "Windows lifecycle/init/logger and owned native contexts": "d34c1a74: all available Mac native/interpreter and Windows SDK checks pass; native Windows/Linux pending",
-    "ignored_asserts": "d34c1a74: canonical public table behavior Mac interpreter/native O0/O2"
+    "ignored_asserts": "d34c1a74: canonical public table behavior Mac interpreter/native O0/O2",
+    "final reviewed behavior": "85c4501d67ca2c6038482941cda51c65209d5c9c: all applicable names implemented; reviewed conditional absence preserved; all five combined suites passed with matching production hashes"
   },
   "remaining_dependencies": {},
   "additional_checks": [
@@ -104,7 +103,7 @@
     "WASM debugger-detection type check",
     "Full20-fixture Debug_Info SDK/public interpreter/native O0/O2 regression runner passed; prior code unchanged"
   ],
-  "combined_evidence": "docs/native/debug-public-evidence.json: all four suites exited0 at d34c1a74",
+  "combined_evidence": "docs/native/debug-public-evidence.json: all five suites exited0; production hashes match 85c4501d",
   "handoff": "docs/status/debug-integration-handoff.md",
   "excluded": {
     "init_crash_handler_thread": "Correctly absent under supplied false source constant; reviewed alternate conditional declaration promises no effect"

@@ -82,6 +82,8 @@ Mac public contract/retention tests pass interpreter/native O0/O2, including add
 
 Windows SDK x64 DLL/executable O0/O2 and arm64 object builds/public checks/lint pass, with native-ready dump header/state and real MessageBox SDK-choice fixtures. No Windows execution is claimed. Linux X11 passes x64/arm64 type/lint checks without host execution. Native Mac command-format bounds/substitution oracles are not Windows launch evidence. The combined assigned runner is next; inventory accounts for30 applicable implementations plus1 reviewed conditional absence, zero missing names and zero unresolved function contracts. Source checkpoint and final evidence follow.
 
+Final source checkpoint: `85c4501d` (`feat(debug): complete reviewed assertion and platform workflows`). All five combined suites exited0, including actual Mac final public behavior/ownership, Windows SDK builds/native-ready fixtures and preserved20-fixture Debug_Info oracles. Machine evidence production hashes match the committed source; no Windows/Linux runtime execution is claimed. The inventory now has zero missing names/zero unresolved contracts, with30 applicable implementations and1 correct default conditional absence. Final integration order, owner/façade architecture, native-ready Windows commands and exact evidence limits are in status/debug-integration-handoff.md. Scoped owned production/tests are clean; unrelated supplied edits remain untouched. No original source, peer compiler change, Context duplication or remote/release operation occurred.
+
 
 ## User reinforced root-cause policy
 
