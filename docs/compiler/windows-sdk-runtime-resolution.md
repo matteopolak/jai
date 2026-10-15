@@ -42,6 +42,11 @@ checks actual runtime export resolution; the real
 suspend-only alias regression checks last-error preservation for live and closed
 handles. Existing alias exit, naming, permission and lifetime assertions remain.
 
+The CI 7350b86 follow-up additionally builds/links both jaic and jailint before
+tests, retaining the configured Rust CRT and workflow LLVM linkage. Use
+--build-only for a prompt native link gate. See windows-crt-linkage.md for the
+separate CRT import repair; the KernelBase implementation is unchanged.
+
 This macOS worker cannot run that native gate: it explicitly exits nonzero here
 (target/windows-kernelbase-native-gate.log). x64/ARM64 all-target core clippy with
 warnings denied and an x64 Rust library/object build pass. Logs are
