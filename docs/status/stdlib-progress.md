@@ -419,6 +419,19 @@ O0/O2 steps passed; full jobs failed. The startup failure without `--` is isolat
 and fixed in the compiler executable-query adapter, with independent red/green
 regressions and strict SDK/native-CI hooks. ARM64 default crash selection remains
 an explicit narrow review request; public defaults/diagnostics are preserved.
+Platform-io Windows Thread SDK effects/result checks are independent of optional
+assertions; failed close/resume retains ownership. Public caller-disabled lifecycle
+and protected real-thread-handle failure/retry tests are scheduled in the native
+runner. Local host suite, cross checks/builds, formatter and 51-file strict lint
+pass. Windows execution and internal Basic(false) configuration audit are pending;
+Unix/generic operations remain portable-owner work. See platform progress.
+
+Platform-io e223538 review: six O0 mismatches were genuine Jai guard interception,
+two O2 mismatches stale export-alias symbol expectations. Added independent C
+PAGE_NOACCESS fault helper and separate retained O0 guard cases without changing
+production guards. Six parser tests and 50-file format/strict four-target lint
+pass; new native SEH matrix still awaits both-CPU CI. See platform progress.
+
 Platform-io checkpoints: 2cdbd9b cleanup/diagnostic gates; 7eb81e8 generic Windows
 unwind metadata and bounded iterator. Separate Windows wait-error safety mapping
 and exact SDK-negative logging assertions are added; new native confirmation and

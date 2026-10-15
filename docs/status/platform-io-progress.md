@@ -1,5 +1,34 @@
 # Platform I/O worker progress
 
+## Windows Thread essential operations (following 8ede5a2)
+
+Windows SDK effects are outside optional assertions, with unconditional failure
+diagnostics. Resume/close failure retains lifecycle ownership for retry. Only
+Windows branches changed; portable/Unix work remains separate. New public
+caller-ENABLE_ASSERT=false lifecycle test adds real protected-thread-handle close
+failure/retry, semaphore signal failure, synchronization and group completion.
+Runner schedules both Windows CPUs' interpreter variants and native O0/O2.
+
+Local host/cross/native suite exits 0; latest fixture x64 O0/O2 cross-build and
+ARM64 -check -no_dce pass. Formatter/check and strict four-target lint pass all
+51 owned Jai files, six diagnostic units pass. No actual Windows execution is
+claimed. Caller Basic(false) does not currently disable Thread's separate Basic
+instance; internal-disabled coverage requires the recorded narrow spec audit,
+not a module-name/compiler or staged-library bypass. See
+[Thread correction and coverage limits](../platform-io-windows-thread-assertions.md).
+
+## e223538 fault-oracle correction (native rerun pending)
+
+Filtered exact bytes classify six O0 failures as correctly intercepted Jai
+near-null writes, two O2 failures as stale PE-alias expectations despite actual
+resolved declared caller names. No production guard/handler was weakened.
+Original guarded write is a separate three-policy O0 regression. Real SEH
+fixtures use a source-built C PAGE_NOACCESS-store helper and exact declared-name
+frame matching. Formatter/check and four-target strict lint pass all 50 files;
+six protocol units pass. Native Windows execution of this changed matrix is
+pending. Original evidence and earlier ARM64 positives remain intact. See
+[classification and test design](../platform-io-e223538-fault-oracles.md).
+
 Unwind/iterator checkpoint: `7eb81e8` (following cleanup/diagnostics `2cdbd9b`).
 A separate Windows completion safety fix maps only WAIT_OBJECT_0 to done; failures
 log/return false. Its scoped SDK-negative check restores logging before the

@@ -1,5 +1,38 @@
 # Platform I/O deviations and pending verification
 
+## Windows Thread optional assertion audit
+
+All owned Windows essential SDK calls and their result checks now execute
+independently of optional assertions. Returning custom failure handlers preserve
+thread/semaphore ownership on failed close; group creation/clock failure reports
+and terminates because those APIs cannot return a valid result. Partial group
+recovery is not implemented or claimed; default termination reclaims resources.
+Unix/generic optional-assert dependencies remain portable-owner scope.
+
+New caller-Basic(false) public lifecycle/SDK-negative fixture is in the real
+runner, not a staged substitute. It requires actual completed Thread handle
+interop via SetHandleInformation, error/count/state/storage retention, protection
+removal and successful deinit retry. Native/interpreter Windows execution is
+pending. The current first-list Basic instance rules do not propagate the caller
+flag into Thread's Basic dependency; internal-disabled coverage remains explicitly
+incomplete pending reviewed configuration audit. No extra public parameter,
+fake handle, hidden root-constant leak or blanket lint/test exclusion is used.
+See [Thread review](../platform-io-windows-thread-assertions.md).
+
+## e223538 test corrections, not production fixes
+
+The former address-1 Jai hardware-fault assumption is invalid at O0 because the
+new compiler guard correctly exits before SEH. The store remains in a separate
+O0 safety test, not disabled. O2 guard emission is not claimed. Hardware-fault
+tests now require a real source-built SDK DLL with PAGE_NOACCESS storage; all
+allocation/return errors fail the test. OS crash teardown reclaims its one-page
+allocation; separate lifecycle probes retain handler/symbol/handle cleanup gates.
+Exact declared frame names replace stale export-alias expectations; neither
+production symbol fabrication nor diagnostic relaxation is used. DLL loading,
+actual exception, unwind and cleanup on this new matrix require next native CI
+on both CPUs. Local formatter/strict lint and protocol tests are not substitutes.
+Details: [fault-oracle review](../platform-io-e223538-fault-oracles.md).
+
 Windows thread completion no longer treats WAIT_FAILED as success. The added
 real SDK negative case captures only its expected error, asserts exact message/
 flag/count, and restores the logger/data before named-thread creation. This is
