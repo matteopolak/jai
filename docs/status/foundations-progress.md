@@ -1,5 +1,27 @@
 # Foundations progress
 
+Stable implementation checkpoint: ad84008, conventional fix(basic) commit for
+refined leak matching/trim/lifetime and the four-facade audit. Its full driver
+completed all six native unused-code targets; overall status remains failure
+for two actual owned API gaps plus the File/POSIX.FILE WASI dependency.
+
+Following checkpoint: the NEW portable runtime CAPS name-out fix was integrated
+read-only in selected staging. Normalizing the prior heap source with real
+jaifmt proves its only semantic difference is the name-out block; bootstrap
+configuration and allocation logic are preserved. Added real default-allocator
+borrowed-name/identity assertions, first observed their failure, then verified
+interpreter and focused warnings-denied lint success after integration.
+The real Pool CAPS source still asserts on null data; its original public-call
+reproducer now also runs as a positive failing integration gate in the driver.
+Post-integration verification completed: all 45 host interpreter/native O0/O2
+and 37 supported WASI O0/O2 cases pass, including the real runtime CAPS check.
+Real jaifmt CLI/owned check and focused warnings-denied lint pass. All six native
+unused-code target checks pass for the expanded real-provider test. The full
+runtime run retains the two required-API failures; Pool was separately rerun
+and failed its original assertion before being added to the driver's ledger.
+The earlier full cross run additionally retains the unrelated WASI File ABI
+failure. No full success is claimed for those failing gates or complete lint.
+
 Refined leak batch: exact name plus case-sensitive source-path matching is now
 implemented for leaves, roots and grouping. Root trimming removes only a matching
 or null suffix; leaf trimming retains the first matching node. Report-owned

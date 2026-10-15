@@ -216,6 +216,12 @@ def main():
         except RuntimeError as error:
             failures.append(f"reviewed public API gap {name}: {error}")
             print(f"FAILED reviewed public API {name}; continuing independent targets", flush=True)
+    try:
+        run([compiler, "-interp", ROOT / "tests/portable-stdlib/pending/pool-capabilities-name.jai"], "ok\n")
+        print("passed real Pool CAPS provider integration", flush=True)
+    except RuntimeError as error:
+        failures.append(f"Pool CAPS provider integration: {error}")
+        print("FAILED real Pool CAPS provider integration; continuing independent targets", flush=True)
     if args.cross:
         for os_name, cpu in (("linux", "x64"), ("linux", "arm64"), ("macos", "arm64"), ("macos", "x64"), ("windows", "x64"), ("windows", "arm64"), ("wasm", "wasm64")):
             try:

@@ -50,14 +50,18 @@ are recorded separately. Full Basic completion is still in progress.
 - All reviewed visualization hook names now have the real version-2 channel
   implementation, with initialization/retry timing, deduplication, definition
   packets, live/alloc/free snapshots, queue-full retry and reader reconnection.
-  macOS/Linux shared-memory transport is tested; other producer transports are
-  explicitly unavailable. The old textual snapshot path is removed.
+  macOS/Linux shared-memory transport is implemented, with macOS runtime tests
+  and Linux unused-code cross-checks. Other producer transports are explicitly
+  unavailable. The old textual snapshot path is removed.
 - get_capabilities follows the exact zero-size/name-out/null-data convention
   and returns the allocator-owned name view. The owned temporary allocator
   supplies its real static name. Preamble has real native caller-scope flags,
   logger defers, allocator-family exclusions and first-use initialization;
   NEW compiler host/target metadata now makes the cross-compilation early
   return pass the genuine predicate and production WASI regression.
+  The NEW portable runtime name-out fix is integrated read-only in selected
+  staging and tested through the real default allocator, including borrowed
+  storage identity. Pool's provider failure remains a positive failing gate.
 
 Original regressions exercise callback effects, nested context restoration,
 default stdout/stderr routing, temporary message storage, numeric boundaries,
@@ -76,7 +80,7 @@ Missing exports are not replaced with inert bodies.
 | Division exercise | test_unsigned_division is genuinely missing. Inventory gives parameters/defaults but no random-callback/null policy or platform-condition detail beyond its Windows section and CPU.X64 label. Original public-call repro is retained. |
 | Hash scalar FNV | fnv1a_hash has a byte overload but lacks the reviewed scalar u64 overload. The exact word-versus-byte operation remains unspecified; original public-call repro rejects. Scalar get_hash and Hash_Table integration are implemented/tested. |
 | Leak reporting | Reviewed matching, trimming and report-owned lifetime are implemented. No module-ID metadata dependency remains. |
-| Visualization | No missing names. Native macOS/Linux channel is real and tested; Windows/WASI shared-memory producers remain unavailable and are diagnosed explicitly. |
+| Visualization | No missing names. Native macOS/Linux channel is real, executed on macOS and cross-checked for Linux. Windows/WASI shared-memory producers remain unavailable and are diagnosed explicitly. |
 
 ## Preserved portable responsibility
 
