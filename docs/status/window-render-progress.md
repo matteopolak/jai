@@ -1,5 +1,17 @@
 # Window/render progress
 
+Prepared Python fix committed as `a68544c`. Follow-up verified LLVM-only cache:
+exact source/toolchain/configuration key, selected SDK/tool content fingerprints,
+atomic full installed-file receipt before Mesa setup, native identity/prefix checks
+on hit and miss. Fresh output is mandatory and driver DLLs are never reused from
+this cache. Seven cache/source safety tests and one real Meson prepared-child test
+pass locally; Python syntax/plan checks pass. Full owned formatter check and scoped
+integrated native-host warnings-denied lint rerun pass, no incomplete diagnostics;
+all54 owned Jai files match staged lint inputs. No Jai/Rust/Extensions changes in
+this infrastructure batch. Native Windows rerun/cache execution is still pending;
+earliera78721d LLVM artifacts without the new receipt are not blindly adopted.
+Source build/runtime, WGL lifecycle and Windows lint remain required native gates.
+
 Prepared-Python checkpoint: authorizeda78721d ARM64 LLVM build completed, then
 Mesa setup chose global python3.EXE without Mako and failed. This is infrastructure
 evidence only. Helper now supplies a generated Meson native machine file binding

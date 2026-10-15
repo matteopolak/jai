@@ -1,5 +1,21 @@
 # Window/render deviations and implementation gaps
 
+Verified build-cache tradeoff (`tools/window_render_mesa_windows.py`): persistent
+installed LLVM reuse hashes selected public native SDK headers/libs, toolchain
+binaries and every installed LLVM file. This adds disk I/O but avoids repeating
+the lengthy compiler build after later Mesa setup failures. Cache identity and
+relocation checks run on native Windows; local integrity fixtures do not count as
+native LLVM/driver success. Only completed receipts from this helper are reusable;
+old completion counts cannot establish artifact/config integrity. Drivers always
+come from fresh Mesa build/install/output directories. Corrupt entries fail instead
+of falling back silently. Abandoned writer locks require coordinator cleanup after
+confirming the writer stopped; no unsafe automatic lock theft is implemented.
+SDK fingerprinting requires the actual native vcvars-selected public SDK roots;
+arbitrary extra include/lib directories and external CMake toolchain overrides are
+outside this explicit configuration. Hash manifests provide integrity, not an
+authenticated provenance service. Native CI must verify the new route and all
+existing real graphics gates; none is weakened or skipped by caching.
+
 CIa78721d establishes ARM64 LLVM source-build completion, followed by infrastructure
 failure when Mesa's child Python discovery selected unprepared global python3.EXE.
 `tools/window_render_mesa_windows.py` now binds Python/python3 using Meson's native
