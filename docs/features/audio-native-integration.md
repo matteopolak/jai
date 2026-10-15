@@ -203,6 +203,11 @@ Add --require-multichannel only when logical 6/8 formats are expected to be
 available. The standalone runner needs Python and OS dependencies, no compiler or
 stdlib source. It checks hashes/architecture and records runtime-result.json.
 Native and translated execution remain separate; a mismatched CPU/OS is rejected.
+Windows adds its Jai ABI fixture at O0/O2, producing 54 executables. Its SDK
+builder also compiles native-windows-abi.c against actual public SDK headers,
+recording audio-sdk-abi.json separately. The ARM64 object-only tool includes those
+ABI assertions too. These verify format layout and reviewed COM-prefix method
+offsets, not DirectSound device execution or a complete SDK interface model.
 
 On this ARM64 Mac, the installed Rosetta runner can additionally execute the x64
 fixtures and logical 6/8 paths:
