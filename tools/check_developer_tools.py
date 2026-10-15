@@ -14,6 +14,7 @@ import check_developer_msf
 import check_developer_native_abi
 import check_developer_dwarf_lines
 import check_developer_dwarf_frames
+import check_developer_eh_frames
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
@@ -71,6 +72,7 @@ def main():
     check_developer_native_abi.main()
     check_developer_dwarf_lines.main()
     check_developer_dwarf_frames.main()
+    check_developer_eh_frames.main()
     prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
     framework = ROOT / "target/developer-tools-frameworks/OriginalNative.framework"
     (framework / "Modules").mkdir(parents=True, exist_ok=True)
@@ -154,6 +156,7 @@ def main():
     cases.append("dwarf-line-query")
     cases.append("dwarf-fde")
     cases.append("bindings-clang-time")
+    cases.append("dwarf-eh-frame")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -244,7 +247,8 @@ def main():
              *sorted((ROOT / "tests/developer-tools").glob("*.jai")),
              ROOT / "target/developer-tools-native-abi.jai", visitor_oracle,
              ROOT / "target/developer-tools-dwarf-line-oracle.jai",
-             ROOT / "target/developer-tools-dwarf-frame-oracle.jai"]
+             ROOT / "target/developer-tools-dwarf-frame-oracle.jai",
+             ROOT / "target/developer-tools-eh-frame-oracle.jai"]
     format_paths = [*paths, *sorted((ROOT / "tests/developer-tools/rejections").glob("*.jai")),
                     *sorted((ROOT / "tests/developer-tools/compiler-requests").glob("*.jai"))]
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *format_paths])

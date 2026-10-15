@@ -79,6 +79,10 @@ def main():
                 section = line[4:]
             if line.startswith("#### `") or (in_members and line.startswith("### `")):
                 aggregate = line.split("`")[1]
+                in_members = True
+            elif line.startswith("#### Contextual layout dependencies"):
+                aggregate = "module-contextual dependency descriptions (not additional exports)"
+                in_members = True
             if not in_members and line.startswith("- ") and "`" in line:
                 signature = line.split("`", 2)[1]
                 name = re.match(r"([A-Za-z_][A-Za-z_0-9]*)\s*(?:::|:)", signature)
@@ -173,7 +177,7 @@ def main():
                                      "Frame_Common_Information_Entry", "decode_cfa_instructions", "parse_common_information_entry"}:
                     item["implementation"] = "supported DWARF frame subset; native-produced CIE and malformed-input fixture"
                 if item["name"] in {"Frame_Description_Entry", "parse_frame_description_entry"}:
-                    item["implementation"] = "DWARF32 debug_frame v4 explicit-width FDE subset; original x86/x64/arm64 O0/O2 ranges/opcode sequences and all truncated prefixes; eh_frame pending question4"
+                    item["implementation"] = "reviewed eh_frame resolved-CIE and absolute8/PC-relative signed4 encodings; relocated native ranges/opcodes, extended CIE length marker, all truncated prefixes; extra debug_frame v4 subset also verified"
                 if item["name"] in {"Codeview_Line_Info", "get_line_number", "get_line_number_end_delta",
                                      "line_info_is_for_statement", "Codeview_Address_Range", "Codeview_Address_Gap",
                                      "Codeview_Symbol_Defrange_Register_Rel", "get_spilled_udt_member", "get_offset_parent"}:
