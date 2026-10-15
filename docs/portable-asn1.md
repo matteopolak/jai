@@ -92,7 +92,9 @@ follows Basic allocator policy; no extra fake success/fallback is introduced.
 NEW foundation composition is read-only input copied into target/. Primitive,
 Java and flag runners now use that same real dependency composition; all pass.
 
-Remaining implementation: X.509 extraction and crypto/signing helpers; hex-array
+X.509 key-info extraction is now implemented with native C-created certificate
+oracles and borrowed-view tests; see portable-x509.md. Remaining implementation:
+crypto/signing helpers; hex-array
 helper representation still needs review. Value view/prefix questions are resolved.
 Native Linux/Windows printer execution and native Windows console handling remain
 unverified; ANSI emission is explicit supported fallback. No parser stubs, disabled

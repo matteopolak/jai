@@ -14,6 +14,8 @@ mask parsing, diagnosed invalid input and independent target checks.
 OID equality/text and length-prefix contracts, with separate test corrections.
 The same document covers all three diagnostic printer overloads, iterative
 nesting, supported types, actual tests and finer output/platform policy questions.
+[X.509 key-info extraction](portable-x509.md) matches genuine newly generated
+native C certificate vectors and preserves caller-backed encoded/content views.
 
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 

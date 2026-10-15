@@ -1,5 +1,15 @@
 # Portable stdlib worker deviations
 
+X.509 extractor supports DER structural key-info location, versions0..2; does not
+claim signature/trust validation. PEM/concatenation/trailing/error-recovery finer
+policy is not established by reviewed declaration; supported first-object policy
+documented portable-x509.md. Production is pure checked ASN.1, no C crypto ABI.
+Native OpenSSL used only as independent test oracle, pinned explicit installation
+prefix and no user config; ephemeral newly generated keys never written/read from
+credentials. Public DER/native expected SPKI data regenerated for each run.
+Native Linux/Windows/Android not executed; separate source-only fixture never
+counted as behavior. Proper follow-up: fine contract review and platform CI.
+
 ASN.1 diagnostic conventions: labeled human lines, spaced lowercase hex, yellow
 Print_Color ANSI-backend banners, standard native-C UTCTime1950..2049 year mapping,
 newline on empty constructed context and invocation-wide skipped indentation.

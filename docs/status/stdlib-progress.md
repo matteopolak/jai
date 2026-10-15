@@ -1,5 +1,14 @@
 # Portable stdlib progress
 
+X.509 structural extraction implemented: optional v1/v2/v3 version handling,
+20-byte serial skip, correct SubjectPublicKeyInfo views into caller DER. Four
+genuine native C-created/signed/verified Ed25519/RSA certs match native SPKI output,
+including extensions. Six malformed cases,10 interpreter/native O0/O2 runs,
+Linux/Windows both-CPU source checks and strict lint pass:
+target/x509-extraction-first.log. No production crypto dependency, credential
+read, fabricated fixture or certificate verification claim. Finer input policies
+documented portable-x509.md. Missing148 ->147; module remains incomplete.
+
 ASN.1 diagnostics implemented: all three overloads, explicit traversal frames,
 all reviewed supported type families, yellow Print_Color banners, UTC calendar,
 borrowed content forwarding and explicit invalid/unsupported errors.15 interpreter/

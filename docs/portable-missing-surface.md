@@ -116,7 +116,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `write_binary_app_manifest_to_builder :: (b: *String_Builder, config: Android_Project_Config) -> bool` | All reviewed hosts |
 | `write_binary_app_manifest_to_file :: (using config: Android_Project_Config, out_filepath: string) -> bool` | All reviewed hosts |
 | `write_binary_app_manifest_to_memory :: (config: Android_Project_Config) -> bool, string` | All reviewed hosts |
-| `x509_get_subject_public_key_info :: (certificate_data: string) -> ASN1_Value` | All reviewed hosts |
 | `zip_add_file :: (using w: *Zip_Writer, filepath: string, zip_filename: string, compression := Zip_Compression_Method.NONE, alignment := 0) -> bool` | All reviewed hosts |
 | `zip_add_file_from_memory :: (using w: *Zip_Writer, file_data: string, zip_filename: string, compression := Zip_Compression_Method.NONE, alignment := 0) -> bool` | All reviewed hosts |
 | `ZIP_CENTRAL_DIRECTORY_FILE_HEADER_SIGNATURE : u32` | All reviewed hosts |
@@ -207,7 +206,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 148 missing reviewed declaration/overload/nested-operation rows
+Total: 147 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

@@ -17,7 +17,7 @@ MODULES = [
       'Android_Config_Changes', 'android_config_changes_from_string',
       'ASN1_Tag_Class', 'ASN1_Tag_Length_Value', 'ASN1_Universal_Type', 'ASN1_Tag', 'ASN1_KNOWN_OIDS',
       'asn1_read_tag', 'asn1_read_length', 'asn1_decode_integer', 'asn1_decode_object_identifier',
-      'asn1_to_string', 'read_silly_alias', 'read', 'read_block', 'ASN1_Value', 'asn1_read_value', 'read_length_prefixed_block', 'asn1_print'},
+      'asn1_to_string', 'read_silly_alias', 'read', 'read_block', 'ASN1_Value', 'asn1_read_value', 'read_length_prefixed_block', 'asn1_print', 'x509_get_subject_public_key_info'},
      'JNI/OID/JKS/SHA, ASN.1 primitive/cursor/value/diagnostic APIs, manifest flags, Java launcher and reviewed ADB discovery/server/quoting/storage/cache operations have independent behavior tests. Real SDK/device and Windows Process integration remain pending. Install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.'),
     ('Build and toolchain', 'Default_Metaprogram', 'default-metaprogram', set(),
      'Build orchestration and option/message behavior remain implementation work; exact help text/option grammar require further review.'),
