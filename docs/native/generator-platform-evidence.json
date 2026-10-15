@@ -14,11 +14,25 @@
       "oracle_sha256": "3b792f80bf28e3facbf0b5bd8765344134bd3576668287cf6f2f309bb54d0f5a"
     },
     "coff.o": {
-      "sha256": "8df24c7c2068b7c7bf697534e7957eb9c52c7ba89dcd8bf19407167a7db2ed2b",
+      "sha256": "e10ce2931f4e3bdb0801d655cdf26cab6dc9b9a694a4ea580b2bdfe322181475",
       "oracle_sha256": "e5aa34a47c379adce82150033ca09eedb72351804afc246f3529fa172e3dd61d"
     }
   },
   "sdk": "Homebrew clang version 23.1.2",
+  "libclang_copy": {
+    "cases": [
+      "absent",
+      "older",
+      "newer",
+      "equal",
+      "different-size",
+      "older-nanoseconds"
+    ],
+    "modes": 3,
+    "missing_source_assertions": 3,
+    "bundled_sdk_sha256": "813be91ac66163dc2aeea8bf7020bf24d3de3276c5e1193262f7dded5c735bd9",
+    "copied_sdk_sha256": "813be91ac66163dc2aeea8bf7020bf24d3de3276c5e1193262f7dded5c735bd9"
+  },
   "executed": [
     "interpreter",
     "Mac native O0",
@@ -28,5 +42,15 @@
     "Linux x64/arm64",
     "Windows x64/arm64",
     "Mac x64"
-  ]
+  ],
+  "canonical_source_commit": "4675c90a",
+  "support_probes": [
+    "canonical record storage and native cursor hash callbacks",
+    "test-only private context session save/restore, nested deferred return and push_context isolation",
+    "reviewed active Generator first-match lookup and persistent exact-key symbol cache ownership",
+    "actual Mac SDK libc root and original configured Linux/Android/Apple directory-selection fixtures",
+    "reviewed libclang copy/update/missing-source effects, including actual bundled SDK library bytes"
+  ],
+  "contextual_fixture_lint": "passed with warnings denied",
+  "module_root_lint": "passed with warnings denied"
 }

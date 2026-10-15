@@ -78,14 +78,14 @@
         "declaration": "ensure_local_libclang_exists :: ()",
         "section": "Public declaration inventory",
         "spec_line": 17,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "ensure_local_libclang_exists",
         "declaration": "ensure_local_libclang_exists :: (source_path: string)",
         "section": "Public declaration inventory",
         "spec_line": 18,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "RESERVED_NAMES",
@@ -281,7 +281,7 @@
         "declaration": "get_libc_paths :: (os := OS, cpu := CPU) -> libc_path: string, libc_platform_path: string, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 46,
-        "implementation": "pending"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "change_type_to_enum",
@@ -568,7 +568,7 @@
         "declaration": "prepend_comment :: (comment: *Comment, text: string)",
         "section": "Public declaration inventory",
         "spec_line": 87,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "is_same_location",
@@ -701,14 +701,14 @@
         "declaration": "maybe_add_spacing :: (builder: *String_Builder, last_location: *Location, location: Location, decl_flags: Declaration_Flags, mimic_type: Mimic_Spacing_Flags)",
         "section": "Public declaration inventory",
         "spec_line": 106,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "maybe_add_spacing",
         "declaration": "maybe_add_spacing :: (builder: *String_Builder, last_location: *Location, location: Location, decl_flags: Declaration_Flags, mimic := true)",
         "section": "Public declaration inventory",
         "spec_line": 107,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "create_pointer_to",
@@ -834,7 +834,7 @@
         "declaration": "append_indentation :: (builder: *String_Builder)",
         "section": "Public declaration inventory",
         "spec_line": 125,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "print_type_to_builder",
@@ -1086,7 +1086,7 @@
         "declaration": "fill_comment :: (comment: *Comment, cur: CXCursor, location: Location)",
         "section": "Public declaration inventory",
         "spec_line": 161,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "is_prefix_comment",
@@ -1100,7 +1100,7 @@
         "declaration": "fill_location_and_comment_if_needed :: (location: *Location, comment: *Comment, cur: CXCursor)",
         "section": "Public declaration inventory",
         "spec_line": 163,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "fill_location",
@@ -1121,7 +1121,7 @@
         "declaration": "debug_print_cursor :: (cur: CXCursor)",
         "section": "Public declaration inventory",
         "spec_line": 166,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "create_struct",
@@ -1303,7 +1303,7 @@
         "declaration": "get_name_for_cursor :: (cur: CXCursor) -> string",
         "section": "Public declaration inventory",
         "spec_line": 192,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "handle_toplevel_cursors",
@@ -1450,14 +1450,14 @@
         "declaration": "append_prefix_comment :: (builder: *String_Builder, comment: Comment, indent: bool)",
         "section": "Public declaration inventory",
         "spec_line": 213,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "append_postfix_comment",
         "declaration": "append_postfix_comment :: (builder: *String_Builder, comment: Comment)",
         "section": "Public declaration inventory",
         "spec_line": 214,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "can_omit_type",
@@ -1541,7 +1541,7 @@
         "declaration": "function_is_missing_foreign_library :: (func: *Function) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 226,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "print_function",
@@ -1569,7 +1569,7 @@
         "declaration": "fix_macos_foreign_name :: (name: *string)",
         "section": "Public declaration inventory",
         "spec_line": 230,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "append_elsewhere",
@@ -1688,7 +1688,7 @@
         "declaration": "get_name_for_cursor :: (cur: CXCursor) -> string",
         "section": "Public declaration inventory",
         "spec_line": 247,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "as_str",
@@ -8590,7 +8590,7 @@
         "declaration": "find_lib_for_foreign_name :: (name: string) -> *Library_Info",
         "section": "Windows-specific declarations",
         "spec_line": 1277,
-        "implementation": "pending"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "find_or_create_extra_info",
@@ -8611,14 +8611,14 @@
         "declaration": "get_name_alignment :: (declarations: [] *Declaration) -> int",
         "section": "Windows-specific declarations",
         "spec_line": 1280,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "get_name_alignment",
         "declaration": "get_name_alignment :: (fields: [] $T, get_declaration: (T) -> *Declaration, ignore_flags := false) -> int",
         "section": "Windows-specific declarations",
         "spec_line": 1281,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "get_primitive_or_array_primitive_type_size",
@@ -8632,7 +8632,7 @@
         "declaration": "library_symbol_cache: [..] Library_Symbols",
         "section": "Windows-specific declarations",
         "spec_line": 1283,
-        "implementation": "pending"
+        "implementation": "single canonical Library_Symbols cache state; reviewed exact keys, success-only insertion, owned miss and borrowed mutable hit behavior; original interpreter/Mac O0/O2 ownership and temporary-allocation lifetime effects"
       },
       {
         "name": "make_valid_identifer",
@@ -8646,35 +8646,35 @@
         "declaration": "os_get_symbol_names_from_file :: (full_path: string) -> success: bool, [] string",
         "section": "Windows-specific declarations",
         "spec_line": 1285,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "os_get_symbol_names_from_file_content",
         "declaration": "os_get_symbol_names_from_file_content :: (file_content: string, full_path: string) -> success: bool, [] string",
         "section": "Windows-specific declarations",
         "spec_line": 1286,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "os_get_symbol_names_from_file_fixed_and_cached",
         "declaration": "os_get_symbol_names_from_file_fixed_and_cached :: (full_path: string) -> success: bool, [] string",
         "section": "Windows-specific declarations",
         "spec_line": 1287,
-        "implementation": "pending"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "os_load_library",
         "declaration": "os_load_library :: (paths: [] string, identifier: string, library_path: string, treat_as_system_library: bool, static_library_suffix := \"\", shared_library_suffix := \"\") -> *Library_Info",
         "section": "Windows-specific declarations",
         "spec_line": 1288,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "os_symbol_exists_in_library",
         "declaration": "os_symbol_exists_in_library :: (lib: *Library_Info, name: string) -> bool",
         "section": "Windows-specific declarations",
         "spec_line": 1289,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "print_namespace",

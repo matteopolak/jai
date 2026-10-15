@@ -1,10 +1,22 @@
 # Developer tooling contract tests
 
-Run `python3 tools/check_generator_platform.py` for the seven assigned platform
-helper names (both libclang-discovery overloads), original Mach-O/ELF/COFF/archive
+Run `python3 tools/check_generator_emission.py` for all ten reassigned public
+comment/spacing/alignment/cursor names, both alignment/spacing overloads and
+configured target branches. Actual public imports run Mac interpreter/native
+O0/O2 against original SDK C comment-range, definition and recursive-traversal
+oracles. Cases include source-file/line gaps, NO_SPACING, u32 bounds, borrowed and
+owned text, absent comments, conditional refresh, caller logging context and
+nested options across configured instances. Six desktop source checks, formatting
+and warnings-denied module/fixture lint cover the helper and singleton owner.
+See [reviewed emission contracts and edge policies](generator-emission.md).
+
+Run `python3 tools/check_generator_platform.py` for all ten assigned platform
+helper names (both libclang-copy overloads), original Mach-O/ELF/COFF/archive
 symbols, live native-library effects, malformed inputs, independent owned arrays,
 temporary-file cleanup and diagnostic-path preservation. Interpreter/Mac O0/O2,
-six desktop source checks, actual formatting and integrated strict lint pass.
+six desktop source checks, actual formatting and integrated strict lint pass with
+the compiler-owned e9affab7 ordering fix. Reviewed cache/context/include-root and
+copy/update behavior is covered, including temporary caller allocation survival.
 See [platform policy and gaps](generator-platform.md); the combined suite still
 stops at the independently reproduced bindings-macros diagnostic mismatch.
 

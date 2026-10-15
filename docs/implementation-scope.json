@@ -1,0 +1,21 @@
+{
+  "module": "Bindings_Generator",
+  "prior_completed_functions": [
+    "ensure_local_libclang_exists",
+    "find_lib_for_foreign_name",
+    "fix_macos_foreign_name",
+    "function_is_missing_foreign_library",
+    "get_libc_paths",
+    "os_get_symbol_names_from_file",
+    "os_get_symbol_names_from_file_content",
+    "os_get_symbol_names_from_file_fixed_and_cached",
+    "os_load_library",
+    "os_symbol_exists_in_library"
+  ],
+  "functions": ["prepend_comment", "append_prefix_comment", "append_postfix_comment", "get_name_alignment", "maybe_add_spacing", "append_indentation", "fill_comment", "fill_location_and_comment_if_needed", "get_name_for_cursor", "debug_print_cursor"],
+  "baseline": "7467b49d",
+  "prior_completion_commit": "f6909c62",
+  "status": "all assigned reassigned names implemented and verified",
+  "remaining": [],
+  "focus": "comment and spacing emission, cursor names and diagnostics; disjoint reassignment"
+}

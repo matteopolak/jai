@@ -44,3 +44,13 @@ Evidence remains in artifacts/compiler-mac-repairs/context-*.log and the native
 producer executables. This is independent compiler/tooling verification, not a
 claim that full generator/profiler integration or other catalogue prerequisites
 have been rerun. Their owner can consume this checkpoint without exclusions.
+
+Generator-platform integration provenance: only the compiler-owned general
+source/test hunks of clean commit e9affab7 were applied here, not the overlapping
+model-worker fix. The local older Options test constructor was adapted to its
+existing target_os/target_cpu/add_sources fields. Local replay passes all ten
+cleanroom_library_roots tests, the specific late-context rejection regression,
+strict module-root lint of both the minimal original pointer-context module and
+Bindings_Generator, and interpreter/native O0/O2 of both original context producers.
+This paragraph records local integration evidence; the larger preceding test
+counts are the compiler owner's checkpoint report.
