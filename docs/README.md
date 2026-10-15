@@ -298,7 +298,7 @@ The LLVM backend, C ABI and linking.
 - [Exact missing owned public declarations](portable-missing-surface.md)
 - [Windows UTF-8 helpers](portable-windows-utf8.md): real Kernel32 conversion code, ABI checks and outstanding native execution
 - [Owned source format/lint runner](../tools/format_portable_stdlib.py): explicit scope and source-built jaifmt/jailint
-- [Bindings generator naming helpers](generator-names.md): isolated selector subset, exact missing names, reviewed contract requests and native/source verification
+- [Bindings generator naming helpers](generator-names.md): eight reviewed helpers, integrated public imports, canonical options and native/source verification
 - [WAV parser design and validation](portable-wav.md)
 - [SMTP/MIME transport and loopback validation](portable-mail.md)
 - [POSIX crash diagnostics and native startup verification](portable-crash-handler.md)

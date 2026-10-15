@@ -1,5 +1,5 @@
 #import "Basic";
-Names :: #import,file "../../stdlib/Bindings_Generator/naming-helpers.jai";
+Names :: #import "Bindings_Generator";
 
 main :: () {
     unchanged := "description";

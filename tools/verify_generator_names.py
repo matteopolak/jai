@@ -1,4 +1,4 @@
-"""Verify only the independently implemented generator naming subset."""
+"""Verify the eight naming helpers through the integrated public facade."""
 
 import json
 import os
@@ -15,11 +15,12 @@ def main():
     jaic = str(target / "debug/jaic")
     jailint = str(target / "debug/jailint")
     formatter = str(artifacts / "jaifmt")
-    fixture = "tests/generator-names/selector.jai"
-    sources = [
+    fixtures = ["tests/generator-names/names.jai", "tests/generator-names/selector.jai"]
+    helpers = [
+        "stdlib/Bindings_Generator/module.jai",
+        "stdlib/Bindings_Generator/active-options.jai",
         "stdlib/Bindings_Generator/naming-helpers.jai",
         "stdlib/internal/developer-tools/generator-names-private.jai",
-        fixture,
     ]
     results = []
 
@@ -42,16 +43,18 @@ def main():
         return 1
     if not run("build-formatter", "build", [jaic, "jaifmt/main.jai", "-O2", "-exe", formatter]):
         return 1
-    run("format", "format", [formatter, "--check", *sources])
-    run("interpreter", "execution", [jaic, fixture, "-interp"])
-    for optimization in ("O0", "O2"):
-        binary = str(artifacts / f"selector-{optimization}")
-        if run(f"mac-arm64-{optimization}-build", "native-build", [jaic, fixture, f"-{optimization}", "-exe", binary]):
-            run(f"mac-arm64-{optimization}-run", "execution", [binary])
-    for os_name, cpu in (("macos", "arm64"), ("macos", "x64"), ("linux", "x64"), ("windows", "x64"), ("windows", "arm64")):
-        flags = ["-os", os_name, "-cpu", cpu]
-        run(f"{os_name}-{cpu}-check", "source-only", [jaic, fixture, "-check", *flags])
-        run(f"{os_name}-{cpu}-lint", "source-only-lint", [jailint, *flags, "-D", "warnings", "--context", fixture, *sources])
+    run("format", "format", [formatter, "--check", *helpers, *fixtures])
+    for fixture in fixtures:
+        stem = Path(fixture).stem
+        run(f"{stem}-interpreter", "execution", [jaic, fixture, "-interp"])
+        for optimization in ("O0", "O2"):
+            binary = str(artifacts / f"{stem}-{optimization}")
+            if run(f"{stem}-mac-arm64-{optimization}-build", "native-build", [jaic, fixture, f"-{optimization}", "-exe", binary]):
+                run(f"{stem}-mac-arm64-{optimization}-run", "execution", [binary])
+        for os_name, cpu in (("macos", "arm64"), ("macos", "x64"), ("linux", "x64"), ("windows", "x64"), ("windows", "arm64")):
+            flags = ["-os", os_name, "-cpu", cpu]
+            run(f"{stem}-{os_name}-{cpu}-check", "source-only", [jaic, fixture, "-check", *flags])
+            run(f"{stem}-{os_name}-{cpu}-lint", "source-only-lint", [jailint, *flags, "-D", "warnings", "--context", fixture, *helpers, fixture])
     return int(any(result["exit_code"] for result in results))
 
 

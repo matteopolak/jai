@@ -1,5 +1,9 @@
 # Generator naming worker inbox
 
+Current status: the reviewed naming addendum resolves the historical questions
+below. All eight naming helpers are implemented and publicly integrated. The
+latest handoff at the end supersedes the earlier partial status.
+
 ## 2026-10-15 — baseline 7467b49d: reviewed naming contract gaps
 
 The reviewed module spec inventories all eight owned signatures but supplies no
@@ -44,3 +48,39 @@ lint/source checks for Mac arm64/x64, Linux x64 and Windows x64/arm64. Cross-tar
 checks are source-only. The exact per-name report is
 `docs/status/implementation-remaining.json`; feature details and deviations are
 in `docs/generator-names.md`. Seven names are missing and the selector is partial.
+
+
+## Helper behavior review ready 2026-10-15 16:14 UTC
+
+Refreshed bindings-generator. Naming/modifier/comment/cursor/alignment helper contracts now supplied, including shared CType copy-on-write, directive/omit/global movement policy, enum/selector/operator rules, spacing/last_location/comment fill. Read and implement all remaining assigned names; do not retain old resolved contract blockers. Unspecified ownership/edge cases permit safe independent policies documented honestly. Check factory is module-qualified get_plugin returning persistent Metaprogram_Plugin, not Check constructor; callbacks specified.
+
+## 2026-10-15 — clean integrator: canonical active options and naming load
+
+The facade now loads `active-options.jai` and `naming-helpers.jai` after the
+canonical options declaration. `active-options.jai` declares the sole active
+options context member, `context.bindings_generator_options`, using the existing
+`Generate_Bindings_Options` record. Naming helpers read that member; callers can
+assign it directly when using the helpers independently. The init/run lifecycle
+owner must install the active supplied options before context-dependent helpers
+run, including `run_generator` as required by the reviewed contract. This change
+does not edit lifecycle/model scaffolding or duplicate any options record.
+
+## Reviewed naming batch completion handoff
+
+All eight assigned helpers now implement the reviewed rules, including every
+operator mapping, enum suffix/prefix order and omitted-value handling, writable
+identifier bytes, and both selector transformations. Public and private helper
+files remain separate. Fixtures import the actual integrated Bindings_Generator
+facade. All prior naming questions are resolved; no new contract blocker exists.
+
+Canonical options access is context.bindings_generator_options, with no second
+slot or options record. Lifecycle/tooling owners should use this field when
+installing options before helper calls. Naming tests assign/restore it directly,
+exercising configured behavior without modifying lifecycle scaffolding.
+
+Verification covers both fixtures in interpreter and Mac arm64 native O0/O2,
+repository formatting, and warnings-denied lint/source checks for Mac arm64/x64,
+Linux x64 and Windows x64/arm64: 33 commands, with cross-target checks source-only.
+Exact inventory is docs/status/implementation-remaining.json; independent edge
+and ownership policies are documented in docs/generator-names.md. No stubs,
+compiler hacks, warnings suppressed, or unresolved assigned names remain.
