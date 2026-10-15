@@ -1,5 +1,53 @@
 # Profiler/Codex compiler-owner requests
 
+## Current approved replay69e971b1: growable-array flags
+
+Exact approved69e971b1 Rust and compiler-owned API sources were source-built
+unchanged using the established isolated snapshot workflow. The retained member,
+inferred enum, unchanged Basic.alloc and INDEX reductions now pass. Their
+assertions are unchanged; previous ownership/enum dependencies are resolved.
+
+Both required actual -modules builds still fail at O0/O2, now while editing
+Basic's nat_decimal body. Its `chunks: [..] u32` is reconstructed as a distinct
+array view, so the following real array_add call fails overload resolution.
+The actual interpreted-module workflow fails identically; its completion
+assertion is retained. Iprof.message remains partial for this one general
+producer reconstruction issue.
+
+Original minimal reduction:
+
+- profiler-array-local-input.jai: collect declares `values: [..] u32`, appends42,
+  asserts count/content, and frees its allocation. The unchanged program prints
+  ok in interpreter/native Mac O0/O2.
+- profiler-array-local-modify.jai: a canonical child workspace intercepts collect
+  and passes its unchanged public body back to compiler_modify_procedure.
+  Program_Print reports success but emits `values: #type,distinct [] u32`.
+  Recompilation fails on `array_add(*values, cast(u32)42)` with "expected an
+  array, found distinct". The required successful-completion assertion fails
+  (exit134). No library internals or special profiler procedure names are
+  needed to reproduce the general fault.
+
+Root cause observed in the authorized NEW source snapshot:
+`crates/jaic/src/sema/code_export.rs`, type_inst, ArraySize::Resizable, emits
+inst_flags0x10. The reviewed canonical Code_Type_Instantiation.inst_flags defines
+RESIZABLE0x2 and TYPE_DIRECTIVE_DISTINCT0x10. The printer correctly interprets
+these public bits and therefore emits the wrong type for the wrong metadata.
+Request correction of the general exporter flag mapping and regression coverage
+for growable/view/fixed local arrays. This worker has not changed the compiler,
+rewritten type metadata, excluded procedures, or supplied a library reparser.
+
+Exact commands (STDLIB is the absolute owned69e971b1 dependency-snapshot path):
+
+```sh
+JAIC_STDLIB="$STDLIB" /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic tests/developer-tools/compiler-requests/profiler-array-local-input.jai -interp
+JAIC_STDLIB="$STDLIB" /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic tests/developer-tools/compiler-requests/profiler-array-local-modify.jai -check
+python3 tools/check_profiler_codex.py --jaic /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic --jailint /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jailint --stdlib "$STDLIB"
+```
+
+Authoritative local reports remain target/profiler-codex-checks.json and
+ target/profiler-codex-dependency-replay.json. Earlier replay evidence follows;
+its ownership/enum failure claims are superseded by69e971b1 success.
+
 ## Current approved replay: b0430110 +59a69c03
 
 The exact approved59a69c03 source (including b0430110 reconstruction) was built

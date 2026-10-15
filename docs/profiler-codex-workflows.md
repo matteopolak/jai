@@ -1,6 +1,14 @@
 # Iprof/Codex workflow progress
 
-Latest replay uses approved compiler59a69c03 including b0430110. INDEX editing
+Latest replay uses approved compiler69e971b1. Retained member ownership and
+inferred enum reconstruction are now resolved; their original reductions pass.
+Both actual -modules native builds now fail at growable local-array type
+reconstruction: exporter RESIZABLE flags0x10 mean TYPE_DIRECTIVE_DISTINCT, rather
+than reviewed RESIZABLE0x2. The original array-local reduction preserves its
+completion assertion and reproduces without profiling. Iprof.message remains
+partial for this precise producer metadata fault.
+
+The preceding59a69c03 replay established the following retained successes: INDEX editing
 is resolved: modules-disabled real profiler CLI builds and execution pass at
 native Mac O0/O2. Actual edited main also runs in the compiler interpreter via
 the public child-workspace plugin lifecycle and #run. Two native -modules builds
