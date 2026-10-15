@@ -15,11 +15,11 @@ Private architecture:
 - windows-resources: manifest construction, transactional Win32 resource updates
   and SDK/tool discovery. Platform effects remain genuinely Windows-only.
 - icon-plugin: Compiler's canonical plugin record plus independently owned state
-  and lifecycle, once the host communication contract is supplied.
+  and lifecycle, using the reviewed POST_WRITE_EXECUTABLE protocol.
 - subtitles: canonical records, parsed ownership/selection, text grammar and
-  HTML/CSV renderers once their missing contracts are reviewed.
+  HTML/CSV renderers using the reviewed positional grammar and output rules.
 - simple-package: canonical records, creation lifecycle and a checked wire codec
-  after magic/entry encoding are specified. No invented proprietary archive.
+  using the reviewed little-endian magic/TOC encoding. No invented proprietary archive.
 
 Verify actual file bytes through independent SDK consumers where available.
 Keep native execution, Windows-target interpretation, cross checking and pending

@@ -12,9 +12,11 @@ root = Path(__file__).resolve().parents[2]
 output = root / "target/portable-data"
 output.mkdir(parents=True, exist_ok=True)
 env = dict(os.environ, JAIC_NATIVE_LIBS=str(output / "native"))
-compiler = root / "target/debug/jaic"
-formatter = root / "target/jaifmt"
-linter = root / "target/debug/jailint"
+if os.name == "nt":
+    env["PATH"] = str(output / "native") + os.pathsep + env.get("PATH", "")
+compiler = root / ("target/debug/jaic.exe" if os.name == "nt" else "target/debug/jaic")
+formatter = root / ("target/jaifmt.exe" if os.name == "nt" else "target/jaifmt")
+linter = root / ("target/debug/jailint.exe" if os.name == "nt" else "target/debug/jailint")
 sources = [
     "stdlib/Ico_File", "stdlib/Simple_Package", "stdlib/Subtitles",
     "stdlib/internal/resource-wire", "stdlib/internal/simple-package",
@@ -38,6 +40,7 @@ def wasm_test(source, name):
     except subprocess.CalledProcessError:
         failures.append(f"WASI {name}")
 
+run(sys.executable, "tests/portable-data/api_inventory.py")
 run(formatter, "--check", *sources)
 run(linter, "-D", "warnings", *sources)
 run(sys.executable, "tests/portable-data/wire_consumer.py", output, "fixtures")
@@ -72,20 +75,40 @@ run(sys.executable, "tests/portable-data/wire_consumer.py", output)
 windows_sources = ["stdlib/Windows_Resources", "stdlib/internal/windows-resources",
                    "stdlib/tests/portable-data-resource-windows.jai",
                    "stdlib/tests/portable-data-manifest-windows.jai",
-                   "stdlib/tests/portable-data-console-windows.jai"]
+                   "stdlib/tests/portable-data-console-windows.jai",
+                   "stdlib/tests/portable-data-discovery-windows.jai"]
 run(formatter, "--check", *windows_sources)
 run(linter, "-D", "warnings", "-os", "windows", "--manifest",
     output / "lint-windows-native.json", *windows_sources)
 for cpu in ("x64", "arm64"):
-    run(compiler, "-check", "-no_dce", "-os", "windows", "-cpu", cpu,
-        "stdlib/tests/portable-data-resource-windows.jai")
-for os_name in ("macos", "linux", "windows", "wasm"):
-    run(linter, "-D", "warnings", "-os", os_name,
-        "--manifest", output / f"lint-{os_name}.json", *sources)
+    for source in windows_sources[2:]:
+        run(compiler, "-check", "-no_dce", "-os", "windows", "-cpu", cpu, source)
+contexts = [(os_name, cpu) for os_name in ("macos", "linux", "windows")
+            for cpu in ("x64", "arm64")] + [("wasm", None)]
+for os_name, cpu in contexts:
+    target_args = ["-os", os_name] + (["-cpu", cpu] if cpu else [])
+    tag = os_name + (f"-{cpu}" if cpu else "")
+    run(linter, "-D", "warnings", *target_args,
+        "--manifest", output / f"lint-{tag}.json", *sources)
     for name in ("ico-wire", "package-contract", "subtitles-contract", "icon-plugin", "icon-phase"):
-        run(compiler, "-check", "-no_dce", "-os", os_name,
+        run(compiler, "-check", "-no_dce", *target_args,
             f"tests/portable-data/{name}.jai")
 if failures:
     print("FAILED target vectors:", ", ".join(failures), file=sys.stderr)
     raise SystemExit(1)
-print("Scoped tests passed; native Windows resource effects remain unverified.")
+if os.name == "nt":
+    for mode in ("O0", "O2"):
+        for name in ("resource", "discovery", "console"):
+            source = f"stdlib/tests/portable-data-{name}-windows.jai"
+            binary = output / f"{name}-windows-{mode}.exe"
+            run(compiler, f"-{mode}", source, "-exe", binary)
+            run(binary, output)
+        run(sys.executable, "tests/portable-data/sdk_discovery.py", output)
+        plugin_output = output / f"with-icon-{mode}.exe"
+        run(compiler, f"-{mode}", "tests/portable-data/package-contract.jai",
+            "-exe", plugin_output, "+Icon", "-icon", output / "resource.ico")
+        run(sys.executable, "tests/portable-data/sdk_icon_output.py",
+            plugin_output, output / "resource.ico")
+    print("Scoped tests including native Windows resource/discovery/CLI Icon passed.")
+else:
+    print("Scoped tests passed; native Windows resource effects remain unverified.")

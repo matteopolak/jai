@@ -187,6 +187,7 @@ The LLVM backend, C ABI and linking.
 
 ## Standard library
 
+- [Data/resource handoff](portable-data-handoff.md).
 - [Data/resource tests and dependencies](portable-data-testing.md);
   [Windows resources and native gate](portable-windows-resources.md).
 - [Subtitles implementation and per-API evidence](portable-subtitles.md).
