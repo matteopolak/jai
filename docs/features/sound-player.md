@@ -1,21 +1,47 @@
 # Sound_Player
 
-The public facade loads audio-owned units under internal/audio. Reviewed records
-retain exact field order, defaults and enum values; mutable topology and the
-accumulator each have one storage location. There is no OFFLINE module parameter.
+The facade loads independently organized units in internal/audio. Public records
+retain reviewed names, layouts, defaults and enum values. Repeated imports share
+mutable topology, accumulator and queue storage. Private player state and helpers
+are rejected by import tests; sound_mutex is private as clarified by review.
 
-Current genuine tests exercise sample arithmetic, interpolation/bounds, repeat
-overshoot, silence, matrix inversion, stereo constant-power gains, listener turns,
-source channel routing and live mutable topology. The runner is
-`python3 tools/audio_verify.py`, using only local source-built tools.
+Implemented behavior includes PCM interpolation/accumulation, signed 16-bit output,
+repeat wrapping, silence outside source bounds, menu pause/resume, listener
+transforms, stereo and editable VBAP gain helpers, perceptual gain, rate slew,
+stream/entity lifecycle, callbacks outside the mixer lock and decoder retirement.
+Loading borrows the supplied complete byte string; PCM samples point into it.
+load_audio_file retains File's allocation. Callers own asset storage and must keep
+it alive until every referring stream is released. release_asset runs per stream.
 
-Independent numerical policy pending review: PCM is signed 16-bit normalized by
-32768; final-page interpolation clamps to its last sample; repeat intervals are
-half-open, retain fractional overshoot and use source-frame cursors. Perceptual
-volume currently squares nonnegative input; gain changes linearly over 480 output
-frames. Stereo uses +X forward/+Y left/+Z up and inverse listener quaternion.
-Speaker gains are power normalized and recomputed from current public vectors
-and arc pairs. These policies are not established reference compatibility.
+ADPCM pages use the NEW Adpcm module synchronously. Vorbis pages use the existing
+stb_vorbis facade and an opaque pinned official C library built locally. Queued work
+is processed by one worker; page publication is synchronized, in-flight memory
+survives disposal, and deinit drains issued work. This intentionally completes the
+threaded path requested by the assignment: the refined spec documents an original
+no-op in that path, which this implementation does not reproduce.
 
-Playback/lifetime/cache/decoder/native backend work remains in progress. Controlled
-buffer results do not establish audible playback or physical device correctness.
+Native macOS output uses an owned C adapter against AudioQueue/CoreAudio. Native
+callbacks only publish buffer availability; no Jai callback crosses into an OS
+audio thread. The adapter also contains Windows waveOut and Linux ALSA paths;
+these remain source-only on this host. No fake device handles or offline-success
+mode are provided. Current device negotiation requests stereo; physical 5.1/7.1
+negotiation and Android remain unfinished. VBAP helpers are controlled-buffer
+behavior, not multichannel hardware evidence.
+
+Build the local dependencies with `python3 tools/audio_build_native.py`. It builds
+only inside this worktree and does not run the shared-root native builder. Build
+jaic/jailint from this repository, then build jaifmt with that jaic. Run
+`python3 tools/audio_verify.py` for formatter --check, warnings-denied lint,
+interpreter, native O0/O2, target and private-visibility checks. The generated
+stereo Vorbis fixture is retained under tests/audio/fixtures and its generation
+provenance is documented there.
+
+Device tests explicitly print whether a real native device opened; unavailable
+hardware is never counted as playback success. All submitted device audio is
+silent. Native API/device evidence is separate from physical-speaker verification.
+See [progress](../status/audio-progress.md), [deviations](../status/audio-deviations.md)
+and the [per-export inventory](../status/audio-api-inventory.md) for remaining work.
+
+Official native API inputs: [Apple AudioQueueNewOutput](https://developer.apple.com/documentation/audiotoolbox/audioqueuenewoutput(_:_:_:_:_:_:_:)),
+[Microsoft waveOutWrite](https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/nf-mmeapi-waveoutwrite),
+and [ALSA PCM documentation](https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html).

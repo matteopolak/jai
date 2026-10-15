@@ -277,3 +277,6 @@ Agreed designs that are not built yet.
 - [Native integration CI](tools/native-integration-ci.md): temporary branch checks and real Windows File execution
 
 - [Sound_Player implementation and verification](features/sound-player.md)
+
+- Sound_Player [per-public-API inventory](status/audio-api-inventory.md) and
+  [minimal dependency requests](status/audio-dependency-requests.md)
