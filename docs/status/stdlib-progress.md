@@ -1,5 +1,12 @@
 # Portable stdlib progress
 
+Platform-io Windows Thread SDK effects/result checks are independent of optional
+assertions; failed close/resume retains ownership. Public caller-disabled lifecycle
+and protected real-thread-handle failure/retry tests are scheduled in the native
+runner. Local host suite, cross checks/builds, formatter and 51-file strict lint
+pass. Windows execution and internal Basic(false) configuration audit are pending;
+Unix/generic operations remain portable-owner work. See platform progress.
+
 Platform-io e223538 review: six O0 mismatches were genuine Jai guard interception,
 two O2 mismatches stale export-alias symbol expectations. Added independent C
 PAGE_NOACCESS fault helper and separate retained O0 guard cases without changing

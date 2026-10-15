@@ -1,5 +1,22 @@
 # Platform I/O worker progress
 
+## Windows Thread essential operations (following 8ede5a2)
+
+Windows SDK effects are outside optional assertions, with unconditional failure
+diagnostics. Resume/close failure retains lifecycle ownership for retry. Only
+Windows branches changed; portable/Unix work remains separate. New public
+caller-ENABLE_ASSERT=false lifecycle test adds real protected-thread-handle close
+failure/retry, semaphore signal failure, synchronization and group completion.
+Runner schedules both Windows CPUs' interpreter variants and native O0/O2.
+
+Local host/cross/native suite exits 0; latest fixture x64 O0/O2 cross-build and
+ARM64 -check -no_dce pass. Formatter/check and strict four-target lint pass all
+51 owned Jai files, six diagnostic units pass. No actual Windows execution is
+claimed. Caller Basic(false) does not currently disable Thread's separate Basic
+instance; internal-disabled coverage requires the recorded narrow spec audit,
+not a module-name/compiler or staged-library bypass. See
+[Thread correction and coverage limits](../platform-io-windows-thread-assertions.md).
+
 ## e223538 fault-oracle correction (native rerun pending)
 
 Filtered exact bytes classify six O0 failures as correctly intercepted Jai

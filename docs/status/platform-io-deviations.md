@@ -1,5 +1,24 @@
 # Platform I/O deviations and pending verification
 
+## Windows Thread optional assertion audit
+
+All owned Windows essential SDK calls and their result checks now execute
+independently of optional assertions. Returning custom failure handlers preserve
+thread/semaphore ownership on failed close; group creation/clock failure reports
+and terminates because those APIs cannot return a valid result. Partial group
+recovery is not implemented or claimed; default termination reclaims resources.
+Unix/generic optional-assert dependencies remain portable-owner scope.
+
+New caller-Basic(false) public lifecycle/SDK-negative fixture is in the real
+runner, not a staged substitute. It requires actual completed Thread handle
+interop via SetHandleInformation, error/count/state/storage retention, protection
+removal and successful deinit retry. Native/interpreter Windows execution is
+pending. The current first-list Basic instance rules do not propagate the caller
+flag into Thread's Basic dependency; internal-disabled coverage remains explicitly
+incomplete pending reviewed configuration audit. No extra public parameter,
+fake handle, hidden root-constant leak or blanket lint/test exclusion is used.
+See [Thread review](../platform-io-windows-thread-assertions.md).
+
 ## e223538 test corrections, not production fixes
 
 The former address-1 Jai hardware-fault assumption is invalid at O0 because the

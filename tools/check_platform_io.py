@@ -200,6 +200,24 @@ def main():
                 if attempt([compiler, source, optimization, "-exe", executable], env):
                     attempt([executable, *fixture_args], env, "ok\n")
         report(before, source.relative_to(ROOT))
+    source = ROOT / "tests/platform-io/windows-thread-noassert.jai"
+    before = len(failures)
+    if args.cross_check or os.name == "nt" or args.windows_build:
+        for target_cpu in ["x64", "arm64"]:
+            attempt([compiler, source, "-os", "windows", "-cpu", target_cpu, "-check", "-no_dce"], env)
+    if os.name == "nt":
+        attempt([compiler, source, "-interp"], env, "ok\n")
+        attempt([compiler, source, "-interp", "--"], env, "ok\n")
+        if args.native:
+            for optimization in ["-O0", "-O2"]:
+                executable = output / (source.stem + optimization + ".exe")
+                if attempt([compiler, source, optimization, "-exe", executable], env):
+                    attempt([executable], env, "ok\n")
+    elif args.windows_build:
+        for optimization in ["-O0", "-O2"]:
+            attempt([compiler, source, "-os", "windows", "-cpu", args.windows_build,
+                     optimization, "-exe", output / (source.stem + optimization + ".exe")], env)
+    report(before, "Windows Thread lifecycle, caller assertions disabled", source.relative_to(ROOT))
     source = ROOT / "tests/platform-io/arguments.jai"
     arguments = ["雪😀", "", 'quote" and slash\\']
     before = len(failures)

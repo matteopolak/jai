@@ -100,6 +100,7 @@ The LLVM backend, C ABI and linking.
 - [Interpreter/native Windows section queries and 0100a1f CI](platform-io-section-query-regression.md)
 - [e8c312d native crash/thread follow-up and SDK regressions](platform-io-e8c312d-follow-up.md)
 - [e223538 fault-test oracle review and native SDK trigger](platform-io-e223538-fault-oracles.md)
+- [Windows Thread assertion side effects and configuration coverage](platform-io-windows-thread-assertions.md)
 - [Private ARM64 exception backend design and checks](platform-io-arm64-crash-plan.md)
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)

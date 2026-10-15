@@ -1,5 +1,12 @@
 # Portable stdlib worker deviations
 
+Platform-io Thread correction changes Windows branches only. Public Basic(false)
+caller coverage does not disable Thread's separate Basic instance; narrow spec
+audit and internal-disabled execution coverage remain open. Protected real-thread
+handle SDK failure/retry is mandatory in the new Windows runner fixture, with
+actual native/interpreter execution pending. Void group-init/clock failures
+report then terminate rather than fabricate a usable result. See platform report.
+
 Platform-io hardware-fault fixtures now depend on an original SDK C DLL because
 Jai near-null stores are correctly guarded at O0. Separate O0 guard coverage is
 retained; O2 guard emission and new native matrix passes are not claimed. Frame
