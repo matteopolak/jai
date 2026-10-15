@@ -483,8 +483,8 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `overlay_inlinesites` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `parse_codeview_symbols` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `parse_codeview_types` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `parse_compilation_unit_v4` | 1 | 1 | Reviewed Parse_Context and Declaration.kind resolved; canonical DWARF parser implementation pending |
-| `parse_dwarf_debug_info` | 1 | 1 | Reviewed canonical parser dependencies resolved; implementation pending |
+| `parse_compilation_unit_v4` | 1 | 1 | Real DWARF4 line byte decoder is staged/tested; public integration, DIE/abbreviation parsing and questions8/10 remain unfinished |
+| `parse_dwarf_debug_info` | 1 | 1 | Real DWARF4 line byte decoder is staged/tested; public integration, DIE/abbreviation parsing and questions8/10 remain unfinished |
 | `parse_msf` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `parse_pdb` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `parse_tpi_stream` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |

@@ -22,6 +22,10 @@ Current checkpoints provide real supported paths across all ten owned modules; s
 
 Declaration traversal/mutation, numeric macro grouping, C++ fragments/global bridge workflows, native token/build-system workflows and the broad direct native ABI surface are implemented with separate evidence. Canonical MSF read helpers, DWARF model/interval queries and CodeView string/checksum queries now supplement staged byte parsing. Continue broader C/C++ generation/options and remaining public helpers, then refine debugger/debug-info/profiler/Codex/Check paths as precise contracts arrive. Full completion boxes remain open; source-only native reexports are not counted as direct invocation effects.
 
+## DWARF line decoder dependency
+
+The next debug-format dependency is a real bounded DWARF4 line-program byte decoder, tested through staged owned source with original x86/x64/arm64 C sections and official SDK row oracles. Retain raw encoded directory/file IDs until reviewed public indexing/path conventions are precise. Keep canonical Line_Program_Header identity in Debug_Info. Distinguish this private dependency from public compilation-unit/DIE parsing; do not mark either public parser implemented until it returns the reviewed fully populated records.
+
 ## Measured manual profiler core
 
 Implement init_runtime, Stack_Push, zone_begin and zone_end using existing canonical POSIX/Windows clock APIs. Retain reviewed zone/node/global types and explicit manual initialization. A private independently designed map keys nodes by zone and parent identity, preserves node pointers through growth and uses persistent default-allocator storage. Bound active nesting by MAX_DEPTH. Verify real elapsed/self/hierarchical ticks, recursion and call counts, node identity across different parents/cache reuse/growth, and explicit unbalanced-depth failures in interpreter/native O0/O2. Keep Windows source checks separate from host execution. Do not expose placeholder update/create_report/instrumentation paths; history calibration/aggregation details and public hash/helper policies remain precise follow-up work.

@@ -88,6 +88,8 @@ The Windows backend uses SDK stack capture, DbgHelp symbols, kernel memory reads
 
 MSF free-page helpers query/clear/set bits in caller-supplied initialized maps, using the standard [MSF free-page bit meanings](https://www.llvm.org/docs/PDB/MsfFile.html). `is_fpm_page_number` supports MSF7 big maps with4096-byte pages. Original x64/arm64 PDBs and official SDK FPM byte exports verify every bit; boundary mutation tests restore owned copies and preserve native inputs. Maps must currently have iwMac==rgw.count and sufficient storage. Invalid bounds and unsupported reserved-page layouts fail explicitly. Initialization/growth/rover/fill policy remains open; this does not claim parse_msf construction.
 
+The staged private DWARF4 line decoder now reads actual original x86/x64/arm64 C O0/O2 section bytes and matches official SDK rows, following [DWARF4 sections6.2 and7.21](https://dwarfstd.org/doc/DWARF4.pdf). It retains raw file/directory IDs, borrows path bytes, owns decoded arrays and rejects malformed/unsupported records without partial results. Canonical Line_Program_Header has the reviewed packed fields. This is a tested parser dependency; public compilation-unit/DIE parsing and filename/index integration remain unfinished.
+
 ## Iprof report output and Codex inspection
 
 Iprof reports display stored seconds as milliseconds, write an informational command line followed by name/self (ms)/hier (ms)/calls CSV columns, and log file-write failures. Text filtering applies positive self/hier thresholds independently; nonpositive thresholds are disabled. CSV quoting is an independent improvement beyond the reviewed escaping guarantee. These tests supply measured-row values explicitly; runtime instrumentation and history sampling remain pending.

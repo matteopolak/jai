@@ -56,6 +56,8 @@ def remaining_matrix(inventory):
                     reason = "CodeView overloads pending; canonical DWARF Compilation_Unit offset lookup is implemented/tested"
                 if module == "Debug_Info" and name in {"init", "ensure_room", "set_all"}:
                     reason = "Question14: active-word/capacity, growth, rover and fill policy; already-sized bit operations execute against native PDB/SDK FPM oracles"
+                if module == "Debug_Info" and name in {"parse_dwarf_debug_info", "parse_compilation_unit_v4"}:
+                    reason = "Real DWARF4 line byte decoder is staged/tested; public integration, DIE/abbreviation parsing and questions8/10 remain unfinished"
                 unfinished = sum(entry["implementation"] == "pending" for entry in entries)
                 output.append(f"| `{name}` | {len(entries)} | {unfinished} | {reason} |")
             output.append("")
@@ -205,6 +207,8 @@ def main():
                     item["implementation"] = "bounded CodeView C13 string/checksum-ID lookup; original Windows x64/arm64 C O0/O2 SDK filename/file-ID/source MD5 oracles, borrowed pointer identity and malformed/duplicate failures; ownership precision question12"
                 if item["name"] in {"Debug_Info", "Compilation_Unit", "Debug_Type", "Subprogram", "Declaration", "Lexical_Block", "Dwarf_Language", "Dwarf_Tag", "Dwarf_Base_Type"}:
                     item["implementation"] = "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
+                if item["name"] == "Line_Program_Header":
+                    item["implementation"] = "canonical reviewed header shape/packed field offset; actual staged DWARF4 byte decoder with original x86/x64/arm64 O0/O2 SDK row oracles; public parser integration pending"
                 if item["name"] == "get_type" and "cu: Compilation_Unit" in item["declaration"]:
                     item["implementation"] = "DWARF model offset lookup; six original C DWARF4 SDK-decoded type oracles, unsorted tables/missing offsets/borrowed storage/duplicate diagnostics in interpreter/native O0/O2; not a byte parser"
                 if item["name"] in {"Msf", "Free_Page_Map"}:

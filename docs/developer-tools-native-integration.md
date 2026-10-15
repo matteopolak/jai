@@ -22,6 +22,8 @@ Build the owned `debug-native` sources with `tools/build_developer_debug.py` for
 
 ## Coordinator-owned acceptance steps
 
+Debug-format fixture jobs also require the configured official `llvm-dwarfdump`, `llvm-objcopy`, `llvm-pdbutil` and LLD tools. The focused runner produces original C debug objects/PDBs, SDK row/FPM byte oracles, then stages the owned private DWARF line decoder for isolated execution. That pure Jai decoder adds no production native library or shared manifest entry. Its staging is test-only; public DWARF compilation-unit/parser integration remains unfinished. Retain host decoder execution separately from execution of the x86/x64/arm64 target programs, which these jobs do not run.
+
 - Add these build actions and installation paths to the shared dependency manifest without changing public module identities.
 - Exercise source builds in configured SDK jobs, keeping SDK21/SDK23 results separate.
 - Run Windows native Debug and binding workflows on Windows; retain Linux runtime jobs separately from this worker's host decoding/target checks.
