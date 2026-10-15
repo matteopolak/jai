@@ -23,8 +23,11 @@ No source implementation outside the authorized NEW producers is an input.
   actual live-state publication using reviewed transport once synchronized.
 - [x] Finish Preamble cross semantics through a genuine compiler host predicate;
   the unchanged WASI behavior regression now passes.
-- [ ] Finish module-qualified leak matching when exact module mapping is supplied;
-  current explicit unsupported diagnostics are not full behavior.
+- [x] Implement refined module-qualified leak matching as exact procedure name
+  plus source-path substring; inclusive first matching leaf, matching/null root
+  suffix, and report-owned lifetime have original regression coverage.
+- [ ] Resolve scalar FNV overload and division-exercise contracts; original
+  public-call reproducers fail and remain positive API gates, not negative tests.
 - [ ] Retest unavailable Windows/WASI transport when producers supply it.
 - [ ] After each coherent batch: real jaifmt format/check, warnings-denied lint,
   interpreter/native O0/O2 and supported WASI checks, relevant unused-code

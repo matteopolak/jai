@@ -1,8 +1,9 @@
-# Basic public surface audit
+# Foundations public surface audit
 
-Reviewed input: `specs/stdlib/modules/basic.md`, including conditional
-declarations and module parameters. Production implementation is the Basic
-facade and `stdlib/internal/basic`; legacy tests and reference sources are not
+Reviewed inputs: Basic, String, Hash and File_Utilities pages under
+`specs/stdlib/modules`, including conditional declarations and module parameters.
+Production implementations are their facades and independently organized
+private services; legacy tests and reference sources are not
 API inputs. This is a declaration/signature audit, not proof of all behavior.
 
 ## Closed in the current batch
@@ -41,8 +42,11 @@ are recorded separately. Full Basic completion is still in progress.
   segment scanning, reachability/interior pointers/cycle-safe ownership,
   grouping, trace trimming, descending byte summaries, owned cleanup and
   logging. Visualizer mode skips both scans and includes pre-baseline objects.
-  Module-qualified matching remains explicitly unsupported pending metadata
-  mapping review; diagnostic/reporting is not claimed fully complete there.
+  Module-qualified matching now uses exact procedure names plus case-sensitive
+  source-path substrings. Root trimming consumes only the matching/null suffix;
+  leaf trimming retains the first matching frame. Original tests cover repeated
+  names, wrong-case paths, retained interior roots, empty traces, missing locations
+  and report-owned node/group storage after tracked allocation cleanup.
 - All reviewed visualization hook names now have the real version-2 channel
   implementation, with initialization/retry timing, deduplication, definition
   packets, live/alloc/free snapshots, queue-full retry and reader reconnection.
@@ -69,7 +73,9 @@ Missing exports are not replaced with inert bodies.
 | --- | --- |
 | Debugger macro | No missing name or cross gap: NEW compiler host constants resolve the earlier failure, and the genuine WASI predicate/Preamble tests pass. Exact allocator-family matching is still a review question. |
 | Wide integer conversions | to_s128/to_u128 exist, but their reviewed #modify source-kind and conversion policies are unspecified. The current cast-based bodies have no guard; precise questions are recorded rather than calling them exact signatures. |
-| Leak reporting | No missing ordinary names. Module-qualified frame matching needs source/module identity mapping; current explicit diagnostics are not full support. |
+| Division exercise | test_unsigned_division is genuinely missing. Inventory gives parameters/defaults but no random-callback/null policy or platform-condition detail beyond its Windows section and CPU.X64 label. Original public-call repro is retained. |
+| Hash scalar FNV | fnv1a_hash has a byte overload but lacks the reviewed scalar u64 overload. The exact word-versus-byte operation remains unspecified; original public-call repro rejects. Scalar get_hash and Hash_Table integration are implemented/tested. |
+| Leak reporting | Reviewed matching, trimming and report-owned lifetime are implemented. No module-ID metadata dependency remains. |
 | Visualization | No missing names. Native macOS/Linux channel is real and tested; Windows/WASI shared-memory producers remain unavailable and are diagnosed explicitly. |
 
 ## Preserved portable responsibility
@@ -87,8 +93,8 @@ checkout was modified.
 The latest logging paragraph confirms the implemented contextual dispatch,
 temporary lifetime, no extra verbosity filtering/newline/null-logger check,
 and suppression of empty messages. Typed enum-array lifetime is also resolved.
-Remaining review questions concern module-qualified frame identity, exact
-allocator-family matching and leaf/root trimming boundaries. Preamble requires
+Remaining review questions concern wide conversions, scalar FNV, the division
+exercise and exact allocator-family matching. Preamble requires
 a real host/target compiler distinction, now provided by the NEW producer.
 Conservative scanner
 and ownership heuristics are implementation policy under the reviewed contract.
@@ -103,3 +109,22 @@ The new path captures/rebases such views after a single reserve and copies
 overlapping storage in the safe direction. Nonoverlapping copies retain memcpy.
 Original moving/poisoning allocator tests cover full self-append, interior view
 append, empty append and overlapping/self copy.
+
+## Other owned facades
+
+String and File_Utilities have all reviewed ordinary declaration names, including
+conditional aliases; Hash has every reviewed name but the scalar overload gap
+above. This audit checks overload bodies as well as facade aliases. String
+signatures/defaults and observed reviewed quirks are covered by original token,
+search/split/path/scan tests, including view identity and partial failure effects.
+Its unspecified wildcard/scan conversion edges remain questions, not invented
+compatibility claims. File_Utilities preserves Path/File_Visit_Info field order
+and Unix aliases, uses real Unix/Windows filesystem backends, and returns actual
+failures. Native filesystem execution is macOS; Windows behavior is cross-checked,
+not executed. WASI supports portable path operations; native filesystem/channel
+runtime coverage is not claimed. File visitation edge policies remain explicitly
+documented while review is pending. Private aliases/helpers are not facade exports.
+
+The driver positively checks the two unresolved public-call reproducers and
+retains their failure in its overall result. They are not classified as expected
+negative API tests or included in completed functionality counts.
