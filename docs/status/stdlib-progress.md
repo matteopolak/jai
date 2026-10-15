@@ -1,5 +1,17 @@
 # Portable stdlib progress
 
+ASN.1 diagnostics implemented: all three overloads, explicit traversal frames,
+all reviewed supported type families, yellow Print_Color banners, UTC calendar,
+borrowed content forwarding and explicit invalid/unsupported errors.15 interpreter/
+native runs cover300-level nesting and7 failures; Linux/Windows both-CPU source
+checks and strict lint pass (target/asn1-printer-final.log). Human text/century/
+Windows ANSI finer policies documented in portable-asn1.md. Primitive/Java/flag
+focused regressions pass with actual NEW foundation composition. Missing151 ->148.
+Active broad regression before printer:116 positives,27 expected faults and16
+compile rejections plus actual IPC/runtime config/Linux+Windows targets pass
+(target/android-sdk-asn1-corrected-full.log). Resolver candidate remains a genuine
+separate failing compiler gate; no all-library green completeness claim.
+
 Test-only OID correction: removed obsolete android-oid-count expected assertion
 after refreshed whole-record equality. Positive android-oid now verifies all12
 slots and count bytes for -1/13/s64 extrema without count-based indexing. Public

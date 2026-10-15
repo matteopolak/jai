@@ -13,7 +13,7 @@ or legacy test expectations are inventory inputs.
 
 ### Android/Toolchain
 
-JNI/OID/JKS/SHA, ASN.1 primitive/cursor/value parsing and ADB host operations have independent behavior tests. Refreshed ADB discovery/server/quoting/storage contracts still require correction; real SDK/device and Windows Process integration remain pending. ASN.1 diagnostics printing, install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
+JNI/OID/JKS/SHA, ASN.1 primitive/cursor/value/diagnostic APIs, manifest flags, Java launcher and reviewed ADB discovery/server/quoting/storage/cache operations have independent behavior tests. Real SDK/device and Windows Process integration remain pending. Install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
 
 Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 
@@ -70,9 +70,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `Apk_Signing_Block_V2 :: struct` | All reviewed hosts |
 | `apk_verify :: (apk: Android_Apk, verbose := false) -> bool` | All reviewed hosts |
 | `apk_verify :: (filepath: string, verbose := false) -> bool` | All reviewed hosts |
-| `asn1_print :: (data: string, depth := 0, hack_skip_depth := false)` | All reviewed hosts |
-| `asn1_print :: (name: string, data: string)` | All reviewed hosts |
-| `asn1_print :: (name: string, value: ASN1_Value)` | All reviewed hosts |
 | `Certificiate :: struct` | All reviewed hosts |
 | `CheckSSL :: (result: s32, loc := #caller_location) #expand` | All reviewed hosts |
 | `copy_android_libcpp :: (cpu_target: CPU_Tag, output_dir: string) -> bool` | All reviewed hosts |
@@ -210,7 +207,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 151 missing reviewed declaration/overload/nested-operation rows
+Total: 148 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

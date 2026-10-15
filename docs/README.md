@@ -12,6 +12,8 @@ and records its interpreter/native protocol coverage and Windows dependency.
 mask parsing, diagnosed invalid input and independent target checks.
 [ASN.1 readers](portable-asn1.md) now follow refreshed value/TLV, known-array,
 OID equality/text and length-prefix contracts, with separate test corrections.
+The same document covers all three diagnostic printer overloads, iterative
+nesting, supported types, actual tests and finer output/platform policy questions.
 
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 

@@ -1,5 +1,17 @@
 # Portable stdlib worker deviations
 
+ASN.1 diagnostic conventions: labeled human lines, spaced lowercase hex, yellow
+Print_Color ANSI-backend banners, standard native-C UTCTime1950..2049 year mapping,
+newline on empty constructed context and invocation-wide skipped indentation.
+Finer reference punctuation/century/leap policy not established; recorded in
+spec questions and portable-asn1.md, not presented as observed reference output.
+Native Windows console rendering remains unavailable; explicit supported ANSI
+backend selected. Iterative frames avoid host recursion; per-indent/field printf
+calls have deliberate overhead for diagnostics, future batching can improve it.
+All supported types/overloads have real bodies; malformed input logs/asserts,
+frame allocations are released on normal/early return by defer. No fabricated
+parse defaults treated as successful output or hidden assertion/lint suppression.
+
 macOS addrinfo candidate excluded from active source while general forward-enum
 compiler defect persists. Location: pending/socket-macos-addrinfo.patch, generated
 staging target/portable-socket-resolver; gate tools/check_portable_socket_resolver.py.

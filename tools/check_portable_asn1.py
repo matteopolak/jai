@@ -7,6 +7,7 @@ import random
 import shutil
 import struct
 import subprocess
+from check_portable_time_foundation import compose, LIBRARY
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,6 +43,8 @@ def main():
     library = ROOT / 'target/portable-integration-stdlib'
     for relative in ['Android/Toolchain', 'internal/android-toolchain']:
         shutil.copytree(ROOT / 'stdlib' / relative, library / relative, dirs_exist_ok=True)
+    compose()
+    library = LIBRARY
     env = dict(os.environ, JAIC_STDLIB=str(library))
     compiler = ROOT / 'target/compiler/debug/jaic'
     targets = [([], 'host')]
