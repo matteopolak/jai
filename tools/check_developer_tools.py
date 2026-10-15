@@ -47,7 +47,7 @@ def main():
     cases = ["c-header", "c-header-roundtrip", "c-header-reject", "c-header-modes", "c-header-lifetime", "c-header-support-roundtrip", "bindings-public", "bindings-public-roundtrip", "bindings-literals", "bindings-tree", "bindings-sdk-public", "bindings-sdk-roundtrip", "bindings-clang-api", "print-vars", "rewrite", "dwarf-cfa", "debug-native", "iprof-report", "codex-inspection"]
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-I", prefix / "include",
          "tests/developer-tools/bindings-sdk-layout.c", "-o", "target/developer-tools-sdk-layout"])
-    run([ROOT / "target/developer-tools-sdk-layout"], output="CXString=16 CXCursor=32 CXType=24 CXUnsavedFile=24\nCXIndexOptions=24 PreambleStoragePath=8 InvocationEmissionPath=16\n")
+    run([ROOT / "target/developer-tools-sdk-layout"], output="CXString=16 CXCursor=32 CXType=24 CXUnsavedFile=24\nCXIndexOptions=24 PreambleStoragePath=8 InvocationEmissionPath=16\nCXToken=24 ptr_data=16 CXTokenKind=4\n")
     run([JAIC, "tests/developer-tools/c-header.jai", "-interp"], output="ok\n")
     run(["clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-I", "target",
          "tests/developer-tools/point.c", "-o", "target/libdeveloper_tools_point.dylib"])
@@ -94,6 +94,7 @@ def main():
     cases.append("bindings-model-properties-roundtrip")
     cases.append("msf-wire")
     cases.append("debug-int-set")
+    cases.append("bindings-clang-tokens")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -193,7 +194,7 @@ def main():
     for cpu in ["x64", "arm64"]:
         run([JAIC, "tests/developer-tools/debug-windows-contract.jai", "-check", "-os", "windows", "-cpu", cpu])
         for os_name in ["linux", "windows"]:
-            for case in ["msf-wire", "debug-int-set", "dwarf-cfa"]:
+            for case in ["msf-wire", "debug-int-set", "dwarf-cfa", "bindings-clang-tokens"]:
                 run([JAIC, f"tests/developer-tools/{case}.jai", "-check", "-os", os_name, "-cpu", cpu])
     for case, reason in [("check-array", "fixed array used as a pointer in assignment"),
                          ("check-small-driver", "small integer addition requires an explicit intermediate integer cast")]:

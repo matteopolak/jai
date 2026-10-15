@@ -2752,7 +2752,7 @@
         "declaration": "clang_equalCursors :: (unknown0: CXCursor, unknown1: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 439,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Cursor_isNull",
@@ -2773,7 +2773,7 @@
         "declaration": "clang_getCursorKind :: (unknown0: CXCursor) -> CXCursorKind #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 442,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_isDeclaration",
@@ -3025,7 +3025,7 @@
         "declaration": "clang_getCursor :: (unknown0: CXTranslationUnit, unknown1: CXSourceLocation) -> CXCursor #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 478,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getCursorLocation",
@@ -4222,7 +4222,7 @@
         "declaration": "CXTokenKind :: enum u32",
         "section": "Unix-specific declarations",
         "spec_line": 649,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "CXToken",
@@ -4243,28 +4243,28 @@
         "declaration": "clang_getTokenKind :: (unknown0: CXToken) -> CXTokenKind #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 652,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTokenSpelling",
         "declaration": "clang_getTokenSpelling :: (unknown0: CXTranslationUnit, unknown1: CXToken) -> CXString #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 653,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTokenLocation",
         "declaration": "clang_getTokenLocation :: (unknown0: CXTranslationUnit, unknown1: CXToken) -> CXSourceLocation #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 654,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTokenExtent",
         "declaration": "clang_getTokenExtent :: (unknown0: CXTranslationUnit, unknown1: CXToken) -> CXSourceRange #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 655,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_tokenize",
@@ -4278,7 +4278,7 @@
         "declaration": "clang_annotateTokens :: (TU: CXTranslationUnit, Tokens: *CXToken, NumTokens: u32, Cursors: *CXCursor) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 657,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_disposeTokens",
@@ -6126,7 +6126,7 @@
         "declaration": "clang_equalCursors :: (unknown0: CXCursor, unknown1: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 924,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Cursor_isNull",
@@ -6147,7 +6147,7 @@
         "declaration": "clang_getCursorKind :: (unknown0: CXCursor) -> CXCursorKind #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 927,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_isDeclaration",
@@ -6399,7 +6399,7 @@
         "declaration": "clang_getCursor :: (unknown0: CXTranslationUnit, unknown1: CXSourceLocation) -> CXCursor #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 963,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getCursorLocation",
@@ -7596,7 +7596,7 @@
         "declaration": "CXTokenKind :: enum s32",
         "section": "Windows-specific declarations",
         "spec_line": 1134,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "CXToken",
@@ -7617,28 +7617,28 @@
         "declaration": "clang_getTokenKind :: (unknown0: CXToken) -> CXTokenKind #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1137,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTokenSpelling",
         "declaration": "clang_getTokenSpelling :: (unknown0: CXTranslationUnit, unknown1: CXToken) -> CXString #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1138,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTokenLocation",
         "declaration": "clang_getTokenLocation :: (unknown0: CXTranslationUnit, unknown1: CXToken) -> CXSourceLocation #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1139,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTokenExtent",
         "declaration": "clang_getTokenExtent :: (unknown0: CXTranslationUnit, unknown1: CXToken) -> CXSourceRange #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1140,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_tokenize",
@@ -7652,7 +7652,7 @@
         "declaration": "clang_annotateTokens :: (TU: CXTranslationUnit, Tokens: *CXToken, NumTokens: u32, Cursors: *CXCursor) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1142,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_disposeTokens",

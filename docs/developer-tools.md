@@ -34,6 +34,8 @@ The binding-model void/bool predicates follow explicit scalar flags and typedef 
 
 `fill_location` fills the reviewed file/line/column record from native cursor spelling locations, clearing a previous value for a null cursor. `get_clang_type_alignment` preserves libclang alignment/error results; the parsed declaration model uses both helpers. `create_null_literal` returns an initialized caller-owned Literal in the active allocator; generated C++ consumers verify its null pointer effect. Diagnostic range getters and signed evaluation now have direct native invocation coverage, including highlighted operand bytes and resource cleanup.
 
+The native token API now exposes reviewed token kinds, spelling, locations/extents and cursor annotations, plus cursor kind/lookup/equality. Keep the translation unit alive while using tokens/cursors, dispose token arrays with libclang and dispose returned CXString spellings individually. Annotation arrays are caller-owned. Tests match every token to original header bytes and verify declaration annotations; Windows/Unix enum signedness follows the reviewed native ABI.
+
 ## Print_Vars
 
 `print_vars_to`, `print_vars` and `log_vars` expand over caller expressions. They retain caller scope, use Program_Print for source names, evaluate each expression once, render values/types and align name/value columns. The helper accepts the exact reviewed fixed Code array; the variadic entry points create that array at compile time. `Print_Vars_Config` controls fields, delimiters, indentation and line separators. Logging forwards the caller location. Widths currently count UTF-8 bytes; see questions and deviations for display-cell and source-whitespace limits.
