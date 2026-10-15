@@ -1,0 +1,43 @@
+{
+  "module": "Bindings_Generator",
+  "batch": "generator-modifiers",
+  "baseline": "7467b49d",
+  "publication_status": "committed",
+  "commit_reference": "Commit containing this status file; no external publication",
+  "complete": [
+    "add_access_flags",
+    "function_has_a_valist_arg"
+  ],
+  "partial": [],
+  "missing": [
+    "add_type_flags",
+    "append_calling_convention_directives",
+    "append_type_info_directives",
+    "check_if_foreign_function_should_be_omitted",
+    "shared_type",
+    "should_be_moved_to_global_scope"
+  ],
+  "committed": [
+    "add_access_flags",
+    "function_has_a_valist_arg"
+  ],
+  "draft": [],
+  "facade_integration": "pending coordinator-owned #load of modifiers.jai; fixture directly loads the exact public file with canonical imports",
+  "remaining_contracts": "docs/worker-inbox.md",
+  "verification": {
+    "command": "python3 tools/check_generator_modifiers.py",
+    "source_built_tools": true,
+    "build_jobs": 2,
+    "format": "passed repository jaifmt --check",
+    "lint": "passed jailint -D warnings; all three owned Jai files in checked-files",
+    "interpreter": "passed on Mac host",
+    "native": ["passed Mac ARM64 O0", "passed Mac ARM64 O2"],
+    "source_only": ["windows x64", "windows arm64", "linux x64", "linux arm64"],
+    "evidence": "$CARGO_TARGET_DIR/generator-modifiers-evidence.json"
+  },
+  "deviations": [
+    "Six signatures lack reviewed public behavior; no implementation is invented",
+    "Shared facade integration remains coordinator-owned"
+  ],
+  "hacks": []
+}

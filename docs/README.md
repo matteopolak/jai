@@ -45,6 +45,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 
 - [Features](features.md): what works, performance and what is missing
 - [Generator model helpers](generator-model.md): canonical model operations, ownership, verification and integration dependencies
+- [Generator modifier helpers](generator-modifiers.md): access flags and va_list argument checks, measured host/target verification, and six remaining reviewed-contract gaps
 - [Window/render progress](status/window-render-progress.md): scoped native window,
   native input, Windows pointer tracking and keyboard layouts, Keymap, window lifecycle, original native-font
   feature regressions, real font-atlas/text rendering and texture color-space transitions,
