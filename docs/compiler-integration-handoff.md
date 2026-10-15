@@ -1,5 +1,7 @@
 # Compiler integration handoff
 
+Windows thread naming/ABI handle repair ready for native CI: retain real kernel handles in shared scheduler state; native Set/GetThreadDescription, pseudo handles, rights and HRESULTs remain authoritative. Protected-close failure preserves ownership/error, teardown releases references, and unmanaged duplicate suspension is explicitly bounded. Original host regression and scoped checks pass; actual Windows interpreter/native execution remains pending. See compiler/windows-thread-handles.md for fixtures, commands, producer staging and deviations.
+
 Windows unwind checkpoint 0d49463: ABI-required uwtable(async) survives inferred nounwind and O2 for x64/ARM64, including synthesis defaults and optimized definitions. Original metadata red/green, six object/PE cases and native SDK driver are in compiler/windows-unwind.md. Native Windows execution remains required; producer named-fault O2 leaf is a genuine frameless leaf and its unconditional table assertion needs review. Portable runtime adoption remains pending.
 
 Host/target checkpoint 9bab736: BUILD_OS/BUILD_CPU identify the executing compiler binary; OS/CPU remain output selection. Native/WASM64 emitted code, wasm32 compiler host and cross-child, and staged independent Preamble interpreter/native/WASI O0/O2 pass. Browser child failures now prevent parent execution. Exact commands, preserved broader-browser failures and runtime adoption boundary: compiler/host-target-constants.md.
