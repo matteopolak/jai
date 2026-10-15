@@ -1,5 +1,29 @@
 # Portable default build workflow
 
+Current2026-10-15 Check integration is RESOLVED: the NEW tools producer supplies
+the reviewed persistent get_plugin factory and CHECK_BINDINGS module parameter.
+Default imports the exact true/false instance lazily in its private factory, and
+the runner stages the complete real Check engine/porting/binding dependency set.
+Ordinary builds, both binding flags, default help/version, custom plugin ordering,
+no_check/replay/option/error cases and full owned strict lint now pass. Earlier
+missing-factory descriptions below are historical evidence, not active blockers.
+
+Test correction, separate from production: argument-dependent fixture procedures
+are invoked by ordinary `-add '#run,stallable run_build();'` compiler input. This
+executes the same real D.build workspace workflow and all replay assertions;
+neither target construction nor callbacks are bypassed. Lint checks callable
+fixture bodies without executing an invalid zero-input build. Explicit empty-input
+and no_check-only invocations still must exit1. No test/diagnostic suppression or
+compiler source-name exception. Full command:
+`python3 -B tools/check_portable_default_metaprogram.py`;
+evidence target/default-metaprogram-check-integrated.log.
+
+Remaining compiler execution limits: .X64 backend/debugger are explicitly
+unsupported by current compiler; selected-workspace command-line readback has
+the corrected generic reproducer. These are separate from the now-working normal
+default CLI workflow and its passed source/lint gate. Native other OS/combined
+baseline are coordinator gates, not claimed here.
+
 The reviewed Default_Metaprogram contract is the API oracle. The implementation
 separates command-line classification, compiler option projection and intercepted
 workspace execution. Plugin imports are generated as ordinary Jai declarations

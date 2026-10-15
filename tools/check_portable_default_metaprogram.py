@@ -8,6 +8,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import check_portable_time_foundation as foundation
+from portable_file_stage import compose_into as compose_file
 
 ROOT = Path(__file__).resolve().parents[1]
 CASE = ROOT / "tests/portable-stdlib/default-metaprogram"
@@ -20,16 +21,21 @@ def compose():
     library = foundation.LIBRARY
     # File facade and its backend are one producer closure. Foundation's
     # File_Utilities filesystem helpers remain separate owned dependencies.
-    shutil.copytree(ROOT.parent / "platform-io/stdlib/File", library / "File", dirs_exist_ok=True)
-    for name in ["file.jai", "native-unix.jai", "native-windows.jai"]:
-        shutil.copyfile(ROOT.parent / "platform-io/stdlib/internal/files" / name,
-                        library / "internal/files" / name)
+    compose_file(library)
     for relative in OWNED:
         shutil.copytree(ROOT / "stdlib" / relative, library / relative, dirs_exist_ok=True)
     for relative in ["Compiler", "internal/compiler-api"]:
         shutil.copytree(ROOT.parent / "compiler/stdlib" / relative,
                         library / relative, dirs_exist_ok=True)
     shutil.copytree(ROOT.parent / "stdlib-tools/stdlib/Check", library / "Check", dirs_exist_ok=True)
+    for relative in ["check-engine", "porting-check.jai", "check-bindings.jai"]:
+        source = ROOT.parent / "stdlib-tools/stdlib/internal/developer-tools" / relative
+        destination = library / "internal/developer-tools" / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        if source.is_dir():
+            shutil.copytree(source, destination, dirs_exist_ok=True)
+        else:
+            shutil.copyfile(source, destination)
     return library
 
 
@@ -56,7 +62,7 @@ def main():
         assert run([str(executable)]) == "ok\n"
 
     def build(arguments, status=0, contains=None, optimization="-O0"):
-        return run([compiler, str(CASE / "build.jai"), optimization, "-", *arguments], status, contains)
+        return run([compiler, str(CASE / "build.jai"), optimization, "-add", "#run,stallable run_build();", "-", *arguments], status, contains)
 
     target = OUTPUT / "target-program"
     common = ["-no_check", "target.jai", "-exe", target.name,
@@ -64,6 +70,12 @@ def main():
     for optimization in ["-O0", "-O2"]:
         build(common, optimization=optimization)
         assert run([str(target)]) == "target ok\n"
+    default_common = common[1:]
+    for binding_flag in [[], ["-no_check_bindings"], ["-check_bindings"]]:
+        build([*default_common, *binding_flag])
+        assert run([str(target)]) == "target ok\n"
+    build(["-help"], contains="Default build:")
+    build(["-version"], contains="jaic")
     inferred_source = OUTPUT / "inferred.jai"
     shutil.copyfile(CASE / "target.jai", inferred_source)
     build(["-no_check", str(inferred_source)])
@@ -75,6 +87,7 @@ def main():
     build(["-no_check", "-?"], contains="Default build:")
     build(["-no_check", "-version"], contains="jaic")
     build(["-no_check"], status=1, contains="Provide a source file")
+    build([], status=1, contains="Provide a source file")
     build(["-no_check", "-unknown"], status=1, contains="Unknown option")
     build(["-no_check", "-exe"], status=1, contains="Missing value")
     build(["-no_check", "invalid-target.jai", "-exe", "invalid", "-output_path", str(OUTPUT)],
@@ -91,7 +104,7 @@ def main():
     for optimization in ["-O0", "-O2"]:
         assert build([*common, *flags, *plugin_args], optimization=optimization) == callbacks
         assert run([str(target)]) == "target ok\n"
-    replay = run([compiler, str(CASE / "build-twice.jai"), "-", *common,
+    replay = run([compiler, str(CASE / "build-twice.jai"), "-add", "#run,stallable run_build_twice();", "-", *common,
                   "+Workflow_Probe", "value"])
     single = "init A 1\nprepare A\nsource A\ncomplete A\nfinish A\nshutdown A\n"
     assert replay == single * 2
@@ -109,6 +122,7 @@ def main():
                       ["default-options.jai", "default-workspace.jai", "default-plugins.jai"]],
                     *[str(CASE / name) for name in ["paths.jai", "build.jai", "build-twice.jai", "target.jai", "import-target.jai"]],
                     str(CASE / "modules/Workflow_Probe/module.jai")], env=env, cwd=ROOT, check=True)
+    print("Default_Metaprogram ordinary Check-enabled builds/binding flags, no_check/custom plugins/replay/error paths and full owned strict lint pass", flush=True)
 
 
 if __name__ == "__main__":
