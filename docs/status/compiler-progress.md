@@ -1,5 +1,13 @@
 # Compiler progress
 
+2026-10-15 library interception: exact Basic.alloc producer passes. Resolved
+library declarations and ordinary concrete callees share canonical export and
+per-procedure event deduplication. Shared flags/parameter typing preserve baked
+signature slots and instance semantics. Core/public tests verify ordinary/generic/
+alias/private identity, lazy unused bodies, filtering and completion. Scoped
+core/lint, format and clippy pass. Input runtime executes interpreter/native ARM64
+O0/O2; NO_OUTPUT checks are separate. See compiler/canonical-library-interception.md.
+
 2026-10-15 Context module-root repair: separate source preparation from settling
 and finalization. Configured bootstrap imports resolve before root fallback;
 module context fields register before bootstrap #run/body layout. Producer strict

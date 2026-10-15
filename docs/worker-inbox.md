@@ -34,3 +34,24 @@ Tests retain configured parameter identity, single context field size, invalid
 body diagnostics and late-context rejection. See compiler/module-root-context-ordering.md.
 Owner should replay full generator/profiler integration using this compiler;
 other catalogue prerequisites remain assigned externally.
+
+
+## User reinforced root-cause policy
+
+Do not patch isolated cases merely to turn tests green. Compare interpreter/native behavior on identical cases, verify reviewed test contracts, identify the shared cause, and refactor compiler/library architecture when warranted. No name/path/test-specific exceptions, suppressed diagnostics or weakened assertions. Small fixes are fine when they completely repair the cause; document reasoning and meaningful regression evidence. Call out any workaround explicitly. Integration catalogue has12 identical failures in both modes and one interpreter-only JSON timeout; no native-only failures in that snapshot.
+
+
+## Called-library interception compiler checkpoint
+
+Exact staged stdlib-body producer and canonical/filter/lifecycle fixtures pass.
+Design, evidence and limits: compiler/canonical-library-interception.md.
+Ordinary and generic callees share canonical headers/body scheduling, with
+per-procedure event deduplication and unchanged privacy/interception filters.
+Actual input executes interpreter and native ARM64 O0/O2; NO_OUTPUT child checks
+are separately reported. Full Iprof replay remains with its owner.
+
+Integrator follow-up requested: please stage sanitized exact general compiler
+causes from the 80-target ledger: fixture/target/mode, first owned diagnostic,
+prerequisite classification and independent minimal source. Avoid raw vendor
+logs, transcripts, quarantined paths and broad status excerpts. This worker can
+continue independent compiler causes once those approved reductions arrive.

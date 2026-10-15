@@ -1,15 +1,15 @@
 # Profiler/Codex compiler-owner requests
 
-## Compiler disposition 2026-10-15
+## Compiler disposition: ordinary library interception
 
-The staged Context_Probe now passes strict module-root lint and program-root
-execution. Module roots prepare sources and discover configured imports before
-settling top-level code/finalizing Context. No duplicate context, parameter
-fallback or private-import exception is introduced. Design and exact verification:
-[module-root-context-ordering.md](module-root-context-ordering.md).
-The remaining sections preserve the independent producer's original request;
-their developer-tools paths refer to its source tree. Compiler-owned staged
-copies are tests/producer-requests/profiler-context/{main.jai,modules/Context_Probe/module.jai}.
+The staged profiler-stdlib-bodies reduction now receives Basic.alloc before
+successful COMPLETE. General library declaration/callee scheduling uses the
+canonical exporter, without a Basic/Iprof exception.
+[Design and verification](canonical-library-interception.md) cover filters,
+aliases, generic/baked metadata and private scope. Full Iprof integration remains
+a producer replay. Context ordering is fixed in canonical checkpoint e9affab7;
+no overlapping model implementation was imported. Remaining text records the
+independent producer request rather than current compiler results.
 
 ## Reduced module-root context/lint reproduction
 
@@ -58,3 +58,42 @@ and applies the documented entry-point policy to that source procedure as well
 as any explicit ENTRY_POINT flag. This uses canonical configuration and real
 procedure metadata; it is not a compiler bypass. An owner clarification of
 which header should carry ENTRY_POINT would help other independent plugins.
+
+## Ordinary standard-library body interception
+
+Original reproducer:
+tests/developer-tools/compiler-requests/profiler-stdlib-bodies.jai, with its
+profiler-stdlib-bodies-input.jai sibling. Run the source-built jaic with
+JAIC_STDLIB=$PWD/stdlib and -check. It creates a NO_OUTPUT child workspace,
+begins interception with flags0, compiles a main that calls real Basic.alloc
+and free, observes main's TYPECHECKED body, then asserts that Basic.alloc's
+ordinary body was also received. Current producer exits134 on that assertion.
+
+Request: expose called ordinary standard-library procedure bodies and their
+canonical headers through general TYPECHECKED interception before completion.
+Iprof's reviewed -modules behavior includes Basic except temporary_allocator_proc
+and IsScalar. This is impossible from absent body records; no fabricated AST,
+stdlib-source reparser or module-specific compiler bypass is supplied.
+
+The current Rust exporter explicitly skips modules under stdlib_root in
+export_typechecked. resolved_header provides called ordinary signatures but
+does not enqueue ordinary unbound procedures' bodies. This is a general
+producer limitation, not a missing Iprof option parser. Imported user-module
+instrumentation is verified natively at O0/O2.
+
+## Safe reconciled source intake
+
+The inbox reports the compiler owner's e9affab7 fix and an overlapping model
+fix. This worker has not merged or edited either compiler implementation.
+Please synchronize the single canonical compiler-owned fix into this snapshot,
+or provide the exact approved NEW source path for a read-only build using the
+assigned T7 target. No old integration tree or alternate source was inspected.
+
+## Shared tooling test classification
+
+tools/check_developer_tools.py lines380–381 still expect the old explicit
+Codex conditional/Basic metric rejection messages. Those contracts are resolved
+and implemented. Integration must replace those two obsolete rejection
+expectations with the positive codex-conditional, codex-lifecycle and real CLI
+export fixtures. This worker does not silently skip either failure or edit the
+other tooling owner's shared runner.

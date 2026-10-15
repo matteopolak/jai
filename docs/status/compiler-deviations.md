@@ -1,5 +1,16 @@
 # Compiler deviations and implementation gaps
 
+## Called standard-library TYPECHECKED bodies
+
+Ordinary and instantiated concrete callees use canonical headers and transitive
+ready-body draining, deduplicated by ProcId. Resolved library declarations are
+eligible; cold declarations stay lazy and export does not lower unused/rejected
+instances. Generic source trees keep separate existing identities. Public flags
+and import privacy remain unchanged. Shared metadata fixes baked/runtime slot
+alignment and semantic instance flags. Exact producer/filter/identity tests pass;
+actual input executes Mac interpreter/native O0/O2. NO_OUTPUT checks are not native
+child execution. Full Iprof and cross-target integration remain owner verification.
+
 ## Module-root Context bootstrap ordering
 
 New Rust prepare_sources separates existing loading from settle/finish, allowing
