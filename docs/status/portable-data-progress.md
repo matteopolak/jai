@@ -1,34 +1,29 @@
 # Portable data/resource progress
 
-Own source-built jaic/jailint and unchanged repository jaifmt execute here.
-No old foundations staging or binaries were used.
+Stable earlier checkpoints: a8f982b package wire/ICO primitives, 4dc5881 subtitles,
+75e1e55 checked resource backend. The detailed review batch has now been applied.
 
-Simple_Package implements all reviewed declarations, wire layout, copied names,
-borrowed payloads, stable sorted/default and original-order writes, memory/file
-and TOC-only loading. Original package-contract passes interpreter and native
-O0/O2 on macOS ARM64, including direct TOC parsing, lookup identity, ownership,
-real filesystem writes and malformed signature/version/name rejection.
+All reviewed exports across Ico_File, Icon, Windows_Resources, Subtitles and
+Simple_Package are present with real bodies. Five-frame ICO uses actual native
+stb resizing and exact padded wire fields; filename conversion is bottom-up BGR.
+LLVM RC consumes five-frame output, private groups match its bytes, lld-link
+creates a real PE, and ImageIO decodes the 256x256 frame. Gradient decoding is
+compared with an independently invoked native SDK resize.
 
-Ico_File helpers have exact reviewed formulas. The provisional single-frame
-encoder writes padded bottom-up RGB/RGBA and transparency masks. LLVM RC accepts
-both fixtures and macOS sips decodes 16x16. Tiny fixtures are accepted by LLVM
-but sips gives no dimensions: tiny decode success is not claimed. Fixed-frame
-layout remains unspecified. Real File/stb loading execution remains pending.
+Packages preserve duplicate entries with first-match lookup, and TOC names/payloads
+can borrow distinct buffers; the initialized header bounds payloads. Subtitles
+now uses zero-based public CSV counters with display offset 262, suppresses rows
+without spoken text, and omits event end times when begin is negative.
 
-Subtitles grammar/render contracts are ready for implementation. Resource defaults
-and Icon host protocol still need review; focused remaining questions are ready at
-docs/specs/questions/portable-data.md. See the per-API ledger.
+Windows APIs include real Unicode transactions, copied/aligned frame payloads,
+manifest construction, registry Kits roots, numeric SDK selection, Setup COM
+enumeration/registry fallback and compile-time console flags. Icon has real
+callbacks, borrowed options and post-write dispatch. A Windows compiler host is
+required for mutation. Console arguments remain alive for compiler process
+lifetime because the current Compiler API borrows their slice.
 
-Subtitles now implements all exports with live public CSV storage, real grammar,
-selection, serialization, HTML and CSV. Interpreter/native O0/O2 pass, compiled
-WASI passes filesystem tests. Package compiled WASI also passes. Broader package
-checks cover every truncation, UTF-8 names, empty-package rejection, huge counts/
-lengths, negative extents and TOC-only overlap. Python independently reads emitted
-package and CSV. Real stb filename loading passes interpreter/native O0/O2.
-
-Windows resource backend now has validated portable ICO group conversion and real
-private Win32 transactions. Portable directory tests pass interpreter/native O0/O2
-and compiled WASI. LLVM RC emits byte-identical group/image payloads and lld-link
-links a real resource-only x64 DLL. Windows transactions are x64/ARM64 checked
-with strict lint, with original native SDK readback tests prepared but NOT run.
-Public Windows policies and all Icon host functions remain pending spec review.
+Current native host is macOS ARM64. Original native Windows SDK readback/public
+API tests are prepared and target-checked, not executed. Positive native Icon
+attachment/discovery remains a Windows gate. The portable suite retains genuine
+Subtitles/Simple_Package WASI evidence; unsupported image probes report missing
+native imports rather than replacing them. See current API ledger and deviations.

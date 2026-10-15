@@ -51,10 +51,21 @@ main :: () {
     found, entry := H.table_find(*loaded.lookup, "zeta");
 
     assert(found && entry == *loaded.entries[1]);
+    header_for_direct := loaded.header;
+
     release_metadata(*loaded);
+    loaded.header = header_for_direct;
     assert(P.load_table_of_contents(*loaded, .{ bytes.count - 67, bytes.data + 67 }, bytes.data, "direct", 67));
     assert(loaded.entries[1].data.data == bytes.data + 64 && loaded.entries[1].data[1] == 99);
     release_metadata(*loaded);
+    toc_copy := copy_string(.{ bytes.count - 67, bytes.data + 67 });
+
+    loaded.header = header_for_direct;
+    assert(P.load_table_of_contents(*loaded, .{ toc_copy.count, toc_copy.data }, bytes.data, "separate", 999));
+    assert(loaded.entries[1].name.data >= toc_copy.data && loaded.entries[1].name.data < toc_copy.data + toc_copy.count);
+    assert(loaded.entries[1].data.data == bytes.data + 64);
+    release_metadata(*loaded);
+    free(toc_copy);
     assert(P.init_from_file(*loaded, path));
     owned := loaded.data.data;
 
@@ -89,6 +100,27 @@ main :: () {
     owned = loaded.data.data;
     release_metadata(*loaded);
     free(owned);
+    duplicate_creator: P.Create_Package;
+
+    P.init(*duplicate_creator);
+    defer P.deinit(*duplicate_creator);
+    first_payload: [1] u8 = .[10];
+    second_payload: [1] u8 = .[20];
+
+    P.add(*duplicate_creator, "same", first_payload);
+    P.add(*duplicate_creator, "same", second_payload);
+    duplicate_path := sprint("%/duplicates.simp", args[1]);
+
+    defer free(duplicate_path);
+    assert(P.write(*duplicate_creator, duplicate_path));
+    assert(P.init_from_file(*loaded, duplicate_path));
+    first_found, first_entry := H.table_find(*loaded.lookup, "same");
+
+    assert(first_found && loaded.entries.count == 2 && first_entry == *loaded.entries[0]);
+    assert(first_entry.data[0] == 10 && loaded.entries[1].data[0] == 20);
+    owned = loaded.data.data;
+    release_metadata(*loaded);
+    free(owned);
     empty_creator: P.Create_Package;
 
     P.init(*empty_creator);
@@ -113,6 +145,12 @@ main :: () {
     push_context {
         context.logger = capture;
         context.logger_data = null;
+
+        missing := sprint("%/absent-package.simp", args[1]);
+        optional_ok, optional := P.load_table_of_contents_only(missing, okay_if_it_does_not_exist = true);
+
+        free(missing);
+        assert(!optional_ok && optional.data.data == null && errors == 0);
 
         for prefix: 0..bytes.count - 1 {
             assert(!P.init_from_memory(*loaded, .{ prefix, bytes.data }));

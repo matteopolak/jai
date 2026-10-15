@@ -14,13 +14,13 @@ free releases source bytes only when data_owned, then clears the record.
 
 Serialization creates caller-owned builder output, preserving section/instant/
 event ordering and omitting negative times. Float output uses Basic SHORTEST
-rather than rounding timestamps. This owned-result lifetime is a provisional
-choice pending the focused lifetime question; it is not claimed reference-exact.
+rather than rounding timestamps. The refreshed review explicitly confirms caller ownership of these outputs.
 
 HTML preserves raw text and names intentionally, skips empty speakers and
 renders emphasis/directions. CSV joins adjacent speaker lines, doubles quotes,
-retains embedded newlines and maps names. Document formatting resets row 262;
-single-section formatting uses the caller's row number and resets audio index.
+retains embedded newlines and maps names. Document formatting resets the stored row counter to zero; displayed numbers add
+262. Single-section calls retain that counter and reset the stored audio index
+to zero; displayed audio indices start at 01. Rows without spoken text are omitted.
 Raw section/filename columns are intentional reviewed behavior.
 
 ## Public API and execution
@@ -46,7 +46,7 @@ tools/wasi_run.mjs with real filesystem operations. Independent Python csv.reade
 confirms seven columns and decoded content. Windows-target strict lint passes;
 this is target checking, not native Windows execution.
 
-Narrow unresolved positional-event/negative-time serialization, initial counters,
-empty-row and temporary-result contracts remain in the questions document.
-Malformed headers safely fail even though the reviewed original may fail to
-propagate Text_File_Handler errors. No assertions or checks are suppressed.
+Positional empty-parameter ambiguities and negative-begin/end serialization follow
+the refreshed grammar, including its non-round-tripping cases. Empty-speaker
+adjacency is the only remaining grouping question. Malformed headers safely fail
+instead of proceeding after Text_File_Handler errors. No checks are suppressed.

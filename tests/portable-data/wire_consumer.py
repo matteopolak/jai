@@ -13,6 +13,24 @@ if len(sys.argv) > 2 and sys.argv[2] == "fixtures":
     header = struct.pack("<2sIHHI", b"BM", 54 + len(pixels), 0, 0, 54)
     dib = struct.pack("<IiiHHIIiiII", 40, 16, 16, 1, 24, 0, len(pixels), 0, 0, 0, 0)
     (root / "bitmap-ü.bmp").write_bytes(header + dib + pixels)
+    gradient = bytes(value for row in range(16) for column in range(16)
+                     for value in (row * 10, column * 10, 60 + row))
+    (root / "gradient.bmp").write_bytes(header + dib + gradient)
+    import ctypes
+    import os
+    suffix = ".dll" if os.name == "nt" else (".dylib" if sys.platform == "darwin" else ".so")
+    library = root / "native" / ("libstb_image_resize" + suffix)
+    resize = ctypes.CDLL(str(library)).stbir_resize_uint8_srgb
+    resize.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+                      ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_int,
+                      ctypes.c_int, ctypes.c_int, ctypes.c_int]
+    resize.restype = ctypes.c_int
+    bgra = bytes(value for row in range(16) for column in range(16)
+                 for value in (row * 10, column * 10, 60 + row, 255))
+    source = ctypes.create_string_buffer(bgra)
+    destination = ctypes.create_string_buffer(16 * 16 * 4)
+    assert resize(source, 16, 16, 64, destination, 16, 16, 64, 4, 3, 0) == 1
+    (root / "gradient-resized.bgra").write_bytes(destination.raw)
     sys.exit(0)
 
 data = (root / "package.simp").read_bytes()
@@ -40,3 +58,25 @@ assert len(rows) == 3 and all(len(row) == 7 for row in rows)
 assert rows[1] == ["262", "scene", 'Alice "A"', 'Hello <b>raw</b>\nSecond "line"', "gently", "scene_01.wav", "scene.wav"]
 assert rows[2] == ["263", "outro", "BOB", "Bye", "", "outro_01.wav", "outro.wav"]
 print("independent wire/CSV consumer ok")
+
+
+# Parse actual generated XML with the host XML consumer, rather than matching text.
+import xml.etree.ElementTree as ET
+xml_text = (root / "manifests-O2.xml").read_text()
+documents = [part for part in xml_text.split('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>') if part.strip()]
+assert len(documents) == 8
+for bits, document in enumerate(documents):
+    tree = ET.fromstring(document)
+    assert tree.tag == "{urn:schemas-microsoft-com:asm.v1}assembly"
+    assert tree.find("{urn:schemas-microsoft-com:asm.v1}assemblyIdentity") is None
+    requested = tree.find(".//{urn:schemas-microsoft-com:asm.v3}requestedExecutionLevel")
+    assert requested.attrib["level"] == ("requireAdministrator" if bits & 2 else "asInvoker")
+    legacy = tree.find(".//{http://schemas.microsoft.com/SMI/2005/WindowsSettings}dpiAware")
+    modern = tree.find(".//{http://schemas.microsoft.com/SMI/2016/WindowsSettings}dpiAwareness")
+    assert legacy.text == ("true/pm" if bits & 1 else "unaware")
+    assert (modern is not None) == bool(bits & 1)
+    heap = tree.find(".//{http://schemas.microsoft.com/SMI/2020/WindowsSettings}heapType")
+    assert (heap is not None) == bool(bits & 4)
+    code_page = tree.find(".//{http://schemas.microsoft.com/SMI/2019/WindowsSettings}activeCodePage")
+    assert code_page.text == "UTF-8"
+print("independent XML consumer ok")

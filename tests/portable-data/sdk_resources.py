@@ -39,10 +39,11 @@ while cursor < len(data):
     if size:
         entries[resource_type, name, language] = payload
     cursor += header_size + ((size + 3) & ~3)
-assert cursor == len(data) and len(entries) == 2
+assert cursor == len(data) and len(entries) == 6
 icon = icon_path.read_bytes()
-size, offset = struct.unpack_from("<II", icon, 14)
-assert entries[3, 1, 1033] == icon[offset:offset + size]
+for index in range(5):
+    size, offset = struct.unpack_from("<II", icon, 14 + 16 * index)
+    assert entries[3, 1 + index, 1033] == icon[offset:offset + size]
 assert entries[14, 101, 1033] == (root / "group.bin").read_bytes()
 dll = root / "resource-only.dll"
 subprocess.run([linker, "/dll", "/noentry", "/machine:x64",

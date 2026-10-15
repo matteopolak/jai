@@ -78,15 +78,22 @@ main :: () {
     expected := "Line #,Conversation,Character,Dialogue,Directions,Wav Filename,Conversation Filename\n262,scene,\"Alice \"\"A\"\"\",\"Hello <b>raw</b>\nSecond \"\"line\"\"\",\"gently\",scene_01.wav,scene.wav\n263,outro,\"BOB\",\"Bye\",\"\",outro_01.wav,outro.wav\n";
 
     assert(csv == expected);
-    assert(S.csv_line_number == 264 && S.csv_line_index_within_section == 2);
+    assert(S.csv_line_number == 2 && S.csv_line_index_within_section == 1);
     reset(*builder);
     S.csv_line_number = 900;
     S.format_section_as_csv(*builder, chosen[1]);
     direct := builder_to_string(*builder);
 
-    assert(Strings.begins_with(direct, "900,") && S.csv_line_number == 901);
+    assert(Strings.begins_with(direct, "1162,") && S.csv_line_number == 901);
     free(direct);
     reset(*builder);
+    S.csv_line_number = 0;
+    S.csv_line_index_within_section = 0;
+    empty_lines: [2] string = .["", ""];
+    only_directions: [1] string = .["direction only"];
+
+    S.flush_csv_lines(*builder, "no-row", null, "speaker", empty_lines, only_directions);
+    assert(builder_string_length(*builder) == 0 && S.csv_line_number == 0 && S.csv_line_index_within_section == 0);
     S.csv_line_number = 1200;
     S.csv_line_index_within_section = 7;
     line_items: [2] string = .["one", "two"];
@@ -95,7 +102,7 @@ main :: () {
     S.flush_csv_lines(*builder, "direct", null, "speaker", line_items, direction_items);
     direct_flush := builder_to_string(*builder);
 
-    assert(direct_flush == "1200,direct,\"speaker\",\"one\ntwo\",\"aside\",direct_07.wav,direct.wav\n");
+    assert(direct_flush == "1462,direct,\"speaker\",\"one\ntwo\",\"aside\",direct_08.wav,direct.wav\n");
     assert(S.csv_line_number == 1201 && S.csv_line_index_within_section == 8);
     free(direct_flush);
     reset(*builder);
@@ -140,12 +147,28 @@ main :: () {
     }
 
     assert(errors == 6);
+    empty_ok, empty := S.load_subtitles_from_memory("[1]\n# no sections\n", "empty");
+
+    assert(empty_ok && empty.all_sections.count == 0);
+    S.free(*empty);
     unusual_ok, unusual := S.load_subtitles_from_memory("[3]\r\n: café\r\n+ backwards p 5 2\r\n= A -3\r\nwords\r\n= A -5\r\n++ aside\r\n", "unusual");
 
     assert(unusual_ok && unusual.all_sections[0].name == "café");
     assert(unusual.all_sections[0].events[0].time_begin == 5 && unusual.all_sections[0].events[0].time_end == 2);
     assert(unusual.all_sections[0].instants[0].time == -3 && unusual.all_sections[0].instants[1].time == -5);
+    unusual.all_sections[0].events[0].time_begin = -1;
+    unusual.all_sections[0].events[0].time_end = 8;
+    negative_serialized := S.serialize(*unusual);
+
+    assert(Strings.contains(negative_serialized, "+ backwards p\n"));
+    assert(!Strings.contains(negative_serialized, "+ backwards p 8"));
+    free(negative_serialized);
     S.free(*unusual);
+    ambiguous_ok, ambiguous := S.load_subtitles_from_memory("[1]\n: s\n+ fade 1.5 2.0\n= A\nspoken\n", "positional");
+
+    assert(ambiguous_ok && ambiguous.all_sections[0].events[0].parameter == "1.5");
+    assert(ambiguous.all_sections[0].events[0].time_begin == 2 && ambiguous.all_sections[0].events[0].time_end == -1);
+    S.free(*ambiguous);
     S.free(*subs);
     assert(input[0] == 91 && subs.all_sections.count == 0);
     print("ok\n");

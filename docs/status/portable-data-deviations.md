@@ -1,32 +1,37 @@
-# Portable data/resource deviations and availability
+# Data/resource deviations and availability
 
-ICO size-helper formulas are exact. Current encoder is provisional single-frame
-standard ICO/DIB: reviewed fixed frame sizes/layout/resize policy are missing.
-It is real wire output accepted by LLVM RC; ImageIO decodes 16x16. No full ICO
-compatibility is claimed. Filename decoding uses real official stb C, including
-Unicode paths, tested in interpreter/native O0/O2. No mock decoder or zero data.
+No missing public declarations remain in the five-module audit. Narrow pixel/
+manifest/grouping/path literal questions remain in the focused review page.
+Supported-input behavior follows the refreshed specs; no old library/test behavior
+is used as oracle. Original tests were strengthened/revised for the newly reviewed
+five-frame ICO and zero-based CSV semantics, not weakened to hide failures.
 
-Simple_Package validates counts, extents, names, and table overlap before forming
-views. TOC-only checks now also use the real header payload boundary. Every
-truncated fixture prefix is rejected. The reviewed exact-EOF empty-package
-rejection remains, including for the writer's empty output. Undefined unsafe
-malformed-input behavior is not reproduced. Duplicate/reinit policies pending.
+ICO uses real stb native resizing, with actual padding/formulas and filename
+channel/row conversion. Native colorspace/filter settings are documented pending
+pixel-level confirmation. Native WASI ICO is not established by the contract.
+An explicit probe fails on real missing stb imports. Official WASI SDK 34's
+hash-verified sysroot has wasm32 headers, while the compiler targets wasm64; the
+real C compile fails to find a target assert.h. No wasm32 ABI or fake imports are
+substituted, and this is not counted as portable runtime coverage.
 
-Subtitles implements reviewed supported grammar and all public procedures; narrow
-event field/lifetime/initial-counter questions remain. Owned serializer/csv_quote
-results are currently caller released; this choice awaits lifetime review.
-Malformed version headers fail safely. HTML deliberately inserts raw markup,
-and section/filename CSV columns are raw as specified.
+Packages safely reject malformed lengths/counts/offsets before views, retain the
+reviewed exact-EOF empty-package rejection, preserve duplicate entries and borrow
+separate TOC/payload buffers. Populated repeated-init is outside the contract.
+Subtitles safely propagates malformed-header failure rather than reproducing
+unsafe/error-propagation gaps; raw HTML and raw CSV section columns are intentional.
 
-Native evidence is macOS ARM64 plus compiled WASI under Node. LLVM resource
-consumption and cross checks do not establish Win32 update/discovery effects.
-Native Windows CI is required. Icon host protocol and Windows resource defaults/
-discovery still need reviewed contracts. No declaration stubs count as functionality.
+Native Win32 transaction, discovery and positive Icon attachment remain unverified
+on this macOS host. Windows x64/ARM64 lint/check evidence and LLVM RC/PE consumption
+are kept separate. Target-Windows interpreter startup is blocked here by unavailable
+CommandLineToArgvW; portable manifest logic is executed through a library-owned
+test of the actual production engine, not a replacement facade.
 
-No shared dependency manifest, peer source, Extensions or old foundations staging
-is modified. Native dependencies live under this worktree's target/.
+disable_runtime_console appends real reviewed arguments. Current Compiler API
+retains its argument slice: buffers are explicitly kept for compiler-process
+lifetime. Native Icon attachment also requires a Windows compiler host; macOS
+cross-target metaprogram dispatch logs unsupported rather than calling absent SDK
+functions. Owned help text describes the reviewed -icon option; literal help text
+was not supplied as a byte contract.
 
-Windows_Resources currently exposes only its exact three records. Native SDK
-transaction internals are real but not yet wired to public functions, whose
-default/policy contracts are unresolved. LLVM group/image interoperability and
-portable private tests pass; native transaction execution remains pending.
+No shared manifests, peer sources, Extensions, old foundations staging or publishing
+are changed. Native C/SDK inputs and outputs stay in this worktree's durable target.
