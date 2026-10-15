@@ -60,6 +60,10 @@ def remaining_matrix(inventory):
         if module == "Codex":
             output += ["", "| Implemented function with remaining paths | Remaining work |", "| --- | --- |",
                        "| `collect_metrics` | Conditional weights and Basic allocator names await question2, with explicit rejection; calls/identity/assignments/globals/loop depth execute. |", ""]
+        if module == "Bindings_Generator":
+            output += ["", "| Implemented generator with remaining paths | Remaining work |", "| --- | --- |",
+                       "| `generate_bindings` | Global POD aggregate/reference C++ declarations execute; namespace/method/overload/custom C++ mapping/printf adapters and broader parsing remain unfinished. |",
+                       "| `generate_bridge` | Global POD aggregate/reference adapters execute; namespace/method/overload/custom declaration mapping/printf adapters remain unfinished. |", ""]
         if source_only:
             output += ["| Native function | Evidence / next check |", "| --- | --- |"]
             output += [f"| `{name}` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |" for name in sorted(source_only)]
@@ -158,6 +162,8 @@ def main():
                     item["implementation"] = "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
                 if item["name"] == "generate_bridge":
                     item["implementation"] = "global C++17 adapter subset; POD result leading out pointer, reference argument/result pointers and original native consumer effects; scopes/overloads/custom callbacks/printf adapters pending"
+                if item["name"] == "generate_bindings":
+                    item["implementation"] = "C and global POD C++ generation subset; actual generated 8/16/24-byte record aggregate/reference adapter declarations, native original argument/result/storage-identity effects, diagnostics and destination preservation; scopes/methods/overloads/custom C++ callbacks/printf paths pending"
                 if item["name"] in {"visit_declarations", "find_parent_enum", "create_type_of_enum", "change_type_to_enum",
                                      "change_return_type", "change_return_type_to_enum", "change_argument_type_to_enum",
                                      "create_pointer_to", "get_int_type"}:

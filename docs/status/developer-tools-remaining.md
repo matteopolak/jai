@@ -166,6 +166,12 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `type_has_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `type_to_string` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 
+
+| Implemented generator with remaining paths | Remaining work |
+| --- | --- |
+| `generate_bindings` | Global POD aggregate/reference C++ declarations execute; namespace/method/overload/custom C++ mapping/printf adapters and broader parsing remain unfinished. |
+| `generate_bridge` | Global POD aggregate/reference adapters execute; namespace/method/overload/custom declaration mapping/printf adapters remain unfinished. |
+
 | Native function | Evidence / next check |
 | --- | --- |
 | `clang_CXIndex_getGlobalOptions` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |

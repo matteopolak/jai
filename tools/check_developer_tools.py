@@ -74,6 +74,8 @@ def check_bridge_consumers(prefix, emitter, workflow=False):
     stem = "cpp-workflow" if workflow else "bridge"
     library = "cpp_workflow" if workflow else "bridge"
     if workflow:
+        run([prefix / "bin/clang++", "-x", "c++", "-std=c++17", "-Wall", "-Wextra", "-Werror", "-fsyntax-only",
+             ROOT / "tests/developer-tools/bindings-cpp-nonpod.h"])
         for suffix in ["generated", "linux", "windows"]:
             generated = ROOT / f"target/developer-tools-cpp-workflow-{suffix}.jai"
             run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", generated])

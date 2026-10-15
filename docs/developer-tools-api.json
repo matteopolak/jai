@@ -176,14 +176,14 @@
         "declaration": "generate_bindings :: (options: Generate_Bindings_Options, filename: string, log_results := true) -> success: bool",
         "section": "Public declaration inventory",
         "spec_line": 31,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "C and global POD C++ generation subset; actual generated 8/16/24-byte record aggregate/reference adapter declarations, native original argument/result/storage-identity effects, diagnostics and destination preservation; scopes/methods/overloads/custom C++ callbacks/printf paths pending"
       },
       {
         "name": "generate_bindings",
         "declaration": "generate_bindings :: (_options: Generate_Bindings_Options, log_results := false) -> generated_result: String_Builder, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 32,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "C and global POD C++ generation subset; actual generated 8/16/24-byte record aggregate/reference adapter declarations, native original argument/result/storage-identity effects, diagnostics and destination preservation; scopes/methods/overloads/custom C++ callbacks/printf paths pending"
       },
       {
         "name": "Bridge_Data",
