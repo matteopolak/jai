@@ -1,5 +1,18 @@
 # Compiler deviations and implementation gaps
 
+## Program_Print and Code reconstruction bounds
+
+Supported compound/comma/exists/backtick output uses reviewed record fields and
+returns real success only after all children print. compiler_get_code omits root
+expression parentheses to preserve statement syntax. Original mixed/backtick
+runtime round-trip and catalogue cases pass, with no fixture-specific compiler
+bypass. Non-null exists sync fields and mixed typed assignment records still
+return false rather than invent syntax. Run/assert export currently lacks a
+reviewed procedure-body encoding; no private expression/message fields were
+invented. The explicit unsupported-return regression is not counted as Run/assert
+printing support. Exact pretty-string/name oracles were migrated to public AST,
+type/parameter metadata and meaningful inspection checks; docs list every reason.
+
 ## Mac catalogue repair scope (2026-10-15)
 
 Test oracle corrections are documented per fixture in compiler/mac-catalogue-repairs.md.

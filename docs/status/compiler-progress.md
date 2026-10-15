@@ -1,5 +1,14 @@
 # Compiler progress
 
+First Mac catalogue checkpoint b377ed7c is committed. Further verified printing
+batch resolves compiler-resolved-nodes, rules-code-values-and-insertion,
+poly-struct-type-names, rules-structs and type-of-polymorphic-template. Actual
+interpreter/native O0/O2 pass for the four runtime fixtures; resolved-nodes is
+explicitly compile-time-only on the native runner. Original statement/mixed/
+backtick round-trip fixture executes natively at O0/O2. Root printing and compound
+scope flags are fixed generally; no fake AST fields or type names. Current
+printer limits and per-fixture oracle reasons: compiler/mac-catalogue-repairs.md.
+
 Fresh approved d30311a5 compiler-mac-repairs scope: classified all22 unresolved
 compiler catalogue fixtures against reviewed contracts. Six contract migrations
 pass interpreter/native ARM64 O0/O2: build-options-main-defaults,

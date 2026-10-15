@@ -20,7 +20,7 @@ Default_Metaprogram changes, profiles or benchmarks are included.
 | float-literal-precision | Old total-digit heuristic conflicts with reviewed Jai_Lexer fractional-digit flags. Compiler inference boundary needs review; retain numeric failures pending clarification. |
 | macro-code-variable-arg | Exact whitespace obsolete; verify declaration/literal identity plus successful public printing. |
 | modern-metaprogramming | Mixed formatting and supported AST print gaps; inspect each assertion, retain scope/type/backtick semantics. |
-| poly-struct-type-names | Exact verbose instance spelling unestablished; compare printed canonical reflected name and retain parameter/identity metadata. |
+| poly-struct-type-names | Exact verbose instance spelling unestablished; require declared-name presence and retain parameter/identity metadata. |
 | print-null-pointer-union-forms | Mixed Basic formatting oracle; review independently, preserve pointer/union/using field-offset assertions. |
 | rules-code-values-and-insertion | Genuine get-code reconstruction parser failure for parenthesized assignment statements. |
 | rules-compiler-module | Relative path normalization promise not established by reviewed inventory; test actual configured module lookup and metadata round trip. |
@@ -47,10 +47,46 @@ arity correction, but the normal runner still fails loading the absent
 crash-native/portable_crash library for its child executable. This remains a
 prerequisite failure, not a pass or compiler fix; integrator owns setup.
 
-Compiler-resolved-nodes retains typed/compound checks and now explicitly checks
-print_expression's false result, exposing unsupported compound output instead
-of inspecting a partial string as success. It remains unresolved pending a real
-implementation. The compiler-reflection-pure missing public helper is not removed.
+The initial compiler-resolved-nodes repair exposed compound-print failure instead
+of inspecting a partial string as success. The implementation below resolves it.
+The compiler-reflection-pure missing public helper is not removed.
+
+## Statement printing and reconstruction
+
+Program_Print now prints compound declarations, comma-separated values, plain
+#exists queries, and backtick identifiers/declarations through reviewed fields.
+Mixed existing/new declarations retain assignment markers. Compound export
+preserves per-name HAS_SCOPE_MODIFIER flags, which an original round-trip test
+first reproduced as an unknown caller variable. Compiler.compiler_get_code prints
+a root without expression-only parentheses, permitting assignment statements
+to parse as statements. No source text or symbol-name matching is involved.
+
+Original code-roundtrip-statements.jai executes assignments, typed/mixed compound
+declarations, existence queries and caller-visible backtick bindings. Interpreter
+and actual native ARM64 O0/O2 pass. compiler-resolved-nodes, including procedure
+modification assertions, now passes; its native runner result is honestly
+compile-time-only (the test disables root output), not executable execution.
+
+New(Code_Ident) was incorrectly expected to override inherited kind defaults.
+The reviewed Code_Node default is UNINITIALIZED and Basic.New applies declared
+defaults. The fixture now verifies that default, explicitly sets IDENT/name, and
+checks successful printing of the constructed node.
+
+rules-code-values-and-insertion also confused backtick caller-scoped defer with
+per-iteration cleanup. The immediate per-iteration example now uses ordinary
+defer; a separate caller-scoped defer check proves it stays pending until the
+caller block exits. Neither lifetime check is dropped. That fixture passes actual
+interpreter/native O0/O2. Parameterized-name fixtures retain declaration names,
+instance identity, parameter values and concrete signature metadata; exact verbose
+spelling/spacing is not established by polymorphism-and-metaprogramming.md.
+
+Known print bounds remain explicit: unsupported Run/assert procedure encoding,
+non-null Code_Directive_Exists.sync_expression, and mixed typed assignment
+records return false. No unknown public fields or placeholder procedures are
+added. These forms require reviewed representation contracts before extension.
+The modern-metaprogramming migration requires that unsupported Run printing
+report false and independently tests supported #exists printing, rather than
+present partial output as successful assertion serialization.
 
 Initial and focused reports are stored locally under artifacts/compiler-mac-repairs.
 The assigned T7 compiler target holds reproducible build output only. Native
