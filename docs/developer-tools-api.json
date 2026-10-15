@@ -218,7 +218,7 @@
         "declaration": "omit_cpp_functions_visitor :: (decl: *Declaration, parent_decl: *Declaration, user_data: *void) -> Declaration_Visit_Result",
         "section": "Public declaration inventory",
         "spec_line": 37,
-        "implementation": "pending"
+        "implementation": "canonical model-engine callback delegation; public named-call parameters, real method omission/STOP before child callbacks, plain/data ordering and persistent closure storage verified interpreter/native Mac O0/O2 and strict lint; global C++ classification refinement remains in generator-model questions"
       },
       {
         "name": "append_cpp_wrapper",
