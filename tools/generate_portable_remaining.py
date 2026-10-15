@@ -139,11 +139,11 @@ def main():
         "private_handoffs": [{"name": "internal/runtime/android-output.discard_pending_output",
                               "source_state": "committed ca8570d", "status": "host interpreter/native O0/O2 and strict lint pass; binding patch/native adoption pending"}],
         "verification_gaps": [
-            "Stable combined coordinator Mac baseline last reported822 passed/7 failed; not rerun by this worker.",
+            "Historical stable combined coordinator Mac baseline822 passed/7 failed. Latest filtered original-corpus compile-only run316 passed/84 failed on frozen older snapshot (execution run304/96); neither is a current full integration rerun by this worker.",
             "Default_Metaprogram real Check-enabled builds/configuration, plugins, failures and full owned strict lint pass; unsupported compiler backend/debugger and target argument readback remain separate dependencies.",
             "Selected-workspace Build_Options.compile_time_command_line readback fails in child #run. Original top-level getter scope expectation was unspecified; corrected reproducer uses get_build_options().",
             "Project_Generator real target/artifact/mtime tests pass; jailint SandboxHost lacks _NSGetExecutablePath. Natvis resource and actual VS execution pending.",
-            "Socket resolver/CMSG and native global storage tests pass; whole binding lint remains blocked by general field-array-element type query. Mac addrinfo candidate not activated.",
+            "Active Mac addrinfo and hostent/netent/protoent/servent layouts and real resolver/database SDK calls pass interpreter/native ARM64/x64 O0/O2. CMSG/native global storage tests pass; whole binding lint remains blocked by general field-array-element type query.",
             "Android private discard kernel passes host tests; binding owner has not yet adopted hook, Android target/device and exact fine flush policy remain unverified.",
             "Native Linux/Windows/Android and full corpus/release verification remain coordinator/platform gates, not implied by source checking."
         ],

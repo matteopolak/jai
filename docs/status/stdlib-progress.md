@@ -1,5 +1,14 @@
 # Portable stdlib progress
 
+Foundations handoff: current Basic S128 +/- and U128 - are reviewed but missing.
+Independent pending/basic-wide-arithmetic.jai fails S128 Add against NEW foundation
+composition. General custom base/isa operator control executes exactly once with
+correct value in interpreter/native O0/O2 and strict lint, separating missing
+library overloads from unsupported compiler claims. Initial unreviewed base-result
+type assertion was corrected separately; valid value/call assertions preserved.
+No duplicate Apollo operator exports or foundation peer edits. Details
+portable-wide-arithmetic-handoff.md.
+
 Metaprogram_Plugins refreshed17:24 contract consumed: canonical record and real
 public parser now pass interpreter/native O0/O2 and strict lint. Dynamic loading
 IS required. Positive independently authored dynamic.jai + Dynamic_Probe factory
