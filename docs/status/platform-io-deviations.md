@@ -1,5 +1,39 @@
 # Platform I/O deviations and pending verification
 
+Windows thread completion no longer treats WAIT_FAILED as success. The added
+real SDK negative case captures only its expected error, asserts exact message/
+flag/count, and restores the logger/data before named-thread creation. This is
+targeted negative-path verification, not a warning whitelist or output weakening.
+The Windows-specific branch is source/cross checked and still needs native CI;
+the separate interpreter real-handle/name failure remains open.
+
+## General Windows unwind-table and iteration fixes
+
+- Owned compiler patch: jaic-llvm::apply_codegen_attributes requests async unwind
+  tables for defined Windows ABI functions, even if nounwind is inferred. An
+  original O2 exported nonleaf/stack-using fixture lacked table entries before
+  the fix; fresh cross-built machine code has matching native unwind records.
+  The regression fails before/passes after, with all 19 LLVM unit tests and
+  strict clippy passing. This is required native ABI metadata, not an optional
+  library-backtrace flag or a source/symbol special case. Risk/cost: extra Windows
+  unwind metadata, unbenchmarked binary-size effect; retain ABI correctness and
+  let LLVM select compact native encodings. Unix behavior is unchanged.
+- The x64 iterator tolerates only an initial repeated SDK frame, then detects
+  repeated PC/SP pairs across the walk. It uses a 64-pair stack array (about 1KiB)
+  and bounded quadratic comparison (at most 2016 history comparisons plus the
+  initial-frame check) to avoid looping or
+  counting duplicate frames. This overhead is small relative to SDK/symbol calls
+  but unbenchmarked, and increases crash-stack demand. Destroyed/overflowed stacks
+  remain best effort; proper isolation is out-of-process reporting. No frame or
+  symbol is synthesized. Limit/cycle diagnostics are explicit.
+- Portable scripted-transition tests and parser tests are control/protocol unit
+  evidence only. Native SDK probes, named application frames, actual fault status
+  and cleanup must execute in the next Windows candidate. The first SDK result
+  may be initial or caller; the probe reports actual behavior and accepts both,
+  while requiring real resolved symbols and caller transitions. The original
+  e8c312d exact failed output remains unavailable/requested; no current native
+  x64-success or interpreter-thread fix is inferred from these local passes.
+
 ## e8c312d native follow-up (supersedes older verification statements)
 
 - Actual private ARM64 native OFF/ON/default startup/fault O0/O2 positives now exist

@@ -1,5 +1,36 @@
 # Platform I/O worker progress
 
+Unwind/iterator checkpoint: `7eb81e8` (following cleanup/diagnostics `2cdbd9b`).
+A separate Windows completion safety fix maps only WAIT_OBJECT_0 to done; failures
+log/return false. Its scoped SDK-negative check restores logging before the
+original named-thread tests, preserving their strict output checks. Host/cross/
+format/49-file lint pass; actual new negative-path execution remains pending.
+This does not claim the interpreter native-handle/name mismatch resolved.
+
+## General unwind ABI / iterator follow-up after 2cdbd9b
+
+Checkpoint 2cdbd9b contains x64 isolated sessions/private runtime cleanup and
+stronger SDK/named-frame diagnostics. Continued verification found an additional
+real Windows ABI defect: optimized named frame functions saved registers/allocated
+stack/called another function but had no unwind entries. Added a generic LLVM
+Windows uwtable(async) fix and original red/green regression. All 19 LLVM library
+tests and scoped clippy pass. Fresh x64 O2 machine-code/export/unwind inspection
+proves both fixture frame functions now have correct .pdata/.xdata records.
+
+The x64 iterator now handles an initial repeated SDK frame without truncating,
+keeps the actual fault frame once, applies skips to unique frame pairs, rejects
+later cycles and caps output. Original portable unit assertions fail the old loop
+and pass the fix; they are not Windows execution evidence. Native SDK first-step,
+named-symbol, status and cleanup checks remain required. ARM64's earlier 12 actual
+native positives are preserved; no ARM64 private source or original fault was changed.
+
+Remaining original thread/fault exact-output request is still pending. Thread
+logging/output checks remain strict, and the real-kernel-handle reproducer/handoff
+remain open compiler integration work. New source-built host/cross verification
+and strict 49-file lint pass; actual Windows confirmation of this later compiler/
+x64 handler combination is still required. Details and durable red/green logs:
+[native follow-up](../platform-io-e8c312d-follow-up.md).
+
 ## Actual e8c312d: ARM64 crash positives, x64/thread diagnosis in progress
 
 Filtered run38662728329 confirms all 12 private ARM64 native startup/fault cases
