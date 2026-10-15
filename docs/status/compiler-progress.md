@@ -1,5 +1,17 @@
 # Compiler progress
 
+Registry/raw-pointer checkpoint committed: babb2fd, with 332 available core/backend
+passes and final scoped formatting/strict lint/clippy/wasm32 checks. Mailbox's next
+relative-import lint defect also repaired: driver anchors configured import roots
+to invocation cwd before RootedFs source rebasing, including missing roots to
+prevent accidental source-local shadows. Original independent relative/absolute/
+no-I controls, loaded fragments and invalid-body checks pass; all 39 jailint cases
+pass with the configured independent prelude. Initial missing-prelude suite failure
+retained; no assertions changed. Staged NEW producer source passes own jaic -check
+and jailint -D warnings with identical relative -I arguments; source-check evidence
+only. Rust format/item spacing and jailint all-target clippy pass. See
+tools/jailint-targets.md; no peer writes or integration runtime/optimizer/LSP overlap.
+
 Raw pointer/Registry blocker repaired generally in sema/convert.rs and consteval.rs:
 nonzero integer pointer constants retain target-width scalar bits; opaque #run
 results/fields need no invented bounds or pointee capture. Known globals still

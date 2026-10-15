@@ -1,5 +1,14 @@
 # Compiler integration handoff
 
+Raw pointer dependency committed as babb2fd. The mailbox's follow-up relative -I
+jailint request is also fixed in driver path normalization: configured roots are
+anchored to invocation cwd before RootedFs source rebasing. All 39 jailint cases,
+format and all-target clippy pass; staged producer input passes both jaic -check
+and strict jailint with the identical relative path. Keep producer's valid absolute
+configuration if desired, but it is no longer required to evade a compiler/tool
+bug. Missing roots, source-local shadows, no-I controls and invalid imported bodies
+remain errors. Read tools/jailint-targets.md for retained setup failure/evidence.
+
 Registry compiler dependency repaired without module exceptions: raw integer casts
 to pointers fold as scalar target-width bits; opaque #run pointer values/fields
 preserve bits without unknown-size capture. Known global pointers still relocate.

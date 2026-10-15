@@ -1,5 +1,17 @@
 # Compiler deviations and implementation gaps
 
+Relative include lookup: no caller absolute-path workaround or warning relaxation.
+Location: jailint/driver.rs canonical fallback and configured import-root anchoring.
+Source/generated relative paths retain RootedFs behavior; invocation configuration
+is absolute before rebasing. Nonexistent roots stay missing and invalid bodies stay
+fatal. One filesystem normalization per root/path adds small unbenchmarked overhead;
+canonicalization retains existing symlink policy. Original failure and independent
+negative shadows are preserved. First full jailint run lacked JAIC_STDLIB and three
+CLI tests failed for missing prelude; configured rerun passes all 39, with no test
+edits/suppression. Staged producer checks are source-only, not native API execution.
+Exact evidence and rationale: tools/jailint-targets.md. No production workaround
+remains in the reviewed relative-import scope.
+
 Raw pointer scope: no Registry-specific branch, allocated handle storage, suppressed
 error, mutable constant replacement or SDK sign-extension. Locations: sema/convert.rs
 and consteval.rs. Scalar folding uses target width and existing checked-cast rules;
