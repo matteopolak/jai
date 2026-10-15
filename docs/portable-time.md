@@ -11,7 +11,7 @@ adds no public helper types. Native conversions use the NEW POSIX types directly
 | compare_apollo_times; to_float64_seconds | Existing signed ordering and floating conversion |
 | to_apollo | NEW exact binary-significand scaling into two words; finite fractions truncate toward zero at femtosecond resolution. Supports durations exceeding s64 seconds. Nonfinite/overflow returns APOLLO_TIME_INVALID |
 | timespec_to_apollo; to_timespec | NEW macOS/Linux/Android native ABI conversions; reviewed Unix epoch constant, normalized seconds/nanoseconds, negative timestamps use floor seconds; reverse conversion reports out-of-range/invalid failure |
-| current_time_consensus; current_time_monotonic | NEW native realtime/monotonic queries on macOS/Linux/Android. Realtime includes Unix epoch offset; monotonic has native arbitrary origin. Query errors assert explicitly |
+| current_time_consensus; current_time_monotonic | Native POSIX realtime/monotonic queries execute on host; NEW Windows system-FILETIME/QPC code and fixture bodies type-check both CPUs. Counter arithmetic executes host interpreter/native. Realtime includes epoch, monotonic has arbitrary native origin; errors assert. Actual Windows calls/cache remain unverified |
 | to_calendar; calendar_to_apollo | NEW reentrant native UTC/local conversions on macOS/Linux/Android, exact zero-based fields and millisecond resolution. Invalid calendar inputs return invalid sentinel; unrepresentable calendar output asserts |
 | ConvertToApollo | Expansion caller-local requirements remain unspecified; not exported |
 | calendar_to_string; calendar_to_iso_string | Exact text/zone/fraction formats unresolved; not exported |
@@ -69,3 +69,32 @@ eight compile rejections and prior integration/Linux+Windows checks. The product
 arithmetic unit also executes native O2;297 owned Jai files pass source-built
 jaifmt --check and jailint -D warnings. Red missing-source evidence remains at
 target/filetime-kernel-red.log; no assertion was disabled.
+
+
+Windows clock exports use GetSystemTimeAsFileTime for realtime and typed
+QueryPerformanceCounter/QueryPerformanceFrequency overloads for monotonic time.
+Frequency is cached with existing64-bit compare-and-swap; concurrent initializers
+publish one positive native value. This caches a boot-fixed conversion factor,
+not an elapsed-time origin. Failed query/nonpositive frequency/negative counter
+diagnose. Private counter arithmetic exactly scales integer ticks to femtoseconds
+before division, truncating sub-femtosecond fractions. No float intermediate,
+invented intrinsic or source-name compiler special case is used.
+
+Production-source arithmetic tests cover full positive signed64 counter range,
+integer and fractional frequencies, tiny fractions, invalid arguments and2048
+monotonic steps. Native O2 additionally executes these checks. Public Windows
+clock fixture compares realtime with an independent native FILETIME query and
+checks monotonic values; both CPU bodies type-check but have not executed here.
+The actual Windows cache race/native accuracy remain platform gates.
+General unsigned128 division costs128 bit steps; the native realtime API retains
+system clock resolution rather than claiming precise-clock accuracy.
+
+Official native C contracts:
+[QueryPerformanceCounter](https://learn.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter),
+[QueryPerformanceFrequency](https://learn.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency),
+[GetSystemTimeAsFileTime](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsystemtimeasfiletime).
+
+Full suite now passes97 cases and23 checked faults in both modes, eight negative
+compile cases and prior SMTP/IPC/parent/startup/Linux+Windows checks;300 owned Jai
+files pass formatter/check/strict lint. These are host/staged producer results,
+not Windows runtime or full distribution integration.

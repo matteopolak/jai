@@ -110,6 +110,21 @@ main :: () {
         invalid_ft, valid_ft := to_filetime(APOLLO_TIME_INVALID);
 
         assert(!valid_ft);
+        start := current_time_monotonic();
+        finish := current_time_monotonic();
+
+        assert(compare_apollo_times(start, APOLLO_TIME_INVALID) != 0 && compare_apollo_times(finish, start) >= 0);
+        now := current_time_consensus();
+        now_ft, now_valid := to_filetime(now);
+
+        assert(now_valid);
+        native_now: Native_Filetime.FILETIME;
+
+        Native_Filetime.GetSystemTimeAsFileTime(*native_now);
+        actual_seconds, actual_valid := to_float64_seconds(now);
+        native_seconds, native_valid := to_float64_seconds(filetime_to_apollo(native_now));
+
+        assert(actual_valid && native_valid && native_seconds - actual_seconds >= -2 && native_seconds - actual_seconds <= 2);
     }
 
     print("ok\n");
