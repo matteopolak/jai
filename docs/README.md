@@ -1,7 +1,8 @@
 # Developer documentation
 
 - [Mac Extensions dependency repairs](extensions/mac-dependency-repairs.md):
-  Json ownership/numerics, Http time/atomics, and test-only dependency migrations.
+  Json ownership/numerics, Http time/atomics, and test-only dependency migrations;
+  [measured results and remaining lint-context failure](status/extensions-mac-repairs.md).
 
 - [Extensions Io/Args dependency migration](extensions/dependency-migration.md):
   allocator ownership, fiber scratch lifecycle and actual WASI termination;

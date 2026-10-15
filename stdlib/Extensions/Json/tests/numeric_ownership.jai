@@ -1,6 +1,7 @@
-// Numeric slow paths and shortest formatting release their private allocations.
+// Numeric slow paths, shortest formatting and empty keys release their allocations.
 #import "Basic";
 #import "Extensions/Json";
+#import "Hash_Table";
 
 outstanding: int;
 allocations: int;
@@ -47,6 +48,22 @@ main :: () {
 
             assert(bad.kind == .OUT_OF_RANGE);
             free_json(*bad);
+
+            object, object_error := from_json(Json_Value, "{\"\":1}");
+
+            assert(object_error.kind == .NONE);
+            assert(object.members.count == 1 && object.members[0].key == "" && object.members[0].value.text == "1");
+            free_json(*object);
+            free_json(*object_error);
+
+            table, table_error := from_json(Table(string, int), "{\"\":1}");
+
+            assert(table_error.kind == .NONE);
+            entry := table_find_pointer(*table, "");
+
+            assert(entry != null && entry.* == 1);
+            free_json(*table);
+            free_json(*table_error);
         }
     }
 

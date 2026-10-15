@@ -246,6 +246,7 @@ linear_time :: () {
     check(Byte_Search.find_last(text, needle) == -1, "no match in all a's, backwards");
     before, before_ok := to_nanoseconds(start);
     after, after_ok := to_nanoseconds(current_time_monotonic());
+
     assert(before_ok && after_ok, "monotonic time must fit nanoseconds");
     seconds := cast(float64) (after - before) / 1_000_000_000.0;
 

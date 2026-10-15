@@ -17,11 +17,20 @@ for an empty path, but cleanup tested its length. `free_json(Json_Error)` now
 releases both owned strings by pointer and resets the error. The full existing
 leak sweep passes interpreted with its allocator assertions unchanged.
 
+An additional ownership regression reproduced two more allocations leaking per
+iteration for an empty object key: one in Json_Value and one in a typed table.
+Empty keys now follow Json's existing empty-string policy and use static empty
+storage, while nonempty keys are still copied and owned. The regression verifies
+the empty key/value remains present and lookup works, then requires zero live
+allocations. It passes interpreter/native O0/O2 without weakening the tally.
+
 Http uses canonical `compare_and_swap`, retaining real sequentially consistent
 state publication. Io tests use reviewed `atomic_read`/`atomic_write` aliases.
 Timer tests use checked nanosecond conversions before subtracting monotonic
 timestamps; Http date conversion subtracts the canonical 128-bit Apollo fields
 with a borrow before checked `to_seconds`, preserving the fractional boundary.
+The codec test additionally checks the current date against canonical
+`to_timespec` conversion; interpreter/native O0/O2 agree.
 
 Json keeps its exact/Eisel-Lemire fast parsing and normal-float64 Schubfach
 printing. Slow parsing now calls reviewed `string_to_float64` or
@@ -48,7 +57,11 @@ Actual Mac results so far: all27 existing affected catalogue tests pass native
 O0/O2 (Json9, Http11, Io6, Byte_Search1), plus the new Json numeric ownership test
 passes interpreter/native O0/O2. The existing complete Json number and leak
 suites, typed decoder, Http client/codec, Io files and Byte_Search search pass
-interpreted. All original rounding, cleanup, timer and atomic assertions remain.
+interpreted. HTTPS also passes interpreted and native through the repository
+runner's configured native C libraries. A direct unconfigured interpreter
+invocation failed to locate `jai_tls_init`; that was a library-path setup failure,
+not a completed test or a reason to alter TLS behavior. All original rounding,
+cleanup, timer and atomic assertions remain.
 Catalogue output is retained under artifacts/{Json,Http,Io,Byte_Search}-native-o*;
 individual interpreter and numerical logs are under artifacts as well.
 
@@ -78,3 +91,10 @@ normal source checking and the actual client test passing. The unchanged large
 client fixture is the original reproducer for the compiler/linter owner. Its
 incomplete lint result is not counted as success; the positive consumer context
 does not replace it or claim to fix compiler generic sketches.
+
+After the empty-key repair, all10 Json catalogue tests pass native O0/O2, and
+all11 Http tests pass native O2 again. The original Io6/Byte_Search1 native O0/O2
+runs are unchanged and passing. Final changed-file formatting passes on all16
+Jai files; contextual strict lint of changed production/test files passes with
+the additional incomplete large-client context retained above. Native/Linux/
+Windows/WASM runtime verification outside the actual Mac host is not claimed.

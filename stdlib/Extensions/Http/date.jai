@@ -103,8 +103,10 @@ http_date_now :: (cache: *Date_Cache) -> string #no_aoc {
     elapsed: Apollo_Time;
     elapsed.low = now.low - epoch.low;
     borrow: u64 = ifx now.low < epoch.low then 1 else 0;
+
     elapsed.high = now.high - epoch.high - cast(s64) borrow;
     seconds, ok := to_seconds(elapsed);
+
     assert(ok, "HTTP date seconds exceed the supported range");
 
     return http_date(cache, seconds);

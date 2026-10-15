@@ -24,3 +24,17 @@ client fixture; normal compile/execution passes. Compiler/linter worker owns
 that reduction. Changed-source strict lint passes in the real positive consumer
 context, without suppression. No Http/Io production lifecycle workaround is
 introduced to mask compiler behavior.
+
+Final corrective regression also found/repaired empty-key ownership leaks in
+Json_Value and typed table decoding. Key/value presence and zero outstanding
+allocations are asserted in interpreter/native O0/O2. Json10 tests pass both
+native modes; Http11 tests pass native O2 again, including real TLS. Configured
+HTTPS passes interpreted too; direct invocation without native-library paths
+was a setup failure and is not counted as success. Http's current-date codec
+assertion now agrees with canonical Unix-time conversion in all three modes.
+
+The stable baseline report/T7 external-path questions remain unanswered; no
+alternate checkout or raw vendor log was sought. Source-built compiler/linter
+outputs stay in local artifacts/T7; test reports are durable under artifacts.
+The exact large-client-context lint error above remains a compiler-owner handoff,
+not a production workaround or suppressed result. No Io production was edited.
