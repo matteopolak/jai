@@ -3,8 +3,8 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint before critical fixes: ad03082. Pool/Unix Thread
-critical corrections are ready for checkpoint: field-only Pool guard, no registry,
+Current durable checkpoint: d6db68f. Pool/Unix Thread
+critical corrections are committed: field-only Pool guard, no registry,
 allocator/options preserved by reset/release, genuine returned leak report fixed.
 Every owned essential Thread SDK operation now executes outside optional asserts;
 error logging and native ownership retention are explicit. All ten configurations/
@@ -17,7 +17,21 @@ separately from production fixes. Native Linux/Windows/Android execution, forced
 join failures and group transactional fault recovery are not claimed. Windows
 Thread is untouched. Pending digest/signing sources remain durable and excluded
 from this checkpoint, as do all three provisional Performance_Report files.
-Full task remains unfinished; missing public surface inventory still names248
+Broad regression subsequently passes112 cases (including pending digest fixture),
+27 expected faults and16 compile negatives plus IPC/SMTP/Linux+Windows source
+checks. Original Basic.exit staging dependency error is retained at
+target/lifecycle-full.log; private libc abort now implements the documented
+conservative fatal group policy without requiring a foundation export.
+
+Machine ISA continuation: all eight remaining reviewed public macros now emit
+real instructions through NEW compiler mechanisms; native O0/O2 and source-built
+x64 interpreter pass, both optional RNG capability errors pass, focused strict
+target-aware lint and macOS/Linux/Windows x64 body checks pass. Actual SDK CPUID
+lacks both RNG features, so capable-hardware execution remains a CI gate. Generic
+fence/prefetch original probes now emit real opcodes versus official C intrinsics.
+386 owned files pass formatting/check, including preserved pending digests; whole
+strict lint remains a separate failed gate. No source compiler edits or fake ISA
+results. Full task remains unfinished; missing public surface inventory still names248
 rows before pending digest changes. Next: committed compiler ISA handoff and
 remaining portable APIs after the critical checkpoint.
 

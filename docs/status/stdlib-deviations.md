@@ -372,3 +372,21 @@ errors. Draft locked-mutex EBUSY oracle was invalid POSIX misuse and returned
 success; removed in favor of genuine Mach failure, with original evidence retained.
 Draft assertion callback type and Darwin cross-target CLI spelling were corrected
 without production API changes or weakening valid checks. See portable-thread-lifecycles.md.
+
+Group fatal path initially referenced Basic.exit, absent from this producer's
+baseline facade despite existing in NEW foundations. Broad regression caught it;
+the private native boundary now binds official libc abort directly. No public
+foundation export is added and no failure result is invented. The original broad
+failure is target/lifecycle-full.log; corrected broad run passes112 cases,
+including the preserved uncommitted digest fixture.
+
+Machine ISA handoff supersedes the earlier missing/fake compiler-instruction
+entries for the eight reviewed APIs. Real timestamp/AUX, RNG carry/value, fences
+and prefetch bodies now use the general compiler assembler; no C production shim,
+wall-clock/random substitution or forced success. Actual CPUID on this translated
+x64 environment lacks RDRAND/RDSEED. Opcodes and actual interpreter capability
+errors pass; native hardware RNG sample/CF execution is pending capable CI.
+Timestamp/AUX exact cross-SDK tests are compiler-owner evidence, not independently
+repeated public-wrapper evidence. Native Windows/Linux remains unexecuted.
+Public prefetch invalid compile-time hints diagnose explicitly. The forty-four-byte
+options projection and all prior canonical feature types remain unchanged.

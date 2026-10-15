@@ -58,10 +58,12 @@ are genuine compiler gaps, not solely eager-lint quirks.
   Source-built x64 C intrinsic and no-call baseline verify additional native pause
   opcodes at O0/O2. Interpreter models a cooperative hint (and can do nothing in
   single-thread execution); no processor delay or memory-order guarantee claimed.
-- prefetch, rdtsc, rdtscp, rdseed, rdrand, mfence, lfence, sfence: missing.
-  The current compiler still makes fence mnemonics no-ops, random instructions
-  synthetic and RDTSCP processor ID zero. Real architecture semantics or explicit
-  diagnostics must be provided before those exports are counted complete.
+- prefetch, rdtsc, rdtscp, rdseed, rdrand, mfence, lfence, sfence: implemented
+  after the committed NEW compiler ISA handoff. Exact reviewed #expand headers
+  emit actual compiler-supported instructions. Timestamp halves combine into u64,
+  RDTSCP returns actual auxiliary output as u32; random wrappers return actual
+  carry and sample after one 64-bit attempt. No retries or synthetic fallback.
+  Prefetch hint is compile-time and selects exactly T0/T1/T2/NTA.
 - Windows/Linux native CPU-query execution remains a platform gate. No target
   checking is counted as native execution or full module completeness.
 
@@ -71,7 +73,7 @@ staged Machine_X64 module and tests/portable-stdlib/machine-x64. Evidence:
 target/machine-verified-final.log, target/machine-x64-lint-final.log,
 target/machine-format-check.log and target/portable-machine/unsupported-host.log.
 
-## Original failure evidence (CPUID now resolved)
+## Historical failure evidence (CPUID and reviewed instructions now resolved)
 
 The reviewed module is x64-only and promises architectural CPU/instruction
 operations, without a non-x64 fallback. No zero-feature CPU record is supplied as
@@ -112,7 +114,7 @@ the current301-file owned scope, but its x64 execution **fails**. It is not incl
 as a passing functionality test or used to relax any API assertion.
 
 
-## Supported spin hint and precise remaining native lowering failures
+## Historical spin-hint checkpoint and now-resolved lowering failures
 
 tools/check_portable_machine_pause.py builds actual official C _mm_pause and
 public Jai pause binaries, executes them, and counts only instruction lines in
@@ -149,3 +151,33 @@ are required; no module/path/symbol special cases, C helper shim or fake public
 prefetch/fence wrappers are introduced. Random/timestamp instruction semantics
 remain separately unimplemented dependency gaps. Full native Linux/Windows
 execution and independent integrated test review still belong to coordinator.
+
+## Current full reviewed instruction surface
+
+The NEW compiler ISA checkpoint75e8fd6 is adopted by rebuilding authorized
+Rust sources into this checkout. No compiler edits or module-specific lowering
+are needed. All twenty reviewed public top-level declarations now have bodies
+or canonical type definitions. This is implemented surface, not full-platform
+execution completeness. tools/check_portable_machine_instructions.py runs public
+wrappers natively O0/O2 under x64 translation and in the own source-built x64
+interpreter, verifies all eleven requested opcode kinds, and strictly lints the
+module/private files/new tests with target-aware jailint. macOS/Linux/Windows
+x64 bodies check. Original generic prefetch/fence probes now pass against official
+C intrinsics at both optimizations; old zero-instruction failure evidence remains.
+
+Actual native SDK CPUID reports RDRAND=false/RDSEED=false here. Both public
+random functions emit real opcodes, and the x64 interpreter explicitly diagnoses
+each missing hardware feature. Hardware sample/CF execution is pending capable
+CI; no entropy, success-rate or fabricated-success claim. The runner executes
+128 real attempts for each advertised feature on capable hosts. Native Windows/
+Linux remains pending. Counter tests check real ordered nonzero samples and u32
+AUX type; exact AUX cross-SDK/migration tests are in the compiler owner suite,
+not claimed independently repeated by this public wrapper test.
+
+Evidence: target/machine-public-instructions-red.log (original missing export),
+target/machine-public-instructions-green.log, target/machine-dependencies-resolved.log,
+target/machine-isa-regression.log and target/machine-isa-x64-build.log.
+General default-generic-pointer handoff: tests/portable-stdlib/pending/default-generic-pointer-constraint.jai
+declares Box(T=void), passes *Box into *$B/Box, and expects ordinary default
+argument constraint matching; the original checked failure remains compiler work.
+No default pointer tracking or stdlib API workaround is added.
