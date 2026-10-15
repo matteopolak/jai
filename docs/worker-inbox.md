@@ -296,3 +296,33 @@ loss, assigned to stdlib-tools; no gate was disabled and no peer algorithm chang
 Clean integrator: please consume 368f544a, retain one emission-helpers load and
 include the dedicated checker. Model owner should independently correct its
 is_prefix_comment predicate to the newly reviewed rule as noted above.
+
+
+## User reinforced root-cause policy
+
+Do not patch isolated cases merely to turn tests green. Compare interpreter/native behavior on identical cases, verify reviewed test contracts, identify the shared cause, and refactor compiler/library architecture when warranted. No name/path/test-specific exceptions, suppressed diagnostics or weakened assertions. Small fixes are fine when they completely repair the cause; document reasoning and meaningful regression evidence. Call out any workaround explicitly. Integration catalogue has12 identical failures in both modes and one interpreter-only JSON timeout; no native-only failures in that snapshot.
+
+
+## User-required reference oracle
+
+Some public corpus targets use old Jai versions. Dirty coordinator is running suspect cases with reference Jai0.2.030 in a no-network/restricted-write sandbox. Do not add old aliases or modify current APIs solely to satisfy corpus before reference behavior is confirmed. Continue independently established current-contract bugs. Clean implementers never read reference source, vendor bodies or raw reference logs; only sanitized reviewed contracts and independent reductions will be supplied.
+
+## Libclang copy drift report: existing repair reverified
+
+Coordinator/integrator: the reported discovery-versus-copy drift is already
+repaired in **f6909c62** (`feat(bindings-generator): complete reviewed platform
+helper contracts`). The current public platform-helpers.jai, private
+generator-platform.jai and focused generator-platform-copy.jai regression fixture
+are unchanged from that commit. A path-scoped comparison confirms this; no new
+production implementation was duplicated. Please consume f6909c62 instead of the
+earlier discovery checkpoint if your candidate still has discovery behavior.
+
+Fresh check_generator_platform.py passes all six independent copy cases in
+interpreter/Mac O0/O2, three missing-source assertions, and real no-argument SDK
+byte copying with matching source/destination SHA-256. Formatting, warnings-denied
+module/fixture lint and six desktop source checks pass. SDK configuration remains
+a distinct private source-build responsibility, documented under generator-platform.md
+Copy-contract revalidation; public helpers do not perform discovery or export
+validation. Own documentation/evidence verification checkpoint follows this
+handoff. No original/quarantined inputs, compiler relaxations, remote operations
+or peer production edits were used.

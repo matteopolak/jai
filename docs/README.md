@@ -5,6 +5,8 @@
 
 - [Generator platform helpers](generator-platform.md): owned native-library/object
   APIs, reviewed cache/context/path contracts, official LLVM delegation and canonical model integration.
+  [Copy-contract revalidation](generator-platform.md#copy-contract-revalidation)
+  identifies the existing f6909c62 repair and fresh filesystem/native evidence.
 - [String-macro diagnostic reduction](generator-platform-macro-cause.md): original
   SDK/FFI evidence and the exact callback-model cause of the combined test failure.
 - [Module-root context ordering](compiler/module-root-context-ordering.md): the
