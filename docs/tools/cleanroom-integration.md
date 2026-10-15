@@ -698,6 +698,28 @@ All seven workspace failures remain enabled. Failure classifications are triage,
 not expected-failure exemptions. No original application/vendor source was read.
 # Focused repairs after the frozen measurement
 
+Shared source checkpoint7467b49d integrates the six newly supplied portable,
+compiler, profiler and generator/tooling snapshots with canonical state once.
+Rust CLI/LSP/linter source rebuild passes. Actual production canonical generator
+and model-helper fixtures print ok. Producer staging scripts are not executed as
+production proof; Default/Project/Example drivers now use this stdlib directly.
+Example actual O0 callbacks/workspaces and strict lint pass; Default behavior
+cases pass but its mandatory full lint still fails missing Check factory. Project
+behavior/artifacts pass before mandatory sandbox executable-path lint failure.
+Both failures remain active. Reviewed duplicate Context fields still reject.
+
+The migrated Default CLI test explicitly calls build, requests reviewed -no_check,
+executes the native child and retains precise unknown/missing/unsupported option
+checks. Unsupported legacy -os/-cpu/-no_output options are not invented. Diagnostics
+may use either stream where the contract does not choose one. Whole-module default
+Check functionality is not claimed from this supported subset.
+
+Actual root-library main-thread affinity is now decided before its first foreign
+call, removing symbol-name activation. Library-neutral C regression has red/green
+evidence. Original SDL WM and all19 CLI tests pass. Workspace Clippy with warnings
+denied, Rustfmt and scoped Jai formatting pass. Broader native ABI/callback/fork
+and full stable workspace/catalogue replay remain required after committing.
+
 Approved Extensions34c06fa3 and graphics7a5cce7a are merged through e026e5f3 and
 b99d2f02; inbox/control guidance was excluded and latest authoritative specs
 preserved. Against committed b99d2f02, all28 affected Extensions cases pass native

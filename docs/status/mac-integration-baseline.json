@@ -833,5 +833,47 @@
         "note": "Existing runner retained deadline but not exact per-case elapsed time; process was killed and independent cases finished."
       }
     ]
+  },
+  "shared_source_checkpoint": "7467b49de0175e6d43f2263092b82ccb9182356f",
+  "merged_graphics": {
+    "snapshot": "032b079353e65d79a320f69431d6bc7442b60761",
+    "cases": 6,
+    "interp_passed": 6,
+    "native_arm64_O0_passed": 6,
+    "failed": 0,
+    "ignored": 0,
+    "clipboard": "real native restoration guard"
+  },
+  "json_numbers_retry": {
+    "status": "finished",
+    "command": [
+      "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/target/debug/jaic",
+      "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/stdlib/Extensions/Json/tests/numbers.jai",
+      "-interp"
+    ],
+    "started_monotonic": 94867.866267083,
+    "timeout_seconds": 300,
+    "source_snapshot": "7467b49de0175e6d43f2263092b82ccb9182356f",
+    "note": "Json and compiler production sources match this committed snapshot; unrelated Default fixture/runner edits are pending.",
+    "exit_code": 0,
+    "timed_out": false,
+    "elapsed_seconds": 149.44852591700328
+  },
+  "post_shared_focused": {
+    "cli": {
+      "passed": 19,
+      "failed": 0,
+      "ignored": 0
+    },
+    "original_SDL_WM": {
+      "interp_passed": 1,
+      "native_arm64_O0_passed": 1,
+      "failed": 0
+    },
+    "production_generator_canonical": "passed interpreter",
+    "production_generator_model_helpers": "passed interpreter",
+    "default_whole_module_lint": "failed: missing reviewed Check factory",
+    "project_generator_lint": "failed: unavailable sandbox executable-path query",
+    "whole_workspace_replay": "pending after scoped commit"
   }
 }

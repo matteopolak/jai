@@ -2,14 +2,12 @@
 """Example_Plugin reviewed record/options/callbacks and actual default build usage."""
 import os
 from pathlib import Path
-import shutil
 import subprocess
-from check_portable_default_metaprogram import compose, ROOT, CASE, OUTPUT
+from check_portable_default_metaprogram import compose, ROOT, CASE, OUTPUT, OPTIMIZATIONS
 
 
 def main():
     library = compose()
-    shutil.copytree(ROOT / "stdlib/Example_Plugin", library / "Example_Plugin", dirs_exist_ok=True)
     OUTPUT.mkdir(parents=True, exist_ok=True)
     binaries = Path(os.environ["CARGO_TARGET_DIR"]) / "debug"
     compiler = str(binaries / "jaic")
@@ -25,7 +23,7 @@ def main():
     expected = run([compiler, "-interp", str(fixture)])
     assert "observed 3 messages" in expected and "test-program" in expected
     assert expected.endswith("ok\n")
-    for optimization in ["-O0", "-O2"]:
+    for optimization in OPTIMIZATIONS:
         program = OUTPUT / ("example-plugin" + optimization)
         run([compiler, str(fixture), optimization, "-exe", str(program)])
         assert run([str(program)]) == expected
@@ -41,7 +39,7 @@ def main():
         assert run([str(target)]) == "target ok\n"
     subprocess.run([str(binaries / "jailint"), "-D", "warnings",
                     str(library / "Example_Plugin"), str(fixture)], env=env, cwd=ROOT, check=True)
-    print("Example_Plugin public record/options/callbacks: interpreter and native O0/O2; actual compiler workspace builds/plugin shutdown and strict lint pass")
+    print(f"Example_Plugin public record/options/callbacks: interpreter/native {OPTIMIZATIONS}; actual workspaces/shutdown and strict lint pass")
 
 
 if __name__ == "__main__":

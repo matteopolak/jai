@@ -1476,6 +1476,50 @@ expectation correction; the normal packaged false selector is restored byte for
 byte. This does not add further option coverage or native platform claims.
 # Native Mac measurement limitations, 2026-10-15
 
+Fresh shared baseline7467b49d combines portable70eb7fb0, compiler328b6c46,
+profiler8a284119, tooling4d3a1106, model4675c90a and platform943637d9 through normal
+merges. Generator/Token_Info/Library_Symbols have one canonical definition/load.
+Worker-specific staged model-query scratch was excluded from product tracking;
+producer reports remain evidence, not integrated test passes. Portable Default,
+Project and Example verification drivers now select actual production stdlib
+and never read peer working trees or patch facades/load lists. Their old staging
+composition is not final proof. Default -no_check behavior executes real child
+artifacts/callbacks; whole-module lint still exposes missing Check.get_plugin.
+Project behavior/XML/ownership checks run, but full lint fails unavailable sandbox
+_NSGetExecutablePath. Example's production O0 workflow and strict lint pass.
+Natvis is an explicit negative, not stored-only successful emission; other
+unsupported compiler settings remain limits. Profile selection is explicit and
+does not claim O2 when O0 was selected.
+
+Json numbers completed unchanged in isolation under the refreshed compiler:
+149.449 seconds, exit0, exact ok stdout, empty stderr. Original120-second timeout
+is retained; the catalogue's existing180-second default is unchanged. No numeric
+assertion or sweep size was reduced. Six merged graphics cases passed all12
+interpreter/native ARM64 O0 executions at032b0793, with native clipboard guard.
+
+General Mac FFI correction: native main-thread routing was activated only after
+Objective-C/NS/CGL/selector symbol-name hints. A library with opaque names could
+call Cocoa first on the compiler worker. Actual SDL reported No available video
+device despite three real drivers; compiled native execution initialized normally.
+A library-neutral C pthread_main_np regression failed before the fix and passes
+after. The name activation gate is removed; existing loaded-image affinity policy
+applies from the first call. Original SDL WM now passes interpreter/native O0 and
+all19 CLI tests pass. There is no SDL/module-name exception or dummy video path.
+The existing system/libc++ direct fast path and non-root/fork handling remain;
+unknown library calls conservatively pay main-thread handoff cost. Per-image
+classification is cached. Native library TLS/errno interaction across execution
+threads remains a broader policy risk; do not infer full native-thread identity
+conformance from GUI success. Proper follow-up is general affinity/context tests,
+not more symbol-prefix exceptions.
+
+Remaining detected producer tradeoffs include64-level limits in cpp typedef/name
+and type-emission traversal, conservative partial overload equivalence, ASCII-only
+identifier policy, diagnostic Iprof graphics callbacks and borrowed libclang file
+handles. Exact producer paths/limits are documented in generator-model/platform,
+developer-tools-deviations and profiler-codex-workflows. Avoidable traversal limits
+need cycle-aware replacement; unreviewed equivalence/context/graph behavior remains
+in questions. No module-completeness count is inferred from declaration presence.
+
 Merged Mac repair snapshots: Extensions34c06fa3 and graphics7a5cce7a, through normal
 merge commits e026e5f3/b99d2f02. Latest reviewed specs/guidance are byte-identical
 to the saved authoritative copies. Producer mailbox was excluded from the merge

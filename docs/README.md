@@ -493,3 +493,8 @@ restoration and bounded child cleanup; no clipboard substitute is used.
 - [Developer tools status and remaining APIs](status/developer-tools-remaining.md): canonical model emission, native Check/Debug subsets and unresolved integration gates.
 
 - [Generator model helpers](generator-model.md) and [native platform helpers](generator-platform.md): shared canonical Generator/Token_Info/Library_Symbols, supported subsets and ownership limits.
+
+Shared candidate7467b49d combines the new committed producer snapshots. All19
+CLI tests and original SDL WM now pass after general Mac foreign-call affinity
+repair. Json's unchanged interpreter numbers suite completes in149.449 seconds;
+the earlier120-second timeout is retained. Full aggregate replay remains required.

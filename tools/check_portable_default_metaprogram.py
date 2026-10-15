@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """Reviewed default build contract; real compiler workspaces and target artifacts.
 
-No peer writes. Dependency composition is a staging check, not combined integration.
+Uses the committed production library; no peer reads, overlays or source repair.
 """
 import os
 from pathlib import Path
 import shutil
 import subprocess
-import check_portable_time_foundation as foundation
 
 ROOT = Path(__file__).resolve().parents[1]
 CASE = ROOT / "tests/portable-stdlib/default-metaprogram"
@@ -15,21 +14,15 @@ OUTPUT = ROOT / "target/portable-default-metaprogram"
 OWNED = ["Default_Metaprogram", "internal/build"]
 
 
+OPTIMIZATIONS = ["-" + value for value in os.environ.get("JAIC_TEST_OPTIMIZATIONS", "O0,O2").split(",")]
+if not OPTIMIZATIONS or any(value not in {"-O0", "-O2"} for value in OPTIMIZATIONS) or len(set(OPTIMIZATIONS)) != len(OPTIMIZATIONS):
+    raise ValueError("JAIC_TEST_OPTIMIZATIONS must select O0 and/or O2 once each")
+
+
 def compose():
-    foundation.compose()
-    library = foundation.LIBRARY
-    # File facade and its backend are one producer closure. Foundation's
-    # File_Utilities filesystem helpers remain separate owned dependencies.
-    shutil.copytree(ROOT.parent / "platform-io/stdlib/File", library / "File", dirs_exist_ok=True)
-    for name in ["file.jai", "native-unix.jai", "native-windows.jai"]:
-        shutil.copyfile(ROOT.parent / "platform-io/stdlib/internal/files" / name,
-                        library / "internal/files" / name)
-    for relative in OWNED:
-        shutil.copytree(ROOT / "stdlib" / relative, library / relative, dirs_exist_ok=True)
-    for relative in ["Compiler", "internal/compiler-api"]:
-        shutil.copytree(ROOT.parent / "compiler/stdlib" / relative,
-                        library / relative, dirs_exist_ok=True)
-    shutil.copytree(ROOT.parent / "stdlib-tools/stdlib/Check", library / "Check", dirs_exist_ok=True)
+    library = ROOT / "stdlib"
+    if not (library / "prelude/module.jai").is_file():
+        raise RuntimeError("production canonical prelude is missing")
     return library
 
 
@@ -50,7 +43,7 @@ def main():
 
     path_case = CASE / "paths.jai"
     assert run([compiler, "-interp", str(path_case)]) == "ok\n"
-    for optimization in ["-O0", "-O2"]:
+    for optimization in OPTIMIZATIONS:
         executable = OUTPUT / ("paths" + optimization)
         run([compiler, str(path_case), optimization, "-exe", str(executable)])
         assert run([str(executable)]) == "ok\n"
@@ -61,7 +54,7 @@ def main():
     target = OUTPUT / "target-program"
     common = ["-no_check", "target.jai", "-exe", target.name,
               "-output_path", str(OUTPUT)]
-    for optimization in ["-O0", "-O2"]:
+    for optimization in OPTIMIZATIONS:
         build(common, optimization=optimization)
         assert run([str(target)]) == "target ok\n"
     inferred_source = OUTPUT / "inferred.jai"
@@ -85,10 +78,11 @@ def main():
     callbacks = ("init A 2\ninit B 1\nprepare A\nprepare B\nsource A\nsource B\n"
                  "complete A\ncomplete B\nfinish A\nfinish B\nshutdown A\nshutdown B\n")
     flags = ["-o", "-no_inline", "-no_dce", "-no_split", "-no_color", "-msvc_format",
-             "-natvis", "-debug_for", "-quiet", "-no_backtrace_on_crash", "-context_size", "8192"]
+             "-debug_for", "-quiet", "-no_backtrace_on_crash", "-context_size", "8192"]
+    build([*common, "-natvis"], status=1, contains="Natvis-compatible type emission is unavailable")
     plugin_args = ["+Workflow_Probe", "-options", "value", '+Workflow_Probe(TAG="B")',
                    "value", "-", "first", "-literal"]
-    for optimization in ["-O0", "-O2"]:
+    for optimization in OPTIMIZATIONS:
         assert build([*common, *flags, *plugin_args], optimization=optimization) == callbacks
         assert run([str(target)]) == "target ok\n"
     replay = run([compiler, str(CASE / "build-twice.jai"), "-", *common,
@@ -102,7 +96,7 @@ def main():
     build(["-no_check", "-add", 'main :: () {}', "-exe", "added", "-output_path", str(OUTPUT)])
     build(["-no_check", "-run", 'print("run ok\\n")', "-add", 'using #import "Basic"',
            "-add", 'main :: () {}', "-exe", "run-added", "-output_path", str(OUTPUT)], contains="run ok")
-    print("Default_Metaprogram: paths interpreter/native O0/O2; real builds, option projection, plugin parameters/order, help/version and failures pass", flush=True)
+    print(f"Default_Metaprogram behavior cases pass interpreter/native {OPTIMIZATIONS}; required strict lint follows", flush=True)
     subprocess.run([str(compiler_root / "jailint"), "-D", "warnings", "-I", str(CASE / "dependency-modules"),
                     str(library / "Default_Metaprogram"),
                     *[str(library / "internal/build" / name) for name in

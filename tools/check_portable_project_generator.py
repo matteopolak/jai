@@ -3,10 +3,9 @@
 import json
 import os
 from pathlib import Path
-import shutil
 import subprocess
 import xml.etree.ElementTree as ET
-from check_portable_default_metaprogram import compose, ROOT
+from check_portable_default_metaprogram import compose, ROOT, OPTIMIZATIONS
 
 OUTPUT = ROOT / "target/portable-project-generator"
 NS = {"m": "http://schemas.microsoft.com/developer/msbuild/2003"}
@@ -15,9 +14,6 @@ NS = {"m": "http://schemas.microsoft.com/developer/msbuild/2003"}
 def main():
     OUTPUT.mkdir(parents=True, exist_ok=True)
     library = compose()
-    shutil.copytree(ROOT / "stdlib/Project_Generator", library / "Project_Generator", dirs_exist_ok=True)
-    shutil.copytree(ROOT / "stdlib/internal/build", library / "internal/build", dirs_exist_ok=True)
-    shutil.copyfile(ROOT / "stdlib/internal/crypto/sha.jai", library / "internal/crypto/sha.jai")
     env = dict(os.environ, JAIC_STDLIB=str(library))
     binaries = Path(os.environ["CARGO_TARGET_DIR"]) / "debug"
     compiler = str(binaries / "jaic")
@@ -30,7 +26,7 @@ def main():
         return result.stdout
 
     assert run([compiler, "-interp", str(case)]) == "ok\n"
-    for optimization in ["-O0", "-O2"]:
+    for optimization in OPTIMIZATIONS:
         executable = OUTPUT / ("collection" + optimization)
         run([compiler, str(case), optimization, "-exe", str(executable)])
         assert run([str(executable)]) == "ok\n"
@@ -53,7 +49,7 @@ def main():
         'assert(P.Project_Generator.debug_command == "app.exe");\n'
         'assert(P.Project_Generator.project_files.count == 0);\n'
         'P.Project_Generator.reset(); assert(P.Project_Generator.project_name == "app");\n}\n')
-    for optimization in ["-O0", "-O2"]:
+    for optimization in OPTIMIZATIONS:
         run([compiler, str(driver), optimization, "-", "optimized" if optimization == "-O2" else "debug"])
         assert run([str(OUTPUT / "app")]) == "built app\n"
         verify_artifacts("app", default=True)

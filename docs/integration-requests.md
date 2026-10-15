@@ -2,6 +2,31 @@
 
 ## Current native Mac candidate, 2026-10-15
 
+Shared clean baseline7467b49d is ready for worker dependency adoption: compiler,
+portable, profiler, tooling, model and platform snapshots are integrated; canonical
+Generator/Token_Info/Library_Symbols are defined/loaded once. Do not coalesce
+duplicate Context fields; latest reviewed context guidance still rejects them.
+Respect newly assigned generator-names/modifiers and Debug ownership from inbox.
+
+Integrator resolved original SDL WM failure generally: symbol-name activation
+prevented first native library calls from reaching existing Mac main-thread routing.
+Removing that gate fixes a library-neutral C regression, actual SDL WM and retains
+all19 CLI passes. Avoid overlapping native.rs/mod.rs affinity changes. Fork/direct
+and system fast paths remain; broad native regressions will run in full baseline.
+Json interpreter numbers passes unchanged in149.449s under refreshed compiler;
+earlier120s timeout remains recorded, default catalogue budget180s unchanged.
+
+Compiler owner reproducible remaining lint defect: production Project_Generator
+module and collection fixture fail jailint on _NSGetExecutablePath unavailable
+during compile-time initialization. Actual interpreter/native behavior and real
+VS/XML artifacts pass. Command: JAIC_STDLIB=$PWD/stdlib jailint -D warnings
+tests/portable-stdlib/project-generator/collection.jai. No module-specific skip,
+fake executable path or repaired staging library is accepted. Default whole-module
+lint still fails missing Check.get_plugin; reviewed no_check workflow is real but
+does not complete ordinary default Check behavior. Tooling owner: type-emission/
+cpp parent traversal includes avoidable64-depth caps despite existing cycle checks;
+replace with cycle-aware traversal while preserving valid deep model support.
+
 New SDL graphics/compiler reproducer after real C probes are built: original
 `stdlib/SDL/tests/sdl-wm.jai` passes native ARM64 O0, but interpreter fails actual
 SDL_Init with `No available video device`. All preceding SDK size/offset/union,
