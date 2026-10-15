@@ -1,0 +1,24 @@
+{
+  "snapshot": "a7bd9b9c4a93eed5479641d63eabacddf58ea393",
+  "ref": "integration/thread-fixtures",
+  "candidate": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures",
+  "stdlib": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/artifacts/integration-clean/frozen-a7bd9b9c/stdlib",
+  "stdlib_tree": "5c43ca40872e2e197293c55156b3e71cae737ca2",
+  "binaries": {
+    "jaic": {
+      "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/artifacts/integration-clean/frozen-a7bd9b9c/bin/jaic",
+      "sha256": "e3680560a602f1239bb43481c57b655e806a1f648aadc2f36aafa572ce3e70a9"
+    },
+    "jailint": {
+      "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/artifacts/integration-clean/frozen-a7bd9b9c/bin/jailint",
+      "sha256": "3dfab32d77ceaccbcf07b3e8deb569e477cd36e3aac30a85632704460082d9e4"
+    },
+    "jailsp": {
+      "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/artifacts/integration-clean/frozen-a7bd9b9c/bin/jailsp",
+      "sha256": "6c251f6ca62def9a06d8dbe0af3807306a69bdb8a1545364cea3db96cbdf5932"
+    }
+  },
+  "source_overlay": false,
+  "native_artifacts": "copied own source-built development helpers; SDK symlinks preserved; not distribution relocation proof",
+  "release_permitted": false
+}

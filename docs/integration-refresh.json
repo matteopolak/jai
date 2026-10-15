@@ -94,7 +94,7 @@
     "integrated_via": "7467b49de0175e6d43f2263092b82ccb9182356f"
   },
   "latest_consumed_independent_checkpoints": {
-    "compiler_mac": "59a69c0384c0695dead22fba2976106efc715e74",
+    "compiler_mac": "9b3d4932",
     "extensions_mac_basic": "b821bf6d6f5c10c70e9ae144bea423f224d598c1",
     "generator_model": "ba878c70d9a93b2437c235ff597bb95181cfb853",
     "generator_platform": "81c8217b47110f8eb7d48c23f4a6f1a9c3c4c30b",
@@ -103,12 +103,16 @@
     "bindings_native": "958af0a25df90db26092575b690d5e81dece94ea",
     "developer_tools": "a2bb717529080a8d87fa4e15df691da4a3f8f609",
     "debug_info": "baafd02e021c654d50320f9048f80bb3135e5270",
-    "executable_formats": "f68873b996c9be5018fac8ed7944da0dc2fe6a9a"
+    "executable_formats": "f68873b996c9be5018fac8ed7944da0dc2fe6a9a",
+    "compiler_deferred": "89560db9",
+    "lsp": "a3c858d3",
+    "portable": "b74c4abd",
+    "profiler_foundations": "9a8db93a"
   },
   "latest_candidate": {
     "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures",
     "ref": "integration/thread-fixtures",
-    "snapshot": "396707e75af75eb3bbcaa19b70c3a1c8aa602224",
+    "snapshot": "a7bd9b9c4a93eed5479641d63eabacddf58ea393",
     "root_tracking": "3b50fee6f4300a94c77eedaab422681694604895",
     "root_tracking_updated": false
   }

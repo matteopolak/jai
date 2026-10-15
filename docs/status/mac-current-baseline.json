@@ -738,8 +738,9 @@
       ]
     },
     "catalogue": {
-      "status": "pending",
-      "command": "python3 tools/stdlib_runtime.py --jaic /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target/debug/jaic --jobs 2 --timeout 180 --modes interp,native --opt O0 --verbose --report artifacts/mac-baseline/catalogue-final-isolated.json"
+      "status": "running",
+      "command": "python3 tools/stdlib_runtime.py --jaic /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target/debug/jaic --jobs 2 --timeout 180 --modes interp,native --opt O0 --verbose --report artifacts/mac-baseline/catalogue-final-isolated.json",
+      "snapshot": "a7bd9b9c4a93eed5479641d63eabacddf58ea393"
     },
     "production_profiler_commands": {
       "passed": 198,
@@ -752,6 +753,21 @@
     "owner_and_independent_lsp_tests": {
       "passed": 46,
       "failed": 0
+    },
+    "debug_payload_followup": {
+      "snapshot": "a7bd9b9c",
+      "passed": 5,
+      "failed": 0,
+      "full_replay": false
     }
+  },
+  "final_production_lsp_protocol": {
+    "snapshot": "4397e23c",
+    "scenarios": 4,
+    "failed": 0,
+    "actual_production_binary": true,
+    "actual_production_stdlib": true,
+    "source_or_manifest_overlay": false,
+    "exit_executed": false
   }
 }
