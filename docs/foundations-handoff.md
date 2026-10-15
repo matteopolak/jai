@@ -4,6 +4,23 @@ This work owns Basic builder/formatting, String utilities, Hash scalars and
 File_Utilities. Inherited spec, argument/runtime and Command_Line edits are
 retained in the worktree and excluded from foundations commits.
 
+Latest continuation implements the refined leak name/source-path predicate and
+exact leaf/root boundaries, removes the false module-ID dependency, and verifies
+report-owned lifetime with original regressions. All 45 host cases pass
+interpreter/native O0/O2 and 37 supported WASI cases pass O0/O2 after the latest
+NEW compiler/linter rebuild. String's reviewed quirks have added direct coverage.
+Focused changed production/test lint passes. Complete lint remains incomplete
+on seven roots: Windows target context, deliberate negative/cross fixtures and
+two genuine required-public-API gaps; no exclusion is called full coverage.
+Scalar fnv1a_hash and test_unsigned_division calls now have positive failing
+API gates/reproducers; exact unresolved contracts are in the questions document.
+The four-facade audit distinguishes these from portable calendar/native ownership.
+Native visualization is real on macOS/Linux; Windows/WASI transport remains
+unavailable, with explicit connection diagnostics. The File/integration owner
+has the minimal original WASI -no_dce repro and a proper private ABI-guard request.
+
+The following paragraph records the previous stable checkpoint before this batch.
+
 Latest stable checkpoint is 5c5e27b; continuation improves canonical context
 lint usage and adds array aliasing safety. NEW compiler host constants resolve
 the Preamble cross failure: the 43-case suite passes interpreter/native O0/O2,

@@ -1,5 +1,29 @@
 # Foundations progress
 
+Refined leak batch: exact name plus case-sensitive source-path matching is now
+implemented for leaves, roots and grouping. Root trimming removes only a matching
+or null suffix; leaf trimming retains the first matching node. Report-owned
+node/group storage survives tracked allocation cleanup and original option-string
+mutation. The old module-identity diagnostic is removed. The graph regression
+now selects user_site as its retained leaf under the refined inclusive rule.
+
+Latest NEW compiler/linter sources were copied read-only into durable own staging
+and rebuilt; unchanged real jaifmt rebuilt at O2. All 45 host cases pass
+interpreter/native O0/O2; all 37 supported production WASI cases pass O0/O2.
+New String contract coverage includes views, split variants, parser consumption,
+narrowing, partial scan outputs and escaped-percent behavior. Focused changed
+production/tests pass -D warnings; complete lint retains seven incomplete roots:
+three host-inapplicable Windows files, two expected-invalid/cross-only fixtures,
+and two actual positive API gaps. CLI still has no target option. No exclusions
+or bootstrap/private-import changes hide those failures.
+
+Full four-facade audit found genuine missing scalar fnv1a_hash overload and
+test_unsigned_division export. Original pending public-call probes reject and
+are positive required-API gates in the driver, not accepted negative tests.
+Exact FNV word/byte and division platform/random callback behavior are requested
+in foundations-questions.md; wide-conversion guards remain a precise question.
+WASI unused File ABI and Windows/WASI channel transport are producer dependencies.
+
 Stable owned checkpoint: 5c5e27b (array aliasing, canonical debugger context
 usage and strict verification evidence). The final expanded driver completed
 43 interpreter/native O0/O2 cases, 35 production WASI O0/O2 cases, exact misuse

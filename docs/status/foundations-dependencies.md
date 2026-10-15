@@ -20,7 +20,9 @@ JAIC_STDLIB=$PWD/target/foundation-integration/stdlib target/peer-compiler/debug
 Observed diagnostic: internal/files/native-unix.jai, `handle: *P.FILE`, POSIX
 has no exported FILE. The preceding snapshot failed Windows too, in file.jai;
 that failure is preserved in the progress evidence. No check was disabled.
-Proper fix: File/bindings producer's supported WASI libc/file ABI, or coherent
+Proper fix: File/integration owner should guard its private native ABI/backend
+for unsupported WASI targets, or implement a supported WASI libc/file ABI. Use
+coherent
 conditional compiler API/library dependencies so unused runtime reflection
 does not require unsupported native file declarations. No module-specific
 compiler bypass or fabricated FILE layout is requested; no peer file is edited.

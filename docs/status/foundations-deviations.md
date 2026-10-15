@@ -4,6 +4,19 @@ Review scope: owned Basic builder/formatter, String utilities, scalar Hash,
 File_Utilities, focused tests and unchanged repository jaifmt integration.
 This is a deviations inventory, not a claim of completed production integration.
 
+Refined leak matching is implemented: exact names and case-sensitive source-path
+fragments across all three option lists, inclusive first matching leaf and
+consecutive matching/null root suffix. The old module-ID diagnostic is removed.
+Report-owned node/group/table resources survive tracked allocation cleanup and
+are released by deinit; the refined contract permits the private pool/lock design.
+
+- **Audit-discovered genuine API gaps** — Hash's scalar fnv1a_hash overload and
+  Basic.test_unsigned_division are absent. Original pending public-call sources
+  reject; the driver now records them as positive required-API failures and
+  continues independent tests. Word/byte FNV semantics and division-exercise
+  platform/random callback contracts need review. No fake bodies/default values,
+  expected-negative reclassification or test/lint exclusion hides these gaps.
+
 Latest resolution: NEW producer compiler_host semantics fix BUILD_* generally.
 Preamble cross early return now passes the genuine WASI test and independent
 predicate. The historical failure below is retained, not still treated as a gap.
@@ -90,15 +103,15 @@ those contracts; the earlier choices are retained only as checkpoint history.
   storing a dangling pointer to the returned-by-value report.pool in its table
   allocator. deinit releases child blocks before the owning pool. Tests grow
   the returned table by 100 keys and verify complete cleanup/snapshot survival.
-  Review requests explicit confirmation of hierarchical versus direct pool
-  ownership; no stack self-pointer or unsupported table allocator is used.
-- **Module-qualified leak filters** — the provided frame metadata has no module
-  identity field/mapping. Nonempty module_name currently logs and terminates
-  explicitly, even with assertions off; it is not accepted and ignored. Ordinary
-  procedure matching/trimming/grouping and all scan/baseline flags have real
-  behavior. Proper fix requires reviewed module mapping or producer metadata,
-  as requested in the questions document. Preamble and CAPS name ABI also remain
-  genuine exact-contract questions, not inert placeholder exports.
+  The refined lifetime contract explicitly leaves private allocation organization
+  unconstrained; no stack self-pointer or unsupported table allocator is used.
+- **Module-qualified leak filters resolved** — the refined contract requires a
+  source-path substring, not module identity. The prior explicit rejection was
+  removed and replaced with the actual case-sensitive name/path predicate.
+  Root and leaf boundaries now follow the refined contract; the old graph test
+  names user_site as its retained leaf rather than relying on removing a match.
+  This changes the expectation for the stated reviewed rule, preserving real
+  trim/group/output coverage and adding repeated/missing/empty boundary cases.
 - **WASI unused-code producer dependency** — adding real runtime reflection
   exposes Compiler's unrelated File dependency during -no_dce. NEW File refresh
   resolves Windows; WASI still lacks POSIX.FILE. Runtime WASI leak reports pass
@@ -295,9 +308,10 @@ those contracts; the earlier choices are retained only as checkpoint history.
   actual CLI/check passes, and scoped source-built jailint -D warnings passes.
   Earlier panic evidence remains above; no local workaround was necessary.
 - **Remaining reviewed exports** — scalar fnv1a_hash's word-versus-byte operation
-  and sequence/byte/log helper details remain questions; no fake exports were
-  added. Basic's wider profiler/debugger/leak helpers are outside the completed
-  core subset. String scan/wildcard corner contracts remain in focused questions;
+  and test_unsigned_division's platform/random callback contract remain questions;
+  no fake exports were added. Reviewed sequence/byte/log/debugger/leak helpers
+  are implemented; their older missing-detail entries are superseded. String
+  scan/wildcard corner contracts remain in focused questions;
   u64 scan does not support values above signed-s64 range. Risk: incomplete API
   coverage. Proper fix requires reviewed semantics and real implementations.
 - **Filesystem/runtime targets** — real Windows implementations are checked

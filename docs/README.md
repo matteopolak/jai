@@ -95,7 +95,7 @@ The LLVM backend, C ABI and linking.
 ## Standard library
 
 - [Core foundations implementation handoff](foundations-handoff.md)
-- [Basic public surface audit and outstanding exports](foundations-api-audit.md)
+- [Basic/String/Hash/File_Utilities public surface audit](foundations-api-audit.md)
 - [Remaining Basic implementation plan](status/foundations-completion-plan.md)
 - [Basic producer dependency requests](status/foundations-dependencies.md)
 - [General cross-compilation predicate request](status/foundations-preamble-request.md)

@@ -1,5 +1,12 @@
 # Strict lint context/target coverage request
 
+Rebuilt from the latest NEW compiler/linter sources after the refined leak spec
+sync. CLI still exposes no target selection; driver.rs still creates host
+CompilerOptions. The selected bootstrap and private import rules are preserved;
+no alternate prelude or fake public wrapper is used. The two positive pending
+API-gap probes are included in the lint inventory too; incomplete bodies there
+are genuine missing APIs, not expected-negative fixtures or completed coverage.
+
 After refreshing the NEW compiler to its general BUILD_* host fix, jailint now
 reports incomplete semantic coverage instead of silently falling back. That is
 useful failure evidence; no old pass is reinterpreted as full semantic coverage.
