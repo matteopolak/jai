@@ -43,7 +43,7 @@ def remaining_matrix(inventory):
         source_only = {name: entries for name, entries in functions.items() if any("invocation remains unverified" in entry["implementation"] for entry in entries)}
         output += [f"## {module}", "", f"{len(pending)} function names have pending declarations; {len(source_only)} native function names still lack invocation fixtures.", ""]
         if pending:
-            output += ["| Function | Reviewed overload variants | Next work / precise question |", "| --- | ---: | --- |"]
+            output += ["| Function | Reviewed overload variants | Pending variants | Next work / precise question |", "| --- | ---: | ---: | --- |"]
             for name, entries in sorted(pending.items()):
                 reason = questions.get((module, name), "Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior.")
                 if module == "Debug_Info" and ("msf" in name or "stream" in name or name in {"parse_pdb", "get_stream_size", "stream_exists", "is_valid_page_number", "is_valid_stream_number", "is_valid_user_stream_number", "verify_integrity", "ensure_room", "is_free_page", "alloc_page", "free_page", "is_fpm_page_number"}):
@@ -52,7 +52,10 @@ def remaining_matrix(inventory):
                     reason = "Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details"
                 if module == "Iprof":
                     reason = "Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2"
-                output.append(f"| `{name}` | {len(entries)} | {reason} |")
+                if module == "Debug_Info" and name == "get_type":
+                    reason = "CodeView overloads pending; canonical DWARF Compilation_Unit offset lookup is implemented/tested"
+                unfinished = sum(entry["implementation"] == "pending" for entry in entries)
+                output.append(f"| `{name}` | {len(entries)} | {unfinished} | {reason} |")
             output.append("")
         if source_only:
             output += ["| Native function | Evidence / next check |", "| --- | --- |"]
@@ -172,6 +175,10 @@ def main():
                 item["implementation"] = "supported subset; actual compiler-message rewrite and edit safety fixture"
         if module == "Debug_Info":
             for item in declarations:
+                if item["name"] in {"Debug_Info", "Compilation_Unit", "Debug_Type", "Subprogram", "Declaration", "Lexical_Block", "Dwarf_Language", "Dwarf_Tag", "Dwarf_Base_Type"}:
+                    item["implementation"] = "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
+                if item["name"] == "get_type" and "cu: Compilation_Unit" in item["declaration"]:
+                    item["implementation"] = "DWARF model offset lookup; six original C DWARF4 SDK-decoded type oracles, unsorted tables/missing offsets/borrowed storage/duplicate diagnostics in interpreter/native O0/O2; not a byte parser"
                 if item["name"] in {"Msf", "Free_Page_Map"}:
                     item["implementation"] = "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
                 if item["name"] in {"is_msf", "is_pdb", "get_stream_data", "get_stream_size", "is_valid_stream_number", "stream_exists", "is_valid_page_number"}:

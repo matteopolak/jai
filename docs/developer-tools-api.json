@@ -24831,42 +24831,42 @@
         "declaration": "Debug_Info :: struct",
         "section": "Public declaration inventory",
         "spec_line": 100,
-        "implementation": "pending"
+        "implementation": "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
       },
       {
         "name": "Compilation_Unit",
         "declaration": "Compilation_Unit :: struct",
         "section": "Public declaration inventory",
         "spec_line": 101,
-        "implementation": "pending"
+        "implementation": "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
       },
       {
         "name": "Debug_Type",
         "declaration": "Debug_Type :: struct",
         "section": "Public declaration inventory",
         "spec_line": 102,
-        "implementation": "pending"
+        "implementation": "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
       },
       {
         "name": "Subprogram",
         "declaration": "Subprogram :: struct",
         "section": "Public declaration inventory",
         "spec_line": 103,
-        "implementation": "pending"
+        "implementation": "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
       },
       {
         "name": "Declaration",
         "declaration": "Declaration :: struct",
         "section": "Public declaration inventory",
         "spec_line": 104,
-        "implementation": "pending"
+        "implementation": "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
       },
       {
         "name": "Lexical_Block",
         "declaration": "Lexical_Block :: struct",
         "section": "Public declaration inventory",
         "spec_line": 105,
-        "implementation": "pending"
+        "implementation": "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
       },
       {
         "name": "Frame_Common_Information_Entry",
@@ -24894,7 +24894,7 @@
         "declaration": "Dwarf_Language :: enum u16",
         "section": "Public declaration inventory",
         "spec_line": 109,
-        "implementation": "pending"
+        "implementation": "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
       },
       {
         "name": "parse_dwarf_debug_info",
@@ -24915,7 +24915,7 @@
         "declaration": "get_type :: (cu: Compilation_Unit, type: u32) -> *Debug_Type",
         "section": "Public declaration inventory",
         "spec_line": 112,
-        "implementation": "pending"
+        "implementation": "DWARF model offset lookup; six original C DWARF4 SDK-decoded type oracles, unsorted tables/missing offsets/borrowed storage/duplicate diagnostics in interpreter/native O0/O2; not a byte parser"
       },
       {
         "name": "parse_common_information_entry",
@@ -24957,14 +24957,14 @@
         "declaration": "Dwarf_Tag :: enum",
         "section": "Public declaration inventory",
         "spec_line": 118,
-        "implementation": "pending"
+        "implementation": "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
       },
       {
         "name": "Dwarf_Base_Type",
         "declaration": "Dwarf_Base_Type :: enum",
         "section": "Public declaration inventory",
         "spec_line": 119,
-        "implementation": "pending"
+        "implementation": "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
       },
       {
         "name": "Call_Frame_Address_Instruction_Type",
