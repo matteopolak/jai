@@ -239,14 +239,14 @@
         "declaration": "append_cpp_expression :: (builder: *String_Builder, expression: *Expression, target_type: *CType = null, current_scope: *Declaration = null) -> valid: bool",
         "section": "Public declaration inventory",
         "spec_line": 40,
-        "implementation": "pending"
+        "implementation": "C++17 fragment subset; generated native consumers O0/O2 from interpreter/native emitter runs, unsupported output preservation"
       },
       {
         "name": "append_cpp_literal",
         "declaration": "append_cpp_literal :: (builder: *String_Builder, lit: *Literal, target_type: *CType = null, current_scope: *Declaration = null, print_integers_as_hex := false) -> valid: bool",
         "section": "Public declaration inventory",
         "spec_line": 41,
-        "implementation": "pending"
+        "implementation": "C++17 fragment subset; generated native consumers O0/O2 from interpreter/native emitter runs, unsupported output preservation"
       },
       {
         "name": "append_cpp_type_modifiers",

@@ -40,7 +40,7 @@ def main():
         run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-target", triple,
              "-c", "tests/developer-tools/codeview-register.c", "-o", register_object])
         run([prefix / "bin/llvm-objcopy", "--dump-section", f".data={register_data}", register_object])
-    cases = ["c-header", "c-header-roundtrip", "c-header-reject", "c-header-modes", "c-header-lifetime", "c-header-support-roundtrip", "bindings-public", "bindings-public-roundtrip", "bindings-literals", "bindings-tree", "bindings-sdk-public", "bindings-sdk-roundtrip", "bindings-clang-api", "print-vars", "rewrite", "dwarf-cfa", "debug-native", "iprof-report", "codex-inspection", "check-porting"]
+    cases = ["c-header", "c-header-roundtrip", "c-header-reject", "c-header-modes", "c-header-lifetime", "c-header-support-roundtrip", "bindings-public", "bindings-public-roundtrip", "bindings-literals", "bindings-tree", "bindings-sdk-public", "bindings-sdk-roundtrip", "bindings-clang-api", "print-vars", "rewrite", "dwarf-cfa", "debug-native", "iprof-report", "codex-inspection"]
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-I", prefix / "include",
          "tests/developer-tools/bindings-sdk-layout.c", "-o", "target/developer-tools-sdk-layout"])
     run([ROOT / "target/developer-tools-sdk-layout"], output="CXString=16 CXCursor=32 CXType=24 CXUnsavedFile=24\nCXIndexOptions=24 PreambleStoragePath=8 InvocationEmissionPath=16\n")
@@ -82,6 +82,7 @@ def main():
          "tests/developer-tools/bindings-macro-merge.c", "-o", "target/libdeveloper_tools_merge.dylib"])
     run([JAIC, "tests/developer-tools/bindings-macro-merge.jai", "-interp"], output="ok\n")
     cases.extend(["bindings-macro-merge", "bindings-macro-merge-roundtrip"])
+    cases.append("bindings-cpp-fragments")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -97,10 +98,22 @@ def main():
             error = "native debug output\n"
         expected = "x = 7 (s32)\nok\n" if case == "print-vars" else "ok\n"
         run([JAIC, source, "-interp", "-I", ROOT / "target"], output=expected, error=error)
+        if case == "bindings-cpp-fragments":
+            for cpp_optimization in [0, 2]:
+                cpp_exe = ROOT / f"target/developer-tools-cpp-fragments-interp-cxx{cpp_optimization}"
+                run([prefix / "bin/clang++", "-std=c++17", f"-O{cpp_optimization}", "-Wall", "-Wextra", "-Werror",
+                     ROOT / "target/developer-tools-cpp-fragments.cpp", "-o", cpp_exe])
+                run([cpp_exe])
         for optimization in [0, 2]:
             exe = ROOT / f"target/developer-tools-{case}-o{optimization}"
             run([JAIC, source, f"-O{optimization}", "-exe", exe, "-I", ROOT / "target"])
             run([exe], output=expected, error=error)
+            if case == "bindings-cpp-fragments":
+                for cpp_optimization in [0, 2]:
+                    cpp_exe = ROOT / f"target/developer-tools-cpp-fragments-o{optimization}-cxx{cpp_optimization}"
+                    run([prefix / "bin/clang++", "-std=c++17", f"-O{cpp_optimization}", "-Wall", "-Wextra", "-Werror",
+                         ROOT / "target/developer-tools-cpp-fragments.cpp", "-o", cpp_exe])
+                    run([cpp_exe])
     for optimization in [0, 2]:
         exe = ROOT / f"target/developer-tools-performance-o{optimization}"
         report = run([JAIC, "tests/developer-tools/performance-target.jai", f"-O{optimization}",
