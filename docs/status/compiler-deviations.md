@@ -1,5 +1,31 @@
 # Compiler deviations and implementation gaps
 
+## Enum dependency checkpoint (2026-10-15)
+
+No module/source-name bypass, fabricated constants, weakened assertions, public
+API change or library declaration reordering. `sema/enums.rs` uses ordinary lazy
+entity resolution and keeps a separate ordered declaration sequence.
+
+Remaining reduced semantics: conditions/inserts requiring a future implicit
+member whose predecessor depends on their expansion diagnose an unestablished
+declaration-order dependency. More elaborate provably empty generated branches
+can hit this conservative boundary. Rationale: no reviewed fixed-point/structural
+dependency selection contract; guessing changes active declarations and numbering.
+Risk: rejection of sophisticated acyclic generation patterns. Long-term fix:
+review structural dependency contracts and extend the shared dependency machinery
+without publishing inactive names. Exact examples in compiler-questions.md.
+
+Value dependencies use the existing recursive evaluator, retaining its extreme
+nesting/stack limits. No per-enum arbitrary cutoff was added. Core reflection uses
+a scoped minimal independent bootstrap record; positive Jai lint uses the existing
+staged independent library. These are focused checks, not full production stdlib
+integration. Native execution covers macOS ARM64 and WASM64 O0/O2; actual wasm32
+compiler-host execution also passes. Windows/Linux native and full corpus remain
+coordinator gates; inherited corpus-sweep ignore remains recorded, not counted as
+execution. Architecture and evidence: compiler/enum-dependencies.md.
+
+## Earlier scopes
+
 Browser verification split has no new public WASM API, module exception, guard
 relaxation or fake worker. Locations: jai-wasm/play.rs tests, two crate-owned Jai
 fixtures, CLI guard test and actual-wasm32 Node runner. Consumers explicitly use

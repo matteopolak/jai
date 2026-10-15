@@ -1,5 +1,23 @@
 # Compiler integration handoff
 
+Forward enum checkpoint: 7ddabf5. Dependencies are repaired through `sema/enums.rs`, lazy
+EnumMember entities and in-progress typed member scopes. Selected declaration
+order remains the reflection/implicit-numbering oracle. Port the cohesive source,
+original core/LLVM tests and enum-dependencies.jai fixture; minimal IDE matches
+preserve metadata for the new entity kind without touching recovery/cache logic.
+Original staged reduction passes own host/WASM CLI checks, returning intended5
+in interpreter; actual ARM64/WASM64 O0/O2 and wasm32 compiler-host checks pass.
+See compiler/enum-dependencies.md and compiler-deviations.md for structural
+dependency limits, commands and pending full integration/native platform gates.
+Use the same source-built jaic path/command and runtime configuration as below;
+no public bootstrap/runtime protocol/API change is part of this checkpoint.
+
+Browser runtime test-split checkpoint: 457dc04. Port the cohesive new fixtures,
+four test cases and CLI/actual-wasm32 checks without changing public Thread guards.
+At that checkpoint the next mailbox compiler issue was independently reproduced
+at tests/producer-requests/forward-enum-dependencies.jai; log
+target/forward-enum-producer-red.log. The repair above supersedes that pending state.
+
 Browser Thread test repair is a test-only split at the real runtime boundary:
 private SandboxHost hooks drive three cooperative workers, contended mutexes,
 actual joins and in-memory stdio; public Thread still rejects WASM in playground
