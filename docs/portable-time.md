@@ -11,12 +11,12 @@ adds no public helper types. Native conversions use the NEW POSIX types directly
 | compare_apollo_times; to_float64_seconds | Existing signed ordering and floating conversion |
 | to_apollo | NEW exact binary-significand scaling into two words; finite fractions truncate toward zero at femtosecond resolution. Supports durations exceeding s64 seconds. Nonfinite/overflow returns APOLLO_TIME_INVALID |
 | timespec_to_apollo; to_timespec | NEW macOS/Linux/Android native ABI conversions; reviewed Unix epoch constant, normalized seconds/nanoseconds, negative timestamps use floor seconds; reverse conversion reports out-of-range/invalid failure |
-| current_time_consensus; current_time_monotonic | NEW native realtime/monotonic queries on macOS/Linux/Android. Realtime includes Unix epoch offset; monotonic has native arbitrary origin. Query errors assert explicitly |
+| current_time_consensus; current_time_monotonic | Native realtime/monotonic queries on macOS/Linux/Android execute even with ENABLE_ASSERT=false. Realtime includes Unix epoch offset; monotonic has native arbitrary origin. Query errors assert and return APOLLO_TIME_INVALID if assertion handling returns or is disabled |
 | to_calendar; calendar_to_apollo | NEW reentrant native UTC/local conversions on macOS/Linux/Android, exact zero-based fields and millisecond resolution. Invalid calendar inputs return invalid sentinel; unrepresentable calendar output asserts |
 | ConvertToApollo | Expansion caller-local requirements remain unspecified; not exported |
 | calendar_to_string; calendar_to_iso_string | Exact text/zone/fraction formats unresolved; not exported |
 | filetime_to_apollo; to_filetime | Windows platform integration unfinished; not exported |
-| seconds_since_init | Required initialization origin and interpreter/native startup integration unresolved; not exported. A first-query baseline would give misleading elapsed time and is not substituted |
+| seconds_since_init | Latest reviewed contract specifies a lazy first-call monotonic baseline, with first use not guaranteed thread-safe. Implementation remains absent; portable owner notified via integration requests |
 
 The reviewed constants and existing duration conversions establish the working
 femtosecond representation. Detailed floating rounding, invalid-date/leap-second,

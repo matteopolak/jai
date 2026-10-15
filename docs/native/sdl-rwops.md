@@ -11,7 +11,9 @@ The public record remains 48 bytes with ordinary Jai callback signatures. It
 is an incomplete description of the native 72-byte object. Never construct,
 copy, dereference its callbacks as Jai procedures, or pass this public record by
 value to C. The supported pointer can be passed to the SDK that owns it. Public
-RWops/UserEvent ABI mismatch assertions remain unchanged, active, and failing.
+RWops/UserEvent public prefix and complete private native layouts are checked
+separately under the reviewed prefix policy; historical total-size mismatch
+failures remain preserved. See [native ABI checks](sdl-native-abi.md).
 
 The regression checks private C record size/hidden offset against official SDK
 headers, native file write/size/seek/read, a real decoded BMP, and both freesrc
@@ -38,4 +40,4 @@ belongs to this scalar adapter; the private declaration retains the actual SDK
 symbol. No public parameter name, type, C calling convention, record layout or
 stream identity changes. Before/after evidence is in
 `.work/sdl-wide-freesrc-before.json` and `.work/sdl-wide-freesrc-after.json`;
-the original layout failures remain active.
+the original total-size failure evidence remains preserved.

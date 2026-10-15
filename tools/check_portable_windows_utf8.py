@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """Check Windows_Utf8 ABI targets; --native requires actual Windows execution.
 
-Uses the NEW dependency composition prepared by check_portable_stdlib.py.
+Uses the combined production library without staging or source overlays.
 Never substitutes Kernel32 or reports type-checking as runtime execution.
 """
 import argparse
 import os
 from pathlib import Path
-import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,18 +15,16 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--native", action="store_true")
+    parser.add_argument("--jaic", type=Path)
+    parser.add_argument("--stdlib", type=Path, default=ROOT / "stdlib")
     args = parser.parse_args()
     if args.native and os.name != "nt":
         parser.error("native Windows_Utf8 verification requires an actual Windows host")
     suffix = ".exe" if os.name == "nt" else ""
-    compiler = ROOT / f"target/compiler/debug/jaic{suffix}"
-    library = ROOT / "target/portable-integration-stdlib"
+    compiler = (args.jaic or ROOT / f"target/debug/jaic{suffix}").resolve(strict=True)
+    library = args.stdlib.resolve(strict=True)
     if not (library / "prelude/module.jai").is_file():
-        parser.error("prepare the independent dependency composition first")
-    for relative in ["Windows_Utf8/module.jai", "internal/text/windows-utf8.jai"]:
-        destination = library / relative
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(ROOT / "stdlib" / relative, destination)
+        parser.error("the production library must contain canonical prelude/module.jai")
     env = dict(os.environ, JAIC_STDLIB=str(library))
     source = ROOT / "tests/portable-stdlib/windows-utf8/main.jai"
 

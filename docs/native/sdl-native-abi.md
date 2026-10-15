@@ -14,8 +14,10 @@ type/timestamp prefix. These private shapes do not change canonical public
 names, field layout or export visibility. Native extent is checked against the
 pinned target SDK, not assumed to be the same across operating systems.
 
-SDL_RWFromFile and SDL_LoadBMP_RW remain the real foreign symbols. The factory
-returns the actual SDL-owned object; passing it back to its SDK preserves native
+SDL_RWFromFile remains the real foreign symbol. SDL_LoadBMP_RW uses a C-call
+adapter to map its full64-bit freesrc value to native0/1; its function address
+belongs to that adapter. The factory returns the actual SDL-owned object;
+passing it back to its SDK preserves native
 identity and ownership. No Jai proxy, registry, copied callback table or fabricated
 context is interposed. Real file operations, BMP decoding, both freesrc policies,
 native close counts and errors are covered by the RWops regression. Safe WM-info

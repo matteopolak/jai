@@ -664,6 +664,16 @@ suppressed, no malformed configuration is accepted, and no assertion is skipped.
   assert. These avoidable side effects must move outside assertion evaluation;
   retain diagnostics and native failure handling. Production red regression and
   correction are required before the time increment is counted supported.
+
+Refresh14 correction: clock queries and Flat_Pool release now execute outside
+optional assertion arguments. Native query failure returns APOLLO_TIME_INVALID
+after the diagnostic, rather than fabricating a zero clock if assertions return
+or are disabled. Failed unmap retains pool ownership fields for diagnosis/retry.
+The original time-assert-disabled regression failed against the actual combined
+production library at its realtime lower-bound assertion; the same interpreter
+case passes after correction. Native O0/O2 and strict tool reruns remain pending.
+Flat_Pool imports the default Basic instance, so no claim is made that its old
+release defect was reached through a public disabled-assert configuration.
 - Foundationad84008 resolves path-fragment matching and report-owned lifetimes;
   scalar FNV and unsigned-division exercise remain actual positive API failures.
   Do not reclassify those as accepted negatives. Revised fields/guards still
