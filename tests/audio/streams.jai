@@ -24,6 +24,7 @@ main :: () {
     config.release_asset = release;
     config.set_async_thread_priority = set_priority;
     if !sound_player_init(config) {
+        sound_player_shutdown();
         print("native-device-unavailable\nok\n");
         return;
     }

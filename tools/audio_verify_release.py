@@ -95,6 +95,9 @@ def main():
     runtime_env = dict(os.environ)
     for variable in ("JAIC_NATIVE_LIBS", "JAIC_STDLIB", "LD_LIBRARY_PATH", "DYLD_LIBRARY_PATH", "DYLD_FALLBACK_LIBRARY_PATH"):
         runtime_env.pop(variable, None)
+    if os.name == "nt":
+        system = Path(os.environ["SystemRoot"])
+        runtime_env["PATH"] = os.pathsep.join(map(str, (relocated / "bin", system / "System32", system)))
     # Native audio and decoder must be embedded: omit even packaged shared files.
     # Keep their verified copies for interpreter distribution, but remove them
     # from this runtime-test package to make accidental dynamic loading fail.

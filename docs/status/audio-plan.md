@@ -1,29 +1,26 @@
 # Audio implementation plan
 
-Goal: implement reviewed Sound_Player in the dedicated audio worktree.
-Architecture: one facade loads independently organized audio units, preserving
-one storage location for mutable globals. Device-independent PCM mixing, cache
-pages, stream ownership and native queues have separate responsibilities.
+Implement reviewed Sound_Player in the isolated audio worktree. Compatibility
+inputs are reviewed specs, NEW independent producer code and official C/OS SDKs.
+No /Users/matthew/projects/jai-reference/old stdlib bodies, transcripts, corpus vendor Jai, peer edits,
+subagents, publication or release actions. Extensions remain intact.
 
-- [ ] Audit declarations, aliases, defaults, identity and target conditions.
-- [ ] Test then implement sample math, bounds, interpolation and repeat.
-- [ ] Test then implement panning, listener transforms and editable VBAP.
-- [ ] Test then implement page lifecycle/queues with NEW Adpcm and stb_vorbis.
-- [ ] Test then implement stream ownership, synchronized updates and retirement.
-- [ ] Implement native SDK output and test muted device lifecycle.
-- [ ] Run actual source-built formatter/linter, interpreter, native O0/O2 and
-  cross-target checks; commit stable logical checkpoints and continue.
-- [ ] Maintain per-export inventory, feature docs, deviations and questions.
+- [x] Audit public declarations, aliases, defaults, reflected names and identity.
+- [x] Implement/test PCM bounds, interpolation, repeat, silence and signed rates.
+- [x] Implement/test reviewed listener, locked/music, stereo and VBAP rules.
+- [x] Implement genuine Vorbis/ADPCM pages, queues and drain-before-free lifetime.
+- [x] Implement independently synchronized entity phases and reentrant stops.
+- [x] Build real silent native output and relocatable static/shared artifacts.
+- [x] Provide six desktop SDK/CI recipes, per-target metadata and relocation tests.
+- [x] Implement documented desktop focus/recovery and fresh discovery.
+- [x] Split producer/stream locks, render in 256-frame chunks and reuse page windows.
+- [x] Maintain per-API inventory and NEW spec-provenance test manifest.
+- [ ] Coordinator independent review of NEW tests.
+- [ ] Coordinator shared native-manifest adoption and six native CI host runs.
+- [ ] Linux/Windows runtime, Windows ARM64 SDK build and physical event validation.
+- [ ] Android compiler target, official NDK/AAudio build and actual Android backend.
+- [ ] Future numeric clarification where spatial prose leaves private choices open.
 
-Explicit autonomous-work instructions govern execution without subagents or
-approval pauses. No peer edits, shared packaging changes or reference access.
-
-Current checkpoints implement and test public declaration identity, PCM mixing,
-gain/listener/VBAP helpers, actual compressed queues, owned lifecycle and real
-host native output. These are locally integrated sources with native evidence,
-not completion of the whole scope. Pending: reviewed exact spatial/orientation
-and interpolation contracts, Android target/backend, focus/background lifecycle,
-Linux/Windows native execution and release packaging. History and independent
-entity-phase synchronization are now resolved and implemented. The per-export
-inventory records missing direct behavioral references rather than treating
-signature probes as conformance.
+Checked items describe locally integrated source and stated evidence, not whole
+scope completion. Detailed native/source/cross-build distinctions and unresolved
+requirements are in progress, deviations and audio-native-integration.md.

@@ -4,8 +4,12 @@
 main :: () {
     config: Sound_Player_Config;
     config.update_from_a_thread = false;
-    devices := backend_get_devices();
+    devices := get_devices();
     for device: devices assert(device.name.count > 0);
+
+    refreshed := backend_get_devices();
+    for device: refreshed assert(device.name.count > 0);
+    for device: devices assert(device.name.count > 0, "previous borrowed discovery results remain valid");
 
     properties := backend_init(config);
     if properties.initted {

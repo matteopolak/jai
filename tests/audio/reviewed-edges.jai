@@ -108,6 +108,16 @@ main :: () {
     arcs = pair;
     add_vbap_gain_for_direction(*scale, .{ -1, 1 }, 1);
     assert(scale.source_scale_for_this_output_index[0] == 0 && scale.source_scale_for_this_output_index[1] > 0, "outside coverage retains positive selected component");
+    vbap_speaker_directions[2] = .{ -ROOT_2_OVER_2, ROOT_2_OVER_2 };
+    overlapping := Vbap_Arc.[.{ .FRONT_LEFT, .FRONT_RIGHT, .{} }, .{ .FRONT_LEFT, .CENTER, .{} }];
+
+    arcs = overlapping;
+    scale = .{};
+    add_vbap_gain_for_direction(*scale, .{ 0.1, 1 }, 1);
+    assert(scale.source_scale_for_this_output_index[2] > 0 && scale.source_scale_for_this_output_index[1] == 0, "select greatest minimum, not first covering arc");
+    scale = .{};
+    add_vbap_gain_for_direction(*scale, .{ -1, 0.2 }, 1);
+    assert(scale.source_scale_for_this_output_index[2] > 0 && scale.source_scale_for_this_output_index[1] == 0, "outside coverage still selects greatest minimum");
     channel, success := source_dir_to_target_dir(.MONO);
 
     assert(success && channel == .CENTER);

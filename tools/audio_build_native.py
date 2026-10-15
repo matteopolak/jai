@@ -38,6 +38,8 @@ def verify_object(path, entry):
     data = path.read_bytes()[:64]
     expected = entry["cpu"]
     if data[:4] == b"\x7fELF":
+        if data[4:6] != bytes((2, 1)):
+            raise RuntimeError("Desktop audio requires a 64-bit little-endian ELF object")
         osname = "linux"
         machine = int.from_bytes(data[18:20], "little")
         cpu = {62: "x64", 183: "arm64"}.get(machine)
@@ -126,6 +128,12 @@ def build(target, out, cc, ar, mingw=False, runtime=False, require_device=False)
     if runtime:
         result = subprocess.run([str(executable), *(["--require-device"] if require_device else [])],
                                 cwd=out, capture_output=True, text=True, timeout=30)
+        record = {"platform": target, "kind": "exact-host SDK harness execution",
+                  "exit_code": result.returncode, "device_opened": "native-device-opened:" in result.stdout,
+                  "physical_focus_hotplug_sleep": "not tested", "require_device": require_device,
+                  "diagnostic_lines": len(result.stderr.splitlines()),
+                  "manual_pause_unsupported": "native-manual-pause-unsupported" in result.stdout}
+        (out / "audio-runtime.json").write_text(json.dumps(record, indent=2) + "\n")
         if result.returncode or result.stderr:
             raise RuntimeError(f"native SDK harness failed: exit {result.returncode}")
         print(result.stdout.strip(), flush=True)
@@ -145,7 +153,8 @@ def main():
     target = args.platform or host_platform()
     if args.test_runtime and target != host_platform():
         parser.error("runtime tests require the exact host platform; cross builds are not runtime evidence")
-    if target != host_platform() and not args.cc and not target.startswith("macos-"):
+    apple_cross = target.startswith("macos-") and host_platform().startswith("macos-")
+    if target != host_platform() and not args.cc and not apple_cross:
         parser.error("cross builds require --cc with the target SDK; no host substitution")
     out = (args.out or (ROOT / "target/audio-native" / target if args.platform else ROOT / "target/audio-native")).resolve()
     if not out.is_relative_to(ROOT):

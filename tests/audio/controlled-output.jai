@@ -8,6 +8,7 @@ main :: () {
     set_master_volume(0);
 
     if !sound_player_init(config) {
+        sound_player_shutdown();
         print("native-device-unavailable\nok\n");
         return;
     }
@@ -16,6 +17,19 @@ main :: () {
 
     #if #exists(EXPECTED_CHANNELS) assert(properties.num_channels == EXPECTED_CHANNELS);
     print("native-%-channel-output-opened\n", properties.num_channels);
+    directions := Source_Direction.[.MONO, .LEFT, .RIGHT, .FRONT_LEFT, .FRONT_RIGHT, .REAR_LEFT, .REAR_RIGHT, .CENTER_FORWARD, .SUBWOOFER_CENTER_FORWARD, .EXTEND_LEFT, .EXTEND_RIGHT];
+    expected_channels := Audio_Channel.[.CENTER, .FRONT_LEFT, .FRONT_RIGHT, .FRONT_LEFT, .FRONT_RIGHT, .REAR_LEFT, .REAR_RIGHT, .CENTER, .SUBWOOFER, .REAR_LEFT, .REAR_RIGHT];
+
+    if properties.num_channels == 8 {
+        expected_channels[9] = .EXTEND_LEFT;
+        expected_channels[10] = .EXTEND_RIGHT;
+    }
+
+    for direction: directions {
+        channel, success := source_dir_to_target_dir(direction);
+        assert(success && channel == expected_channels[it_index]);
+    }
+
     // Native output already holds only silence. Pull all nonzero test samples
     // directly into this controlled buffer; never submit them to the device.
     pcm := s16.[24576];

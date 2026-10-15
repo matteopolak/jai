@@ -12,6 +12,7 @@ main :: () {
     config.update_from_a_thread = false;
     config.release_asset = release;
     if !sound_player_init(config) {
+        sound_player_shutdown();
         print("native-device-unavailable\nok\n");
         return;
     }

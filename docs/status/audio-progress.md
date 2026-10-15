@@ -129,3 +129,46 @@ paths include music and near-footstep assertions. Final filename-only and seven-
 channel refinements also receive targeted strict/native/target verification.
 Numeric choices absent from the prose are stated narrowly in questions and are
 not treated as a requirement to seek original private behavior.
+
+2026-10-15 performance/lifetime checkpoint after 2df2134: stream rendering now
+locks only 256 output frames at a time, with no stream pointer crossing unlock.
+Native poll/reservation/copy/commit use a separate producer mutex; exported lock
+helpers remain private. Decoder windows reuse three forward pages plus reverse
+look-behind/repeat-start coverage instead of marking/evicting every chunk. Missing
+pages silence the remainder of an accumulation call without repeated queue-lock
+polling. Synchronous ADPCM work and unlimited stream count still prevent any
+real-time or worst-case latency claim.
+
+Independent safety fixes: concurrent elapsed-time state is locked; decoder
+resources drain outside private locks while their object remains alive/published,
+then the retired pointer is removed before object free. Borrowed fill regions
+block producer refills via ownership state, with no lock spanning caller work.
+The region-lifetime regression first failed on the producer's buffer assertion and
+passes after repair. Real queued-byte counts and zero rate for absent/lost devices
+replace private-state sentinels. Loss during a borrowed region defers SDK closure
+until release, never pretending its data was committed. Native error/restoration
+notices are retained and emitted outside both locks. ALSA retry loops are bounded,
+prepared recovery restarts explicitly, and negotiated rate is queried from SDK
+parameters; these Linux branches remain source-only until coordinator CI.
+
+Final verification after native builds completed: actual source-built jaifmt
+--check, warnings-denied host/Windows lint, 24 interpreter/native O0/O2 fixture
+paths, 144 common desktop source checks, 2 Windows ABI checks and 3 private-name
+negative fixtures pass. The 25 positive fixtures include 106 signature/link probes
+and public-only history smoke coverage, not exhaustive behavior. Strict device
+and multichannel flags require actual opens; logical 6/8 streams opened in all
+three modes. Coordinated render/stop, retired-resource callback and borrowed-region
+safety assertions pass. Fresh moved-package O0/O2 entity-phase/Vorbis tests pass
+without audio/decoder shared files or loader overrides; six separate release
+source-check groups pass. Owned C/ObjC host and Windows x64 cross builds/harness
+links pass warnings denied, with actual silent SDK runtime on host only. Owned
+object headers validate macOS ARM64/x64 and Windows x64 architectures.
+
+The arbitrary 4 MiB concurrency test exceeded the interpreter's 60-second command
+budget; 256 KiB retains page-transition coordination and all lifetime/full-buffer
+assertions. Earlier overlapping rebuild verification is not final evidence.
+The latest coordinator instruction removes legacy stdlib gates: audio now uses
+only NEW tests with tests/audio/manifest.json provenance and migration.json.
+Independent dirty review is requested, not claimed complete. See audio-testing.md.
+Coordinator native packaging/CI, physical events, Windows ARM64 SDK and Android
+compiler/backend remain pending. No peer/manifest changes or Extensions edits.

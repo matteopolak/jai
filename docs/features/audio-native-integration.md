@@ -15,6 +15,9 @@ opaque stb_vorbis archive/shared library and its verified license.
 `audio-build.json` records target, SHA256s, SDK link dependencies and the compiler
 invocation. Object headers are checked against the requested OS and CPU; passing
 a host compiler as a cross compiler cannot create a mislabeled successful build.
+Build records do not imply execution. A separate audio-runtime.json records the
+exact-host SDK harness outcome, including real device availability and unsupported
+manual pause. Physical focus/hotplug/sleep remain untested in that record.
 
 Native executables embed the owned adapter and decoder. macOS links only public
 system frameworks; Linux still requires the system ALSA runtime and its selected
@@ -25,7 +28,9 @@ not required beside an already linked native executable.
 The relocatability verifier copies artifacts to a new install path, compiles
 against that path, moves the install tree, removes its audio/decoder shared files,
 clears loader override variables, inspects executable imports/rpaths, and runs
-O0/O2 entity-phase and compressed-decoder tests from the moved tree. A successful
+O0/O2 entity-phase and compressed-decoder tests from the moved tree. Windows
+runtime PATH contains only the moved package and OS directories, so SDK/compiler
+directories cannot mask missing package/runtime DLL dependencies. A successful
 native device marker is required with `--require-device`. An unavailable device
 is explicitly labeled and is never treated as playback evidence.
 
@@ -50,7 +55,7 @@ platform development SDK, build jaic/jailint/jaifmt from this repository, then r
 ```sh
 python3 tools/audio_build_native.py --test-runtime --require-device
 python3 tools/audio_verify_release.py --require-device --check-targets
-python3 tools/audio_verify.py
+python3 tools/audio_verify.py --require-device --require-multichannel
 ```
 
 The last verifier currently expects host artifacts in target/audio-native and

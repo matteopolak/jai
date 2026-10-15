@@ -6,6 +6,7 @@ released: int;
 
 probe :: (thread: *Thread) -> s64 {
     set_master_volume(0);
+    update_from_async_thread(false);
     return 0;
 }
 
@@ -14,7 +15,7 @@ check_unlocked :: () {
 
     assert(thread_init(*worker, probe));
     thread_start(*worker);
-    assert(thread_is_done(*worker, 1000), "phase/callback must not retain the mixer lock");
+    assert(thread_is_done(*worker, 1000), "phase/callback must not retain stream or producer locks");
     thread_deinit(*worker);
 }
 

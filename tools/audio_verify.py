@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Verify this audio worker's explicit scope using its own source-built tools."""
 import os
-import re
+import argparse
+import json
 from pathlib import Path
 import subprocess
 
@@ -10,7 +11,6 @@ COMPILER = ROOT / "target/compiler/debug/jaic"
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"),
            JAIC_NATIVE_LIBS=str(ROOT / "target/audio-native"))
 CASES = sorted((ROOT / "tests/audio").glob("*.jai"))
-CASES += [ROOT / "tests/stdlib/sound-player-device.jai"]
 NEGATIVE = sorted((ROOT / "tests/audio/negative").glob("*.jai"))
 OWNED = [ROOT / "stdlib/Sound_Player/module.jai"]
 OWNED += sorted(p for p in (ROOT / "stdlib/internal/audio").glob("*.jai")
@@ -32,6 +32,16 @@ def run(command, expected=None, cwd=ROOT, env=ENV):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--require-device", action="store_true", help="fail when a base native-device fixture reports unavailable")
+    parser.add_argument("--require-multichannel", action="store_true", help="also require real logical 6/8-channel SDK streams")
+    args = parser.parse_args()
+    manifest = json.loads((ROOT / "tests/audio/manifest.json").read_text())
+    declared = {ROOT / entry["path"] for entry in manifest["cases"]}
+    if declared != set(CASES):
+        raise RuntimeError("Audio fixture/provenance manifest differs from discovered NEW tests")
+    if {ROOT / entry["path"] for entry in manifest["negative"]} != set(NEGATIVE):
+        raise RuntimeError("Audio negative fixture/provenance manifest differs from discovered tests")
     output = ROOT / "target/audio-tests"
     output.mkdir(parents=True, exist_ok=True)
     run([ROOT / "target/jaifmt", "--check", *OWNED, *NEGATIVE])
@@ -49,15 +59,19 @@ def main():
             print("windows-abi.jai: Windows x64/ARM64 static ABI checks; native execution unavailable", flush=True)
             continue
         expected = "ok\n"
-        if case.stem in {"device-lifecycle", "streams", "compressed-stream", "entity-phase", "entity-lifecycle"}:
+        if case.stem in {"device-lifecycle", "streams", "compressed-stream", "entity-phase", "entity-lifecycle", "concurrent-render-stop", "region-lifetime"}:
             expected = lambda out: out in {"native-device-opened\nok\n", "native-device-unavailable\nok\n"}
         if case.stem == "controlled-output":
             expected = lambda out: out in {"native-2-channel-output-opened\nok\n", "native-6-channel-output-opened\nok\n", "native-8-channel-output-opened\nok\n", "native-device-unavailable\nok\n"}
-        run([COMPILER, case, "-interp"], expected)
+        interpreted = run([COMPILER, case, "-interp"], expected)
+        if args.require_device and "native-device-unavailable" in interpreted:
+            raise RuntimeError(f"{case.name}: required native device unavailable; no playback pass recorded")
         for level in ("O0", "O2"):
-            executable = output / f"{case.stem}-{level}"
+            executable = output / (f"{case.stem}-{level}" + (".exe" if os.name == "nt" else ""))
             run([COMPILER, case, "-" + level, "-exe", executable], "")
             native_evidence = run([executable], expected, cwd=case.parent)
+            if args.require_device and "native-device-unavailable" in native_evidence:
+                raise RuntimeError(f"{case.name}: required native device unavailable; no playback pass recorded")
             if callable(expected):
                 print(f"  {level}: {native_evidence.splitlines()[0]}", flush=True)
         for target_os in ("linux", "windows", "macos"):
@@ -69,18 +83,23 @@ def main():
     controlled = ROOT / "tests/audio/controlled-output.jai"
     for channels in (6, 8):
         env = dict(ENV, JAI_AUDIO_CHANNELS=str(channels))
-        expected = f"native-{channels}-channel-output-opened\nok\n"
+        opened = f"native-{channels}-channel-output-opened\nok\n"
+        expected = lambda out: out in (opened, "native-device-unavailable\nok\n")
         extra = ["-add", f"EXPECTED_CHANNELS :: {channels};"]
-        run([COMPILER, controlled, "-interp", *extra], expected, env=env)
+        observed = [run([COMPILER, controlled, "-interp", *extra], expected, env=env)]
         for level in ("O0", "O2"):
-            executable = output / f"controlled-{channels}-{level}"
+            executable = output / (f"controlled-{channels}-{level}" + (".exe" if os.name == "nt" else ""))
             run([COMPILER, controlled, "-" + level, *extra, "-exe", executable], "")
-            run([executable], expected, cwd=controlled.parent, env=env)
-        print(f"{channels}-channel native API/controlled-buffer path passed interpreter and O0/O2; physical multichannel unverified", flush=True)
+            observed.append(run([executable], expected, cwd=controlled.parent, env=env))
+        count = observed.count(opened)
+        if args.require_multichannel and count != 3:
+            raise RuntimeError(f"{channels}-channel SDK format unavailable in {3-count} execution mode(s); no multichannel playback pass recorded")
+        print(f"{channels}-channel SDK/controlled-buffer fixture: {count}/3 opened, {3-count}/3 unavailable; physical multichannel unverified", flush=True)
     for case in NEGATIVE:
         result = subprocess.run([COMPILER, case, "-check"], cwd=ROOT, env=ENV,
                                 capture_output=True, text=True, timeout=60)
-        expected = "sound_mutex" if case.stem == "private-mutex" else "lock_player"
+        expected = {"private-mutex": "sound_mutex", "private-player-helper": "lock_player",
+                    "private-producer": "lock_producer"}[case.stem]
         if result.returncode != 1 or f"unknown identifier `{expected}`" not in result.stderr:
             raise RuntimeError(f"{case.name}: expected private API rejection was not observed")
         print(f"{case.name}: expected private API rejection passed", flush=True)

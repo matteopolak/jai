@@ -14,6 +14,12 @@ status, held interpolation at page ends, planar closeness, outside-coverage VBAP
 selection, locked/music coefficients and footstep rear exclusions. Filename
 metadata is unread; seven channels have no inferred center-rear layout.
 Each entity phase synchronizes only its own work. No lock spans caller code.
+Rendering releases the stream lock every 256 frames and retains no stream pointer
+across that unlock. Native submissions use a separate producer lock. Prefetch
+windows are reused; retired decoder objects stay alive until drained and removed
+from the published list. Borrowed fill regions block producer overwrite without
+holding a lock across caller writes. These are lifetime/ownership improvements,
+not a real-time guarantee; synchronous ADPCM and unlimited streams remain costs.
 Configure public stream fields before start; direct active-field edits can race
 mixing. Exported synchronized setters/stops remain usable between phase calls.
 Natural completion remains live until entity retirement observes a silent mixer
@@ -50,6 +56,8 @@ jaic/jailint from this repository, then build jaifmt with that jaic. Run
 interpreter, native O0/O2, target and private-visibility checks. The generated
 stereo Vorbis fixture is retained under tests/audio/fixtures and its generation
 provenance is documented there.
+NEW fixture provenance and coordinator review status are in
+[audio testing](audio-testing.md); legacy stdlib-specific gates are retired.
 
 Device tests explicitly print whether a real native device opened; unavailable
 hardware is never counted as playback success. All submitted device audio is
