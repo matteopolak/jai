@@ -20,3 +20,10 @@ shared façade or canonical model/context/lifecycle files.
 
 The user explicitly requested immediate implementation and independent routine
 architecture decisions; no additional design approval gate is introduced.
+
+Resumed after reviewed behavior refresh: all six previously pending helpers are
+implemented, with single shared borrowed context slots and coordinator-authorized
+façade integration. Both fixtures now use actual public imports. Verification
+covers eight target-source checks, two host interpreter/four host native
+executions, strict contextual lint and two canonical-model interpreter regressions.
+Exact final inventory and independent policies are in the status/feature docs.

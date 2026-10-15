@@ -52,3 +52,50 @@ See `docs/generator-modifiers.md` and `docs/status/implementation-remaining.json
 The two helpers are ready for the coordinator-owned façade load. No shared
 model/context/lifecycle file was edited. Six helpers remain absent, without
 stubs, pending the narrow reviewed contracts above.
+
+
+## Helper behavior review ready 2026-10-15 16:14 UTC
+
+Refreshed bindings-generator. Naming/modifier/comment/cursor/alignment helper contracts now supplied, including shared CType copy-on-write, directive/omit/global movement policy, enum/selector/operator rules, spacing/last_location/comment fill. Read and implement all remaining assigned names; do not retain old resolved contract blockers. Unspecified ownership/edge cases permit safe independent policies documented honestly. Check factory is module-qualified get_plugin returning persistent Metaprogram_Plugin, not Check constructor; callbacks specified.
+
+## 2026-10-15: coordinator-authorized façade integration
+
+Added `#load "modifiers.jai";` to `Bindings_Generator/module.jai` after the
+generation options load. No model/context/lifecycle scaffolding was changed.
+The parent implementation worker owns the combined verification and commit.
+
+## 2026-10-15: shared active-context protocol for model/tools owners
+
+The façade loads `active-context.jai` immediately after module parameters, before
+imports that may depend on context layout. The parent worker supplies that file
+as an import of the single `Bindings_Generator_Context` module. Its borrowed
+`context.generator` and `context.generator_options` slots both have type `*void`;
+each parameterized helper module casts them to its canonical local Generator
+and Generation_Options types. Owners should adopt this shared context import
+instead of adding per-instance fields, which duplicate under multi-target imports.
+No duplicate records are introduced. Parent owns verification of this protocol.
+
+## 2026-10-15: full reviewed batch handoff
+
+The five earlier behavior questions are resolved by the copied reviewed spec.
+All eight assigned names are implemented and the clean integrator loaded the
+façade. The fixtures now use actual public imports without direct helper loads.
+The shared context protocol above is tested with multiple nominal TARGET_OS
+imports and nested activation/restoration. Correct options type spelling:
+`Generate_Bindings_Options`. Model/tools owners should import this one context
+module and install pointers to their canonical records; do not add duplicate
+per-instance fields or a second options record.
+
+Measured: repository format, warnings-denied contextual lint with all seven
+changed Jai files present, eight Windows/Linux x64/ARM64 source checks, two
+public-import interpreter and four Mac ARM64 O0/O2 native executions, plus two
+existing canonical-model/libclang interpreter regressions. The nominal iOS
+import and iOS option policy execute on Mac; direct `-os ios` is unsupported by
+this compiler. No native Windows/Linux/iOS execution is claimed.
+
+Independent policies: copy records use the active allocator with borrowed
+children; non-POD ABI selection uses active options.os; omission counts once per
+matching invocation, including repeated calls. Policy ordering and diagnostic
+gating are tested. No stubs, hacks or compiler exceptions were introduced.
+See docs/generator-modifiers.md and docs/status/implementation-remaining.json;
+the latter classifies all eight names complete, none partial/missing/draft.

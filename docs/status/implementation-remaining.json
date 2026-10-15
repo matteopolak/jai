@@ -6,38 +6,47 @@
   "commit_reference": "Commit containing this status file; no external publication",
   "complete": [
     "add_access_flags",
-    "function_has_a_valist_arg"
-  ],
-  "partial": [],
-  "missing": [
     "add_type_flags",
     "append_calling_convention_directives",
     "append_type_info_directives",
+    "function_has_a_valist_arg",
     "check_if_foreign_function_should_be_omitted",
     "shared_type",
     "should_be_moved_to_global_scope"
   ],
+  "partial": [],
+  "missing": [],
   "committed": [
     "add_access_flags",
-    "function_has_a_valist_arg"
+    "add_type_flags",
+    "append_calling_convention_directives",
+    "append_type_info_directives",
+    "function_has_a_valist_arg",
+    "check_if_foreign_function_should_be_omitted",
+    "shared_type",
+    "should_be_moved_to_global_scope"
   ],
   "draft": [],
-  "facade_integration": "pending coordinator-owned #load of modifiers.jai; fixture directly loads the exact public file with canonical imports",
-  "remaining_contracts": "docs/worker-inbox.md",
+  "facade_integration": "clean integrator loaded modifiers and shared context; both fixtures use actual public imports",
+  "remaining_contracts": [],
+  "context_protocol": "Single Bindings_Generator_Context module; borrowed generator and generator_options pointers; canonical per-instance casts; lifecycle owners notified in docs/worker-inbox.md",
   "verification": {
     "command": "python3 tools/check_generator_modifiers.py",
     "source_built_tools": true,
     "build_jobs": 2,
     "format": "passed repository jaifmt --check",
-    "lint": "passed jailint -D warnings; all three owned Jai files in checked-files",
-    "interpreter": "passed on Mac host",
-    "native": ["passed Mac ARM64 O0", "passed Mac ARM64 O2"],
+    "lint": "passed jailint -D warnings --context; all seven changed Jai files in measured checked-files union",
+    "interpreter": "2 public-import fixtures passed on Mac host; 2 model regression fixtures passed",
+    "native": ["2 public-import fixtures passed Mac ARM64 O0", "2 public-import fixtures passed Mac ARM64 O2"],
     "source_only": ["windows x64", "windows arm64", "linux x64", "linux arm64"],
+    "source_check_count": 8,
+    "nominal_import_variants": ["host", "windows", "ios"],
+    "ios_target_limit": "-os ios rejected by compiler; nominal iOS source and options policy tested on Mac host only",
     "evidence": "$CARGO_TARGET_DIR/generator-modifiers-evidence.json"
   },
   "deviations": [
-    "Six signatures lack reviewed public behavior; no implementation is invented",
-    "Shared facade integration remains coordinator-owned"
+    "No native Windows/Linux/iOS execution claim",
+    "Unspecified copy allocation, per-invocation counting and directive whitespace policies documented in docs/generator-modifiers.md"
   ],
   "hacks": []
 }
