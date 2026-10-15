@@ -1,5 +1,23 @@
 # Compiler progress
 
+Raw pointer/Registry blocker repaired generally in sema/convert.rs and consteval.rs:
+nonzero integer pointer constants retain target-width scalar bits; opaque #run
+results/fields need no invented bounds or pointee capture. Known globals still
+relocate. Immutable positive HKEY-shaped aliases, globals/defaults/comparisons,
+round trips and checked-cast failures pass original regressions. Five core/two
+LLVM cases pass; actual native ARM64/WASM64 O0/O2 and wasm32 compiler-host execution
+pass. Full available core/backend: 332 pass, zero fail, one inherited corpus sweep
+ignored. Scoped Rust formatting/item spacing, Jai format/strict rebuilt-tool lint
+and host core/LLVM all-target clippy pass. 32-bit program targets explicitly reject;
+no 32-bit backend claim. Low-address accesses trap and unreadable view capture
+diagnoses; existing arbitrary non-low interpreter faults remain a bounded runtime
+gap, not claimed safe. No runtime/optimizer/assert-hook/LSP feature edits, peer
+writes or publication. Exact evidence/limits: compiler/raw-pointer-constants.md.
+Additional original baked-pointer regression repaired type loss in inferred
+procedure/struct bindings; semantic instance keys now include canonical type and
+value, retaining alias identity while separating equal-bit pointer/int arguments.
+These changes do not touch optimizer or Compiler field/drop order.
+
 Verified generic-pointer checkpoint: 6abf47a,
 `fix(sema): canonicalize default generic pointees before binding`. Implementation,
 original regressions and documentation are committed. Producer restored-fixture/

@@ -1,5 +1,23 @@
 # Compiler integration handoff
 
+Registry compiler dependency repaired without module exceptions: raw integer casts
+to pointers fold as scalar target-width bits; opaque #run pointer values/fields
+preserve bits without unknown-size capture. Known global pointers still relocate.
+Public producer may retain immutable positive cast(HKEY)0x800000xx declarations;
+no mutable/function/sign-extended facade replacement is needed. Original four
+core/two LLVM cases, native ARM64/WASM64 O0/O2, actual wasm32 host, full 332-case
+core/backend suite, scoped format/strict lint and host all-target clippy pass.
+One inherited corpus sweep ignored; Windows/Linux native Registry integration
+remains pending. 32-bit output remains explicitly unsupported. Existing raw
+non-low interpreter dereference fault-containment and opaque temporary lifetime
+limits are documented; no runtime/optimizer/assert-hook/LSP source overlap.
+Details and exact commands: compiler/raw-pointer-constants.md.
+Follow-up original baked-value regression also repairs typed binding/key identity
+in calls/structs/procs and sema/mod's private cache helper: retain checked argument
+types, and key instances by canonical TypeId plus value. No Compiler field/drop
+order, optimizer, interpreter runtime or LSP algorithm change. Five core cases
+now cover equal-bit pointer/integer cache separation and canonical alias behavior.
+
 Default generic pointer implementation checkpoint: 6abf47a. Rebuilt own
 target/debug/jaic and target/debug/jailint include it; use the canonical compiler
 build command below. Fixture strict lint/format and host core/LLVM clippy pass.
