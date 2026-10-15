@@ -1,5 +1,7 @@
 # Compiler integration handoff
 
+Host/target repair: BUILD_OS/BUILD_CPU identify the executing compiler binary; OS/CPU remain output selection. Native/WASM64 emitted code, wasm32 compiler host and cross-child, and staged independent Preamble interpreter/native/WASI O0/O2 pass. Browser child failures now prevent parent execution. Exact commands, preserved broader-browser failures and runtime adoption boundary: compiler/host-target-constants.md.
+
 Latest completeness batches: 2f36a1e rejects qualified constant writes;
 1a120b4 models suspended Win32/CRT scheduler threads; 1b19b3f resolves public
 alias callable documentation. See compiler/completeness-follow-up.md.

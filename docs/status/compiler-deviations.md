@@ -1,5 +1,7 @@
 # Compiler deviations and implementation gaps
 
+Host-target follow-up uses a shared private host mapping, with no module exceptions or new public Jai exports. Unsupported compiler hosts now fail the Rust build explicitly rather than masquerading as Linux/X64. Actual cross-native execution is not claimed; cross-WASI/native execution and wasm32 host identity are verified. Browser child failure now stops parent execution; structured failure is workspace-level while original child diagnostics remain on stderr (separate source maps). Broader browser suite has eight preserved dependency/legacy failures; cross-only predicate cannot pass native-only jailint and its failure is recorded. Candidate runtime adoption remains pending; no new peer writes occurred. Locations, evidence, risks and remaining work: compiler/host-target-constants.md.
+
 Late cross-workspace runtime configuration is now refreshed by the Rust CLI and
 workspace emission drivers immediately before execution/output. The original
 child-to-root update test failed before this repair and now executes real 131072

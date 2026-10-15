@@ -36,6 +36,13 @@ pub fn execute(
                 options.cpu = TargetCpu::Wasm;
             }
             options.import_paths = vec!["/lib".into()];
+            // A fixture may supply its own independent minimal bootstrap declarations.
+            if files
+                .iter()
+                .any(|(path, _)| *path == "/lib/prelude/module.jai")
+            {
+                options.preload = Some("/lib/prelude/module.jai".into());
+            }
             let mut fs = VirtualFs::default();
             for &(path, text) in files {
                 fs.insert(path, text.as_bytes());

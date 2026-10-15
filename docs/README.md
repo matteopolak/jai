@@ -10,6 +10,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 Jai language behavior as implemented by `jaic`.
 
 - [Casts and conversions](language/casts-and-conversions.md)
+- [Compiler host and output target constants](compiler/host-target-constants.md)
 - [The implicit context](language/context.md)
 - [Control flow: loops, cases and defer](language/control-flow.md)
 - [Dead-code elimination: what is checked when unused](language/dead-code-elimination.md)

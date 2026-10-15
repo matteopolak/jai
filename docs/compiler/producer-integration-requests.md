@@ -65,3 +65,14 @@ and execute scalar add. That expectation contradicts the reviewed Meow_Hash
 or scalar alias is introduced. Original SIMD lane extraction/mutation and generic
 forwarding tests execute on interpreter/native/WASM64, preserving canonical type
 identity. Producer source and assertions were not edited.
+
+## Host/target dependency resolved
+
+BUILD_OS/BUILD_CPU now retain compiler-binary host tags under cross selection;
+OS/CPU retain output tags. The unchanged NEW foundations predicate and Preamble
+fixtures are staged only in this compiler checkout and pass cross checking and
+interpreter/native/WASI execution. No producer facade change is needed. Actual
+wasm32 compiler host and Linux/X64 child checks pass too. See
+[host-target evidence](host-target-constants.md). The portable private runtime
+protocol adoption remains pending independently; existing runtime-configuration.md
+consumer edits and allocation regressions are unchanged and pass.

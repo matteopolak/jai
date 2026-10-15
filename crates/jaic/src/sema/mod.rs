@@ -86,6 +86,40 @@ pub enum TargetCpu {
     Wasm,
 }
 
+/// Platform on which this compiler binary executes, independent of output options.
+fn compiler_host() -> (TargetOs, TargetCpu) {
+    #[cfg(not(any(
+        target_os = "windows",
+        target_os = "macos",
+        target_os = "linux",
+        target_arch = "wasm32"
+    )))]
+    compile_error!("compiler host OS has no supported Operating_System_Tag mapping");
+    #[cfg(not(any(
+        target_arch = "x86_64",
+        target_arch = "aarch64",
+        target_arch = "wasm32"
+    )))]
+    compile_error!("compiler host architecture has no supported CPU_Tag mapping");
+    let os = if cfg!(target_os = "windows") {
+        TargetOs::Windows
+    } else if cfg!(target_os = "macos") {
+        TargetOs::MacOS
+    } else if cfg!(target_arch = "wasm32") {
+        TargetOs::Wasm
+    } else {
+        TargetOs::Linux
+    };
+    let cpu = if cfg!(target_arch = "aarch64") {
+        TargetCpu::Arm64
+    } else if cfg!(target_arch = "wasm32") {
+        TargetCpu::Wasm
+    } else {
+        TargetCpu::X64
+    };
+    (os, cpu)
+}
+
 /// `Build_Options.dead_code_elimination`: which declarations that nothing the program reaches
 /// still get type-checked. Only checking changes; compiled output keeps just what is reachable.
 /// See `docs/language/dead-code-elimination.md`.
@@ -210,22 +244,7 @@ impl Options {
     }
 
     pub fn host() -> Self {
-        let os = if cfg!(target_os = "windows") {
-            TargetOs::Windows
-        } else if cfg!(target_os = "macos") {
-            TargetOs::MacOS
-        } else if cfg!(target_arch = "wasm32") {
-            TargetOs::Wasm
-        } else {
-            TargetOs::Linux
-        };
-        let cpu = if cfg!(target_arch = "aarch64") {
-            TargetCpu::Arm64
-        } else if cfg!(target_arch = "wasm32") {
-            TargetCpu::Wasm
-        } else {
-            TargetCpu::X64
-        };
+        let (os, cpu) = compiler_host();
         Self {
             os,
             cpu,
