@@ -578,6 +578,26 @@
       ]
     },
     {
+      "report": ".work/rpmalloc-public-checkpoint-18.json",
+      "sha256": "699fbcddff725d538a6ad9197c29872eb95fba6466929f0cc7893077e9f489c3",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 54,
+          "failed": 6
+        },
+        "native": {
+          "passed": 16
+        },
+        "privacy": {
+          "passed": 126
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
       "report": ".work/rpmalloc-public-checkpoint-14.json",
       "sha256": "aabc211f5a6199b8ad73baaf00ba9e17d16add6a4dc3a0e1812d532000cabb42",
       "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
@@ -646,7 +666,7 @@
     },
     {
       "report": ".work/rpmalloc-boundary-verification.json",
-      "sha256": "5d5ef11761c94f2d8fab7042b3945f5dc9ed334958c120e0120359bf89f9098f",
+      "sha256": "d5759269a64282f3e95d285547c49ce746720e0f13289504443b6f9f7e9351e5",
       "scope": "Six public supported-profile programs; source matrix separately from actual two-CPU Mac execution",
       "checks": 65,
       "failures": 0

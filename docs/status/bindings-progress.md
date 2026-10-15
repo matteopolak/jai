@@ -1,5 +1,20 @@
 # Bindings worker progress
 
+Stable implementation commit: `5c6aa17` (raw facade, isolated statistics
+profiles and refreshed callback contracts). Follow-up public profile tests now
+also verify same-profile raw import rejection preserves an active rewrite
+owner, custom-map failure in the no-statistics domain rolls back without
+unmap/retry calls, and subsequent real initialization succeeds while the other
+statistics domain remains live. Both Mac CPUs and all six source targets pass;
+scoped strict lint and 63 Python tests pass. Standard scoped verifier fixture
+selection now includes all three new programs: checkpoint-18 has 54 source
+passes/six inventory failures, 126 privacy passes and 16 host build/run passes
+(two private ABI/SDK plus six public programs). The separate boundary report
+records 12 actual two-CPU public executions. All 18 configuration public-name
+failures remain; their declaration checks pass. Other36 unresolved declarations
+are precisely requested through the questions document after fresh spec review.
+The missing canonical heap implementation is explicitly required next code work.
+
 Current public batch after `fc6c681`: real raw lifecycle/allocation/statistics,
 calloc/aligned calloc/memalign/checked POSIX alignment, statistics FILE output,
 collection and canonical raw aliases now share the rewrite's private boundary.

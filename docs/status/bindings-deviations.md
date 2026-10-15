@@ -8,6 +8,17 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Scoped native fixture registration repair.** New rpmalloc public fixtures
+  were registered in the source/native lists but initially omitted from the
+  scoped runtime module-owner filter. Dedicated two-CPU execution still ran
+  them, but the scoped verifier skipped those three programs. The owner filter
+  and explicit evidence scopes are now corrected: checkpoint-18 runs all eight
+  rpmalloc programs (two private, six public), producing 16 host build/run
+  checks. This was a test-registration defect, not public functionality credit;
+  earlier ten-check reports are preserved. Future fixture additions must update
+  source/runtime registration and owner filtering together; a unified fixture
+  manifest is the proper longer-term tooling refactor.
+
 - **Current rpmalloc raw/profile policy and callback corrections.**
   `rpmalloc/context.jai` privately selects raw first-class heaps false because
   the reviewed parameter is genuinely undeclared and the latest user explicitly
