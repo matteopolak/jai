@@ -1,5 +1,12 @@
 # Portable stdlib worker deviations
 
+Example_Plugin scope review: no missing reviewed entry or test exclusion remains.
+The public some_state stores33 plus messages observed after init; this gives a real
+count while preserving exact layout and allocation ownership. Diagnostic prose is
+independently worded. Public direct-callback fixtures supply typed messages only
+to test reporting; separate actual compiler-workspace runs verify real messages,
+output and shutdown. No public callback is a fabricated completion/artifact path.
+
 Default build partial dependency: Default_Check.get_plugin is required by the
 generic plugin workflow but absent from the reviewed Check inventory and NEW
 producer. No fake plugin/body/check success is supplied; default builds and full

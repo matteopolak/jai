@@ -1,5 +1,13 @@
 # Portable stdlib progress
 
+Example_Plugin completed: all ten reviewed entries, canonical My_Plugin layout,
+option grammar/default/init state, compiler message reporting and allocation-owned
+shutdown. Public tests interpreter/native O0/O2 and real Default_Metaprogram
+-no_check +Example_Plugin builds/runs pass, as does strict lint and format/--check.
+Evidence target/example-plugin-workflow.log. Inventory120 missing rows. Check
+factory/config and general target CLI forwarding remain explicit dependencies;
+no default-enabled or combined Mac success claim. Returning to reviewed ZIP/APK.
+
 Default_Metaprogram workspace checkpoint: actual Mac target executables, inferred
 and explicit outputs, relative import directories, add/run input, options,
 parameterized plugin imports, two-plugin callback ordering, help/version and

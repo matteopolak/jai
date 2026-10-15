@@ -138,22 +138,12 @@ Reviewed contract: [module page](specs/stdlib/modules/default-metaprogram.md).
 
 ### Example_Plugin
 
-Plugin lifecycle callbacks/options/state behavior remain missing. Compiler callback types are reviewed; no placeholder callbacks are counted as implementation.
+All reviewed record/options/lifecycle exports implemented. Canonical type/defaults, initialized state, malformed options, phase/typecheck/completion diagnostics and owned shutdown pass interpreter/native O0/O2 and strict lint; the actual default workspace loader builds and runs a target with +Example_Plugin. No source/artifact-producing callback is fabricated.
 
 Reviewed contract: [module page](specs/stdlib/modules/example-plugin.md).
 
 | Missing public declaration | Condition |
 | --- | --- |
-| `add_source :: (p: *Metaprogram_Plugin)` | All reviewed hosts |
-| `before_intercept :: (p: *Metaprogram_Plugin, flags: *Intercept_Flags)` | All reviewed hosts |
-| `finish :: (p: *Metaprogram_Plugin)` | All reviewed hosts |
-| `get_plugin :: () -> *Metaprogram_Plugin` | All reviewed hosts |
-| `HELP_STRING :: #string` | All reviewed hosts |
-| `init :: (p: *Metaprogram_Plugin, options: [] string) -> bool` | All reviewed hosts |
-| `log_help :: (p: *Metaprogram_Plugin)` | All reviewed hosts |
-| `message :: (p: *Metaprogram_Plugin, message: *Message)` | All reviewed hosts |
-| `My_Plugin :: struct` | All reviewed hosts |
-| `shutdown :: (p: *Metaprogram_Plugin)` | All reviewed hosts |
 
 ### linux_build
 
@@ -189,7 +179,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 130 missing reviewed declaration/overload/nested-operation rows
+Total: 120 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

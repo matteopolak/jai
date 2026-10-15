@@ -42,3 +42,13 @@ support, combined baseline rerun, native Windows/Linux. No combined Mac failure
 reduction is claimed from these staged runs. Stable coordinator baseline remains
 822 passed / 7 failed until rerun. Inventory credits five public entries; build
 is retained as incomplete among 130 missing rows.
+
+Public Example_Plugin is now implemented, including canonical My_Plugin, initial
+some_state=0 / init=33, repeated option/value parsing, all lifecycle callbacks,
+phase/typecheck/completion reporting and allocation ownership through shutdown.
+Its state increments once per message, allowing finish to report the count without
+extra public fields or an external address registry. Option values only print.
+`python3 -B tools/check_portable_example_plugin.py` passes interpreter/native O0/O2
+public behavior tests, real default-workspace +Example_Plugin builds/runs, and
+strict lint. Format/--check passes both owned files. No byte-for-byte diagnostic
+prose claim. Inventory120 missing rows after this complete ten-entry module.
