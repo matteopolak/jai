@@ -1,5 +1,9 @@
 # Developer documentation
 
+- [Mac graphics catalogue repairs](native/mac-graphics-catalogue-repairs.md):
+  SDK-correct NSString construction, queued native window notifications,
+  reviewed-test migrations, clipboard preservation and actual scoped native runs.
+
 - [Extensions Io/Args dependency migration](extensions/dependency-migration.md):
   allocator ownership, fiber scratch lifecycle and actual WASI termination;
   [measured status and remaining dependency handoff](status/extensions-dependencies.md).

@@ -1,5 +1,21 @@
 # Window/render deviations and implementation gaps
 
+Mac repair batch: no public API additions, exception swallowing, fake context
+attachment or duplicate binding identities. Native notification retention costs
+one retain/queue entry per notification until the pump drains it; intentionally
+preserves callbacks/lifetime across frame reset. Clipboard guard restores all
+materialized item/type bytes but cannot reproduce original provider identity,
+changeCount/lazy-provider behavior or protect concurrent clipboard changes. Direct
+clipboard fixture execution preserves text only; use the documented guard runner
+for rich state. Tests no longer print returned clipboard content. Native context
+readback/close/reopen and application-local injection really execute on this Mac;
+no global hardware injection or other-CPU/Windows claim. No GUI permission issue
+was encountered here. The supplied baseline JSON was absent. Unreviewed NSCursor
+surface and cursor-arrow/contextless-swap policies remain exact questions; test
+corrections and remaining limits are recorded in the README-linked Mac repair doc.
+Directory-wide Input lint encountered a Windows-only fixture assertion; linting
+the real production entry plus scoped native fixtures passes without suppression.
+
 Resolved source-download resilience gap: candidate 2fa2bc2 failed on a transient
 WinError10054 before compilation. tools/window_render_mesa_windows.py now retries
 only recognized transport failures/selected HTTP statuses, at most four attempts,
