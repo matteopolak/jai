@@ -1821,105 +1821,105 @@
         "declaration": "CXVirtualFileOverlayImpl :: struct",
         "section": "Unix-specific declarations",
         "spec_line": 306,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "CXVirtualFileOverlay",
         "declaration": "CXVirtualFileOverlay :: *CXVirtualFileOverlayImpl",
         "section": "Unix-specific declarations",
         "spec_line": 307,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "clang_VirtualFileOverlay_create",
         "declaration": "clang_VirtualFileOverlay_create :: (options: u32) -> CXVirtualFileOverlay #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 308,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_VirtualFileOverlay_addFileMapping",
         "declaration": "clang_VirtualFileOverlay_addFileMapping :: (unknown0: CXVirtualFileOverlay, virtualPath: *u8, realPath: *u8) -> CXErrorCode #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 309,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_VirtualFileOverlay_setCaseSensitivity",
         "declaration": "clang_VirtualFileOverlay_setCaseSensitivity :: (unknown0: CXVirtualFileOverlay, caseSensitive: s32) -> CXErrorCode #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 310,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_VirtualFileOverlay_writeToBuffer",
         "declaration": "clang_VirtualFileOverlay_writeToBuffer :: (unknown0: CXVirtualFileOverlay, options: u32, out_buffer_ptr: **u8, out_buffer_size: *u32) -> CXErrorCode #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 311,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_free",
         "declaration": "clang_free :: (buffer: *void) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 312,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_VirtualFileOverlay_dispose",
         "declaration": "clang_VirtualFileOverlay_dispose :: (unknown0: CXVirtualFileOverlay) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 313,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXModuleMapDescriptorImpl",
         "declaration": "CXModuleMapDescriptorImpl :: struct",
         "section": "Unix-specific declarations",
         "spec_line": 314,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "CXModuleMapDescriptor",
         "declaration": "CXModuleMapDescriptor :: *CXModuleMapDescriptorImpl",
         "section": "Unix-specific declarations",
         "spec_line": 315,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "clang_ModuleMapDescriptor_create",
         "declaration": "clang_ModuleMapDescriptor_create :: (options: u32) -> CXModuleMapDescriptor #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 316,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_ModuleMapDescriptor_setFrameworkModuleName",
         "declaration": "clang_ModuleMapDescriptor_setFrameworkModuleName :: (unknown0: CXModuleMapDescriptor, name: *u8) -> CXErrorCode #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 317,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_ModuleMapDescriptor_setUmbrellaHeader",
         "declaration": "clang_ModuleMapDescriptor_setUmbrellaHeader :: (unknown0: CXModuleMapDescriptor, name: *u8) -> CXErrorCode #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 318,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_ModuleMapDescriptor_writeToBuffer",
         "declaration": "clang_ModuleMapDescriptor_writeToBuffer :: (unknown0: CXModuleMapDescriptor, options: u32, out_buffer_ptr: **u8, out_buffer_size: *u32) -> CXErrorCode #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 319,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_ModuleMapDescriptor_dispose",
         "declaration": "clang_ModuleMapDescriptor_dispose :: (unknown0: CXModuleMapDescriptor) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 320,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXFile",
@@ -5195,105 +5195,105 @@
         "declaration": "CXVirtualFileOverlayImpl :: struct",
         "section": "Windows-specific declarations",
         "spec_line": 791,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "CXVirtualFileOverlay",
         "declaration": "CXVirtualFileOverlay :: *CXVirtualFileOverlayImpl",
         "section": "Windows-specific declarations",
         "spec_line": 792,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "clang_VirtualFileOverlay_create",
         "declaration": "clang_VirtualFileOverlay_create :: (options: u32) -> CXVirtualFileOverlay #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 793,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_VirtualFileOverlay_addFileMapping",
         "declaration": "clang_VirtualFileOverlay_addFileMapping :: (unknown0: CXVirtualFileOverlay, virtualPath: *u8, realPath: *u8) -> CXErrorCode #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 794,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_VirtualFileOverlay_setCaseSensitivity",
         "declaration": "clang_VirtualFileOverlay_setCaseSensitivity :: (unknown0: CXVirtualFileOverlay, caseSensitive: s32) -> CXErrorCode #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 795,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_VirtualFileOverlay_writeToBuffer",
         "declaration": "clang_VirtualFileOverlay_writeToBuffer :: (unknown0: CXVirtualFileOverlay, options: u32, out_buffer_ptr: **u8, out_buffer_size: *u32) -> CXErrorCode #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 796,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_free",
         "declaration": "clang_free :: (buffer: *void) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 797,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_VirtualFileOverlay_dispose",
         "declaration": "clang_VirtualFileOverlay_dispose :: (unknown0: CXVirtualFileOverlay) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 798,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXModuleMapDescriptorImpl",
         "declaration": "CXModuleMapDescriptorImpl :: struct",
         "section": "Windows-specific declarations",
         "spec_line": 799,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "CXModuleMapDescriptor",
         "declaration": "CXModuleMapDescriptor :: *CXModuleMapDescriptorImpl",
         "section": "Windows-specific declarations",
         "spec_line": 800,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "clang_ModuleMapDescriptor_create",
         "declaration": "clang_ModuleMapDescriptor_create :: (options: u32) -> CXModuleMapDescriptor #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 801,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_ModuleMapDescriptor_setFrameworkModuleName",
         "declaration": "clang_ModuleMapDescriptor_setFrameworkModuleName :: (unknown0: CXModuleMapDescriptor, name: *u8) -> CXErrorCode #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 802,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_ModuleMapDescriptor_setUmbrellaHeader",
         "declaration": "clang_ModuleMapDescriptor_setUmbrellaHeader :: (unknown0: CXModuleMapDescriptor, name: *u8) -> CXErrorCode #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 803,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_ModuleMapDescriptor_writeToBuffer",
         "declaration": "clang_ModuleMapDescriptor_writeToBuffer :: (unknown0: CXModuleMapDescriptor, options: u32, out_buffer_ptr: **u8, out_buffer_size: *u32) -> CXErrorCode #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 804,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_ModuleMapDescriptor_dispose",
         "declaration": "clang_ModuleMapDescriptor_dispose :: (unknown0: CXModuleMapDescriptor) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 805,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXFile",

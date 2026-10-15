@@ -23,12 +23,27 @@ def run(command, *, output=None, error=""):
     return result.stdout
 
 
+def check_framework_consumer(prefix, emitter):
+    for optimization in [0, 2]:
+        tag = f"{emitter}-c{optimization}"
+        exe = ROOT / f"target/developer-tools-framework-{tag}"
+        run([prefix / "bin/clang", "-x", "objective-c", "-std=c11", "-fmodules", f"-O{optimization}",
+             f"-fmodules-cache-path={ROOT / ('target/developer-tools-module-cache-' + tag)}",
+             f"-F{ROOT / 'target/developer-tools-frameworks'}", "-Wall", "-Wextra", "-Werror",
+             ROOT / "tests/developer-tools/bindings-module-consumer.m", "-o", exe])
+        run([exe])
+
+
 def main():
     check_developer_bindings.main()
     build_developer_debug.main()
     check_developer_debug_windows.main()
     check_developer_msf.main()
     prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
+    framework = ROOT / "target/developer-tools-frameworks/OriginalNative.framework"
+    (framework / "Modules").mkdir(parents=True, exist_ok=True)
+    (framework / "Headers").mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(ROOT / "tests/developer-tools/bindings-module-header.h", framework / "Headers/OriginalNative.h")
     run([prefix / "bin/clang", "-target", "x86_64-unknown-linux-gnu", "-g", "-fno-omit-frame-pointer",
          "-c", "tests/developer-tools/dwarf-native.c", "-o", "target/developer-tools-dwarf.o"])
     run([prefix / "bin/llvm-objcopy", "--dump-section", ".eh_frame=target/developer-tools-eh-frame.bin",
@@ -95,6 +110,7 @@ def main():
     cases.append("msf-wire")
     cases.append("debug-int-set")
     cases.append("bindings-clang-tokens")
+    cases.append("bindings-clang-build-system")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -110,6 +126,8 @@ def main():
             error = "native debug output\n"
         expected = "x = 7 (s32)\nok\n" if case == "print-vars" else "ok\n"
         run([JAIC, source, "-interp", "-I", ROOT / "target"], output=expected, error=error)
+        if case == "bindings-clang-build-system":
+            check_framework_consumer(prefix, "interp")
         if case == "bindings-cpp-fragments":
             for cpp_optimization in [0, 2]:
                 cpp_exe = ROOT / f"target/developer-tools-cpp-fragments-interp-cxx{cpp_optimization}"
@@ -120,6 +138,8 @@ def main():
             exe = ROOT / f"target/developer-tools-{case}-o{optimization}"
             run([JAIC, source, f"-O{optimization}", "-exe", exe, "-I", ROOT / "target"])
             run([exe], output=expected, error=error)
+            if case == "bindings-clang-build-system":
+                check_framework_consumer(prefix, f"o{optimization}")
             if case == "bindings-cpp-fragments":
                 for cpp_optimization in [0, 2]:
                     cpp_exe = ROOT / f"target/developer-tools-cpp-fragments-o{optimization}-cxx{cpp_optimization}"
@@ -194,7 +214,7 @@ def main():
     for cpu in ["x64", "arm64"]:
         run([JAIC, "tests/developer-tools/debug-windows-contract.jai", "-check", "-os", "windows", "-cpu", cpu])
         for os_name in ["linux", "windows"]:
-            for case in ["msf-wire", "debug-int-set", "dwarf-cfa", "bindings-clang-tokens"]:
+            for case in ["msf-wire", "debug-int-set", "dwarf-cfa", "bindings-clang-tokens", "bindings-clang-build-system"]:
                 run([JAIC, f"tests/developer-tools/{case}.jai", "-check", "-os", os_name, "-cpu", cpu])
     for case, reason in [("check-array", "fixed array used as a pointer in assignment"),
                          ("check-small-driver", "small integer addition requires an explicit intermediate integer cast")]:

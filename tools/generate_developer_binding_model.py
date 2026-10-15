@@ -64,7 +64,8 @@ def main():
         "native-model.jai": ["CXToken", "CXTokenKind", "CX_StorageClass", "CXTypeLayoutError"],
         "native-parser-model.jai": ["CXString", "CXCursorKind", "CXCursor", "CXTypeKind", "CXType",
                                      "CXErrorCode", "CXTranslationUnitImpl", "CXUnsavedFile", "CXChildVisitResult",
-                                     "CXSourceLocation", "CXSourceRange", "CXDiagnosticSeverity", "CXIndexOptions", "CXEvalResultKind"],
+                                     "CXSourceLocation", "CXSourceRange", "CXDiagnosticSeverity", "CXIndexOptions", "CXEvalResultKind",
+                                     "CXVirtualFileOverlayImpl", "CXModuleMapDescriptorImpl"],
     }
     directory = ROOT / "stdlib/Bindings_Generator"
     directory.mkdir(exist_ok=True)
@@ -111,7 +112,13 @@ def main():
                  "clang_Cursor_Evaluate", "clang_EvalResult_getKind", "clang_EvalResult_getAsInt",
                  "clang_EvalResult_getAsLongLong", "clang_EvalResult_isUnsignedInt", "clang_EvalResult_getAsUnsigned",
                  "clang_EvalResult_getAsDouble", "clang_EvalResult_dispose", "clang_isExpression",
-                 "clang_getFile", "clang_getFileContents", "clang_getNullCursor"]
+                 "clang_getFile", "clang_getFileContents", "clang_getNullCursor",
+                 "CXVirtualFileOverlay", "clang_VirtualFileOverlay_create", "clang_VirtualFileOverlay_addFileMapping",
+                 "clang_VirtualFileOverlay_setCaseSensitivity", "clang_VirtualFileOverlay_writeToBuffer",
+                 "clang_VirtualFileOverlay_dispose", "clang_free", "CXModuleMapDescriptor",
+                 "clang_ModuleMapDescriptor_create", "clang_ModuleMapDescriptor_setFrameworkModuleName",
+                 "clang_ModuleMapDescriptor_setUmbrellaHeader", "clang_ModuleMapDescriptor_writeToBuffer",
+                 "clang_ModuleMapDescriptor_dispose"]
     source = "// Native parser subset; declarations from the reviewed platform-specific inventories.\n"
     for name in api_names:
         def declaration(inventory):

@@ -36,6 +36,8 @@ The binding-model void/bool predicates follow explicit scalar flags and typedef 
 
 The native token API now exposes reviewed token kinds, spelling, locations/extents and cursor annotations, plus cursor kind/lookup/equality. Keep the translation unit alive while using tokens/cursors, dispose token arrays with libclang and dispose returned CXString spellings individually. Annotation arrays are caller-owned. Tests match every token to original header bytes and verify declaration annotations; Windows/Unix enum signedness follows the reviewed native ABI.
 
+The reviewed virtual-overlay and module-map descriptor APIs now invoke libclang's real build-system utilities. Overlay mappings reject relative virtual paths; generated case-insensitive overlays are consumed by native header parsing. Generated framework module maps are imported by native Clang consumers at O0/O2 after each interpreter/native emitter run. Descriptor handles and returned buffers use their matching native disposal APIs, following the [official build-system API](https://clang.llvm.org/doxygen/group__BUILD__SYSTEM.html). This does not implement the unrelated public generate_bridge path.
+
 ## Print_Vars
 
 `print_vars_to`, `print_vars` and `log_vars` expand over caller expressions. They retain caller scope, use Program_Print for source names, evaluate each expression once, render values/types and align name/value columns. The helper accepts the exact reviewed fixed Code array; the variadic entry points create that array at compile time. `Print_Vars_Config` controls fields, delimiters, indentation and line separators. Logging forwards the caller location. Widths currently count UTF-8 bytes; see questions and deviations for display-cell and source-whitespace limits.
