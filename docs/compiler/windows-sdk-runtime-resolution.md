@@ -36,8 +36,9 @@ Official contracts:
 
 `python tools/check_windows_thread_sdk.py` requires a native Windows x64/ARM64
 Rust host and SDK. It builds/links actual Rust test executables with cargo test
---no-run before executing scheduler units and both owned Windows integration
-targets. A new native unit checks actual runtime export resolution; the real
+--no-run before executing scheduler units and all three owned Windows integration
+targets, including the existing native naming/error fixture. A new native unit
+checks actual runtime export resolution; the real
 suspend-only alias regression checks last-error preservation for live and closed
 handles. Existing alias exit, naming, permission and lifetime assertions remain.
 
