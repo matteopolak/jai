@@ -229,3 +229,5 @@ finalization/stream responsibilities. Verify whole/fragmented/block flows and bo
 check native O0/O2 and interpreter. Preserve scalar rejection and real dump output.
 Record raw scratch/store/dump/state-byte/window contracts and untuned backend cost.
 Keep NEW-foundation legacy verification in a dedicated target overlay.
+
+SIMD increment: execute allocation-free reviewed scalar operations first; retain exact canonical aggregate ABI, public flags and qualified imports. Record missing load result and gather/looping/interleaving contracts rather than invent signatures. Next implement bounded executable container parsers from reviewed records and official native format documentation, with malformed-input and native/interpreter verification.

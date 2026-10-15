@@ -167,7 +167,7 @@ six compile-time rejections and all prior worker integration/target checks.
 All 254 owned Jai files pass source-built jaifmt --check and jailint -D warnings.
 Continue valid SIMD register verification, Meow/SIMD and remaining owned modules.
 
-Current verified increment: all reviewed Meow exports execute real calico hashing,
+Previously verified increment: all reviewed Meow exports execute real calico hashing,
 register mixing/lane extraction, incremental state and diagnostics. Live mutable
 array identity/edits are checked. 317 source-built native C cases verify one-shot,
 fragmented streaming, both 128-byte outputs, tails/blocks/page offsets and custom
@@ -185,3 +185,5 @@ Known workarounds and incomplete behavior are recorded in
 module ledger. Next: finish regression/checkpoint, then continue remaining owned
 portable modules using reviewed specifications. Full corpus/release integration
 remains the coordinator's responsibility.
+
+Current verified increment: canonical SIMD value aggregates and supported scalar kernels pass interpreter/native, including all comparison forms, 64-lane masks, wrap, unaligned stores and reflected names. No allocation or ISA dependency; scalar min/max delegates to Basic. Load's missing result header and offsets/looping/interleaving contracts remain unresolved. Full suite passes 87 positive cases in both modes, 20 expected faults in both modes, eight compile rejections and prior SMTP/IPC/startup/parent/target checks. Source-built formatter/linter pass all 269 owned Jai files. Review records distinguish implementation mask/FP/overflow policies from reference facts. Continue executable-format containers and remaining modules.

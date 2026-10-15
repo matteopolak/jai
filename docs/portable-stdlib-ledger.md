@@ -107,7 +107,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Embedding initialization, owned scratch lifetime, synchronized output, explicit-Code once and fault hooks implemented; POSIX crash backtrace startup ON/OFF verified through source-built Compiler workspace; remaining platform adaptations unfinished |
 | [sdl](specs/stdlib/modules/sdl.md) | Reserved for bindings worker; not implemented or modified here |
 | [shared-memory-channel](specs/stdlib/modules/shared-memory-channel.md) | Real Unix named-mapping SPSC reserve/commit/poll/done and ownership implemented; wrap/full/corruption and 2,048 packets in all four interpreter/native process pairings. Wire details require review; Windows absent, Linux native unverified |
-| [simd](specs/stdlib/modules/simd.md) | Owned portable scope; not implemented |
+| [simd](specs/stdlib/modules/simd.md) | Canonical aggregates, set/store, arithmetic/comparisons, min/max, sum/masks implemented as scalar fallback; interpreter/native tested. Load result, offsets/looping/interleaving and mask/overflow policies need review |
 | [simp](specs/stdlib/modules/simp.md) | Reserved for window/render worker by current ownership; not modified here |
 | [simple-package](specs/stdlib/modules/simple-package.md) | Not implemented; oracle lacks package/TOC magic values and per-entry wire encoding. Questions recorded; no substitute archive format fabricated |
 | [sloppy-math](specs/stdlib/modules/sloppy-math.md) | Reserved for numerics worker; not implemented or modified here |

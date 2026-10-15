@@ -76,3 +76,5 @@ Further contract details and risks: [portable gaps](../portable-stdlib-gaps.md),
 [SMTP choices](../portable-mail.md), [crash backend](../portable-crash-handler.md).
 This record covers the known deviations in the implemented portable scope;
 the remaining module ledger is unfinished scope, not a claim of no deviations.
+
+SIMD increment: allocation-free scalar fallback uses Basic scalar min/max (Math exports its own vector overloads). All-ones comparison masks, MSB extraction, integer wrap and scalar FP semantics are explicit pending-review policies; no ISA speed claim. Reviewed load has no return/output contract; load/gather/scatter/looping/horizontal-add exports remain unfinished rather than invented signatures or fake bodies. See [SIMD](../portable-simd.md) for exact scope and tests.
