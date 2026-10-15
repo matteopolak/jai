@@ -189,7 +189,8 @@ def main():
         ("buildcpp-target", "BuildCpp object target validation failed"),
         ("mpeg-scalar-store", "cannot assign to constant"),
         ("adpcm-field-visibility", "no exported member `nChannels`"),
-        ("meow-lane", "Meow lane index out of range"),
+        ("register-scalar", "expected a SIMD register operand"),
+        ("meow-lane", "INDEX >= 0 && INDEX < 2"),
     ]:
         negative = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
         result = subprocess.run([str(compiler), "-check", str(negative)], cwd=ROOT,
