@@ -20,6 +20,13 @@ Build the real server with `cargo build --locked -p jai-language-server`. Run
 The driver does not patch or copy the server source and does not execute its
 Jai documents or exit calls. Native protocol acceptance is recorded separately.
 
+Actual server source044782c9 with immutable production library6295584c passes
+all40 phases in4 fresh processes. Server SHA256:
+`b66e97cf7e151d6b7cd14c399abbe239fc4dc51ac621a2c3fa03c76eb2861256`.
+The source-built server, normal bootstrap, real Basic imports, ranged edits and
+strict diagnostics were used; Jai documents were not executed. This focused
+protocol acceptance does not change the failed whole-workspace/corpus results.
+
 The root original-corpus audit remains red, including observed crash/panic cases
 being repaired by the compiler owner. Clean integration never reads original
 vendor bodies or runs the original application corpus. Strict audit reports

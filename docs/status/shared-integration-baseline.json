@@ -332,7 +332,7 @@
       "94ddd821",
       "4dac97bb"
     ],
-    "source_status": "reconciled; unit verified; native protocol pending",
+    "source_status": "committed044782c9; unit and actual native protocol verified",
     "lsp_tests": {
       "passed": 263,
       "failed": 0,
@@ -343,6 +343,16 @@
       "failed": 0,
       "ignored": 0
     },
-    "full_original_audit": "red; coordinator-owned; no acceptance inferred"
+    "full_original_audit": "red; coordinator-owned; no acceptance inferred",
+    "native_protocol": {
+      "accepted": true,
+      "source_id": "044782c9df61df709be8e29c554f7852ba08c86a",
+      "stdlib_id": "6295584c42cf004999267d28835dfa8e1b00e95f",
+      "server_sha256": "b66e97cf7e151d6b7cd14c399abbe239fc4dc51ac621a2c3fa03c76eb2861256",
+      "native_host": true,
+      "jai_documents_executed": false,
+      "phases": 40,
+      "processes": 4
+    }
   }
 }
