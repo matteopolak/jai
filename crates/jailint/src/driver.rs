@@ -434,7 +434,7 @@ fn lint_root(root: &Root, options: &Options, report: &BTreeSet<PathBuf>) -> Root
             // Strictly prepare bootstrap exports first: their lazy dependencies
             // may carry required parameters. Never invent a second binding.
             compiler
-                .compile_sources(&[ProgramSource::String("main :: () {}".into())])
+                .begin_sources(&[ProgramSource::String("main :: () {}".into())])
                 .and_then(|()| {
                     for source in &options.add_sources {
                         compiler.add_source(&ProgramSource::String(source.clone()))?;
