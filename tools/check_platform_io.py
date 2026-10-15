@@ -88,6 +88,10 @@ def main():
                                 ("macos", "arm64"), ("linux", "x64")]:
                 attempt([compiler, source, "-check", "-no_dce", "-os", system, "-cpu", target_cpu], env)
         fixture_args = [helper] if os.name == "nt" and source.stem == "process-contract" else []
+        if not fixture_args:
+            # Exercise ordinary CLI startup as well as the explicit argv form.
+            # Always supplying -- hid the Windows zero-vector SDK hook failure.
+            attempt([compiler, source, "-interp"], env, "ok\n")
         attempt([compiler, source, "-interp", "--", *fixture_args], env, "ok\n")
         if args.native:
             for optimization in ["-O0", "-O2"]:

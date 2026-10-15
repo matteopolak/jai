@@ -1,5 +1,10 @@
 # Portable stdlib worker deviations
 
+Platform-io cc07c00 follow-up is recorded in [its deviations](platform-io-deviations.md):
+actual native Platform subset passes are distinct from full-matrix failures; the
+fabricated empty-argv SDK failure is removed; ARM64 default crash policy still
+requires reviewed clarification without changing ON/AUTO defaults or hiding errors.
+
 Platform-io role report: [platform I/O deviations](platform-io-deviations.md)
 enumerates native verification limits, crash DLL packaging/stack bounds, staged
 dependencies, remaining interpreter suspension and debug/race-detector gaps, and

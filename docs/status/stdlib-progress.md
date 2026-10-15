@@ -1,5 +1,12 @@
 # Portable stdlib progress
 
+Platform-io cc07c00 update: actual Windows x64/ARM64 Platform interpreter/native
+O0/O2 steps passed; full jobs failed. The startup failure without `--` is isolated
+and fixed in the compiler executable-query adapter, with independent red/green
+regressions and strict SDK/native-CI hooks. ARM64 default crash selection remains
+an explicit narrow review request; public defaults/diagnostics are preserved.
+See [startup findings](../platform-io-startup-regressions.md).
+
 Platform-io role continuation: public Windows Process records/adapter landed in
 `700f07e`; reviewed x64 crash facade (`2b1d623`) and generic strict-lint/IDE repairs (`27b719c`) are now
 implemented. Four-target strict lint covers all 42 owned sources; host interpreter/

@@ -1,5 +1,25 @@
 # Platform I/O compiler/tool integration handoff
 
+## Current cc07c00 startup findings
+
+See [the original startup reproducers](platform-io-startup-regressions.md). The
+minimal patch to interp/executable_path.rs removes a deliberate NULL result from
+CommandLineToArgvW and supplies virtual executable metadata only for omitted argv.
+Shell32 remains responsible for parsing/ownership/errors; runtime strict Unicode
+conversion and initialization are unchanged. Two tests fail before the patch and
+all four executable-query tests pass afterward. Apply the local producer patch to
+the current independent compiler, not the historical staged compiler as a whole.
+
+Platform I/O execution passed on both Windows CPUs at cc07c00, while startup without `--`
+wheel/renderer interpretation failed and ARM64 default backtraces blocked corpus.
+The current independent producer already contains suspended CRT threads and real
+event interoperation, so the older thread-gap section below is historical.
+
+Default ARM64 crash selection still needs the narrow reviewed rule: the public
+Build_Options defaults ON/AUTO and complete serialization make unchanged ON and
+explicit ON identical. No guessed mask or changed default was implemented. Direct
+unsupported Runtime_Support enablement must retain the x64-only diagnostic.
+
 The worker now includes a small general IDE dependency-order fix and generic
 jailint driver/rule fixes. Compiler-owned integration is required; no module/path
 or symbol-name special cases were introduced. Remaining gaps below must retain
@@ -48,14 +68,14 @@ that producer module before integration. Do not supply a fake partial module or
 claim System's entire public inventory complete without it. Unix counter facade
 coverage likewise belongs to the portable integration review.
 
-## Suspended CRT threads in the Windows interpreter
+## Historical suspended CRT-thread gap (superseded by cc07c00 follow-up)
 
 Original reproducer: `tests/platform-io/pending/windows-crt-suspended-thread.jai`.
 Run `jaic -interp` on native Windows after integrating the independent stdlib.
 The required behavior is an actual gated thread, an initial timeout, ResumeThread
 returning the previous suspend count, then completion and handle cleanup.
 
-The current compiler producer's `interp/threads/win32.rs` intercepts CreateThread
+The earlier compiler producer's `interp/threads/win32.rs` intercepted CreateThread
 but explicitly traps CREATE_SUSPENDED. It does not schedule `_beginthreadex` or
 ResumeThread. Windows Thread now uses the documented CRT lifecycle so that CRT
 thread-local resources are reclaimed. Required general fix: model suspended thread
