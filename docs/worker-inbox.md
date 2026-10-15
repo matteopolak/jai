@@ -38,3 +38,20 @@ alternate checkout or raw vendor log was sought. Source-built compiler/linter
 outputs stay in local artifacts/T7; test reports are durable under artifacts.
 The exact large-client-context lint error above remains a compiler-owner handoff,
 not a production workaround or suppressed result. No Io production was edited.
+
+## Compiler/linter owner: blocking request from resumed client-context audit
+
+The exact production client context is freshly reproduced red. Two original
+reductions now exist: `tests/extensions/http-client-overload-lint-repro.jai`
+uses only real Http App POST registration, and
+`tests/extensions/rejected-overload-lint-repro.jai` removes Http/Json entirely.
+Both compile normally; the pure reduction executes its selected handler and
+asserts the result. Warnings-denied audit erroneously checks the Client generic
+candidate rejected by the App pointer type. This is a general compiler defect,
+not invalid test setup. The precise request, safe fresh logs and required
+non-suppression constraints are in docs/compiler/rejected-overload-lint-request.md.
+
+Please route that request to the compiler/linter owner and return an approved
+sanitized repair checkpoint. No compiler/peer checkout is edited here. The
+production client context remains a required green gate, not counted as passed.
+The absent original baseline is explicitly not a blocker for this resumed work.

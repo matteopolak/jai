@@ -1,5 +1,8 @@
 # Developer documentation
 
+- [Rejected-overload lint defect](compiler/rejected-overload-lint-request.md):
+  independent reduction and compiler-owner request for the required Http client context.
+
 - [Mac Extensions dependency repairs](extensions/mac-dependency-repairs.md):
   Json ownership/numerics, Http time/atomics, and test-only dependency migrations;
   [measured results and remaining lint-context failure](status/extensions-mac-repairs.md).
