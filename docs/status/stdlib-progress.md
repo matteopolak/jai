@@ -1,5 +1,14 @@
 # Portable stdlib progress
 
+Direct signing-key workflow now creates real EC/P256 or fixed RSA2048 DER keys
+and self-signed certificates. Real SDK cross-parsing, public-key match/signature,
+subjects/private permissions/repeated distinct outputs and real SDK failure cleanup
+pass interpreter/native O0/O2 plus full scoped strict lint. Canonical key model and
+exact signature retained; key_size ignored by reviewed policy. Installed native
+crypto CLI required; independent365-day/DER/private-directory policies documented
+in portable-direct-signing-key.md. Windows backend explicitly unsupported, no JKS
+credit (host Java runtime absent), no existing credentials accessed.
+
 CRITICAL17:45 test-oracle correction: filtered coordinator confirms official Jai
 also rejects dynamic-build-source-continuation; source-call timing probe mutates
 root options too late and is invalid. Proposed dynamic forward-call suspension

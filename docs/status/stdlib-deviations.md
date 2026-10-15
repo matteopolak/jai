@@ -1,5 +1,27 @@
 # Portable stdlib worker deviations
 
+Direct signing keys use installed native crypto CLI on POSIX hosts, not a linked
+LibreSSL ABI backend. Production dependency: compatible openssl req/pkcs8/x509 on
+PATH; absence/failure yields explicit false/diagnostic, never fabricated key data.
+Independent policies: SHA256 self-signing/365-day validity, private unique0700
+directory, DER X509/PKCS8 outputs,0600 key permissions, component-only key names.
+Native Mac SDK validation passes; Windows backend returns diagnosed unsupported,
+Linux/Android native pending. Proper long-term fix: native licensed C crypto ABI
+plus platform exclusive file/directory backend, preserving public model/signature.
+No user keys/configs/credential stores read. Subject escaping, ownership and full
+failure cleanup tested; details portable-direct-signing-key.md. Test oracle fixes
+(misspelled member/local redeclaration/unestablished duplicate-failure policy)
+are separate from the real minimal crypto config fix.
+
+Default parent-output phase follow-up: current real Default workflow sets its
+parent output_type to NO_OUTPUT inside build. Removing that setup in a staged
+probe causes the own compiler to write a parent with no main after child build
+(target/default-without-root-options.log). Filtered oracle rejects late parent
+option mutation in the separate timing probe. Valid parent-output/evaluation
+phase needs compiler/reviewer reconciliation; no exact-reference phase claim.
+Existing child artifacts/workspace tests remain genuine. General proper fix must
+handle build-script parent output through supported phases, not module-name hacks.
+
 WITHDRAWN plugin architecture: initial draft assumed a running procedure could
 add the definition of its own unresolved callee. Filtered17:45 reference oracle
 disproves that assumption; timing probe also changes root options too late. These
