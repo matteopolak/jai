@@ -1,5 +1,88 @@
 # WGL failure investigation and native CI handoff
 
+## e223538 install failure: validated expectation and configuration fix
+
+Authorized filtered evidence: native ARM64 LLVM/Mesa compilation reached install,
+then candidatee223538 (using helpera68544c) failed the required WGL pair check.
+No ARM64 GL execution was established. Compiler linking/headless WARP and ARM64
+signed-wheel checks pass; those are distinct from OpenGL driver support. No raw CI
+logs, vendor Jai or coordinator implementation bodies were inspected.
+
+Failure triage: the DLL expectation is correct. Official pinned Mesa25.2.5
+`meson.build:401-424` sets `with_platform_windows` from the **platforms option**,
+and `src/gallium/meson.build:233-244` includes both WGL targets only when that
+flag and OpenGL are enabled. Our `-Dplatforms=[]` disabled those targets even on
+Windows. This is a helper configuration defect, not an installer-name oracle
+correction or unavailable-platform classification. The proper fix is explicit
+`-Dplatforms=windows`; no assertion is dropped and no unrelated DLL is renamed.
+
+The pinned target definitions create `opengl32.dll` in targets/libgl-gdi and
+`libgallium_wgl.dll` in targets/wgl, both installed shared libraries. The supported
+`gallium-wgl-dll-name` option is explicitly pinned to its canonical default
+`libgallium_wgl`. `shared-glapi` is deprecated/no-op in this source version; it
+is not used as an invented enabling switch. The source archive/digest remain
+unchanged. No LLVM option, source pin or cache receipt format changes: completed
+verified LLVM entries from1f66dc1 remain reusable on the same toolchain/config.
+An original regression confirms Mesa-only option changes do not alter that key.
+
+Before compilation the helper saves real Meson --buildoptions/--machines/--targets/
+--installed/--install-plan JSON and requires Windows/aarch64, llvmpipe, OpenGL,
+static LLVM/CRT and both expected installed shared-library targets defined in the
+verified native source paths. Installation saves `install-files.json` (relative
+paths, sizes and hashes) even on failure. Discovery follows Meson's actual install
+mapping, including custom directories/case, and requires exact build/install file
+hash equality. It cannot substitute a similarly named target or a guessed path.
+External DESTDIR is rejected to keep all outputs in the fresh owned prefix.
+
+`window_render_mesa_install.py` validates ARM64 PE identity for installed DLLs,
+then uses official MSVC dumpbin /dependents /exports to check real WGL/ICD symbols
+and opengl32's import of the actual ICD. Only the reachable app-local dependency
+closure is copied, preserving original names. SDK-native metadata is retained in
+`native-sdk/*.sdk.txt` and progressive `native-sdk/validation.json`; successful
+closure is recorded in `driver-dependencies.json`. Missing external dependencies
+are checked with the actual OS LoadLibraryExW SYSTEM32 search, including API-set
+resolution, and resolved module paths/machines are reported. The OS loader handles
+compatible system ARM64X libraries; all deployed driver images must be ARM64.
+These are loader/metadata checks, not a renderer execution pass.
+
+Native vcvars must expose its official dumpbin.exe under VCToolsInstallDir. Use
+the already documented prepared venv/package/SDK configuration and restore the
+coordinator's1f66dc1 LLVM cache/full receipts. Build with a **fresh** output:
+
+```sh
+python tools/window_render_mesa_windows.py \
+  --out target/window-mesa-arm64-wgl --cache-dir target/window-mesa-cache --jobs 4
+python tools/window_render_wgl_ci.py \
+  --jaic target/aarch64-pc-windows-msvc/debug/jaic.exe \
+  --jailint target/aarch64-pc-windows-msvc/debug/jailint.exe \
+  --stdlib stdlib --native-libs target/native-libs \
+  --driver-dir target/window-mesa-arm64-wgl/driver
+```
+
+The native runner still requires fresh actual GL3.3 creation, llvmpipe identity,
+draw/readback, events, lifecycle and strict lint in interpreter/O0/O2. It now also
+requires the probe's actual loaded opengl32 file identity to match the supplied
+fresh driver file or its app-local deployed copy; a renderer label alone cannot
+establish the candidate driver was loaded. The interpreter explicitly honors the
+JAIC_NATIVE_LIBS source directory, so requiring only the app-local copy would be
+an incorrect new test expectation. The identity regression covers both legitimate
+paths and rejects an unlisted same-content file; no existing assertion is removed.
+No GL/GLSL overrides or skip-as-pass paths are introduced. Native ARM64 build,
+dependency checks and GL execution remain **pending the next native run**.
+
+Local evidence: eight new installer/configuration/SDK-metadata/file-identity tests,
+seven source/cache tests and one real Meson child-Python regression pass (16 total).
+The new x64 COFF-header negative test proves rejection before any SDK execution;
+it is deliberately non-executable metadata, not a usable driver fixture.
+Installer fixtures are metadata/copy-integrity inputs only, never executed or
+counted as native drivers. Public stdlib APIs and Jai sources are unchanged.
+The full public application/corpus gate remains the coordinator's responsibility.
+
+Native oracles: pinned Mesa archive and its target/DEF files; [Mesa WGL deployment](https://docs.mesa3d.org/drivers/llvmpipe.html#windows),
+[Meson introspection](https://mesonbuild.com/IDE-integration.html),
+[MSVC DLL dependencies](https://learn.microsoft.com/en-us/cpp/build/reference/dependents?view=msvc-170),
+[Microsoft native loader](https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryexw).
+
 ## Prepared Python discovery correction
 
 Authorized candidatea78721d feedback: native ARM64 LLVM source build completed;

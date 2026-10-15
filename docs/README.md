@@ -112,7 +112,8 @@ The LLVM backend, C ABI and linking.
 - [Native WGL investigation](native/window-render-wgl-investigation.md): filtered CI
   failure evidence, real retirement-surface lifetime, native diagnostics and pinned
   official-source ARM64 Mesa build/deployment, deterministic prepared child Python,
-  verified LLVM-only cache, and explicit runtime verification limits.
+  verified LLVM-only cache, pinned Windows WGL target/install validation and SDK
+  dependency evidence, with explicit runtime verification limits.
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping and Unix System coverage
