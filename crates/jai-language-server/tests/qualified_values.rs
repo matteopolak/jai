@@ -7,6 +7,22 @@ use std::{path::PathBuf, rc::Rc};
 const MODULE: &str = "Item :: struct { field: int; }\nseed :: 41;\nscalar :: seed + 1;\naggregate :: Item.{scalar};\nstate: Item;\nNumber :: s32;\ncallback :: (status: s32) {}\n#scope_file\nsecret :: 99;\n";
 const SOURCE: &str = "Data :: #import \"Values\";\nAlias :: Data;\nmain :: () {\n    first := Data.scalar;\n    second := Alias.aggregate;\n    third := Data.state;\n    number: Data.Number;\n    result := second.field;\n    Data.callback(1);\n}\n";
 
+#[test]
+fn failed_identifier_does_not_become_a_literal_members_definition() {
+    let uri = DocumentUri::parse("file:///qualified-values/main.jai").unwrap();
+    let source = "bad :: missing;\nmain :: () { failed := bad; length := \"abc\".count; }\n";
+    let mut s = session();
+    s.open(uri.clone(), 1, source.into()).unwrap();
+    assert!(s.diagnostics(&uri).unwrap().iter().any(|d| {
+        d.severity == jai_language_server::DiagnosticSeverity::Error
+            && d.message.contains("missing")
+    }));
+    assert!(
+        s.definition(&uri, at(source, "count;")).unwrap().is_empty(),
+        "a builtin string count has no source declaration; a failed entity must not leak"
+    );
+}
+
 fn at(text: &str, needle: &str) -> Position {
     let prefix = &text[..text.find(needle).unwrap()];
     Position {

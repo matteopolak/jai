@@ -57,7 +57,7 @@ pub struct IdeFacts {
     pub output: Option<Rc<std::cell::RefCell<crate::interp::SandboxHost>>>,
     /// Entity the named expression being checked resolved to (set by identifier
     /// lookup or explicit module-member lookup, after resolving its operand).
-    pub(super) last_entity: Option<EntityId>,
+    pub(super) last_entity: Option<(Span, EntityId)>,
     /// Field the identifier being checked reached through a `using` (set by `check_ident`).
     pub(super) last_using_member: Option<Sym>,
     /// Names of a type that is neither a struct nor an enum (a polymorph's `T`, an alias of a
@@ -378,12 +378,15 @@ impl Compiler {
                     ast::ExprKind::Member(_, name) => (name.span, Some(name.name)),
                     _ => (expr.span, None),
                 };
-                let entity = self.ide.as_mut().and_then(|i| i.last_entity.take());
-                let member = self
+                // Failed expressions can leave scratch state behind. Only consume
+                // the association made for this exact source expression.
+                let entity = self
                     .ide
                     .as_mut()
-                    .and_then(|i| i.last_using_member.take())
-                    .or(qualified_member);
+                    .and_then(|i| i.last_entity.take())
+                    .and_then(|(at, id)| (at == span).then_some(id));
+                let using_member = self.ide.as_mut().and_then(|i| i.last_using_member.take());
+                let member = qualified_member.or(using_member);
                 let what = match op {
                     Operand::Type(t) => {
                         if let Some(e) = entity

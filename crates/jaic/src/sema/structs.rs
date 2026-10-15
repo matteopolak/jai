@@ -1507,7 +1507,7 @@ impl Compiler {
                         if result.is_ok()
                             && let Some(ide) = self.ide.as_mut()
                         {
-                            ide.last_entity = ids.first().copied();
+                            ide.last_entity = ids.first().map(|&id| (span, id));
                         }
                         result
                     }
