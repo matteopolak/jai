@@ -22,9 +22,9 @@ CPU fault fixture checks a genuine diagnostic. Interpreter/native and Linux/
 Windows body checks execute in the portable runner; focused source-built strict
 lint passes. Missing-module failure remains target/android-abi-name-red.log.
 
-Counted OID identity is also implemented: canonical ASN1_Object_Identifier with
-twelve inline u64 arcs and inferred count; asn1_oid_equals compares only active
-prefixes, diagnoses invalid counts and ignores inactive storage. The reviewed Sun
+OID record identity is implemented: canonical ASN1_Object_Identifier with
+twelve inline u64 arcs and inferred count; refreshed reviewed asn1_oid_equals
+compares the complete record, including inactive storage and count bytes. The reviewed Sun
 OID retains exactly eleven active arcs and its twelfth trailing zero. Global OID
 and both JKS magic constants are immutable; ordinary value copies remain mutable.
 JKS_MAGIC uses its reviewed typed-u32 constant and JKS_MAGIC_LITTLE_ENDIAN uses
@@ -34,11 +34,14 @@ byte-swap explanation is mathematically inconsistent: reversing bytes would give
 0xedfeedfe. This rationale question is recorded; no alternate public value or
 working JKS decoder is invented.
 
-android-oid.jai covers every count0..12, each active difference, inactive tails,
+android-oid.jai covers every count0..12, each stored difference, inactive tails,
 canonical metadata/layout, exact typed constants and independent copies. Native
 O2 and focused strict lint pass. Constant nested-array and typed-scalar writes
-are required compile rejections. Invalid count is a checked safety fault.
-These data/equality primitives are not signing, ASN.1 decoding or JKS loading.
+are required compile rejections. Extreme count metadata compares safely without
+indexing by count; the old expected assertion migrated to these positive safety
+checks under the refreshed whole-record oracle. ASN.1 primitive/value/diagnostic
+implementation and exact test corrections are in portable-asn1.md. JKS loading
+and signing remain unfinished.
 
 `sha1(s: string) -> [20]u8` and `sha256(s: string) -> [32]u8` now provide the
 reviewed fixed-array digest APIs. Public aliases retain parameter name `s` and
@@ -66,9 +69,11 @@ success claim. That invalid-input continuation is independent defensive behavior
 not a reviewed reference guarantee or tested supported hashing domain. No
 streaming/accelerated SHA interface or extra digest constants are exported.
 
-The rest of Android/Toolchain remains missing, including ADB operations,
-SDK/NDK discovery, project/APK/manifest generation, signing/verification,
-ASN.1/JKS helpers and public records/constants needed by those operations.
+ADB operations and SDK discovery/cache/startup are now implemented and documented
+in portable-adb.md. Java launcher discovery is in portable-java-discovery.md;
+manifest flag parsing in portable-android-values.md. ASN.1 readers and diagnostic
+overloads are in portable-asn1.md. NDK discovery, project/APK/manifest generation,
+signing/verification, X.509/JKS helpers and associated records/constants remain missing.
 No declarations, fake device/crypto results, stub callbacks or invented defaults
 are credited. Exact missing public declarations/overloads are generated from the
 reviewed page into portable-missing-surface.md. This module is partial.
@@ -80,8 +85,10 @@ will require independently supplied test keys and explicit native dependencies;
 they must never read harness/real credentials.
 
 Specific next oracle/dependency questions: SDK_LEVEL and other omitted default
-constants/module parameters; adb output/storage ownership and device selection;
-shell escaping rules; exact manifest/ASN.1 error behavior. Compiler Build_Options/
+constants/module parameters; NDK selection, device-selection/install retry policy,
+manifest invalid-token/theme text and finer diagnostic output behavior. SDK/ADB
+path/cache/quoting/storage and ASN.1 value/prefix contracts have been refreshed and
+implemented, so they no longer block the completed batches. Compiler Build_Options/
 Message callbacks exist as reviewed interfaces, but the remaining actual build
 and device orchestration is implementation work, not automatically blocked by
 a missing type or excused by this one implemented helper.

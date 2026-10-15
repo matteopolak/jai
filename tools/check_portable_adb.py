@@ -5,7 +5,7 @@ import platform
 from pathlib import Path
 import shutil
 import subprocess
-from check_portable_time_foundation import compose, LIBRARY
+from portable_android_stage import compose, LIBRARY
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,9 +22,6 @@ def main():
         sdk_bin.mkdir(parents=True, exist_ok=True)
         shutil.copy2(fixture, sdk_bin / "adb")
     (output / "SDK empty").mkdir(parents=True, exist_ok=True)
-    library = ROOT / "target/portable-integration-stdlib"
-    for relative in ["Android/Toolchain", "internal/android-toolchain"]:
-        shutil.copytree(ROOT / "stdlib" / relative, library / relative, dirs_exist_ok=True)
     compose()
     library = LIBRARY
     env = dict(os.environ, JAIC_STDLIB=str(library), ANDROID_HOME=str(output / "SDK space"),

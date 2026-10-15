@@ -1,5 +1,15 @@
 # Machine_X64 compiler integration gaps
 
+Updated Socket dependency audit: forward enum compiler1929d5a now passes the
+original reduction, real resolver interpreter/native O0/O2 and CMSG regression.
+The remaining general pending/field-array-element-type.jai still fails ordinary
+-check: cannot index a value of type Type. Full generated Socket ABI lint fails
+the same idiom. Original source order and public alias type remain unchanged;
+no hardcoded mask/enum reorder/type-query workaround. Native global reexports
+were a separate library defect, now corrected through filtered using. Current
+evidence and scoped/full gate distinction: portable-socket-resolver.md. The
+forward-enum paragraph below is historical, superseded by this rerun.
+
 Current general enum dependency evidence (Socket integration):
 tests/portable-stdlib/pending/socket-ai-forward-enum.jai fails unknown LATER;
 tests/portable-stdlib/socket-resolver/main.jai fails AI.MASK's later ADDRCONFIG.

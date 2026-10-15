@@ -15,18 +15,31 @@ MODULES = [
       'JAVA_ENV_NAME', 'find_java_bin_path_from_environment',
       'android_find_sdk_path',
       'Android_Config_Changes', 'android_config_changes_from_string',
+      'Zip_Version', 'zip_decode_version', 'zip_encode_version', 'ZIP_CENTRAL_DIRECTORY_FILE_HEADER_SIGNATURE',
+      'ZIP_END_OF_CENTRAL_DIRECTORY_RECORD_SIGNATURE', 'ZIP_END_OF_CENTRAL_DIRECTORY_RECORD_SIZE',
+      'ZIP_EOCD_OFFSET_FIELD_OFFSET', 'zip_eocd_get_start_of_central_directory_offset',
+      'zip_eocd_set_start_of_central_directory_offset', 'zip_crc32', 'Kilobytes', 'Megabytes',
+      'Zip_Compression_Method', 'Zip_Local_File_Header', 'Zip_Central_Directory_Header',
+      'Zip_End_Of_Central_Directory_Record', 'ZIP_LOCAL_HEADER_SIZE', 'ZIP_VERSION_DEFAULT',
+      'Zip_Writer', 'zip_init_writer', 'zip_add_file', 'zip_add_file_from_memory', 'zip_write_central_directory',
+      'Android_Apk', 'Android_Apk_Entry', 'apk_load', 'apk_deinit', 'for_expansion', 'apk_print_sections',
+      'ANDROID_APK_SIGNING_BLOCK_MAGIC',
       'ASN1_Tag_Class', 'ASN1_Tag_Length_Value', 'ASN1_Universal_Type', 'ASN1_Tag', 'ASN1_KNOWN_OIDS',
       'asn1_read_tag', 'asn1_read_length', 'asn1_decode_integer', 'asn1_decode_object_identifier',
-      'asn1_to_string', 'read_silly_alias', 'read', 'read_block', 'ASN1_Value', 'asn1_read_value', 'read_length_prefixed_block'},
-     'JNI/OID/JKS/SHA, ASN.1 primitive/cursor/value parsing and ADB host operations have independent behavior tests. Refreshed ADB discovery/server/quoting/storage contracts still require correction; real SDK/device and Windows Process integration remain pending. ASN.1 diagnostics printing, install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.'),
-    ('Build and toolchain', 'Default_Metaprogram', 'default-metaprogram', set(),
-     'Build orchestration and option/message behavior remain implementation work; exact help text/option grammar require further review.'),
-    ('Build and toolchain', 'Example_Plugin', 'example-plugin', set(),
-     'Plugin lifecycle callbacks/options/state behavior remain missing. Compiler callback types are reviewed; no placeholder callbacks are counted as implementation.'),
+      'asn1_to_string', 'read_silly_alias', 'read', 'read_block', 'ASN1_Value', 'asn1_read_value', 'read_length_prefixed_block', 'asn1_print', 'x509_get_subject_public_key_info'},
+     'JNI/OID/JKS constants/SHA, ASN.1 primitives/diagnostics/X509, ZIP32 records/writer/CRC/offset/unit helpers, APK whole-file views/iteration, manifest flags, Java launcher and reviewed ADB operations have independent behavior tests. Deflate uses real stored blocks (size tradeoff). Real SDK/device and Windows Process integration remain pending. Install recovery, higher-level build/signing/manifest and remaining helpers are missing; marker-only APK is not claimed signature-valid.'),
+    ('Build and toolchain', 'Default_Metaprogram', 'default-metaprogram',
+     {'HELP_STRING', 'is_absolute_path', 'message_loop', 'plugins', 'verbose'},
+     'Real workspace builds, options, plugin imports/callback ordering, paths, help/version and failures are implemented and tested with explicit -no_check. build remains incomplete: the delegated Check producer/reviewed page supplies no Mac plugin factory or binding-check configuration; compiler target command-line forwarding is separately defective. Full strict lint and ordinary default builds remain blocked, not counted complete.'),
+    ('Build and toolchain', 'Example_Plugin', 'example-plugin',
+     {'HELP_STRING', 'My_Plugin', 'add_source', 'before_intercept', 'finish', 'get_plugin', 'init', 'log_help', 'message', 'shutdown'},
+     'All reviewed record/options/lifecycle exports implemented. Canonical type/defaults, initialized state, malformed options, phase/typecheck/completion diagnostics and owned shutdown pass interpreter/native O0/O2 and strict lint; the actual default workspace loader builds and runs a target with +Example_Plugin. No source/artifact-producing callback is fabricated.'),
     ('Build and toolchain', 'linux_build', 'linux-build', set(),
      'Windows-host Unreal cross-link orchestration remains missing; actual external toolchain/native integration is also pending.'),
-    ('Build and toolchain', 'Project_Generator', 'project-generator', set(),
-     'Mutable project state, compiler message integration and actual Visual Studio output generation remain missing, including nested public operations.'),
+    ('Build and toolchain', 'Project_Generator', 'project-generator',
+     {'Project_Generator', 'Project_Generator.reset', 'Project_Generator.add_file',
+      'Project_Generator.process_message', 'Project_Generator.build', 'Project_Generator.intercept_messages'},
+     'All reviewed public state/method behavior implemented: owned unique file collection/reset, real compiler workspaces and four deterministic XML/solution artifacts. Collection interpreter/native O0/O2, actual target O0/O2, defaults/persistence/escaping/filters/unchanged mtimes and write failure pass. Full strict lint remains blocked by general SandboxHost compile-time executable-path SDK support; no default or lint workaround. Native Visual Studio execution/resource availability remain pending.'),
 ]
 
 
@@ -60,6 +73,9 @@ def main():
         nested = []
         for shape in spec.shapes:
             for match in re.finditer(r'^\s*(\w+\s*::\s*\([^\n]+)', shape.code, re.MULTILINE):
+                method_name = match[1].split('::', 1)[0].strip()
+                if f'{shape.name}.{method_name}' in implemented:
+                    continue
                 nested.append(f'{shape.name}.{match[1].strip()}')
         if nested:
             lines += ['Missing nested public operations:', '']

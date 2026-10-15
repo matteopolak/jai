@@ -3,8 +3,8 @@
 import os
 import platform
 from pathlib import Path
-import shutil
 import subprocess
+from portable_android_stage import compose, LIBRARY
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -12,9 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     output = ROOT / "target/portable-android-values"
     output.mkdir(parents=True, exist_ok=True)
-    library = ROOT / "target/portable-integration-stdlib"
-    for relative in ["Android/Toolchain", "internal/android-toolchain"]:
-        shutil.copytree(ROOT / "stdlib" / relative, library / relative, dirs_exist_ok=True)
+    compose()
+    library = LIBRARY
     env = dict(os.environ, JAIC_STDLIB=str(library))
     compiler = str(ROOT / "target/compiler/debug/jaic")
     targets = [([], "host")]

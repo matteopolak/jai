@@ -5,6 +5,7 @@ import platform
 from pathlib import Path
 import shutil
 import subprocess
+from portable_android_stage import compose, LIBRARY
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -21,9 +22,8 @@ def main():
     failing.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(executable, failing / "java")
     shutil.copymode(executable, failing / "java")
-    library = ROOT / "target/portable-integration-stdlib"
-    for relative in ["Android/Toolchain", "internal/android-toolchain"]:
-        shutil.copytree(ROOT / "stdlib" / relative, library / relative, dirs_exist_ok=True)
+    compose()
+    library = LIBRARY
     env = dict(os.environ, JAIC_STDLIB=str(library))
     compiler = str(ROOT / "target/compiler/debug/jaic")
     source = ROOT / "tests/portable-stdlib/android-java/main.jai"

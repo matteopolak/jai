@@ -6,6 +6,7 @@ import platform
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
+BINARIES = Path(os.environ.get("CARGO_TARGET_DIR", ROOT / "target/compiler")) / "debug"
 
 
 def main():
@@ -36,7 +37,7 @@ def main():
         print(f"Actual macOS C SDK {label} layout and numeric resolver pass:", result.stdout.strip(), flush=True)
     library = ROOT / "stdlib"
     env = dict(os.environ, JAIC_STDLIB=str(library))
-    compiler = str(ROOT / "target/debug/jaic")
+    compiler = str(BINARIES / "jaic")
     source = ROOT / "tests/portable-stdlib/socket-resolver/main.jai"
     commands = [[compiler, "-interp", str(source)]]
     for flags, label in [([], "host"), (["-target", "x86_64-apple-darwin"], "x64")]:
@@ -50,7 +51,7 @@ def main():
             raise RuntimeError(f"{command!r}: {result.stdout}{result.stderr}")
     for cpu in ["x64", "arm64"]:
         subprocess.run([compiler, "-check", "-os", "macos", "-cpu", cpu, str(source)], env=env, check=True)
-    subprocess.run([str(ROOT / "target/debug/jailint"), "-D", "warnings", "--config", str(ROOT / "jailint.toml"),
+    subprocess.run([str(BINARIES / "jailint"), "-D", "warnings", "--config", str(ROOT / "jailint.toml"),
                     "--context", str(source),
                     str(library / "Socket/native.jai"), str(library / "internal/net/socket-abi.jai"), str(source)], env=env, check=True)
     print("Jai public resolver passes interpreter/native both CPUs O0/O2, source checks and strict lint")

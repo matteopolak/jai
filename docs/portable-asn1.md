@@ -62,9 +62,40 @@ all count/arc bytes match, with every stored slot tested. No production change o
 assertion disabling; the original broad failure remains in
 target/android-sdk-asn1-active-full.log.
 
-Remaining implementation: three asn1_print overloads (behavior now reviewed),
-X.509 extraction and crypto/signing helpers. Diagnostic UTC/calendar/banner finer
-formatting and hex-array helper representation still need precise review; value
-view/prefix questions are resolved and no longer blockers. No fake parser success,
-disabled verification assertions, dangling returned payloads or blanket lint
-suppression was introduced.
+All three asn1_print overloads now traverse supported values using an explicit
+heap-backed frame stack. SEQUENCE/SET descend normally; constructed context items
+print their number and descend without indentation for that invocation. Primitive
+context items preserve reviewed IMPLICT spelling and hex byte count. OID, NULL,
+INTEGER (long content as hex), PRINTABLE/UTF8, UTC_TIME, zero-unused-bit BIT_STRING
+and OCTET_STRING have real rendering. Unsupported/malformed forms diagnose;
+NULL prints its required trailing space before checking content. The named-value
+overload forwards only content, and name/data surrounds it with yellow banners.
+Colors use the existing Print_Color API with its explicit portable ANSI backend.
+
+Diagnostic conventions are independently chosen human text: lowercase spaced
+hex, labeled lines and --- name --- banners. They are not claimed reference byte
+serialization. UTC years use1950..2049 as documented for the official native C
+[OpenSSL ASN1_UTCTIME](https://docs.openssl.org/master/man3/ASN1_TIME_set/); Calendar_Time
+is filled directly and printed through the reviewed calendar_to_string. Exact
+century/leap-second compatibility, empty-context newline, banner punctuation and
+native Windows console color still await finer review. These choices are recorded
+in specs questions; supported type traversal is implemented, not declaration-only.
+
+Run python3 -B tools/check_portable_asn1_printer.py. Fifteen interpreter/native
+ARM64+x64 O0/O2 runs cover all supported type families, all overloads,49/50 year
+boundary, four-space/skip indentation,300 nested constructed frames and seven
+diagnosed failures with fatal verification restored. Linux/Windows both CPUs and
+strict scoped lint pass; target/asn1-printer-final.log. Source printf overhead is
+deliberate for diagnostics: per-field/indent writes favor simple streaming and an
+explicit traversal stack over a giant assembled output buffer. Allocation failure
+follows Basic allocator policy; no extra fake success/fallback is introduced.
+NEW foundation composition is read-only input copied into target/. Primitive,
+Java and flag runners now use that same real dependency composition; all pass.
+
+X.509 key-info extraction is now implemented with native C-created certificate
+oracles and borrowed-view tests; see portable-x509.md. Remaining implementation:
+crypto/signing helpers; hex-array
+helper representation still needs review. Value view/prefix questions are resolved.
+Native Linux/Windows printer execution and native Windows console handling remain
+unverified; ANSI emission is explicit supported fallback. No parser stubs, disabled
+verification assertions, dangling payloads or blanket lint suppression introduced.
