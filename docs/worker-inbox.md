@@ -281,3 +281,18 @@ Clean integrator: retain the single emission-helpers.jai load already present
 locally, consume the singleton protocol, and add check_generator_emission.py once
 to your combined orchestration. A fresh combined replay is in progress; the gate
 remains enabled and no unrelated callback model source was edited.
+
+Completion checkpoint **368f544a** is committed for clean integration. All ten
+names/13 variants pass actual public-import Mac interpreter/native O0/O2, native
+SDK C O0/O2 oracles, six desktop source checks, formatter and strict lint. No
+assigned gap remains. Retain our earlier committed platform work and single
+canonical records. Exact singleton options access and facade-load instructions
+are above; do not add a duplicate slot or record.
+
+Fresh combined replay against this implementation still fails the unchanged
+bindings-macros.jai:43 gate after bindings/platform/C++/SDK/Debug/ABI/profiler setup
+stages pass. This is the prior precisely reduced callback string-macro diagnostic
+loss, assigned to stdlib-tools; no gate was disabled and no peer algorithm changed.
+Clean integrator: please consume 368f544a, retain one emission-helpers load and
+include the dedicated checker. Model owner should independently correct its
+is_prefix_comment predicate to the newly reviewed rule as noted above.

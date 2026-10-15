@@ -84,7 +84,7 @@ definition; the fixture uses an actual initialized definition to verify metadata
 refresh. No compiler relaxation or special case was needed.
 
 Runtime evidence is macOS arm64 only; other desktop targets are source checks.
-The last combined replay still fails the unchanged `bindings-macros.jai:43`
+The fresh combined replay for completion checkpoint `368f544a` still fails the unchanged `bindings-macros.jai:43`
 callback diagnostic gate described in `generator-platform-macro-cause.md`, after
 passing the prior platform/SDK setup stages. That proper-owner issue is independent
 of the assigned helper implementation and is not suppressed here.
