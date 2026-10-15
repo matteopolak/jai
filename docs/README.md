@@ -44,6 +44,7 @@ operations, shared producer staging and the precise remaining archive contracts.
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing
+- [Generator model helpers](generator-model.md): canonical model operations, ownership, verification and integration dependencies
 - [Window/render progress](status/window-render-progress.md): scoped native window,
   native input, Windows pointer tracking and keyboard layouts, Keymap, window lifecycle, original native-font
   feature regressions, real font-atlas/text rendering and texture color-space transitions,
