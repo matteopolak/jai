@@ -4,6 +4,7 @@
 No peer writes. Dependency composition is a staging check, not combined integration.
 """
 import os
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -13,7 +14,7 @@ from portable_file_stage import compose_into as compose_file
 ROOT = Path(__file__).resolve().parents[1]
 CASE = ROOT / "tests/portable-stdlib/default-metaprogram"
 OUTPUT = ROOT / "target/portable-default-metaprogram"
-OWNED = ["Default_Metaprogram", "internal/build"]
+OWNED = ["Default_Metaprogram", "Metaprogram_Plugins", "internal/build"]
 
 
 def compose():
@@ -120,11 +121,36 @@ def main():
     build(["-no_check", "-run", 'print("run ok\\n")', "-add", 'using #import "Basic"',
            "-add", 'main :: () {}', "-exe", "run-added", "-output_path", str(OUTPUT)], contains="run ok")
     print("Default_Metaprogram: paths interpreter/native O0/O2; real builds, option projection, plugin parameters/order, help/version and failures pass", flush=True)
-    subprocess.run([str(compiler_root / "jailint"), "-D", "warnings", "-I", str(CASE / "dependency-modules"),
-                    str(library / "Default_Metaprogram"),
+    # The generic loader has a reviewed deferred-definition import obligation.
+    # Supply a real empty initialization in the lint PROGRAM context, then lint
+    # every original owned body; do not replace or filter failed definitions.
+    warmup = '''Lint_Basic :: #import "Basic";
+Lint_Compiler :: #import "Compiler";
+Lint_Plugins :: #import "Metaprogram_Plugins";
+#run,stallable {
+    requests: [] Lint_Plugins.Plugin_To_Create;
+    results: [..] *Lint_Compiler.Metaprogram_Plugin;
+    success := Lint_Plugins.init_plugins(requests, *results, -1);
+    Lint_Basic.assert(success && results.count == 0);
+    Lint_Basic.array_free(results);
+}
+'''
+    def write_lint_context(path, text):
+        path.write_text(text)
+        for mode in [[], ["--check"]]:
+            subprocess.run([str(ROOT / "target/jaifmt"), "--config", str(ROOT / "jaifmt.toml"),
+                            *mode, str(path)], check=True)
+    context = OUTPUT / "lint-library.jai"
+    write_lint_context(context, warmup + 'Lint_Default :: #import "Default_Metaprogram";\n#run Lint_Basic.assert(Lint_Default.is_absolute_path("/"));\n')
+    lint = [str(compiler_root / "jailint"), "-D", "warnings", "-I", str(CASE / "dependency-modules")]
+    subprocess.run([*lint, "--context", str(context), str(library / "Default_Metaprogram"),
                     *[str(library / "internal/build" / name) for name in
-                      ["default-options.jai", "default-workspace.jai", "default-plugins.jai"]],
-                    *[str(CASE / name) for name in ["paths.jai", "build.jai", "build-twice.jai", "target.jai", "import-target.jai"]],
+                      ["default-options.jai", "default-workspace.jai", "default-plugins.jai"]]], env=env, cwd=ROOT, check=True)
+    for name in ["paths.jai", "build.jai", "build-twice.jai"]:
+        context = OUTPUT / ("lint-" + name)
+        write_lint_context(context, warmup + "#load " + json.dumps(str(CASE / name)) + ";\n")
+        subprocess.run([*lint, "--context", str(context), str(CASE / name)], env=env, cwd=ROOT, check=True)
+    subprocess.run([*lint, str(CASE / "target.jai"), str(CASE / "import-target.jai"),
                     str(CASE / "modules/Workflow_Probe/module.jai")], env=env, cwd=ROOT, check=True)
     print("Default_Metaprogram ordinary Check-enabled builds/binding flags, no_check/custom plugins/replay/error paths and full owned strict lint pass", flush=True)
 

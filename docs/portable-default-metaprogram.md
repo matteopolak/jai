@@ -1,5 +1,21 @@
 # Portable default build workflow
 
+Shared loader integration: custom requests and the correctly parameterized Check
+request now pass to public Metaprogram_Plugins.init_plugins. The previous private
+CLI-only static-import generator is removed; no separate factory/registration
+context remains. Input option arrays stay borrowed through setup/lifecycle and
+real factory pointers append directly to the mutable public plugins array.
+Generic initializer status aggregates as reviewed; failure still logs/stops target
+work through Default's exit0 path. Per-plugin early short-circuiting was not an
+established Default contract and is not restored as a private convenience.
+
+The linter's program context performs real empty initialization before checking
+all original Default bodies. This satisfies the generic module's declared
+deferred-definition import obligation; it does not fake a plugin, skip an assertion
+or filter any failed body. Generated lint contexts are normalized and --check
+verified. Real Default executions independently exercise nonempty factories and
+native target outputs. Evidence target/default-shared-plugins-final.log.
+
 Parent phase correction: build() now uses the reviewed set_build_options_dc with
 do_output=false, preserving its parent's static output type/name/path and existing
 dynamic write/extension settings. Parent debugger changes also use that dynamic

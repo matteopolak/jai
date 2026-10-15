@@ -1,5 +1,14 @@
 # Portable stdlib worker deviations
 
+Removed duplicate Default CLI-only plugin generator; canonical public loader now
+handles custom plus Check requests. Default follows reviewed generic aggregate
+initializer semantics; original independent early-stop behavior had no separate
+reviewed guarantee. Failure remains logged exit0 before target work. Full lint
+requires real empty-init PROGRAM context because importing the generic helper
+creates a deferred definition obligation. This is actual supported initialization,
+not a fake facade or excluded body; real nonempty builds run separately. Context
+source normalized/--check. Details portable-default-metaprogram.md.
+
 Metaprogram initializer dependency RESOLVED with general compiler89560db9. Active
 real workflow and full context-aware strict lint pass. Lint context executes valid
 empty initialization required by the reviewed module import contract; no failing

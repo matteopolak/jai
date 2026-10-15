@@ -1,5 +1,12 @@
 # Portable stdlib progress
 
+Default now delegates custom/Check factory setup to actual public M_Plugins helper,
+removing private CLI-only generator/duplicate context. Live objects/options/order/
+replay and real child outputs retained. Full strict lint supplies valid empty-init
+program context for the generic module's reviewed deferred obligation, checks every
+original owned body, normalizes generated contexts. No stub/filter/assert removal.
+Generic aggregate init status used; old early-stop-private behavior unestablished.
+
 Metaprogram_Plugins FULL reviewed parser/initializer workflow now ACTIVE with
 source-built general compiler89560db9. Computed imports/parameters, real factory
 objects/options/workspace, aggregate status/no-init options, stable factory identity,
