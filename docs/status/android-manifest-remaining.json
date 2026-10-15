@@ -1,0 +1,32 @@
+{
+  "batch": "Android binary manifests",
+  "commit_status": "draft; parent owns commit",
+  "complete": [
+    "Android_Manifest_Binary",
+    "Android_Install_Location",
+    "Android_Screen_Orientation_",
+    "DUMMY_U32",
+    "LAUNCH_MODE_SINGLE_TASK",
+    "ANDROID_XML_SCHEMA",
+    "USE_FULL_MODULE",
+    "__debug_manifest_reading",
+    "deinit(Android_Manifest_Binary)",
+    "print_binary_manifest",
+    "read_binary_manifest_from_apk",
+    "read_binary_manifest_from_file",
+    "read_binary_manifest_from_memory",
+    "write_binary_app_manifest_to_builder",
+    "write_binary_app_manifest_to_file",
+    "write_binary_app_manifest_to_memory"
+  ],
+  "partial": [],
+  "missing": [],
+  "limitations": [
+    "Styled string pools and unknown XML chunks rejected; CDATA omitted from public model",
+    "SDK aapt2/device unavailable; foreign target checks source-only",
+    "Windows runtime requires system zlib1"
+  ],
+  "verification": "tools/verify_android_manifest.py: all 16 checks pass; interpreter/Mac arm64 O0/O2, strict lint and source checks",
+  "publication": "Integrated portions committed by parent; dependency-bound drafts remain unloaded/uncompiled and versioned separately.",
+  "parent_inventory": "docs/status/implementation-remaining.json"
+}

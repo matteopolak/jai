@@ -62,4 +62,4 @@ x64/arm64. Cross-target results are source-only, not execution or linking proof.
 All previous naming contract gaps are resolved. No stubs, compiler changes,
 warning suppressions, path/name exceptions, or publishing were introduced.
 Exact committed-versus-draft inventory is in
-[implementation-remaining.json](status/implementation-remaining.json).
+[generator-names-remaining.json](status/generator-names-remaining.json).

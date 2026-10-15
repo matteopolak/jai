@@ -494,3 +494,9 @@ restoration and bounded child cleanup; no clipboard substitute is used.
 - [Developer tools status and remaining APIs](status/developer-tools-remaining.md): canonical model emission, native Check/Debug subsets and unresolved integration gates.
 
 - [Generator model helpers](generator-model.md) and [native platform helpers](generator-platform.md): shared canonical Generator/Token_Info/Library_Symbols, supported subsets and ownership limits.
+
+- [Android project generation](android-project.md): canonical project models, escaped Gradle/manifest generation and explicit build dependencies.
+- [Android host orchestration](android-orchestration.md): SDK/NDK discovery, launcher/device helpers, integrated verification and exact signing-dependent drafts.
+- [Android APK build orchestration](android-build.md): Gradle and SDK command orchestration, ZIP packaging, signing dependencies and verification limits.
+
+- [Android binary manifests](android-manifest.md): valid AXML writer, UTF-8/UTF-16 reader, canonical APK parsing and system-zlib decompression.
