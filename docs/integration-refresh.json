@@ -1,25 +1,15 @@
 {
   "compiler": {
     "ref": "coordinator/compiler",
-    "commit": "6e000b34629a38f22574fd6e9b77535d9a85df35",
-    "additional_repairs": {
-      "source": "6904b4a52d50fb405d31491c158bb7ad17866bc3",
-      "integrated_via": "e223538f34c89b4122088e8a76a066f4cf61cdfa",
-      "cherry_picks": [
-        "13b706a",
-        "4c9180b",
-        "7cfd527",
-        "447e05f"
-      ]
-    }
+    "commit": "093712a7c7db34e91b336eb526179336572afb3e"
   },
   "stdlib": {
     "ref": "coordinator/stdlib",
-    "commit": "eab33836d833ef622bd3aab97e7ec1ac2a78ebbf"
+    "commit": "e81f1a5b7af112c8260db1d4a640b71ceb2b0a12"
   },
   "bindings": {
     "ref": "coordinator/bindings",
-    "commit": "fc6c681276fbadc331c1d2f4ced8ddc5a9119cf2"
+    "commit": "2a18c3c3130cc65194df094b78a2a299d8e380dd"
   },
   "numerics": {
     "ref": "producer/numerics",
@@ -39,22 +29,22 @@
   },
   "window-render": {
     "ref": "coordinator/window-render",
-    "commit": "1f66dc1595e6e7c33684f9ce078f4ff05a167898"
+    "commit": "387efe210431df3bba69e7cb8dbd326c3aef2964"
   },
   "platform-io": {
-    "ref": "producer/platform-io",
-    "commit": "2d36a0852e6508a13f7f1d6f0c39bf8d35e4d820"
+    "ref": "coordinator/platform-io",
+    "commit": "44a2f156b4f3daaa113463a39afc69a3cf8241fd"
   },
   "audio": {
     "ref": "coordinator/audio",
-    "commit": "498046ba41c152070602de9c8b061c1150937884"
+    "commit": "c453579ef3257e0f62f642b82047d03f1e4acc59"
   },
   "stdlib-tools": {
     "ref": "coordinator/stdlib-tools",
-    "commit": "af8b5f412b448d0b2d3dffdb98664518fb2b992d"
+    "commit": "4f87fd6a6cc3b3379b9a8668df7c80ea5fcf5660"
   },
   "ci-candidate": {
     "ref": "coordinator/ci-candidate",
-    "commit": "e223538f34c89b4122088e8a76a066f4cf61cdfa"
+    "commit": "172558ab65c8159c3be2514cf1e4b1fa171d93c2"
   }
 }

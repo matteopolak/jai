@@ -852,3 +852,5 @@ configured Windows source checks. The stale ordinary macro value-expression
 probe is retained and explicitly classified as superseded for this API, not a
 required compatibility oracle or an established compiler gap. No public result
 annotation, compiler special case, fake value or peer write.
+
+Integration worker refresh20: compiler093712a, portablee81f1a5, developer4f87fd6, WGL387efe2 and fuzz172558a merged; exact consumed manifest updated.15 machine/generic-pointer tests plus9 literal/intrinsic regressions PASS. Production-source Pool/leak/Thread matrix50 actual interpreter/ARM64+x64 native O0/O2 executions PASS without overlays; disabled optional assertions proven by real Mach handler counts and unchanged library hashes. Developer56 fixtures/native SDK checks PASS; fuzz12 PASS; Mesa helper16 PASS. Full lint and broad suites remain open; forward enum dependencies reproduce Socket failure and are precisely requested. SDL3b4d6859/WGL3ced6c4 objects missing locally, safe-ref refresh requested. Full1091-file frozen owned-source partial-edit sweep running.

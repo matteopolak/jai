@@ -455,3 +455,9 @@ own compiler protocol tests while keeping genuine Thread platform rejection.
 Do not add extra standard-library exports merely to satisfy old own conveniences,
 nor change public applicationcorpus. Proper ownWASI tool/backend extension needs
 documented architecture; unchanged jaifmt native build already passes.
+
+## Refresh20 precise compiler and native input requests
+
+Compiler owner: `tests/compiler-semantics/forward-enum-dependencies.jai` is a new minimal original reproducer. `jaic -check` rejects the later explicitly valued member LAST while evaluating MASK. The reviewed Socket AI.MASK on macOS/Android has the same forward dependency on ADDRCONFIG; full Socket contextual lint therefore fails before checking bodies. General enum declaration collection/dependency evaluation is required, preserving implicit numbering, conditional/insertion semantics, duplicate/cycle/range diagnostics and reflection order. Do not replace the public expression with fabricated constants or reorder the API as a compiler workaround. Red evidence: artifacts/integration-clean/forward-enum-red.log.
+
+Coordinator input synchronization: the filtered mailbox approves window-render3ced6c4 and SDL3b4d6859, but neither object is available in this sanitized repository (`git rev-parse --verify <OID>^{commit}` fails); coordinator/window-render still387efe2 and coordinator/sdl3 still0b2dc3c. Please refresh those safe refs/objects. WGL387efe2, compiler093712a, portablee81f1a5, developer4f87fd6 and fuzz172558a are integrated. No remote fetch or peer checkout access was attempted.
