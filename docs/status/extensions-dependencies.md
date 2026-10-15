@@ -1,6 +1,7 @@
 # Extensions dependency integration status, 2026-10-15
 
-Only Io, Args, their focused regression tests and documentation are changed.
+Only Io, Args, the explicitly authorized Io_Uring dependency migration, their
+focused regression tests and documentation are changed.
 Compiler crates, replacement stdlib modules, other Extensions and peer checkouts
 are unchanged. The compiler and linter used here were source-built in this
 worktree with `cargo build --locked -p jaic-cli -p jailint` and the configured
@@ -10,7 +11,7 @@ LLVM23 prefix. No reference binaries or reference library inputs were used.
 
 | Check | Result |
 | --- | --- |
-| `python3 tests/extensions/run-dependencies.py` | 118/122 pass; four genuine Linux dependency failures retained |
+| `python3 tests/extensions/run-dependencies.py` | 122/122 pass; the four Linux dependency failures are repaired |
 | Existing context, 10,000-fiber stress, channel and timer/cancellation tests | Interpreter/native O0/O2 pass with original assertions retained |
 | New allocation-owner contract, scratch64/pool1 and scratch0/pool0 | Interpreter/native O0/O2 pass, no tracked allocation leaks or owner mismatches |
 | Actual file-pool I/O and delayed `io_run_threads` workers | Interpreter/native O0/O2 pass with forced pool threshold0 |
@@ -22,10 +23,16 @@ LLVM23 prefix. No reference binaries or reference library inputs were used.
 | Changed Jai files, actual jaifmt `--check` | 20/20 pass |
 | Scoped jailint `-D warnings` in real enclosing contexts and focused tests | Exit0, no warnings/errors, no suppression |
 | Windows/macOS x64 and arm64 focused source checks | 12/12 pass; no claim of native execution on those cross targets |
+| Linux x64/arm64 focused source checks | 6/6 pass |
+| Original Io_Uring dependency reproducer and raw kernel test source | Both source-check on Linux x64/arm64 (4/4); neither executed as a Linux program here |
+| Caller-memory protocol regression | Interpreter/native O0/O2 pass, including 1000 handshakes with a real second host thread |
+| Io_Uring strict lint | Both Linux CPUs pass in the real raw-test context; portable protocol test passes host lint |
+| Io_Uring changed sources and regressions formatting | All4 files pass actual jaifmt `--check` |
+| `python3 tests/extensions/run-uring-protocol.py` | 13/13 pass; explicitly no Linux kernel execution |
 
 The matrix writes commands, exit codes, stdout, stderr and failures to its output
 directory. Final retained evidence is in ignored
-`artifacts/extensions-dependencies/final-process-verified/results.json`.
+`artifacts/extensions-dependencies/uring-final/results.json`.
 The original compiler tests are rerunnable with:
 
 ```sh
@@ -37,18 +44,30 @@ Use jailint's supported `--context tests/extensions/io-allocator-ownership.jai`
 when checking the changed Io module/loaded source paths. It supplies the actual
 context extension before layout, rather than importing Io after a synthetic
 program has already laid out Context. Args module/loaded paths and the focused
-test roots pass directly. `io-uring-dependency-repro.jai` is a deliberately
-retained failing dependency reduction, not counted as completed functionality.
+test roots pass directly. `io-uring-dependency-repro.jai` retains the original
+source-only reduction and now compiles on both Linux CPUs. Its uninitialized
+ring must never be submitted at runtime.
 
 ## Remaining integration work
 
-Four Linux source checks (two Io roots on x64/arm64) fail at
-`Extensions/Io_Uring/ring.jai:241`: that separately owned dependency passes an
-obsolete ordering argument to canonical one-argument `atomic_load`. The original
-minimal reproducer is `tests/extensions/io-uring-dependency-repro.jai`; its
-classified handoff is in [the inbox](../worker-inbox.md). Io's own ordering
-arguments have been migrated to the compiler's sequentially consistent defaults.
-No dependency guard, assertion or compiler rule was changed to hide this failure.
+The coordinator extended ownership to Io_Uring; all eight obsolete atomic calls
+now use the canonical signatures. The supplied compiler selects sequential
+consistency, at least as strong as the earlier acquire/release/relaxed uses.
+No kernel record, mapping lifecycle, syscall, ring-index owner, public signature,
+guard, assertion or compiler rule was changed. Ring memory still comes from real
+`mmap` and is released by `munmap`; it is not Basic-allocator storage.
+
+The real host is Darwin arm64. No Linux native kernel execution is available
+in this worktree. The Linux raw NOP/batch/file/probe/timeout/mapping suite was
+source-checked, not executed or reported as skipped success. The host protocol
+test directly loads production queue source, uses caller-owned memory, and
+executes real host atomics and a second host thread. It never calls or replaces
+a kernel syscall, so it establishes userspace queue behavior and host publication
+visibility, not Linux syscall ABI, SQPOLL wakeup, mmap cleanup or kernel acceptance.
+Stronger ordering may incur target-dependent barriers/locked stores and inhibit
+reordering; no Linux performance measurement is available. See
+[Io_Uring's protocol verification](../extensions/io-uring.md#canonical-atomics-and-protocol-verification)
+for commands and boundaries.
 
 Broader existing Io engine suites independently expose old qualified
 `Atomics.atomic_store` test dependencies and remain integrator migration work.

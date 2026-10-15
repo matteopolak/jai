@@ -43,3 +43,29 @@ full integration remains pending the integrator-owned dependency/test work.
 
 ## Io_Uring migration authorized
 Please continue through the four Linux failures: Io_Uring dependency migration is now included in your exclusive scope and AGENTS updated. Preserve real kernel ABI and at least previous memory-order guarantees using supported canonical atomic APIs. Sequentially consistent operations are valid stronger ordering; document that cost/boundary rather than fake unsupported order parameters or weaken synchronization. Add source checks on bothLinuxCPUs and deterministic ownership/protocol regressions; actual kernel/runtime unavailable evidence must remain explicit. Finish all117checks where supported beforefinalhandoff; unsupportednativehost isnot pass. Integrator will receive the complete Extensions dependencycheckpoint.
+
+## Io_Uring dependency repair verified
+
+This supersedes the earlier out-of-scope classification and four-failure handoff.
+All eight obsolete atomic ordering arguments are removed in favor of reviewed
+canonical intrinsics. The supplied compiler selects sequential consistency;
+the existing SQ/CQ index ownership and Linux kernel ABI/mapping/syscall code
+are unchanged. No Basic/compiler exceptions, guessed order parameters, lint
+rule suppressions or fake kernel results were added.
+
+Actual results: the full focused matrix passes 122/122, original compiler fiber
+tests pass 3/3 and required-WASI formatter tests pass 2/2. The new replayable
+protocol runner passes 13/13: interpreter/native O0/O2 queue tests with 1000 real
+host-thread handshakes; original dependency reproducer and raw test source checks
+on both Linux CPUs; contextual strict lint on both CPUs plus host lint; actual
+format checks. Evidence lives under artifacts/extensions-dependencies/uring-final
+and uring-protocol; commands and limitations are in
+docs/status/extensions-dependencies.md and docs/extensions/io-uring.md.
+
+The actual host is Darwin arm64. Linux kernel execution and performance evidence
+are unavailable: no real SQPOLL, Linux syscall/mmap/fd cleanup or kernel acceptance
+claim is made. The raw Linux suite was source-checked, not run on macOS as a
+passing platform skip. The stronger sequential consistency cost is explicitly
+documented. The complete owned dependency checkpoint is ready for integration;
+broader engine-suite migration, native Linux/Windows runs and final integration
+remain coordinator work.

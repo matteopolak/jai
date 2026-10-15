@@ -1,5 +1,5 @@
-// Original dependency reduction for the integrator; Linux compile is currently
-// blocked by Io_Uring's obsolete ordering arguments, outside this worker's scope.
+// Original dependency reduction: Linux compile must accept canonical atomic calls.
+// Source-check only: an uninitialized ring must never be submitted at runtime.
 Uring :: #import "Extensions/Io_Uring";
 
 main :: () {

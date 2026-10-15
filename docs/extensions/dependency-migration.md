@@ -51,12 +51,13 @@ Windows and macOS source checks on x64/arm64. It writes every command and actual
 result to ignored `artifacts/extensions-dependencies/results.json`, returns
 nonzero for any failure, and does not turn unavailable dependencies into passes.
 
-Linux currently remains blocked in the separately owned Io_Uring dependency:
-its obsolete two-argument `atomic_load` declaration use is reduced in
-`tests/extensions/io-uring-dependency-repro.jai`. Io's own ring backend now uses
-canonical sequentially consistent loads/stores (the supplied compiler selects
-`ORDER_SEQ_CST`), preserving at least the previous acquire/release strength.
-No Io_Uring source is changed here. Windows/Linux executions require their real
+The coordinator subsequently authorized Io_Uring's dependency migration.
+Its eight obsolete ordering-argument calls now use canonical sequentially
+consistent loads/stores (the supplied compiler selects `ORDER_SEQ_CST`),
+preserving at least the previous acquire/release strength. The original reduction
+`tests/extensions/io-uring-dependency-repro.jai` and all 122 focused checks pass.
+See [Io_Uring verification](io-uring.md#canonical-atomics-and-protocol-verification)
+for the stronger-ordering cost and actual host protocol tests. Windows/Linux executions require their real
 native hosts; source checks alone establish neither native ABI nor runtime
 success. Bare WebAssembly hosts using Args.parse must provide the declared WASI
 process service; this implementation does not fabricate one for browser hosts.
