@@ -57,6 +57,9 @@ def remaining_matrix(inventory):
                 unfinished = sum(entry["implementation"] == "pending" for entry in entries)
                 output.append(f"| `{name}` | {len(entries)} | {unfinished} | {reason} |")
             output.append("")
+        if module == "Codex":
+            output += ["", "| Implemented function with remaining paths | Remaining work |", "| --- | --- |",
+                       "| `collect_metrics` | Conditional weights and Basic allocator names await question2, with explicit rejection; calls/identity/assignments/globals/loop depth execute. |", ""]
         if source_only:
             output += ["| Native function | Evidence / next check |", "| --- | --- |"]
             output += [f"| `{name}` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |" for name in sorted(source_only)]
@@ -234,6 +237,8 @@ def main():
             for item in declarations:
                 if item["name"] in {"Math", "get_file_and_module", "is_global_ident"}:
                     item["implementation"] = "inspection subset; real producer code records and canonical Math identity verified"
+                if item["name"] in {"Metrics", "collect_metrics"}:
+                    item["implementation"] = "typed-tree metrics subset; real producer body and native public-node call/file/module/assignment/global/loop-depth effects; conditional forms and Basic allocator recognition explicitly rejected pending question2"
         if module == "Check":
             for item in declarations:
                 if item["name"] in {"DEBUG_BINDINGS", "C_Porting_Check_Settings", "check_c_porting", "should_skip",

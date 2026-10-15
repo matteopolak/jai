@@ -402,11 +402,10 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Codex
 
-15 function names have pending declarations; 0 native function names still lack invocation fixtures.
+14 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
-| `collect_metrics` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 | `communication_proc` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 | `deinit` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 | `dump_file` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
@@ -421,6 +420,11 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `put` | 2 | 2 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 | `put_short_string` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 | `shutdown` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+
+
+| Implemented function with remaining paths | Remaining work |
+| --- | --- |
+| `collect_metrics` | Conditional weights and Basic allocator names await question2, with explicit rejection; calls/identity/assignments/globals/loop depth execute. |
 
 ## Debug
 

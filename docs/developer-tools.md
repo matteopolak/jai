@@ -98,7 +98,9 @@ TO_INSERT now supplies actual generic context-alias client setup, and prepend_ma
 
 Iprof's initial subset writes caller-supplied report rows to logs or properly quoted CSV. It omits zero-call rows and uninitialized zones in manual mode, retains conditional zone-history storage, and applies requested text-report minimums. The actual runtime profiler and graphics are unfinished; report tests supply original explicit values rather than claim measured zones.
 
-Codex's initial helpers retrieve a code node's file/import and inspect a resolved declaration's IS_GLOBAL flag. Its public Math import retains canonical module/type identity. The binary metadata format and metrics semantics require refinement before the remaining APIs can be implemented without invented compatibility answers.
+Codex retrieves code-node file/import metadata and inspects resolved declarations' IS_GLOBAL flags. Its Math import retains canonical identity. The canonical Metrics record and collect_metrics count resolved/unresolved calls, exclude resolved type instantiations, compare file/module identity, recognize assignment operators, count global identifier reads/direct writes and measure nested for/while depth. Global procedure identifiers also count as global reads. Original intercepted procedure bodies and native public-node models exercise these effects.
+
+Conditional forms fail explicitly until their exact if_points weights are reviewed; calls into Basic fail until its fixed allocation/free name set is reviewed. Binary writer/reader/plugin integration remains pending precise canonical relative-string encoding and inline placement. See the per-function remaining matrix and deviations.
 
 ## Check
 

@@ -220,6 +220,7 @@ def main():
     cases.append("codeview-strings")
     cases.append("iprof-manual-clock")
     cases.append("iprof-client-setup")
+    cases.append("codex-metrics")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -319,7 +320,7 @@ def main():
              *sorted((ROOT / "stdlib/Debug_Info").glob("*.jai")),
              ROOT / "stdlib/Debug/module.jai",
              ROOT / "stdlib/Iprof/module.jai",
-             ROOT / "stdlib/Codex/module.jai",
+             *sorted((ROOT / "stdlib/Codex").glob("*.jai")),
              ROOT / "stdlib/Check/module.jai",
              *sorted((ROOT / "stdlib/Bindings_Generator").glob("*.jai")),
              *sorted((ROOT / "stdlib/internal/developer-tools").rglob("*.jai")),
@@ -367,7 +368,9 @@ def main():
     if private_profile.returncode != 1 or "no exported member `profile_owner`" not in private_profile.stderr:
         raise RuntimeError("Iprof must not export its private runtime allocator state")
     for case, diagnostic in [("iprof-unbalanced", "Iprof: zone_end without an active zone"),
-                              ("iprof-depth", "Iprof: maximum profiling depth exceeded")]:
+                              ("iprof-depth", "Iprof: maximum profiling depth exceeded"),
+                              ("codex-conditional-metrics", "Codex: conditional metric weights require reviewed refinement"),
+                              ("codex-basic-metrics", "Codex: Basic allocation metric recognition requires reviewed name set")]:
         fixture = ROOT / f"tests/developer-tools/rejections/{case}.jai"
         for mode in ["interp", "0", "2"]:
             executable = ROOT / f"target/developer-tools-{case}-o{mode}"
@@ -380,7 +383,7 @@ def main():
             rejected = subprocess.run(command, cwd=ROOT, env=ENV, text=True, capture_output=True, timeout=60,
                                       preexec_fn=disable_core_dump if os.name == "posix" else None)
             if rejected.returncode == 0 or diagnostic not in rejected.stdout + rejected.stderr:
-                raise RuntimeError(f"Profiler {case}/{mode} did not fail with the required independent safety diagnostic")
+                raise RuntimeError(f"Developer-tool rejection {case}/{mode} did not fail with the required diagnostic")
     for os_name, cpu in [("linux", "x64"), ("windows", "x64"), ("wasm", "x64")]:
         run([JAIC, "tests/developer-tools/c-header.jai", "-check", "-os", os_name, "-cpu", cpu])
         run([JAIC, "tests/developer-tools/debug-target.jai", "-check", "-os", os_name, "-cpu", cpu])

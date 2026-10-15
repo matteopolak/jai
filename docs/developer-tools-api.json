@@ -23221,7 +23221,7 @@
         "declaration": "collect_metrics :: (tc: Typechecked(Code_Procedure_Body)) -> (metrics: Metrics)",
         "section": "Public declaration inventory",
         "spec_line": 7,
-        "implementation": "pending"
+        "implementation": "typed-tree metrics subset; real producer body and native public-node call/file/module/assignment/global/loop-depth effects; conditional forms and Basic allocator recognition explicitly rejected pending question2"
       },
       {
         "name": "get_file_and_module",
@@ -23277,7 +23277,7 @@
         "declaration": "Metrics :: struct",
         "section": "Public declaration inventory",
         "spec_line": 15,
-        "implementation": "pending"
+        "implementation": "typed-tree metrics subset; real producer body and native public-node call/file/module/assignment/global/loop-depth effects; conditional forms and Basic allocator recognition explicitly rejected pending question2"
       },
       {
         "name": "Revision_Control_Type",
