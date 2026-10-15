@@ -4,7 +4,7 @@ This work owns Basic builder/formatting, String utilities, Hash scalars and
 File_Utilities. Inherited spec, argument/runtime and Command_Line edits are
 retained in the worktree and excluded from foundations commits.
 
-Latest stable checkpoint is f9cd1c3; continuation improves canonical context
+Latest stable checkpoint is 5c5e27b; continuation improves canonical context
 lint usage and adds array aliasing safety. NEW compiler host constants resolve
 the Preamble cross failure: the 43-case suite passes interpreter/native O0/O2,
 and 35 supported WASI cases pass O0/O2. Six native unused-code scopes pass;

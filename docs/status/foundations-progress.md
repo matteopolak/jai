@@ -1,5 +1,15 @@
 # Foundations progress
 
+Stable owned checkpoint: 5c5e27b (array aliasing, canonical debugger context
+usage and strict verification evidence). The final expanded driver completed
+43 interpreter/native O0/O2 cases, 35 production WASI O0/O2 cases, exact misuse
+termination/rejection gates and all six native unused-code scopes. Its overall
+exit remains 1 for the preserved WASI File/POSIX.FILE dependency. Full lint
+likewise exits 1 for its five documented incomplete semantic roots, with no
+remaining rule findings. Focused changed production roots/positive tests pass
+-D warnings. The unchanged real jaifmt was rebuilt after the array fix; owned
+--check and stdin idempotence pass. All 13 unchanged LSP auto_import tests pass.
+
 Continuation after f9cd1c3: fixed bulk array self-append/interior-view append
 across allocator moves, plus overlapping array_copy. A moving allocator poisons
 old storage; its original regression failed before implementation and now
