@@ -1,6 +1,6 @@
 # Developer documentation
 
-Clean-room boundary incident: [compiler exposure report](status/compiler-cleanroom-incident-2026-10-14.md). Implementation stopped after the verified checkpoints.
+Clean-room boundary incident: [compiler exposure report](status/compiler-cleanroom-incident-2026-10-14.md). Coordinator reviewed bounded provenance and authorized resumption; retain disclosure locally, exclude it from final published history.
 
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 

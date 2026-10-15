@@ -35,3 +35,15 @@ The search should have named only docs/specs/stdlib/developer-tools-questions.md
 docs/status/developer-tools-progress.md and developer-tools-deviations.md after
 finding their paths. Broad peer status globs are prohibited for further clean-room
 work. No producer checkout was written by this continuation.
+
+## Bounded coordinator disposition
+
+The user authorized resumption after coordinator review of exactly the four
+excerpts above. The producer file is inherited from independent integration-clean
+baseline 769acd1, not quarantined integration. The excerpts are generic clean
+status metadata; no /Users/matthew/projects/jai-reference/old/quarantined implementation bodies or algorithms
+were exposed. This disposition is accepted from the user; this worker did not
+inspect that commit or broaden the investigation. Resume strict clean-room work
+using explicitly named NEW producer question/progress/reproducer files only.
+Retain this local disclosure; coordinator must exclude the incident report from
+final published history. This worker will not rewrite history or publish.

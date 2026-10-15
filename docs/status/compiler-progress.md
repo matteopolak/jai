@@ -1,6 +1,6 @@
 # Compiler progress
 
-IMPLEMENTATION STOPPED: after committed overlay 3aab9d1 and CPUID 44ed369, a broad NEW tooling status search returned four excerpts from potentially quarantined integration-deviations.md. No code changes followed exposure. Exact scope/disposition: compiler-cleanroom-incident-2026-10-14.md. Coordinator provenance review/reassignment is required before further implementation by this worker.
+RESUMED by explicit user authorization: coordinator verified the four status excerpts came from independent integration-clean baseline 769acd1 and contain no forbidden implementation. Disclosure retained locally; exclude incident report from final published history. No broader provenance inspection performed. Named NEW developer-tools reproducers are the current scope.
 
 Forward-overlay checkpoint 3aab9d1 is committed. CPUID now uses real host/native hardware queries with leaf/subleaf inputs and four zero-extended outputs. Original x64 interpreter and native O0/O2 comparisons pass; eight ABI objects preserve RBX, unsupported ARM/WASM paths diagnose. The 295-case selected core/backend run, scoped format/Jai lint and host/x64/Windows/WASM clippy pass. See compiler/cpuid.md. Windows runtime CI, portable runtime adoption, tooling identity/typed-descriptor reproducers and separate synthetic random/timestamp instruction gaps remain pending.
 
