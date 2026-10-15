@@ -1,5 +1,14 @@
 # Portable stdlib progress
 
+SDK/startup milestone: real exact directory precedence/warnings and platform-tools
+executable discovery, durable allocator-owned cache, explicit per-call start-server
+and failure retention. Main/cache:10 interpreter/native runs; verbosity:3; actual
+default-assert true/false startup:10 with verification separately enabled. Linux
+both-CPU source checks and strict lint pass: target/adb-sdk-final.log. Newly composed
+foundation is read-only input/staged only. Conventional-existing-home branch and
+native Windows/real SDK/device remain unverified, documented in portable-adb.md.
+Missing152 ->151; no declaration-only credit or native Android generation claim.
+
 ADB review correction milestone: temporary version/device views+array, exact
 version lines, malformed-device diagnostics, double-quote-only shell wrapping,
 compression conflicts, first PID+warning/-1 failure, empty commands and launch0

@@ -1,5 +1,18 @@
 # Portable stdlib worker deviations
 
+ADB SDK/startup earlier gap is now implemented. Durable default-allocator cache
+retains one current executable path until rediscovery/process exit; allocator
+identity saved for proper Basic free on replacement. This prevents temporary reset
+from dangling the executable. Concurrent public cache/config mutation is not
+guaranteed; callers serialize it. Current cache retention is deliberate process
+lifetime, not a hidden per-call leak. Tests compose actual NEW foundation sources
+under target/ only; coordinator production integration is still pending.
+Existing-conventional-home precedence source implemented, not native exercised
+because host SDK directory absent and tests do not modify user home. Windows
+Process/System integration and real SDK/server/device verification remain pending.
+23 host protocol executions plus exact default-assert distinction prove startup
+ordering/failure, not an installed SDK. See portable-adb.md for test corrections.
+
 ADB reviewed policies first correction: temporary capture backing preserves
 device/version views until temp reset; array is temporary. Safe lifetime choice
 is explicit where reviewer says original backing lifetime ambiguous. Generic

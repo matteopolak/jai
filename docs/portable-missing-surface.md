@@ -37,7 +37,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `Android_Default_Theme :: enum u16` | All reviewed hosts |
 | `ANDROID_DYNAMIC_LOADER_VERSION :: 3` | All reviewed hosts |
 | `android_find_ndk_path :: (log_errors := false) -> bool, string` | All reviewed hosts |
-| `android_find_sdk_path :: () -> bool, string` | All reviewed hosts |
 | `android_generate_apk :: (options: Android_Build_Options, config: Android_Project_Config) -> bool, string` | All reviewed hosts |
 | `android_generate_apk :: (project_path: string, release := false) -> bool, string #deprecated "Use android_generate_apk that takes Android_Build_Options as first argument"` | All reviewed hosts |
 | `android_generate_apk_command_line_tools :: (options: Android_Build_Options, config: Android_Project_Config) -> bool, string` | All reviewed hosts |
@@ -211,7 +210,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 152 missing reviewed declaration/overload/nested-operation rows
+Total: 151 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

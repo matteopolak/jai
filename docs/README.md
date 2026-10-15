@@ -1,7 +1,8 @@
 # Developer documentation
 
 Android host [ADB operations](portable-adb.md) now include app lifecycle status,
-force-stop and installation queries, with protocol tests and device gaps recorded.
+force-stop, installation queries and reviewed SDK discovery/cache/startup, with
+protocol/assertion-configuration tests and device gaps recorded.
 [JAVA_HOME discovery](portable-java-discovery.md) validates real launcher status
 and records its interpreter/native protocol coverage and Windows dependency.
 [Android configuration flags](portable-android-values.md) covers actual manifest

@@ -3,6 +3,7 @@
 #import "Basic";
 A :: #import "Android/Toolchain";
 S :: #import "String";
+F :: #import "File";
 
 warnings: s64;
 errors_seen: s64;
@@ -43,8 +44,15 @@ exercise :: () {
     assert(devices_ok && devices.count == 1 && devices[0].serial == "ready-1");
 
     installed, sdk_path := A.is_adb_installed();
+    expected_sdk_path := sprint("%/../../../target/portable-adb/SDK space/platform-tools/adb", S.path_strip_filename(#file));
 
-    assert(installed && sdk_path == "/explicit/sdk/platform-tools/adb");
+    defer free(expected_sdk_path);
+
+    absolute_expected, resolved := F.get_absolute_path(expected_sdk_path);
+
+    defer free(absolute_expected);
+
+    assert(installed && resolved && sdk_path == absolute_expected);
     malformed := sprint("%/../../../target/portable-adb/malformed SDK fixture", S.path_strip_filename(#file));
 
     defer free(malformed);
@@ -110,7 +118,9 @@ exercise :: () {
     assert(!A.stop_app("org.example.offline"));
     assert(A.adb_uninstall("org.example.app"));
     A.__adb_path = "/definitely/unavailable/adb";
+    context.assertion_failed = continue_failure;
     ok, output, errors, code = A.adb("version");
+    context.assertion_failed = original_assertion;
     assert(!ok && code == 0 && output == "" && errors == "");
     free(output);
     free(errors);
@@ -121,7 +131,7 @@ exercise :: () {
     pulled := A.adb_pull("a", compression_algorithm = .ANY, disable_compression = true);
 
     context.assertion_failed = original_assertion;
-    assert(!pushed && !pulled && assertions_seen == 3 && errors_seen == 7 && warnings == 2);
+    assert(!pushed && !pulled && assertions_seen == 4 && errors_seen == 8 && warnings == 2);
     A.__adb_path = "";
     A.adb_device_serial = "";
 }

@@ -13,6 +13,7 @@ MODULES = [
       'adb_be_verbose', 'adb', 'adb_version', 'adb_devices', 'is_adb_installed', 'adb_push', 'adb_pull',
       'adb_shell_mkdir', 'adb_shell_pidof', 'adb_uninstall', 'stop_app', 'is_app_running', 'android_is_app_installed',
       'JAVA_ENV_NAME', 'find_java_bin_path_from_environment',
+      'android_find_sdk_path',
       'Android_Config_Changes', 'android_config_changes_from_string',
       'ASN1_Tag_Class', 'ASN1_Tag_Length_Value', 'ASN1_Universal_Type', 'ASN1_Tag', 'ASN1_KNOWN_OIDS',
       'asn1_read_tag', 'asn1_read_length', 'asn1_decode_integer', 'asn1_decode_object_identifier',

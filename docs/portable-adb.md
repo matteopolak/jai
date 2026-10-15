@@ -1,5 +1,53 @@
 # Android SDK command subsystem design
 
+CURRENT SDK/startup correction: android_find_sdk_path checks conventional home
+directory first, then ANDROID_HOME/ANDROID_SDK_ROOT/ANDROID_SDK_HOME in exact reviewed
+order, using the NEW foundation producer's real File_Utilities.is_directory. Set
+invalid environment candidates warn; absent values are skipped. SDK selection
+returns an active-context copy. is_adb_installed checks platform-tools/adb (adb.exe
+on Windows) and returns a temporary path without running version or a daemon.
+No PATH fallback or unrelated user directories are scanned. Conventional Windows
+path is AppData/Local/Android/Sdk; all other reviewed targets use Android/Sdk.
+
+With no explicit __adb_path, adb discovers once and retains an owned durable copy
+using the runtime default allocator, preserving its allocator for replacement.
+Public __adb_path is still the same mutable entity, with explicit caller overrides
+honored directly. SDK environment changes do not refresh a nonempty cache. An
+explicit clear permits rediscovery and releases the previous privately owned cache
+through its saved allocator/normal Basic free path. Process-lifetime retention of
+the current cache is intentional; no public teardown API is invented. Callers must
+serialize configuration/environment mutation; concurrent cache reconfiguration
+has no established public guarantee.
+
+Every valid wrapper call explicitly executes executable start-server before the
+requested command. Actual exit/launch/timeout failure logs/asserts and returns
+failure if assertions continue. Essential calls are outside optional assertions;
+captured startup buffers are released. No-command failure executes neither step.
+Startup protocol logs prove ordering; this is a source-built SDK-command fixture,
+not actual SDK/server/device/auth verification.
+
+Evidence: target/adb-sdk-final.log. Main and SDK/cache fixtures pass five
+interpreter/native ARM64+x64 O0/O2 modes each; verbosity passes three modes.
+Default Basic ENABLE_ASSERT=true/false startup success/failure each pass allfive
+modes, with verification explicitly importing a separate enabled instance. Both
+staged Basic defaults are changed, so this actually varies the ADB instance.
+Linux x64/ARM64 public bodies and strict lint pass. Formatting checks owned code.
+Dependency composition copies NEW foundations read-only into target/, not peer
+edits or completed coordinator integration. Public SDK environment fallback,
+empty SDK missing-executable, cache/reset/rediscovery and startup failure are
+tested. Existing conventional-home-directory precedence is implemented but that
+existing-directory branch is not native-tested here: the actual home SDK is absent,
+and tests do not mutate user home. Native Windows/Linux/Android and real SDK/device
+integration remain pending; Windows Process/System integration is peer-owned.
+
+Additional test corrections: expected fixture path first contained lexical ../
+segments unlike canonical environment paths; normalize only the expected fixture
+through public File.get_absolute_path and free its allocation. No production path
+special case was introduced. Standalone internal-file lint needed the actual module
+load context (facade plus file); both assertion configurations now receive it.
+Historical follow-up notes below preserve earlier evidence and are superseded by
+the CURRENT SDK/startup correction and first-policy batch where applicable.
+
 REFRESHED REVIEW FOLLOW-UP: synchronized Android/Toolchain behavior now specifies
 SDK discovery/cache, per-call server startup, generic shell double-quote wrapping,
 compression conflict assertion, exact version lines/temporary fields and device
