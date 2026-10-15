@@ -1,0 +1,10 @@
+{
+  "scope": "staged libclang backend used by the supported public Bindings_Generator facade; full compatibility remains pending",
+  "sdk_headers_sha256": {
+    "/opt/homebrew/opt/llvm/include/clang-c/Index.h": "c3568d06272605871718f54f367ed061109e3082d5b8087a6dd99bfb96c24259",
+    "/opt/homebrew/opt/llvm/include/clang-c/CXString.h": "c82e38b8283c1f9d39ac0637d74f2ef4ead933fc344b880688e5ea2a7f321316"
+  },
+  "clang_version": "Homebrew clang version 23.1.2\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm/23.1.2/bin\nConfiguration file: /opt/homebrew/Cellar/llvm/23.1.2/etc/clang/arm64-apple-darwin27.cfg\n",
+  "source_sha256": "14730ce6b9ae4e988a0d141b8a486c574c7449537f6f6f4e05ec2cabdff92b97",
+  "tests": "interpreter/native O0/O2 call and mutation, callbacks, enum and record layout; rejection preserves output; Linux/Windows target-dependent long"
+}

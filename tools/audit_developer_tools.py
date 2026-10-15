@@ -48,9 +48,71 @@ def main():
         if module == "Generate_C_Header":
             for item in declarations:
                 item["implementation"] = "supported subset; see developer-tools-deviations.md"
+        if module == "Bindings_Generator":
+            models = set()
+            for path in (ROOT / "stdlib/Bindings_Generator").glob("*.jai"):
+                models.update(re.findall(r"^\s*([A-Za-z_][A-Za-z_0-9]*)\s*::", path.read_text().split("#scope_file")[0], re.MULTILINE))
+            for item in declarations:
+                if item["name"] in models or item["name"] == "TARGET_OS":
+                    item["implementation"] = "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
+                if item["name"].startswith("clang_") and item["name"] in models:
+                    item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
+                    if item["name"] in {"clang_getDiagnosticNumRanges", "clang_getDiagnosticRange", "clang_EvalResult_getAsInt"}:
+                        item["implementation"] = "reviewed native signature implemented; direct invocation remains source-only"
+                if item["name"] in {"set_ExcludeDeclarationsFromPCH", "get_ExcludeDeclarationsFromPCH",
+                                     "set_DisplayDiagnostics", "get_DisplayDiagnostics",
+                                     "set_StorePreamblesInMemory", "get_StorePreamblesInMemory"}:
+                    item["implementation"] = "reviewed bit views; native SDK layout, bit preservation and index creation verified"
+                if item["name"] in {"generate_bindings", "normalize_options", "get_default_system_include_paths",
+                                     "_default_get_func_args_for_printing", "looks_like_valid_identifier",
+                                     "is_hex_digit", "is_valid_int_literal_suffix", "is_valid_float_literal_suffix",
+                                     "convert_float_literal", "convert_literal_value", "generate_replacements_array"}:
+                    item["implementation"] = "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
+                if item["name"] in {"visit_declarations", "find_parent_enum", "create_type_of_enum", "change_type_to_enum",
+                                     "change_return_type", "change_return_type_to_enum", "change_argument_type_to_enum",
+                                     "create_pointer_to", "get_int_type"}:
+                    item["implementation"] = "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
         if module == "Performance_Report":
             for item in declarations:
                 item["implementation"] = "implemented; measured native compiler plugin fixture"
+        if module == "Print_Vars":
+            for item in declarations:
+                item["implementation"] = "implemented; original caller-code, formatting and logging fixture"
+        if module == "Rewrite":
+            for item in declarations:
+                item["implementation"] = "supported subset; actual compiler-message rewrite and edit safety fixture"
+        if module == "Debug_Info":
+            for item in declarations:
+                if item["name"] in {"Call_Frame_Address_Instruction_Type", "Call_Frame_Address_Instruction",
+                                     "Frame_Common_Information_Entry", "decode_cfa_instructions", "parse_common_information_entry"}:
+                    item["implementation"] = "supported DWARF frame subset; native-produced CIE and malformed-input fixture"
+                if item["name"] in {"Codeview_Line_Info", "get_line_number", "get_line_number_end_delta",
+                                     "line_info_is_for_statement", "Codeview_Address_Range", "Codeview_Address_Gap",
+                                     "Codeview_Symbol_Defrange_Register_Rel", "get_spilled_udt_member", "get_offset_parent"}:
+                    item["implementation"] = "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
+        if module == "Debug":
+            supported = {"Exit_Code", "Minidump_State", "CRASH_HANDLER_USE_SEPARATE_THREAD", "backtrace",
+                         "free_backtrace", "backtrace_symbols", "translate_symbols", "os_backtrace",
+                         "os_backtrace_symbols", "is_debugger_present", "os_is_debugger_present",
+                         "is_valid_pointer", "output", "abort", "os_abort", "breakpoint"}
+            for item in declarations:
+                if item["name"] in supported:
+                    item["implementation"] = "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        if module == "Iprof":
+            supported = {"Report", "Report_Row", "Report_Mode", "Zone", "Zone_History", "NUM_VALUES", "NUM_TITLE",
+                         "NUM_HEADER", "NUM_FRAME_SLOTS", "save_csv_report", "log_text_report"}
+            for item in declarations:
+                if item["name"] in supported:
+                    item["implementation"] = "reporting subset; CSV/text, manual/history conditions verified"
+        if module == "Codex":
+            for item in declarations:
+                if item["name"] in {"Math", "get_file_and_module", "is_global_ident"}:
+                    item["implementation"] = "inspection subset; real producer code records and canonical Math identity verified"
+        if module == "Check":
+            for item in declarations:
+                if item["name"] in {"DEBUG_BINDINGS", "C_Porting_Check_Settings", "check_c_porting", "should_skip",
+                                     "is_of_fixed_array_type", "do_error_checking"}:
+                    item["implementation"] = "Windows-only porting subset; actual typed-message and manual diagnostic fixtures"
         inventory[module] = {"spec": str(spec.relative_to(ROOT)),
                              "spec_sha256": hashlib.sha256(contents.encode()).hexdigest(),
                              "declarations": declarations, "reviewed_members": members}

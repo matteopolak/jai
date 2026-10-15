@@ -871,3 +871,38 @@ ledger marks partial default wrappers; source inventory is not functionality
 certification. Strict target lint/configuration/native execution gaps remain.
 Private test placement must remain byte-identical inputs and not library repair;
 production-source stability/cleanup and bindings generator idempotence need rerun.
+
+
+Tooling9b6c482 audited/merged scope: source-built official libclang C/Jai ABI,
+CXIndexOptions u16bitfield/size24/pointer8,16, cursor/types/strings/callback models,
+finite numeric macro probes and enum groups, CodeView/DWARF subsets, kernel-
+mediated Debug readability. No reference compiler/std bodies used. Public native
+model ordering comes from independent responsibility groups; aggregate/enum/ABI
+order preserved. Public version21 remains reviewed compatibility constant while
+actual official SDK23 supplies the supported native backend; exact header/native
+source hashes are recorded, not full21SDK conformance.
+
+Removed avoidable host-specific test/build setup: official SDK prefix now uses
+explicit DEVELOPER_TOOLS_LLVM_PREFIX, compiler LLVM_SYS_231_PREFIX or actual
+llvm-config; missing SDK diagnoses. Shared native fixtures use real macOS dylib/
+Linux PICso flags/names, retaining identical C ABI/behavior assertions. No hardcoded
+Homebrew path or Linux-as-macOS command remains. Native Windows tooling is still
+unsupported, explicit builder diagnostic; source target checks are separate.
+
+Unfinished/reduced behavior remains producer-reported: Bindings_Generator supports
+one C header/library, rejects unsupported C++bridges/bitfields/variadic callback
+mutations/string/function/nonfinite macros and options; macro probes reparse per
+macro (callbacks can double cost), include snapshots not atomic; no fabricated
+constants. Header generation rejects unsupported overlays/multiple returns/etc,
+layout mismatch may surface at Ccompile rather than pregeneration. Its runtime
+support-descriptor fixtures still use reviewed test-only records and are not
+production bootstrap identity proof. Rewrite uses byte coordinates/quadratic
+sorting, skips unwritable string inputs and has non-atomic write TOCTOU risk.
+Print_Vars byte widths/eager temporary storage and Performance_Report quadratic
+sorting are deliberate. Debug has bounded little-endian DWARF32 subset, real
+readability kernel syscalls, unsupported architectures/backends remain explicit.
+Iprof has caller-supplied reports only, no fabricated instrumentation/samples;
+Codex metadata and Check semantics remain subsets. Full1630declaration inventory
+is not full behavior support. Producer tests independently authored but separate
+root review remains pending. All current production/Jai/native/ABI/regeneration/
+lint verification remains required; no staged producer pass counts integrated.
