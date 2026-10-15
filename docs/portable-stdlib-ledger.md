@@ -39,7 +39,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [dxc-compiler](specs/stdlib/modules/dxc-compiler.md) | Reserved for bindings worker; not implemented or modified here |
 | [dxgi](specs/stdlib/modules/dxgi.md) | Reserved for bindings worker; not implemented or modified here |
 | [example-plugin](specs/stdlib/modules/example-plugin.md) | Owned portable scope; not implemented |
-| [executable-formats](specs/stdlib/modules/executable-formats.md) | Owned portable scope; not implemented |
+| [executable-formats](specs/stdlib/modules/executable-formats.md) | Partial: real bounded classic/GNU/COFF/BSD ar parsing, symbol indexes and universal signature detection. Native original C archive and malformed/lifetime tests pass. Missing Arch_File shape blocks universal records; remaining object/debug/text parsers unfinished |
 | [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial paths, Unix metadata, recursive listing/copy and replacement implemented; tree copying, self-copy rejection and metadata pass interpreter/native. Visit aliases missing reviewed signatures |
 | [file-watcher](specs/stdlib/modules/file-watcher.md) | Owned portable scope; not implemented |
 | [file](specs/stdlib/modules/file.md) | Reserved completion for platform-io worker. Existing partial Unix implementation retained; offset/EOF/write/seek cases remain integration regressions. Windows/Android not completed here |
