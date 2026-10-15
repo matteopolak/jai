@@ -1,5 +1,8 @@
 # Developer documentation
 
+[Deep_Copy timer operations](portable-deep-copy-timing.md) records the real
+disabled-assertion defect, explicit clock/error fix and Mac regression evidence.
+
 [macOS resolver and network database bindings](portable-socket-resolver.md) record
 active C/Jai ABI and native behavior evidence, with the remaining full-lint compiler gate.
 

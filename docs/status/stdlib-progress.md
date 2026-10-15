@@ -1,5 +1,20 @@
 # Portable stdlib progress
 
+Deep_Copy timer operations fixed: real SDK calls no longer occur inside optional
+assertions. New unconditional 20ms callback regression failed exit5 with the
+staged DEFAULT Basic assertions disabled, passed enabled; now both pass
+interpreter/native Mac O0/O2 with existing graph/scalar/debug execution and whole
+owned strict lint. Format/--check pass. Windows same-source correction remains
+native-unverified. No test correction. See portable-deep-copy-timing.md.
+
+Socket actual whole-binding strict lint now PASSES compiler89560db9 together with
+real C SDK and Jai resolver interpreter/native ARM64/x64 O0/O2/source checks:
+target/socket-whole-lint-refresh.log. Earlier type-query gap is historical.
+New four-way inbox split accepted; ASN1/Socket, JKS crypto/readers and APK signing
+are now excluded from new portable edits. An uncommitted APK model fixture is
+preserved only as pending/apk-signing-model-behavior-candidate.jai; no production
+APK signing record edits were made. Exact refreshed inventory/handoff follows.
+
 Post-integration snapshot:4076 owned reviewed rows,3574 complete-source,
 455 conservatively partial,47 missing (87.68%source rows; not conformance totals).
 Metaprogram_Plugins now complete-source/verified; JKS source moved missing->partial

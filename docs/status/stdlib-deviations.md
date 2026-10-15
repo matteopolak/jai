@@ -1,5 +1,13 @@
 # Portable stdlib worker deviations
 
+Deep_Copy timer fix: no optional-assertion side-effect workaround remains in its
+clock queries. Real clock failure invokes the configured failure handler and
+aborts if it returns, preserving explicit failure rather than fabricated elapsed
+time. Mac enabled/disabled regressions and owned strict lint pass; native Windows
+and injected SDK failures unverified. Existing graph assertions are only effective
+in the enabled run; the new disabled timer check is unconditional. No test oracle
+correction or suppressed diagnostic. See portable-deep-copy-timing.md.
+
 Removed duplicate Default CLI-only plugin generator; canonical public loader now
 handles custom plus Check requests. Default follows reviewed generic aggregate
 initializer semantics; original independent early-stop behavior had no separate
