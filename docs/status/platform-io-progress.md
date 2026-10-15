@@ -1,5 +1,47 @@
 # Platform I/O worker progress
 
+## cc07c00 actual native feedback and startup follow-up
+
+Argv fix checkpoint: `acda8e2`. Additional supplied-argv coverage includes an
+explicitly empty argv[0]; it must remain caller data rather than trigger metadata
+substitution. All 155 compiler library tests and clippy pass with that assertion.
+
+Filtered docs/ci-feedback-latest.md confirms real Windows x64 and ARM64 Platform
+I/O interpreter/native O0/O2 steps passed at cc07c00. The full jobs failed. This
+supersedes earlier File-only evidence for that step's snapshot, without extending
+the result to the newer argv patch or the full renderer/corpus matrix. No raw logs
+or vendor implementation bodies were read.
+
+The no-argument interpreter startup regression is isolated to the compiler's
+executable-query adapter: it intentionally returned NULL from CommandLineToArgvW
+when the CLI omitted --. Strict runtime conversion correctly rejected that result.
+Two independent Rust regressions reproduced the error; all four executable-query
+tests pass after removal of the fabricated failure and supplying the program's
+virtual executable name for an omitted argv vector. Caller-supplied argument
+vectors remain intact. No runtime initialization or strict conversion is bypassed.
+The source file matched the permitted current compiler producer before the patch;
+only this local checkout and local tool staging were modified.
+
+The new startup-arguments contract verifies context initialization, argv[0], strict
+surrogate handling and insufficient-buffer errors on Windows. The runner now tests
+both omitted -- and supplied -- startup. Local interpreter/native O0/O2, four-target
+source checks and x64 cross-builds pass with the source-built patched compiler;
+actual Windows execution of this newer fix remains for the next native CI iteration.
+All 155 compiler library unit tests and scoped clippy pass. Source-built jaifmt
+--check and strict four-target jailint pass with 43/43 owned Jai source coverage.
+The full local runner passes omitted/explicit argv, host interpreter/native O0/O2,
+four-target -no_dce checks and x64 cross-builds. Durable logs are
+target/platform-io-argv-{red,green,all-unit,clippy,lint,suite}.log. The first two
+logs preserve the failing native-query adapter tests and their corrected results.
+
+Untouched ARM64 Compiler.Build_Options reproduces the x64-handler diagnostic.
+Reviewed defaults are .ON/.AUTO; the full-record serializer cannot distinguish an
+untouched .ON from assignment of .ON. A narrow policy review was requested, with
+an original reproducer in [startup regressions](../platform-io-startup-regressions.md).
+No public default, explicit unsupported-handler diagnostic, or assertion was changed
+to conceal this remaining full-matrix blocker. The pending example is documentation,
+not a claimed positive executable fixture.
+
 Latest code checkpoint: `6d71f26` (full finite Windows waits and final Unix
 preservation audit); preceding checkpoints are `556330b`, `2b1d623`, `27b719c`
 and `700f07e`. Owned code/tests are committed. Native Windows verification and

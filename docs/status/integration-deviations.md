@@ -500,4 +500,3 @@ argument before an unknown supplied name. General validation now declares the
 complete header, validates supplied names/duplicates, then rejects omitted ordinary
 parameters; late program parameters remain supported. All 50 module regressions
 and both production runtime configuration regressions pass without test changes.
-

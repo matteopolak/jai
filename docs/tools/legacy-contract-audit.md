@@ -33,4 +33,3 @@ See [requests](../integration-requests.md) and
   and zero-sleep check, using native QueryPerformanceCounter/frequency on Windows
   and POSIX monotonic time elsewhere. The former unconditional POSIX test import
   rejected Windows before exercising the supported public sleep operation.
-
