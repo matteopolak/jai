@@ -453,3 +453,50 @@ foreign/native SDK cases separately, never passed. Root contract coverage is
 bounded, not equivalent to deleted suite or complete reviewed API coverage.
 Coordinator alone runs opaque original public corpus, Focus and ordinary native
 CI. Release/publication remains held. No push/dispatch performed.
+
+## Production refresh17 validation and scoped repairs
+
+At combined producer head7aec510, cargo test --locked --workspace --all-targets
+recorded85 summaries742 aggregatepasses32 failures/one inheritedignored result.
+The raw own-source log is retained under ignoredartifacts/integration-clean.
+Do not interpret those aggregates as distinct tests or green integration.
+Production jaifmt/check covered1052 files; quality-refresh17.json records
+58/187 failed strictlint gates and source_stable=true.
+
+Assertion transport correction is committed29ec8f9. Exact focused commands:
+LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm RUSTC_WRAPPER= cargo test --locked
+-p jaic --test cleanroom_interpreter_hook (fourPASS), and cargo test --locked
+-p jaic-cli --test cleanroom_interpreter_assertions (one test/four scenariosPASS).
+The existing module/native-check/runtime-configuration batch passed57 tests.
+Workspace clippy --all-targets -- -D warnings PASS. Diagnostics25cases now22PASS/
+threeFAIL; remaining failures are retained, not hidden.
+
+python3 tests/stdlib-contract/run.py --jaic "$PWD/target/debug/jaic"
+--stdlib-root "$PWD/stdlib" --mode native --opt O0, repeatedO2:54PASS each.
+Interpreter54PASS. Counts include declared precise negative checks; these are
+bounded spec contracts, not54 distinct native behavior executions.
+
+python3 tools/native_bindings/verify.py --compiler "$PWD/target/debug/jaic"
+--stdlib "$PWD/stdlib" --native-libs "$PWD/artifacts/integration-clean/native-sdk"
+--module SDL --runtime --report artifacts/integration-clean/sdl-sdk-refresh17.json:
+zero failures,30targets24privacy299symbols/nine native-interpreter phases.
+Canonical module-owned fixture discovery fixes stale migration paths. Temporary
+private test placement restores preexisting bytes/modes and removes added files/
+directories even on exceptions; original fixture bytes remain unchanged.
+
+Integration duplicate get_magic4 and User_Event declarations were removed,
+retaining the stronger existing magic bounds check and identical SDL layout.
+Public skip_this_output_channel restored to its reviewed visibility. Scoped
+real jailint -v -D warnings --config jailint.toml on Sound_Player/module.jai plus
+changed loaded fragments, Runtime_Support, SDLnative and correctedAudio/codec
+contracts PASS; earlier contextless/duplicate-helper failures retained.
+Scoped actualjaifmt formatting/check PASS, unchangedjaifmt rebuilt against
+production tree. Audio contract successful-buffer test now supplies valid
+loaded PCM and asserts actual pointer identity. No default-value assertion lost.
+
+Native source builder now extracts complete verified archives afresh, restoring
+transitive headers and removing injected cached files as well as validating
+primary pinned files. This deliberately costs extractionI/O per build for
+integrity; no nativepin weakened. Seven builder/verifier input regressionsPASS.
+Full SDK dependency setup still fails officialX.org connectionreset; scopedSDL,
+rpmalloc andFSEvents probes source-build successfully, not all-dependency proof.

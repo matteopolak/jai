@@ -1004,3 +1004,19 @@ when testing successful buffer bounds, as required by reviewed Sound_Player:
 default UNINITIALIZED/no-storage data cannot establish successful buffer bounds.
 Default-value assertions remain before the mutation; bounds checks now assert
 actual backing-storage identity. Original failure evidence retained.
+
+Follow-up to refresh17 SDK/cache and audio lint entries: avoidable transitive
+archive cache gap removed by extracting the entire hash-verified archive afresh
+on each preparation, then replacing the cache tree. Modified transitive headers
+and injected extras are covered by a regression. Deliberate extractionI/O
+tradeoff; future optimization can compare complete verified manifests, never
+only primary headers. Seven transport/placement regressionsPASS. OfficialX.org
+network failure remains; no full-pin build success.
+
+Context-complete audio lint exposed duplicate get_magic4 implementations from
+integration, with identical signature/bounds/encoding; retained samples.jai
+version with stronger diagnostic and removed loading.jai duplicate. Actual
+scoped loaded-fragment/runtime/SDL/contract lint nowPASS with warnings denied.
+Whole-tree58failedlintgates remain historical/currentuntilrerun, not declared
+resolved. Default Audio publicskip helper visibility andSDLUser_Event duplicate
+are included in the integration correction checkpoint, not producer blame.
