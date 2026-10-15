@@ -1,17 +1,17 @@
 {
-  "timestamp_utc": "2026-10-15T17:16:24.862738+00:00",
-  "head": "42ff7e22c579f9627ea8bb97a7103f05757b72f7",
+  "timestamp_utc": "2026-10-15T17:48:15.722139+00:00",
+  "head": "5380c4c63376904aeb88191e24012706d3ae9b5a",
   "scope_count": 56,
   "counts": {
-    "complete": 33,
-    "partial": 23,
+    "complete": 44,
+    "partial": 12,
     "missing": 0
   },
   "committed_baseline": {
-    "complete_names": 33,
-    "partial_names": 23,
+    "complete_names": 44,
+    "partial_names": 12,
     "missing_names": 0,
-    "checkpoint": "42ff7e22c579f9627ea8bb97a7103f05757b72f7",
+    "checkpoint": "5380c4c63376904aeb88191e24012706d3ae9b5a",
     "integration_fix_commits": [
       "a5da97bc",
       "f91c96ac",
@@ -22,15 +22,26 @@
   "complete_names": [
     "_create_declaration",
     "can_omit_type",
+    "contains_equivalent_function",
     "count_asterisks",
     "count_namespace_refs",
     "create_empty_struct_type",
+    "create_expression_from_cursor",
+    "create_function_type",
+    "create_literal",
+    "create_macro_definition",
     "create_namespace",
+    "create_objc_interface",
+    "create_objc_type_param",
+    "create_reference_expression",
+    "create_typedef",
+    "create_variable_declaration",
     "find_closing_paren_token_index",
     "find_first_member_offset",
     "find_or_create_enum_for_macro",
     "find_referenced_declaration",
     "find_underlying_type",
+    "functions_are_equivalent",
     "get_primitive_or_array_primitive_type_size",
     "get_type_alignment",
     "is_16byte_integer_type",
@@ -55,68 +66,84 @@
     "macro_values_are_equal"
   ],
   "partial_names": [
-    "contains_equivalent_function",
     "create_declaration",
     "create_declaration_inner",
     "create_elaborated_type",
     "create_enum",
-    "create_expression_from_cursor",
     "create_function",
-    "create_function_type",
-    "create_literal",
-    "create_macro_definition",
-    "create_objc_interface",
-    "create_objc_type_param",
     "create_omit_cpp_functions_visitor",
-    "create_reference_expression",
     "create_struct",
     "create_type",
     "create_type_inner",
-    "create_typedef",
-    "create_variable_declaration",
     "find_and_check_macro_identifier",
     "find_name_clash",
-    "find_or_create_extra_info",
-    "functions_are_equivalent"
+    "find_or_create_extra_info"
   ],
   "missing_names": [],
   "draft": false,
   "remaining_batches": [
     {
       "names": [
-        "contains_equivalent_function",
         "create_declaration",
         "create_declaration_inner",
         "create_elaborated_type",
-        "create_enum",
-        "create_expression_from_cursor",
-        "create_function",
-        "create_function_type",
-        "create_literal",
-        "create_macro_definition",
-        "create_objc_interface",
-        "create_objc_type_param",
-        "create_omit_cpp_functions_visitor",
-        "create_reference_expression",
         "create_struct",
         "create_type",
-        "create_type_inner",
-        "create_typedef",
-        "create_variable_declaration",
-        "find_and_check_macro_identifier",
-        "find_name_clash",
-        "find_or_create_extra_info",
-        "functions_are_equivalent"
+        "create_type_inner"
       ],
-      "effort": "8-16 hours for template/wrapper/vtable edges, source mappings and validation",
-      "dependencies": "single canonical protocol is committed and handed off; public lifecycle/generation owner integration; limited is_same_type domain; emitted vtable declarations",
-      "delegatable": "ObjC/template edge paths or virtual-record metadata can be explicitly reassigned as disjoint private helper files; do not duplicate canonical scaffolding"
+      "effort": "3-6 hours",
+      "dependencies": "Template argument/reference recovery and virtual inheritance representation remain implementation/integration work. Explicit unsupported specializations are rejected before registration. Shared vtable/layout emission belongs to tooling integration.",
+      "delegatable": "Template recovery may be explicitly reassigned; no reassignment has been received."
+    },
+    {
+      "names": [
+        "create_enum"
+      ],
+      "effort": "contract/model dependency",
+      "dependencies": "Exact enum-value representation beyond64 bits: reviewed Literal payloads and libclang value accessors are64-bit. Question6; currently diagnosed, never truncated."
+    },
+    {
+      "names": [
+        "create_function"
+      ],
+      "effort": "1-2 hours plus integration",
+      "dependencies": "Exact constructor/destructor spelling question3 and canonical foreign-library association with tooling/platform owners."
+    },
+    {
+      "names": [
+        "create_omit_cpp_functions_visitor"
+      ],
+      "effort": "contract clarification then under1 hour",
+      "dependencies": "Question5: ordinary mangled C++ globals and wrapped callback order/STOP behavior. Existing explicit-method/constructor omission and real callback forwarding are implemented."
+    },
+    {
+      "names": [
+        "find_and_check_macro_identifier"
+      ],
+      "effort": "contract clarification then under1 hour",
+      "dependencies": "Question4: allowed conversion states. KEEP resolves, NEEDS_CHECKING/DISCARD reject, with no invented converted values."
+    },
+    {
+      "names": [
+        "find_name_clash"
+      ],
+      "effort": "shared comparator dependency",
+      "dependencies": "Tooling-owned is_same_type supported-domain limits. Unsupported overload disambiguation diagnoses and retains the collision."
+    },
+    {
+      "names": [
+        "find_or_create_extra_info"
+      ],
+      "effort": "3-6 hours plus shared emission",
+      "dependencies": "Polymorphic/base-record vtable/layout declaration integration with tooling owner. Nonpolymorphic real cached metadata and single public unknown sentinel are implemented."
     }
   ],
   "verification": {
-    "focused": "format, strict lint, Windows/Linux source checks, original Clang C O0/O2 layout oracles, 11 interpreter + 22 Mac native O0/O2 executions passed, including reopened namespaces and empty-token boundaries",
+    "focused": "format, strict lint, two cross-target source checks, original Clang C layout/wide-type O0/O2 oracles, 14 interpreter +28 Mac native O0/O2 executions passed",
     "raw_evidence": "CARGO_TARGET_DIR/generator-model-evidence.json",
-    "combined": "Complete configured-SDK/Mac suite running against stable42ff7e22 after independently verified timestamp fixture repair884c7ebc.",
-    "compiler_overlap": "Integrate compiler-owned e9affab7, retaining f91c96ac original regressions. Do not blindly merge both driver fixes."
-  }
+    "combined": "Audited rerun completed interpreter/native O0/O2 runtime gates with immutable native-input hashes. Whole-suite strict lint blocked by independently reduced general sandbox symlink/overlay identity bug; compiler owner notified. No skips/exceptions.",
+    "compiler_overlap": "Integrate compiler-owned e9affab7, retaining f91c96ac original regressions. Do not blindly merge both driver fixes.",
+    "reduction": "tools/reduce_generator_lint_path_alias.py: native_alias exit0; lint_same_path exit0; lint_alias exit1. Detailed local evidence in assigned target/generator-lint-path-alias-evidence.json."
+  },
+  "completion_definition": "Reviewed overloads and supported domains implemented; explicit diagnosed native/model representation limits are documented, not claimed equivalent outside that domain."
 }
