@@ -23779,14 +23779,14 @@
         "declaration": "CRASH_HANDLER_USE_SEPARATE_THREAD :: false",
         "section": "Public declaration inventory",
         "spec_line": 7,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "Exit_Code",
         "declaration": "Exit_Code :: enum s32",
         "section": "Public declaration inventory",
         "spec_line": 8,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "Crash_Handler",
@@ -23807,35 +23807,35 @@
         "declaration": "backtrace :: (trace: []*void, skip:=0) -> int",
         "section": "Public declaration inventory",
         "spec_line": 11,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "backtrace",
         "declaration": "backtrace :: (skip:=0) -> [] string",
         "section": "Public declaration inventory",
         "spec_line": 12,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "free_backtrace",
         "declaration": "free_backtrace :: (trace_symbols: [] string)",
         "section": "Public declaration inventory",
         "spec_line": 13,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "backtrace_symbols",
         "declaration": "backtrace_symbols :: os_backtrace_symbols",
         "section": "Public declaration inventory",
         "spec_line": 14,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "translate_symbols",
         "declaration": "translate_symbols :: backtrace_symbols",
         "section": "Public declaration inventory",
         "spec_line": 15,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "break_once",
@@ -23849,14 +23849,14 @@
         "declaration": "breakpoint :: () -> bool #expand #no_debug",
         "section": "Public declaration inventory",
         "spec_line": 17,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "is_debugger_present",
         "declaration": "is_debugger_present :: inline () -> bool",
         "section": "Public declaration inventory",
         "spec_line": 18,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "attach_to_debugger",
@@ -23870,14 +23870,14 @@
         "declaration": "output :: (text: string)",
         "section": "Public declaration inventory",
         "spec_line": 20,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "abort",
         "declaration": "abort :: (exit_code := Exit_Code.Abort)",
         "section": "Public declaration inventory",
         "spec_line": 21,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "get_written_minidump_filename",
@@ -23891,7 +23891,7 @@
         "declaration": "Minidump_State :: enum",
         "section": "Public declaration inventory",
         "spec_line": 23,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "set_minidump_state",
@@ -23961,7 +23961,7 @@
         "declaration": "is_valid_pointer :: (ptr : *void) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 33,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "write_minidump",
@@ -23982,21 +23982,21 @@
         "declaration": "os_is_debugger_present :: inline () -> bool",
         "section": "Unix-specific declarations",
         "spec_line": 39,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "os_is_debugger_present",
         "declaration": "os_is_debugger_present :: () -> bool",
         "section": "Unix-specific declarations",
         "spec_line": 40,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "os_is_debugger_present",
         "declaration": "os_is_debugger_present :: () -> bool",
         "section": "Unix-specific declarations",
         "spec_line": 41,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "os_attach_to_debugger",
@@ -24010,7 +24010,7 @@
         "declaration": "os_abort :: (exit_code: Exit_Code)",
         "section": "Unix-specific declarations",
         "spec_line": 43,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "os_enable_signal_handler",
@@ -24031,14 +24031,14 @@
         "declaration": "os_backtrace :: (trace: [] *void, maxcount: int, skip := 0) -> int",
         "section": "Unix-specific declarations",
         "spec_line": 46,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "os_backtrace_symbols",
         "declaration": "os_backtrace_symbols :: (trace: []*void, n: int) -> [] string",
         "section": "Unix-specific declarations",
         "spec_line": 47,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "os_show_assert_dialog",
@@ -24059,7 +24059,7 @@
         "declaration": "os_is_debugger_present :: inline () -> bool",
         "section": "Windows-specific declarations",
         "spec_line": 53,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "os_attach_to_debugger",
@@ -24073,7 +24073,7 @@
         "declaration": "os_abort :: (exit_code: Exit_Code)",
         "section": "Windows-specific declarations",
         "spec_line": 55,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "os_enable_signal_handler",
@@ -24094,14 +24094,14 @@
         "declaration": "os_backtrace :: (trace: [] *void, maxcount: int, skip:=0) -> int",
         "section": "Windows-specific declarations",
         "spec_line": 58,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "os_backtrace_symbols",
         "declaration": "os_backtrace_symbols :: (trace: [] *void, n: int) -> [] string",
         "section": "Windows-specific declarations",
         "spec_line": 59,
-        "implementation": "pending"
+        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
       },
       {
         "name": "init_crash_handler_thread",

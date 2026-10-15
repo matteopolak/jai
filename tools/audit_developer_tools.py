@@ -62,6 +62,14 @@ def main():
                 if item["name"] in {"Call_Frame_Address_Instruction_Type", "Call_Frame_Address_Instruction",
                                      "Frame_Common_Information_Entry", "decode_cfa_instructions", "parse_common_information_entry"}:
                     item["implementation"] = "supported DWARF frame subset; native-produced CIE and malformed-input fixture"
+        if module == "Debug":
+            supported = {"Exit_Code", "Minidump_State", "CRASH_HANDLER_USE_SEPARATE_THREAD", "backtrace",
+                         "free_backtrace", "backtrace_symbols", "translate_symbols", "os_backtrace",
+                         "os_backtrace_symbols", "is_debugger_present", "os_is_debugger_present",
+                         "is_valid_pointer", "output", "abort", "os_abort", "breakpoint"}
+            for item in declarations:
+                if item["name"] in supported:
+                    item["implementation"] = "native macOS/Linux subset; Android/WASM debugger false; see target limits"
         inventory[module] = {"spec": str(spec.relative_to(ROOT)),
                              "spec_sha256": hashlib.sha256(contents.encode()).hexdigest(),
                              "declarations": declarations, "reviewed_members": members}
