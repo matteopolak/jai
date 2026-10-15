@@ -135,7 +135,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [window-type](specs/stdlib/modules/window-type.md) | Reserved for window/render worker by current ownership; not modified here |
 | [windows-registry](specs/stdlib/modules/windows-registry.md) | Owned portable scope; not implemented |
 | [windows-resources](specs/stdlib/modules/windows-resources.md) | Owned portable scope; not implemented |
-| [windows-utf8](specs/stdlib/modules/windows-utf8.md) | Owned portable scope; not implemented |
+| [windows-utf8](specs/stdlib/modules/windows-utf8.md) | Both exact procedures implemented with real Kernel32 calls, checked lengths/terminators/allocation/native failures. Windows x64/ARM64 bodies type-check; all owned code formats/lints. Actual Windows execution remains unverified, not counted as runtime-complete. See portable-windows-utf8.md |
 | [windows](specs/stdlib/modules/windows.md) | Reserved for bindings worker; not implemented or modified here |
 | [x11](specs/stdlib/modules/x11.md) | Reserved for bindings worker; not implemented or modified here |
 | [xar](specs/stdlib/modules/xar.md) | Reviewed exports implemented: stable exponential chunks, captured allocator, removal, coordinates/iterators, pointer/value loops and in-place sorting. Failure/iterator boundary policy noted; reverse iteration and capacity limits checked |
