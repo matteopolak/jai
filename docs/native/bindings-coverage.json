@@ -47625,7 +47625,7 @@
     },
     "GL": {
       "spec": "docs/specs/stdlib/modules/gl.md",
-      "spec_sha256": "c4ca5ccdc42205349d86a028a3a1c66ccfd4981e9a4c23a1d143949c76d0a1bd",
+      "spec_sha256": "c6aa400220ad08badf6616fbcd4ae2fa4a351ca21e838a670b9252570c1e2d22",
       "counts": {
         "implemented_manual": 22,
         "declared": 1591,
@@ -172353,7 +172353,7 @@
     },
     "SDL": {
       "spec": "docs/specs/stdlib/modules/sdl.md",
-      "spec_sha256": "09a12c2658b5a379c41af91fa98405523c33798343492130c3c4b85b605e32b1",
+      "spec_sha256": "6da7ac5449cc99a4714d4d5d58691978d4e8dcd8d3ade2ec27c745fab220f6da",
       "counts": {
         "declared": 521,
         "implemented": 17,
