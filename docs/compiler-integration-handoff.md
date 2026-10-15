@@ -1,5 +1,17 @@
 # Compiler integration handoff
 
+Default generic pointer binding is repaired generally in expr/decls/structs:
+*Generic with all defaults now names *Generic(defaults), using canonical instance
+cache/type identity. Type arguments validate before insertion even when unused.
+The constraint matcher and explicit specialization rules remain strict. Seven
+original core cases, native ARM64/WASM64 O0/O2 and full 325-case core/backend suite
+pass (one inherited corpus sweep ignored). User-named producer reduction path is
+missing; named portable-file-watcher.md description alone was read and identical
+error reproduced independently. Restore/rerun that producer fixture and watcher
+integration before claiming the producer gate. No optimizer/assert-hook/LSP feature
+overlap or peer writes. Exact cause, tests, source provenance and bounds:
+compiler/default-generic-pointers.md.
+
 Architectural instruction implementation checkpoint: 75e8fd6. Canonical own
 compiler executable: target/debug/jaic, built using
 `LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm CARGO_TARGET_DIR=target RUSTC_WRAPPER= cargo build --locked -p jaic-cli --bin jaic`.

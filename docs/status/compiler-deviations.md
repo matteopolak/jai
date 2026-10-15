@@ -1,5 +1,19 @@
 # Compiler deviations and implementation gaps
 
+Default generic pointer scope: no workaround, nominal matcher relaxation, module
+exception, fabricated binding or unsafe operation. Locations: sema/expr.rs,
+decls.rs, structs.rs. Default pointees reuse canonical instance binding; unused
+Type parameters reject non-type operands. Cache allocation/evaluation costs are
+the existing instantiation costs; no throughput claim. Required-argument source
+types remain symbolic and wider restriction/null-Type/variadic-only contracts
+are not claimed newly supported. User-named producer file is missing at its exact
+authorized path; independently authored source reproduces the identical defect,
+but actual restored producer/watcher integration remains required. Scoped
+reflection prelude and native/WASM harness are test infrastructure, not production
+stdlib integration. Three initial test setup/oracle errors were corrected with
+failure logs retained and meaningful identity/constraint assertions preserved.
+Exact evidence, effects, risk and proper follow-up: compiler/default-generic-pointers.md.
+
 Architectural instruction scope: no fabricated timestamp/AUX/random/CF, noop fence,
 module exception or external assembler fallback remains in the implemented batch.
 Locations: sema/asm{,/scalar}.rs, ir.rs, interp/machine.rs, LLVM lower.rs. Real x64

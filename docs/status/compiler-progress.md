@@ -1,8 +1,22 @@
 # Compiler progress
 
+Default generic pointer defect repaired: pointer construction now instantiates
+all-default generic pointees through the same canonical binder/cache as ordinary
+type positions. Type parameters validate actual type operands before binding,
+including unused parameters. Nominal/pointer/explicit-specialization diagnostics
+remain intact; constraint matching is unchanged. Seven independent core cases
+and actual native ARM64/WASM64 O0/O2 execution pass. Full available core/backend:
+325 pass, zero fail, one inherited corpus sweep ignored. Host core/LLVM clippy,
+scoped Rust formatting/item spacing, standalone Jai format and rebuilt-tool
+strict lint pass. Exact producer path supplied by user was absent, so
+only the named description was read and an original reduction reproduced the
+identical error. No alternate peer search/execution claim. Details and test-oracle
+corrections: compiler/default-generic-pointers.md. Integration optimizer/assert-hook/
+LSP features and peer checkouts remain untouched.
+
 Stable instruction checkpoint: 75e8fd6, `feat(compiler): execute architectural x64
 machine instructions`. All owned batch paths are committed; no publication.
-Next dependency: explicitly named original portable generic-pointer reduction.
+The generic-pointer dependency below has now been independently reproduced and repaired.
 
 Architectural x64 batch: real RDTSC/RDTSCP (including AUX), distinct RDRAND/RDSEED
 single-attempt value/CF and flag/partial-write semantics, real LFENCE/SFENCE/MFENCE,

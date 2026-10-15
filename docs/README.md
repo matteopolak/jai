@@ -20,6 +20,7 @@ Jai language behavior as implemented by `jaic`.
 - [Checked expression result metadata](compiler/typed-expression-metadata.md)
 - [Real x64 CPUID execution](compiler/cpuid.md)
 - [Architectural x64 timestamps, random instructions and memory hints](compiler/x86-machine-instructions.md)
+- [Default generic pointee construction and constraints](compiler/default-generic-pointers.md)
 - [Forward overlay declaration and layout resolution](compiler/forward-overlay-layout.md)
 - [Interpreter Windows thread handles and naming](compiler/windows-thread-handles.md)
 - [Windows ABI unwind tables](compiler/windows-unwind.md)
