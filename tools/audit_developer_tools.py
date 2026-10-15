@@ -54,9 +54,19 @@ def main():
                 models.update(re.findall(r"^\s*([A-Za-z_][A-Za-z_0-9]*)\s*::", path.read_text().split("#scope_file")[0], re.MULTILINE))
             for item in declarations:
                 if item["name"] in models or item["name"] == "TARGET_OS":
-                    item["implementation"] = "reviewed data/defaults/constants implemented; native parser model traversal pending"
+                    item["implementation"] = "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
                 if item["name"].startswith("clang_") and item["name"] in models:
                     item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
+                    if item["name"] in {"clang_getDiagnosticNumFixIts", "clang_getDiagnosticFixIt",
+                                         "clang_getDiagnosticNumRanges", "clang_getDiagnosticRange",
+                                         "clang_getCursorSemanticParent", "clang_getCursorExtent",
+                                         "clang_getRangeStart", "clang_getRangeEnd", "clang_getTypeSpelling",
+                                         "clang_getEnumConstantDeclValue"}:
+                        item["implementation"] = "reviewed native signature implemented; direct invocation remains source-only"
+                if item["name"] in {"set_ExcludeDeclarationsFromPCH", "get_ExcludeDeclarationsFromPCH",
+                                     "set_DisplayDiagnostics", "get_DisplayDiagnostics",
+                                     "set_StorePreamblesInMemory", "get_StorePreamblesInMemory"}:
+                    item["implementation"] = "reviewed bit views; native SDK layout, bit preservation and index creation verified"
                 if item["name"] in {"generate_bindings", "normalize_options", "get_default_system_include_paths",
                                      "_default_get_func_args_for_printing", "looks_like_valid_identifier",
                                      "is_hex_digit", "is_valid_int_literal_suffix", "is_valid_float_literal_suffix",

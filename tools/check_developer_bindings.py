@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import build_developer_bindings
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
@@ -24,10 +25,8 @@ def run(command, expected="", returncode=0, diagnostic=None):
 
 def main():
     prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
-    tool = ROOT / "target/developer-tools-clang"
+    tool = build_developer_bindings.build(prefix)
     source = ROOT / "stdlib/internal/developer-tools/clang-bindings/main.c"
-    run([prefix / "bin/clang", "-std=c11", "-O2", "-Wall", "-Wextra", "-Werror", "-I", prefix / "include",
-         source, "-L", prefix / "lib", "-lclang", "-o", tool])
     output = ROOT / "target/developer-tools-generated.jai"
     header = ROOT / "tests/developer-tools/bindings-input.h"
     run([tool, header, output, "developer_tools_bindings"])

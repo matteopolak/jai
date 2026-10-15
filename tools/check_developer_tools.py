@@ -57,6 +57,17 @@ def main():
     run([JAIC, "tests/developer-tools/bindings-sdk-public.jai", "-interp"], output="ok\n")
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib",
          "tests/developer-tools/bindings-sdk.c", "-o", "target/libdeveloper_tools_sdk.dylib"])
+    cases.extend(["bindings-clang-diagnostics", "bindings-callback-context", "bindings-custom", "bindings-custom-roundtrip", "bindings-clang-options"])
+    run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-I", prefix / "include",
+         "tests/developer-tools/bindings-options.c", "-o", "target/libdeveloper_tools_options.dylib"])
+    run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
+    for name in ["custom", "model"]:
+        generated = ROOT / f"target/developer-tools-{name}-generated.jai"
+        run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", generated])
+        run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", generated])
+        run([ROOT / "target/debug/jailint", "-D", "warnings", "-I", ROOT / "target", generated])
+    for os_name in ["linux", "windows"]:
+        run([JAIC, "target/developer-tools-model-generated.jai", "-check", "-os", os_name, "-cpu", "x64"])
     for case in cases:
         source = ROOT / f"tests/developer-tools/{case}.jai"
         error = "C header: C cannot project multiple return values" if case == "c-header-reject" else ""
@@ -141,6 +152,7 @@ def main():
         run([JAIC, "tests/developer-tools/debug-target.jai", "-check", "-os", os_name, "-cpu", cpu])
         if os_name != "wasm":
             run([JAIC, "tests/developer-tools/bindings-literals.jai", "-check", "-os", os_name, "-cpu", cpu])
+            run([JAIC, "tests/developer-tools/bindings-clang-options.jai", "-check", "-os", os_name, "-cpu", cpu])
     print(f"Developer tooling supported suite: {len(cases)} interpreter/native O0/O2 fixtures, native C/C++ round trips, diagnostics, scoped format/lint and target ABI checks passed")
 
 

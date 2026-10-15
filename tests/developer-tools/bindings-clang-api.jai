@@ -1,9 +1,5 @@
 #import "Basic";
-#import "Compiler";
 B :: #import "Bindings_Generator";
-
-// Staged official SDK dependency, not a distributed-library search default.
-#run compiler_add_library_search_directory("/opt/homebrew/opt/llvm/lib");
 
 State :: struct {
     records: s64;

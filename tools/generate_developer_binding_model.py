@@ -63,7 +63,8 @@ def main():
                             "Print_Decl_Flags", "Arg_Print_Mode", "Declaration_Visit_Result"],
         "native-model.jai": ["CXToken", "CX_StorageClass", "CXTypeLayoutError"],
         "native-parser-model.jai": ["CXString", "CXCursorKind", "CXCursor", "CXTypeKind", "CXType",
-                                     "CXErrorCode", "CXTranslationUnitImpl", "CXUnsavedFile", "CXChildVisitResult"],
+                                     "CXErrorCode", "CXTranslationUnitImpl", "CXUnsavedFile", "CXChildVisitResult",
+                                     "CXSourceLocation", "CXSourceRange", "CXDiagnosticSeverity", "CXIndexOptions"],
     }
     directory = ROOT / "stdlib/Bindings_Generator"
     directory.mkdir(exist_ok=True)
@@ -91,7 +92,20 @@ def main():
                  "clang_getCursorType", "clang_getCursorSpelling", "clang_getCString", "clang_disposeString",
                  "clang_Type_getSizeOf", "clang_Type_getAlignOf", "clang_getTypeSpelling", "clang_getResultType",
                  "clang_getArgType", "clang_getNumArgTypes", "clang_Cursor_getNumArguments", "clang_Cursor_getArgument",
-                 "clang_getEnumDeclIntegerType", "clang_getEnumConstantDeclValue", "clang_getEnumConstantDeclUnsignedValue"]
+                 "clang_getEnumDeclIntegerType", "clang_getEnumConstantDeclValue", "clang_getEnumConstantDeclUnsignedValue",
+                 "CXDiagnostic", "clang_getNumDiagnostics", "clang_getDiagnostic", "clang_disposeDiagnostic",
+                 "clang_formatDiagnostic", "clang_defaultDiagnosticDisplayOptions", "clang_getDiagnosticSeverity",
+                 "clang_getDiagnosticSpelling", "clang_getDiagnosticLocation", "clang_getDiagnosticNumFixIts",
+                 "clang_getDiagnosticFixIt", "clang_getDiagnosticNumRanges", "clang_getDiagnosticRange",
+                 "clang_getCursorLocation", "clang_Location_isFromMainFile", "clang_Location_isInSystemHeader",
+                 "clang_getSpellingLocation", "clang_getFileName", "clang_getCursorSemanticParent",
+                 "clang_getTypedefDeclUnderlyingType", "clang_getCanonicalType", "clang_getPointeeType",
+                 "clang_getTypeDeclaration", "clang_getArrayElementType", "clang_getArraySize",
+                 "clang_Cursor_getOffsetOfField", "clang_isCursorDefinition", "clang_isConstQualifiedType",
+                 "clang_isVolatileQualifiedType", "clang_isFunctionTypeVariadic", "clang_Cursor_isBitField",
+                 "clang_getFieldDeclBitWidth", "clang_getCursorExtent", "clang_getRangeStart", "clang_getRangeEnd",
+                 "clang_Cursor_getRawCommentText", "clang_createIndexWithOptions", "clang_getCursorDefinition",
+                 "clang_Cursor_isNull"]
     source = "// Native parser subset; declarations from the reviewed platform-specific inventories.\n"
     for name in api_names:
         def declaration(inventory):
@@ -104,7 +118,7 @@ def main():
             source += unix
         else:
             source += "#if OS == .WINDOWS {\n" + windows + "} else {\n" + unix + "}\n"
-    source += '\n#scope_file\nlibclang :: #foreign_library "clang";\n'
+    source += '\n#scope_file\nlibclang :: #foreign_library "../internal/developer-tools/clang-bindings/clang";\n'
     (directory / "native-parser-api.jai").write_text(source)
     # Exact compatibility arrays are specified in the reviewed refinement.
     names = ["RESERVED_NAMES", "RESERVED_TYPE_NAMES", "TYPEDEFS_TO_UNWRAP", "TYPEDEF_PREFIXES_TO_UNWRAP", "MACROS_TO_IGNORE"]
