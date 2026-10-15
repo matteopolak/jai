@@ -1,5 +1,26 @@
 # Portable stdlib progress
 
+Canonical signing models requested16:34 are ready: three exact reviewed public
+types, canonical names, enum defaults/order, promoted JKS fields and real union
+storage. Interpreter/native O0/O2, Linux/Windows source checks, strict lint and
+format/--check pass (target/android-signing-model-final.log). No fake signing
+functions or real credential reads; model handoff portable-signing-model-handoff.md.
+Shared staged File closure now includes NEW platform-io Windows text dependency;
+initial source-check guard/missing-import failures fixed through real dependency
+composition, not weakened guards. Generator-names exact transferred API names
+snapshotted in portable-scope-transfers.json; no further edits to that batch.
+
+Default_Metaprogram normal workflow now passes real Check-enabled builds after
+adopting reviewed CHECK_BINDINGS module parameter/persistent factory and exact
+NEW tools dependency closure. Both binding flags/default help/version, no_check,
+custom plugins/replay/options/failure tests and FULL owned strict lint pass.
+Test harness correction preserves every build/assertion: callable fixtures invoked
+by normal added #run input; standalone linter no longer executes an invalid
+zero-argument build. Empty/no_check-only input still exits1. No CLI bypass or
+module-specific compiler change. Evidence target/default-metaprogram-check-integrated.log.
+X64/debugger/current-workspace command-line compiler dependencies remain separately
+recorded; no native other-OS or combined-baseline claim.
+
 Inventory update after explicit16:14 transfer: executable_formats excluded in full
 (507 declaration/condition rows in this inventory), with zero completion credit.
 Current own denominator4129 rows:3559 complete-source,442 conservatively partial,

@@ -1,5 +1,20 @@
 # Portable stdlib worker deviations
 
+Shared signing model scope: exact data declarations only, explicitly requested
+to unblock project worker; no signing/key-generation function counted from model
+tests. Genuine union/promoted-field/default/name behavior and full source/lint/
+native gates pass. Fixtures use literal test-only strings, never real credentials.
+Read-only NEW File/Windows-text staging completes dependency closure; it is not
+claimed production integration or an API shim. Details portable-signing-model-handoff.md.
+
+Default Check dependency resolved using real NEW producer factory/parameter and
+private engine closure. Full owned strict lint now passes. Fixture correction:
+normal CLI added #run invokes callable test bodies, keeping every behavior and
+assertion while lint does static body checks. No source-name branch, skipped
+assertion, fake checker or target-building bypass. Compiler unsupported backend/
+debugger and corrected selected-workspace option readback remain genuine gaps;
+old missing-factory/lint-block notes below are historical.
+
 Runtime Android discard: queue uses independent4096-byte capacity/line/forced
 flush policy and ordinary raw descriptor sink. Exact finer Android flush/sink
 policy is absent from reviewed public page, so no logcat tag mapping or exact

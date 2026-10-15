@@ -145,6 +145,7 @@ The LLVM backend, C ABI and linking.
 - [Memory visualizer protocol comparison](portable-memory-protocol.md): opaque pointer-pair equality, packet layouts and genuine compile-time/native regressions
 - [Portable owned implementation inventory](status/implementation-remaining.json): reviewed API denominator, conservative complete/partial/missing source counts, exact names, draft state and transfer estimates
 - [Runtime pending-output discard handoff](portable-runtime-output-discard.md): canonical private hook, exact binding patch and real byte-I/O tests
+- [Canonical signing model handoff](portable-signing-model-handoff.md): shared record/enum defaults, union storage and generator ownership boundary
 - [Android SDK ADB command subsystem](portable-adb.md): native host CLI protocol tests, canonical records and live configuration
 - [ASN.1 primitive parsing and byte cursors](portable-asn1.md): canonical tags, signed integers, full-width OIDs and unresolved value/printer contracts
 - [Exact missing owned public declarations](portable-missing-surface.md)
