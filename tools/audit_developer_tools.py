@@ -77,6 +77,17 @@ def main():
                                              "clang_isInvalidDeclaration", "clang_createCXCursorSet", "clang_disposeCXCursorSet",
                                              "clang_CXCursorSet_contains", "clang_CXCursorSet_insert"}:
                             item["implementation"] = "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
+                        if item["name"] in {"clang_CXXConstructor_isConvertingConstructor", "clang_CXXConstructor_isCopyConstructor",
+                                             "clang_CXXConstructor_isDefaultConstructor", "clang_CXXConstructor_isMoveConstructor",
+                                             "clang_CXXMethod_isConst", "clang_CXXMethod_isCopyAssignmentOperator",
+                                             "clang_CXXMethod_isDefaulted", "clang_CXXMethod_isDeleted", "clang_CXXMethod_isExplicit",
+                                             "clang_CXXMethod_isMoveAssignmentOperator", "clang_CXXMethod_isPureVirtual",
+                                             "clang_CXXMethod_isStatic", "clang_CXXMethod_isVirtual", "clang_CXXRecord_isAbstract",
+                                             "clang_Cursor_getMangling", "clang_Cursor_isAnonymous", "clang_Cursor_isAnonymousRecordDecl",
+                                             "clang_Cursor_isInlineNamespace", "clang_Type_visitFields", "clang_visitCXXBaseClasses",
+                                             "clang_visitCXXMethods", "clang_getCursorAvailability", "clang_getCursorLanguage",
+                                             "clang_getCursorLinkage", "clang_getCursorTLSKind", "clang_getCursorVisibility"}:
+                            item["implementation"] = "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
                 if item["name"] in {"set_ExcludeDeclarationsFromPCH", "get_ExcludeDeclarationsFromPCH",
                                      "set_DisplayDiagnostics", "get_DisplayDiagnostics",
                                      "set_StorePreamblesInMemory", "get_StorePreamblesInMemory"}:

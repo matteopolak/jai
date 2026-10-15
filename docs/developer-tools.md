@@ -42,6 +42,8 @@ The remaining reviewed native records/enums/aliases and direct native functions 
 
 Source-query coverage now directly invokes physical and presumed-location readers, file identity/real-path queries, range construction/comparison and native cursor sets. An original `#line` header separates physical line3 from presumed line100; four location readers are called through native function pointers. File IDs remain opaque; tests compare repeated queries rather than interpret platform words. Native cursor sets retain their native-owned insertion/deduplication/disposal behavior.
 
+The direct native C++ AST queries now have constructor/assignment/method/class, linkage/TLS/mangling and visitor-callback effects against an original C++17 hierarchy. An independent C probe verifies class visitor returns and counts. The installed SDK returns1 for both complete and stopped visits, contrary to its header's return comment; the binding preserves native results, with early termination verified through the callback count. This is native parser-query evidence, with C++ method-body execution and high-level bridge generation still pending.
+
 ## Print_Vars
 
 `print_vars_to`, `print_vars` and `log_vars` expand over caller expressions. They retain caller scope, use Program_Print for source names, evaluate each expression once, render values/types and align name/value columns. The helper accepts the exact reviewed fixed Code array; the variadic entry points create that array at compile time. `Print_Vars_Config` controls fields, delimiters, indentation and line separators. Logging forwards the caller location. Widths currently count UTF-8 bytes; see questions and deviations for display-cell and source-whitespace limits.

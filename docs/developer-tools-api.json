@@ -2864,7 +2864,7 @@
         "declaration": "clang_getCursorLinkage :: (cursor: CXCursor) -> CXLinkageKind #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 455,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "CXVisibilityKind",
@@ -2878,14 +2878,14 @@
         "declaration": "clang_getCursorVisibility :: (cursor: CXCursor) -> CXVisibilityKind #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 457,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_getCursorAvailability",
         "declaration": "clang_getCursorAvailability :: (cursor: CXCursor) -> CXAvailabilityKind #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 458,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "CXPlatformAvailability",
@@ -2920,7 +2920,7 @@
         "declaration": "clang_getCursorLanguage :: (cursor: CXCursor) -> CXLanguageKind #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 463,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "CXTLSKind",
@@ -2934,7 +2934,7 @@
         "declaration": "clang_getCursorTLSKind :: (cursor: CXCursor) -> CXTLSKind #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 465,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_Cursor_getTranslationUnit",
@@ -3508,21 +3508,21 @@
         "declaration": "clang_Cursor_isAnonymous :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 547,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_Cursor_isAnonymousRecordDecl",
         "declaration": "clang_Cursor_isAnonymousRecordDecl :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 548,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_Cursor_isInlineNamespace",
         "declaration": "clang_Cursor_isInlineNamespace :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 549,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "CXRefQualifierKind",
@@ -3928,7 +3928,7 @@
         "declaration": "clang_Cursor_getMangling :: (unknown0: CXCursor) -> CXString #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 607,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_Cursor_getCXXManglings",
@@ -4082,28 +4082,28 @@
         "declaration": "clang_CXXConstructor_isConvertingConstructor :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 629,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXConstructor_isCopyConstructor",
         "declaration": "clang_CXXConstructor_isCopyConstructor :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 630,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXConstructor_isDefaultConstructor",
         "declaration": "clang_CXXConstructor_isDefaultConstructor :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 631,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXConstructor_isMoveConstructor",
         "declaration": "clang_CXXConstructor_isMoveConstructor :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 632,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXField_isMutable",
@@ -4117,63 +4117,63 @@
         "declaration": "clang_CXXMethod_isDefaulted :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 634,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isDeleted",
         "declaration": "clang_CXXMethod_isDeleted :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 635,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isPureVirtual",
         "declaration": "clang_CXXMethod_isPureVirtual :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 636,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isStatic",
         "declaration": "clang_CXXMethod_isStatic :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 637,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isVirtual",
         "declaration": "clang_CXXMethod_isVirtual :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 638,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isCopyAssignmentOperator",
         "declaration": "clang_CXXMethod_isCopyAssignmentOperator :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 639,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isMoveAssignmentOperator",
         "declaration": "clang_CXXMethod_isMoveAssignmentOperator :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 640,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isExplicit",
         "declaration": "clang_CXXMethod_isExplicit :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 641,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXRecord_isAbstract",
         "declaration": "clang_CXXRecord_isAbstract :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 642,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_EnumDecl_isScoped",
@@ -4187,7 +4187,7 @@
         "declaration": "clang_CXXMethod_isConst :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 644,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_getTemplateCursorKind",
@@ -5027,21 +5027,21 @@
         "declaration": "clang_Type_visitFields :: (T: CXType, visitor: CXFieldVisitor, client_data: CXClientData) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 764,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_visitCXXBaseClasses",
         "declaration": "clang_visitCXXBaseClasses :: (T: CXType, visitor: CXFieldVisitor, client_data: CXClientData) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 765,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_visitCXXMethods",
         "declaration": "clang_visitCXXMethods :: (T: CXType, visitor: CXFieldVisitor, client_data: CXClientData) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 766,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "CXBinaryOperatorKind",
@@ -6238,7 +6238,7 @@
         "declaration": "clang_getCursorLinkage :: (cursor: CXCursor) -> CXLinkageKind #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 940,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "CXVisibilityKind",
@@ -6252,14 +6252,14 @@
         "declaration": "clang_getCursorVisibility :: (cursor: CXCursor) -> CXVisibilityKind #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 942,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_getCursorAvailability",
         "declaration": "clang_getCursorAvailability :: (cursor: CXCursor) -> CXAvailabilityKind #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 943,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "CXPlatformAvailability",
@@ -6294,7 +6294,7 @@
         "declaration": "clang_getCursorLanguage :: (cursor: CXCursor) -> CXLanguageKind #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 948,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "CXTLSKind",
@@ -6308,7 +6308,7 @@
         "declaration": "clang_getCursorTLSKind :: (cursor: CXCursor) -> CXTLSKind #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 950,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_Cursor_getTranslationUnit",
@@ -6882,21 +6882,21 @@
         "declaration": "clang_Cursor_isAnonymous :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1032,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_Cursor_isAnonymousRecordDecl",
         "declaration": "clang_Cursor_isAnonymousRecordDecl :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1033,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_Cursor_isInlineNamespace",
         "declaration": "clang_Cursor_isInlineNamespace :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1034,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "CXRefQualifierKind",
@@ -7302,7 +7302,7 @@
         "declaration": "clang_Cursor_getMangling :: (unknown0: CXCursor) -> CXString #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1092,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_Cursor_getCXXManglings",
@@ -7456,28 +7456,28 @@
         "declaration": "clang_CXXConstructor_isConvertingConstructor :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1114,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXConstructor_isCopyConstructor",
         "declaration": "clang_CXXConstructor_isCopyConstructor :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1115,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXConstructor_isDefaultConstructor",
         "declaration": "clang_CXXConstructor_isDefaultConstructor :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1116,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXConstructor_isMoveConstructor",
         "declaration": "clang_CXXConstructor_isMoveConstructor :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1117,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXField_isMutable",
@@ -7491,63 +7491,63 @@
         "declaration": "clang_CXXMethod_isDefaulted :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1119,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isDeleted",
         "declaration": "clang_CXXMethod_isDeleted :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1120,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isPureVirtual",
         "declaration": "clang_CXXMethod_isPureVirtual :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1121,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isStatic",
         "declaration": "clang_CXXMethod_isStatic :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1122,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isVirtual",
         "declaration": "clang_CXXMethod_isVirtual :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1123,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isCopyAssignmentOperator",
         "declaration": "clang_CXXMethod_isCopyAssignmentOperator :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1124,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isMoveAssignmentOperator",
         "declaration": "clang_CXXMethod_isMoveAssignmentOperator :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1125,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXMethod_isExplicit",
         "declaration": "clang_CXXMethod_isExplicit :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1126,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_CXXRecord_isAbstract",
         "declaration": "clang_CXXRecord_isAbstract :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1127,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_EnumDecl_isScoped",
@@ -7561,7 +7561,7 @@
         "declaration": "clang_CXXMethod_isConst :: (C: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1129,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_getTemplateCursorKind",
@@ -8401,21 +8401,21 @@
         "declaration": "clang_Type_visitFields :: (T: CXType, visitor: CXFieldVisitor, client_data: CXClientData) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1249,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_visitCXXBaseClasses",
         "declaration": "clang_visitCXXBaseClasses :: (T: CXType, visitor: CXFieldVisitor, client_data: CXClientData) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1250,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "clang_visitCXXMethods",
         "declaration": "clang_visitCXXMethods :: (T: CXType, visitor: CXFieldVisitor, client_data: CXClientData) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1251,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native C++17 AST queries and class visitor callbacks; interpreter/native O0/O2 with independent public-header C visitor return/count oracle"
       },
       {
         "name": "CXBinaryOperatorKind",
