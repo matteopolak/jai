@@ -240,3 +240,28 @@ interpreter/native O0/O2. macOS x64 and Windows x64 SDK artifacts/harnesses link
 Windows ARM64 output/routing/cleanup/decoder objects compiled with real target
 headers. Linux remains uncompiled here; no Linux/Windows runtime is claimed.
 
+Continued reviewed behavior after f37f97d: a NEW small diagonal-matrix regression
+failed at the previous singular threshold, then passed after widening determinant
+arithmetic and removing the absolute cutoff. Shared Ogg metadata writes now use
+the mixer lock, while codec setup remains outside it; stream setup snapshots
+shared metadata and uses decoder-owned dimensions. A concurrent-factory smoke
+test validates 32 independent creations during silent playback, plus cleanup.
+The smoke baseline passed before the change; source audit identified the race,
+and no sanitizer evidence is claimed. Full verification is being refreshed.
+
+The f37f97d SDK libraries also passed fresh actual O0/O2 cross links for macOS
+x64 and Windows x64; macOS x64 then passed all 14 translated runtime cases through
+installed Rosetta. These records are translation on ARM64, not physical x64 native
+hardware. Windows binaries were linked/target-verified only, never executed here.
+
+Fresh full owned verification passed after the spatial/factory changes and the
+ADPCM page-cost refinement: 26 common fixtures, interpreter/native O0/O2, 156
+desktop source checks, two Windows ABI checks, three private-name rejections,
+formatter --check and warnings-denied lint. ADPCM now validates once at factory
+creation and checks local page bounds/progress thereafter; strengthened tests
+detect block offsets and eight-channel interleaving. Whole-file header scans are
+removed from each page, but no realtime or benchmark improvement is claimed.
+Disabled-audio-assert execution and injected close ownership were refreshed;
+ARM64 relocated packages passed. Native package cross-linking is being expanded
+to all current common fixtures, with per-binary execution records kept separate.
+

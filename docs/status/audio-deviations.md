@@ -173,3 +173,26 @@ controlled byte tests and host macOS SDK checks do not establish Linux SDK build
 Linux runtime, or physical multichannel placement. Default private spatial angles
 are independently chosen, editable approximations, not physical calibration.
 
+Spatial/lifetime follow-up: the old absolute determinant threshold rejected
+valid small, well-conditioned matrices. A NEW scaled-identity test reproduced
+that failure; inversion now computes its determinant/divisions in float64 and
+only rejects zero determinant before storing the reviewed float fields. This
+adds wider arithmetic during panning preparation; no realtime claim is made.
+Extreme inverses beyond float field range still have ordinary floating limits.
+
+Concurrent factory metadata publication now shares the player lock used by
+mixing. Codec open/metadata discovery retains independent handles outside that
+lock; stream setup snapshots shared fields and uses decoder-owned dimensions.
+A NEW concurrent-factory smoke test checks shared metadata, factory dimensions
+and disposal during real silent playback. The baseline also passed this smoke;
+the race was identified by source synchronization audit, not a deterministic
+test failure. No thread-sanitizer/race-detector evidence is claimed. Caller byte
+storage/lifetime requirements and serial init/shutdown remain unchanged.
+
+ADPCM page preparation no longer rescans the entire compressed file's headers
+for every page. Creation still validates every block; stable borrowed bytes are
+a reviewed lifetime requirement. Each page checks its own bounds and reports
+nonpositive decoder progress unconditionally. This removes repeated whole-file
+validation, but page decoding and WAV payload discovery still run synchronously
+where requested. No latency benchmark or realtime guarantee is claimed.
+

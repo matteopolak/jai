@@ -291,6 +291,17 @@
         "staged-audio-assertions-disabled"
       ],
       "hardware": "none"
+    },
+    {
+      "path": "tests/audio/concurrent-factories.jai",
+      "provenance": "Reviewed Ogg metadata replacement and independent shared lifetime safety during playback; concurrency smoke, not a race-detector proof",
+      "modes": [
+        "interpreter",
+        "native-host-O0",
+        "native-host-O2",
+        "source-desktop-six-targets"
+      ],
+      "hardware": "real SDK silent playback or explicit unavailable marker"
     }
   ],
   "negative": [

@@ -97,3 +97,9 @@ close error; only the wrapper is retained for retry, avoiding a second PCM close
 These are controlled failures around real resources, not OS-generated failures,
 physical hotplug, or physical-speaker verification. The SDK build tool links
 this C harness on each configured platform; runtime metadata remains separate.
+
+Current cache-page tests use distinct ADPCM predictors to detect block-offset
+mistakes and verify all eight interleaved source channels with independently
+constructed constant-predictor blocks. The concurrent-factory case runs 32 Ogg
+factories while a real muted output worker mixes; its baseline also passed, so it
+is smoke coverage rather than evidence that a sanitizer detected a race.
