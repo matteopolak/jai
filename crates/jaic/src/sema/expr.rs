@@ -43,6 +43,25 @@ impl Compiler {
         {
             result = Ok(op);
         }
+        if !f.type_only
+            && !self.sketching()
+            && let Some(procedure) = f.proc
+            && let Ok(op) = &result
+            && op.ty() != TypeId::COMPILE_TIME
+        {
+            let ty = op.ty();
+            self.export
+                .expression_types
+                .entry(procedure)
+                .or_default()
+                .entry(expr.span)
+                .and_modify(|known| {
+                    if *known != Some(ty) {
+                        *known = None;
+                    }
+                })
+                .or_insert(Some(ty));
+        }
         if self.ide.is_some()
             && let Ok(op) = &result
         {
