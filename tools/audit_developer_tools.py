@@ -204,6 +204,10 @@ def main():
             for item in declarations:
                 if item["name"] in supported:
                     item["implementation"] = "reporting subset; CSV/text, manual/history conditions verified"
+                if item["name"] in {"History_Scalar", "NUM_SMOOTHING_SLOTS", "slot", "set_smoothing", "clear", "get_value"}:
+                    item["implementation"] = "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
+                if item["name"] in {"Profile_Tracker_Data_Record", "Zone_Profiling_Data", "count_recursion_depth"}:
+                    item["implementation"] = "reviewed canonical tracker/stack records and pointer-identity ancestor count; acyclic/cyclic parent effects and borrowed-storage preservation verified; timer-driven stack/profiling runtime pending"
         if module == "Codex":
             for item in declarations:
                 if item["name"] in {"Math", "get_file_and_module", "is_global_ident"}:

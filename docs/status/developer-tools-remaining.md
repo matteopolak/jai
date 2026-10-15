@@ -492,7 +492,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Iprof
 
-50 function names have pending declarations; 0 native function names still lack invocation fixtures.
+46 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Next work / precise question |
 | --- | ---: | --- |
@@ -504,10 +504,8 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `add_hook` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `add_source` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `before_intercept` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `clear` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `clear_stack` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `compute_heat` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `count_recursion_depth` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `createStackNode` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `create_report` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `draw` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
@@ -516,7 +514,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `finish` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `get_current_graph_scaling` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `get_plugin` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `get_value` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `graph_select_sample` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `hash` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `init` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
@@ -538,7 +535,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `set_cursor_screen_coordinates` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `set_frame` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `set_report_mode` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `set_smoothing` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `shutdown` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `sum_times` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `traverse` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |

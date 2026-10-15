@@ -33581,7 +33581,7 @@
         "declaration": "Zone_Profiling_Data :: struct",
         "section": "Public declaration inventory",
         "spec_line": 47,
-        "implementation": "pending"
+        "implementation": "reviewed canonical tracker/stack records and pointer-identity ancestor count; acyclic/cyclic parent effects and borrowed-storage preservation verified; timer-driven stack/profiling runtime pending"
       },
       {
         "name": "zone_begin",
@@ -33658,7 +33658,7 @@
         "declaration": "NUM_SMOOTHING_SLOTS :: 3",
         "section": "Public declaration inventory",
         "spec_line": 58,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "NUM_THROWAWAY_UPDATES",
@@ -33763,7 +33763,7 @@
         "declaration": "set_smoothing :: (x: s64)",
         "section": "Public declaration inventory",
         "spec_line": 73,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "init_runtime",
@@ -33791,7 +33791,7 @@
         "declaration": "count_recursion_depth :: (stack: *Zone_Profiling_Data, zone: *Zone) -> s32",
         "section": "Public declaration inventory",
         "spec_line": 77,
-        "implementation": "pending"
+        "implementation": "reviewed canonical tracker/stack records and pointer-identity ancestor count; acyclic/cyclic parent effects and borrowed-storage preservation verified; timer-driven stack/profiling runtime pending"
       },
       {
         "name": "createStackNode",
@@ -33812,14 +33812,14 @@
         "declaration": "History_Scalar :: struct",
         "section": "Public declaration inventory",
         "spec_line": 80,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "Profile_Tracker_Data_Record",
         "declaration": "Profile_Tracker_Data_Record :: struct",
         "section": "Public declaration inventory",
         "spec_line": 81,
-        "implementation": "pending"
+        "implementation": "reviewed canonical tracker/stack records and pointer-identity ancestor count; acyclic/cyclic parent effects and borrowed-storage preservation verified; timer-driven stack/profiling runtime pending"
       },
       {
         "name": "FRAME_TIME_INITIAL",
@@ -33833,7 +33833,7 @@
         "declaration": "clear :: (using s: *History_Scalar)",
         "section": "Public declaration inventory",
         "spec_line": 83,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "update",
@@ -33854,7 +33854,7 @@
         "declaration": "get_value :: (using s: *History_Scalar) -> float64",
         "section": "Public declaration inventory",
         "spec_line": 86,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "propagate_stack",
@@ -34106,7 +34106,7 @@
         "declaration": "slot: s64 = 1",
         "section": "Public declaration inventory",
         "spec_line": 123,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "speedstep_warning",
