@@ -1,5 +1,29 @@
 # Portable stdlib progress
 
+## Integration refresh17: production fixes under review
+
+Committed combined producer head: 7aec510. The integration assertion transport
+fix is verified and ready for a scoped checkpoint: four private protocol/body
+cases and four CLI scenarios pass; existing 51 module, two native-check and four
+runtime-configuration tests pass. Whole-workspace clippy with warnings denied
+passes. All 54 reviewed public fixtures pass interpreter/native O0/native O2
+(including declared precise negative cases, not 54 native runtime effects).
+Actual SDL verification: 30 target, 24 privacy, 299 symbol checks and nine
+native/interpreter phases pass against the production library and source-built
+SDK probes. No source overlays were used.
+
+The prior broad run retains 742 aggregate passes/32 failures/one inherited
+ignored result. Jaifmt/check passed for 1052 owned files; strict lint failed
+58/187 gates. Those are not green integration results. New scoped formatting
+passes; full-fragment-context audio lint remains under investigation. Windows
+x64/ARM64 compiler builds now pass in filtered coordinator CI e223538; downstream
+native platform/window checks and SDL3 newline reproducibility remain red.
+Full opaque public corpus and Focus execution remain coordinator responsibilities.
+No publishing, push, dispatch or release action was performed. Next: commit
+reviewed general fixes, merge approved native repair checkpoints, run all new
+producer suites and resolve remaining compiler/ABI/lint failures.
+
+
 ## Replacement integration: combined refresh-nine checkpoint
 
 Reviewable implementation head: `9cd757a` (no push/dispatch/publication by this

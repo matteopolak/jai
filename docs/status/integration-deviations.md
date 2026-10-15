@@ -938,3 +938,69 @@ whose exact language precedence needs oracle review before calling it a compiler
 defect. No special symbol/path lowering. Missing CMSG/bitfield/native shape families
 remain explicit. Native close failure is logged then invalidates caller handle,
 with documented resource risk per wrapperpolicy; not silently counted success.
+
+
+Refresh17 production verification completed against7aec510: fullworkspace85
+result summaries742aggregatepass/32fail/one inheritedignored, ninefailedtargets;
+counts include child-process summaries, not unique tests.1052ownedJai format/
+check PASS; strictlint58/187checksFAIL, source_stable=true. Full root contract
+batch52/54PASS initially: duplicateBase64local(valid) is a fixture syntax error,
+and Sound.skip_this_output_channel was accidentally moved into file-private scope
+during integrationhelper relocation. Both corrected without changing assertions
+or addingexports; original failures retained. DuplicatecompleteSDL.User_Event from
+two independent ABI patches caused SDLsource checks to fail; one identical layout
+now retained. Root implementation regression, not an invalid ABI oracle.
+
+Default assertion CLI reproducer exitsSIGABRT under-interp because NEW runtime
+calls realC.abort while the old compiler hook expected an obsolete private name.
+Proper correction: optional file-private runtime assertion transport selects the
+actual callback procedure by identity and validates exact canonical location/
+string/bool/Jai-context signature plus ordinary native body. Interpreter installs
+its existing structured fault operation for that procedure; native code retains
+the real Jai body. Custom callbacks execute unchanged; no public export/module
+parameter or filename/symbol-specific library bypass. Native reporter discovery
+shares the general private-extension resolver; obsolete name-based assertion
+hook removed. Private runtime_entry is #no_debug, suppressing only bootstrap
+frames through existing semantic metadata, not display-name filtering. Source
+CLI regression (default/compile-time assertions and custom continuation) PASS;
+three protocolprivacy/validation cases plus51module/two nativehook/fourruntime
+configuration cases PASS. Full diagnostic/native regression rerun pending.
+
+NativeSDK fulldependencysetup FAIL at stale GitHub X11mirror tag404. Manifest
+already pins officialX.org1.8.12 release+header hashes; builder now verifies/
+extracts release beforeusing per-file bytes, preserving both hashes and all-input
+validation. Three transport/cache/corruption units PASS. Full retry hit official
+server connectionreset: stillFAILED, not called a productiondependency pass.
+Scoped actualSDLprobe builds PASS; scoped actualrpmallocSDK/statlayout/FSEvents
+probe builds PASS. One ownedFSEventsprobe warning uses deprecated but public
+ScheduleWithRunLoop API; no warning suppression applied, not a-Werror pass.
+FutureSDK removal risk remains; retain ABIcoverage and add modern dispatch-path
+coverage with an explicit narrow deprecation policy. Source archive cache also
+needs complete transitive-header tree integrity validation beyond current pinned
+primary files; no source-wide SDKconformance inferred from scoped builds.
+
+Refresh17 final focused results: four private interpreter protocol tests now
+include proof that the native callback body still typechecks; four CLI scenarios
+cover default/compile-time faults, explicit #no_debug unwinding and custom
+continuation. Existing module/native-hook/runtime-config60 tests passed before
+the fourth protocol case was added. Workspace clippy warnings-denied PASS.
+All54 public contracts PASS interpreter/nativeO0/nativeO2, including precise
+negative checks (not54 distinct native runtime effects). Scoped formatter/check
+PASS after rebuilding actual unchanged jaifmt. A fragment-only audio lint attempt
+failed missing its loaded-module constants; failure retained and context-complete
+run required. No incomplete lint is called success.
+
+Native verifier found stale relocated SDLfixture paths before execution.
+General canonical module-owned test resolution replaces filename-specific routing;
+three input-placement tests prove fixture ownership and exception-safe restoration
+of existing sources/removal of temporary dependency directories. Runtime checks
+now restore private placement on failure/success; no private exports promoted,
+fixture bytes unchanged. RealSDLverify PASS30target/24privacy/299symbol/nine
+native-interpreter phases using actualproductionstdlib/source-builtSDK. Full
+all-dependency validation remains blocked by officialX.org connectionreset.
+
+Root Audio contract setup was corrected to provide actual loaded in-memory PCM
+when testing successful buffer bounds, as required by reviewed Sound_Player:
+default UNINITIALIZED/no-storage data cannot establish successful buffer bounds.
+Default-value assertions remain before the mutation; bounds checks now assert
+actual backing-storage identity. Original failure evidence retained.

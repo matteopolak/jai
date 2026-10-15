@@ -328,3 +328,32 @@ Integration keeps private VBAP helper private; moved valid selected-pair public
 behavior assertion to actual initialized6/8channel controlled-output test.
 Producer panning.jai had directly called an unreviewed helper. Preserve public
 coverage and report native opened/unavailable counts independently.
+
+
+## Refresh17 compiler/regression follow-through (integration, 2026-10-15)
+
+Fullworkspace7aec510:742aggregatepass/32fail/oneignored across85summaryrows;
+all failing evidence retained artifacts/integration-clean/workspace-refresh17.log.
+Integration OWNS the new optional interpreter assertion transport and related
+runtime_config/procs paths; defaultC.abort hosttermination reproduced and fixed
+locally, preserving customcallback/nativebody/privacy. Compilerowner avoid
+duplicating that pending change. Other concrete semantic concerns:
+- field_type_queries_infer_values_select_branches_and_reject_real_cycles:
+  Record::{COUNT::size_of(type_of(value));value:[COUNT]u8;} gives truefieldcycle;
+  audit test oracle before change (dependency may actuallybe cyclic).
+- compiler-workspace-ids native builds execute get_current_workspace as runtime
+  primitive inside a function-local #run; compare exact languagecontract and
+  preserve compile-time-only behavior, no function-name/path bypass.
+- objc_selectors test finds0calls/table entries, optimized_split finds0kept-out
+  functions; inspect actualIR/observability before altering compiler/tests.
+- LSP Math namespace quickfix nowalsooffers newlyreviewed Codex.Math reexport.
+  Valid alternative is not an implementation defect; preserve meaningful import/
+  resolution assertions rather than an unsupported exactcandidatecount.
+Integration triages remaining legacy API Rustfixtures separately, preserving
+compiler/safety/Extensions/ABI/issue coverage. Threaddeinit tests must establish
+completion per reviewed Threadcontract; thread_startreturnsvoid. No ThreadWASM
+facade promised; preserve core sandbox scheduler via independent compiler/native
+ABI tests rather than adding unreviewed platformexports. PublicExtensions still
+call old Basic.free(ptr,allocator); APIs maynotbeexpanded forlegacy conveniences,
+so a supported compatibility architecture needs coordinatorreview while existing
+Extensions bodies remain intact. No assertions or coverage disabled.
