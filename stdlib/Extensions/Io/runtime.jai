@@ -181,7 +181,7 @@ run_threads :: (count: s64, entry: Thread.Thread_Proc, data: *void) {
         started += 1;
     }
 
-    for 0..started - 1 Thread.thread_deinit(*threads[it]);
+    for 0..started - 1 finish_thread(*threads[it]);
 }
 
 // ---------------------------------------------------------------------------------------------

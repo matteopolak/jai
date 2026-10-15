@@ -245,7 +245,7 @@
     ring_close :: (state: *Iocp_State) {
         if state.ring_thread_started {
             win_set_event(state.stop_event);
-            Thread.thread_deinit(*state.ring_thread);
+            finish_thread(*state.ring_thread);
 
             state.ring_thread_started = false;
         }
