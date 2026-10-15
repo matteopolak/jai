@@ -428,3 +428,5 @@ Agreed designs that are not built yet.
 - [Refresh22 combined verification](tools/cleanroom-integration.md#refresh22-combined-checkpoint): workspace counts, production allocator artifacts and remaining gates.
 
 - [Foreign native storage reexports](compiler/foreign-data-reexports.md): reviewed immutable-binding boundary, general filtered export fix and actual Socket identity verification.
+
+- [Extensions assertion-profile runner](../tests/extensions/run-assert-profiles.py): actual Io worker preparation/completion under enabled and disabled assertions, with unchanged production source hashes.

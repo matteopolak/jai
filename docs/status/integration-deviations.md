@@ -1375,3 +1375,41 @@ conflict. Original failing gates remain enabled; no stub/extra Basic export or
 compiler exception substitutes. Coordinator must resolve that authorization
 boundary. Full quality target applicability, broad catalogue, current-head
 partial edits, native targets and opaque corpus remain open.
+
+### Integration worker: authorized Extensions lifecycle correction
+
+Coordinator's latest AGENTS clarification authorizes dependency migrations as
+normal new Extensions history. The earlier preservation hold is resolved; approved
+6b0f2229 is merged normally. The producer coordination mailbox is removed from
+the product tree in a follow-up commit; the initial merge message overstated its
+immediate omission, and that removal is now explicit. No history was rewritten.
+
+Audit found `assert(Thread.thread_init(...))` and
+`assert(Thread.thread_is_done(...))` in Io runtime/ownership. Optional assertion
+discarding removed essential preparation and completion waits. A real
+Compiler.remap_import/Basic(false) regression reproduced zero completed workers
+and invalid lifecycle diagnostics. Calls now execute before optional assertions.
+Failed preparation/wait logs and exits1 even when assertions are disabled; these
+void APIs do not return a partially usable worker set. Thread-record storage uses
+public uninitialized NewArray, checks allocation before Initialize and releases
+the allocation-base result. This retains explicit process-fatal resource failure;
+transactional recovery is not claimed, and arbitrary user callback side effects
+cannot be rolled back. Production default behavior already terminated on such
+assertion failures. A recoverable API would require an independently reviewed
+error/partial-work protocol, not ignored failures.
+
+Ten actual interpreter/native ARM64/x64 O0/O2 worker executions pass under both
+assertion profiles with all production Jai hashes unchanged. Strict configured
+context lint and format check pass. The first native candidate lacked its real
+portable_crash runtime library; building that dependency from its own C source
+fixed the link. Earlier parent invocation used runtime -- arguments instead of
+metaprogram -, and the first test used an unexported qualified atomic_load;
+corrected public atomic_read and command-line handling retain the red lifecycle
+evidence. No test-only library body/default rewrite or compiler bypass is used.
+
+Io_Uring producer uses canonical sequentially consistent atomics, stronger than
+the prior acquire/release/relaxed calls. This may cost barriers/locked stores;
+kernel mmap/syscalls/record layout and assertions remain. Actual Linux kernel
+runtime remains required; host caller-memory handshakes are only userspace
+publication evidence. Native ARM64 xxhash source-guard repair is integrated with
+exact pinned-source validation; full Windows execution remains a CI gate.
