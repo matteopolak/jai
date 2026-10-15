@@ -39,6 +39,7 @@ EXPECTED = {
 }
 EXPECTED_STDERR = {"print-color": "\x1b[0;44merror\x1b[0m"}
 FAULT_EXPECTATIONS = {
+    "flat-pool-capacity": ("assertion failed", "flat-pool reservation exhausted"),
     "sound-channels": ("assertion failed", "audio sample input/channel range invalid"),
     "sound-magic": ("assertion failed", "audio magic read outside input"),
     "atomic-bit-index": ("assertion failed", "atomic bit index out of range"),

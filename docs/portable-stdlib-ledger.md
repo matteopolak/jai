@@ -43,7 +43,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial paths, Unix metadata, recursive listing/copy and replacement implemented; tree copying, self-copy rejection and metadata pass interpreter/native. Visit aliases missing reviewed signatures |
 | [file-watcher](specs/stdlib/modules/file-watcher.md) | macOS SDK-native queue/lifecycle plus exact generic facade, coalescing/filtering and captured allocation implemented. Real event/rename/recursive/overflow tests pass interpreter/native; native backend passes ASan/UBSan and tracked allocations. Windows/Linux and detailed timing/lifetime policies unfinished or under review; retained NEW binding ABI defect |
 | [file](specs/stdlib/modules/file.md) | Reserved completion for platform-io worker. Existing partial Unix implementation retained; offset/EOF/write/seek cases remain integration regressions. Windows/Android not completed here |
-| [flat-pool](specs/stdlib/modules/flat-pool.md) | Owned portable scope; not implemented |
+| [flat-pool](specs/stdlib/modules/flat-pool.md) | Partial native core: canonical record, real aligned page commitment, explicit stamp reset, release and allocator modes pass interpreter/native O0/O2 with native reservations. Public init/example and global overwrite option withheld for missing oracle defaults; Windows/console absent. See portable-flat-pool.md |
 | [float16](specs/stdlib/modules/float16.md) | Reserved for numerics worker; not implemented or modified here |
 | [freetype](specs/stdlib/modules/freetype.md) | Reserved for bindings worker; not implemented or modified here |
 | [gamepad-sdl-input-map](specs/stdlib/modules/gamepad-sdl-input-map.md) | Reserved for window/render worker by current ownership; not modified here |
@@ -52,7 +52,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [getrect-lefthanded](specs/stdlib/modules/getrect-lefthanded.md) | Reserved for numerics worker; not implemented or modified here |
 | [getrect](specs/stdlib/modules/getrect.md) | Reserved for numerics worker; not implemented or modified here |
 | [gl](specs/stdlib/modules/gl.md) | Reserved for bindings worker; not implemented or modified here |
-| [hash-table](specs/stdlib/modules/hash-table.md) | Partial: custom-hash and string-key operations pass interpreter/native collision/growth/tombstone tests. Default scalar fixture fails missing reviewed hash formula; temporary multiple lookup and Walk_Table unfinished |
+| [hash-table](specs/stdlib/modules/hash-table.md) | Real custom/string/scalar-default (NEW Hash) operations and duplicate temporary copies/removal, growth, tombstones, caller-initialized slots and collision counters pass interpreter/native. No storage-order assumption. Walk_Table caller-local expansion contract remains unspecified |
 | [hash](specs/stdlib/modules/hash.md) | Partial: specified byte/string/array hashes and Knuth implemented. Scalar seed mix and scalar FNV formula unresolved; digest vectors pass interpreter/native |
 | [ico-file](specs/stdlib/modules/ico-file.md) | Owned portable scope; not implemented |
 | [icon](specs/stdlib/modules/icon.md) | Owned portable scope; not implemented |
