@@ -46,6 +46,10 @@ The initial subset decodes DWARF call-frame instructions and common information 
 
 CodeView line and register-relative flag helpers retain reviewed records/signatures. Their packed fields follow [Microsoft's public cvinfo.h](https://github.com/microsoft/microsoft-pdb/blob/master/include/cvinfo.h). Original C fixtures compiled for Windows x64/arm64 supply data for host-side decoding tests. These helpers allocate nothing; complete CodeView symbol/type parsing remains unfinished.
 
+`Int_Set`, `cardinality` and `is_set` retain the reviewed borrowed u32-word view. Membership rejects negative/out-of-range indices; cardinality counts stored bits without allocating.
+
+A private staged MSF7 reader now decodes stream directories, copies scattered stream data and validates bounds, duplicate page ownership and reachable-page free-map consistency. It supports 4096-byte blocks; other block sizes and nil streams return explicit errors. Parsed views borrow immutable file bytes and own their stream/page arrays; copied stream bytes belong to the caller. The wire-format input is [LLVM's official MSF documentation](https://llvm.org/docs/PDB/MsfFile.html). Original Clang/LLD Windows x64/arm64 PDBs have every stream compared against official llvm-pdbutil exports. A synthetic multi-block directory exercises reversed, nonadjacent data pages and malformed ownership. Missing reviewed Msf dependency shapes prevent a public parser facade; this private evidence is staged, not public API completion.
+
 ## Debug native helpers
 
 The macOS/Linux/Windows subset captures and symbolizes stacks, checks debugger presence, probes one byte through kernel APIs, writes text, aborts with reviewed exit codes and traps only when a debugger is present. Symbol text and its array share one native allocation; release the original complete array with `free_backtrace`. Capture is bounded at4096 physical frames, with256 slots in the convenience overload. Actual macOS interpreter/native effects remain separate from Linux source-only support, Windows cross-build evidence and Android/WASM target checks. Signal/assert/dialog/minidump/attachment paths remain unfinished.

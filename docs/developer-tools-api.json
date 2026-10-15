@@ -25111,21 +25111,21 @@
         "declaration": "Int_Set :: struct",
         "section": "Public declaration inventory",
         "spec_line": 140,
-        "implementation": "pending"
+        "implementation": "reviewed bit-set record and operations; interpreter/native O0/O2 boundaries and borrowed-storage mutation verified"
       },
       {
         "name": "cardinality",
         "declaration": "cardinality :: (set: Int_Set) -> u64",
         "section": "Public declaration inventory",
         "spec_line": 141,
-        "implementation": "pending"
+        "implementation": "reviewed bit-set record and operations; interpreter/native O0/O2 boundaries and borrowed-storage mutation verified"
       },
       {
         "name": "is_set",
         "declaration": "is_set :: (set: Int_Set, i: int) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 142,
-        "implementation": "pending"
+        "implementation": "reviewed bit-set record and operations; interpreter/native O0/O2 boundaries and borrowed-storage mutation verified"
       },
       {
         "name": "Msf",

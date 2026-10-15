@@ -87,6 +87,8 @@ def main():
                 item["implementation"] = "supported subset; actual compiler-message rewrite and edit safety fixture"
         if module == "Debug_Info":
             for item in declarations:
+                if item["name"] in {"Int_Set", "cardinality", "is_set"}:
+                    item["implementation"] = "reviewed bit-set record and operations; interpreter/native O0/O2 boundaries and borrowed-storage mutation verified"
                 if item["name"] in {"Call_Frame_Address_Instruction_Type", "Call_Frame_Address_Instruction",
                                      "Frame_Common_Information_Entry", "decode_cfa_instructions", "parse_common_information_entry"}:
                     item["implementation"] = "supported DWARF frame subset; native-produced CIE and malformed-input fixture"

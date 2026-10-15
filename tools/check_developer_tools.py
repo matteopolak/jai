@@ -8,6 +8,7 @@ import shutil
 import check_developer_bindings
 import build_developer_debug
 import check_developer_debug_windows
+import check_developer_msf
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
@@ -26,6 +27,7 @@ def main():
     check_developer_bindings.main()
     build_developer_debug.main()
     check_developer_debug_windows.main()
+    check_developer_msf.main()
     prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
     run([prefix / "bin/clang", "-target", "x86_64-unknown-linux-gnu", "-g", "-fno-omit-frame-pointer",
          "-c", "tests/developer-tools/dwarf-native.c", "-o", "target/developer-tools-dwarf.o"])
@@ -90,6 +92,8 @@ def main():
          "tests/developer-tools/bindings-model-properties.c", "-o", "target/libdeveloper_tools_properties.dylib"])
     run([JAIC, "tests/developer-tools/bindings-model-properties.jai", "-interp"], output="ok\n")
     cases.append("bindings-model-properties-roundtrip")
+    cases.append("msf-wire")
+    cases.append("debug-int-set")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -188,6 +192,9 @@ def main():
     run([ROOT / "target/debug/jailint", "-D", "warnings", "--os", "windows", "--cpu", "x64", *debug_windows])
     for cpu in ["x64", "arm64"]:
         run([JAIC, "tests/developer-tools/debug-windows-contract.jai", "-check", "-os", "windows", "-cpu", cpu])
+        for os_name in ["linux", "windows"]:
+            for case in ["msf-wire", "debug-int-set", "dwarf-cfa"]:
+                run([JAIC, f"tests/developer-tools/{case}.jai", "-check", "-os", os_name, "-cpu", cpu])
     for case, reason in [("check-array", "fixed array used as a pointer in assignment"),
                          ("check-small-driver", "small integer addition requires an explicit intermediate integer cast")]:
         rejected = subprocess.run([str(JAIC), f"tests/developer-tools/rejections/{case}.jai", "-check", "-os", "windows", "-cpu", "x64"],
