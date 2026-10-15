@@ -639,3 +639,41 @@ The test now collects config-open/main-open/completion messages, still requires
 exactly one jai.toml unknown-setting diagnostic and requires no repeat on a
 second completion. All four resilience tests pass. No server diagnostic is
 suppressed, no malformed configuration is accepted, and no assertion is skipped.
+## Refresh14 code audit before merge
+
+- Compiler3084377 transfers a real std::thread kernel handle into GThread and
+  exposes it as the scheduler key; native naming/HRESULT/LocalFree are genuine.
+  Duplicate suspension/resumption explicitly rejects unsupported alias scheduling.
+  Ordinary duplicate waits/exit queries remain native, while managed queries use
+  scheduler completion/result. Source thread_main returns Rust unit after recording
+  the Jai result, so native duplicate exit-code/completion equivalence is not yet
+  established; full native entry/alias lifecycle needs a proper compiler fix.
+  Existing unfinished-worker parking retains OS workers after VM teardown, though
+  owned handle references close. This is a resource/lifetime gap, not complete
+  Windows thread interoperability. Native runtime regression is still required.
+- Portable Flat_Pool uses real generic mmap/mprotect or VirtualAlloc operations,
+  public256MiB defaults, page rounding and OR reset flags. Commit failure returns
+  null with no cursor advance. Page-size queries per commitment and allocation
+  prefix ownership are independent policies; Android/console validation missing.
+  Windows_Utf8 uses real Kernel32 two-pass conversion, active allocator, explicit
+  failure cleanup and flags0 native replacement policy. Host source checks do not
+  establish Windows execution.
+- New clock-calendar.jai places clock_gettime inside assert. Basic's reviewed
+  disabled assert discards its argument, which would silently return epoch/zero
+  under ENABLE_ASSERT=false. Flat-pool.fini similarly puts essential unmap inside
+  assert. These avoidable side effects must move outside assertion evaluation;
+  retain diagnostics and native failure handling. Production red regression and
+  correction are required before the time increment is counted supported.
+- Foundationad84008 resolves path-fragment matching and report-owned lifetimes;
+  scalar FNV and unsigned-division exercise remain actual positive API failures.
+  Do not reclassify those as accepted negatives. Revised fields/guards still
+  require latest reviewed contracts and producer implementation.
+- Bindings204f6f6's BMP close adapter preserves the SDL-owned stream pointer and
+  C convention while converting full64-bit nonzero freesrc to native1. Its
+  function address necessarily differs from the SDK symbol; only the actual file
+  factory retains symbol identity. This is a documented ABI boundary, not a
+  reintroduced stream proxy/context registry. Update the earlier invalid BMP
+  address-identity expectation while keeping all stream/lifetime assertions and
+  adding high-bit close flags. DXC source/ownership/COM checks remain blocked at
+  public D3D forward overlays and need real Windows execution, not private-unit
+  passes counted as public support.
