@@ -62,6 +62,7 @@ def main():
         host.append("windows-class-parameters")
         host.append("windows-layout-keys")
         host.append("windows-render-lifecycle")
+        host.append("windows-render-public")
         host.append("windows-device-notifications")
         host.append("windows-pointer")
         host.append("public-window")
@@ -101,7 +102,7 @@ def main():
     for os_name in ["linux", "windows"]:
         for cpu in ["x64", "arm64"]:
             cases = ["types", "callback-types", "keycodes", "window-types", "texture-signatures", "simp-none", "public-window", "keymap-behavior"]
-            cases += ["evdev-signatures", "window-invalid", "font-effects"] if os_name == "linux" else ["clipboard-host", "windows-queries", "windows-events", "windows-committed-text", "windows-render-events", "windows-class-parameters", "windows-layout-keys", "windows-render-lifecycle", "windows-device-notifications", "windows-device-decoding", "windows-pointer", "font-public", "font-effects"]
+            cases += ["evdev-signatures", "window-invalid", "font-effects"] if os_name == "linux" else ["clipboard-host", "windows-queries", "windows-events", "windows-committed-text", "windows-render-events", "windows-class-parameters", "windows-layout-keys", "windows-render-lifecycle", "windows-render-public", "windows-wgl-driver", "windows-device-notifications", "windows-device-decoding", "windows-pointer", "font-public", "font-effects"]
             for name in cases:
                 run([compiler, ROOT / f"tests/window-render/{name}.jai", "-check", "-os", os_name,
                      "-cpu", cpu, "-I", args.stdlib])

@@ -163,6 +163,8 @@ The LLVM backend, C ABI and linking.
 
 - [Windows startup CI regressions and native verification](platform-io-startup-regressions.md)
 - [Private ARM64 exception backend design and checks](platform-io-arm64-crash-plan.md)
+- [Native WGL investigation](native/window-render-wgl-investigation.md): filtered CI
+  failure evidence, production diagnostics, actual driver probe and explicit real-driver CI deployment.
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
