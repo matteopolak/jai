@@ -225,7 +225,9 @@ def main():
                 if item["name"] in {"History_Scalar", "NUM_SMOOTHING_SLOTS", "slot", "set_smoothing", "clear", "get_value"}:
                     item["implementation"] = "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
                 if item["name"] in {"Profile_Tracker_Data_Record", "Zone_Profiling_Data", "count_recursion_depth"}:
-                    item["implementation"] = "reviewed canonical tracker/stack records and pointer-identity ancestor count; acyclic/cyclic parent effects and borrowed-storage preservation verified; timer-driven stack/profiling runtime pending"
+                    item["implementation"] = "reviewed canonical tracker/stack records and pointer-identity ancestor count; measured manual core uses the stack records; history tracker updates remain pending"
+                if item["name"] in {"init_runtime", "Stack_Push", "zone_begin", "zone_end", "MAX_DEPTH", "MAX_HASH_SIZE", "INIT_HASH_SIZE", "MAX_PROFILING_ZONES_FOR_MANUAL_MODE", "zones", "caches", "dummy", "dummy2", "stack", "zone_hash", "zone_hash_count", "zone_hash_mask", "timestamps_to_seconds", "integer_timestamps_per_second"}:
+                    item["implementation"] = "measured manual-zone core; canonical POSIX/QPC clocks, real elapsed/self/hierarchical/call/recursion counters and stable cached/grown node identities, native/interpreter O0/O2 plus explicit rejection fixtures; Windows SDK links/source checks only; history/instrumentation/report creation pending"
         if module == "Codex":
             for item in declarations:
                 if item["name"] in {"Math", "get_file_and_module", "is_global_ident"}:

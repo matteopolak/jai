@@ -498,7 +498,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Iprof
 
-46 function names have pending declarations; 0 native function names still lack invocation fixtures.
+42 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
@@ -506,7 +506,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `Automatic_Zone_Guarded` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `Prepend_To_Main` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `Prof_init_highlevel` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `Stack_Push` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `add_hook` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `add_source` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `before_intercept` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
@@ -523,7 +522,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `graph_select_sample` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `hash` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `init` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `init_runtime` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `init_zone_hash` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `insert_node` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `log_help` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
@@ -546,8 +544,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `traverse` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `update` | 2 | 2 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `update_history` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `zone_begin` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `zone_end` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 
 ## Performance_Report
 

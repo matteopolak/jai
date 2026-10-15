@@ -14,6 +14,12 @@ This worker owns the native sources/build scripts below. Shared manifest and pac
 
 ## Debug native runtime
 
+## Iprof native clocks
+
+The measured manual core uses existing canonical POSIX/Windows dependencies directly; there is no new private clock binary to package. Preserve normal libc/kernel32 linkage through those facades. Host interpreter/native O0/O2 verifies actual monotonic-clock spans, counts, lifetime and measured CSV. `tools/check_developer_profiler_windows.py` separately checks public SDK counter-record ABI, x64 O0/O2 kernel32 imports and arm64 compilation. Its [evidence](native/developer-tools-profiler-windows-evidence.json) does not certify Windows execution. Coordinator jobs must execute the original manual-clock fixture on Windows/Linux before promoting those branches to native coverage. Automatic instrumentation/frame history/report creation remain implementation work.
+
+## Debug native runtime
+
 Build the owned `debug-native` sources with `tools/build_developer_debug.py` for the destination host. Install the resulting library beside its sources, matching the existing facade's private foreign-library reference. The Windows backend additionally links public SDK DbgHelp/kernel APIs; its cross-build evidence does not certify Windows execution. Coordinator integration must also provide common DbgHelp serialization if other components use that process-global API concurrently.
 
 ## Coordinator-owned acceptance steps
