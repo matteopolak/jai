@@ -1,5 +1,11 @@
 # Portable stdlib worker deviations
 
+Recovery tool configuration: the launch-assigned T7 target is an authorized own
+source build location, accepted through explicit CARGO_TARGET_DIR alongside own
+checkout target/. No alternate external-build discovery or reference fallback.
+This fixes a test-tool guard failure, not a production stdlib defect. Fresh mail,
+channel and crash checks pass; combined original corpus remains coordinator-owned.
+
 Mail scramble: current reviewed alphabet lists characters but no explicit numeric
 index table/ciphertext vector. Independent implementation uses ascending listed
 order; reversibility/cyclic/temporary/error tests pass on actual interpreter/native

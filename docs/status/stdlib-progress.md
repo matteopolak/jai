@@ -1,5 +1,22 @@
 # Portable stdlib progress
 
+Recovery tooling now accepts only own checkout target builds or the explicit
+launch-assigned CARGO_TARGET_DIR (T7); no searches of other build trees. Shared
+selector used by root/mail/channel/crash runners. Fresh mail loopback10 scenarios,
+channel4 interpreter/native pairings x2048 packets and native crash backtrace
+OFF/ON tests pass (target/mail-after-scramble.log, channels-recovery.log,
+crash-recovery.log). No full combined corpus claim. Prior root117 cases/27 runtime
+faults/16 compile-rejections ran before the Runtime lock change; retained evidence
+is not presented as a post-change full rerun.
+
+Filtered corpus update names Metaprogram_Plugins as Focus's first missing module.
+Reviewed public page still lacks parse ownership/grouping/index details and the
+loader evaluation boundary for arbitrary runtime-created names. Exact questions
+and general added-source timing probe are in metaprogram-plugins-dependency-request.md.
+Probe shows added #run runs after active caller returns; not claimed a compiler
+bug without reviewed reentrancy guarantee. No CLI-only dispatch restriction,
+pointer serialization or placeholder loader added. Module remains missing.
+
 Default Check integration committed d22aa67; fresh recovery run
 target/default-metaprogram-recovery.log passes ordinary builds/binding flags,
 plugins/options/replay/failures and full owned strict lint. Canonical shared
