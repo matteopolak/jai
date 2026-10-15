@@ -1,5 +1,7 @@
 # Compiler progress
 
+Windows unwind implementation committed as 0d49463 (fix(llvm)). Verified: async ABI attributes and synthesis defaults retain O0/O2 entries for x64 MSVC/MinGW and ARM64. Original red O2 empty-table failure is retained. Six object/PE metadata cases and the SDK driver cross-build pass; native Windows execution remains required. Original core/backend and CLI regressions, owned formatting/lint and clippy pass. The staged producer O2 fault leaf is genuinely frameless: its unconditional metadata assertion needs review, while its middle frame now has an entry. See compiler/windows-unwind.md for exact evidence. Runtime protocol adoption remains pending.
+
 Verified implementation checkpoint: 9bab736. Host/target constants now use compiler-binary host identity independently of output selection. Original 12-combination core test, native/WASM64 O0/O2 execution, staged foundations Preamble interpreter/native/WASI O0/O2, and actual wasm32 compiler host/cross-child checks pass. Child-workspace negative control also repaired browser parent false success. Core/backend and separate CLI runtime/plugin regressions, format and scoped clippy pass. Broader browser suite remains 21/29: eight dependency/legacy failures retained. Private runtime producer adoption remains pending. See compiler/host-target-constants.md for exact evidence and limits.
 
 Linter batch committed as 0eeb90c; all 28 library/CLI/rule cases and clippy pass.

@@ -1,5 +1,7 @@
 # Compiler integration handoff
 
+Windows unwind checkpoint 0d49463: ABI-required uwtable(async) survives inferred nounwind and O2 for x64/ARM64, including synthesis defaults and optimized definitions. Original metadata red/green, six object/PE cases and native SDK driver are in compiler/windows-unwind.md. Native Windows execution remains required; producer named-fault O2 leaf is a genuine frameless leaf and its unconditional table assertion needs review. Portable runtime adoption remains pending.
+
 Host/target checkpoint 9bab736: BUILD_OS/BUILD_CPU identify the executing compiler binary; OS/CPU remain output selection. Native/WASM64 emitted code, wasm32 compiler host and cross-child, and staged independent Preamble interpreter/native/WASI O0/O2 pass. Browser child failures now prevent parent execution. Exact commands, preserved broader-browser failures and runtime adoption boundary: compiler/host-target-constants.md.
 
 Latest completeness batches: 2f36a1e rejects qualified constant writes;
