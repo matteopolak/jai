@@ -2,6 +2,29 @@
 
 ## Shared portable transition, 2026-10-15
 
+- `tools/developer_native_runtime.py::stage_macos_sdk` relocates and signs the
+  real configured libclang/LLVM/zstd/z3 images and records source/output hashes.
+  Its stage contains no license-copy step. Loader closure is verified locally;
+  redistribution-license closure is a separate unresolved packaging requirement.
+  `compiler-path.txt` still names a configured SDK compiler/resource environment;
+  Linux retains configured symlink/rpath dependence. These development helpers
+  do not establish a self-contained release distribution. Proper fix: package
+  required compiler resources and notices with pinned receipts, then remove
+  disposable SDK prefixes and verify actual installed consumers on each host.
+- Fresh shared workspace `6295584c` initially omitted generated
+  `stdlib/internal/runtime/crash-native/libportable_crash.dylib`. Three native
+  tests failed; `tools/build_portable_runtime.py` rebuilt the actual owned C
+  source. Their original failures remain recorded until frozen-source follow-up.
+  Proper fix: a single documented native build preparation step in the combined
+  baseline/package pipeline, rather than relying on old worktree artifacts.
+- `crates/jaic-cli/tests/debug_info.rs::lldb_breakpoints_backtraces_and_variables`
+  stalled at LLDB `run`. The external-debugger case was terminated after
+  210.059 observed seconds against a180-second timeout policy, then independent
+  tests continued. This is a failed timeout, not debugger verification. The
+  process-age query was sandbox-denied; no alternate query was attempted.
+  Proper fix: bounded external-tool test execution and actual native debugger
+  verification on an authorized host; retain all breakpoint/variable assertions.
+
 - Producer preservation checkpoints `ba964cb5` (model), `98b1581c` (tools) and
   `0d57d885` (bindings) contain partial work. Adoption is not verification:
   aggregate emission's unchanged negative-cycle assertion, unrepresented native

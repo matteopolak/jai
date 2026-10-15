@@ -2,6 +2,32 @@
 
 ## Shared tree, 2026-10-15
 
+Completed native ARM64 source snapshot `6295584c`: workspace **877 passed,
+6 failed, 1 inherited ignore**,106 binaries. Three missing crash-helper setup
+failures each pass exact frozen-source follow-ups after source-building the helper;
+the original full result stays failed. LLDB stalled at `run` and was terminated
+after210.059 observed seconds (180-second policy). WASI tour imports native-only
+Thread. The strict unused-code matrix retains183 differences:141 assertion first
+errors,35 passes/removals and7 body/API/compile-time errors. Assertions include
+unfinished platform support and are not automatically accepted as public guards.
+
+The complete417-case catalogue against the coordinator's immutable, unmodified
+production snapshot records interpreter394 passed/12 failed and native383
+passed/11 failed. Each mode has6 unavailable platform cases and5 expected
+negative checks; native has12 compile-time-only cases. Total777 positive runtime
+passes,23 failures and0 ignored. JSON numbers interpreter timed out180.007s;
+native passed. Serial Window_Creation/macos-events passes both modes. All2099
+authorized committed production/compiler/catalogue fixture blobs rehash unchanged.
+No copied corpus/vendor bodies were accessed or executed. Full original corpus
+and Focus remain external coordinator gates.
+
+The next compiler/LSP checkpoint is reconciled only from owned source/test deltas
+47a2bfa7,94ddd821 and4dac97bb. Static selector, aggregate using and named module
+argument definitions retain actual declaration identities. Existing IDE-only
+recovery and strict application compilation stay distinct. All263 LSP tests and
+5 metadata-only scanner tests pass; full original IDE audit remains red and is
+not inferred from these fixtures. Native protocol replay is a separate gate.
+
 Current integration work is in `stdlib-shared`, branch `codex/stdlib-shared`;
 the older thread-fixtures checkout is retained evidence, not the active tree.
 Canonical ASN.1/Socket, JKS/crypto/APK and narrow generator/tools/bindings producer

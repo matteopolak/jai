@@ -632,3 +632,10 @@ Android rows partial and other native platforms unverified.
 
 - [Retained portable shared audit](status/stdlib-shared-audit.json): per-API current audit distinct from 929 historical bookkeeping rows
 - [Current shared integration baseline](status/shared-integration-baseline.json): exact candidate, commands, measured counts and unresolved failures
+
+
+[Essential operations inside optional assertions](optional-assert-side-effects.md)
+records a finite read-only handwritten stdlib audit, independent disabled-default
+text/keymap reproductions, precise owner routing, and explicit pure/diagnostic
+non-defect classifications. [Its scoped findings](status/optional-assert-side-effects.json)
+include exact file/line/source hashes and required platform limits.
