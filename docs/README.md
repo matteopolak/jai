@@ -110,6 +110,7 @@ The LLVM backend, C ABI and linking.
 - [Machine_X64 compiler gaps](portable-machine-gaps.md): original interpreter/native CPUID failure and genuine native C comparison
 - [Flat_Pool core and container audit](portable-flat-pool.md): real initialization, lazy page commitment, parameterized overwrite and lifecycle
 - [Pool behavior and checked allocation extents](portable-pool.md)
+- [Unix Thread assertion configuration and lifecycle ownership](portable-thread-lifecycles.md)
 - [Windows calendar verification](../tools/check_portable_windows_calendar.py): source/ABI checks, explicit native-host requirement
 - [Windows shared-memory backend and remaining gates](portable-windows-channel.md)
 - [Windows Socket wrappers, native ABI evidence and remaining public gaps](portable-windows-socket.md)

@@ -3,18 +3,23 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint:eab3383, Android JNI naming/missing-surface inventory. Current host-tooling
-increment adds exact Android JNI ABI naming and a253-row missing public-surface
-inventory. Full109 positives/26 checked faults in both modes/14 compile negatives
-plus existing integration and Linux/Windows target checks pass
-(target/android-abi-name-full.log).363 owned files pass format/check. Focused new
-roots pass strict lint; whole strict lint still fails for documented compiler/
-configuration/intentional-negative categories, with all groups attempted.
-Native Windows/Linux/Android gates remain distinct. Exact partial-module gaps and
-all largely unimplemented portable APIs are linked from the module ledger and
-portable-missing-surface.md; the full task is unfinished. Next: retain reviewed
-native/resource ownership behavior while continuing portable platform/toolchain
-work, and use named questions for precise missing contracts rather than fake APIs.
+Current durable checkpoint before critical fixes: ad03082. Pool/Unix Thread
+critical corrections are ready for checkpoint: field-only Pool guard, no registry,
+allocator/options preserved by reset/release, genuine returned leak report fixed.
+Every owned essential Thread SDK operation now executes outside optional asserts;
+error logging and native ownership retention are explicit. All ten configurations/
+fixtures pass interpreter, host ARM64 and translated x64 native O0/O2 (50 runs),
+including the unchanged NEW foundations report and audio reproducer. Both default
+assertion settings pass focused strict lint and Linux x64/ARM64 source checks.
+Evidence: target/lifecycle-all-green.log; original failures retained separately.
+The draft invalid locked-mutex oracle and staging corrections are documented
+separately from production fixes. Native Linux/Windows/Android execution, forced
+join failures and group transactional fault recovery are not claimed. Windows
+Thread is untouched. Pending digest/signing sources remain durable and excluded
+from this checkpoint, as do all three provisional Performance_Report files.
+Full task remains unfinished; missing public surface inventory still names248
+rows before pending digest changes. Next: committed compiler ISA handoff and
+remaining portable APIs after the critical checkpoint.
 
 Post-f044252 work: get_machine_options_x86 now implements the reviewed generic
 #modify API as a checked in-place projection of actual Compiler.Build_Options
