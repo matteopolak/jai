@@ -1,5 +1,21 @@
 # Portable stdlib worker deviations
 
+Runtime Android discard: queue uses independent4096-byte capacity/line/forced
+flush policy and ordinary raw descriptor sink. Exact finer Android flush/sink
+policy is absent from reviewed public page, so no logcat tag mapping or exact
+Android conformance invented. Private discard never flushes. Real host byte-I/O
+tests and strict lint pass; Android public branch/device and binding adoption
+remain pending. Private unit fixture is byte-identical under a target-only library
+test module, preserving external private-import rejection; it is not a production
+facade/API shim or SDK simulation. pending/android-logger-discard.patch is for
+coordinator/owner application, not an edited peer. Details/evidence in
+portable-runtime-output-discard.md.
+
+Compiler command-line oracle refined: old get_toplevel scope expectation is
+unspecified, so that probe alone was insufficient evidence. New selected-workspace
+get_build_options().compile_time_command_line probe fails under the explicit
+read/write contract; remaining compiler request uses this genuine evidence.
+
 Default plugin-array ownership correction removes a dangling public descriptor
 after shutdown by using Basic.array_reset. Actual repeated workspace/plugin builds
 verify cleanup, retaining callbacks and error behavior. No caller patch, lifecycle

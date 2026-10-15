@@ -1,0 +1,20 @@
+--- a/stdlib/Android/wrappers.jai
++++ b/stdlib/Android/wrappers.jai
+@@ -94,7 +94,7 @@
+     payload := Native.terminated_copy(message);
+ 
+     defer Native.release(payload);
+-    Runtime.android_flush_write_string_buffer(true);
++    Pending_Output.discard_pending_output();
+     __android_log_write(cast(Log_Priority) Policy.log_priority(info.common_flags), native_tag, payload);
+ }
+ 
+@@ -103,7 +103,7 @@
+ Policy :: #import "internal/bindings/android-policy";
+ Native :: #import "internal/bindings/native";
+ Basic :: #import "Basic";
+-Runtime :: #import "Runtime_Support";
++Pending_Output :: #import "internal/runtime/android-output";
+ 
+ libc :: #library,system "c";
+ binding_exit :: (status: s32) #foreign libc "exit";

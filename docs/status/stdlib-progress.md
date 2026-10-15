@@ -1,5 +1,22 @@
 # Portable stdlib progress
 
+Runtime15:24 request implemented: private canonical Android pending-byte queue
+and discard_pending_output hook, shared real CAS lock and reviewed Android-only
+flush facade. Actual host stdout/stderr tests prove pending bytes are discarded
+without emission while normal line/forced/capacity flush and desktop output work.
+Interpreter/native O0/O2, full scoped strict lint and format/--check pass. Exact
+NEW binding patch pending/android-logger-discard.patch prepared, no peer write;
+binding adoption/Android compiler/device remain pending. No public discard export
+invented. Fine Android sink/force policy unestablished and honestly documented in
+portable-runtime-output-discard.md; no native Android success claimed.
+
+Test oracle correction: original target-command-line probe used get_toplevel
+getter whose scope is not reviewed. The corrected selected-workspace
+pending/workspace-target-options-command-line.jai instead reads
+get_build_options().compile_time_command_line and fails its genuine assertion,
+confirming selected-workspace readback defect under the actual guaranteed
+contract. Original failure evidence remains; no compiler patch made here.
+
 Fresh assigned-scope inventory published at docs/status/implementation-remaining.json:
 4636 reviewed declaration/overload/condition/nested-procedure rows across62 owned
 module pages; source classification3559 complete,448 partial,629 missing (76.77%
