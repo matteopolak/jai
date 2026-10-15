@@ -25020,7 +25020,7 @@
         "declaration": "Line_Program_Header :: struct",
         "section": "Public declaration inventory",
         "spec_line": 127,
-        "implementation": "pending"
+        "implementation": "canonical reviewed header shape/packed field offset; actual staged DWARF4 byte decoder with original x86/x64/arm64 O0/O2 SDK row oracles; public parser integration pending"
       },
       {
         "name": "get_filename_for_file_id",

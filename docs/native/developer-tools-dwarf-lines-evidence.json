@@ -2,6 +2,212 @@
   "scope": "original Linux-target DWARF4 objects decoded by host SDK; no target executable run",
   "fixtures": [
     {
+      "target": "i386-unknown-linux-gnu",
+      "optimization": 0,
+      "rows": [
+        {
+          "address": 0,
+          "line": 1,
+          "column": 0,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 7,
+          "line": 2,
+          "column": 27,
+          "file_id": 1,
+          "flags": [
+            "is_stmt",
+            "prologue_end"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 10,
+          "line": 2,
+          "column": 36,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 13,
+          "line": 2,
+          "column": 18,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 16,
+          "line": 3,
+          "column": 18,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 22,
+          "line": 4,
+          "column": 16,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 31,
+          "line": 5,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 33,
+          "line": 6,
+          "column": 16,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 42,
+          "line": 8,
+          "column": 12,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 45,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "epilogue_begin"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 50,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "end_sequence"
+          ],
+          "discriminator": 0
+        }
+      ],
+      "line_bytes_sha256": "5192a5fdf984aaee3535ef2e39a9dcf11c0fcbc4ff655276780dcfd449ac103e"
+    },
+    {
+      "target": "i386-unknown-linux-gnu",
+      "optimization": 2,
+      "rows": [
+        {
+          "address": 0,
+          "line": 1,
+          "column": 0,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 5,
+          "line": 3,
+          "column": 18,
+          "file_id": 1,
+          "flags": [
+            "is_stmt",
+            "prologue_end"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 17,
+          "line": 0,
+          "column": 18,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 20,
+          "line": 2,
+          "column": 36,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 23,
+          "line": 2,
+          "column": 18,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 26,
+          "line": 0,
+          "column": 0,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 29,
+          "line": 8,
+          "column": 12,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 32,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "epilogue_begin"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 34,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "end_sequence"
+          ],
+          "discriminator": 0
+        }
+      ],
+      "line_bytes_sha256": "5648995b6a1f278fcdff8e819660522398141590b3aef9d26b643f3ef44b9114"
+    },
+    {
       "target": "x86_64-unknown-linux-gnu",
       "optimization": 0,
       "rows": [
