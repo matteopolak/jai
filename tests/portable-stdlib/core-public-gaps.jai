@@ -49,4 +49,16 @@ main :: () {
 
     B.assert(output == "ff");
     B.free(output);
+    builder: B.String_Builder;
+    handled := M.math_struct_printer(*builder, vector, null);
+
+    B.assert(handled);
+    expected := B.builder_to_string(*builder);
+
+    context.print_style.struct_printer = M.math_struct_printer;
+    output = B.sprint("%", vector);
+    B.assert(output == expected);
+    B.free(output);
+    B.free(expected);
+    context.print_style.struct_printer = null;
 }

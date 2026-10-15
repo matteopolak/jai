@@ -31,13 +31,21 @@ reviewed buffer layouts. Cross-configuration raw buffer-pointer identity is not
 offered; the reviewed spec already requires consistent configuration when
 exchanging String_Builder values.
 
-Interpreted regressions verify one reflected context field across three Basic
+Regressions verify one reflected context field across three Basic
 instances, shared type identities, real style-sensitive integer/array output,
 context-copy isolation, and a5000-byte custom callback that reads its prefix.
 The callback runs through both layouts under a counting allocator with no live
-allocations remaining. The existing Basic configuration/formatter and Json
-numeric ownership regressions also pass interpreted. Native/lint checks are
-ongoing; these observations do not claim final integration acceptance.
+allocations remaining. Declining callbacks preserve their bytes before default
+rendering, and explicitly formatted values cross Basic instances with canonical
+formatter identities. The existing Basic configuration/formatter and Json
+numeric ownership regressions also pass interpreter/native O0/O2.
+
+`python3 tests/portable-stdlib/check-core-public.py` replays seven focused
+programs in all three modes plus warnings-denied lint of the four new roots.
+The measured result is39/39 commands passing. Actual formatting and loaded-source
+strict lint also pass. The actual host is Mac arm64; no cross-platform runtime
+or full public-corpus integration is claimed. Durable commands/stdout/stderr
+are in ignored artifacts/core-public-verification/results.json.
 
 ## Public arithmetic and existing supported APIs
 
@@ -55,3 +63,9 @@ Regression coverage uses real allocator ownership, table_set versus duplicate
 table_add semantics, and record keys with the reviewed explicit hash/equality
 callbacks. Unsupported default record hashes are not invented. No allocator
 named arguments, Basic.get_time, Swap or bubble_sort aliases are introduced.
+
+The adopted compiler checkpoint also closes the earlier independently reduced
+Http client audit dependency: the exact production lint context and its
+18-check reduction/control runner now pass. This is verified source-built
+candidate behavior; no Extensions production workaround or compiler source
+edit was introduced in this worker.

@@ -79,6 +79,22 @@ is staged locally and source-built in T7. No peer checkout is written.
 The design and explicit ABI-bridge cost are in docs/features/basic-public-context.md.
 Dirty-room contract precision questions are in docs/specs/questions/basic-core-public.md.
 
+Focused core implementation is verified: seven programs in interpreter/native
+O0/O2 and four strict-lint roots give39/39 passing commands. Loaded-source
+warnings-denied lint and actual formatting pass. One canonical print_style field
+is reflected across Basic configurations, and the callback layout bridge keeps
+output/prefix/allocator ownership while preserving the reviewed Buffer layouts.
+Free/hash supported cases already pass on the substrate; no extra exports were
+added. Integer/Apollo and Vector2 reviewed interfaces are implemented.
+
+Compiler owner: on the authorized source-built8b134bdb compiler the former Http
+audit request is now closed: exact production context plus reduction/control
+runner18/18 pass. The independent failure evidence remains preserved. Portable
+time owner: no calendar/clock/Apollo conversion or lifecycle scaffolding edits;
+S128/U128 operators are isolated to integer128.jai. Remaining contract questions
+are explicit signed-overflow policy and cross-configuration callback identity;
+no wider corpus/target certification is claimed here.
+
 
 ## User-required reference oracle
 

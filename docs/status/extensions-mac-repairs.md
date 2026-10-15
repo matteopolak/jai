@@ -59,6 +59,18 @@ pass actual formatting; their lint failures are intentionally retained as
 blocking evidence, not certified clean. The module is still not fully green
 pending an approved general compiler/linter repair checkpoint.
 
+## Approved substrate verification
+
+The subsequent Basic/Math assignment authorizes the independent combined
+candidate8b134bdb. Its compiler source was staged locally and built in isolated
+T7 without editing compiler or Extensions sources. With that approved compiler,
+the exact production Http client warnings-denied context passes, and
+`tests/extensions/check-http-client-context.py` reports18/18 passing, including
+both independent reductions and genuine-error controls. The earlier audit
+dependency is therefore closed on this substrate. Historical red evidence and
+the independent sources remain intact; no ignored failure or library workaround
+was used to obtain this result.
+
 The named stable baseline JSON was absent in this worktree. The coordinator has
 the exact names and152 failed executions and explicitly states that local
 absence does not block this task. These totals are direct affected catalogue
