@@ -86,8 +86,7 @@ env_number :: (name: *u8, fallback: s64) -> s64 {
 #if OS == .LINUX || OS == .MACOS {
     pool_lock :: () {
         while true {
-            exchanged, _ := atomic_compare_exchange(*file_pool_lock, cast(s32) 0, cast(s32) 1);
-            if exchanged break;
+            if compare_and_swap(*file_pool_lock, cast(s32) 0, cast(s32) 1) break;
 
             sleep_milliseconds(0);
         }
@@ -126,11 +125,11 @@ env_number :: (name: *u8, fallback: s64) -> s64 {
             for 0..engine.file_threads - 1 {
                 worker := *pool.workers[it];
 
-                Thread.thread_init(worker, pool_worker);
-                worker.data = pool;
+                if !Thread.thread_init(worker, pool_worker) break;
 
-                if Thread.thread_start(worker) pool.started += 1;
-                else Thread.thread_deinit(worker);
+                worker.data = pool;
+                Thread.thread_start(worker);
+                pool.started += 1;
             }
 
             if pool.started == 0 {

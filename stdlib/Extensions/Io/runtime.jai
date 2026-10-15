@@ -162,12 +162,12 @@ pop_deadline :: (previous: s64) {
     fiber.deadline = previous;
 }
 
-run_threads :: (count: s64, entry: Thread.Native_Thread_Proc, data: *void) {
+run_threads :: (count: s64, entry: Thread.Thread_Proc, data: *void) {
     count = ifx count <= 0 then processor_count() else count;
 
-    threads := NewArray(count, Thread.Thread);
+    threads, allocation := NewArray(count, Thread.Thread);
 
-    defer free(threads.data);
+    defer free(allocation);
 
     started := 0;
 
@@ -177,7 +177,7 @@ run_threads :: (count: s64, entry: Thread.Native_Thread_Proc, data: *void) {
         assert(Thread.thread_init(thread, entry), "Io: could not prepare a thread");
         thread.data = data;
 
-        assert(Thread.thread_start(thread), "Io: could not start a thread");
+        Thread.thread_start(thread);
         started += 1;
     }
 
