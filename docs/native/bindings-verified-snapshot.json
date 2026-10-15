@@ -1,8 +1,8 @@
 {
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
-    "declared": 28389,
-    "unresolved": 128,
+    "declared": 28397,
+    "unresolved": 120,
     "implemented_manual": 45,
     "implemented": 547,
     "forwarded": 1262,
@@ -280,6 +280,99 @@
         },
         "symbols": {
           "passed": 1200
+        }
+      }
+    }
+  ],
+  "sdk_delegate_checkpoint_reports": [
+    {
+      "report": ".work/stable-checkpoint-2-full.json",
+      "sha256": "dba0e4308ba874ae0f972b84ca63465f3b93f5112fe0982560ad6c995877489a",
+      "scope": null,
+      "compiler_sha256": "1cf63b50f2c750711d01dab0de2844aa014b087014c2d34ce4143c345787d78c",
+      "results": {
+        "targets": {
+          "unsupported": 70,
+          "passed": 240,
+          "failed": 36
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 47,
+          "failed": 1
+        },
+        "privacy": {
+          "passed": 96,
+          "unsupported": 28,
+          "failed": 2
+        },
+        "symbols": {
+          "passed": 1200
+        }
+      }
+    },
+    {
+      "report": ".work/sdk-delegates-and-cpp-current.json",
+      "sha256": "e5e2e4581ce45155f2225e7d08683317242f86d0d59345b8d33c20be704ceb55",
+      "scope": null,
+      "compiler_sha256": "1cf63b50f2c750711d01dab0de2844aa014b087014c2d34ce4143c345787d78c",
+      "results": {
+        "targets": {
+          "passed": 50,
+          "unsupported": 2
+        },
+        "native": {
+          "passed": 10
+        },
+        "privacy": {},
+        "symbols": {
+          "passed": 549
+        }
+      }
+    },
+    {
+      "report": ".work/posix-sdk-delegates-both-cpus.json",
+      "sha256": "7d10f065b2c42f450e55c037616ac91aee8a2b24109224822bece2164e1c1776",
+      "scope": "Worker native macOS CPU ABI/runtime tests; not coordinator integration",
+      "compiler_sha256": "1cf63b50f2c750711d01dab0de2844aa014b087014c2d34ce4143c345787d78c",
+      "results": {
+        "checks": {
+          "passed": 12
+        }
+      }
+    },
+    {
+      "report": ".work/checkpoint-3-production-tools.json",
+      "sha256": "772c81b27bb1d71adf633f3f7e6ed1b1572e24312f4f174a50cc236bf135eae3",
+      "checks": 41,
+      "failures": 0
+    },
+    {
+      "report": ".work/android-posix-header-regeneration.json",
+      "sha256": "8902897a9a955ca488cb2e49e98046d721ad309a281351036ae20b91b9132a4e",
+      "scope": "Official native C header delegates; Android Jai target/runtime remains unverified",
+      "compiler_sha256": null,
+      "results": {
+        "checks": {
+          "passed": 2
+        }
+      }
+    },
+    {
+      "report": ".work/imgui-qualified-native-current.json",
+      "sha256": "c9446e5f6b11164a8b808360e1d75a35c196ab3e3306414d4d2edc246b9ef9a6",
+      "scope": null,
+      "compiler_sha256": "1cf63b50f2c750711d01dab0de2844aa014b087014c2d34ce4143c345787d78c",
+      "results": {
+        "targets": {
+          "passed": 18
+        },
+        "native": {
+          "passed": 4
+        },
+        "privacy": {},
+        "symbols": {
+          "passed": 518
         }
       }
     }

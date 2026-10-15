@@ -8,6 +8,23 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Android POSIX records, resolved source association.** Complete pinned
+  official Bionic headers now supply eight target declarations for four
+  inventoried records, with per-field and complete C layout assertions on both
+  CPUs. No other OS shape is borrowed; explicit reviewed target shapes win.
+  See [delegate provenance](../native/android-posix-delegates.md). Android Jai
+  compilation/device execution still fails/is unavailable and is not claimed.
+  Proper follow-up remains general compiler target support and real device ABI
+  tests; source disposition counts do not establish completed native support.
+- **ImGui owner tracking and C++ dependency.** The old public-name verifier
+  incorrectly asked for a flattened nested method. Qualified owner metadata
+  now checks the actual reviewed API, with no invented alias. Real Jai native
+  SDK calls pass layout checks, construction, split and SDK-domain cleanup.
+  [Details](../native/imgui-nested-methods.md) record explicit C++ runtime
+  linkage, constants-only import overhead, Windows evidence limits and the
+  general dependency-graph refinement. Other provisional ImGui layouts are
+  unchanged and remain required ABI work.
+
 - **iOS helper availability and private host testing.** All three facade
   helpers now obey reviewed iOS-only availability. The old host fixture was
   an invalid target expectation; its public assertions remain active under

@@ -111,6 +111,8 @@ Implementation work uses the API specification as its compatibility contract. Im
 - [iOS helper availability and private native host verification](native/apple-toolchain.md)
 - [Android EGL native header input and verification boundary](native/egl-sdk-inputs.json)
 - [Safe private SDL RWops adapters and remaining contract limits](native/sdl-rwops.md)
+- [Explicit Android POSIX C header delegates](native/android-posix-delegates.md)
+- [ImGui nested member scopes and real native C++ calls](native/imgui-nested-methods.md)
 - [Real GL SDK validation and reviewable integration fixes](native/gl-sdk-validation.md)
 - [Current compiler context-probing regression](native/compiler-context-probe.md)
 - [Jai language guide](specs/jai/README.md)

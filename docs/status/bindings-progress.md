@@ -1,7 +1,8 @@
 # Bindings worker progress
 
 Active implementation; full integration/corpus/release verification remains
-coordinator-owned. POSIX/WGL checkpoint: `79af73e`.
+coordinator-owned. POSIX/WGL checkpoint: `79af73e`; safe SDL/iOS/X11 checkpoint:
+`fddae00`.
 
 2026-10-14 current batch:
 
@@ -56,8 +57,8 @@ rpmalloc, enabled telemetry, Objective-C class helpers, D3D/DXC convenience
 wrappers and X11 helpers remain required. See deviations/questions for exact
 limitations; declaration counts are not a claim of native completeness.
 
-Current source ledger: 28,389 declared, 1,262 forwarded, 547 generated bodies,
-45 manual bodies, 128 unresolved, one duplicate. Manual includes unverified
+Current source ledger: 28,397 declared, 1,262 forwarded, 547 generated bodies,
+45 manual bodies, 120 unresolved, one duplicate. Manual includes unverified
 Android code; no native completion is inferred. Configurations still have 58
 required failures. The intermediate broad matrix recorded 1,200 symbols passed,
 45 native checks passed and two native failures (invalid host iOS expectation
@@ -70,3 +71,27 @@ Current reports: `.work/checkpoint-2-production-tools.json` (40 passed),
 `.work/adapter-privacy-current.json`, `.work/windows-render-current.json`.
 The actual Windows renderer remains blocked by the independent fixed-array
 literal reproducer in NEW producer Unicode, after integrating the File owner.
+
+Subsequent reviewed progress:
+
+- Eight Android POSIX records now come from complete pinned official Bionic
+  headers, with all field sizes/offsets and record sizes/alignments asserted
+  for both C targets. Explicit reviewed target shapes always take precedence;
+  no new names or cross-OS guessed layouts. POSIX has zero unresolved source
+  declarations; Android Jai/device verification remains unavailable/required.
+- Fixed generic nested C++ member ownership tracking. `TextFilter.TextRange.split`
+  replaces the invalid flattened verifier expectation, preserving the API.
+  Added a real Jai-to-SDK native constructor/split test with three sizes/five
+  offsets checked first. Added the missing C++ runtime dependency, shared by
+  ImGui/NVTT/meshoptimizer with platform-correct default native runtimes.
+- SDK-focused matrix: 50 source checks, 10 native checks, 549 symbols passed;
+  zero failures. Both macOS CPU ABI/runtime probes still pass. All 41 current
+  production tool checks and 41 Python regressions pass.
+
+Evidence: `.work/sdk-delegates-and-cpp-current.json`,
+`.work/posix-sdk-delegates-both-cpus.json`, `.work/checkpoint-3-production-tools.json`,
+`.work/android-posix-header-regeneration.json`.
+Stable checkpoint-2 full report is `.work/stable-checkpoint-2-full.json`:
+240 source checks passed/36 failed, 47 native passed/one retained SDL ABI failure,
+96 privacy passed/two blocked by D3D, 1,200 symbols passed. It predates the six
+corrected ImGui namespace checks, which now pass in the scoped report.
