@@ -2,6 +2,19 @@
 
 ## Stable combined native ARM64 replay, 2026-10-15
 
+Current415-case replay at081ecbff: interpreter391 passed/13 failed; native382
+passed/12 failed/10 compile-time-only. Each mode has six unavailable platform
+cases and five precise negative passes. Json numbers still exceeds180s. The
+new compiler-typechecked-messages failure is an interception-oracle migration;
+the other invalid legacy API/ISA constructions remain explicit failures.
+No failing count is replaced by a projection of focused follow-ups.
+
+Android host orchestration runner with `JAIC_TEST_OPTIMIZATIONS=O0` passes94
+commands, retaining seven fixtures, five source targets, strict lint and every
+argument/failure assertion. Default runner coverage remains O0/O2; selecting a
+local optimization changes only actual executed profile counts, not assertions.
+Controlled SDK/ADB command sentinels remain test inputs, not real SDK/device proof.
+
 Stable workspace at53ecb3d3 completes852 passed/two failed/one inherited ignore
 across101 Cargo binaries. Remaining failures are the WASI tour and target ledger;
 constructor, ABI, ownership, CLI and LSP suites pass in that command. Focused new

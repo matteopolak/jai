@@ -28,6 +28,13 @@ fixture now passes interpreter execution after its native execution already pass
 Linux/Windows native verification remains required; the C constructor test is
 Unix-specific and supplies no Windows execution evidence.
 
+A stronger Mac constructor checks pthread_main_np. It first aborted because
+dlopen itself ran on the compiler worker. Native loading now uses the existing
+synchronous main-thread dispatcher on Mac, including callback/crash attribution,
+with the ordinary direct/fork/foreign-thread boundaries retained. This is a
+general loader operation, independent of library names and exported symbols.
+The strengthened original constructor cases and failure/isolation tests pass.
+
 Each native lookup currently scans the program's library metadata and reuses
 cached handles. This costs O(number of libraries) metadata checks; no benchmark
 claim is made. A measured incremental cursor may optimize append-only programs,

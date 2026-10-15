@@ -1,5 +1,17 @@
 # Independent integration deviations audit
 
+## Mac native loader constructor affinity
+
+The strengthened original C constructor's pthread_main_np assertion reproduced
+a second initialization defect: Library::open called dlopen on the compiler
+worker. The Mac loader now uses the existing generic synchronous root-thread
+job, retaining calling-out callback attribution and direct/fork boundaries.
+No library/symbol-name exception or loader environment override is used. Two
+Rust boundary tests cover four named/unnamed runtime/compile-time constructor
+cases, actual linked O0 executions and missing-library/isolation checks. They
+pass. Root-thread handoff adds first-load latency; other-platform native loader
+behavior and general TLS/errno parity remain separately required verification.
+
 ## Value-emission load reconciliation
 
 Preserving the newer canonical model/facade during tooling merge dropped the

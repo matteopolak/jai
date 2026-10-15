@@ -11,7 +11,15 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "tests/android-project"
 
 
+def selected_optimizations():
+    values = os.environ.get("JAIC_TEST_OPTIMIZATIONS", "O0,O2").split(",")
+    if not values or len(set(values)) != len(values) or any(value not in {"O0", "O2"} for value in values):
+        raise ValueError("JAIC_TEST_OPTIMIZATIONS must select O0 and/or O2 once each")
+    return values
+
+
 def main():
+    optimizations = selected_optimizations()
     target = Path(os.environ["CARGO_TARGET_DIR"]).resolve()
     output = target / "android-project-verification"
     output.mkdir(parents=True, exist_ok=True)
@@ -76,7 +84,7 @@ def main():
     for stem, source in zip(stems, sources):
         args = [str(ndk)] if stem == "sdk" else [str(fake_adb)] if stem == "device" else []
         run(f"{stem}-interp", "host-execution", [compiler, source, "-interp", "--", *args])
-        for optimization in ("O0", "O2"):
+        for optimization in optimizations:
             binary = str(output / f"{stem}-{optimization}")
             if run(f"{stem}-{optimization}-build", "host-native-build", [compiler, source, f"-{optimization}", "-exe", binary]):
                 run(f"{stem}-{optimization}-run", "host-execution", [binary, *args], cwd=FIXTURE_ROOT)
@@ -90,11 +98,12 @@ def main():
             run(f"{stem}-{system}-{cpu}-lint", "source-only-lint", [lint, *flags, "-D", "warnings", "--context", check_source, *context_sources])
     calls = [json.loads(line)[1:] for line in command_log.read_text().splitlines()]
     install = [call for call in calls if "install" in call and call[-1] == "an apk with spaces.apk"]
-    assert len(install) == 3 and all(call == ["-s", "host-fixture-serial", "install", "-r", "-t", "-d", "an apk with spaces.apk"] for call in install)
+    mode_count = 1 + len(optimizations)
+    assert len(install) == mode_count and all(call == ["-s", "host-fixture-serial", "install", "-r", "-t", "-d", "an apk with spaces.apk"] for call in install)
     links = [call for call in calls if "--controlled-test" in call]
-    assert len(links) == 3 and all("aarch64-linux-android34" in call and "-shared" in call for call in links)
+    assert len(links) == mode_count and all("aarch64-linux-android34" in call and "-shared" in call for call in links)
     uninstalls = [call for call in calls if "uninstall" in call]
-    assert len(uninstalls) == 3 and all(call == ["-s", "host-fixture-serial", "uninstall", "jai.host.fixture"] for call in uninstalls)
+    assert len(uninstalls) == mode_count and all(call == ["-s", "host-fixture-serial", "uninstall", "jai.host.fixture"] for call in uninstalls)
     (output / "host-command-arguments.json").write_text(json.dumps(calls, indent=2) + "\n")
     # Only the runner's generated paths are removed; original fixtures stay intact.
     for directory in ("generated-host-tools", "generated-helper", "generated-invalid-helper", "generated-inner-helper", "generated-sdk-output", "generated-device", "target", "tests"):

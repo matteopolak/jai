@@ -774,7 +774,8 @@
     "artifacts/mac-baseline/workspace-ad575d16.log": "f29e0cc8e3f6fe65459f25b19d6b94c3a3ac55cfe80770cd5c6e4b7bd0ea29b4",
     "artifacts/mac-baseline/catalogue-ad575d16.log": "8ba6e7dfee98474fc53f4b062b60ca3401127ea6bdcde7bb9030b4b1d62bd85d",
     "artifacts/mac-baseline/workspace-7b6e8de9.log": "c4128c694cc8c3486e38e5a53efa835b7f8f17a251940876ff329ca02e2a239c",
-    "artifacts/mac-baseline/workspace-53ecb3d3.log": "114dcfa037a742214b212eff4915de42b5263b74aa0f6d9895397ed29e95e1fc"
+    "artifacts/mac-baseline/workspace-53ecb3d3.log": "114dcfa037a742214b212eff4915de42b5263b74aa0f6d9895397ed29e95e1fc",
+    "artifacts/mac-baseline/catalogue-081ecbff.log": "1c15364276c957ce3c94bf797a0f9db074dc2f23174beb93664b5ec39e9c11f9"
   },
   "timeouts": [],
   "source_changes_during_measurement": false,
@@ -1184,5 +1185,197 @@
     "original_ObjC_interpreter": "pass",
     "rustfmt": "pass",
     "clippy_warnings_denied": "pass"
+  },
+  "second_catalogue": {
+    "snapshot": "081ecbff",
+    "command": "python3 tools/stdlib_runtime.py --jaic <own-root-target>/debug/jaic --jobs 2 --timeout 180 --modes interp,native --opt O0 --verbose",
+    "cases": 415,
+    "exit_code": 1,
+    "counts": {
+      "interp": {
+        "passed": 391,
+        "failed": 13,
+        "unavailable": 6,
+        "compile_time_only": 0,
+        "expected_negative_passed": 5
+      },
+      "native": {
+        "passed": 382,
+        "failed": 12,
+        "unavailable": 6,
+        "compile_time_only": 10,
+        "expected_negative_passed": 5
+      }
+    },
+    "failures": [
+      {
+        "name": "compiler/compiler-typechecked-messages",
+        "mode": "interp",
+        "classification": "interception_fixture_oracle",
+        "diagnostic": "compiler-typechecked-messages.jai:66:21: error: error during compile-time execution: assertion failed: `decl.enclosing_load && decl.enclosing_load.enclosing_import == main_import` is false"
+      },
+      {
+        "name": "compiler/compiler-typechecked-messages",
+        "mode": "native",
+        "classification": "interception_fixture_oracle",
+        "diagnostic": "compiler-typechecked-messages.jai:66:21: error: error during compile-time execution: assertion failed: `decl.enclosing_load && decl.enclosing_load.enclosing_import == main_import` is false"
+      },
+      {
+        "name": "compiler/lang-asm",
+        "mode": "interp",
+        "classification": "architecture_specific_assembly_fixture",
+        "diagnostic": "lang-asm.jai:601:9: error: pause requires an x86-64 target"
+      },
+      {
+        "name": "compiler/lang-asm",
+        "mode": "native",
+        "classification": "architecture_specific_assembly_fixture",
+        "diagnostic": "lang-asm.jai:601:9: error: pause requires an x86-64 target"
+      },
+      {
+        "name": "compiler/rules-prelude-and-runtime-support",
+        "mode": "interp",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "rules-prelude-and-runtime-support.jai:23:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/rules-prelude-and-runtime-support",
+        "mode": "native",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "rules-prelude-and-runtime-support.jai:23:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/rules-simd-asm",
+        "mode": "interp",
+        "classification": "architecture_specific_assembly_fixture",
+        "diagnostic": "rules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target"
+      },
+      {
+        "name": "compiler/rules-simd-asm",
+        "mode": "native",
+        "classification": "architecture_specific_assembly_fixture",
+        "diagnostic": "rules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target"
+      },
+      {
+        "name": "compiler/runtime-support-output",
+        "mode": "interp",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "runtime-support-output.jai:1:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/runtime-support-output",
+        "mode": "native",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "runtime-support-output.jai:1:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/runtime-support-source",
+        "mode": "interp",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "runtime-support-source.jai:2:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/runtime-support-source",
+        "mode": "native",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "runtime-support-source.jai:2:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "graphics/getrect-simp-gl-frame",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "getrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`"
+      },
+      {
+        "name": "graphics/getrect-simp-gl-frame",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "getrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`"
+      },
+      {
+        "name": "graphics/getrect-widgets-driven",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "getrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`"
+      },
+      {
+        "name": "graphics/getrect-widgets-driven",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "getrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`"
+      },
+      {
+        "name": "graphics/input-multi-window-focus",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-multi-window-focus",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-published-events",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-published-events",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-temporary-allocator",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-temporary-allocator",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/simp-gl-render-readback",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "simp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`"
+      },
+      {
+        "name": "graphics/simp-gl-render-readback",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "simp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`"
+      },
+      {
+        "name": "Extensions/Json/tests/numbers",
+        "mode": "interp",
+        "classification": "interpreter_performance_timeout",
+        "diagnostic": "timed out after 180s"
+      }
+    ],
+    "timeouts": [
+      {
+        "name": "Extensions/Json/tests/numbers",
+        "mode": "interp",
+        "timeout_seconds": 180,
+        "elapsed_seconds": null,
+        "runtime_lower_bound_seconds": 180,
+        "note": "runner discarded measured elapsed; no exact runtime fabricated"
+      }
+    ]
+  },
+  "android_host_followup": {
+    "commands": 94,
+    "passed": 94,
+    "failed": 0,
+    "native_optimization": "O0",
+    "source_targets": 5,
+    "real_SDK_or_device_success_claimed": false
   }
 }
