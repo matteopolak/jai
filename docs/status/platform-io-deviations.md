@@ -1,5 +1,36 @@
 # Platform I/O deviations and pending verification
 
+## cc07c00 follow-up (supersedes older verification/gap statements below)
+
+- Filtered CI confirms actual x64/ARM64 Platform I/O interpreter/native O0/O2 step
+  passes at cc07c00. Full jobs still fail; new argv/strict-SDK regression behavior
+  is not yet natively verified. No blanket native-support claim is made from a
+  cross-build or this passing subset.
+- Removed an avoidable compiler workaround: its CommandLineToArgvW interception
+  fabricated NULL for omitted argv. This broke strict production startup. The
+  adapter now supplies the virtual executable name when no vector was supplied
+  and delegates parsing/allocation/errors to Shell32. Explicit caller vectors are
+  preserved. Runtime WC_ERR_INVALID_CHARS, failure checks, cleanup and context
+  initialization remain unchanged. No new conversion fallback is introduced.
+- The previous interpreter suspended-thread/event gap is no longer present in the
+  current independent compiler producer: it has _beginthreadex/ResumeThread and
+  real event backing. cc07c00's Platform step is positive execution evidence, but
+  no separate pending fixture result is inferred from the filtered step summary.
+  Locally staged producer sources remain independent integration inputs; the next
+  candidate must include the minimal argv patch in the current producer compiler.
+- ARM64 default crash policy remains unresolved and is a real failure, not a
+  supported platform exclusion. Public Build_Options defaults ON/AUTO are retained;
+  the current serializer has no default-versus-explicit provenance. An original
+  default-option example reproduces the error and is retained in documentation
+  and durable logs. Moving that pending example out of the positive .jai fixture
+  inventory does not remove any corpus test or bless its failure: the full-matrix
+  blocker stays open pending narrow review, then a proper policy regression/fix.
+- The no-argument SDK hook is host-independent Rust tested; native UTF-16 parser,
+  strict conversion and cleanup must still be exercised on both Windows CPUs.
+  The SDK-negative fixture uses real API failures (unpaired surrogates and short
+  buffers), not emulated success or reduced checking. Existing Windows command-line
+  cache/allocation lifetime policy is unchanged by this fix.
+
 ## Refreshed-contract changes (supersede corresponding historical items below)
 
 - Windows Process record ambiguity is resolved by the refreshed reviewed spec.
