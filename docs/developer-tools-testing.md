@@ -1,5 +1,13 @@
 # Developer tooling contract tests
 
+Run `python3 tools/check_generator_platform.py` for the seven assigned platform
+helper names (both libclang-discovery overloads), original Mach-O/ELF/COFF/archive
+symbols, live native-library effects, malformed inputs, independent owned arrays,
+temporary-file cleanup and diagnostic-path preservation. Interpreter/Mac O0/O2,
+six desktop source checks, actual formatting and integrated strict lint pass.
+See [platform policy and gaps](generator-platform.md); the combined suite still
+stops at the independently reproduced bindings-macros diagnostic mismatch.
+
 These fixtures were independently authored in this clean worktree from reviewed module specifications, NEW public producer APIs and official C/OS SDK contracts. They are not inherited replaced-stdlib tests and do not use corpus/vendor source, reference binaries, transcripts or another Jai implementation. Their presence is not evidence of full module coverage. Separate coordinator/spec-reviewer review remains pending; this document supplies the provenance and remaining gaps for that review.
 
 Run `python3 tools/check_developer_cpp_custom.py` for original overloaded functions, repeated prototypes, renamed POD fields/reference identity, both argument callback modes, omissions and destination-preserving duplicate-name failures. Emitters execute interpreter/native Mac O0/O2; adapters compile using configured LLVM C++ O0/O2 and real consumers execute interpreter/native modes. Existing C visitor/type/macro regressions exercise the changed model. Generated Jai passes formatting and warnings-denied lint. The standard focused suite invokes this workflow; this is not combined Mac or complete public helper coverage.

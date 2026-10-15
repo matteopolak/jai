@@ -1,0 +1,32 @@
+{
+  "scope": "original objects; official SDK symbol tables; host interpreter/native O0/O2",
+  "objects": {
+    "macho.o": {
+      "sha256": "85808815a2da1afe20a7cbab61ec2f06d7c2e4dc629bd8f73e3f3ac291a06bef",
+      "oracle_sha256": "579a6b593487ec368f3d78a2583838b2f1fb4844a9fb870f3cc17747391c1896"
+    },
+    "macho-o2.o": {
+      "sha256": "272b97d968eeb8159a3b49c3fdbe96292545c4750d89f5ba3e06eb345b8ab83e",
+      "oracle_sha256": "e4bb629549e4daceb9ff2a422dc20039062f245c2a5c6c7e8c41757e10ef0efe"
+    },
+    "elf.o": {
+      "sha256": "426f39106b0bde50e93f19d670cb76539ade7edabbb1ccbe99af635b0a947d14",
+      "oracle_sha256": "3b792f80bf28e3facbf0b5bd8765344134bd3576668287cf6f2f309bb54d0f5a"
+    },
+    "coff.o": {
+      "sha256": "a070e32dfa169cd459ae358bd847551896ce8a480d6447c6b7189da95fe8de75",
+      "oracle_sha256": "e5aa34a47c379adce82150033ca09eedb72351804afc246f3529fa172e3dd61d"
+    }
+  },
+  "sdk": "Homebrew clang version 23.1.2",
+  "executed": [
+    "interpreter",
+    "Mac native O0",
+    "Mac native O2"
+  ],
+  "source_checked_only": [
+    "Linux x64/arm64",
+    "Windows x64/arm64",
+    "Mac x64"
+  ]
+}

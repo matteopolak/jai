@@ -4,6 +4,16 @@ Role: developer-tools. Scope is the ten modules in implementation-ownership.md. 
 
 ## Supported implementation and evidence
 
+- **Generator platform worker checkpoint:** seven assigned names/eight overloads
+  execute real installed-libclang discovery, original object/archive symbol queries,
+  native loading/lookup and foreign-name/pointer predicates. Interpreter/native Mac
+  O0/O2, six desktop source checks, formatting and warnings-denied lint pass. The
+  native shim compiles against official MinGW x64 headers. Canonical generator/cache
+  dependencies and libc path meanings leave three names pending in the matrix.
+  [Policies, evidence and exact limits](../generator-platform.md). Full combined Mac
+  tests stop at an independent bindings-macros.jai:43 diagnostic mismatch, reproduced
+  with this facade unloaded; no combined-green or Windows-execution claim is made.
+
 - **Debug public POSIX lifecycle checkpoint:** init, enable/disable and OS enable/disable now install and restore all five reviewed signal actions. Repeated calls preserve prior handler identity, flags and masks. Init replaces only the canonical default runtime assertion callback; custom callbacks survive repeated init. no_assert, print_assert and trace_assert execute normal diagnostic helpers; a genuine installed assertion failure exits Assert3. Canonical Assert_Response and crash_handler storage are present. Interpreter/native Mac O0/O2 lifecycle/diagnostics and native O0/O2 real signal callbacks pass; changed Jai passes source-built formatting and warnings-denied lint. Fatal callbacks get a real borrowed fault-PC row, not an allocated/symbolized full stack. Linux has source evidence only; Windows lifecycle/assertion paths remain pending. set_report_mode stores a separate flag, with graphics integration still missing. The full remaining matrix deliberately keeps these names pending for unimplemented target/graphics variants, while recording host evidence. This is not a completed Debug module or combined Mac result.
 
 - **Customized C++ public workflow:** real declaration visitors run before name-collision validation. Canonical repeated prototypes collapse while distinct overloads retain native cursor signatures and manglings. Callback-selected names and argument order generate matching Jai/C++ adapters with original typed overload selection, POD leading-out returns and reference storage identity. Targeted interpreter/native Mac O0/O2, configured C++ O0/O2 and C callback/macro regressions passed. Generated and changed Jai pass actual formatter/linter checks. Unsupported callback type conversions, namespace/method/template wrappers and printf adapters remain open. The standard runner invokes the new targeted workflow. No new public helper name or module is counted complete.
