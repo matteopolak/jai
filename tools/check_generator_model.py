@@ -23,6 +23,8 @@ OWNED = [
     "stdlib/internal/developer-tools/generator-canonical-construction.jai",
     "stdlib/internal/developer-tools/generator-model-lookup.jai",
     "stdlib/internal/developer-tools/generator-special-construction.jai",
+    "stdlib/internal/developer-tools/generator-aggregate-construction.jai",
+    "stdlib/internal/developer-tools/generator-template-construction.jai",
     "stdlib/internal/developer-tools/binding-native-model.jai",
     "tests/developer-tools/generator-model-helpers.jai",
     "tests/developer-tools/generator-model-native.jai",
@@ -31,12 +33,17 @@ OWNED = [
     "tests/developer-tools/generator-model-construction.jai",
     "tests/developer-tools/generator-model-objc.jai",
     "tests/developer-tools/generator-model-macros.jai",
+    "tests/developer-tools/generator-model-cpp.jai",
+    "tests/developer-tools/generator-model-typedefs.jai",
+    "tests/developer-tools/generator-model-aggregates.jai",
+    "tests/developer-tools/generator-model-record-edges.jai",
+    "tests/developer-tools/generator-model-templates.jai",
 ]
 FIXTURES = [
     "generator-model-helpers", "generator-model-native",
     "generator-model-session", "generator-model-tokens",
     "generator-model-construction",
-    "generator-model-objc", "generator-model-macros", "bindings-macros",
+    "generator-model-objc", "generator-model-macros", "generator-model-cpp", "generator-model-typedefs", "generator-model-aggregates", "generator-model-record-edges", "generator-model-templates", "bindings-macros",
     "bindings-tree", "bindings-equivalence",
 ]
 evidence = []
@@ -68,6 +75,19 @@ def main():
         oracle.write_text(layout)
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", oracle])
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", oracle])
+        template_layout = None
+        for optimization in [0, 2]:
+            probe = TARGET / f"generator-model-template-layout-O{optimization}"
+            run([prefix / "bin/clang++", "-std=c++17", "-Wall", "-Wextra", "-Werror",
+                 f"-O{optimization}", ROOT / "tests/developer-tools/generator-model-template-layout.cpp", "-o", probe])
+            output = run([probe])
+            if template_layout is not None and output != template_layout:
+                raise RuntimeError("Original SDK template layout oracle differs between O0/O2")
+            template_layout = output
+        template_oracle = TARGET / "generator-model-template-layout-oracle.jai"
+        template_oracle.write_text(template_layout)
+        run([TARGET / "jaifmt", "--config", "jaifmt.toml", template_oracle])
+        run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", template_oracle])
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", *OWNED])
         run([TARGET / "debug/jailint", "-D", "warnings", *OWNED])
         for os_name in ["windows", "linux"]:
