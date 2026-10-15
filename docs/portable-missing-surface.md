@@ -13,7 +13,7 @@ or legacy test expectations are inventory inputs.
 
 ### Android/Toolchain
 
-JNI/OID/JKS constants/SHA, ASN.1 primitive/cursor/value/diagnostic/X509 APIs, ZIP wire/CRC/unit helpers, manifest flags, Java launcher and reviewed ADB discovery/server/quoting/storage/cache operations have independent behavior tests. Real SDK/device and Windows Process integration remain pending. Archive writer/APK, install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
+JNI/OID/JKS constants/SHA, ASN.1 primitives/diagnostics/X509, ZIP32 records/writer/CRC/offset/unit helpers, APK whole-file views/iteration, manifest flags, Java launcher and reviewed ADB operations have independent behavior tests. Deflate uses real stored blocks (size tradeoff). Real SDK/device and Windows Process integration remain pending. Install recovery, higher-level build/signing/manifest and remaining helpers are missing; marker-only APK is not claimed signature-valid.
 
 Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 
@@ -23,9 +23,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `__no_gradle_build_be_verbose := false` | All reviewed hosts |
 | `adb_install :: (apk_path: string, reinstall_keeping_data := false, allow_test_apk := false, allow_version_code_downgrade := false, uninstall_and_retry_on_key_mismatch := true, log_errors := true) -> bool` | All reviewed hosts |
 | `Algorithm_Id :: enum u32` | All reviewed hosts |
-| `Android_Apk :: struct` | All reviewed hosts |
-| `Android_Apk_Entry :: struct` | All reviewed hosts |
-| `ANDROID_APK_SIGNING_BLOCK_MAGIC :: "APK Sig Block 42"` | All reviewed hosts |
 | `android_build_and_install_loader_app :: (project_config: Android_Project_Config, build_options: Build_Options, android_build_options: Android_Build_Options)` | All reviewed hosts |
 | `Android_Build_Options :: struct` | All reviewed hosts |
 | `android_build_or_update_dynamic_loader :: (project_config: Android_Project_Config, build_options: Build_Options, android_build_options: Android_Build_Options, force_rebuild_loader := false) -> bool` | All reviewed hosts |
@@ -61,9 +58,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `android_theme_to_string :: (theme: Android_Default_Theme) -> string` | All reviewed hosts |
 | `ANDROID_XML_SCHEMA :: "http://schemas.android.com/apk/res/android"` | All reviewed hosts |
 | `apk_compute_digest_libressl :: (apk: Android_Apk, algorithm: Digest_Hash_Algorithm) -> [SHA256_DIGEST_LENGTH] u8` | All reviewed hosts |
-| `apk_deinit :: (apk: *Android_Apk)` | All reviewed hosts |
-| `apk_load :: (filepath: string) -> Android_Apk` | All reviewed hosts |
-| `apk_print_sections :: (apk: Android_Apk)` | All reviewed hosts |
 | `apk_read_signing_block_v2 :: (s: *string) -> bool, Apk_Signing_Block_V2` | All reviewed hosts |
 | `apk_sign :: (unsigned_apk_filepath: string, keystore_filepath: string, keystore_password := "password") -> bool, string` | All reviewed hosts |
 | `apk_sign2 :: (unsigned_apk_filepath: string, private_key_info: string, certificate: string) -> bool, string` | All reviewed hosts |
@@ -82,7 +76,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `fh2 :: #bake_arguments formatInt(minimum_digits = 2, base = 16)` | All reviewed hosts |
 | `fh4 :: #bake_arguments formatInt(minimum_digits = 4, base = 16)` | All reviewed hosts |
 | `fh8 :: #bake_arguments formatInt(minimum_digits = 8, base = 16)` | All reviewed hosts |
-| `for_expansion :: (apk: Android_Apk, body: Code, flags: For_Flags) #expand` | All reviewed hosts |
 | `generate_android_project :: (using config: Android_Project_Config, recreate_existing_files := true) -> bool` | All reviewed hosts |
 | `get_android_target_triple :: (cpu: CPU_Tag) -> triple: string, triple_with_sdk: string` | All reviewed hosts |
 | `get_ndk_libc_paths :: (cpu: CPU_Tag) -> libc_path: string, libc_platform_path: string` | All reviewed hosts |
@@ -168,7 +161,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 109 missing reviewed declaration/overload/nested-operation rows
+Total: 102 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

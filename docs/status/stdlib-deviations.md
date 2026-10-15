@@ -1,5 +1,14 @@
 # Portable stdlib worker deviations
 
+APK safety scope: loader/iterator explicitly check sizes, leading/trailing signing
+block lengths, signatures and bounds rather than reproduce unsafe unchecked reads.
+Malformed files assert; no recoverable success or valid-signature claim. Fixtures
+include a deliberately unsigned marker-only block, and is_signed remains marker
+semantics. Native Windows/Linux/Android, real device and cryptographic signing/
+verification are separate pending work. No lint/assertion exclusions in positive
+APK scope; POINTER fixture is a required negative compilation gate. Public ZIP
+enum order now matches reviewed declaration order, preserving reflected order.
+
 ZIP writer deflate tradeoff: internal/archive/android-zip-writer.jai emits real
 raw DEFLATE stored blocks rather than LZ/Huffman matches. Independent zlib reads
 empty/single/multiple-block output correctly, but payloads grow by5 bytes/block.

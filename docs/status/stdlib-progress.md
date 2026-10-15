@@ -1,5 +1,15 @@
 # Portable stdlib progress
 
+APK batch completed7 public entries: canonical whole-file/entry records, loader,
+deinit, value/reverse iterator, section reporting and immutable signing marker.
+Six interpreter/native Mac O0/O2 real-file runs, nine malformed/missing failures,
+POINTER compile rejection, format/--check and strict lint pass. Independent Python
+ZIP reads validate fixture contents/CRCs before Jai tests. No marker-to-signature
+validity inference. Evidence target/apk-workflow.log; docs/portable-apk.md.
+Inventory102 missing rows; root ledger updated for completed modules/workflow and
+remaining Check/Compiler dependency. Prior writer enum declaration order restored
+to reviewed order (explicit values unchanged), retaining reflected public order.
+
 ZIP writer completed11 public entries: exact canonical30/46/22 records/defaults,
 writer layout/lifecycle/temp storage/borrowed names, CRC/dummy CRC, file/memory
 stored or real raw-DEFLATE blocks, local4096 padding and central/end emission.
