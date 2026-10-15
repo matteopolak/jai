@@ -52,6 +52,14 @@ The complete -no_check behavior gate reruns successfully; the strict lint stage
 still fails exclusively on the missing Check factory. No test expectation was
 weakened or compiler/module exception introduced.
 
+Ownership replay correction: shutdown previously freed the plugin array by value
+without clearing the public descriptor. The new build-twice fixture first failed
+after shutdown because it retained freed storage (target/default-build-twice-red.log).
+Cleanup now uses reviewed Basic.array_reset, so each actual build finishes with
+an empty descriptor and a second workspace/plugin lifecycle runs safely. The full
+no_check workflow/replay passes; full strict lint still has only the Check factory
+dependency. No lifecycle registry, caller patch or new public API is introduced.
+
 Public Example_Plugin is now implemented, including canonical My_Plugin, initial
 some_state=0 / init=33, repeated option/value parsing, all lifecycle callbacks,
 phase/typecheck/completion reporting and allocation ownership through shutdown.

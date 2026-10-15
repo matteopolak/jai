@@ -91,6 +91,10 @@ def main():
     for optimization in ["-O0", "-O2"]:
         assert build([*common, *flags, *plugin_args], optimization=optimization) == callbacks
         assert run([str(target)]) == "target ok\n"
+    replay = run([compiler, str(CASE / "build-twice.jai"), "-", *common,
+                  "+Workflow_Probe", "value"])
+    single = "init A 1\nprepare A\nsource A\ncomplete A\nfinish A\nshutdown A\n"
+    assert replay == single * 2
     build([*common, "-context_size", "invalid"], contains="Ignoring invalid context size")
     for alias in ["-release", "-release_debug"]:
         warning = build([*common, alias])
@@ -103,7 +107,7 @@ def main():
                     str(library / "Default_Metaprogram"),
                     *[str(library / "internal/build" / name) for name in
                       ["default-options.jai", "default-workspace.jai", "default-plugins.jai"]],
-                    *[str(CASE / name) for name in ["paths.jai", "build.jai", "target.jai", "import-target.jai"]],
+                    *[str(CASE / name) for name in ["paths.jai", "build.jai", "build-twice.jai", "target.jai", "import-target.jai"]],
                     str(CASE / "modules/Workflow_Probe/module.jai")], env=env, cwd=ROOT, check=True)
 
 

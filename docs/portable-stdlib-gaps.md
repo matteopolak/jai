@@ -129,10 +129,11 @@ and is rejected explicitly; supported fallback tests are not counted as X64
 heap coverage. The fallback's unsafe_reset is the explicitly specified no-op;
 it exports neither the optimized allocator value nor heap/statistics names.
 
-Protocol_For_Memory_Visualization's compare_alloc_and_free_traces signature does
-not establish equality versus ordering semantics. It is withheld, rather than
-inferred from its name. The packet layouts, tags and version/channel constants
-are implemented and tested independently of any transport/receiver.
+Protocol_For_Memory_Visualization's comparator question is resolved by the
+filtered2026-10-15 reviewed equality contract. Both opaque trace identifiers must
+match. Actual implementation and2401 symmetric pairs, #run/interpreter/native
+O0/O2/layout/source/strict-lint evidence are recorded in portable-memory-protocol.md.
+Transport/receiver and native other-OS integration remain separate gates.
 
 Xar returns null on backing allocation failure without changing count, and
 captures the allocator before the first attempt. The exact allocation-failure

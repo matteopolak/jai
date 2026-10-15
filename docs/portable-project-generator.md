@@ -11,10 +11,11 @@ emission live under internal/build. Use real Compiler/File/System/Sort APIs.
 - [x] Implement real workspace interception/build and completion defaults.
 - [x] Emit solution/project/filters/user files with escaped data, deterministic
   identifiers, normalized sorted paths and byte-identical file retention.
-- [ ] Verify direct public collection in interpreter/native O0/O2; real compiler
+- [x] Verify direct public collection in interpreter/native O0/O2; real compiler
   target generation and artifact contents, defaults/persistence, deduplication,
-  escaping and unchanged file mtimes. Format and strictly lint owned files.
-- [ ] Update inventory, deviations, README and progress; commit cohesive behavior.
+  escaping and unchanged file mtimes. Owned formatting/--check pass.
+- [ ] Full strict lint: blocked by general executable-path SDK call in SandboxHost.
+- [x] Update inventory, deviations, README and progress; commit cohesive behavior.
 
 Windows Visual Studio execution is a later native platform gate. Mac tests must
 write real files and run real compiler targets, not count declarations as behavior.

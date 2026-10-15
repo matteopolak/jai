@@ -1,5 +1,10 @@
 # Portable stdlib worker deviations
 
+Default plugin-array ownership correction removes a dangling public descriptor
+after shutdown by using Basic.array_reset. Actual repeated workspace/plugin builds
+verify cleanup, retaining callbacks and error behavior. No caller patch, lifecycle
+registry, public layout change or skipped assertion; full lint dependency unchanged.
+
 Memory protocol comparator review scope: no workaround, reduced semantics,
 allocation/dereference, disabled assertion or lint exclusion remains. Both opaque
 pointer identifiers are compared exactly. Compile-time/interpreter/native O0/O2

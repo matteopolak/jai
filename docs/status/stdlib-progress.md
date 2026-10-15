@@ -1,5 +1,13 @@
 # Portable stdlib progress
 
+Default build ownership replay fixed: shutdown used by-value array_free, leaving
+the public plugin descriptor pointing at freed allocation. New public build-twice
+fixture reproduced stale count/data; cleanup now uses Basic.array_reset. Two real
+target/plugin lifecycles run in one module, descriptor cleared after each. Focused
+workflow/replay passes, format/--check passes; strict lint still explicitly fails
+only missing Check.get_plugin. Evidence target/default-build-twice-red.log and
+default-metaprogram-workflow.log. No caller/address tracking workaround.
+
 Coordinator14:34 request completed: public compare_alloc_and_free_traces compares
 both opaque pointer identities, preserving exact signature/canonical type and
 never dereferencing.2401 symmetric pairs inclnull/highbits pass #run/interpreter/
