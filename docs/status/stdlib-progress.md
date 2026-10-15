@@ -1,5 +1,11 @@
 # Portable stdlib progress
 
+Platform-io e223538 review: six O0 mismatches were genuine Jai guard interception,
+two O2 mismatches stale export-alias symbol expectations. Added independent C
+PAGE_NOACCESS fault helper and separate retained O0 guard cases without changing
+production guards. Six parser tests and 50-file format/strict four-target lint
+pass; new native SEH matrix still awaits both-CPU CI. See platform progress.
+
 Platform-io checkpoints: 2cdbd9b cleanup/diagnostic gates; 7eb81e8 generic Windows
 unwind metadata and bounded iterator. Separate Windows wait-error safety mapping
 and exact SDK-negative logging assertions are added; new native confirmation and

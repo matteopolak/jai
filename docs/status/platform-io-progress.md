@@ -1,5 +1,17 @@
 # Platform I/O worker progress
 
+## e223538 fault-oracle correction (native rerun pending)
+
+Filtered exact bytes classify six O0 failures as correctly intercepted Jai
+near-null writes, two O2 failures as stale PE-alias expectations despite actual
+resolved declared caller names. No production guard/handler was weakened.
+Original guarded write is a separate three-policy O0 regression. Real SEH
+fixtures use a source-built C PAGE_NOACCESS-store helper and exact declared-name
+frame matching. Formatter/check and four-target strict lint pass all 50 files;
+six protocol units pass. Native Windows execution of this changed matrix is
+pending. Original evidence and earlier ARM64 positives remain intact. See
+[classification and test design](../platform-io-e223538-fault-oracles.md).
+
 Unwind/iterator checkpoint: `7eb81e8` (following cleanup/diagnostics `2cdbd9b`).
 A separate Windows completion safety fix maps only WAIT_OBJECT_0 to done; failures
 log/return false. Its scoped SDK-negative check restores logging before the

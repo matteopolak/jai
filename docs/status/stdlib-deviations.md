@@ -1,5 +1,11 @@
 # Portable stdlib worker deviations
 
+Platform-io hardware-fault fixtures now depend on an original SDK C DLL because
+Jai near-null stores are correctly guarded at O0. Separate O0 guard coverage is
+retained; O2 guard emission and new native matrix passes are not claimed. Frame
+oracles require actual declared names rather than stale PE aliases. See the
+[fault-oracle review](../platform-io-e223538-fault-oracles.md) and platform deviations.
+
 Platform-io's scoped SDK-negative thread wait/logger assertion preserves all
 named-thread output checks; it is not a blanket suppression. New Windows execution
 is pending and the interpreter handle/name interoperability gap remains explicit.

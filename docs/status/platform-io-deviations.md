@@ -1,5 +1,19 @@
 # Platform I/O deviations and pending verification
 
+## e223538 test corrections, not production fixes
+
+The former address-1 Jai hardware-fault assumption is invalid at O0 because the
+new compiler guard correctly exits before SEH. The store remains in a separate
+O0 safety test, not disabled. O2 guard emission is not claimed. Hardware-fault
+tests now require a real source-built SDK DLL with PAGE_NOACCESS storage; all
+allocation/return errors fail the test. OS crash teardown reclaims its one-page
+allocation; separate lifecycle probes retain handler/symbol/handle cleanup gates.
+Exact declared frame names replace stale export-alias expectations; neither
+production symbol fabrication nor diagnostic relaxation is used. DLL loading,
+actual exception, unwind and cleanup on this new matrix require next native CI
+on both CPUs. Local formatter/strict lint and protocol tests are not substitutes.
+Details: [fault-oracle review](../platform-io-e223538-fault-oracles.md).
+
 Windows thread completion no longer treats WAIT_FAILED as success. The added
 real SDK negative case captures only its expected error, asserts exact message/
 flag/count, and restores the logger/data before named-thread creation. This is
