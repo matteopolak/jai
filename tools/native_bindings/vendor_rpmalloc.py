@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 import subprocess
 from config import RPMALLOC_SDK_BUILD_OPTIONS
+from rpmalloc_heap_facade import public_c_header, layout_probes
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'stdlib/internal/bindings/rpmalloc-sdk'
@@ -163,6 +164,16 @@ def storage_outputs(vendor, functions, work, formatter):
     probe = '// Generated native ABI probe from complete pinned official C source.\n'
     probe += ''.join('#define '+name+' binding_storage_probe_'+name+'\n' for name in sorted(source_exports[1]))
     probe += '#include "rpmalloc.c"\n'
+    probe += 'long long binding_rpmalloc_native_heap_counter(void* pointer,unsigned family,unsigned index,unsigned field) { heap_t* heap=pointer;\n'
+    for family,(name,member,limit) in enumerate((('span_use_t','span_use','LARGE_CLASS_COUNT'),('size_class_use_t','size_class_use','SIZE_CLASS_COUNT+1'))):
+        probe += 'if(family=='+str(family)+' && index<('+limit+')) { switch(field) {\n'
+        for i,(_,field,_) in enumerate(chosen[name][1]):
+            expression = 'heap->'+member+'[index].'+field
+            if field not in ('high','alloc_peak','spans_peak','unused'):
+                expression = 'atomic_load32(&'+expression+')'
+            probe += 'case '+str(i)+':return '+expression+';\n'
+        probe += '} }\n'
+    probe += 'abort(); }\n'
     probe += ''.join('#undef '+name+'\n' for name in sorted(source_exports[1]))
     probe += '#include <stddef.h>\n'
     checks = [row for name in STORAGE_RECORDS for row in chosen[name][1]]
@@ -338,6 +349,13 @@ def main():
         'no_statistics': dict(options=dict(RPMALLOC_SDK_BUILD_OPTIONS, ENABLE_STATISTICS=0),
                               symbol_prefix='binding_rpmalloc_nostats_')}
     outputs[OUT/'provenance.json'] = json.dumps(provenance,indent=2,sort_keys=True)+'\n'
+    outputs[ROOT/'stdlib/internal/bindings/rpmalloc-heaps/public-layout.h'] = public_c_header(
+        (ROOT/'docs/specs/stdlib/modules/rpmalloc.md').read_text())
+    probe, jai_checks = layout_probes((ROOT/'docs/specs/stdlib/modules/rpmalloc.md').read_text())
+    outputs[ROOT/'stdlib/internal/bindings/rpmalloc-heaps/layout-probes.inc'] = probe
+    temporary.write_text(jai_checks)
+    run([args.formatter.resolve(),'--config',ROOT/'jaifmt.toml',temporary])
+    outputs[ROOT/'tests/native-bindings/generated/rpmalloc-heap-facade-layout.jai'] = temporary.read_text()
     for path, data in outputs.items():
         if args.check:
             if not path.exists() or path.read_text() != data:

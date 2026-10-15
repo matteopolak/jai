@@ -573,6 +573,18 @@ def main():
                                                     for p in sorted((ROOT/'stdlib/internal/bindings/callback-context').iterdir()) if p.is_file()},
                         'tests':['tests/native-bindings/rpmalloc-public-callbacks.jai',
                                  'tests/native-bindings/rpmalloc-public-configurable.jai']})
+                heap_backend = ROOT/'stdlib/internal/bindings/rpmalloc-heaps'
+                if heap_backend.exists():
+                    all_ledger[module]['supplemental_backends'].append({
+                        'module':'internal/bindings/rpmalloc-heaps',
+                        'status':'partial_public_canonical_heap_adapter',
+                        'artifacts':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()
+                                     for p in sorted(heap_backend.iterdir()) if p.is_file()},
+                        'scope':'Canonical reviewed records, private typed native ownership, all real SDK counters, defined span graph and unmap-driven retirement; both statistics profiles',
+                        'limitations':'Only reviewed live/quiescent field observations; other native options and raw first-class heap profile remain incomplete; metadata OOM is fail-fast',
+                        'tests':['tests/native-bindings/rpmalloc-public-heaps.jai',
+                                 'tests/native-bindings/rpmalloc-public-heap-lifecycle.jai',
+                                 'tests/native-bindings/rpmalloc-heap-marshalling.jai']})
         if module == 'Objective_C':
             appkit = ROOT/'stdlib/Objective_C/AppKit/module.jai'
             if appkit.exists():

@@ -2,8 +2,14 @@
 
 `internal/bindings/rpmalloc-sdk` is a complete private binding to the pinned
 official C SDK. It is not either public Jai allocator implementation. The
-public module still has 34 unresolved and 46 partially implemented declarations; configuration
+public module still has 23 unresolved and 57 partially implemented declarations; configuration
 failures remain active. No public callback/config/heap record is cast to C.
+
+Production SDK compilation now uses `rpmalloc-heaps/bridge.c`, which includes
+the unchanged pinned official SDK source and adds canonical record ownership,
+atomic field marshalling, real deferred-free routing and unmap-driven retirement.
+The original 35 native SDK functions and storage ABI remain unchanged. Public
+and private evidence are distinguished in the canonical heap design document.
 
 The private STATISTICS module parameter selects separately compiled enabled
 and disabled SDK libraries. Disabled exports use the generated
