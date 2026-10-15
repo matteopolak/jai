@@ -2,6 +2,8 @@
 """Check the foundations cases against explicitly selected clean-room source builds."""
 import argparse
 import os
+import re
+import sys
 from pathlib import Path
 import subprocess
 
@@ -16,7 +18,27 @@ CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "
          "basic-helpers", "basic-print-bytes", "basic-stack-traces", "basic-stack-output",
          "basic-scalars-ownership", "basic-leak-reports", "basic-leak-graphs",
          "basic-visualization-disabled", "basic-visualization-channel", "basic-visualization-timing",
-         "basic-capabilities", "basic-preamble", "basic-array-aliasing", "basic-leak-filters", "string-reviewed-contracts")
+         "basic-capabilities", "basic-preamble", "basic-array-aliasing", "basic-leak-filters", "string-reviewed-contracts", "basic-wide-conversions", "hash-scalar-fnv")
+
+
+def check_division_output(output):
+    lines = output.splitlines()
+    if len(lines) != 19 or lines[-1] != "ok":
+        raise RuntimeError(f"division exercise did not print its 18 samples: {output}")
+    samples = []
+    for line in lines[:-1]:
+        match = re.fullmatch(r"(\d+):(\d+) / (\d+) = (\d+) remainder (\d+)", line)
+        if not match:
+            raise RuntimeError(f"invalid division diagnostic: {line}")
+        high, low, divisor, quotient, remainder = map(int, match.groups())
+        dividend = (high << 64) | low
+        if divmod(dividend, divisor) != (quotient, remainder):
+            raise RuntimeError(f"incorrect division diagnostic: {line}")
+        samples.append((high, low, divisor))
+    if samples[:5] != samples[5:10] or samples[:5] != samples[13:18]:
+        raise RuntimeError("deterministic divisions must run for every exercise call")
+    if samples[10:13] != [(0, 23, 3), (0, 7, 1), (0, 0, (1 << 64) - 1)]:
+        raise RuntimeError("random exercise did not consume its three callback operands per iteration")
 
 
 def expected_output(name):
@@ -47,6 +69,8 @@ def owned_sources():
     paths.extend(path for path in (ROOT / "stdlib/internal/files").glob("*.jai") if path.name != "file.jai")
     paths.extend(ROOT / f"tests/portable-stdlib/{name}.jai" for name in CASES)
     paths.extend((ROOT / "tests/portable-stdlib/negative").glob("format-*.jai"))
+    paths.extend((ROOT / "tests/portable-stdlib/negative").glob("wide-to-*.jai"))
+    paths.append(ROOT / "tests/portable-stdlib/basic-division-exercise.jai")
     paths.append(ROOT / "tests/portable-stdlib/negative/builder-ensured-range.jai")
     paths.append(ROOT / "tests/portable-stdlib/negative/stack-trace-cycle.jai")
     paths.append(ROOT / "tests/portable-stdlib/negative/basic-scalar-bool.jai")
@@ -75,6 +99,7 @@ def main():
     parser.add_argument("--jailint", type=Path, help="linter built from the selected independent compiler sources")
     parser.add_argument("--cross", action="store_true")
     parser.add_argument("--wasm", action="store_true", help="execute supported cases under Node WASI at O0/O2")
+    parser.add_argument("--x64-target", default={"darwin": "x86_64-apple-darwin", "linux": "x86_64-unknown-linux-gnu", "win32": "x86_64-pc-windows-msvc"}.get(sys.platform), help="executable native x64 target for the CPU-conditional division diagnostic")
     args = parser.parse_args()
     compiler = args.jaic.resolve(strict=True)
     if not compiler.is_relative_to(ROOT / "target"):
@@ -155,6 +180,29 @@ def main():
         if rejected.returncode != 1 or diagnostic not in rejected.stderr:
             raise RuntimeError(f"expected contract rejection {name}: {rejected}")
     print("passed unsupported-hash and facade-visibility rejection checks", flush=True)
+    for source in sorted((ROOT / "tests/portable-stdlib/negative").glob("wide-to-*.jai")):
+        diagnostic = "to_s128 requires" if source.name.startswith("wide-to-s128-") else "to_u128 requires"
+        rejected = subprocess.run([compiler, "-check", source], cwd=ROOT, env=env,
+                                  capture_output=True, text=True, timeout=60)
+        if rejected.returncode != 1 or "#modify rejected" not in rejected.stderr or diagnostic not in rejected.stderr:
+            raise RuntimeError(f"expected wide conversion guard rejection: {source}\n{rejected.stderr}")
+    print("passed all 13 wide-conversion admissibility rejection checks", flush=True)
+    exercise = ROOT / "tests/portable-stdlib/basic-division-exercise.jai"
+    result = subprocess.run([compiler, "-interp", "-cpu", "x64", exercise], cwd=ROOT, env=env,
+                            capture_output=True, text=True, timeout=60)
+    if result.returncode or result.stderr:
+        raise RuntimeError(f"x64 division interpreter failed: {result}")
+    check_division_output(result.stdout)
+    if not args.x64_target:
+        raise RuntimeError("an executable --x64-target is required for native division exercise checks")
+    for level in ("O0", "O2"):
+        binary = output / f"division-exercise-x64-{level}"
+        run([compiler, "-target", args.x64_target, f"-{level}", exercise, "-exe", binary])
+        result = subprocess.run([binary], cwd=ROOT, env=env, capture_output=True, text=True, timeout=60)
+        if result.returncode or result.stderr:
+            raise RuntimeError(f"native x64 division exercise failed: {result}")
+        check_division_output(result.stdout)
+    print("passed CPU.X64 public division exercise: interpreter/native O0/O2 and independent integer oracle", flush=True)
     run([compiler,"-check",ROOT / "tests/portable-stdlib/pending/context-overload-probe.jai"])
     print("passed general context/overload compiler regression", flush=True)
     run([compiler, "-interp", "-I", ROOT / "tests/portable-stdlib/pending",
@@ -239,6 +287,8 @@ def main():
                     run([compiler, "-check", "-no_dce", "-os", os_name, "-cpu", cpu,
                          ROOT / "tests/portable-stdlib/windows-foundations.jai"])
                     print("checked Windows-specific filesystem specializations (not executed)", flush=True)
+                if cpu == "x64":
+                    run([compiler, "-check", "-no_dce", "-os", os_name, "-cpu", cpu, exercise])
                 print(f"checked unused code: {os_name}/{cpu}", flush=True)
             except RuntimeError as error:
                 failures.append(f"{os_name}/{cpu}: {error}")

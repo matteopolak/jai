@@ -26,8 +26,8 @@ No source implementation outside the authorized NEW producers is an input.
 - [x] Implement refined module-qualified leak matching as exact procedure name
   plus source-path substring; inclusive first matching leaf, matching/null root
   suffix, and report-owned lifetime have original regression coverage.
-- [ ] Resolve scalar FNV overload and division-exercise contracts; original
-  public-call reproducers fail and remain positive API gates, not negative tests.
+- [x] Implement resolved scalar FNV overload, division exercise and wide-conversion
+  guards; original public-call reproducers now pass as positive API gates.
 - [ ] Retest unavailable Windows/WASI transport when producers supply it.
 - [ ] After each coherent batch: real jaifmt format/check, warnings-denied lint,
   interpreter/native O0/O2 and supported WASI checks, relevant unused-code

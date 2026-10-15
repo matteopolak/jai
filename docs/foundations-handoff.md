@@ -4,6 +4,27 @@ This work owns Basic builder/formatting, String utilities, Hash scalars and
 File_Utilities. Inherited spec, argument/runtime and Command_Line edits are
 retained in the worktree and excluded from foundations commits.
 
+Current owned export audit has no genuine missing names/overloads. Resolved
+whole-value scalar FNV, exact wide-conversion guards and all-OS x64 division
+diagnostic are implemented and tested. The diagnostic always runs real fixed
+checks, prints results and consumes exactly three callback operands per positive
+iteration, with no callback for zero/negative counts. Signed division's private
+bit conversions preserve the stricter public guard contract.
+
+Final batch verification: 47 host interpreter/native O0/O2 cases, 39 supported
+WASI O0/O2 cases, thirteen compile-time guard rejections, separate x64 diagnostic
+interpreter/native O0/O2 with independent integer oracle, and six native unused-
+code scopes pass. Unchanged real jaifmt CLI/check and focused changed code/tests
+warnings-denied lint pass. Refreshed NEW Pool CAPS now passes its original gate.
+Full driver remains nonzero solely for the File producer's WASI POSIX.FILE ABI;
+full lint remains incomplete on target-specific/negative roots with its host-only
+CLI. Latest linter sources were compared against NEW producer and match exactly.
+No producer files, bootstrap parameters, private rules or exclusions were changed.
+See foundations-wide-integers.md, the API audit, deviations and owner requests.
+
+The following paragraphs retain earlier checkpoint evidence; current resolutions
+above supersede their old missing-API/provider statements.
+
 Latest continuation implements the refined leak name/source-path predicate and
 exact leaf/root boundaries, removes the false module-ID dependency, and verifies
 report-owned lifetime with original regressions. All 45 host cases pass

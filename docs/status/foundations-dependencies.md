@@ -37,13 +37,12 @@ read-only into own selected staging; normalized diff contains only the CAPS
 name-out change, preserving selected bootstrap parameters and all allocation
 logic. The real-provider test first failed on the old staged heap, then passed
 after integration, checking nonempty borrowed name and repeat-call identity.
-Pool still asserts allocator_data is non-null before handling CAPS even though
-get_capabilities passes null. Correct its producer body without changing Basic's
-reviewed ABI. Basic must not manufacture names on providers' behalf.
-Original pending/pool-capabilities-name.jai reproduces the Pool failure using
-only public APIs; it is not counted as a completed runtime case. The driver now
-also runs this as a positive integration gate and retains the actual assertion
-failure; no expected-negative classification or skipped assertion hides it.
+Refreshed NEW portable Pool now handles CAPS before dereferencing allocator_data
+and supplies its name. Its complete producer pool.jai was copied read-only into
+selected staging, and the original public-call reproducer now passes. The real
+positive provider gate remains mandatory in the driver. Basic did not change
+the reviewed ABI or manufacture provider names. The earlier failing assertion
+is historical evidence, not a current producer limitation.
 
 Preamble native scoped effects and cross early return now pass with the NEW
 compiler general BUILD_OS/BUILD_CPU host fix. The separate predicate request

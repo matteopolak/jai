@@ -1,5 +1,33 @@
 # Foundations progress
 
+Final owned export batch implements the resolved scalar FNV overload, exact
+to_s128/to_u128 #modify guards/conversions, and public all-OS CPU.X64 division
+exercise. No genuine reviewed API name/overload remains missing in the owned
+Basic/String/Hash/File_Utilities scope; portable time/native responsibility and
+unspecified edge policies are separately documented. Signed division now uses
+private bit conversions, preserving the public guard boundaries.
+
+Verified 47 host cases in interpreter/native O0/O2 and 39 supported WASI cases
+in O0/O2. Thirteen inadmissible conversion sources reject specialization.
+The x64 diagnostic also passes interpreter and actual x64 native O0/O2 execution,
+with independent Python divmod checks on all printed samples and exact callback
+count/order assertions. Six native unused-code scopes pass, including the
+diagnostic on Linux/macOS/Windows x64. Real unchanged jaifmt CLI/owned check and
+focused changed-code/positive-test -D warnings pass.
+
+Refreshed NEW portable Pool into selected staging read-only; the original null-
+data CAPS call and mandatory provider gate now pass. Scalar FNV/division original
+public-call gates also pass. The full driver exits 1 solely for the preserved
+WASI unused File/POSIX.FILE dependency. Current File producer still loads its
+Unix FILE backend for WASI; the original minimal ABI-guard request remains.
+Latest linter main/driver match the NEW producer byte-for-byte and still provide
+only host context. Full lint exits 1 on 20 target-specific/intentional-negative
+roots, with no rule findings; no exclusions or configured-bootstrap/private-
+import changes hide them. See foundations-lint-request.md for proper owner work.
+
+Earlier checkpoint evidence follows; current resolutions above supersede its
+old missing-API/provider statements.
+
 Latest stable checkpoints: ad84008 implements refined leak filters; e3d9052
 verifies the real runtime CAPS provider and retains the Pool failure. Current
 supported execution is 45 host / 37 WASI cases as detailed below. Remaining

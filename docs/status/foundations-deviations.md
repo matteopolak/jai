@@ -10,23 +10,21 @@ consecutive matching/null root suffix. The old module-ID diagnostic is removed.
 Report-owned node/group/table resources survive tracked allocation cleanup and
 are released by deinit; the refined contract permits the private pool/lock design.
 
-- **Audit-discovered genuine API gaps** — Hash's scalar fnv1a_hash overload and
-  Basic.test_unsigned_division are absent. Original pending public-call sources
-  reject; the driver now records them as positive required-API failures and
-  continues independent tests. Word/byte FNV semantics and division-exercise
-  platform/random callback contracts need review. No fake bodies/default values,
-  expected-negative reclassification or test/lint exclusion hides these gaps.
+- **Audit-discovered API gaps resolved** — scalar FNV and the all-OS x64 public
+  division exercise now implement the refined contracts. Original probes pass;
+  independent scalar vectors and a Python integer oracle validate real results.
+  Division diagnostic formatting/deterministic samples are independently chosen
+  because the reviewed behavior does not fix their exact bytes/set. There is no
+  callback substitute, iteration clamp, ignored parameter or fabricated result.
 
 Latest resolution: NEW producer compiler_host semantics fix BUILD_* generally.
 Preamble cross early return now passes the genuine WASI test and independent
 predicate. The historical failure below is retained, not still treated as a gap.
 
-- **Wide integer conversion guard gap** — integer128.jai implements real wide
-  arithmetic and scalar conversion bodies, but to_s128/to_u128 lack the
-  inventory's #modify guard. Accepted source kinds, negative unsigned extension
-  and unsigned-to-signed overflow policy are not specified. Risk: unsupported
-  kinds may be accepted or produce misleading diagnostics. The precise contract
-  request is in foundations-questions.md; no arbitrary guard is invented.
+- **Wide conversion guards resolved** — integer128.jai now has the exact reviewed
+  #modify guards and conversions, including signed-64 extension of high-bit u64
+  inputs. Thirteen unsupported-kind specializations reject. Signed division uses
+  explicit private bit conversions; no public convenience overload was retained.
 - **Array aliasing safety resolved** — bulk append formerly read stale source
   storage after growth when given its own slice. The original moving allocator
   regression failed before the fix and now passes. A single reserve/rebase and
@@ -83,8 +81,10 @@ predicate. The historical failure below is retained, not still treated as a gap.
   unchanged heap source was integrated read-only into own selected staging.
   Normalized diff isolates the CAPS change, preserving bootstrap parameters.
   Original real-runtime regression failed before integration and checks nonempty
-  name plus repeat-call borrowed identity afterward. Pool still asserts on null
-  data; its real positive interpreter gate preserves that failure. Basic never
+  name plus repeat-call borrowed identity afterward. Refreshed NEW Pool handles
+  CAPS before dereferencing data and supplies its name; its original real
+  positive interpreter gate now passes. Historical assertion evidence is retained
+  in prior checkpoints. Basic never
   fabricates provider names. The CAPS-only callback additionally tests exact
   zero sizes/null data and borrowed name identity, not an allocator substitute.
 

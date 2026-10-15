@@ -96,6 +96,7 @@ The LLVM backend, C ABI and linking.
 
 - [Core foundations implementation handoff](foundations-handoff.md)
 - [Basic/String/Hash/File_Utilities public surface audit](foundations-api-audit.md)
+- [Wide conversions, division exercise and scalar FNV](foundations-wide-integers.md)
 - [Remaining Basic implementation plan](status/foundations-completion-plan.md)
 - [Basic producer dependency requests](status/foundations-dependencies.md)
 - [General cross-compilation predicate request](status/foundations-preamble-request.md)
