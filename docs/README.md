@@ -1,6 +1,9 @@
 # Developer documentation
 
 Current frozen native ARM64 measurement: [machine-readable current baseline](status/mac-current-baseline.json), with exact candidate path/ref/snapshot and separate coordinator gates.
+- [Dynamic import factory registration](compiler/plugin-registration.md):
+  reference-confirmed placeholder/indirect-call boundary, retained compile-time
+  frames, scoped source dependencies, tested factories and exact limitations.
 
 - [Required native library initialization](compiler/native-required-libraries.md):
   real constructor effects in interpreted/linked programs, precise load failures
@@ -587,3 +590,5 @@ the earlier120-second timeout is retained. Full aggregate replay remains require
 - [Android APK build orchestration](android-build.md): Gradle and SDK command orchestration, ZIP packaging, signing dependencies and verification limits.
 
 - [Android binary manifests](android-manifest.md): valid AXML writer, UTF-8/UTF-16 reader, canonical APK parsing and system-zlib decompression.
+
+- [Basic LSP resolution verification](tools/lsp-basic-resolution-verification.md): reported Basic.temp and exit(1) checks on the merged server
