@@ -389,7 +389,7 @@ def generate_facade(module, spec):
             if module == 'rpmalloc':
                 record.update(status='partially_implemented',
                               implemented_condition='Native_Profile_Matches' + (' && ('+condition+')' if condition else ''),
-                              reason='Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete')
+                              reason='Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete')
             ledger.append(record)
             continue
         key = (condition, d.code)

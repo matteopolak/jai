@@ -21,37 +21,7 @@ deny_unmap :: (address: *void, size: s64, offset: s64, release: s64) {
     assert(false, "a failed mapping must not be unmapped");
 }
 
-exercise :: (proc: Allocator_Proc) {
-    assert(proc(.STARTUP, 0, 0, null, null) == null);
-    heap := proc(.CREATE_HEAP, 0, 0, null, null);
-
-    assert(heap != null);
-    slots: [256] *void;
-    // Overflow each native cache batch rather than relying on small frees.
-    for *slots {
-        it.* = proc(.ALLOCATE, 131072, 0, null, heap);
-        assert(it.* != null);
-        (cast(*u8) it.*)[0] = 39;
-        assert(cast(u64) proc(.IS_THIS_YOURS, 0, 0, it.*, heap) == 1);
-    }
-
-    for slots {
-        assert((cast(*u8) it)[0] == 39);
-        assert(proc(.FREE, 0, 0, it, heap) == null);
-    }
-
-    assert(proc(.DESTROY_HEAP, 0, 0, null, heap) == null);
-    assert(proc(.THREAD_STOP, 0, 0, null, null) == null);
-    assert(proc(.THREAD_START, 0, 0, null, null) == null);
-    memory := proc(.ALLOCATE, 71, 0, null, null);
-
-    assert(memory != null);
-    (cast(*u8) memory)[0] = 81;
-    replacement := proc(.RESIZE, 8192, 0, memory, null);
-
-    assert(replacement != null && (cast(*u8) replacement)[0] == 81);
-    assert(proc(.FREE, 0, 0, replacement, null) == null);
-}
+#load "rpmalloc-cache-exercise.jai";
 
 main :: () {
     assert(Default.initialize() == 0);
@@ -66,10 +36,10 @@ main :: () {
     assert(CachedOff.initialize_config(*config) != 0);
     assert(denied > 0 && !CachedOff.is_initialized());
     assert(Default.is_initialized() && (cast(*u8) memory)[0] == 91);
-    exercise(CachedOff.rpmalloc_allocator_proc);
-    exercise(CachedOffSmall.rpmalloc_allocator_proc);
-    exercise(RawOff.rpmalloc_allocator_proc);
-    exercise(RawOffSmall.rpmalloc_allocator_proc);
+    cache_exercise(CachedOff.rpmalloc_allocator_proc);
+    cache_exercise(CachedOffSmall.rpmalloc_allocator_proc);
+    cache_exercise(RawOff.rpmalloc_allocator_proc);
+    cache_exercise(RawOffSmall.rpmalloc_allocator_proc);
 
     guarded: struct {
         before: u64 = 0x123;

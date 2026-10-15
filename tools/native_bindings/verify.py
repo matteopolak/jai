@@ -33,7 +33,12 @@ PRIVATE_UNITS = {'ios-sdk-host':'iOS/sdk-host-unit.jai',
                  'rpmalloc-raw-heap-marshalling':'rpmalloc/sdk-raw-heap-marshalling-unit.jai',
                  'rpmalloc-native-error-callback':'rpmalloc/sdk-error-callback-unit.jai',
                  'rpmalloc-raw-base-marshalling':'rpmalloc/sdk-raw-base-marshalling-unit.jai'}
+PRIVATE_UNITS['rpmalloc-no-thread-cache'] = 'rpmalloc/sdk-no-thread-cache-unit.jai'
 PRIVATE_UNIT_DEPENDENCIES = {
+    'rpmalloc-no-thread-cache': {
+        **{'tests/native-bindings/generated/rpmalloc-no-thread-cache-'+label+'-layout.jai': 'rpmalloc/generated/rpmalloc-no-thread-cache-'+label+'-layout.jai' for label in ('rewrite', 'raw-base', 'raw')},
+        'tests/native-bindings/rpmalloc-cache-exercise.jai': 'rpmalloc/rpmalloc-cache-exercise.jai',
+    },
     'rpmalloc-raw-base-marshalling': {
         'tests/native-bindings/generated/rpmalloc-raw-base-heap-facade-layout.jai': 'rpmalloc/generated/rpmalloc-raw-base-heap-facade-layout.jai',
     },

@@ -172745,7 +172745,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/allocator.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "initialize",
@@ -172756,7 +172756,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "initialize",
@@ -172768,7 +172768,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_initialize",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "finalize",
@@ -172778,7 +172778,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "initialize_config",
@@ -172789,7 +172789,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "initialize_config",
@@ -172801,7 +172801,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_initialize_config",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "is_initialized",
@@ -172811,7 +172811,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "thread_initialize",
@@ -172821,7 +172821,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "thread_finalize",
@@ -172833,7 +172833,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_thread_finalize",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "thread_finalize",
@@ -172843,7 +172843,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "thread_finalize",
@@ -172854,7 +172854,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_thread_finalize",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "is_thread_initialized",
@@ -172864,7 +172864,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "set_main_thread",
@@ -172874,7 +172874,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "config",
@@ -172884,7 +172884,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc",
@@ -172895,7 +172895,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpfree",
@@ -172905,7 +172905,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rprealloc",
@@ -172916,7 +172916,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpaligned_realloc",
@@ -172927,7 +172927,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpaligned_alloc",
@@ -172938,7 +172938,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "usable_size",
@@ -172949,7 +172949,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "usable_size",
@@ -172961,7 +172961,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_usable_size",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "thread_statistics",
@@ -172971,7 +172971,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "global_statistics",
@@ -172981,7 +172981,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "dump_statistics",
@@ -172992,7 +172992,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/statistics.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW && (ENABLE_STATISTICS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "dump_statistics",
@@ -173003,7 +173003,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/statistics.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW && (!ENABLE_STATISTICS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "dump_statistics",
@@ -173015,7 +173015,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_dump_statistics",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_acquire",
@@ -173026,7 +173026,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_acquire",
@@ -173038,7 +173038,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_acquire",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_release",
@@ -173049,7 +173049,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_release",
@@ -173061,7 +173061,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_release",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_is_this_yours",
@@ -173072,7 +173072,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "is_in_span",
@@ -173083,7 +173083,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_alloc",
@@ -173094,7 +173094,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_alloc",
@@ -173106,7 +173106,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_alloc",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_aligned_alloc",
@@ -173117,7 +173117,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_aligned_alloc",
@@ -173129,7 +173129,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_aligned_alloc",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_realloc",
@@ -173140,7 +173140,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_realloc",
@@ -173152,7 +173152,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_realloc",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_aligned_realloc",
@@ -173163,7 +173163,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_aligned_realloc",
@@ -173175,7 +173175,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_aligned_realloc",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_free",
@@ -173186,7 +173186,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_free",
@@ -173198,7 +173198,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_free",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_free_all",
@@ -173209,7 +173209,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_free_all",
@@ -173221,7 +173221,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_free_all",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_thread_set_current",
@@ -173232,7 +173232,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_thread_set_current",
@@ -173244,7 +173244,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_thread_set_current",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "errno",
@@ -173283,7 +173283,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_is_initialized",
@@ -173294,7 +173294,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_initialize_config",
@@ -173305,7 +173305,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_finalize",
@@ -173316,7 +173316,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_thread_initialize",
@@ -173327,7 +173327,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_thread_finalize",
@@ -173338,7 +173338,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_is_thread_initialized",
@@ -173349,7 +173349,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_config",
@@ -173360,7 +173360,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc",
@@ -173371,7 +173371,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpcalloc",
@@ -173382,7 +173382,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rprealloc",
@@ -173393,7 +173393,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpaligned_realloc",
@@ -173404,7 +173404,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpaligned_alloc",
@@ -173415,7 +173415,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpaligned_calloc",
@@ -173426,7 +173426,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmemalign",
@@ -173437,7 +173437,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpposix_memalign",
@@ -173448,7 +173448,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_usable_size",
@@ -173459,7 +173459,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_thread_collect",
@@ -173470,7 +173470,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_thread_statistics",
@@ -173481,7 +173481,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_global_statistics",
@@ -173492,7 +173492,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_dump_statistics",
@@ -173503,7 +173503,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_acquire",
@@ -173514,7 +173514,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_release",
@@ -173525,7 +173525,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_alloc",
@@ -173536,7 +173536,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_aligned_alloc",
@@ -173547,7 +173547,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_calloc",
@@ -173558,7 +173558,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_aligned_calloc",
@@ -173569,7 +173569,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_realloc",
@@ -173580,7 +173580,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_aligned_realloc",
@@ -173591,7 +173591,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_free",
@@ -173602,7 +173602,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_free_all",
@@ -173613,7 +173613,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_thread_set_current",
@@ -173624,7 +173624,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "ENABLE_OVERRIDE",
@@ -173642,7 +173642,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "RPMALLOC_CONFIGURABLE",
@@ -173675,7 +173675,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real native boundaries for twelve raw/rewrite/layout/statistics/global-cache profiles; thread-cache/assertion/page-advice and numeric build options remain incomplete"
+          "reason": "Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "Heap",
@@ -173866,7 +173866,7 @@
         {
           "module": "internal/bindings/rpmalloc-sdk",
           "artifact": "stdlib/internal/bindings/rpmalloc-sdk/module.jai",
-          "artifact_sha256": "34f06b41c406f5b35022dcc5efe852a23452910e949f12826aa32f03e25121a7",
+          "artifact_sha256": "8e05b0851d04fed8fed5a8256e28f7ba37e46e41701050a005ad0a6e36d65b9f",
           "status": "private_native_backend",
           "public_support": "Unresolved; this backend does not establish Jai callback/config/heap compatibility",
           "provenance": {
@@ -174303,7 +174303,7 @@
               "binding_rpmalloc_sdk": {
                 "callback_prefix": "binding_rpmalloc_",
                 "callbacks": "binding_rpmalloc_callbacks",
-                "condition": "!RAW && STATISTICS && GLOBAL_CACHE",
+                "condition": "!RAW && STATISTICS && GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_facade_",
                 "global_cache": true,
                 "options": {
@@ -174313,6 +174313,7 @@
                   "ENABLE_GLOBAL_CACHE": 1,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174321,12 +174322,13 @@
                 "raw": false,
                 "sdk": "binding_rpmalloc_sdk",
                 "statistics": true,
-                "symbol_prefix": ""
+                "symbol_prefix": "",
+                "thread_cache": true
               },
               "binding_rpmalloc_sdk_no_global_cache": {
                 "callback_prefix": "binding_rpmalloc_no_global_cache_",
                 "callbacks": "binding_rpmalloc_callbacks_no_global_cache",
-                "condition": "!RAW && STATISTICS && !GLOBAL_CACHE",
+                "condition": "!RAW && STATISTICS && !GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_no_global_cache_facade_",
                 "global_cache": false,
                 "options": {
@@ -174336,6 +174338,7 @@
                   "ENABLE_GLOBAL_CACHE": 0,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174344,12 +174347,63 @@
                 "raw": false,
                 "sdk": "binding_rpmalloc_sdk_no_global_cache",
                 "statistics": true,
-                "symbol_prefix": "binding_rpmalloc_no_global_cache_"
+                "symbol_prefix": "binding_rpmalloc_no_global_cache_",
+                "thread_cache": true
+              },
+              "binding_rpmalloc_sdk_no_global_cache_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_no_global_cache_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_no_global_cache_no_thread_cache",
+                "condition": "!RAW && STATISTICS && !GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_no_global_cache_no_thread_cache_facade_",
+                "global_cache": false,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
+                  "BINDING_RPMALLOC_RAW": 0,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 0,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": true,
+                "raw": false,
+                "sdk": "binding_rpmalloc_sdk_no_global_cache_no_thread_cache",
+                "statistics": true,
+                "symbol_prefix": "binding_rpmalloc_no_global_cache_no_thread_cache_",
+                "thread_cache": false
+              },
+              "binding_rpmalloc_sdk_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_no_thread_cache",
+                "condition": "!RAW && STATISTICS && GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_no_thread_cache_facade_",
+                "global_cache": true,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
+                  "BINDING_RPMALLOC_RAW": 0,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": true,
+                "raw": false,
+                "sdk": "binding_rpmalloc_sdk_no_thread_cache",
+                "statistics": true,
+                "symbol_prefix": "binding_rpmalloc_no_thread_cache_",
+                "thread_cache": false
               },
               "binding_rpmalloc_sdk_nostats": {
                 "callback_prefix": "binding_rpmalloc_nostats_",
                 "callbacks": "binding_rpmalloc_callbacks_nostats",
-                "condition": "!RAW && !STATISTICS && GLOBAL_CACHE",
+                "condition": "!RAW && !STATISTICS && GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_nostats_facade_",
                 "global_cache": true,
                 "options": {
@@ -174359,6 +174413,7 @@
                   "ENABLE_GLOBAL_CACHE": 1,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174367,12 +174422,13 @@
                 "raw": false,
                 "sdk": "binding_rpmalloc_sdk_nostats",
                 "statistics": false,
-                "symbol_prefix": "binding_rpmalloc_nostats_"
+                "symbol_prefix": "binding_rpmalloc_nostats_",
+                "thread_cache": true
               },
               "binding_rpmalloc_sdk_nostats_no_global_cache": {
                 "callback_prefix": "binding_rpmalloc_nostats_no_global_cache_",
                 "callbacks": "binding_rpmalloc_callbacks_nostats_no_global_cache",
-                "condition": "!RAW && !STATISTICS && !GLOBAL_CACHE",
+                "condition": "!RAW && !STATISTICS && !GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_nostats_no_global_cache_facade_",
                 "global_cache": false,
                 "options": {
@@ -174382,6 +174438,7 @@
                   "ENABLE_GLOBAL_CACHE": 0,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174390,12 +174447,63 @@
                 "raw": false,
                 "sdk": "binding_rpmalloc_sdk_nostats_no_global_cache",
                 "statistics": false,
-                "symbol_prefix": "binding_rpmalloc_nostats_no_global_cache_"
+                "symbol_prefix": "binding_rpmalloc_nostats_no_global_cache_",
+                "thread_cache": true
+              },
+              "binding_rpmalloc_sdk_nostats_no_global_cache_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_nostats_no_global_cache_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_nostats_no_global_cache_no_thread_cache",
+                "condition": "!RAW && !STATISTICS && !GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_nostats_no_global_cache_no_thread_cache_facade_",
+                "global_cache": false,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
+                  "BINDING_RPMALLOC_RAW": 0,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 0,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": true,
+                "raw": false,
+                "sdk": "binding_rpmalloc_sdk_nostats_no_global_cache_no_thread_cache",
+                "statistics": false,
+                "symbol_prefix": "binding_rpmalloc_nostats_no_global_cache_no_thread_cache_",
+                "thread_cache": false
+              },
+              "binding_rpmalloc_sdk_nostats_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_nostats_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_nostats_no_thread_cache",
+                "condition": "!RAW && !STATISTICS && GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_nostats_no_thread_cache_facade_",
+                "global_cache": true,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
+                  "BINDING_RPMALLOC_RAW": 0,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": true,
+                "raw": false,
+                "sdk": "binding_rpmalloc_sdk_nostats_no_thread_cache",
+                "statistics": false,
+                "symbol_prefix": "binding_rpmalloc_nostats_no_thread_cache_",
+                "thread_cache": false
               },
               "binding_rpmalloc_sdk_raw": {
                 "callback_prefix": "binding_rpmalloc_raw_",
                 "callbacks": "binding_rpmalloc_callbacks_raw",
-                "condition": "RAW && PUBLIC_HEAPS && STATISTICS && GLOBAL_CACHE",
+                "condition": "RAW && PUBLIC_HEAPS && STATISTICS && GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_raw_facade_",
                 "global_cache": true,
                 "options": {
@@ -174405,6 +174513,7 @@
                   "ENABLE_GLOBAL_CACHE": 1,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174413,12 +174522,13 @@
                 "raw": true,
                 "sdk": "binding_rpmalloc_sdk_raw",
                 "statistics": true,
-                "symbol_prefix": "binding_rpmalloc_raw_"
+                "symbol_prefix": "binding_rpmalloc_raw_",
+                "thread_cache": true
               },
               "binding_rpmalloc_sdk_raw_base": {
                 "callback_prefix": "binding_rpmalloc_raw_base_",
                 "callbacks": "binding_rpmalloc_callbacks_raw_base",
-                "condition": "RAW && !PUBLIC_HEAPS && STATISTICS && GLOBAL_CACHE",
+                "condition": "RAW && !PUBLIC_HEAPS && STATISTICS && GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_raw_base_facade_",
                 "global_cache": true,
                 "options": {
@@ -174428,6 +174538,7 @@
                   "ENABLE_GLOBAL_CACHE": 1,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174436,12 +174547,13 @@
                 "raw": true,
                 "sdk": "binding_rpmalloc_sdk_raw_base",
                 "statistics": true,
-                "symbol_prefix": "binding_rpmalloc_raw_base_"
+                "symbol_prefix": "binding_rpmalloc_raw_base_",
+                "thread_cache": true
               },
               "binding_rpmalloc_sdk_raw_base_no_global_cache": {
                 "callback_prefix": "binding_rpmalloc_raw_base_no_global_cache_",
                 "callbacks": "binding_rpmalloc_callbacks_raw_base_no_global_cache",
-                "condition": "RAW && !PUBLIC_HEAPS && STATISTICS && !GLOBAL_CACHE",
+                "condition": "RAW && !PUBLIC_HEAPS && STATISTICS && !GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_raw_base_no_global_cache_facade_",
                 "global_cache": false,
                 "options": {
@@ -174451,6 +174563,7 @@
                   "ENABLE_GLOBAL_CACHE": 0,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174459,12 +174572,63 @@
                 "raw": true,
                 "sdk": "binding_rpmalloc_sdk_raw_base_no_global_cache",
                 "statistics": true,
-                "symbol_prefix": "binding_rpmalloc_raw_base_no_global_cache_"
+                "symbol_prefix": "binding_rpmalloc_raw_base_no_global_cache_",
+                "thread_cache": true
+              },
+              "binding_rpmalloc_sdk_raw_base_no_global_cache_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_raw_base_no_global_cache_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_base_no_global_cache_no_thread_cache",
+                "condition": "RAW && !PUBLIC_HEAPS && STATISTICS && !GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_raw_base_no_global_cache_no_thread_cache_facade_",
+                "global_cache": false,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 0,
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 0,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": false,
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_base_no_global_cache_no_thread_cache",
+                "statistics": true,
+                "symbol_prefix": "binding_rpmalloc_raw_base_no_global_cache_no_thread_cache_",
+                "thread_cache": false
+              },
+              "binding_rpmalloc_sdk_raw_base_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_raw_base_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_base_no_thread_cache",
+                "condition": "RAW && !PUBLIC_HEAPS && STATISTICS && GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_raw_base_no_thread_cache_facade_",
+                "global_cache": true,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 0,
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": false,
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_base_no_thread_cache",
+                "statistics": true,
+                "symbol_prefix": "binding_rpmalloc_raw_base_no_thread_cache_",
+                "thread_cache": false
               },
               "binding_rpmalloc_sdk_raw_base_nostats": {
                 "callback_prefix": "binding_rpmalloc_raw_base_nostats_",
                 "callbacks": "binding_rpmalloc_callbacks_raw_base_nostats",
-                "condition": "RAW && !PUBLIC_HEAPS && !STATISTICS && GLOBAL_CACHE",
+                "condition": "RAW && !PUBLIC_HEAPS && !STATISTICS && GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_raw_base_nostats_facade_",
                 "global_cache": true,
                 "options": {
@@ -174474,6 +174638,7 @@
                   "ENABLE_GLOBAL_CACHE": 1,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174482,12 +174647,13 @@
                 "raw": true,
                 "sdk": "binding_rpmalloc_sdk_raw_base_nostats",
                 "statistics": false,
-                "symbol_prefix": "binding_rpmalloc_raw_base_nostats_"
+                "symbol_prefix": "binding_rpmalloc_raw_base_nostats_",
+                "thread_cache": true
               },
               "binding_rpmalloc_sdk_raw_base_nostats_no_global_cache": {
                 "callback_prefix": "binding_rpmalloc_raw_base_nostats_no_global_cache_",
                 "callbacks": "binding_rpmalloc_callbacks_raw_base_nostats_no_global_cache",
-                "condition": "RAW && !PUBLIC_HEAPS && !STATISTICS && !GLOBAL_CACHE",
+                "condition": "RAW && !PUBLIC_HEAPS && !STATISTICS && !GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_raw_base_nostats_no_global_cache_facade_",
                 "global_cache": false,
                 "options": {
@@ -174497,6 +174663,7 @@
                   "ENABLE_GLOBAL_CACHE": 0,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174505,12 +174672,63 @@
                 "raw": true,
                 "sdk": "binding_rpmalloc_sdk_raw_base_nostats_no_global_cache",
                 "statistics": false,
-                "symbol_prefix": "binding_rpmalloc_raw_base_nostats_no_global_cache_"
+                "symbol_prefix": "binding_rpmalloc_raw_base_nostats_no_global_cache_",
+                "thread_cache": true
+              },
+              "binding_rpmalloc_sdk_raw_base_nostats_no_global_cache_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_raw_base_nostats_no_global_cache_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_base_nostats_no_global_cache_no_thread_cache",
+                "condition": "RAW && !PUBLIC_HEAPS && !STATISTICS && !GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_raw_base_nostats_no_global_cache_no_thread_cache_facade_",
+                "global_cache": false,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 0,
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 0,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": false,
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_base_nostats_no_global_cache_no_thread_cache",
+                "statistics": false,
+                "symbol_prefix": "binding_rpmalloc_raw_base_nostats_no_global_cache_no_thread_cache_",
+                "thread_cache": false
+              },
+              "binding_rpmalloc_sdk_raw_base_nostats_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_raw_base_nostats_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_base_nostats_no_thread_cache",
+                "condition": "RAW && !PUBLIC_HEAPS && !STATISTICS && GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_raw_base_nostats_no_thread_cache_facade_",
+                "global_cache": true,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 0,
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": false,
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_base_nostats_no_thread_cache",
+                "statistics": false,
+                "symbol_prefix": "binding_rpmalloc_raw_base_nostats_no_thread_cache_",
+                "thread_cache": false
               },
               "binding_rpmalloc_sdk_raw_no_global_cache": {
                 "callback_prefix": "binding_rpmalloc_raw_no_global_cache_",
                 "callbacks": "binding_rpmalloc_callbacks_raw_no_global_cache",
-                "condition": "RAW && PUBLIC_HEAPS && STATISTICS && !GLOBAL_CACHE",
+                "condition": "RAW && PUBLIC_HEAPS && STATISTICS && !GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_raw_no_global_cache_facade_",
                 "global_cache": false,
                 "options": {
@@ -174520,6 +174738,7 @@
                   "ENABLE_GLOBAL_CACHE": 0,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174528,12 +174747,63 @@
                 "raw": true,
                 "sdk": "binding_rpmalloc_sdk_raw_no_global_cache",
                 "statistics": true,
-                "symbol_prefix": "binding_rpmalloc_raw_no_global_cache_"
+                "symbol_prefix": "binding_rpmalloc_raw_no_global_cache_",
+                "thread_cache": true
+              },
+              "binding_rpmalloc_sdk_raw_no_global_cache_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_raw_no_global_cache_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_no_global_cache_no_thread_cache",
+                "condition": "RAW && PUBLIC_HEAPS && STATISTICS && !GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_raw_no_global_cache_no_thread_cache_facade_",
+                "global_cache": false,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 0,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": true,
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_no_global_cache_no_thread_cache",
+                "statistics": true,
+                "symbol_prefix": "binding_rpmalloc_raw_no_global_cache_no_thread_cache_",
+                "thread_cache": false
+              },
+              "binding_rpmalloc_sdk_raw_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_raw_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_no_thread_cache",
+                "condition": "RAW && PUBLIC_HEAPS && STATISTICS && GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_raw_no_thread_cache_facade_",
+                "global_cache": true,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 1,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": true,
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_no_thread_cache",
+                "statistics": true,
+                "symbol_prefix": "binding_rpmalloc_raw_no_thread_cache_",
+                "thread_cache": false
               },
               "binding_rpmalloc_sdk_raw_nostats": {
                 "callback_prefix": "binding_rpmalloc_raw_nostats_",
                 "callbacks": "binding_rpmalloc_callbacks_raw_nostats",
-                "condition": "RAW && PUBLIC_HEAPS && !STATISTICS && GLOBAL_CACHE",
+                "condition": "RAW && PUBLIC_HEAPS && !STATISTICS && GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_raw_nostats_facade_",
                 "global_cache": true,
                 "options": {
@@ -174543,6 +174813,7 @@
                   "ENABLE_GLOBAL_CACHE": 1,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174551,12 +174822,13 @@
                 "raw": true,
                 "sdk": "binding_rpmalloc_sdk_raw_nostats",
                 "statistics": false,
-                "symbol_prefix": "binding_rpmalloc_raw_nostats_"
+                "symbol_prefix": "binding_rpmalloc_raw_nostats_",
+                "thread_cache": true
               },
               "binding_rpmalloc_sdk_raw_nostats_no_global_cache": {
                 "callback_prefix": "binding_rpmalloc_raw_nostats_no_global_cache_",
                 "callbacks": "binding_rpmalloc_callbacks_raw_nostats_no_global_cache",
-                "condition": "RAW && PUBLIC_HEAPS && !STATISTICS && !GLOBAL_CACHE",
+                "condition": "RAW && PUBLIC_HEAPS && !STATISTICS && !GLOBAL_CACHE && THREAD_CACHE",
                 "facade_prefix": "binding_rpmalloc_raw_nostats_no_global_cache_facade_",
                 "global_cache": false,
                 "options": {
@@ -174566,6 +174838,7 @@
                   "ENABLE_GLOBAL_CACHE": 0,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 1,
                   "ENABLE_VALIDATE_ARGS": 1,
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
@@ -174574,7 +174847,58 @@
                 "raw": true,
                 "sdk": "binding_rpmalloc_sdk_raw_nostats_no_global_cache",
                 "statistics": false,
-                "symbol_prefix": "binding_rpmalloc_raw_nostats_no_global_cache_"
+                "symbol_prefix": "binding_rpmalloc_raw_nostats_no_global_cache_",
+                "thread_cache": true
+              },
+              "binding_rpmalloc_sdk_raw_nostats_no_global_cache_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_raw_nostats_no_global_cache_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_nostats_no_global_cache_no_thread_cache",
+                "condition": "RAW && PUBLIC_HEAPS && !STATISTICS && !GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_raw_nostats_no_global_cache_no_thread_cache_facade_",
+                "global_cache": false,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 0,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": true,
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_nostats_no_global_cache_no_thread_cache",
+                "statistics": false,
+                "symbol_prefix": "binding_rpmalloc_raw_nostats_no_global_cache_no_thread_cache_",
+                "thread_cache": false
+              },
+              "binding_rpmalloc_sdk_raw_nostats_no_thread_cache": {
+                "callback_prefix": "binding_rpmalloc_raw_nostats_no_thread_cache_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_nostats_no_thread_cache",
+                "condition": "RAW && PUBLIC_HEAPS && !STATISTICS && GLOBAL_CACHE && !THREAD_CACHE",
+                "facade_prefix": "binding_rpmalloc_raw_nostats_no_thread_cache_facade_",
+                "global_cache": true,
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_GLOBAL_CACHE": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 0,
+                  "ENABLE_THREAD_CACHE": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": true,
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_nostats_no_thread_cache",
+                "statistics": false,
+                "symbol_prefix": "binding_rpmalloc_raw_nostats_no_thread_cache_",
+                "thread_cache": false
               }
             },
             "native_storage": {
@@ -175227,7 +175551,7 @@
           "verification": "Source/header inventory only here; actual private SDK native evidence is indexed separately",
           "checked_boundary": {
             "artifact": "stdlib/internal/bindings/rpmalloc-checked/module.jai",
-            "artifact_sha256": "93162ec38cbf6e82fd4b7adabed1e5b194842330c77055499b0e483bc80f6c87",
+            "artifact_sha256": "6b7d45eb55dcbdc1aa305c5610c50b1334aed2960639e03f00bdffeaad228c65",
             "signature": "posix_memalign :: (output: **void, alignment: u64, size: u64) -> s32",
             "scope": "Private SDK precondition validation and commit-on-success output; not public API completion"
           }
@@ -175237,7 +175561,7 @@
           "status": "partial_public_profile_adapter",
           "artifacts": {
             "stdlib/internal/bindings/rpmalloc-callbacks/bridge.c": "8b6476dd20ce5249d271f133e49656911e528eeff720be93e4628b16d2aff964",
-            "stdlib/internal/bindings/rpmalloc-callbacks/module.jai": "ad578a74e2362471a73488fd5f97bd4b19293d1ead7048ad53a262b4e9c8d01e"
+            "stdlib/internal/bindings/rpmalloc-callbacks/module.jai": "c460087276b1e390733e3cf7ee7dd6f8a5117e63dd77550c6cf2da0b231b707c"
           },
           "scope": "Owned callback/name lifetime, bounded wide public offset registry, actual init failure; raw/rewrite and both statistics profiles",
           "limitations": "Other cache/assertion/page-advice profiles and exact native-error Jai location provenance unresolved",
@@ -175257,7 +175581,7 @@
             "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "6be01cc0c2441806f524e1f6c1b0b281b0726b94c498ed0f09f19f030ed425d9",
             "stdlib/internal/bindings/rpmalloc-heaps/heap-snapshot.inc": "924de912ceae68dc7a9e3f850fe9c6cd378c8a0284ffa3c134590e34d2019dac",
             "stdlib/internal/bindings/rpmalloc-heaps/layout-probes.inc": "840ba9929bf90075a9c02627de6d2b654ec44a30efe6b86f7df359dd66d317a1",
-            "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "d186987c1255b8150f0d7512fc331d430130873a74cd6cd1dd00197ab05cd445",
+            "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "9db8987a9f1060a0614dff70196403a38fccffe6dd1d6917f713bbc8fae315d5",
             "stdlib/internal/bindings/rpmalloc-heaps/public-layout.h": "626ba6cefda0f83aa139209d929e1fa1f5408747c0410f6c0d570227a9737b4a",
             "stdlib/internal/bindings/rpmalloc-heaps/sdk-page-granularity.patch": "4ee8af6bc941251310da5ccea8810c158eeb8152b6960923a9d5a9e5a05394ff"
           },

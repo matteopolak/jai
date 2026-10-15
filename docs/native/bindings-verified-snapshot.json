@@ -1212,6 +1212,76 @@
       "checks": 238,
       "failures": 0,
       "expected_failures": 10
+    },
+    {
+      "report": ".work/rpmalloc-global-cache-enabled.json",
+      "sha256": "ee28b6aeb1506c49ac3c6459629a44730ab659576f5f273c9cf064100e16b471",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "passed": 126
+        },
+        "native": {
+          "passed": 38
+        },
+        "privacy": {
+          "passed": 198
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-cache-matrix-final.json",
+      "sha256": "18cd7f81a714f3411cc580da497475b80068717ecb04d26d109a5eca6ebe87d7",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 357,
+      "failures": 0,
+      "expected_failures": 10
+    },
+    {
+      "report": ".work/rpmalloc-cache-configurations.json",
+      "sha256": "853b5efad2b7940673a009693b40fb0494b63b935380dd5bbd78ca511bf91303",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 192,
+      "failures": 0,
+      "expected_failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-cache-enabled-configurations.json",
+      "sha256": "737aac06143be58b131217724058d090e20d006f09b9642dab32f14af5655085",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 192,
+      "failures": 0,
+      "expected_failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-cache-production-enabled.json",
+      "sha256": "bfd1a730c34d2ef39ed45c2d652287a3410138b817f129517ab56a319a14da49",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 349,
+      "failures": 0,
+      "expected_failures": 8
+    },
+    {
+      "report": ".work/rpmalloc-cache-full-enabled.json",
+      "sha256": "66f9086ac3d36f25c1e07952f14a058b67e1e1e0a345f49d1f4ad169bb9be6ff",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "passed": 132
+        },
+        "native": {
+          "passed": 40
+        },
+        "privacy": {
+          "passed": 198
+        }
+      }
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

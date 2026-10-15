@@ -8,6 +8,18 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Thread-cache option domains and conditional storage.** After `154ff0d`,
+ 24 real SDK/callback domains cover both thread/global cache choices, all three
+ public layouts and both statistics selections. Public cache fields disappear
+ only under the reviewed condition; private SDK-correct storage remains
+ separate. Independent mirror offsets/widths and real native lifetime/thread
+ handoff/sanitizer tests are active;357 checks pass, plus192 configuration checks
+ for each raw heap selection. Added domains increase code/package/build cost;
+ no extra public parameters, substituted opaque public records or changed
+ public layouts. Long-term selected-domain packaging should avoid shipping
+ unused combinations. Other options, association metadata OOM, serialized
+ mutation/full-view copies and native Windows/Linux proof remain open.
+
 - **Global-cache option domains.** After `7eafe15`, six additional real SDK
   and callback domains implement ENABLE_GLOBAL_CACHE=false. Public layouts and
   typed heap/span ownership are preserved; official C cache semantics execute

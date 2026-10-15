@@ -44,6 +44,8 @@ def main():
         configure(stdlib, True)
     unit = place_private_unit('rpmalloc-heap-marshalling',
                               ROOT/'tests/native-bindings/rpmalloc-heap-marshalling.jai', stdlib, {})
+    cache_unit = place_private_unit('rpmalloc-no-thread-cache',
+                                    ROOT/'tests/native-bindings/rpmalloc-no-thread-cache.jai', stdlib, {})
     prepared = prepare(ROOT/'.work/vendor/rpmalloc', work/'rpmalloc-source')
     env = dict(os.environ, TMPDIR=str(ROOT/'.work/tmp'), JAIC_STDLIB=str(stdlib),
                JAIC_NATIVE_LIBS=str(libraries))
@@ -61,6 +63,7 @@ def main():
     else:
         programs += [place_private_unit('rpmalloc-raw-base-marshalling',
                                         ROOT/'tests/native-bindings/rpmalloc-raw-base-marshalling.jai', stdlib, {})]
+    programs += [cache_unit]
     commands = []
     for program in programs:
         for target_os in ('macos', 'linux', 'windows'):
@@ -81,19 +84,25 @@ def main():
                              *['-D'+k+'='+str(v) for k, v in options.items()],
                              ROOT/'tests/native-bindings'/(name+'.c'), '-o', exe])
             commands.append([exe])
-    layouts = ((0, 1), (1, 0), (1, 1))
     resource = subprocess.run(['clang', '-print-resource-dir'], check=True, capture_output=True,
                               text=True).stdout.strip()
     for target in ('x86_64-apple-darwin', 'aarch64-apple-darwin', 'x86_64-linux-gnu',
                    'aarch64-linux-gnu', 'x86_64-pc-windows-msvc', 'aarch64-pc-windows-msvc'):
-        for raw, public_heaps, stats in [(r, h, s) for r, h in layouts for s in (1, 0)]:
-            commands.append(['clang', '-target', target, '-std=c11', '-ffreestanding', '-nostdinc',
-                             '-isystem', resource+'/include', '-DENABLE_THREAD_CACHE=1',
-                             '-DENABLE_STATISTICS='+str(stats), '-fsyntax-only',
-                             '-DBINDING_RPMALLOC_RAW='+str(raw),
-                             '-DBINDING_RPMALLOC_PUBLIC_HEAPS='+str(public_heaps),
-                             ROOT/'stdlib/internal/bindings/rpmalloc-heaps/public-layout.h'])
-    scopes = ['stdlib/rpmalloc', 'stdlib/internal/bindings/rpmalloc-heaps',
+        # Global caching does not change record fields; both thread-cache
+        # layouts must independently compile for every target and public shape.
+        for profile in PROFILES:
+            if not profile["global_cache"]:
+                continue
+            definitions = {key: profile["options"][key] for key in
+                           ("ENABLE_THREAD_CACHE", "ENABLE_STATISTICS", "BINDING_RPMALLOC_RAW",
+                            "BINDING_RPMALLOC_PUBLIC_HEAPS")}
+            commands.append(["clang", "-target", target, "-std=c11", "-ffreestanding", "-nostdinc",
+                             "-isystem", resource+"/include", "-fsyntax-only",
+                             *["-D"+key+"="+str(value) for key, value in definitions.items()],
+                             ROOT/"stdlib/internal/bindings/rpmalloc-heaps/public-layout.h"])
+    scopes = ['tests/native-bindings/rpmalloc-cache-exercise.jai',
+              'tests/native-bindings/rpmalloc-no-thread-cache.jai',
+              'tests/native-bindings/generated', 'stdlib/rpmalloc', 'stdlib/internal/bindings/rpmalloc-heaps',
               *[str(p.relative_to(ROOT)) for p in programs[:-1]],
               'tests/native-bindings/rpmalloc-heap-marshalling.jai',
               'tests/native-bindings/generated/rpmalloc-heap-facade-layout.jai',

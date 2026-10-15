@@ -1,5 +1,29 @@
 # Bindings worker progress
 
+Thread-cache option batch after `154ff0d`: all four thread/global-cache
+selections now use24 real SDK/callback domains, preserving every conditional
+public Heap field. Native independent public mirror offsets/sizes pass with
+thread cache absent in raw-base, raw-enabled and rewrite layouts, with both
+statistics selections. Shared public regressions also exercise real four-thread
+free handoff, resize/data retention, heap lifetime and independent domain state.
+Universal Mac builds pass. `.work/rpmalloc-cache-matrix-final.json` passes357
+checks:66 desktop source checks,22 positive Mac executions,72 C sanitizer
+executions across24 profiles,72 C mirror target/layout checks, strict lint,
+formatting, regeneration and68 Python tests. Ten expected failure checks retain
+actual observed exits. Both private heap selections pass192 configuration
+declaration/public-name checks each (all16 public cache/statistics/raw options
+on six desktop targets). Earlier original18 failures remain resolved. Fresh worker native static/shared
+builder succeeds for all24 domains; its raw-enabled host scope passes349
+checks. The ordinary full enabled verifier passes132 source,40 host build/run
+and198 privacy checks. This is worker evidence, not final package integration.
+
+Declaration ledger stays0 unresolved/80 partial rpmalloc plus36 other-module
+unresolved APIs. Adaptive cache/assertion/validation/page-advice/numeric/huge
+and unmap options remain incomplete. Metadata association OOM remains fail-fast;
+diagnostic snapshot allocation is transactional. More native domains increase
+package/build size, and view copying/serialization remain explicit costs.
+Native Windows/Linux and final coordinator integration remain unverified.
+
 Global-cache option batch after `7eafe15`: ENABLE_GLOBAL_CACHE=false now
 selects a genuinely separately compiled SDK/callback/ownership domain for each
 raw/rewrite/statistics shape. All twelve domains build for both Mac CPUs.
