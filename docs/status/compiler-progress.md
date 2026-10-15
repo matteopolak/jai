@@ -1,5 +1,10 @@
 # Compiler progress
 
+Verified checkpoints: babb2fd (raw pointer constants/typed bindings) and 2676b02
+(invocation-relative jailint imports). Source, regressions and handoffs committed;
+no publication. Platform Registry integration and the documented unsupported
+32-bit program/fault-containment/lifetime cases remain separate gates.
+
 Registry/raw-pointer checkpoint committed: babb2fd, with 332 available core/backend
 passes and final scoped formatting/strict lint/clippy/wasm32 checks. Mailbox's next
 relative-import lint defect also repaired: driver anchors configured import roots

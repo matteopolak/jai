@@ -1,5 +1,9 @@
 # Compiler integration handoff
 
+Latest stable checkpoints: babb2fd raw pointers and 2676b02 relative jailint imports.
+Rebuild the own tools using the canonical commands below to adopt both. All owned
+batch source/test/docs paths are committed; no publication or peer writes.
+
 Raw pointer dependency committed as babb2fd. The mailbox's follow-up relative -I
 jailint request is also fixed in driver path normalization: configured roots are
 anchored to invocation cwd before RootedFs source rebasing. All 39 jailint cases,
