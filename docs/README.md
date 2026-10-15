@@ -438,3 +438,7 @@ The [machine-readable baseline](status/mac-integration-baseline.json) records th
 exact candidate snapshot, commands, environment, counts and failure names.
 Snapshot `90fea8ab` has 822 workspace passes, seven failures and one ignored test;
 the 408-case catalogue remains red. This is a measurement, not completion.
+Focused follow-up: seven reviewed Thread fixtures pass interpreter/native ARM64
+O0 and strict lint; original thread and native backtrace regressions pass. See
+[integration evidence](tools/cleanroom-integration.md) for the coverage changes
+and unresolved old negative assumptions. Full baseline remains red.

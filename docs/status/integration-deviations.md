@@ -1491,3 +1491,17 @@ The test commands finished with no timeouts. One inherited ignored workspace tes
 is reported explicitly. Native Windows/Linux execution, full opaque public corpus
 and Focus GUI remain unverified here. Process inspection is denied by the OS;
 no alternate inspection path was attempted. No remote action was performed.
+# Thread fixture contract migration audit
+
+Seven existing independent thread fixtures now use the reviewed public APIs;
+no Thread/Basic facade exports, compiler bypasses or production defaults changed.
+Removed tests assumed results from canonical void functions and invalid-state
+behavior absent from the oracle (enumerated in the questions document). This
+reduces unestablished legacy negative assumptions; it does not certify those
+states. Real supported contention, allocator byte preservation, work ownership,
+STOP, shutdown timeout/retry, condition wake, semaphore permit/timeout, inherited
+context/logger and caller-owned scratch tests remain. Allocator calls use scoped
+public context selection; temporary storage is freed only after completion and
+deinit. Group logging is explicitly disabled in fixtures to retain exact stdout,
+not suppressed globally or by the test runner. Mac native Debug prerequisite was
+source-built, with no library overlay. Other platforms remain unverified.

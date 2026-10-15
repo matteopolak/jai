@@ -696,3 +696,20 @@ library overlay or tool-only repair was used. Raw logs are durable ignored
 `artifacts/mac-baseline/{workspace,catalogue}.log`, with SHA256 in the report.
 All seven workspace failures remain enabled. Failure classifications are triage,
 not expected-failure exemptions. No original application/vendor source was read.
+# Focused repairs after the frozen measurement
+
+All seven `tests/compiler-regressions/threads-*.jai` now pass interpreter and
+native ARM64 O0 through `tools/stdlib_runtime.py --filter compiler/threads-`.
+The original Rust `interpreted_threads` test also passes, retaining its exact
+`ok` stdout assertion. Group fixtures explicitly select `logging = false`;
+the production public default is unchanged. The real Debug helper was built
+with `python3 tools/build_developer_debug.py`; original
+`backtrace_sees_compiled_callers` passes its original O0/O2 caller assertions.
+Scoped jaifmt check and strict verbose jailint over all seven roots pass.
+Logs/manifests are in ignored `artifacts/mac-baseline/`.
+
+Migration details and unresolved old invalid-state assumptions are recorded in
+`docs/specs/questions/cleanroom-integration.md`; those assumptions are not counted
+as supported negative tests. The frozen full-workspace/catalogue counts remain
+unchanged until a new complete snapshot is measured. This closes two focused
+workspace failures, not the remaining integration gaps.
