@@ -15,9 +15,12 @@ CAPS_VERSION_STRING remain unchanged.
 | flat_pool_allocator_proc | Allocate/copy-resize, no-op FREE, allocated-prefix ownership, static CAPS name/flags, lazy STARTUP and real SHUTDOWN; thread/heap modes diagnose |
 | example | Real default initialization, allocation, reset/stamp verification and deferred release |
 
-Implemented native operations are macOS/Linux/Android branches. Windows/console
-operations remain absent; Windows target checking of the test verifies canonical
-record shape only. Android CLI is unsupported, so no Android target/native claim.
+Native operations use the private internal/allocation/virtual-memory subsystem.
+POSIX hosts use mmap/mprotect/munmap; Windows uses GetSystemInfo and
+VirtualAlloc/VirtualFree through NEW bindings. Windows x64/ARM64 checks now
+compile all public allocation/default/overwrite test bodies, not just record
+shape. Actual Windows execution remains unverified. Console backends are absent;
+Android CLI is unsupported, so no Android target/native claim.
 
 Normal behavior tests now use public init and lazy get, rather than manually
 populating reservation fields. They verify explicit page rounding, default 256MiB
@@ -55,4 +58,26 @@ caller-initialized find_or_add, captured allocator cleanup, non-refilling
 tombstones, collision counters and NEW foundation scalar-default hashing.
 Walk_Table remains withheld pending its caller-local expansion contract.
 
-Refreshed initialization verification: full95 positive cases and23 expected faults pass in both interpreter/native modes, eight compile rejections and prior SMTP/IPC/parent/startup/Linux+Windows checks pass. Flat_Pool also executes native O2. All293 currently owned Jai files pass source-built jaifmt --check and jailint -D warnings. Windows checking currently covers canonical record only, not a native Windows allocator backend.
+Refreshed initialization verification: full95 positive cases and23 expected faults pass in both interpreter/native modes, eight compile rejections and prior SMTP/IPC/parent/startup/Linux+Windows checks pass. Flat_Pool also executes native O2. All293 currently owned Jai files pass source-built jaifmt --check and jailint -D warnings. That checkpoint preceded the Windows backend; current Windows body checks are recorded below.
+
+
+## Native virtual-memory backend
+
+The private backend separates reservation, commitment, release and page-size
+queries without adding public helpers or changing Flat_Pool ABI. Native failure
+returns null/false and the existing checked caller handles it. Windows reserves
+PAGE_NOACCESS with MEM_RESERVE, commits PAGE_READWRITE with MEM_COMMIT, and
+releases the complete reservation with MEM_RELEASE and size0. POSIX reservation
+MAP_FAILED is normalized to null. No backend result is fabricated.
+Host behavior remains executed; Windows source/body checking is not execution.
+
+Official native C facts:
+[VirtualAlloc](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc),
+[VirtualFree](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfree),
+[SYSTEM_INFO](https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info).
+NEW Windows declarations provide the ABI; no peer modifications or Jai source
+implementations were consulted. The source-file readonly-mapping failure is a
+POSIX-specific assertion branch, retained in both actual host execution modes.
+Windows native failure behavior still needs actual platform verification.
+
+Backend-refactor verification:95 positive cases and23 expected faults execute in both modes, with eight compile rejections and existing integration/target checks passing. Dedicated Flat_Pool native O2 passes;294 owned Jai files pass source-built jaifmt --check and strict jailint.

@@ -11,8 +11,14 @@ main :: () {
     assert(type_info(F.Flat_Pool).members[0].offset_in_bytes == 0);
     assert(type_info(F.Flat_Pool).members[1].offset_in_bytes == 8);
 
-    #if OS == .MACOS || OS == .LINUX || OS == .ANDROID {
-        page := P.sysconf(P._SC_PAGESIZE);
+    #if OS == .MACOS || OS == .LINUX || OS == .ANDROID || OS == .WINDOWS {
+        page: s64;
+
+        #if OS == .WINDOWS {
+            info: W.SYSTEM_INFO;
+            W.GetSystemInfo(*info);
+            page = info.dwPageSize;
+        } else page = P.sysconf(P._SC_PAGESIZE);
 
         assert(page > 0);
         extent := page * 4;
@@ -63,21 +69,25 @@ main :: () {
         flags := cast(Allocator_Caps) cast(u64) F.flat_pool_allocator_proc(.CAPS, 0, 0, *name, null);
 
         assert(name == F.CAPS_VERSION_STRING && flags == (.IS_THIS_YOURS | .HINT_I_AM_A_FAST_BUMP_ALLOCATOR));
-        // A real failed mprotect must leave the bump and commit metadata intact.
-        readonly := P.open(temp_c_string(#file), P.O_RDONLY);
 
-        assert(readonly >= 0);
-        failed_mapping := P.mmap(null, cast(u64) page, P.PROT_NONE, P.MAP_SHARED, readonly, 0);
+        #if OS != .WINDOWS {
+            // A real failed mprotect must leave the bump and commit metadata intact.
+            readonly := P.open(temp_c_string(#file), P.O_RDONLY);
 
-        assert(P.close(readonly) == 0);
-        assert(failed_mapping != P.MAP_FAILED);
-        failed_base := cast(*u8) failed_mapping;
-        failed_pool := F.Flat_Pool.{ current_point = failed_base, memory_base = failed_base,
-                                    first_uncommitted_page = failed_base, address_limit = failed_base + page };
+            assert(readonly >= 0);
+            failed_mapping := P.mmap(null, cast(u64) page, P.PROT_NONE, P.MAP_SHARED, readonly, 0);
 
-        assert(F.get(*failed_pool, 1) == null);
-        assert(failed_pool.current_point == failed_base && failed_pool.first_uncommitted_page == failed_base);
-        F.fini(*failed_pool);
+            assert(P.close(readonly) == 0);
+            assert(failed_mapping != P.MAP_FAILED);
+            failed_base := cast(*u8) failed_mapping;
+            failed_pool := F.Flat_Pool.{ current_point = failed_base, memory_base = failed_base,
+                                        first_uncommitted_page = failed_base, address_limit = failed_base + page };
+
+            assert(F.get(*failed_pool, 1) == null);
+            assert(failed_pool.current_point == failed_base && failed_pool.first_uncommitted_page == failed_base);
+            F.fini(*failed_pool);
+        }
+
         defaults: F.Flat_Pool;
         default_data := cast(*u8) F.get(*defaults, 1);
 
@@ -133,3 +143,4 @@ main :: () {
 
 #scope_file
 #if OS == .MACOS || OS == .LINUX || OS == .ANDROID P :: #import "POSIX";
+#if OS == .WINDOWS W :: #import "Windows";
