@@ -7,7 +7,8 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
-JAIC = ROOT / "target/debug/jaic"
+BUILD = Path(os.environ.get("CARGO_TARGET_DIR", ROOT / "target"))
+JAIC = BUILD / "debug/jaic"
 
 
 def invoke(command, *, code=0, output=None, diagnostic=None):
@@ -59,7 +60,7 @@ def main():
              *[ROOT / f"tests/developer-tools/{name}.jai" for name in
                ["debug-lifecycle", "debug-crash-callback", "debug-default-assert"]]]
     invoke([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *paths], output="")
-    invoke([ROOT / "target/debug/jailint", "-D", "warnings", *paths], output="")
+    invoke([BUILD / "debug/jailint", "-D", "warnings", *paths], output="")
     print("Debug assertion ownership/diagnostics and POSIX lifecycle passed interpreter/native Mac O0/O2; fatal callbacks passed native O0/O2")
 
 

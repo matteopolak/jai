@@ -16,6 +16,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [Portable Meow](portable-meow.md): canonical register macros, real calico hashing and native C vector provenance
 - [Debug_Info public parsers](debug-info-public-parsers.md): DWARF4 units, CodeView types/symbols/inline overlays, MSF/PDB/TPI/IPI workflows and SDK oracles
   ([isolated implementation checkpoint](status/debug-info-impl.md))
+- [Debug public runtime](debug-public-runtime.md): reassigned ownership, real breakpoint tracing and platform evidence limits
 
 ## Language
 

@@ -1,0 +1,94 @@
+{
+  "module": "Debug",
+  "timestamp": "2026-10-15T15:52:53.815582+00:00",
+  "head": "530aee67528ec1958e12c572e66360e9c861436a",
+  "counts": {
+    "complete": 2,
+    "partial": 19,
+    "missing": 10
+  },
+  "complete": [
+    "is_debugger_present",
+    "os_is_debugger_present"
+  ],
+  "partial": [
+    "break_once",
+    "abort",
+    "backtrace",
+    "breakpoint",
+    "disable_signal_handler",
+    "enable_signal_handler",
+    "free_backtrace",
+    "init",
+    "is_valid_pointer",
+    "no_assert",
+    "os_abort",
+    "os_backtrace",
+    "os_backtrace_symbols",
+    "os_disable_signal_handler",
+    "os_enable_signal_handler",
+    "output",
+    "print_assert",
+    "set_report_mode",
+    "trace_assert"
+  ],
+  "missing": [
+    "attach_to_debugger",
+    "break_assert",
+    "get_written_minidump_filename",
+    "init_crash_handler_thread",
+    "interactive_assert",
+    "os_attach_to_debugger",
+    "os_logger",
+    "os_show_assert_dialog",
+    "set_minidump_state",
+    "write_minidump"
+  ],
+  "draft": [
+    "break_once: verified Mac interpreter/native O0/O2 actual SDK traps, filename ownership, format/strict lint; ready for commit"
+  ],
+  "committed_prior_scope": "Debug_Info complete at 530aee67; preserved",
+  "classification": "All target variants required for complete; partial includes implemented hosts with outstanding platform execution evidence.",
+  "verification_gaps": [
+    "Windows native execution unavailable on Mac; x64 SDK DLL/executable/export and arm64 object checks pass",
+    "Linux native execution pending",
+    "Graphics configuration, attachment launch, unsupported-target minidumps and Windows crash-thread contracts await precise answers"
+  ],
+  "batches": [
+    {
+      "names": [
+        "break_once"
+      ],
+      "effort": "small",
+      "dependency": "none; draft implementation present"
+    },
+    {
+      "names": [
+        "init",
+        "os_enable_signal_handler",
+        "os_disable_signal_handler",
+        "enable_signal_handler",
+        "disable_signal_handler",
+        "os_logger"
+      ],
+      "effort": "medium",
+      "dependency": "Windows SDK available; native Windows execution external"
+    },
+    {
+      "names": [
+        "attach_to_debugger",
+        "break_assert",
+        "get_written_minidump_filename",
+        "init_crash_handler_thread",
+        "interactive_assert",
+        "os_attach_to_debugger",
+        "os_logger",
+        "os_show_assert_dialog",
+        "set_minidump_state",
+        "write_minidump"
+      ],
+      "effort": "large",
+      "dependency": "Debugger launch and USE_GRAPHICS configuration contract; minidump unsupported-target policy"
+    }
+  ]
+}

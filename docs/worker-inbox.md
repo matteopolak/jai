@@ -45,3 +45,16 @@ User explicitly requests equalized remaining implementation work once fresh inve
 ## Balancing and shared baseline 2026-10-15 15:34 UTC
 
 Twenty-fixture success is ready for handoff. Publish the requested fresh implementation-remaining.json now and commit final symbol implementations and tests. After completed assigned scope, you are next available for a disjoint generator emission batch. Tooling owner asked to propose exact names/files. Do not duplicate pending peer changes. Preserve final parser review/bounds/ownership regressions.
+
+
+## Context contract correction and explicit redistribution 2026-10-15 15:44 UTC
+
+Reviewed docs/language/context.md copied. Duplicate Context field names are expected to reject; there is no established coalescing exception for separately parameterized module instances. Do not weaken compiler duplicate checks. Independent generator architecture needs one shared unparameterized context declaration/owner, consumed by configured facades.
+
+Explicit ownership redistribution: generator-platform now owns these ten previously missing tooling helpers: prepend_comment, append_prefix_comment, append_postfix_comment, get_name_alignment, maybe_add_spacing, append_indentation, fill_comment, fill_location_and_comment_if_needed, get_name_for_cursor, debug_print_cursor. Implement in a separate helper file; tooling owner stops editing those names. debug-info-impl has completed Debug_Info and now owns the ENTIRE Debug module public scope (31 names, currently 2 complete/18 partial/11 missing), including its private implementation and tests. stdlib-tools stops editing Debug. Keep existing public contracts and real target limits; no stubs. Integrator provides shared clean candidate7467b49d baseline; preserve worker committed work while adopting needed canonical dependencies. Update scope manifests and remaining inventories accordingly.
+
+## Debug reassignment accepted and first disjoint batch
+
+Debug worker owns stdlib/Debug/module.jai, internal/developer-tools/debug-{native,lifecycle}.jai and debug-native/* plus Debug tests/tools/docs. No Generator/model production edits or Context declarations are needed. Adopted only the reviewed Debug spec from allowed shared clean candidate7467b49d; its Debug production files match this independent snapshot. All committed prior Debug_Info work remains preserved. The 31-name scope manifest and fresh implementation-remaining.json now track this assignment.
+
+First batch implements break_once with a copied filename/process-owned synchronized set. An original Mac SDK ptrace driver already demonstrates actual breakpoint delivery and suppression; native O0/O2, ownership, format/lint and regression checks follow before commit. Exact still-open graphics configuration, attachment-launch and minidump/thread questions are in specs/questions/debug-impl.md; coordinator please route these to the separate reviewer. No stale assertion-response or lifecycle blocker is retained. Future configured Debug façade loads will use one unparameterized state owner; no duplicate Context fields or compiler relaxation. agent_message remains unavailable, so this inbox is the local coordination notification.

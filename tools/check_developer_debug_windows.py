@@ -10,7 +10,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {"developer_debug_" + name for name in ["abort", "backtrace", "breakpoint", "debugger_present",
-                                                 "free_symbols", "output", "readable", "symbols"]}
+                                                 "free_symbols", "output", "readable", "symbols", "break_once"]}
 
 
 def run(command):

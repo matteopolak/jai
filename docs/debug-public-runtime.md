@@ -1,0 +1,9 @@
+# Debug public runtime implementation
+
+Debug ownership moved to the isolated Debug_Info worker after the parser scope completed. The reviewed shared clean candidate `7467b49d` supplies the current assertion/lifecycle contract. Debug_Info commits remain intact. No compiler, Generator/context architecture or peer production file is modified for this batch.
+
+`break_once` now makes one actual breakpoint attempt per filename bytes, line and character. The first attempt consumes that location even with no attached debugger; subsequent calls return false. The returned Boolean describes actual breakpoint success. This is an independent policy where the reviewed signature supplies no detailed behavior, not a reference-equivalence claim. The native helper copies filename bytes and owns its mutex-protected location set until process exit. A failed allocation/lock reports a diagnostic through the Jai façade; allocation failure does not consume a location. No borrowed mutable caller filename is retained.
+
+`tools/check_developer_debug_once.py` runs an original macOS SDK `ptrace(PT_TRACE_ME)` child driver. It counts actual SIGTRAP stops: one exec trap and exactly three first-location breakpoint traps, including a mutable filename ownership regression. Each public fixture runs both traced and untraced in the interpreter and native O0/O2. Strict C warnings, Jai formatting and warnings-as-errors lint are included. These results establish Mac behavior only. The shared Windows implementation is SDK cross-compiled separately and still requires native Windows execution; Linux requires its native host evidence too.
+
+The existing backtrace/output/probe and signal/assertion lifecycle workflows retain their real native implementations. Exact platform/contract gaps are in [the question ledger](specs/questions/debug-impl.md) and [the assigned inventory](status/implementation-remaining.json). No unsupported-target empty success API is introduced.
