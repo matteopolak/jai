@@ -1,5 +1,11 @@
 # Portable stdlib worker deviations
 
+Platform-io 0100a1f fixture correction and its original SDK oracle dependency are
+recorded in [platform deviations](platform-io-deviations.md). Native PE assertions
+remain mandatory; interpreted IDs/heap globals are checked against actual SDK
+memory properties. The production query/API are unchanged. Actual argv success,
+new native verification gaps and ARM64 API/OS limits are kept distinct.
+
 Platform-io cc07c00 follow-up is recorded in [its deviations](platform-io-deviations.md):
 actual native Platform subset passes are distinct from full-matrix failures; the
 fabricated empty-argv SDK failure is removed. Coordinator direction resolves ARM64

@@ -1,5 +1,18 @@
 # Platform I/O compiler/tool integration handoff
 
+## Actual 0100a1f follow-up
+
+The minimal argv repair is now verified by signed-wheel regressions on both real
+Windows CPUs. ARM64's Platform step passes; the latest private ARM64 crash backend
+was absent. x64's interpreter crash-contract line14 failure is an invalid assumption
+that ordinary interpreted procedure IDs/heap globals are native PE code/data.
+Own interpreter source and an original host reproducer establish that distinction.
+No compiler pointer remapping or production predicate change is needed for this
+failure. Updated original SDK/native-only fixtures preserve real ABI/section checks
+and test actual repeated handler installation. The interpreter's vectored foreign
+fault guard does not replace the top-level filter on each call. See
+[section-query findings and next native commands](platform-io-section-query-regression.md).
+
 ## Current cc07c00 startup findings
 
 See [the original startup reproducers](platform-io-startup-regressions.md). The

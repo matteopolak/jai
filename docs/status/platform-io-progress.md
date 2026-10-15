@@ -1,5 +1,37 @@
 # Platform I/O worker progress
 
+## Actual 0100a1f CI and section-query follow-up
+
+Filtered ci-feedback-latest.md confirms signed-wheel/argv tests pass on BOTH
+Windows CPUs. ARM64 Platform I/O passes at that candidate; x64's step fails only
+crash-contract line14 in interpreter modes, while the other listed cases pass.
+The latest private ARM64 crash backend was absent, so this is not its native
+verification. Renderer now links and fails real WGL context creation; that is
+window/bindings/runner-driver investigation, outside this owned backend change.
+
+Root cause: the failing test assumes ordinary interpreted main/global pointers
+belong to the native PE image. Our compiler uses a tagged FuncId and heap global
+storage. The production PE query correctly addresses GetModuleHandleW(NULL)'s
+real executable, and both initialization calls had already passed. An original
+host pointer-address reproducer confirms the representation difference. No
+production section classification, compiler pointer mapping or public API changed.
+
+The shared test now uses independent actual SDK image/memory probes, retaining
+positive code/data sections, exact section names/permissions, symbol/callback
+mapping, null/stack negatives and all ABI/reflection assertions. Native O0/O2
+compiled-symbol PE assertions are preserved in a mandatory separate executable.
+Repeated-init checks now verify the actual installed callback's canonical pointer
+and restore the prior native filter before interpreted callback storage expires.
+The test-only SDK DLL is built from original C; it is not a production replacement.
+
+Host interpreter/O0/O2, four-target source checks, x64 SDK/backend builds,
+x64 cross-builds and ON/OFF/default startup/fault builds pass. Strict four-target
+lint covers 46/46 owned Jai files. Logs: target/platform-io-0100a1f-{suite,lint}.log.
+Revised x64 fixture execution and new ARM64 runtime/fault/lifecycle behavior still
+need actual native CI. Native --windows-crash assertions remain enabled on both
+CPUs. Explicit per-CPU commands and the API minimum/capability limits are in
+[the section-query report](../platform-io-section-query-regression.md).
+
 ## Private ARM64 crash backend checkpoint
 
 Implementation checkpoint: `7dad176`; argv checkpoints: `acda8e2`, `b38bb03`.

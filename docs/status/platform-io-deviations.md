@@ -1,5 +1,41 @@
 # Platform I/O deviations and pending verification
 
+## 0100a1f CI / corrected execution-mode fixture assumption
+
+- Actual evidence: signed-wheel/argv startup passes on both CPUs; ARM64 Platform
+  step passes. x64 Platform step is red only for the interpreter PE assertion.
+  The private ARM64 backend was not in that candidate. New SDK/native-only test
+  execution and ARM64 backtraces remain pending; full matrix is not green.
+- Location: tests/platform-io/crash-contract.jai previously asserted interpreted
+  main and windows_context were PE code/data. Own interpreter source and an
+  original host reproducer establish tagged procedure IDs and heap global storage.
+  Corrected that unsupported mode assumption; kept all native assertions in
+  windows-crash-native-sections.jai, run at O0/O2 by the runner. No production
+  predicate alteration, false memory permissions or compiler fixture special case.
+- New test dependency: windows-section-sdk.c builds a separate original SDK oracle
+  DLL/import library under durable target/platform-io-tests. It supplies actual
+  main-image probes and VirtualQuery/ImageNtHeader/ImageRvaToSection results for
+  the shared test. It is never production stdlib code or a substitute backend.
+  DLL build/load/SDK query failures fail tests. File-backed probes use the RVA API;
+  interpreted/native BSS/global mapping uses actual OS allocation/protection.
+  Risk: test tooling must build/package the additional oracle; the runner handles
+  it and removes prior oracle artifacts before a build. Native execution remains
+  required. Proper integration is the unchanged production backend plus this
+  source-built fixture, not staged production source repair.
+- Init/filter identity assertions are stronger than the former flag-only checks.
+  Fixture cleanup restores the prior top-level filter before interpreter callback
+  lifetime ends. The interpreter's independent vectored foreign-fault guard stays
+  intact. Public x64 symbol state remains process-scoped with no reviewed public
+  shutdown function; this test does not claim x64 SymCleanup/reinit support.
+- OS minimum/capability: the new ARM64 backend requires RtlVirtualUnwind2, documented
+  for Windows 11/Server 2022. That is an API minimum, not an ARM64 Server SKU claim
+  or native verification on every Windows build. Missing export fails explicitly.
+  Native ARM64 runtime diagnostics keep their private SDK context; public x64-shaped
+  callbacks still reject ARM64. No new older-OS guarantee is made for x64/toolchain.
+  Explicit matching --windows-build x64/arm64 in the next native commands avoids
+  choosing a DLL from an emulated scripting host's architecture. ON/OFF/default
+  fault/trace checks and ARM64 lifecycle/cleanup tests are retained.
+
 ## Private ARM64 runtime backend (supersedes older ARM64 policy statements)
 
 - Coordinator decision windows-arm64-backtrace-decision.md authorizes this

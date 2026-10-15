@@ -7,8 +7,10 @@ selects a separate private module; no ARM64 pointer crosses the public x64 ABI.
 
 Use native CONTEXT and RtlLookupFunctionEntry/RtlVirtualUnwind2 with real thread
 stack limits, bounded walking and progress checks. RtlVirtualUnwind2 is dynamically
-resolved as Microsoft documents. Missing API is an explicit initialization error;
-Windows 11/Server 2022 is this backend's minimum. DbgHelp supplies symbols under
+resolved as Microsoft documents. Missing API is an explicit initialization error.
+Its documented API minimum is Windows 11 client/Server 2022; our backend requires
+native ARM64 Windows and the actual export. This is not an ARM64 Server SKU claim
+or native verification of every Windows build. DbgHelp supplies symbols under
 one lock. A fault uses try-lock to avoid deadlocking on interrupted symbol work.
 Copy the native context before walking; preserve the fault/exit status. Duplicate
 the process handle to isolate the symbol session. Reference-count initialization,

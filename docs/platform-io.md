@@ -94,6 +94,10 @@ missing unwind/symbol information is not synthesized. DbgHelp calls are serializ
 A fault that interrupts an active symbol operation prints an explicit stack-unavailable
 message instead of deadlocking. The public section query inspects the running main
 executable's PE section table and returns the real section name and write permission.
+The shared regression uses source-built SDK probes for actual main-image sections;
+ordinary interpreted procedure IDs and heap globals are checked against native
+memory-query results. Native compiled-code/global section assertions are retained
+in a separate mandatory O0/O2 executable. See [0100a1f findings](platform-io-section-query-regression.md).
 
 Crash initialization occurs only from the configured system entry point. An
 initialization-only import does not install or import the handler. The reviewed
@@ -101,8 +105,10 @@ public Windows crash ABI remains x64-only, and direct ARM64 use diagnoses. The
 coordinator authorized an independent portability improvement for Runtime_Support
 entry: a separate private ARM64 SDK backend, preserving ON/AUTO defaults and never
 reinterpreting a native ARM64 context as the public x64 record. It uses dynamically
-resolved RtlVirtualUnwind2 (Windows 11/Server 2022 minimum), stack bounds, a unique
+resolved RtlVirtualUnwind2 (documented API minimum Windows 11/Server 2022), stack bounds, a unique
 process handle and serialized DbgHelp. Missing API produces an initialization error.
+The ARM64 backend requires a native ARM64 Windows runtime with that export; the API
+minimum does not claim an ARM64 Server SKU or verification of every Windows build.
 Normal shutdown restores the previous exception filter/error mode and releases the
 symbol session/handle. See [design and limits](platform-io-arm64-crash-plan.md).
 

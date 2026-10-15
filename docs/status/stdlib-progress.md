@@ -1,5 +1,13 @@
 # Portable stdlib progress
 
+Platform-io 0100a1f follow-up: actual signed-wheel/argv tests pass on both Windows
+CPUs; ARM64 Platform passes. x64's interpreter PE assertion wrongly treated tagged
+procedure IDs/heap globals as native image sections. Shared tests now use real SDK
+probes, preserve native compiled-symbol O0/O2 assertions separately, and check
+actual repeated handler installation. Host/cross checks and strict 46-file lint
+pass; new fixtures/private ARM64 backend still need native CI with --windows-crash.
+See [section-query evidence](../platform-io-section-query-regression.md).
+
 Platform-io cc07c00 update: actual Windows x64/ARM64 Platform interpreter/native
 O0/O2 steps passed; full jobs failed. The startup failure without `--` is isolated
 and fixed in the compiler executable-query adapter, with independent red/green
