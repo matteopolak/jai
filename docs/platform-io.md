@@ -107,14 +107,21 @@ executable's PE section table and returns the real section name and write permis
 
 Crash initialization occurs only from the configured system entry point. An
 initialization-only import does not install or import the handler. The reviewed
-Windows contract is x64-only; enabling it on ARM64 fails with a target diagnostic,
-while ordinary ARM64 entry/initialization continues to compile. The runner checks
-both configurations, including the expected failure. The x64 DLL/import library
-must be built and the DLL packaged beside executables using the handler.
+public Windows crash ABI remains x64-only, and direct ARM64 use diagnoses. The
+coordinator authorized an independent portability improvement for Runtime_Support
+entry: a separate private ARM64 SDK backend, preserving ON/AUTO defaults and never
+reinterpreting a native ARM64 context as the public x64 record. It uses dynamically
+resolved RtlVirtualUnwind2 (Windows 11/Server 2022 minimum), stack bounds, a unique
+process handle and serialized DbgHelp. Missing API produces an initialization error.
+Normal shutdown restores the previous exception filter/error mode and releases the
+symbol session/handle. See [design and limits](platform-io-arm64-crash-plan.md).
 
-The owned startup metaprogram selects DEBUG/O0 or OPTIMIZED/O2 explicitly through
-Compiler.set_optimization. The runner exercises backtraces ON and OFF in both modes;
-ARM64 OFF is supported and ON must diagnose the reviewed unsupported target. The
+Select `--cpu arm64` in the native dependency build on ARM64. The architecture-
+matching DLL/import library must be built, and the DLL packaged beside executables.
+The native runner executes ordinary startup and real faults under ON, OFF and
+untouched public defaults at O0/O2. ARM64 also runs native C lifecycle assertions.
+Enabled faults require the real exception status and at least two actual frames;
+source checks and cross-builds are separate from these native assertions. The
 fault fixture suppresses interactive Windows error boxes while retaining the actual
 access violation and native exit code. Independent test failures are accumulated:
 an interpreter failure does not prevent native O0/O2 or later fixtures from running,

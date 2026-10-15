@@ -160,6 +160,9 @@ The LLVM backend, C ABI and linking.
 - [Windows startup CI regressions and default-policy review](platform-io-startup-regressions.md)
 - [Windows device notifications](native/window-render-device-notifications.md): real
   interface registration, bounded payload decoding, callbacks and native verification limits.
+
+- [Windows startup CI regressions and native verification](platform-io-startup-regressions.md)
+- [Private ARM64 exception backend design and checks](platform-io-arm64-crash-plan.md)
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage

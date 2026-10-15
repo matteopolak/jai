@@ -84,6 +84,40 @@ The incomplete default ARM64 path remains a genuine full-matrix blocker. Explici
 OFF startup and the explicit ON rejection tests continue to run; neither is claimed
 as proof that untouched defaults work. Renderer GL/GDI SDK library selection belongs
 to bindings/window integration and remains separate from the interpreter argv fix.
+
+## ARM64 default crash policy: resolved engineering direction
+
+The coordinator decision in windows-arm64-backtrace-decision.md confirms that
+untouched .ON and explicit .ON are indistinguishable. Public defaults remain
+.ON/.AUTO. Runtime entry now uses an independent private native ARM64 backend;
+the public x64-shaped Runtime_Support_Crash_Handler remains rejected on ARM64.
+No guessed context layout, compiler target mask or false default/explicit split
+was added. See [design and verification](platform-io-arm64-crash-plan.md).
+
+The original default-options reproducer is restored as
+`tests/platform-io/windows-default-startup-build.jai`. It failed with the x64-only
+handler diagnostic before this implementation and now passes ARM64 checking with
+both default fields untouched. Durable red/green logs are in
+target/platform-io-default-arm64/default-backend-{red,green}.log.
+
+The native runner now builds and executes ordinary startup and real access
+violations under explicit .OFF, explicit .ON and untouched defaults at O0/O2.
+Enabled faults must preserve STATUS_ACCESS_VIOLATION, print at least two real
+frames and have no unwind/unavailable-stack failure. ARM64 additionally executes
+native C init/reference-count/final-shutdown/reinitialization/filter/error-mode
+assertions. No test assertion was dropped. Native execution of these new cases
+remains for coordinator CI; x64 cross-builds and ARM64 source/object checks do not
+establish native results.
+
+The private backend uses SDK CONTEXT, a unique duplicated process handle and
+serialized DbgHelp. RtlVirtualUnwind2 is dynamically resolved, validates stack
+bounds and handles native unwind metadata/leaf frames. It requires Windows 11 or
+Server 2022; missing API is an explicit error. A copied context protects the
+OS-provided fault state. The public x64 callback ABI cannot represent ARM64 and
+continues to diagnose. Concurrent symbol work reports stack-unavailable instead
+of deadlocking. See the deviations report for lifecycle/concurrency limits.
+
+Renderer GL/GDI SDK library selection remains a separate bindings/window gap.
 The filtered missing Basic current_time_monotonic, seconds_since_init and to_apollo
 names are present in reviewed basic.md and are real foundation API gaps, not invented
 legacy conveniences. Native_Thread_Proc and ENABLE_NATIVE_INPUT_ADAPTERS were not

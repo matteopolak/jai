@@ -1,5 +1,54 @@
 # Platform I/O deviations and pending verification
 
+
+## Private ARM64 runtime backend (supersedes older ARM64 policy statements)
+
+- Coordinator decision windows-arm64-backtrace-decision.md authorizes this
+  independent portability improvement. Runtime_Support startup uses private
+  SDK CONTEXT and native unwind metadata on ARM64. Public ON/AUTO defaults and
+  x64 record layouts remain unchanged; explicitly importing the public x64
+  callback facade on ARM64 still diagnoses. No default/explicit provenance,
+  unsafe context reinterpretation or disabled handler was invented.
+- Location: internal/runtime/crash-native/runtime-windows-arm64.c and the private
+  windows-arm64-crash adapter. RtlVirtualUnwind2 requires Windows 11/Server 2022.
+  Missing API returns ERROR_PROC_NOT_FOUND and startup asserts; older Windows
+  ARM64 backtraces are not supported by this backend. Rationale: documented
+  error-returning bounded native unwind including leaf frames/PAC stripping.
+  Risk: older OS deployments fail enabled startup. Proper extension: implement
+  and natively validate an older-OS native unwind path with equivalent safety;
+  do not silently disable ON or fabricate a trace.
+- Real traces are capped at 64 frames. DbgHelp is serialized and a fault uses
+  try-lock; interruption during symbol work reports stack unavailable. There is
+  no alternate signal stack or out-of-process reporter, so a destroyed stack or
+  recursive fault may prevent diagnostics. Proper improvement: out-of-process
+  crash reporting. Original fault context and native exit status are preserved.
+  An unrecoverable stderr WriteFile failure exits with ERROR_WRITE_FAULT because
+  diagnostics cannot be delivered; it does not claim a successful crash report.
+  SymInitialize enumerates loaded modules at every enabled process startup;
+  startup cost is unbenchmarked. Proper performance work must retain real module
+  registration/trace behavior rather than silently disabling diagnostics.
+- The private lifecycle duplicates the process handle for a unique symbol session,
+  reference-counts init/fini, SymCleanup/CloseHandle on final shutdown, and restores
+  prior error mode/filter. Windows offers no atomic filter compare/exchange;
+  concurrent external SetUnhandledExceptionFilter or SetErrorMode changes must
+  be serialized by the application. A later filter is preserved on shutdown;
+  an error-mode change during our lifetime may be overwritten by restoration.
+  Proper extension: document/coordinate process-global policy with other owners.
+- This backend adds a real architecture-specific crash DLL/import library to
+  production packaging. The local host has no ARM64 Windows linker/runtime;
+  warnings-denied ARM64 COFF object builds and source/lint checks do not establish
+  native behavior. The native runner builds the real SDK DLL on each CPU and
+  executes untouched defaults, ON/OFF startup/faults and ARM64 lifecycle tests.
+  New argv/ARM64 backend execution remains required in coordinator native CI.
+- The original default-options reproducer is promoted back into positive fixtures
+  after its red x64-only diagnostic and green ARM64 source check. The expanded
+  source matrix initially failed because the runner treated the CLI's intentional
+  unwritten-child-executable warning as an error. It now requires that exact
+  warning and zero exit/stdout for these checks; all other diagnostics fail.
+  No global warning suppression or compiler diagnostic change. Original failure
+  evidence: target/platform-io-arm64-source-warning-red.log. This is source-only
+  testing; native child execution requires a successful actual build.
+
 ## cc07c00 follow-up (supersedes older verification/gap statements below)
 
 - Filtered CI confirms actual x64/ARM64 Platform I/O interpreter/native O0/O2 step
@@ -25,6 +74,10 @@
   and durable logs. Moving that pending example out of the positive .jai fixture
   inventory does not remove any corpus test or bless its failure: the full-matrix
   blocker stays open pending narrow review, then a proper policy regression/fix.
+
+- ARM64 policy review is now resolved by the coordinator decision above; the
+  original default-options reproducer has returned to the positive fixture set.
+  Its initial failure is retained. Public Build_Options defaults stay ON/AUTO.
 - The no-argument SDK hook is host-independent Rust tested; native UTF-16 parser,
   strict conversion and cleanup must still be exercised on both Windows CPUs.
   The SDK-negative fixture uses real API failures (unpaired surrogates and short

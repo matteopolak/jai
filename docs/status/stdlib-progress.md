@@ -339,6 +339,14 @@ O0/O2 steps passed; full jobs failed. The startup failure without `--` is isolat
 and fixed in the compiler executable-query adapter, with independent red/green
 regressions and strict SDK/native-CI hooks. ARM64 default crash selection remains
 an explicit narrow review request; public defaults/diagnostics are preserved.
+
+Platform-io cc07c00 update: actual Windows x64/ARM64 Platform interpreter/native
+O0/O2 steps passed; full jobs failed. The startup failure without `--` is isolated
+and fixed in the compiler executable-query adapter, with independent red/green
+regressions and strict SDK/native-CI hooks. Coordinator direction now authorizes
+a private ARM64 native exception backend, implemented with unchanged ON/AUTO
+defaults; public x64 callback diagnostics remain. Strict lint covers 45 owned Jai
+files. New backend/native argv execution still requires coordinator Windows CI.
 See [startup findings](../platform-io-startup-regressions.md).
 
 Platform-io role continuation: public Windows Process records/adapter landed in
