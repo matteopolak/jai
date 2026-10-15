@@ -81,10 +81,88 @@ Request: preserve configured bootstrap/module parameters while allowing
 module-owned #add_context declarations before Context layout in module-root
 lint. No module-specific compiler bypass or alternative fake context is needed.
 
-## Remaining Iprof functionality
 
-The metaprogram plugin callbacks, source/hook insertion and real automatic
-procedure instrumentation remain active work. USE_GRAPHICS rendering/config
-and graph selection/scaling remain active work. Native Windows/Linux runtime
-verification remains later work; no additional platform matrix is being
-expanded before these public workflows are complete.
+## Automatic instrumentation, hooks and renderer checkpoint
+
+Every reviewed public callable name now has a production implementation:
+52 Iprof names and 17 Codex names (overloads and conditional forms coalesced).
+The current owned inventory covers139 public names /144 declaration variants;
+Iprof.message remains partial at the producer integration boundary described
+below, not because its body or -modules parser is missing.
+
+Iprof's real CLI plugin uses canonical compiler callbacks and typed records,
+prepends deferred zone scopes with public AST editing/printing, marks generated
+helpers live, and inserts zone initialization during TYPECHECKED_ALL_WE_CAN.
+Entry selection uses configured entry_point_name as well as explicit flags.
+The minimum size uses the compiler's actual Typechecked.subexpressions count.
+A boundary regression compiles native O0/O2 children at exactly that count and
+one above it; the leaf is included only at the inclusive boundary. The entry
+point is always retained. Early returns run zone_end before final reporting.
+
+add_hook forwards caller parameter and argument text into real compiler-added
+wrappers. Tests execute both native child levels, verify11 callback effects
+and Unicode filename / line+1 forwarding. The standard per-frame/editor wrappers
+are generated at the late phase. The reviewed private configuration fields are
+not reachable through the canonical public plugin base, so those default
+optional wrappers have no client call. No public setter, cast or option is
+invented for the unavailable private configuration.
+
+Basic exclusions now match the reviewed temporary_allocator_proc and IsScalar
+names. Canonical independent producer implementation modules are recognized as
+their facade owners when applying exclusions. Imported user modules are
+instrumented with direct context._Iprof guarded macro calls; their measured
+CSV rows appear only with -modules. Missing standard-library bodies are not
+manually reconstructed or instrumented.
+
+The GUI Config uses canonical Math vectors and all reviewed defaults.
+draw renders actual report rows via client callbacks; draw_graph renders actual
+zone/frame histories, cursor markers and animated scales. Default callbacks
+emit the specified unset diagnostics. History-disabled configurations show an
+explicit disabled-history label and continue rendering current report rows.
+Graphics exports and Zone_History obey their reviewed module conditions.
+Runtime/drawing/reporting guards prevent automatic callback instrumentation
+from mutating profiler structures while those structures are consumed.
+
+Node and tracker allocation now uses the canonical persistent Pool, with a
+captured default backing allocator. Raw timing, recursive aggregation and
+temporary-storage reset regressions verify actual lifetime and effects.
+Public zone_infos metadata survives private plugin shutdown until the next
+successful session replaces it using its recorded owner. Concurrent instances
+of one configured module are rejected; serial sessions are verified. The
+reviewed interface does not specify concurrent plugin-instance policy.
+
+Codex now serializes num_expressions directly from compiler metadata, rather
+than recounting a tree that omits the body root. The lifecycle test checks exact
+agreement. Conditionals distinguish braced nesting from else-if chains using
+public source spans; real compiler fixtures cover ordinary, chained, ifx,
+switch/case rounding and static forms. All six short-count types, sticky
+errors, owned/borrowed payloads and empty destination failure are exercised.
+Explicit empty export paths are not silently replaced by default output names.
+
+## Remaining integration work and verification limits
+
+The authoritative local command/outcome report is
+target/profiler-codex-checks.json. It records source hashes, actual exits and
+outputs; complete remains false while a required check fails. All source,
+reports and Git state are local. Only Cargo output uses the assigned T7 target.
+
+The full scoped runner retains its strict module-root checks. Compiler-owned
+context ordering still blocks those roots in this snapshot; the reconciled
+e9affab7 source must be synchronized before final strict-lint replay. Program
+fixtures use -D warnings without allow rules or source substitutions.
+
+The original Basic.alloc interception reduction exits134 with flags0:
+main is received, but the ordinary called Basic body is not. This prevents full
+standard-library -modules instrumentation. The exact source/command/result is
+in [compiler handoff](profiler-codex-compiler-handoff.md). No source/path-filter
+workaround or artificial Basic body is used. Imported user-module behavior is
+verified separately. Codex exports every body it receives; it cannot invent
+procedures withheld by that producer.
+
+Native Windows/Linux remain later execution requirements. Existing target
+checks are source-only evidence. This checkpoint does not expand optional
+platform, profile or performance matrices.
+
+Shared tooling integration must replace two obsolete expected Codex metric
+rejections with the positive reviewed behavior tests. The other tooling owner's
+runner is not edited here.
