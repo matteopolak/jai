@@ -1,5 +1,14 @@
 # Android SDK command subsystem design
 
+REFRESHED REVIEW FOLLOW-UP: synchronized Android/Toolchain behavior now specifies
+SDK discovery/cache, per-call server startup, generic shell double-quote wrapping,
+compression conflict assertion, exact version lines/temporary fields and device
+temporary-array backing. Existing implementation below predates that refinement
+and still requires correction. PID failure=-1 and first-PID warning also differ.
+Earlier protocol passes remain process/safety evidence, not conformance proof for
+these policies. No SDK/device integration success is claimed. New ASN.1 contract
+corrections are handled in a separate checkpoint before this ADB follow-through.
+
 Reviewed API: docs/specs/stdlib/modules/android-toolchain.md. SDK CLI protocol:
 https://android.googlesource.com/platform/packages/modules/adb/+/refs/heads/main/docs/user/adb.1.md
 

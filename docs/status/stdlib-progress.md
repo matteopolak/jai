@@ -1,5 +1,15 @@
 # Portable stdlib progress
 
+Refreshed ASN.1 review consumed: full-record OID equality, trailing-period text,
+immutable one-element known array and supported nonnegative/single-tag domain
+corrected. Actual ASN1_Value + both read overloads and u32LE-prefixed borrowed
+block now implemented. Five programs pass interpreter/native ARM64+x64 O0/O2;
+four pure programs source-check Linux/Windows both CPUs; strict lint passes.
+517 INTEGER/183 OID vectors retained with corrected reviewed-domain expectations.
+Test corrections are explicit in portable-asn1.md, separate from production fixes.
+Missing156 ->152. ADB refreshed discovery/start-server/quoting/storage/PID policies
+are still pending correction; older ADB pass counts do not prove those contracts.
+
 Manifest flags milestone: canonical reviewed s32 enum_flags plus actual16-name
 pipe parser, duplicates ORed, invalid components diagnosed without partial result.
 All16 single/256 pair cases and7 malformed cases pass interpreter/native both

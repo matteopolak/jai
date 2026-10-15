@@ -1,5 +1,17 @@
 # Portable stdlib worker deviations
 
+Refreshed ASN.1 correction supersedes earlier signed/high-tag/active-only/alias
+assumptions below: single supported identifier, nonnegative1..8-byte INTEGER,
+full-record OID equality, dotted trailing period and known-array implemented.
+Value TLV/content borrowing and consumed expected mismatch now exact. Safe
+malformed diagnostics/cursor policy is explicitly independent where review grants
+no recovery contract. Generic readers still little-endian-target implementation;
+all configured targets currently little-endian. Original provisional tests/logs
+preserved as historical evidence, corrected oracles documented separately.
+ADB review also resolved many earlier fine policies; current startup/discovery,
+quote/cache/temp-storage/PID implementation requires correction. Those gaps are
+not completed by earlier host protocol totals; portable-adb.md records follow-up.
+
 Manifest flag parser: exact reviewed16 names/masks and official SDK | grammar
 implemented. Empty input gives no flags; unknown/empty components log+assert and
 return zero if assertions continue. Whitespace/invalid recovery fine policy is

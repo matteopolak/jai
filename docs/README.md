@@ -6,6 +6,8 @@ force-stop and installation queries, with protocol tests and device gaps recorde
 and records its interpreter/native protocol coverage and Windows dependency.
 [Android configuration flags](portable-android-values.md) covers actual manifest
 mask parsing, diagnosed invalid input and independent target checks.
+[ASN.1 readers](portable-asn1.md) now follow refreshed value/TLV, known-array,
+OID equality/text and length-prefix contracts, with separate test corrections.
 
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 

@@ -14,9 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     output = ROOT / "target/portable-asn1"
     output.mkdir(parents=True, exist_ok=True)
-    integers = list(range(-128, 128)) + [-2**63, 2**63-1, -32769, 32768, 65535]
+    integers = list(range(256)) + [0, 2**63-1, 32767, 32768, 65535]
     rng = random.Random(80411)
-    integers += [rng.randrange(-2**63, 2**63) for _ in range(256)]
+    integers += [rng.randrange(2**63) for _ in range(256)]
     wire = bytearray(struct.pack('<I', len(integers)))
     for value in integers:
         length = next(n for n in range(1, 9) if -2**(8*n-1) <= value < 2**(8*n-1))
@@ -35,7 +35,7 @@ def main():
                 digits.append((value & 127) | 128)
                 value >>= 7
             data.extend(reversed(digits))
-        text = '.'.join(map(str, arcs)).encode('ascii')
+        text = ('.'.join(map(str, arcs)) + '.').encode('ascii')
         wire += struct.pack('<I', len(data)) + data + struct.pack('<I', len(arcs))
         wire += b''.join(struct.pack('<Q', arc) for arc in arcs) + struct.pack('<I', len(text)) + text
     (output / 'vectors.bin').write_bytes(wire)
@@ -49,7 +49,9 @@ def main():
         targets.append((['-target', 'x86_64-apple-darwin'], 'x64'))
     sources = [ROOT / 'tests/portable-stdlib/android-asn1.jai',
                ROOT / 'tests/portable-stdlib/android-asn1/vectors.jai',
-               ROOT / 'tests/portable-stdlib/android-asn1/failures.jai']
+               ROOT / 'tests/portable-stdlib/android-asn1/failures.jai',
+               ROOT / 'tests/portable-stdlib/android-asn1/records.jai',
+               ROOT / 'tests/portable-stdlib/android-oid.jai']
     for source in sources:
         commands = [[str(compiler), '-interp', str(source)]]
         for flags, label in targets:
@@ -63,12 +65,13 @@ def main():
                 raise RuntimeError(f'{command!r}\n{result.stdout}{result.stderr}')
     for target in ['linux', 'windows']:
         for cpu in ['x64', 'arm64']:
-            subprocess.run([str(compiler), '-check', '-os', target, '-cpu', cpu, str(sources[0])], env=env, check=True)
+            for source in [sources[0], *sources[2:]]:
+                subprocess.run([str(compiler), '-check', '-os', target, '-cpu', cpu, str(source)], env=env, check=True)
     subprocess.run([str(ROOT / 'target/compiler/debug/jailint'), '-D', 'warnings',
                     str(library / 'Android/Toolchain/module.jai'),
-                    *[str(library / 'internal/android-toolchain' / name) for name in ['asn1-tags.jai', 'asn1-values.jai', 'byte-readers.jai']],
+                    *[str(library / 'internal/android-toolchain' / name) for name in ['asn1-tags.jai', 'asn1-values.jai', 'asn1-records.jai', 'asn1-identity.jai', 'byte-readers.jai']],
                     *map(str, sources)], env=env, check=True, timeout=90)
-    print(f'{len(integers)} signed INTEGER and {len(identifiers)} OID vectors; shape/cursor/failure tests pass interpreter/native both CPUs O0/O2, target checks and strict lint')
+    print(f'{len(integers)} reviewed nonnegative INTEGER and {len(identifiers)} OID vectors; shape/record/cursor/failure/equality tests pass interpreter/native both CPUs O0/O2, target checks and strict lint')
 
 
 if __name__ == '__main__':

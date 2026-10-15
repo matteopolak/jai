@@ -1,49 +1,62 @@
-# ASN.1 primitive parsing contract and design
+# ASN.1 primitive, value and binary parsing
 
-API oracle: reviewed Android/Toolchain page. Implement independently grouped
-tag/length/integer/OID primitives and canonical enum/tag types under
-internal/android-toolchain. Byte readers use checked cursor transactions; no
-unchecked caller-buffer reads or native crypto dependency.
+Oracle: refreshed reviewed Android/Toolchain ASN.1/binary-helper behavior section.
+Canonical declarations and private wire algorithms are independently grouped
+under internal/android-toolchain. No native crypto or reference code is used.
 
-Supported wire domain: definite-length ASN.1 tag/length encoding, signed64-bit
-INTEGER results, and the public twelve-u64-arc OID representation. High tags
-must fit the public u8 number. OID base128 decoding handles the first combined
-identifier with carry, including second arcs near UINT64_MAX. No silent wrapping,
-truncated arc count, indefinite-length sentinel or fabricated parse success.
+Supported tags are one-octet universal declared types or context-specific0..30;
+identifier0, high-tag, application/private classes and undeclared universal types
+diagnose safely. Definite lengths support up to8 length octets, including
+nonminimal encodings; indefinite/reserved/overwidth/truncated lengths diagnose.
+INTEGER content is1..8 bytes with a clear sign bit; nonnegative s64 values and
+redundant leading zeros are supported. Other forms diagnose rather than overread.
+OID base128 supports12 u64 arcs, including first combined subidentifiers beyond
+u64 when the resulting second arc fits. Dotted strings are caller-released and
+include the reviewed trailing period. Equality compares all104 record bytes,
+including inactive arcs. ASN1_KNOWN_OIDS is the immutable one-element known array.
 
-Unresolved reviewed contracts: ASN1_Value.content versus value_data meaning;
-expected-tag mismatch/invalid-input cursor policy; ASN.1 printer exact text and
-depth/hack_skip_depth behavior; read_length_prefixed_block prefix width/endian;
-hex-array formatting/storage. Do not invent these to count the value reader,
-printer, block-prefix or signing helpers completed. Primitive invalid-input
-diagnostics with unchanged cursor are independent safety behavior, not an
-established reference recovery guarantee. OID dotted strings are context-owned.
+ASN1_Value embeds/promotes its canonical tag. content borrows value bytes;
+value_data borrows the complete TLV, both from caller storage. The reader advances
+past a complete value. Its expected overload compares class and number/type but
+deliberately ignores primitive/constructed form; mismatch diagnoses after full
+consumption and returns the parsed value if assertions continue. Malformed reads
+are checked and return empty records after diagnostics; no rollback contract is
+claimed. Private success-bearing parsers prevent a continuing assertion from
+turning a failed tag/length into a successful value parse.
 
-Implemented13 reviewed declarations: three enums, the canonical union-backed
-tag record, exact canonical ASN1_KNOWN_OIDS type alias, tag/length/signed-integer/
-OID readers and dotted rendering, checked binary block reader and generic integer
-reader with its exact read alias. No guessed known-OID table is introduced: the
-reviewed declaration is a type alias and preserves ASN1_Object_Identifier metadata.
-Generic binary integer reading supports built-in1/2/4/8-byte signed/unsigned types
-and both wire byte orders on the compiler's supported little-endian targets.
-Other reflected kinds diagnose at compile time; finer accepted-type scope remains
-a review question. ASN.1 long lengths above eight octets, indefinite lengths,
-tags above255, integers outside s64 and excess/overflowing OID arcs diagnose.
-No unsupported value is silently truncated into a valid result.
+read/read_silly_alias share one generic procedure for built-in1/2/4/8-byte integer
+types; native-order or swapped input on supported little-endian targets.
+read_block returns a checked borrowed view. read_length_prefixed_block reads an
+explicit little-endian u32 prefix and borrowed payload; incomplete prefix/payload
+diagnoses without committing its local cursor. No length truncation/allocation.
 
-`python3 -B tools/check_portable_asn1.py` generates517 INTEGER and183 OID vectors
-with independent Python integer/base128 encoding, including signed extrema,
-all OID counts2..12, UINT64_MAX arcs and first-combined values above64 bits.
-It verifies numeric decoding and exact dotted strings against those oracles.
-Separate shape/overlay/alias/cursor tests cover all ordinary tag octets, full-u64
-length and all eight built-in integer widths/sign kinds in both byte orders.
-Seven malformed-input checks require diagnostics and unchanged input cursor;
-fatal assertion handlers are restored before checking the results.
+Run python3 -B tools/check_portable_asn1.py. Independent Python encoders provide
+517 reviewed nonnegative INTEGER and183 OID vectors. Five programs cover primitive
+shapes/overlay, all supported tag octets, all integer reader widths/signs/orders,
+full-u64 length, record views/mutation/nesting, consumed expected-tag mismatch,
+prefix widths/borrowed payload, all inactive OID slots and malformed safety.
+Interpreter and host ARM64/translated x64 native O0/O2 pass. Four pure programs
+check Linux/Windows x64/ARM64; vector File I/O remains host-only. Strict scoped
+lint and owned formatting check pass. Evidence: target/asn1-reviewed-records-first.log
+and target/asn1-reviewed-records-final.log. Native Linux/Windows execution is pending.
 
-All three programs pass interpreter/host ARM64/translated x64 native O0/O2.
-Public primitive bodies check Linux/Windows x64/ARM64; scoped strict lint and
-formatting/check pass. Evidence: target/asn1-primitives-red.log,
-asn1-primitives-first.log, asn1-primitives-vectors.log and asn1-primitives-final.log.
-No native crypto library, key material, device/auth access or reference body is
-used. Value-reader, printing, X.509 extraction and signing remain unimplemented
-where their reviewed public contracts do not yet establish required behavior.
+Production corrections after contract synchronization: known-OID type alias ->
+one-element array; active-arc equality -> full-record equality; omitted trailing
+period -> required period. Newly specified value/prefix APIs now have real bodies.
+Signed/high-tag support was an earlier independent extension, not reference
+proof; it now diagnoses outside the reviewed supported domain.
+
+Test corrections are separate: older NEW provisional tests expected an alias,
+counted-only equality and unpunctuated dotted text; those oracles contradicted the
+refreshed behavior. They now assert exact known-array/whole-record/text contracts.
+Negative INTEGER/high-tag success cases became explicit diagnosed unsupported
+cases, preserving safety coverage. Generic signed binary reads remain supported
+and tested. Historical primitive logs retain original evidence; those prior pass
+totals are not current reference-equivalence proof.
+
+Remaining implementation: three asn1_print overloads (behavior now reviewed),
+X.509 extraction and crypto/signing helpers. Diagnostic UTC/calendar/banner finer
+formatting and hex-array helper representation still need precise review; value
+view/prefix questions are resolved and no longer blockers. No fake parser success,
+disabled verification assertions, dangling returned payloads or blanket lint
+suppression was introduced.
