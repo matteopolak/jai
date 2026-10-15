@@ -1,5 +1,30 @@
 # Window/render worker handoff
 
+Native build infrastructure checkpoint: `a68544c` fixes Mesa child Python selection
+with an explicit generated native machine file, prepared venv and pinned Mako/
+PyYAML. Authorizeda78721d feedback establishes ARM64 LLVM build completion followed
+by global-python Mako setup failure; it establishes no new driver/runtime success.
+The follow-up cache uses exact source/toolchain/config keys, complete installed-file
+hashes and native identity/relocation checks. Restore/save only the dedicated
+target/window-mesa-cache and use a fresh --out for Mesa/driver output. Old LLVM
+directories without completed receipts are not adopted. See
+[native handoff](native/window-render-wgl-investigation.md) for prerequisites,
+configuration, retry/deployment commands and explicit cache/platform limitations.
+
+Actual local commands for this tools-only batch:
+`python3 tests/window-render/test_mesa_source.py` (seven pass),
+`'target/window mesa python tools/bin/python' tests/window-render/test_mesa_python.py`
+(real Meson1.8.3, one pass), and Python py_compile/--plan checks.
+The prepared local venv contains pinned Meson/Mako/MarkupSafe/packaging/PyYAML;
+global packages were not modified. No Jai/Rust source changed. Full owned jaifmt
+--check was rerun and passes; current native-host jailint -D warnings passes on
+the eight integrated public roots plus Contexts/Lifecycle/Cocoa/native-fields and
+the macOS events regression, without incomplete diagnostics. All54 owned Jai files
+match the staged lint inputs. This is not native Windows lint or runtime evidence.
+Coordinator must run the native ARM64 build, deploy its real PE-matching DLLs, and
+retain actual interpreter/O0/O2 GL identity/draw/readback/lifecycle plus strict lint
+gates. SDK hashes/native cache checks themselves have not executed on this macOS host.
+
 Implementation checkpoint `821adb4`; final runner186/zero, including final Windows
 lifecycle source checks. Strict host lint also covers standalone Cocoa and portable
 native fields; no incomplete roots/warnings. Mesa build on macOS correctly exits2
