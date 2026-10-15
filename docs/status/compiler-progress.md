@@ -1,15 +1,16 @@
 # Compiler progress
 
-Forward enum dependency implementation passed final checkpoint verification.
+Forward enum dependency implementation committed and verified: 7ddabf5.
 Original MASK/LAST reduction now passes host/WASM CLI source checks; interpreter
 returns intended value5. Declaration collection/lazy entities replace sequential
 enum evaluation, preserving selected source/reflection order and implicit normal/
 flags sequencing. Independent core/IDE/reflection/invalid-program regressions and
 actual native ARM64/WASM64 O0/O2 checks pass; actual wasm32 compiler-host runtime
 also passes. Final full available core/backend run: 339 pass, zero fail, one
-inherited corpus sweep ignored across42 binaries (target/enum-dependencies-final-suite.log).
+inherited corpus sweep ignored across 42 binaries (target/enum-dependencies-final-suite.log).
 Scoped format/item spacing, strict positive Jai lint, core/LLVM all-target clippy
-and actual wasm32 source clippy pass. Source and docs are ready for local commit.
+and actual wasm32 source clippy pass. Repeatable actual-wasm32 runner passes the
+runtime fixture, original reduction and cycle/range/duplicate rejection controls.
 No public API/library/peer-tree changes or integration optimizer/hook/recovery
 feature overlap. Conservative structure/value dependency boundary is explicit in
 compiler/enum-dependencies.md and compiler-deviations.md; exact review question

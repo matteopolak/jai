@@ -1,6 +1,6 @@
 # Compiler integration handoff
 
-Forward enum dependencies are repaired generally through `sema/enums.rs`, lazy
+Forward enum checkpoint: 7ddabf5. Dependencies are repaired through `sema/enums.rs`, lazy
 EnumMember entities and in-progress typed member scopes. Selected declaration
 order remains the reflection/implicit-numbering oracle. Port the cohesive source,
 original core/LLVM tests and enum-dependencies.jai fixture; minimal IDE matches
