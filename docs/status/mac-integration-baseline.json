@@ -1,0 +1,777 @@
+{
+  "schema": 1,
+  "candidate_path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures",
+  "ref": "integration/thread-fixtures",
+  "snapshot": "90fea8ab84fa881b96a327d2bb117541e83429b4",
+  "target": "macos-arm64",
+  "status": "measured-red",
+  "workspace": {
+    "command": "cargo test --locked --workspace --all-targets --no-fail-fast",
+    "passed": 822,
+    "failed": 7,
+    "ignored": 1,
+    "failures": [
+      {
+        "name": "default_metaprogram_options",
+        "classification": "missing Default_Metaprogram; legacy options also require reviewed-contract migration"
+      },
+      {
+        "name": "ignored_build_options_are_reported",
+        "classification": "fixture expects explicitly unsupported backend/raw LLVM options to be ignored"
+      },
+      {
+        "name": "sandbox_threads_wake_waiters_and_report_deadlocks",
+        "classification": "invalid native-only Thread import on WASM; preserve scheduler coverage through compiler provider"
+      },
+      {
+        "name": "backtrace_sees_compiled_callers",
+        "classification": "native prerequisite absent: source-built developer_tools_debug dylib"
+      },
+      {
+        "name": "interpreted_threads",
+        "classification": "legacy Thread fixtures use void results/invalid lifecycle and allocator APIs"
+      },
+      {
+        "name": "wasm_target::wasm_tour_runs_as_a_wasi_command",
+        "classification": "tour imports native-only Thread on WASM"
+      },
+      {
+        "name": "every_stdlib_module_checks_for_every_target",
+        "classification": "unused-code target ledger differences; platform guards/API errors require individual review"
+      }
+    ],
+    "status": "finished",
+    "completed_suites": 97,
+    "exit_code": 101
+  },
+  "catalogue": {
+    "command": "python3 tools/stdlib_runtime.py --jaic /Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/target/debug/jaic --modes interp,native --opt O0 --jobs 4 --timeout 180 --verbose",
+    "passed": 647,
+    "failed": 152,
+    "ignored": 0,
+    "failures": [
+      {
+        "name": "compiler/build-options-main-defaults",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "build-options-main-defaults.jai:18:5: error: error during compile-time execution: assertion failed: `options.output_executable_name.count > 0` is false"
+      },
+      {
+        "name": "compiler/compiler-build-file-and-literals",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "../../stdlib/internal/compiler-api/workspaces.jai:17:5: error: developer_debug requires compiler debugger support, which is unavailable"
+      },
+      {
+        "name": "compiler/compiler-get-code-rerun",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "compiler-get-code-rerun.jai:12:45: error: unknown identifier `code_to_string`"
+      },
+      {
+        "name": "compiler/compiler-reflection-pure",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "compiler-reflection-pure.jai:16:9: error: unknown identifier `compare_alloc_and_free_traces`"
+      },
+      {
+        "name": "compiler/compiler-resolved-nodes",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "compiler-resolved-nodes.jai:62:5: error: error during compile-time execution: assertion failed: {"
+      },
+      {
+        "name": "compiler/compiler-typechecked-notes",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "compiler-typechecked-notes.jai:61:41: error: error during compile-time execution: assertion failed: `it.body_or_null != null` is false"
+      },
+      {
+        "name": "compiler/custom-link-library-lists",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "custom-link-library-lists.jai:46:65: error: in call to `compiler_custom_link_command_is_complete`: too many arguments: it takes at most 1"
+      },
+      {
+        "name": "compiler/float-literal-precision",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "float-literal-precision.jai:17:5: error: #assert failed: `type_of(a) == float64` is false"
+      },
+      {
+        "name": "compiler/lang-asm",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture contains x64-only assembly on ARM64",
+        "diagnostic": "lang-asm.jai:601:9: error: pause requires an x86-64 target"
+      },
+      {
+        "name": "compiler/macro-code-variable-arg",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "a_constant:: 10"
+      },
+      {
+        "name": "compiler/modern-metaprogramming",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "modern-metaprogramming.jai:110:9: error: error during compile-time execution: assertion failed: {"
+      },
+      {
+        "name": "compiler/poly-struct-type-names",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "no diagnostic"
+      },
+      {
+        "name": "compiler/print-null-pointer-union-forms",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "no diagnostic"
+      },
+      {
+        "name": "compiler/rules-code-values-and-insertion",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "rules-code-values-and-insertion.jai:28:5: error: error during compile-time execution: compiler_get_code: expected `)` to close the parenthesized expression, found `+=`"
+      },
+      {
+        "name": "compiler/rules-compiler-module",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "rules-compiler-module.jai:61:5: error: error during compile-time execution: assertion failed: compiler.5: anchored at this file's directory"
+      },
+      {
+        "name": "compiler/rules-enums",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "rules-enums.jai:85:5: error: runtime error: assertion failed: unnamed value prints as out of range"
+      },
+      {
+        "name": "compiler/rules-numbers",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "rules-numbers.jai:28:5: error: #assert failed: `type_of(long) == float64` is false"
+      },
+      {
+        "name": "compiler/rules-prelude-and-runtime-support",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture runtime configuration conflicts with canonical instance",
+        "diagnostic": "rules-prelude-and-runtime-support.jai:23:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/rules-scoping",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "rules-scoping.jai:59:15: error: module `Rules_Scoping` has no exported member `module_only_value`"
+      },
+      {
+        "name": "compiler/rules-simd-asm",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture contains x64-only assembly on ARM64",
+        "diagnostic": "rules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target"
+      },
+      {
+        "name": "compiler/rules-structs",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "rules-structs.jai:125:5: error: runtime error: assertion failed: struct.14"
+      },
+      {
+        "name": "compiler/runtime-support-output",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture runtime configuration conflicts with canonical instance",
+        "diagnostic": "runtime-support-output.jai:1:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/runtime-support-source",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture runtime configuration conflicts with canonical instance",
+        "diagnostic": "runtime-support-source.jai:2:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/struct-using-member-path",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "struct-using-member-path.jai:37:26: error: unknown identifier `mesh`"
+      },
+      {
+        "name": "compiler/threads-allocators",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture migration: reviewed Thread signatures/lifecycle",
+        "diagnostic": "threads-allocators.jai:101:25: error: in call to `assert`: the argument has no value"
+      },
+      {
+        "name": "compiler/threads-cooperative",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture migration: reviewed Thread signatures/lifecycle",
+        "diagnostic": "thread_deinit requires a completed threadthreads-cooperative.jai:36:18: error: runtime error: assertion failed: thread_deinit requires a completed thread"
+      },
+      {
+        "name": "compiler/threads-group-and-condition",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture migration: reviewed Thread signatures/lifecycle",
+        "diagnostic": "threads-group-and-condition.jai:64:12: error: in call to `assert`: the argument has no value"
+      },
+      {
+        "name": "compiler/threads-group-work",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture migration: reviewed Thread signatures/lifecycle",
+        "diagnostic": "threads-group-work.jai:134:16: error: expression has no value"
+      },
+      {
+        "name": "compiler/threads-switch-while-locked",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture migration: reviewed Thread signatures/lifecycle",
+        "diagnostic": "threads-switch-while-locked.jai:57:16: error: in call to `assert`: the argument has no value"
+      },
+      {
+        "name": "compiler/threads-synchronization",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture migration: reviewed Thread signatures/lifecycle",
+        "diagnostic": "threads-synchronization.jai:142:25: error: in call to `assert`: the argument has no value"
+      },
+      {
+        "name": "compiler/threads-worker-requests",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "fixture migration: reviewed Thread signatures/lifecycle",
+        "diagnostic": "threads-worker-requests.jai:40:12: error: in call to `assert`: the argument has no value"
+      },
+      {
+        "name": "compiler/type-of-polymorphic-template",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "no diagnostic"
+      },
+      {
+        "name": "compiler/using-only-import",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "using-only-import.jai:17:12: error: unknown identifier `contains`"
+      },
+      {
+        "name": "compiler/void-values-print",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "void-values-print.jai:9:5: error: runtime error: assertion failed: `s == \"void void\"` is false"
+      },
+      {
+        "name": "extensions/io-dependency-workers",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "prepared fixture prerequisites/routing missing; not pass",
+        "diagnostic": "io-dependency-workers.jai:21:5: error: runtime error: assertion failed: pass a scratch file path"
+      },
+      {
+        "name": "extensions/io-uring-dependency-repro",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "platform routing: unsupported local target, not pass",
+        "diagnostic": "../../stdlib/Extensions/Io_Uring/module.jai:37:9: error: #assert failed: Extensions/Io_Uring is Linux only: io_uring is a Linux kernel interface"
+      },
+      {
+        "name": "native/clipboard-round-trip",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "fatal runtime error: Rust cannot catch foreign exceptions, aborting"
+      },
+      {
+        "name": "native/objc-window-levels",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "objc-window-levels.jai:11:9: error: unknown identifier `init_core_graphics_runtime_constants`"
+      },
+      {
+        "name": "graphics/getrect-simp-gl-frame",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "legacy fixture API not established by reviewed contracts; migration required",
+        "diagnostic": "getrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`"
+      },
+      {
+        "name": "graphics/getrect-widgets-driven",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "legacy fixture API not established by reviewed contracts; migration required",
+        "diagnostic": "getrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`"
+      },
+      {
+        "name": "graphics/input-multi-window-focus",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "legacy fixture API not established by reviewed contracts; migration required",
+        "diagnostic": "input-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-published-events",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "legacy fixture API not established by reviewed contracts; migration required",
+        "diagnostic": "input-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-temporary-allocator",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "legacy fixture API not established by reviewed contracts; migration required",
+        "diagnostic": "input-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/simp-gl-render-readback",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "legacy fixture API not established by reviewed contracts; migration required",
+        "diagnostic": "simp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`"
+      },
+      {
+        "name": "graphics/window-fullscreen-toggle",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "window-fullscreen-toggle.jai:29:9: error: runtime error: assertion failed: window has no associated native OpenGL context"
+      },
+      {
+        "name": "graphics/window-input-native-events",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "window-input-native-events.jai:256:110: error: unknown identifier `NSCursor`"
+      },
+      {
+        "name": "Extensions/Byte_Search/tests/search",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "search.jai:247:35: error: operator Sub is not defined for Apollo_Time"
+      },
+      {
+        "name": "Extensions/Http/tests/client",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../client.jai:1808:29: error: unknown identifier `atomic_compare_exchange`"
+      },
+      {
+        "name": "Extensions/Http/tests/codec",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../date.jai:101:27: error: operator Sub is not defined for Apollo_Time"
+      },
+      {
+        "name": "Extensions/Http/tests/https",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../date.jai:101:27: error: operator Sub is not defined for Apollo_Time"
+      },
+      {
+        "name": "Extensions/Http/tests/server_connections",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "server_connections.jai:581:32: error: operator Sub is not defined for Apollo_Time"
+      },
+      {
+        "name": "Extensions/Http/tests/server_extractors",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../date.jai:101:27: error: operator Sub is not defined for Apollo_Time"
+      },
+      {
+        "name": "Extensions/Http/tests/server_responses",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../client.jai:1808:29: error: unknown identifier `atomic_compare_exchange`"
+      },
+      {
+        "name": "Extensions/Http/tests/server_routing",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../date.jai:101:27: error: operator Sub is not defined for Apollo_Time"
+      },
+      {
+        "name": "Extensions/Http/tests/testing",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../client.jai:1808:29: error: unknown identifier `atomic_compare_exchange`"
+      },
+      {
+        "name": "Extensions/Io/tests/backends",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "lib/suite.jai:1364:17: error: module `Atomics` has no exported member `atomic_store`"
+      },
+      {
+        "name": "Extensions/Io/tests/files",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "lib/suite.jai:1364:17: error: module `Atomics` has no exported member `atomic_store`"
+      },
+      {
+        "name": "Extensions/Io/tests/streams",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "lib/suite.jai:1364:17: error: module `Atomics` has no exported member `atomic_store`"
+      },
+      {
+        "name": "Extensions/Io/tests/tcp",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "lib/suite.jai:1364:17: error: module `Atomics` has no exported member `atomic_store`"
+      },
+      {
+        "name": "Extensions/Io/tests/timeouts",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "lib/suite.jai:1364:17: error: module `Atomics` has no exported member `atomic_store`"
+      },
+      {
+        "name": "Extensions/Json/tests/differential",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../number.jai:499:19: error: unknown identifier `__float_decimal_digits`"
+      },
+      {
+        "name": "Extensions/Json/tests/encode",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../number.jai:538:19: error: unknown identifier `__float_decimal_digits`"
+      },
+      {
+        "name": "Extensions/Json/tests/leaks",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "genuine ownership failure: decode error cleanup leaves allocation",
+        "diagnostic": "leaks.jai:288:5: error: runtime error: assertion failed: `failures == 0` is false"
+      },
+      {
+        "name": "Extensions/Json/tests/numbers",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../number.jai:499:19: error: unknown identifier `__float_decimal_digits`"
+      },
+      {
+        "name": "Extensions/Json/tests/query",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../number.jai:37:14: error: unknown identifier `Decimal_Float`"
+      },
+      {
+        "name": "Extensions/Json/tests/typed",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "Extensions dependency/API compatibility failure; preserve error and review scope",
+        "diagnostic": "../number.jai:37:14: error: unknown identifier `Decimal_Float`"
+      },
+      {
+        "name": "Input/tests/windows-device-decoding",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "platform routing: unsupported local target, not pass",
+        "diagnostic": "../../Windows/module.jai:1:9: error: #assert failed: Windows requires its documented native platform"
+      },
+      {
+        "name": "SDL/tests/sdl-layout",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "prepared fixture prerequisites/routing missing; not pass",
+        "diagnostic": "sdl-layout.jai:14:5: error: runtime error: foreign procedure `binding_sdl_check_size` is not available here"
+      },
+      {
+        "name": "SDL/tests/sdl-rwops",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "prepared fixture prerequisites/routing missing; not pass",
+        "diagnostic": "sdl-rwops.jai:23:5: error: runtime error: assertion failed: `arguments.count == 2` is false"
+      },
+      {
+        "name": "SDL/tests/sdl-wm",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "prepared fixture prerequisites/routing missing; not pass",
+        "diagnostic": "sdl-wm.jai:19:5: error: runtime error: foreign procedure `binding_runtime_wm_size` is not available here"
+      },
+      {
+        "name": "Simp/tests/glyph-atlas",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "prepared fixture prerequisites/routing missing; not pass",
+        "diagnostic": "glyph-atlas.jai:22:5: error: runtime error: assertion failed: provide a caller-owned native font path"
+      },
+      {
+        "name": "tests/portable-data-console-windows",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "unresolved: requires reviewed-contract comparison",
+        "diagnostic": "portable-data-console-windows.jai:11:7: error: module `Windows_Resources` has no exported member `disable_runtime_console`"
+      },
+      {
+        "name": "tests/portable-data-discovery-windows",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "platform routing: unsupported local target, not pass",
+        "diagnostic": "portable-data-discovery-windows.jai:6:9: error: #assert failed: `OS == .WINDOWS` is false"
+      },
+      {
+        "name": "tests/portable-data-manifest-windows",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "platform routing: unsupported local target, not pass",
+        "diagnostic": "portable-data-manifest-windows.jai:5:9: error: #assert failed: `OS == .WINDOWS` is false"
+      },
+      {
+        "name": "tests/portable-data-resource-windows",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "platform routing: unsupported local target, not pass",
+        "diagnostic": "portable-data-resource-windows.jai:10:9: error: #assert failed: `OS == .WINDOWS` is false"
+      },
+      {
+        "name": "tests/portable-data-resource",
+        "modes": [
+          "interp",
+          "native"
+        ],
+        "classification": "prepared fixture prerequisites/routing missing; not pass",
+        "diagnostic": "portable-data-resource.jai:35:5: error: runtime error: assertion failed: `args.count == 2` is false"
+      }
+    ],
+    "status": "finished",
+    "exit_code": 1,
+    "cases": 408,
+    "counts": {
+      "interp": {
+        "passed": 327,
+        "failed": 76,
+        "unavailable": 0,
+        "compile_time_only": 0,
+        "expected_negative_passed": 5
+      },
+      "native": {
+        "passed": 320,
+        "failed": 76,
+        "unavailable": 0,
+        "compile_time_only": 7,
+        "expected_negative_passed": 5
+      }
+    }
+  },
+  "limits": [
+    "Public application corpus and Focus GUI are coordinator-owned.",
+    "Windows/Linux native verification pending; unsupported targets are not passes.",
+    "Prior checks are recorded separately; pending counts are null, never zero."
+  ],
+  "environment": {
+    "LLVM_SYS_231_PREFIX": "/opt/homebrew/opt/llvm",
+    "RUSTC_WRAPPER": "",
+    "CARGO_TARGET_DIR": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/target",
+    "JAIC_STDLIB": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/stdlib",
+    "JAIC_NATIVE_LIBS": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/artifacts/native-sdk:/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/native-libs/macos-arm64:/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/target/window-native:/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/target/audio-native",
+    "TMPDIR": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/artifacts/test-tmp"
+  },
+  "evidence": {
+    "artifacts/mac-baseline/workspace.log": "8547f97a2fa070c769f09b725479b982e8158a5305bdfcd15f0572fb1c8b384a",
+    "artifacts/mac-baseline/catalogue.log": "04be03b4d387483d4111924664bfb000610b784c4959e3639e03d8c053a49d48"
+  },
+  "timeouts": [],
+  "source_changes_during_measurement": false
+}

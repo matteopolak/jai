@@ -1474,3 +1474,20 @@ rerun. These counts are for the older Root, not the newer candidate.
 The explicit raw-enabled production sweep now passes187/187 after the profile
 expectation correction; the normal packaged false selector is restored byte for
 byte. This does not add further option coverage or native platform claims.
+# Native Mac measurement limitations, 2026-10-15
+
+The frozen `90fea8ab` workspace/catalogue measurements remain red; exact evidence
+is in `docs/status/mac-integration-baseline.json`. `Debug` native helper was not
+built in this candidate, so `backtrace_sees_compiled_callers` fails to link rather
+than proving a backtrace regression. Proper fix: source-build the actual private
+native helper and verify the original caller assertion. Generic catalogue routing
+does not supply argv, fonts, SDL C probes or prepared resource inputs to specialized
+fixtures, and selects Linux/Windows-only programs on Mac. Those failures remain
+failures; proper fix is explicit supported-target/prepared-suite routing with
+required separate execution, not a skip baseline. Unknown identifiers and failed
+runtime assertions still require individual reviewed-contract comparison.
+
+The test commands finished with no timeouts. One inherited ignored workspace test
+is reported explicitly. Native Windows/Linux execution, full opaque public corpus
+and Focus GUI remain unverified here. Process inspection is denied by the OS;
+no alternate inspection path was attempted. No remote action was performed.

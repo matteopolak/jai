@@ -1,5 +1,26 @@
 # Portable stdlib progress
 
+## Native Mac candidate measurement, 2026-10-15
+
+Candidate `integration/thread-fixtures` at `90fea8ab84fa881b96a327d2bb117541e83429b4`
+includes approved Extensions migration plus the assertion lifecycle repair,
+ARM64 xxHash, production rpmalloc profiles, data/resources, forward enums and
+filtered storage reexports. Unsupported live `::` aliases were not merged.
+The following supersedes refresh23's Extensions hold and missing Mac ABI claims:
+original complete Mac C ABI passes; production allocator default 169/169 and
+selected raw 187/187 pass, with default private configuration restored.
+
+One complete stable Mac workspace run: 822 passed, seven failed, one inherited
+ignored. Current 408-case catalogue: interpreter 327 passed/76 failed/five precise
+negative passes; native ARM64 O0 320 passed/76 failed/seven compile-time-only/five
+negative passes. Exact commands and all failure names/classifications are in
+[the baseline report](mac-integration-baseline.json). Missing native Debug helper
+is a prerequisite failure; missing Default_Metaprogram is functionality, not a
+test skip. Reviewed-contract migrations and unused-code target ledger differences
+remain required. No Windows/Linux native or full public corpus success is claimed.
+Inventory remains 129/135 facades, six missing plus one supplementary table, zero
+exhaustive module certifications. Public corpus and Focus remain coordinator-owned.
+
 ## Integration refresh23
 
 Consumed producer OIDs are current in integration-refresh.json. Compiler6080ff0a

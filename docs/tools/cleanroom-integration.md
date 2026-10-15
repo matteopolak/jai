@@ -675,3 +675,24 @@ Whole current-head workspace/catalogue/quality/partial-edit proof remains open.
 The394-case owned catalogue completed with313 interpreter positives/76 failures and308 nativeO0 positives/74 failures, plus5 precise negatives each and7 native compile-only cases. This diagnostic run occurred during edits and included a harness false failure: malformed lexer diagnostics were merged into expected stdout. The corrected runner keeps both streams exact, requires a separate strict source check before compile-only classification, never reclassifies timeouts, and propagates cleanup errors. Nine runner tests pass; original classification failures remain in artifacts. A complete54-contract rerun now passes49 positives plus5 expected negatives in each interpreter/nativeO0 mode. No broad catalogue green claim follows.
 
 Foundations rerun passes the previously failing leak-report/graph cases, then stops on canonical visualization channel acquisition. Independent official SDK diagnostic creates/maps/releases a unique own channel, but canonical O_EXCL creation fails errno17. Existing channel ownership is unknown; no data was opened/read/unlinked and no public constant was renamed. This requires coordinator native isolation. Portable suite completed real watcher/bundle/IPC/runtime checks, then exposed stale MPEG asset paths; those six authored fixtures now use the unchanged migrated input, and the PTS fault reaches its intended checked diagnostic. Whole suites remain failed until rerun.
+# Frozen native Mac measurement
+
+On 2026-10-15, candidate `integration/thread-fixtures` at full source head
+`90fea8ab84fa881b96a327d2bb117541e83429b4` was measured without source edits during
+either command. Candidate path:
+`artifacts/integration-clean/thread-fixtures` under the clean integration root.
+The [JSON report](../status/mac-integration-baseline.json) contains exact commands,
+environment, aggregate counts, all failure names and diagnostic classifications.
+Workspace exited 101: 822 passed/seven failed/one ignored across 97 summaries.
+Catalogue exited 1: 408 cases, interpreter 327/76 plus five expected negatives;
+native ARM64 O0 320/76 plus seven compile-time-only and five expected negatives.
+Neither command timed out. No optional profile or second native architecture
+catalogue was launched. Existing complete workspace tests retain their target,
+ABI, ownership, native optimizer and precise negative checks.
+
+Rust sources were rebuilt from this candidate using the existing own root target
+cache. Production stdlib and fresh rpmalloc SDK were selected explicitly; no
+library overlay or tool-only repair was used. Raw logs are durable ignored
+`artifacts/mac-baseline/{workspace,catalogue}.log`, with SHA256 in the report.
+All seven workspace failures remain enabled. Failure classifications are triage,
+not expected-failure exemptions. No original application/vendor source was read.
