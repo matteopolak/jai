@@ -789,3 +789,21 @@ foreign/native SDK cases separately, never passed. Root contract coverage is
 bounded, not equivalent to deleted suite or complete reviewed API coverage.
 Coordinator alone runs opaque original public corpus, Focus and ordinary native
 CI. Release/publication remains held. No push/dispatch performed.
+
+
+Portable0c09ce4 audited/merged as5eb5149: primitive private clock kernels preserve
+configured Basic canonical Apollo_Time; real first-call CAS elapsed storage,
+native CPUID/mask queries and actual Windows mapping/extent/cleanup bodies.
+Preserved prior Windows thread completion/readback/assertions and production-only
+test drivers over incoming staging overlays. Retained old native Meow regression
+plus both NEW producer vectors against production (no peer copies). Public Basic
+Buffer remains removed; nested builder type retained. Calendar normalization/
+sentinel/assertion and Pool unmapping-option gaps have precise public reproducers
+in integration-requests.md. Windows native runtime remains unverified.
+
+New independently spec-authored storage-time and scalar-Hash nativeO0 cases PASS.
+Formatter case initially FAIL only because its manifest still expected ok after
+reviewer added print_bytes: actual4 ab newline agrees exactly with basic.md line521.
+Manifest now includes those bytes, retaining all formatter assertions. This is a
+test harness oracle correction, no production change. Original failure log is
+artifacts/integration-clean/reviewed-foundations-O0.log. Complete rerun pending.
