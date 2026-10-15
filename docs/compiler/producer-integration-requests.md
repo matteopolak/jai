@@ -49,10 +49,13 @@ parameters. The legacy system-module exemption for unknown arguments is removed.
 The old extra TEMPORARY_STORAGE_SIZE argument must not become a public export.
 Default target allocation works. NO_OUTPUT workspaces retain the requested size
 as metadata and the unchanged 65536 option fixture passes in both runner modes.
-Actual nondefault target allocation diagnoses its missing private startup/config
-mechanism; late setters are checked too. Compiler/runtime owners must implement
-that real allocation without changing reviewed public signatures. The remaining
-gap is target allocation, not option round-tripping.
+The private startup/config mechanism is now implemented in the compiler and owned
+internal/compiler-api/runtime-config helper. A checked staging adapter uses it in
+NEW runtime initialization and executes real 65536-byte late-root and 0/131072-byte
+native child allocations. The producer must adopt those exact private consumer
+changes and remove the public size parameter/forwarding. See runtime-configuration.md.
+Until adoption, nondefault requests on an older runtime still diagnose; no option
+round-trip or staging-only pass is called production integration.
 
 ## Register reproducer classification
 

@@ -34,6 +34,7 @@ mod modify;
 mod modules;
 pub mod perf;
 pub mod procs;
+mod runtime_config;
 mod runtime_info;
 pub mod scope;
 mod stmt;
@@ -391,6 +392,7 @@ pub struct Compiler {
     asserts_done: usize,
     /// `__runtime_info`, when the program references it.
     runtime_info: Option<ir::GlobalId>,
+    runtime_storage_global: Option<ir::GlobalId>,
     /// Id of the workspace this compiler builds (1: the top-level program).
     pub workspace: i64,
     /// Sources added so far (labels of added strings).
@@ -648,6 +650,7 @@ impl Compiler {
             asserts_done: 0,
             workspace: crate::build::TOP_LEVEL_WORKSPACE,
             runtime_info: None,
+            runtime_storage_global: None,
             added_sources: 0,
             lenient_failures: HashMap::default(),
             default_scopes: HashMap::default(),

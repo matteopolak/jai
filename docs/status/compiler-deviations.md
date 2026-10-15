@@ -1,5 +1,48 @@
 # Compiler deviations and implementation gaps
 
+Late cross-workspace runtime configuration is now refreshed by the Rust CLI and
+workspace emission drivers immediately before execution/output. The original
+child-to-root update test failed before this repair and now executes real 131072
+root allocation in interpreter/native modes. The test uses the compiler registry's
+own root identity, not an asserted public reference numbering scheme. Changes
+after object emission/custom linking are not given a new code-rebuild guarantee.
+
+Strict linter follow-up: NEW platform producer root/context and diagnostic fixes
+were reviewed and integrated generally. A virtual library-owned wrapper preserves
+private import policy; strict bootstrap preparation resolves real lazy parameter
+bindings before reuse. Incomplete compile/IDE checking now diagnoses and fails.
+Original privacy, required-binding, CLI failure and generic alias/shadowing tests
+pass. All existing linter rule expectations remain unchanged; the rule test helper
+now honors explicit JAIC_STDLIB selection. The first unconfigured CLI regression
+run failed library discovery; its log is retained. Candidate startup lint initially
+lost privacy and then required parameters; both root causes are repaired rather
+than inventing argument defaults. The lazy fixture's C caller needed an explicit
+no-context helper; that invalid test setup was corrected with the failure retained.
+Procedure alias matching uses exact IDs/instance relationships, improving on the
+NEW producer's span comparison. Public export/instance searches add linear work
+for private-alias rule calls; cache the resolved public identity graph if profiling
+shows a material cost. Warm bootstrap preparation adds a strict compiler finish
+for module roots. Target-selection/manifest and other platform producer linter
+features are not all ported in this scoped repair; no full-platform lint claim.
+
+Nondefault runtime storage now has private compiler-provided finalized target
+data and a no-context getter, with ABI/range checks and direct/procedure-value
+interpreter/native/WASM64 execution. The finalized option also configures new
+interpreter entry contexts. Actual staged NEW runtime allocation passes for a
+late 65536 root setting and independent native 0/131072 child workspaces.
+Production adoption is pending in the portable-owned runtime; the checked test
+adapter modifies only own target copies of three NEW runtime files, removing
+public size parameters and reading the private getter for allocation/metadata.
+This is candidate integration evidence, not production/corpus verification.
+Older target runtimes retain diagnostics even after compile-time or unused
+getter reads. Invalid allocation sizes reject; NO_OUTPUT metadata is distinct.
+Existing host compile-time contexts are not resized by later setters; that exact
+contract question is recorded. Startup allocation-failure behavior remains the
+runtime's responsibility. Existing debugger/AST/backend limits below remain.
+See compiler/runtime-configuration.md for location, commands and producer edits.
+Initial child check-only and stale-linter failures are retained; neither is
+counted as native allocation or strict lint success.
+
 LSP alias documentation resolves simple named-import/load/local alias graphs
 with lexical/export visibility and cycle guards. The token index still falls
 back to the original expression for computed aliases, struct namespaces and
