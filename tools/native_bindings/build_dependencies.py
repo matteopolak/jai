@@ -73,6 +73,8 @@ def main():
         'imgui': [vendor/manifest['imgui']['archive']['root']/name for name in
                   ('imgui.cpp','imgui_draw.cpp','imgui_tables.cpp','imgui_widgets.cpp','imgui_demo.cpp')],
     }
+    if platform.system() == 'Darwin':
+        units['fsevents_context_probe'] = [ROOT/'tests/native-bindings/fsevents_context_probe.c']
     macros = {'stb_image': 'STB_IMAGE_IMPLEMENTATION',
               'stb_image_resize': 'STB_IMAGE_RESIZE_IMPLEMENTATION',
               'stb_image_write': 'STB_IMAGE_WRITE_IMPLEMENTATION'}
@@ -96,6 +98,8 @@ def main():
         run(['ar', 'rcs', args.output / ('lib' + name + '.a'), *compiled])
         suffix = '.dylib' if platform.system() == 'Darwin' else '.so'
         extra = ['-lffi'] if name == 'binding_ffi' else []
+        if name == 'fsevents_context_probe':
+            extra = ['-framework', 'CoreServices']
         run(['c++' if name in ('meshoptimizer','imgui') else 'cc', '-dynamiclib' if suffix == '.dylib' else '-shared', *compiled,
              '-lm', *extra, '-o', args.output / ('lib' + name + suffix)])
         print('Built ' + name)

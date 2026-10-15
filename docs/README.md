@@ -3,6 +3,8 @@
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing
+- [FSEvents context adapter](native/fsevents-context.md): exact public order,
+  private SDK marshalling, callback lifetime and native canary/event checks
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 
 ## Language

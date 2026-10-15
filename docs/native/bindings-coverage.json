@@ -70512,11 +70512,11 @@
     },
     "macOS": {
       "spec": "docs/specs/stdlib/modules/macos.md",
-      "spec_sha256": "2279e8b733cf40b5506e0701b283d690a4c2c055afc040e70a08e4280e85911e",
+      "spec_sha256": "e9d029257b3b69556f58d729c33de4fd96edcd932d5c9e8036acd12437f2155e",
       "counts": {
-        "declared": 2480,
+        "declared": 2479,
         "implemented": 65,
-        "implemented_manual": 2
+        "implemented_manual": 3
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -86047,7 +86047,9 @@
           "signature": "FSEventStreamCreate :: (allocator: CFAllocatorRef, callback: FSEventStreamCallback, _context: *FSEventStreamContext, pathsToWatch: CFArrayRef, sinceWhen: FSEventStreamEventId, latency: CFTimeInterval, flags: FSEventStreamCreateFlags) -> ConstFSEventStreamRef #foreign CoreServices",
           "condition": "OS == .MACOS",
           "spec_line": 2226,
-          "status": "declared"
+          "status": "implemented_manual",
+          "artifact": "stdlib/macOS/wrappers.jai",
+          "native_abi_adapter": "FSEventStreamCreate"
         },
         {
           "name": "FSEventStreamScheduleWithRunLoop",

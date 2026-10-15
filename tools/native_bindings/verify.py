@@ -168,6 +168,7 @@ def main():
                 report['targets'].append(public_result)
             print(module, os_name+'-'+cpu, result['status'])
     for module, filename, configs in [
+        ('macOS', 'fsevents-context.jai', [('macos','x64'),('macos','arm64')]),
         ('Objective_C', 'appkit.jai', [('macos','x64'),('macos','arm64')]),
         ('GL', 'gl-output-buffers.jai', TARGET_CONFIGS),
         ('GL', 'glx-context.jai', [('linux','x64'),('linux','arm64')]),
@@ -212,7 +213,7 @@ def main():
                             ('X11', 'Binding_Message_Choices'), ('X11', 'binding_message_event'),
                             ('X11', 'binding_message_button'), ('dxc_compiler', 'ID3D12ShaderReflection'),
                             ('dxc_compiler', 'Win'), ('dxc_compiler', 'D3D'),
-                            ('dxc_compiler', 'NativeCompile')]:
+                            ('dxc_compiler', 'NativeCompile'), ('macOS', 'NativeEvents')]:
         if args.module and module.split('/')[0] not in args.module and module not in args.module:
             continue
         for os_name, cpu in TARGET_CONFIGS:
@@ -250,6 +251,8 @@ def main():
             runtime_tests.append('dxc-reflect')
             runtime_tests.append('dxc-wide')
             runtime_tests.append('dxc-compile-unit')
+        if sys.platform == 'darwin':
+            runtime_tests.append('fsevents-context')
         runtime_tests.append('sdl-rwops')
         runtime_tests.append('imgui-nested')
         runtime_tests.append('posix-stat')
@@ -261,6 +264,8 @@ def main():
             relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
             if name == 'appkit':
                 relevant = ['Objective_C']
+            if name == 'fsevents-context':
+                relevant = ['macOS']
             if name == 'sdl-wm':
                 relevant = ['SDL']
             if name == 'posix-abi':

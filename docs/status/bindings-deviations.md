@@ -8,6 +8,17 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **FSEvents public/native field-order mismatch, corrected.** The exact public
+  40-byte record remains unchanged. `macOS.FSEventStreamCreate` now copies into
+  complete SDK-correct private storage; the function address necessarily differs
+  from the native symbol. No heap registry or callback convention conversion is
+  introduced. All offset/canary/retain/release/null-context tests and real event
+  delivery are active. [Details](../native/fsevents-context.md) record ownership,
+  the corrected native-control test assumption, the narrow C SDK scheduling
+  deprecation exclusion and optional description-callback coverage limits.
+  Long-term: preserve the private adapter unless a reviewed public ABI change
+  becomes authorized; audit any newly inventoried context-taking entry point.
+
 - **Linux ARM64 public/kernel stat mismatch.** The three named wrappers now
   preserve the public x64 record/constants while using generated pinned native
   ARM64 syscall definitions and complete private storage, with explicit field

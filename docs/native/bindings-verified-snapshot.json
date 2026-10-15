@@ -1,9 +1,9 @@
 {
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
-    "declared": 28398,
+    "declared": 28397,
     "unresolved": 116,
-    "implemented_manual": 51,
+    "implemented_manual": 52,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1
@@ -278,6 +278,41 @@
           "failed": 40
         }
       }
+    },
+    {
+      "report": ".work/fsevents-native-current.json",
+      "sha256": "0e24e3e7b8401250e63b3ea901299d8c28314ad7788b75101ab2ea30de9a6373",
+      "scope": "FSEvents/macOS source matrix, private export checks and real host native tests",
+      "compiler_sha256": "75fd6e23452c090761d90352a00e786439d0971895c6c1708c7ba4bfdf2219ff",
+      "results": {
+        "targets": {
+          "unsupported": 4,
+          "passed": 6
+        },
+        "privacy": {
+          "unsupported": 4,
+          "passed": 2
+        },
+        "native": {
+          "passed": 4
+        }
+      },
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/fsevents-both-cpus-tools.json",
+      "sha256": "03274e4409d5b5883a208b3ed6bdf197e12277d6f078394a25c7209360679521",
+      "scope": "Real macOS x64 (OS translation) and ARM64 event/lifetime/ABI execution; production formatter, strict lint, regeneration and 45 generator tests",
+      "command_exits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

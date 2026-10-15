@@ -1,5 +1,16 @@
 # Bindings worker progress
 
+Latest FSEvents batch: exact public context layout retained; all fields marshal
+into private SDK order at `FSEventStreamCreate`. Real host lifetime/canary/null
+context and filesystem callback delivery pass. Producer FileWatcher is untouched.
+Both supported macOS source configurations and private-export checks pass;
+the scoped matrix has zero failures (`.work/fsevents-native-current.json`).
+Two-CPU native execution and production tool results are recorded separately in
+`.work/fsevents-both-cpus-tools.json`. Generator regression suite now has 45 tests.
+This is an ABI repair, not a reduction of the 116 unresolved declaration or 40
+configuration-failure inventories. Next: apply reviewed SDL prefix/native-record
+verification policy, then remaining supported desktop wrappers and D3D repro.
+
 Active implementation; full integration/corpus/release verification remains
 coordinator-owned. POSIX/WGL checkpoint: `79af73e`; safe SDL/iOS/X11 checkpoint:
 `fddae00`.
