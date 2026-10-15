@@ -55,3 +55,31 @@ Please route that request to the compiler/linter owner and return an approved
 sanitized repair checkpoint. No compiler/peer checkout is edited here. The
 production client context remains a required green gate, not counted as passed.
 The absent original baseline is explicitly not a blocker for this resumed work.
+
+
+## User reinforced root-cause policy
+
+Do not patch isolated cases merely to turn tests green. Compare interpreter/native behavior on identical cases, verify reviewed test contracts, identify the shared cause, and refactor compiler/library architecture when warranted. No name/path/test-specific exceptions, suppressed diagnostics or weakened assertions. Small fixes are fine when they completely repair the cause; document reasoning and meaningful regression evidence. Call out any workaround explicitly. Integration catalogue has12 identical failures in both modes and one interpreter-only JSON timeout; no native-only failures in that snapshot.
+
+
+## Corpus public API review 2026-10-15 17:24 UTC
+
+Reviewed basic, math refreshed. Context.print_style is genuinely public. S128/Apollo_Time +/- operator interface required. Basic alloc/New do NOT accept allocator argument (use context.allocator); free pointer/string real; swap lowercase; Basic get_time/bubble_sort/Swap not current exports, get_time belongs Thread_Group. Math Vector2 scalar multiply/divide actual, scalar add/sub absent. Metaprogram_Plugins supports dynamic names formed during compile-time execution, not just CLI names. Its current generated-source boundary needs proper general compiler/library architecture, no CLI-only dispatch limitation. No arbitrary backwards aliases or weakened tests.
+
+## Latest user assignment: focused Basic/Math ownership
+
+This supersedes the earlier Extensions-only scope for the assigned core work.
+This worker owns the shared print-style context architecture, public integer
+operators, supported free/hash regressions and reviewed Vector2 arithmetic.
+Portable time owner: clock/calendar/Apollo conversion bodies remain untouched;
+only integer128 operator declarations provide the reviewed inherited interface.
+Compiler owner: no compiler source is edited. Authorized candidate8b134bdb source
+is staged locally and source-built in T7. No peer checkout is written.
+
+The design and explicit ABI-bridge cost are in docs/features/basic-public-context.md.
+Dirty-room contract precision questions are in docs/specs/questions/basic-core-public.md.
+
+
+## User-required reference oracle
+
+Some public corpus targets use old Jai versions. Dirty coordinator is running suspect cases with reference Jai0.2.030 in a no-network/restricted-write sandbox. Do not add old aliases or modify current APIs solely to satisfy corpus before reference behavior is confirmed. Continue independently established current-contract bugs. Clean implementers never read reference source, vendor bodies or raw reference logs; only sanitized reviewed contracts and independent reductions will be supplied.

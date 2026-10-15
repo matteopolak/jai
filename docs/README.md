@@ -1,5 +1,8 @@
 # Developer documentation
 
+- [Basic shared print context and public arithmetic](features/basic-public-context.md):
+  one field across configurations, preserved builder layouts, supported free/hash and Vector2 APIs.
+
 - [Rejected-overload lint defect](compiler/rejected-overload-lint-request.md):
   independent reduction and compiler-owner request for the required Http client context.
 
