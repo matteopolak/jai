@@ -3,8 +3,8 @@
 These are packaging choices. Public ABI declarations come from the specs.
 """
 IMPORTS = {
-    'd3d11': ['Windows', 'dxgi'], 'd3d12': ['Windows', 'dxgi', 'd3d11'],
-    'd3d_compiler': ['Windows', 'd3d11'], 'dxc_compiler': ['Windows'],
+    'd3d11': ['Windows', 'dxgi', 'd3d_compiler'], 'd3d12': ['Windows', 'dxgi', 'd3d_compiler'],
+    'd3d_compiler': ['Windows'], 'dxc_compiler': ['Windows'],
     'dxgi': ['Windows'], 'Linux': ['POSIX'], 'Metal': ['Objective_C'],
     'Objective_C': [], 'macOS': ['POSIX', 'Objective_C'], 'nvidia_aftermath': ['Windows', 'd3d12'],
     'X11': ['POSIX'], 'Android': ['POSIX'],

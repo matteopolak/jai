@@ -169,6 +169,8 @@ def main():
             print(module, os_name+'-'+cpu, result['status'])
     for module, filename, configs in [
         ('macOS', 'fsevents-context.jai', [('macos','x64'),('macos','arm64')]),
+        ('d3d11', 'forward-overlay.jai', TARGET_CONFIGS),
+        ('d3d12', 'd3d-interface-identity.jai', [('windows','x64'),('windows','arm64')]),
         ('SDL', 'sdl-layout.jai', TARGET_CONFIGS),
         ('SDL', 'sdl-rwops.jai', TARGET_CONFIGS),
         ('SDL', 'sdl-wm.jai', TARGET_CONFIGS),
@@ -216,7 +218,9 @@ def main():
                             ('X11', 'Binding_Message_Choices'), ('X11', 'binding_message_event'),
                             ('X11', 'binding_message_button'), ('dxc_compiler', 'ID3D12ShaderReflection'),
                             ('dxc_compiler', 'Win'), ('dxc_compiler', 'D3D'),
-                            ('dxc_compiler', 'NativeCompile'), ('macOS', 'NativeEvents')]:
+                            ('dxc_compiler', 'NativeCompile'), ('macOS', 'NativeEvents'),
+                            ('d3d11', 'ID3DBlob'), ('d3d11', 'ID3D11ModuleInstance'),
+                            ('d3d12', 'ID3DBlob')]:
         if args.module and module.split('/')[0] not in args.module and module not in args.module:
             continue
         for os_name, cpu in TARGET_CONFIGS:

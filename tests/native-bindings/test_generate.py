@@ -10,6 +10,13 @@ from spec import parse_spec
 
 
 class GeneratorTests(unittest.TestCase):
+    def test_shader_compiler_is_a_shared_acyclic_interface_dependency(self):
+        from config import IMPORTS
+        self.assertNotIn('d3d11', IMPORTS['d3d_compiler'])
+        self.assertIn('d3d_compiler', IMPORTS['d3d11'])
+        self.assertIn('d3d_compiler', IMPORTS['d3d12'])
+        self.assertNotIn('d3d11', IMPORTS['d3d12'])
+
     def test_fsevents_context_adapter_requires_complete_public_signature(self):
         signature = ('FSEventStreamCreate :: (allocator: CFAllocatorRef, callback: FSEventStreamCallback, '
                      '_context: *FSEventStreamContext, pathsToWatch: CFArrayRef, sinceWhen: FSEventStreamEventId, '

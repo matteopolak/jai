@@ -5,6 +5,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [Features](features.md): what works, performance and what is missing
 - [FSEvents context adapter](native/fsevents-context.md): exact public order,
   private SDK marshalling, callback lifetime and native canary/event checks
+- [Direct3D canonical interface dependencies and compiler repros](native/d3d-source-dependencies.md)
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 
 ## Language

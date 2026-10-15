@@ -8,6 +8,19 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **D3D dependency and compiler staging repair.** Refreshed only safe NEW
+  producer compiler sources. Its general forward-overlay fix now passes our
+  original storage-sharing regression; no local compiler patch remains.
+  Removed unnecessary/inverted module imports and used the existing canonical
+  shader-compiler COM definitions, preserving all public types/aliases/vtables.
+  [Details](../native/d3d-source-dependencies.md) record the independent general
+  imported/local alias lookup bug, real source/privacy improvements, the two
+  unresolved convenience overloads, remaining aggregate ABI risks and unavailable
+  Windows runtime. The dependency cleanup is permanent architecture, not a
+  special-case workaround. The general alias bug still requires compiler repair;
+  its assertions stay active. Host strict lint cannot fully compile Windows-only
+  roots while the linter lacks target selection; do not count that as a pass.
+
 - **FSEvents public/native field-order mismatch, corrected.** The exact public
   40-byte record remains unchanged. `macOS.FSEventStreamCreate` now copies into
   complete SDK-correct private storage; the function address necessarily differs

@@ -1,5 +1,16 @@
 # Bindings worker progress
 
+Direct3D batch: safe producer refresh resolves general forward overlays; the
+independent storage-sharing regression builds/runs. Corrected acyclic canonical
+interface imports unblock D3D11/12, D3D compiler, DXC and Aftermath Windows source
+checks, including full public DXC compile/reflection. D3D11/12 debug configurations
+now pass: configuration failures reduced from 40 to 36 by actual code/dependency
+repairs. No public records/types changed, no compiler patches/peer edits.
+The 116 unresolved declarations remain required. Windows native runtime is not
+claimed. A separate general imported/local alias-resolution failure has an
+active minimal repro; strict whole Windows render source still hits producer
+Unicode's fixed-array literal bug. See `docs/native/d3d-source-dependencies.md`.
+
 SDL policy batch: exact public 48/8-byte prefix contracts are now independently
 asserted, alongside complete private native RWops/User_Event sizes and all
 top-level field offsets. No public layout or callback ABI changed. Native event

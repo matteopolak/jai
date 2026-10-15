@@ -342,6 +342,99 @@
         0,
         0
       ]
+    },
+    {
+      "report": ".work/d3d-forward-overlay-producer-refresh.json",
+      "sha256": "77b820d36924dcbae8af2101e9033b6e3ed6d360400efaf2f9e9b2a6c0688525",
+      "scope": "Historical initial canonical dependency failures after safe producer forward-overlay fix",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "unsupported": 20,
+          "failed": 12,
+          "passed": 4
+        },
+        "privacy": {
+          "unsupported": 20,
+          "failed": 10
+        },
+        "native": {}
+      }
+    },
+    {
+      "report": ".work/d3d-dependencies-current.json",
+      "sha256": "967ee1bc814b2e1b4ac48dad706729d6189ff52564f5e6192accac08b88df613",
+      "scope": "Historical remaining alias mismatch before removing unnecessary D3D11 import",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "unsupported": 20,
+          "passed": 22,
+          "failed": 4
+        },
+        "privacy": {
+          "unsupported": 20,
+          "passed": 10
+        },
+        "native": {}
+      }
+    },
+    {
+      "report": ".work/d3d-dependencies-final.json",
+      "sha256": "75e9a55379de031feabbc2eb62ae5101df101460a4ebbc74215bd9e037d18738",
+      "scope": "Windows x64/ARM64 canonical D3D/DXC source, public aliases and private-export checks; no Windows native runtime",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "unsupported": 20,
+          "passed": 32,
+          "failed": 2
+        },
+        "privacy": {
+          "unsupported": 32,
+          "passed": 16
+        },
+        "native": {}
+      }
+    },
+    {
+      "report": ".work/configurations-after-d3d-refresh.json",
+      "sha256": "3a95c9ea41faf03663c09db436cba463619330b2f48d565a668322ba2e61b127",
+      "scope": "Real D3D debug config repairs; 36 failures remain active",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "checks": {
+          "passed": 46,
+          "failed": 36
+        }
+      }
+    },
+    {
+      "report": ".work/d3d-compiler-and-window-repros.json",
+      "sha256": "71ec7d422e7fe66b9d529e350de030993e03d24934528bf4365b32c028e1be21",
+      "scope": "General forward-overlay native storage regression, active alias compiler repro and strict producer Unicode failure",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "checks": {
+          "0": 2,
+          "1": 3
+        }
+      }
+    },
+    {
+      "report": ".work/d3d-production-tools-current.json",
+      "sha256": "28b4c2539888d6fcf54043cb1ba35696e45d6b8037e9feca38b14d84cbc662f2",
+      "scope": "Production formatting/regeneration/46 tests and independent overlay strict lint pass; Windows target-context and alias-repro strict lint failures remain; ordinary Windows render source checks pass",
+      "command_exits": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0
+      ]
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",
