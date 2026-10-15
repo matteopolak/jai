@@ -4,6 +4,7 @@ Native stb dependencies must be built separately using the repository's reviewed
 native build tool. Nothing is fetched here; no shared manifests/staging are used.
 """
 from pathlib import Path
+import argparse
 import os
 import subprocess
 import sys
@@ -11,12 +12,19 @@ import sys
 root = Path(__file__).resolve().parents[2]
 output = root / "target/portable-data"
 output.mkdir(parents=True, exist_ok=True)
-env = dict(os.environ, JAIC_NATIVE_LIBS=str(output / "native"))
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--native-libs", type=Path, default=output / "native")
+parser.add_argument("--compiler", type=Path)
+parser.add_argument("--formatter", type=Path)
+parser.add_argument("--linter", type=Path)
+parser.add_argument("--probe-unsupported-wasi-images", action="store_true")
+args = parser.parse_args()
+env = dict(os.environ, JAIC_NATIVE_LIBS=str(args.native_libs.resolve()), JAIC_STDLIB=str(root / "stdlib"))
 if os.name == "nt":
-    env["PATH"] = str(output / "native") + os.pathsep + env.get("PATH", "")
-compiler = root / ("target/debug/jaic.exe" if os.name == "nt" else "target/debug/jaic")
-formatter = root / ("target/jaifmt.exe" if os.name == "nt" else "target/jaifmt")
-linter = root / ("target/debug/jailint.exe" if os.name == "nt" else "target/debug/jailint")
+    env["PATH"] = str(args.native_libs.resolve()) + os.pathsep + env.get("PATH", "")
+compiler = (args.compiler or root / ("target/debug/jaic.exe" if os.name == "nt" else "target/debug/jaic")).resolve(strict=True)
+formatter = (args.formatter or root / ("target/jaifmt.exe" if os.name == "nt" else "target/jaifmt")).resolve(strict=True)
+linter = (args.linter or root / ("target/debug/jailint.exe" if os.name == "nt" else "target/debug/jailint")).resolve(strict=True)
 sources = [
     "stdlib/Ico_File", "stdlib/Simple_Package", "stdlib/Subtitles",
     "stdlib/internal/resource-wire", "stdlib/internal/simple-package",
@@ -59,7 +67,7 @@ for mode in ("O0", "O2"):
     binary = output / f"resource-directory-{mode}"
     run(compiler, f"-{mode}", resource_test, "-exe", binary)
     run(binary, output)
-if "--probe-unsupported-wasi-images" in sys.argv:
+if args.probe_unsupported_wasi_images:
     # Explicit unsupported-target probe: failures stay failures and exit nonzero.
     wasm_test("tests/portable-data/ico-wire.jai", "ico-wire")
     wasm_test("tests/portable-data/ico-filename.jai", "ico-filename")

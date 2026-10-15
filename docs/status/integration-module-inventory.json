@@ -296,14 +296,14 @@
   {
     "spec": "docs/specs/stdlib/modules/ico-file.md",
     "module": "Ico_File",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Ico_File/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/icon.md",
     "module": "Icon",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Icon/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/imgui.md",
@@ -626,8 +626,8 @@
   {
     "spec": "docs/specs/stdlib/modules/simple-package.md",
     "module": "Simple_Package",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Simple_Package/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/sloppy-math.md",
@@ -698,8 +698,8 @@
   {
     "spec": "docs/specs/stdlib/modules/subtitles.md",
     "module": "Subtitles",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Subtitles/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/system.md",
@@ -776,8 +776,8 @@
   {
     "spec": "docs/specs/stdlib/modules/windows-resources.md",
     "module": "Windows_Resources",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Windows_Resources/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/windows-utf8.md",

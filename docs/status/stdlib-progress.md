@@ -1,5 +1,29 @@
 # Portable stdlib progress
 
+## Integration refresh23
+
+Consumed producer OIDs are current in integration-refresh.json. Compiler6080ff0a
+general enum fix and portableb174fa22 are merged; data/resourceb1c6b1a5 is consumed
+through only its five scoped producer commits. Actual production data runner
+passes host/WASI/SDK wire consumers and strict target lint/checks. Windows native
+resource/discovery/+Icon effects are now registered in ordinary x64/ARM64 CI,
+prepared but unexecuted locally. Inventory129/135 present, six missing modules
+plus one supporting constant table; zero exhaustive whole-module certifications.
+
+Proper mutable Socket reexports and anonymous filtered import registration fix
+the actual storage/visibility defect without changing immutable declarations.
+All52 module regressions and7 enum core/backend tests pass. Production resolver
+passes interpreter/native both Mac CPUs O0/O2/strict lint, original SDK storage
+identity and real numeric address resolution. Full ABI retains missing Mac
+hostent shape failure. Default-profile production allocator sweep passes71 checks;
+raw/options/other native OS remain gaps. Earlier full workspace810/10/one ignored
+is superseded only by focused fixes until the next complete run.
+
+Extensions6b0f2229 is available but separate pending coordinator resolution of the
+standing preserve-Extensions instruction versus mailbox scope. Existing failures
+remain enabled. Full quality/catalogue/current-head partial-edit/native/opaque
+corpus verification remains next. No push/dispatch/publication performed.
+
 ## Integration refresh18: durable verified checkpoint
 
 Reviewable combined source/test head1f2a3e02e36dfb0be6e19275b24dad14435aef94.

@@ -1,15 +1,15 @@
 {
   "compiler": {
     "ref": "coordinator/compiler",
-    "commit": "093712a7c7db34e91b336eb526179336572afb3e"
+    "commit": "6080ff0a080af64b6896427a0cdbfb7940f44a52"
   },
   "stdlib": {
     "ref": "coordinator/stdlib",
-    "commit": "e81f1a5b7af112c8260db1d4a640b71ceb2b0a12"
+    "commit": "b174fa2236396fa1bfbbff68c0571febd4ea04ec"
   },
   "bindings": {
     "ref": "coordinator/bindings",
-    "commit": "2a18c3c3130cc65194df094b78a2a299d8e380dd"
+    "commit": "9106bfb6eb85e4b6939a21ee89ae124832097226"
   },
   "numerics": {
     "ref": "producer/numerics",
@@ -34,12 +34,7 @@
   },
   "window-render": {
     "ref": "coordinator/window-render",
-    "commit": "387efe210431df3bba69e7cb8dbd326c3aef2964",
-    "additional_repairs": {
-      "source": "3ced6c43e225fbb9a615ca5a587ac23b25a8ea7e",
-      "integrated_via": "2fa2bc2b03c4bfb792ee49fc786611c6330a405c",
-      "note": "Reviewed coordinator cherry-pick; original source OID is not claimed an ancestor"
-    }
+    "commit": "39404f301ec723f188cb004b6e06fc16a48869a5"
   },
   "platform-io": {
     "ref": "coordinator/platform-io",
@@ -51,10 +46,16 @@
   },
   "stdlib-tools": {
     "ref": "coordinator/stdlib-tools",
-    "commit": "4f87fd6a6cc3b3379b9a8668df7c80ea5fcf5660"
+    "commit": "3b3ff6e50854d79a430920ad41c82264b7496067"
   },
   "ci-candidate": {
     "ref": "coordinator/ci-candidate",
     "commit": "2fa2bc2b03c4bfb792ee49fc786611c6330a405c"
+  },
+  "portable-data": {
+    "ref": "codex/stdlib-data",
+    "source_commit": "b1c6b1a57c3d1c12f2d27586f8fe67f0e374df6e",
+    "integrated_via": "efcb29fe",
+    "note": "Five scoped approved producer commits cherry-picked with -x, without importing producer base integration history"
   }
 }

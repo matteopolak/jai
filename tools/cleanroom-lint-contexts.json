@@ -5889,6 +5889,237 @@
         "windows-x64",
         "wasi"
       ]
+    },
+    {
+      "id": "refresh23-tests-portable-data-ico-filename",
+      "source": "tests/portable-data/ico-filename.jai",
+      "paths": [
+        "tests/portable-data/ico-filename.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-tests-portable-data-ico-wire",
+      "source": "tests/portable-data/ico-wire.jai",
+      "paths": [
+        "tests/portable-data/ico-wire.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-tests-portable-data-icon-phase",
+      "source": "tests/portable-data/icon-phase.jai",
+      "paths": [
+        "tests/portable-data/icon-phase.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-tests-portable-data-icon-plugin",
+      "source": "tests/portable-data/icon-plugin.jai",
+      "paths": [
+        "tests/portable-data/icon-plugin.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-tests-portable-data-package-contract",
+      "source": "tests/portable-data/package-contract.jai",
+      "paths": [
+        "tests/portable-data/package-contract.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-tests-portable-data-subtitles-contract",
+      "source": "tests/portable-data/subtitles-contract.jai",
+      "paths": [
+        "tests/portable-data/subtitles-contract.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-stdlib-tests-portable-data-console-windows",
+      "source": "stdlib/tests/portable-data-console-windows.jai",
+      "paths": [
+        "stdlib/tests/portable-data-console-windows.jai"
+      ],
+      "targets": [
+        "windows-arm64",
+        "windows-x64"
+      ]
+    },
+    {
+      "id": "refresh23-stdlib-tests-portable-data-discovery-windows",
+      "source": "stdlib/tests/portable-data-discovery-windows.jai",
+      "paths": [
+        "stdlib/tests/portable-data-discovery-windows.jai"
+      ],
+      "targets": [
+        "windows-arm64",
+        "windows-x64"
+      ]
+    },
+    {
+      "id": "refresh23-stdlib-tests-portable-data-manifest-windows",
+      "source": "stdlib/tests/portable-data-manifest-windows.jai",
+      "paths": [
+        "stdlib/tests/portable-data-manifest-windows.jai"
+      ],
+      "targets": [
+        "windows-arm64",
+        "windows-x64"
+      ]
+    },
+    {
+      "id": "refresh23-stdlib-tests-portable-data-manifest",
+      "source": "stdlib/tests/portable-data-manifest.jai",
+      "paths": [
+        "stdlib/tests/portable-data-manifest.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-stdlib-tests-portable-data-resource-windows",
+      "source": "stdlib/tests/portable-data-resource-windows.jai",
+      "paths": [
+        "stdlib/tests/portable-data-resource-windows.jai"
+      ],
+      "targets": [
+        "windows-arm64",
+        "windows-x64"
+      ]
+    },
+    {
+      "id": "refresh23-stdlib-tests-portable-data-resource",
+      "source": "stdlib/tests/portable-data-resource.jai",
+      "paths": [
+        "stdlib/tests/portable-data-resource.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-tests-compiler-semantics-foreign-data-reexport-main",
+      "source": "tests/compiler-semantics/foreign-data-reexport/main.jai",
+      "paths": [
+        "tests/compiler-semantics/foreign-data-reexport/main.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-tests-compiler-semantics-enum-dependencies",
+      "source": "tests/compiler-semantics/enum-dependencies.jai",
+      "paths": [
+        "tests/compiler-semantics/enum-dependencies.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-tests-developer-tools-codeview-sentinels",
+      "source": "tests/developer-tools/codeview-sentinels.jai",
+      "paths": [
+        "tests/developer-tools/codeview-sentinels.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64",
+        "linux-arm64",
+        "linux-x64",
+        "windows-arm64",
+        "windows-x64",
+        "wasi"
+      ]
+    },
+    {
+      "id": "refresh23-tests-portable-stdlib-socket-resolver-main",
+      "source": "tests/portable-stdlib/socket-resolver/main.jai",
+      "paths": [
+        "tests/portable-stdlib/socket-resolver/main.jai"
+      ],
+      "targets": [
+        "macos-arm64",
+        "macos-x64"
+      ]
     }
   ],
   "pending_negative_classification": [
@@ -5956,6 +6187,8 @@
     "stdlib/GetRect_LeftHanded",
     "stdlib/Hash",
     "stdlib/Hash_Table",
+    "stdlib/Ico_File",
+    "stdlib/Icon",
     "stdlib/ImGui",
     "stdlib/Input",
     "stdlib/IntroSort",
@@ -5993,6 +6226,7 @@
     "stdlib/SIMD",
     "stdlib/Shared_Memory_Channel",
     "stdlib/Simp",
+    "stdlib/Simple_Package",
     "stdlib/Sloppy_Math",
     "stdlib/Soa",
     "stdlib/Socket",
@@ -6000,6 +6234,7 @@
     "stdlib/Sound_Player",
     "stdlib/Srgb",
     "stdlib/String",
+    "stdlib/Subtitles",
     "stdlib/System",
     "stdlib/Text_File_Handler",
     "stdlib/Thread",
@@ -6012,6 +6247,7 @@
     "stdlib/Window_Type",
     "stdlib/Windows",
     "stdlib/Windows_Registry",
+    "stdlib/Windows_Resources",
     "stdlib/Windows_Utf8",
     "stdlib/X11",
     "stdlib/Xar",
@@ -6025,6 +6261,11 @@
     "stdlib/freetype",
     "stdlib/iOS",
     "stdlib/internal",
+    "stdlib/internal/icon-plugin",
+    "stdlib/internal/resource-wire",
+    "stdlib/internal/simple-package",
+    "stdlib/internal/subtitles",
+    "stdlib/internal/windows-resources",
     "stdlib/lz4",
     "stdlib/macOS",
     "stdlib/md5",

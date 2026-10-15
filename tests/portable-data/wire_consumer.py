@@ -19,7 +19,12 @@ if len(sys.argv) > 2 and sys.argv[2] == "fixtures":
     import ctypes
     import os
     suffix = ".dll" if os.name == "nt" else (".dylib" if sys.platform == "darwin" else ".so")
-    library = root / "native" / ("libstb_image_resize" + suffix)
+    directories = os.environ.get("JAIC_NATIVE_LIBS", str(root / "native")).split(os.pathsep)
+    library = next((Path(directory) / ("libstb_image_resize" + suffix)
+                    for directory in directories
+                    if (Path(directory) / ("libstb_image_resize" + suffix)).is_file()), None)
+    if library is None:
+        raise FileNotFoundError("real stb_image_resize dependency is missing from JAIC_NATIVE_LIBS")
     resize = ctypes.CDLL(str(library)).stbir_resize_uint8_srgb
     resize.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_int,
                       ctypes.c_void_p, ctypes.c_int, ctypes.c_int, ctypes.c_int,

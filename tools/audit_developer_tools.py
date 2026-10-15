@@ -183,7 +183,7 @@ def main():
                 if item["name"] in {"Codeview_Debug_Info", "Codeview_Type", "Codeview_Symbol", "Codeview_File_Checksum", "Codeview_File_Checksum_Id", "Codeview_String_Table_Id", "Codeview_Column_Type", "Codeview_Lines_File_Block", "Codeview_Line_Info_Sequence", "Codeview_Inlinee_Line_Info", "Type_Id", "Item_Id"}:
                     item["implementation"] = "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
                 if item["name"] in {"Codeview_Leaf_Type", "Codeview_Symbol_Type"}:
-                    item["implementation"] = "reviewed u16 enum/data subset; four dependent member aliases lack reviewed RECTYPE_MAX/TYPE_LAST/ID_LAST values (question11); no guessed values or added dependency exports"
+                    item["implementation"] = "reviewed u16 numeric enum data including synchronized ID/TYPE/RECTYPE sentinel aliases; original value/name/width fixture; typed symbol/type byte parsers remain pending"
                 if item["name"] == "get_string_from_table" or (item["name"] == "get_filename_for_file_id" and "Codeview_Debug_Info" in item["declaration"]):
                     item["implementation"] = "bounded CodeView C13 string/checksum-ID lookup; original Windows x64/arm64 C O0/O2 SDK filename/file-ID/source MD5 oracles, borrowed pointer identity and malformed/duplicate failures; ownership precision question12"
                 if item["name"] in {"Debug_Info", "Compilation_Unit", "Debug_Type", "Subprogram", "Declaration", "Lexical_Block", "Dwarf_Language", "Dwarf_Tag", "Dwarf_Base_Type"}:

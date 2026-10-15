@@ -634,6 +634,42 @@ correcting stale probe/temp-directory/cleanup-caller failures. Target-aware lint
 now includes changed existing/untracked fixtures and records stable
 HEAD/source/tool/config/context fingerprints; full quality gates remain open.
 
+## Refresh23 production reexports and data integration
+
+`cargo test --locked -p jaic --test cleanroom_modules` passes52 tests after the
+original anonymous filtered export regression fails before the fix. Separate
+`-p jaic -p jaic-llvm --test cleanroom_enum_dependencies` passes6 core/one backend
+tests. Source-built CLI/lint/LSP and unchanged jaifmt rebuild pass; workspace
+Rust formatting and clippy with warnings denied pass after scoped formatting.
+The real resolver command and storage contract are described in
+[foreign-data-reexports](../compiler/foreign-data-reexports.md). No immutable
+binding semantics were broadened and no library/path-specific compiler rule exists.
+
+`python3 tests/portable-data/run.py --native-libs artifacts/native-libs/macos-arm64`
+passes all supported host interpreter/nativeO0/O2, portable WASI, SDK resource/wire
+consumers and seven target lint/body-check contexts. Windows native readback and
+discovery/+Icon effects remain unexecuted host gates; ordinary x64/ARM64 CI now
+registers them with actual source-built tools and pinned SDK DLL construction.
+Only the five scoped data producer commits were consumed, sourceb1c6b1a5 through
+localefcb29fe, without importing producer base integration history.
+
+`python3 tools/native_bindings/verify_rpmalloc_heaps.py --compiler target/debug/jaic
+--formatter target/jaifmt --stdlib stdlib --native-libs
+artifacts/integration-clean/native-sdk --report
+artifacts/integration-clean/rpmalloc-heaps-production-refresh22-complete.json`
+finishes71 checks with zero failures on actual production Root stdlib. Includes
+host ASan/UBSan C probes, six desktop public layout targets, real private/native
+counter/callback programs, strict scoped format/lint and70 Python tests. This is
+the explicit private false heap profile only, not raw/options/all-platform proof.
+
+Latest reviewed CodeView sentinels regenerate normally with zero pending aliases.
+`python3 tools/check_developer_tools.py` passes61 actual interpreter/nativeO0/O2
+fixtures, real C/C++ round trips and scoped strict formatting/lint, including the
+new seven-value canonical-name/width test.1176 SDK layout/enum comparisons and
+360 symbol resolutions remain distinct from invocation coverage. Host SDK23 and
+prepared Windows Debug cross-builds do not establish SDK21/native Windows proof.
+Whole current-head workspace/catalogue/quality/partial-edit proof remains open.
+
 ## Refresh21 catalogue and resource diagnostics
 
 The394-case owned catalogue completed with313 interpreter positives/76 failures and308 nativeO0 positives/74 failures, plus5 precise negatives each and7 native compile-only cases. This diagnostic run occurred during edits and included a harness false failure: malformed lexer diagnostics were merged into expected stdout. The corrected runner keeps both streams exact, requires a separate strict source check before compile-only classification, never reclassifies timeouts, and propagates cleanup errors. Nine runner tests pass; original classification failures remain in artifacts. A complete54-contract rerun now passes49 positives plus5 expected negatives in each interpreter/nativeO0 mode. No broad catalogue green claim follows.

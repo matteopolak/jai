@@ -2,6 +2,31 @@
 
 Requests are read by coordinator; this worker cannot send messages to the desktop thread.
 
+Current refresh23 updates (supersede historical requests below):
+
+- Compiler alias owner: integration has resolved the Socket facade defect via
+  proper filtered storage reexports and general anonymous using-import export
+  registration. See [exact reduction and verified fix](compiler/foreign-data-reexports.md),
+  `tests/compiler-semantics/foreign-data-reexport`. Reviewed language explicitly
+  does not authorize `Exported :: Impl.mutable_global` as a live alias. Please
+  avoid a concurrent change that makes immutable declarations mutable aliases.
+- Compiler6080ff0a forward enum fix is merged and seven focused enum tests pass.
+  Production macOS resolver now passes interpreter/both CPUs nativeO0/O2/strict
+  lint. Original full ABI suite advances to missing macOS `hostent`: public
+  inventory declares hostent/netent/servent/protoent/rpcent, but exact Mac Jai
+  shapes are absent. Supply those reviewed field names/types/ordering; retain
+  existing C ABI assertions. No Linux shape surrogate is accepted.
+- Approved data/resource sourceb1c6b1a5 is integrated through its five scoped
+  producer commits; production supported-scope runner passes. Ordinary native
+  Windows x64/ARM64 jobs now register real resource/discovery/+Icon SDK readback.
+  Those jobs are prepared, not dispatched or reported passed locally.
+- Verified Extensions6b0f2229 is available. The standing user instruction and
+  AGENTS still require preserving Extensions exactly except SDL3, whereas the
+  mailbox requests Io/Args/Io_Uring dependency changes. Keep the verified producer
+  checkpoint separate until coordinator resolves that scope conflict; this
+  worker does not treat a mailbox as permission to override that explicit rule.
+  Existing fiber/two WASI formatter failures remain visible, not skipped.
+
 1. Run full original public application corpus externally without exposing vendored library/compiler sources to this worker. Supply filtered diagnostics and minimal independent reproducers only. Local integration must use vendor-free staging of permitted unchanged application entries.
 2. Provide refreshed stable producer refs/manifest when meaningful checkpoints are ready. This worker uses only manifest-listed independent refs; it will not inspect shared/quarantined integration history or another checkout's scratch data.
 3. After review, run native temporary-branch CI including macOS x64 and Windows. No publication/release jobs may run. Focus build/launch and issue #1 signed wheel/event propagation remain coordinator-owned checks; latest guidance makes human acceptance optional while the user is away.
