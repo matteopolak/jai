@@ -702,5 +702,56 @@
     "native_executions": 0,
     "failed": 0,
     "full_catalogue_replay": false
+  },
+  "refreshed_isolated_measurement": {
+    "snapshot": "4397e23c885bf368c50a0c854c6150e56f19a036",
+    "candidate_path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures",
+    "ref": "integration/thread-fixtures",
+    "target": "macos-arm64",
+    "cargo_target_dir": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target",
+    "status": "workspace-finished-red",
+    "workspace": {
+      "command": "cargo test --locked --workspace --all-targets --no-fail-fast",
+      "passed": 879,
+      "failed": 4,
+      "ignored": 1,
+      "test_binaries": 106,
+      "nested_summaries_excluded": 4,
+      "exit_code": 101,
+      "failures": [
+        {
+          "name": "dwarf_describes_procedures_variables_and_types",
+          "classification": "AppleDouble sidecar on T7; real DWARF payload verified with no errors"
+        },
+        {
+          "name": "dwarf_is_valid_with_split_codegen",
+          "classification": "AppleDouble sidecar on T7; real DWARF payload verified with no errors"
+        },
+        {
+          "name": "wasm_target::wasm_tour_runs_as_a_wasi_command",
+          "classification": "native-only Thread import in old browser/WASI tour"
+        },
+        {
+          "name": "every_stdlib_module_checks_for_every_target",
+          "classification": "190 strict target ledger differences; not accepted as green"
+        }
+      ]
+    },
+    "catalogue": {
+      "status": "pending",
+      "command": "python3 tools/stdlib_runtime.py --jaic /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target/debug/jaic --jobs 2 --timeout 180 --modes interp,native --opt O0 --verbose --report artifacts/mac-baseline/catalogue-final-isolated.json"
+    },
+    "production_profiler_commands": {
+      "passed": 198,
+      "failed": 0
+    },
+    "production_portable_runners": {
+      "passed": 4,
+      "failed": 0
+    },
+    "owner_and_independent_lsp_tests": {
+      "passed": 46,
+      "failed": 0
+    }
   }
 }
