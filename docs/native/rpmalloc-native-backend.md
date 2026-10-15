@@ -33,6 +33,13 @@ full native dependency builder passed with outputs in
 `.work/native-production-check`; this is dependency-build evidence, not final
 production stdlib integration.
 
+The generated backend explicitly rejects non-64-bit pointer ABIs. Its Windows
+native packaging/SDK/CRT/advapi32 linkage still needs the coordinator's native
+build pipeline; the worker dependency builder is verified on the actual macOS
+host. Linux/Windows artifacts and execution are not supplied by the two-CPU Mac
+test archive. The returned native configuration pointer is borrowed/read-only,
+even though Jai has no C const-pointer qualifier in this private declaration.
+
 The real private native unit calls every one of the 34 SDK entry points. It
 checks preserved realloc data, aligned allocations, calloc zeroing, actual
 usable sizes, matching heap ownership, bulk free/release, current-heap changes,
@@ -47,9 +54,14 @@ contract. The native linker-reference hook is also intentionally empty, as its
 header documents. Neither native no-op is authored here or credited as completed
 public behavior.
 
-An invalid-alignment experiment aborted on both CPUs. The pinned SDK documents
-alignment as a caller precondition and its POSIX-named entry point writes the
-caller output directly. The private `rpmalloc-checked.posix_memalign` now rejects
+An invalid-alignment experiment expected an error for alignment 3 and aborted
+on both CPUs. Triage against the complete official header/source classified
+that expectation as an incorrect oracle for the raw SDK: power-of-two alignment
+is a caller precondition, and its small-alignment fast path precedes validation.
+The POSIX-named entry point also writes caller output directly. No public Jai
+compatibility defect is inferred from this out-of-contract SDK request. The
+private `rpmalloc-checked.posix_memalign` offers a separately defined safe
+boundary and now rejects
 null output slots, non-power-of-two/too-small/span-sized alignment before the
 SDK call. It forwards valid requests through the actual SDK, uses temporary
 output storage, propagates native allocation errors and only commits the output

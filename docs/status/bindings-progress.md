@@ -1,5 +1,27 @@
 # Bindings worker progress
 
+2026-10-15 verification checkpoint: `1ef2ea6` contains the complete private SDK
+backend and checked boundary. Stronger follow-up tests require nonzero actual
+thread allocation/free totals and valid per-class current/peak counters; both
+Mac CPUs and the production-builder archive pass. Latest full owned matrix:
+322 source checks passed / 16 failed / 70 unsupported; privacy 120 passed /
+72 unsupported; 58 native build/run checks passed / one unsupported; symbols
+1200 passed. Counts include explicit private/compiler units. Configuration
+failures remain 36; public unresolved declarations remain 116, including all
+80 rpmalloc public entries. Complete owned formatting and regeneration pass;
+scoped supported strict lint passes, Windows target-context and active alias
+compiler repro lint failures remain documented. Generator tests: 52 passed.
+All original failing evidence remains separately classified. Extensions unchanged.
+
+Next required work: implement both public allocator variants/callback/heap/config
+semantics and options; resolve enabled telemetry's matching SDK acquisition ABI;
+remaining X11 ownership/state helpers, Objective-C helper contracts, D3D shader
+convenience overloads and DXC version helper; compiler mobile-target and strict
+Unicode/alias blockers; real Linux/Windows SDK/runtime and other aggregate ABI
+verification. Filtered questions are in the role's questions document. The fresh
+official telemetry lookup did not establish a loader prototype; no SDK version
+substitution, contact/authentication or enabled no-op body was introduced.
+
 Private rpmalloc SDK batch: generated all 34 real native C entry points and
 complete config/statistics records from the pinned official header; native heap
 types stay private and never alias public Jai records. Six desktop C/header and

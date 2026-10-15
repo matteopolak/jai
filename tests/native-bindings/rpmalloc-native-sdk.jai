@@ -154,7 +154,15 @@ main :: () {
     }
 
     rpmalloc_thread_statistics(*thread_statistics.value);
-    check(thread_statistics.value.size_use[0].alloc_current <= thread_statistics.value.size_use[0].alloc_total);
+    allocations, frees: u64;
+
+    for thread_statistics.value.size_use {
+        check(it.alloc_current <= it.alloc_total && it.alloc_peak >= it.alloc_current);
+        allocations += it.alloc_total;
+        frees += it.free_total;
+    }
+
+    check(allocations > 0 && frees > 0);
     check(thread_statistics.before == 0x1234567887654321 && thread_statistics.after == 0x89abcdef76543210);
     report := tmpfile();
 

@@ -484,8 +484,8 @@
     },
     {
       "report": ".work/rpmalloc-sdk-both-cpus-tools.json",
-      "sha256": "404ae41019ad7b658778bb60d19fcc1e11298f836ef92e0ae53dd7e1e2a8a89c",
-      "scope": "Private native SDK only: real macOS x64/ARM64 calls, every SDK entry, ABI field probes, checked failure output, formatter/strict lint/regeneration",
+      "sha256": "5051420f1b16367b072f3e058bac760241668ad7f0e2ebc25a55a8967448eaba",
+      "scope": "Private native SDK only: real macOS x64/ARM64 calls, every SDK entry, ABI field probes, checked failure output, formatter/strict lint/regeneration; latest scoped follow-up includes strengthened nonzero thread statistics and explicit 64-bit ABI guard",
       "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
       "results": {
         "checks": {
@@ -519,8 +519,56 @@
     },
     {
       "report": ".work/rpmalloc-production-sdk-unit.json",
-      "sha256": "00dc2270766c89e66c89323c4d3b72918bf431a5adfdf8094f9537fa636efe4c",
-      "scope": "Real private SDK program against production-builder outputs; regeneration and generator tests",
+      "sha256": "5db85eb14b83ef965f837c8606953b58fb356a58454e5585b951c9ed0f9c7d05",
+      "scope": "Real private SDK program against production-builder outputs; regeneration and generator tests; latest scoped follow-up includes strengthened nonzero thread statistics and explicit 64-bit ABI guard",
+      "command_exits": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "report": ".work/checkpoint-9-full.json",
+      "sha256": "622fe43206717c314f475f4b23168801fa44a626a1c8745a9f5455bb37eef5e1",
+      "scope": "Full owned snapshot after private SDK and general unit placement; subsequent SDK-only stronger statistics/ABI guard checks are indexed separately",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "unsupported": 70,
+          "passed": 322,
+          "failed": 16
+        },
+        "privacy": {
+          "passed": 120,
+          "unsupported": 72
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 58
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-sdk-private-final.json",
+      "sha256": "732cd4942af6631ad6dc800cdd1cc618cd48ba93abc037d8848545a5bf17309b",
+      "scope": "Latest private SDK checks after stronger counters/64-bit guard; all six public module failures retained",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "failed": 6,
+          "passed": 6
+        },
+        "privacy": {},
+        "native": {
+          "passed": 2
+        }
+      }
+    },
+    {
+      "report": ".work/checkpoint-9-owned-format.json",
+      "sha256": "f18c4da16a8c4600aeafeae3391f60d62fd1b93de6401cfc12985c110bb5f3de",
+      "scope": "Actual rebuilt production formatter checks all 34 owned module roots, private bindings and tests; both generators idempotent",
       "command_exits": [
         0,
         0,

@@ -27,6 +27,11 @@ correctness. Previously recorded failures remain required work.
   symbol proves forwarding only, not deferred-collection behavior. Its native
   linker-reference hook is intentionally empty. Neither receives public
   implementation credit. Public collection semantics require proper completion.
+  The invalid-alignment raw SDK experiment is classified as an incorrect oracle
+  outside its documented caller precondition, not a public compatibility defect;
+  the checked helper's safety contract is separate. SDK configuration pointers
+  remain borrowed/read-only despite Jai's lack of const qualification. Windows
+  SDK/CRT/advapi32 packaging and Linux/Windows runtime evidence remain missing.
 
 - **D3D dependency and compiler staging repair.** Refreshed only safe NEW
   producer compiler sources. Its general forward-overlay fix now passes our

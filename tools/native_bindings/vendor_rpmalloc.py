@@ -139,6 +139,7 @@ def main():
     functions = sorted(profiles[1], key=responsibility)
     code = '// Generated from complete pinned official rpmalloc C SDK; not a public Jai facade.\n'
     code += '// Opaque native heaps never alias the reviewed public Jai heap records.\n'
+    code += '#assert size_of(*void) == 8, "The private rpmalloc SDK backend requires the verified 64-bit C ABI";\n\n'
     code += '\n\n'.join(blocks)+'\n\nrpmalloc_heap_t :: struct {}\n\n'
     code += '\n'.join(function(n) for n in functions)
     code += '\n\n#scope_file\nsdk :: #library,system "binding_rpmalloc_sdk";\n'

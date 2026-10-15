@@ -518,6 +518,12 @@ def main():
                     'public_support':'Unresolved; this backend does not establish Jai callback/config/heap compatibility',
                     'provenance':native,
                     'verification':'Source/header inventory only here; actual private SDK native evidence is indexed separately'}]
+                checked = ROOT/'stdlib/internal/bindings/rpmalloc-checked/module.jai'
+                all_ledger[module]['supplemental_backends'][0]['checked_boundary'] = {
+                    'artifact':str(checked.relative_to(ROOT)),
+                    'artifact_sha256':hashlib.sha256(checked.read_bytes()).hexdigest(),
+                    'signature':'posix_memalign :: (output: **void, alignment: u64, size: u64) -> s32',
+                    'scope':'Private SDK precondition validation and commit-on-success output; not public API completion'}
         if module == 'Objective_C':
             appkit = ROOT/'stdlib/Objective_C/AppKit/module.jai'
             if appkit.exists():

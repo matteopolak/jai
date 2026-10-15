@@ -173600,7 +173600,7 @@
         {
           "module": "internal/bindings/rpmalloc-sdk",
           "artifact": "stdlib/internal/bindings/rpmalloc-sdk/module.jai",
-          "artifact_sha256": "ca9cc22e32d28f219d030c4c2b4eebfd7ec82a78d99b48fa00903584b8dda6c2",
+          "artifact_sha256": "8cb18a5bae01d8a7e6c51786adb7769a331299caaa128f68788fb2a847d7ceb3",
           "status": "private_native_backend",
           "public_support": "Unresolved; this backend does not establish Jai callback/config/heap compatibility",
           "provenance": {
@@ -173991,7 +173991,13 @@
             "revision": "e4393ff85585d91400bcbad2e7266c011075b673",
             "scope": "Private native SDK only; reviewed public Jai callbacks/heaps require separate adapters"
           },
-          "verification": "Source/header inventory only here; actual private SDK native evidence is indexed separately"
+          "verification": "Source/header inventory only here; actual private SDK native evidence is indexed separately",
+          "checked_boundary": {
+            "artifact": "stdlib/internal/bindings/rpmalloc-checked/module.jai",
+            "artifact_sha256": "5ac871436dc61ce491e093c4023d67357d818d46594adbbaf93f287c9d4e696a",
+            "signature": "posix_memalign :: (output: **void, alignment: u64, size: u64) -> s32",
+            "scope": "Private SDK precondition validation and commit-on-success output; not public API completion"
+          }
         }
       ]
     },
