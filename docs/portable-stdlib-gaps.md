@@ -73,10 +73,11 @@ generation expects a non-oracle public helper; do not invent that export. See
   policy remains under review; current parser takes first fmt/data and last fact.
 - pending/workspace-hook.jai records compile-time workspace retrieval failure.
   Thread's automatic workspace metadata remains withheld, not fabricated as zero.
-- Apollo duration representation/rounding is assumed signed femtoseconds, which
-  is not explicitly established in the current spec prose. Do not extend native
-  or calendar conversion from round-trip evidence alone.
-- Flat_Pool's default reserve and overwrite option scope/value are absent.
+- Apollo native/calendar conversions now use reviewed FEMTOSECONDS and Unix epoch
+  constants with NEW POSIX ABI types. Exact floating rounding/invalid-date/DST
+  policies remain explicitly independent; see portable-time.md. Calendar text
+  formats and seconds_since_init initialization origin/hook remain unresolved.
+- Flat_Pool reserve/default/overwrite contracts are resolved in the refreshed oracle and implemented. Windows backend code/full fixture bodies now type-check both CPUs; actual Windows execution, console backends and Android validation remain platform gaps.
 - Process finite STILL_RUNNING boolean, live deinit/stdin inheritance, and the
   quote grammar beyond supported double quotes remain under review.
 - Command_Line nested/overlay fields, help result/priority/layout and full numeric

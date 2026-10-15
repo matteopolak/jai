@@ -13,7 +13,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [atomics](specs/stdlib/modules/atomics.md) | CAS arithmetic/bitwise contention and exact bootstrap load/store/exchange aliases execute in interpreter/native after compiler integration. Scalar domain/conversion/ordering details need review |
 | [autorun](specs/stdlib/modules/autorun.md) | Unix native helper and real workspace COMPLETE lifecycle implemented/tested; argument/error/non-executable logs verified. Compiler spread fix permits direct argv call; workaround removed. CLI orchestration, callback parameter and Windows unfinished |
 | [base64](specs/stdlib/modules/base64.md) | Implemented public tables, standard/URL codecs and self-tests; RFC and permissive edge vectors pass interpreter/native |
-| [basic](specs/stdlib/modules/basic.md) | Partial: arrays, allocation, scalar helpers, canonical builder and integer/bool/string formatting; remaining declarations unimplemented |
+| [basic](specs/stdlib/modules/basic.md) | Shared foundations ownership: retained arrays/allocation/scalars/builder; portable owner adds to_apollo plus POSIX realtime/monotonic, timespec and UTC/local calendar conversions. Interpreter/native checks pass; full per-time-API gaps in portable-time.md |
 | [bindings-generator](specs/stdlib/modules/bindings-generator.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
 | [bit-array](specs/stdlib/modules/bit-array.md) | Implemented canonical type, bit mutation, padding and logical/selected iteration; interpreter/native cases pass |
 | [bit-operations](specs/stdlib/modules/bit-operations.md) | Implemented width-generic byte swap, scans and population count; interpreter/native cases pass |
@@ -43,7 +43,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial paths, Unix metadata, recursive listing/copy and replacement implemented; tree copying, self-copy rejection and metadata pass interpreter/native. Visit aliases missing reviewed signatures |
 | [file-watcher](specs/stdlib/modules/file-watcher.md) | macOS SDK-native queue/lifecycle plus exact generic facade, coalescing/filtering and captured allocation implemented. Real event/rename/recursive/overflow tests pass interpreter/native; native backend passes ASan/UBSan and tracked allocations. Windows/Linux and detailed timing/lifetime policies unfinished or under review; retained NEW binding ABI defect |
 | [file](specs/stdlib/modules/file.md) | Reserved completion for platform-io worker. Existing partial Unix implementation retained; offset/EOF/write/seek cases remain integration regressions. Windows/Android not completed here |
-| [flat-pool](specs/stdlib/modules/flat-pool.md) | Owned portable scope; not implemented |
+| [flat-pool](specs/stdlib/modules/flat-pool.md) | All reviewed APIs implemented for POSIX hosts, including exact inferred 256MiB module reserve default, public/lazy page-rounded init, global OR local stamp, real commit/reset/release and allocator modes. Public init/default/overwrite tests pass interpreter/native O0/O2; full95-case suite passes. Windows VirtualAlloc backend and full fixture bodies type-check x64/ARM64, actual Windows execution unverified; console absent, Android unvalidated. See portable-flat-pool.md |
 | [float16](specs/stdlib/modules/float16.md) | Reserved for numerics worker; not implemented or modified here |
 | [freetype](specs/stdlib/modules/freetype.md) | Reserved for bindings worker; not implemented or modified here |
 | [gamepad-sdl-input-map](specs/stdlib/modules/gamepad-sdl-input-map.md) | Reserved for window/render worker by current ownership; not modified here |
@@ -52,7 +52,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [getrect-lefthanded](specs/stdlib/modules/getrect-lefthanded.md) | Reserved for numerics worker; not implemented or modified here |
 | [getrect](specs/stdlib/modules/getrect.md) | Reserved for numerics worker; not implemented or modified here |
 | [gl](specs/stdlib/modules/gl.md) | Reserved for bindings worker; not implemented or modified here |
-| [hash-table](specs/stdlib/modules/hash-table.md) | Partial: custom-hash and string-key operations pass interpreter/native collision/growth/tombstone tests. Default scalar fixture fails missing reviewed hash formula; temporary multiple lookup and Walk_Table unfinished |
+| [hash-table](specs/stdlib/modules/hash-table.md) | Real custom/string/scalar-default (NEW Hash) operations and duplicate temporary copies/removal, growth, tombstones, caller-initialized slots and collision counters pass interpreter/native. No storage-order assumption. Walk_Table caller-local expansion contract remains unspecified |
 | [hash](specs/stdlib/modules/hash.md) | Partial: specified byte/string/array hashes and Knuth implemented. Scalar seed mix and scalar FNV formula unresolved; digest vectors pass interpreter/native |
 | [ico-file](specs/stdlib/modules/ico-file.md) | Owned portable scope; not implemented |
 | [icon](specs/stdlib/modules/icon.md) | Owned portable scope; not implemented |
@@ -135,7 +135,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [window-type](specs/stdlib/modules/window-type.md) | Reserved for window/render worker by current ownership; not modified here |
 | [windows-registry](specs/stdlib/modules/windows-registry.md) | Owned portable scope; not implemented |
 | [windows-resources](specs/stdlib/modules/windows-resources.md) | Owned portable scope; not implemented |
-| [windows-utf8](specs/stdlib/modules/windows-utf8.md) | Owned portable scope; not implemented |
+| [windows-utf8](specs/stdlib/modules/windows-utf8.md) | Both exact procedures implemented with real Kernel32 calls, checked lengths/terminators/allocation/native failures. Windows x64/ARM64 bodies type-check; all owned code formats/lints. Actual Windows execution remains unverified, not counted as runtime-complete. See portable-windows-utf8.md |
 | [windows](specs/stdlib/modules/windows.md) | Reserved for bindings worker; not implemented or modified here |
 | [x11](specs/stdlib/modules/x11.md) | Reserved for bindings worker; not implemented or modified here |
 | [xar](specs/stdlib/modules/xar.md) | Reviewed exports implemented: stable exponential chunks, captured allocator, removal, coordinates/iterators, pointer/value loops and in-place sorting. Failure/iterator boundary policy noted; reverse iteration and capacity limits checked |
