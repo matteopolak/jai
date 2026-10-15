@@ -1,15 +1,15 @@
 {
   "compiler": {
     "ref": "producer/compiler",
-    "commit": "995685c09ce3f9ca6fff48c6737facb914d89c8b"
+    "commit": "308437761b8822a214936ac38125137cfcf358c4"
   },
   "stdlib": {
     "ref": "producer/stdlib",
-    "commit": "235594318b9b2cf01393cff35354d08f400e62b2"
+    "commit": "2f54d0c4d8b77b3309fd1541a1cbf5f45ca391ea"
   },
   "bindings": {
     "ref": "producer/bindings",
-    "commit": "4137f3c62d367ec83d932dc1a375d6940142902e"
+    "commit": "204f6f6f9cd6ebd4d73831c8e2c40a5495f50037"
   },
   "numerics": {
     "ref": "producer/numerics",
@@ -25,7 +25,7 @@
   },
   "foundations": {
     "ref": "producer/foundations",
-    "commit": "3d218cbd9c928491ac6e381da4cb3dde64a10e27"
+    "commit": "ad84008c58944889f51dd23679f8a12649fbf0f1"
   },
   "window-render": {
     "ref": "producer/window-render",
@@ -33,7 +33,7 @@
   },
   "platform-io": {
     "ref": "producer/platform-io",
-    "commit": "2cdbd9ba2402edae8703ad05d7be7c16257c060e"
+    "commit": "2d36a0852e6508a13f7f1d6f0c39bf8d35e4d820"
   },
   "audio": {
     "ref": "codex/stdlib-audio",
