@@ -1,5 +1,12 @@
 # Compiler integration handoff
 
+Browser runtime test-split checkpoint: 457dc04. Port the cohesive new fixtures,
+four test cases and CLI/actual-wasm32 checks without changing public Thread guards.
+Next mailbox compiler issue is independently reproduced at
+tests/producer-requests/forward-enum-dependencies.jai; log
+target/forward-enum-producer-red.log. Sequential enum_items is the cause; no
+enum fix is included here. Reflection/member order must be retained when fixing.
+
 Browser Thread test repair is a test-only split at the real runtime boundary:
 private SandboxHost hooks drive three cooperative workers, contended mutexes,
 actual joins and in-memory stdio; public Thread still rejects WASM in playground

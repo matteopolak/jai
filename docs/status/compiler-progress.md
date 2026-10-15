@@ -1,5 +1,16 @@
 # Compiler progress
 
+Verified browser runtime split checkpoint: 457dc04. Implementation is test-only,
+using the existing real sandbox provider; four focused cases, actual wasm32,
+CLI guard, format/strict lint and clippy pass. Full local browser limitation remains
+25/32 against the older staged library; no current-CI full-pass claim.
+Next mailbox reduction was read/reproduced independently: staged forward enum
+MASK/LAST fails unknown LAST (target/forward-enum-producer-red.log). Owned
+new_enum_type/enum_items currently evaluates declarations sequentially. The next
+compiler scope requires dependency resolution with ordered reflection/implicit
+numbering, selected conditional/injected declarations and genuine cycle/range
+diagnostics. No enum implementation or completion is claimed by this checkpoint.
+
 Browser Thread failure triaged as unsupported public-module test coupling, not a
 guard defect. Split the combined test into independent private SandboxHost
 scheduler/file fixtures and strict public Thread rejection. Three real workers
