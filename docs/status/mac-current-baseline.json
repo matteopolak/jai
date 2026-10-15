@@ -4,7 +4,7 @@
   "ref": "integration/thread-fixtures",
   "snapshot": "ac9b8723813af8b108d92867932b97a084dbc6e4",
   "target": "macos-arm64",
-  "status": "catalogue-running-workspace-red",
+  "status": "complete-measurement-red",
   "workspace": {
     "command": "cargo test --locked --workspace --all-targets --no-fail-fast",
     "passed": 852,
@@ -215,15 +215,201 @@
         "stb_vorbis wasm passes now: remove it from tests/stdlib-targets.txt",
         "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
       ],
-      "verification": "source unused-code typechecking on seven targets; not foreign native runtime"
+      "verification": "source unused-code typechecking on seven targets; not foreign native runtime",
+      "change_from_53ecb3d3": {
+        "prior_differences": 193,
+        "removed": [
+          "new failure: Bindings_Generator linux-arm64: internal/developer-tools/binding-native-model.jai: unknown identifier `print_literal_to_builder`",
+          "new failure: Bindings_Generator linux-x64: internal/developer-tools/binding-native-model.jai: unknown identifier `print_literal_to_builder`",
+          "new failure: Bindings_Generator macos-arm64: internal/developer-tools/binding-native-model.jai: unknown identifier `print_literal_to_builder`",
+          "new failure: Bindings_Generator macos-x64: internal/developer-tools/binding-native-model.jai: unknown identifier `print_literal_to_builder`",
+          "new failure: Bindings_Generator windows-arm64: internal/developer-tools/binding-native-model.jai: unknown identifier `print_literal_to_builder`",
+          "new failure: Bindings_Generator windows-x64: internal/developer-tools/binding-native-model.jai: unknown identifier `print_literal_to_builder`"
+        ],
+        "new": []
+      }
     }
   },
   "catalogue": {
     "command": "python3 tools/stdlib_runtime.py --jaic /Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/target/debug/jaic --jobs 2 --timeout 180 --modes interp,native --opt O0 --verbose",
-    "status": "running",
-    "passed": null,
-    "failed": null,
-    "ignored": null
+    "status": "finished",
+    "passed": 777,
+    "failed": 25,
+    "ignored": 0,
+    "cases_per_mode": 417,
+    "exit_code": 1,
+    "counts_by_mode": {
+      "interp": {
+        "passed": 393,
+        "failed": 13,
+        "platform_unavailable": 6,
+        "compile_time_only": 0,
+        "expected_negative_checks": 5
+      },
+      "native": {
+        "passed": 384,
+        "failed": 12,
+        "platform_unavailable": 6,
+        "compile_time_only": 10,
+        "expected_negative_checks": 5
+      }
+    },
+    "failures": [
+      {
+        "name": "compiler/compiler-typechecked-messages",
+        "mode": "interp",
+        "classification": "interception_fixture_oracle",
+        "diagnostic": "compiler-typechecked-messages.jai:66:21: error: error during compile-time execution: assertion failed: `decl.enclosing_load && decl.enclosing_load.enclosing_import == main_import` is false"
+      },
+      {
+        "name": "compiler/compiler-typechecked-messages",
+        "mode": "native",
+        "classification": "interception_fixture_oracle",
+        "diagnostic": "compiler-typechecked-messages.jai:66:21: error: error during compile-time execution: assertion failed: `decl.enclosing_load && decl.enclosing_load.enclosing_import == main_import` is false"
+      },
+      {
+        "name": "compiler/lang-asm",
+        "mode": "interp",
+        "classification": "architecture_specific_assembly_fixture",
+        "diagnostic": "lang-asm.jai:601:9: error: pause requires an x86-64 target"
+      },
+      {
+        "name": "compiler/lang-asm",
+        "mode": "native",
+        "classification": "architecture_specific_assembly_fixture",
+        "diagnostic": "lang-asm.jai:601:9: error: pause requires an x86-64 target"
+      },
+      {
+        "name": "compiler/rules-prelude-and-runtime-support",
+        "mode": "interp",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "rules-prelude-and-runtime-support.jai:23:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/rules-prelude-and-runtime-support",
+        "mode": "native",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "rules-prelude-and-runtime-support.jai:23:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/rules-simd-asm",
+        "mode": "interp",
+        "classification": "architecture_specific_assembly_fixture",
+        "diagnostic": "rules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target"
+      },
+      {
+        "name": "compiler/rules-simd-asm",
+        "mode": "native",
+        "classification": "architecture_specific_assembly_fixture",
+        "diagnostic": "rules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target"
+      },
+      {
+        "name": "compiler/runtime-support-output",
+        "mode": "interp",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "runtime-support-output.jai:1:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/runtime-support-output",
+        "mode": "native",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "runtime-support-output.jai:1:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/runtime-support-source",
+        "mode": "interp",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "runtime-support-source.jai:2:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "compiler/runtime-support-source",
+        "mode": "native",
+        "classification": "legacy_runtime_instance_configuration",
+        "diagnostic": "runtime-support-source.jai:2:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+      },
+      {
+        "name": "graphics/getrect-simp-gl-frame",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "getrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`"
+      },
+      {
+        "name": "graphics/getrect-simp-gl-frame",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "getrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`"
+      },
+      {
+        "name": "graphics/getrect-widgets-driven",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "getrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`"
+      },
+      {
+        "name": "graphics/getrect-widgets-driven",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "getrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`"
+      },
+      {
+        "name": "graphics/input-multi-window-focus",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-multi-window-focus",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-published-events",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-published-events",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-temporary-allocator",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/input-temporary-allocator",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "input-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+      },
+      {
+        "name": "graphics/simp-gl-render-readback",
+        "mode": "interp",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "simp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`"
+      },
+      {
+        "name": "graphics/simp-gl-render-readback",
+        "mode": "native",
+        "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+        "diagnostic": "simp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`"
+      },
+      {
+        "name": "Extensions/Json/tests/numbers",
+        "mode": "interp",
+        "classification": "interpreter_performance_timeout",
+        "diagnostic": "timed out after 180s",
+        "timeout_seconds": 180,
+        "measured_runtime_seconds": null,
+        "runtime_lower_bound_seconds": 180,
+        "measurement_limitation": "existing runner discards measured elapsed duration"
+      }
+    ]
   },
   "coordinator_gates": [
     "full original public corpus",
@@ -237,5 +423,30 @@
       "tests/developer-tools/compiler-requests/profiler-context/main.jai:3",
       "tests/developer-tools/compiler-requests/profiler-context/modules/Context_Probe/module.jai:2"
     ]
+  },
+  "binary_identity": {
+    "jaic": {
+      "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/target/debug/jaic",
+      "sha256": "858ff3af0fb331b08608176f3d355a0565fbf94f0c0316f7bce37f6495706bd2"
+    },
+    "jailint": {
+      "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/target/debug/jailint",
+      "sha256": "6ae59c3443fb3d21cec8309cdaac07b54e7d7a5eb4e2a2acda542a91b1df7b96"
+    },
+    "jailsp": {
+      "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/target/debug/jailsp",
+      "sha256": "d79008c60e3d084640c189110ecb33f29426ff04f6aeb1e65c13d3f1c613bede"
+    }
+  },
+  "stdlib_tree": "833532db9f12fbdac459cb2defc36d43569a0028",
+  "followup_allocation_repair": {
+    "status": "focused-verification-passed",
+    "source": "stdlib/internal/basic/format-support.jai",
+    "regression": "tests/portable-stdlib/core-builder-allocation.jai",
+    "red_snapshot": "ac9b8723",
+    "focused_passed": 45,
+    "focused_failed": 0,
+    "format_exit_code": 0,
+    "full_replay": false
   }
 }
