@@ -1,5 +1,11 @@
 # Windows startup regressions after cc07c00
 
+Follow-up actual CI at 0100a1f: signed-wheel/argv startup passes on both Windows
+CPUs and the ARM64 Platform step passes. x64's remaining interpreter section-query
+assertion is investigated in [the new regression report](platform-io-section-query-regression.md).
+The private ARM64 crash backend was absent from this candidate. The required
+--windows-crash native fault/trace/lifecycle runs are still outstanding.
+
 The coordinator-filtered feedback confirms the Platform I/O interpreter/native
 O0/O2 step passed on real Windows x64 and ARM64 at cc07c00. The full jobs failed;
 signed-wheel and renderer interpreter tests reported command-line conversion failure.
