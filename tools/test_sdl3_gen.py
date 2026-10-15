@@ -1,4 +1,5 @@
 import unittest
+from pathlib import Path
 import sdl3_gen as gen
 
 class Types(unittest.TestCase):
@@ -33,5 +34,14 @@ class Types(unittest.TestCase):
         with self.assertRaises(ValueError): gen.jai_type('unknown_t')
     def test_variadic_c_signature(self):
         self.assertEqual(gen.jai_type('int (*)(const char *, ...)'), '(arg0: *u8, args: ..Any) -> s32 #c_call')
+    def test_contract_anonymous_record_spelling_is_clang_version_independent(self):
+        source=Path('artifacts/sdl3/SDL3-3.4.18')
+        for kind in ('struct','union'):
+            expected=f'{kind} (unnamed {kind} at SDL3/SDL_gamepad.h:271:5)'
+            for spelling in (f'{kind} (unnamed at ',f'{kind} (unnamed {kind} at '):
+                for prefix in (str(source/'include'),str(source.resolve()/'include')):
+                    self.assertEqual(gen.stable_contract_type(spelling+prefix+'/SDL3/SDL_gamepad.h:271:5)',source),expected)
+        self.assertEqual(gen.stable_contract_type('const SDL_GPUDevice *',source),'const SDL_GPUDevice *')
+        self.assertIsNone(gen.stable_contract_type(None,source))
 
 if __name__ == '__main__': unittest.main()
