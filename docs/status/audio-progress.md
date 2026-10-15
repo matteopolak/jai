@@ -297,4 +297,3 @@ ABI case now cross-links O0/O2 in the self-contained package (54 Windows binarie
 instead of 52). The reviewed eleven-slot IDirectSound8 prefix is preserved;
 the test does not fabricate full SDK-interface equivalence. ARM64 is still SDK
 object-only; Windows x64 is link-only. No Windows runtime is claimed.
-

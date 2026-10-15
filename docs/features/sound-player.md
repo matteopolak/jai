@@ -78,4 +78,3 @@ does not incorrectly classify a well-conditioned basis as singular.
 PCM sampling uses explicit little-endian byte reads, retaining borrowed storage
 identity without requiring two-byte alignment. Known-lost retained devices report
 unavailable on backend initialization while keeping their cleanup ownership.
-
