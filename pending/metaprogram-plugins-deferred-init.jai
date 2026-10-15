@@ -8,7 +8,7 @@ init_plugins :: (to_create: [] Plugin_To_Create, results: *[..] *C.Metaprogram_P
         literal := quote_source_string(body);
 
         defer free(literal);
-        declaration := Strings.join("Generated_Initialization :: ", literal, ";\n");
+        declaration := Strings.join("#scope_module\nGenerated_Initialization :: ", literal, ";\n");
 
         defer free(declaration);
         initialization_requested = true;
@@ -20,7 +20,7 @@ init_plugins :: (to_create: [] Plugin_To_Create, results: *[..] *C.Metaprogram_P
     return invoke(to_create, results, w);
 }
 
-#scope_file
+#scope_module
 using #import "Basic";
 C :: #import "Compiler";
 Strings :: #import "String";
