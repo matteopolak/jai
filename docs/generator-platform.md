@@ -38,6 +38,36 @@ private clang-bindings directory; source-build setup creates that SDK link.
 No original/reference binary is used. The earlier validated-link behavior was
 replaced, not retained as an undocumented alternate overload.
 
+### Copy-contract revalidation
+
+The renewed drift report was checked against the reviewed public behavior
+paragraph near `ensure_local_libclang_exists` in the module specification.
+The repair already exists in **f6909c62**. Both production files and the focused
+`tests/developer-tools/generator-platform-copy.jai` fixture are unchanged from
+that checkpoint, as verified by a path-scoped Git comparison. Integrators using
+the earlier discovery checkpoint should adopt f6909c62 rather than reproduce the
+implementation or change the public API to match discovery tests.
+
+A fresh `python3 tools/check_generator_platform.py` run passes the independent
+copy regressions in interpreter/Mac native O0/O2: absent, older, newer,
+equal-time, different-size and one-nanosecond-older destinations, plus a missing
+source assertion in every mode. The explicit source is an original arbitrary
+four-byte file, so the test also ensures this operation does not validate native
+exports. The no-argument overload copies actual configured SDK bytes; source and
+destination SHA-256 values match in `native/generator-platform-evidence.json`.
+Formatting, warnings-denied module/fixture lint and six desktop source checks
+also pass. Native execution evidence is Mac arm64 only.
+
+SDK setup is a distinct private build responsibility:
+`python3 tools/build_developer_bindings.py --llvm-prefix /path/to/official/llvm`
+configures the native binding tool and the private SDK library link. Its optional
+`DEVELOPER_TOOLS_LLVM_PREFIX` setting defaults to `/opt/homebrew/opt/llvm` here.
+The public explicit-path overload does not read that setting or discover an SDK;
+it uses filesystem metadata and copies to the current working directory. The
+no-argument overload requires the configured private bundled file for the host
+OS. No reference distribution, download, native-library compatibility check, or
+original implementation is involved.
+
 fix_macos_foreign_name removes one underscore for macOS/iOS TARGET_OS and returns
 a borrowed suffix view; retain an owned input's original pointer when freeing it.
 The missing-library predicate tests the canonical Function.library pointer; null
