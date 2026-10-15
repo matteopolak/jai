@@ -2,12 +2,12 @@
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
     "declared": 28397,
-    "unresolved": 36,
-    "implemented_manual": 52,
+    "unresolved": 24,
+    "implemented_manual": 57,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1,
-    "partially_implemented": 80
+    "partially_implemented": 87
   },
   "reports": [
     {
@@ -1336,6 +1336,100 @@
       "checks": 357,
       "failures": 0,
       "expected_failures": 10
+    },
+    {
+      "report": ".work/objc-runtime-complete/checks.json",
+      "sha256": "f6b69cdfeba4342848e1e8560e2d3dce88dcb640262625cdef80fedf8be40c34",
+      "scope": null,
+      "compiler_sha256": null,
+      "checks": 5,
+      "failures": 0,
+      "observed_expected_rejections": 0
+    },
+    {
+      "report": ".work/objc-runtime-complete/negative.json",
+      "sha256": "3052edd2362f371c613fb65864531a533613fe9f5b74eaaa2def0e64faa7800f",
+      "scope": null,
+      "compiler_sha256": null,
+      "checks": 4,
+      "failures": 0,
+      "observed_expected_rejections": 2
+    },
+    {
+      "report": ".work/objc-helper-module.json",
+      "sha256": "48a2965c067360da006127ab785053bbf95a8f6bbca10b6af9efe7a57d9f0f29",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "unsupported": 4,
+          "passed": 8
+        },
+        "native": {
+          "passed": 6
+        },
+        "privacy": {
+          "unsupported": 40,
+          "passed": 20
+        }
+      }
+    },
+    {
+      "report": ".work/shader-helper-modules.json",
+      "sha256": "c1984349260f56b01627992fd0e23298b6bb78f0cc9bdb713e134603085c8ff8",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "unsupported": 8,
+          "passed": 24
+        },
+        "native": {
+          "passed": 4
+        },
+        "privacy": {
+          "unsupported": 48,
+          "passed": 24
+        }
+      }
+    },
+    {
+      "report": ".work/shader-helpers-current/native-and-lint.json",
+      "sha256": "44cf58cb6e7287324bba01c6a92f7303eebecfa6bd30cc18b267a153e523e02e",
+      "scope": null,
+      "compiler_sha256": null,
+      "checks": 5,
+      "failures": 0,
+      "observed_expected_rejections": 0
+    },
+    {
+      "report": ".work/shader-helpers-current/clipboard-checks.json",
+      "sha256": "2332a02d0e3a14781d794a3948b5f9e48a82e9ba50aee175ce2839d698c9a553",
+      "scope": null,
+      "compiler_sha256": null,
+      "checks": 7,
+      "failures": 0,
+      "observed_expected_rejections": 0
+    },
+    {
+      "report": ".work/bindings-mac-combined-current.json",
+      "sha256": "9bb68c47b4e35e48c456c275a784a7b558626896048a51cc0cac2716b6ab59b8",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "unsupported": 26,
+          "passed": 146
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 98
+        },
+        "privacy": {
+          "passed": 116,
+          "unsupported": 40
+        }
+      }
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

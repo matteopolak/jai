@@ -3,6 +3,12 @@
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing
+- [Shader compiler helpers](native/shader-compiler-helpers.md): reviewed D3D
+  string ownership and DXC version text, with separate native/source evidence
+- [X11 clipboard ownership](native/x11-clipboard-ownership.md): real cleanup,
+  allocator tracking and separate native/source verification
+- [Current combined worker Mac evidence](native/bindings-mac-current.md):
+  current producer staging, zero failures and explicit remaining gates
 - [Objective-C runtime helpers](native/objc-runtime-helpers.md): real encoding,
   runtime class/method installation, member declarations and native ABI tests
 - [FSEvents context adapter](native/fsevents-context.md): exact public order,

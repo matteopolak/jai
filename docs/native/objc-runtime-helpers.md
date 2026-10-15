@@ -56,3 +56,10 @@ strings/Any and non-native overlays are not silently encoded as another ABI.
 A private alias to canonical Basic.String_Builder avoids an extra root export.
 Native Windows/Linux are inapplicable to this target-specific module; iOS
 runtime is unverified. Worker staging is not coordinator combined corpus proof.
+
+Installed official SDK evidence: macOS SDK27.0; objc/objc.h SHA256
+24d244af818046702546269afbedbe2992ea9b6d8f6ad43e7b0750e53d3bfe2b;
+objc/runtime.h SHA256
+0cd8f574aa6cf75f743f8bf60e235199792ee6686ae586909e99f151234e183e.
+The private native BOOL declaration follows the actual target SDK condition;
+public reviewed BOOL aliases remain unchanged. No SDK source patch was added.

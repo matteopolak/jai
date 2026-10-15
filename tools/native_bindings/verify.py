@@ -35,6 +35,7 @@ PRIVATE_UNITS = {'ios-sdk-host':'iOS/sdk-host-unit.jai',
                  'rpmalloc-raw-base-marshalling':'rpmalloc/sdk-raw-base-marshalling-unit.jai'}
 PRIVATE_UNITS['rpmalloc-no-thread-cache'] = 'rpmalloc/sdk-no-thread-cache-unit.jai'
 PRIVATE_UNITS['shader-bytes'] = 'd3d_compiler/sdk-shader-bytes-unit.jai'
+PRIVATE_UNITS['clipboard-owned-data'] = 'X11/sdk-clipboard-owned-data-unit.jai'
 PRIVATE_UNIT_DEPENDENCIES = {
     'rpmalloc-no-thread-cache': {
         **{'tests/native-bindings/generated/rpmalloc-no-thread-cache-'+label+'-layout.jai': 'rpmalloc/generated/rpmalloc-no-thread-cache-'+label+'-layout.jai' for label in ('rewrite', 'raw-base', 'raw')},
@@ -163,12 +164,15 @@ def main():
     parser.add_argument('--compiler', type=Path, required=True)
     parser.add_argument('--module', action='append', choices=MODULES)
     parser.add_argument('--runtime', action='store_true')
+    parser.add_argument('--target-os', action='append', choices=('linux', 'macos', 'windows'),
+                        help='Restrict source/privacy checks to selected desktop OS values; default all')
     parser.add_argument('--privacy-only', action='store_true', help='Run the full target privacy matrix without repeating declaration/runtime suites')
     parser.add_argument('--rpmalloc-first-class-heaps', action='store_true',
                         help='Supply the missing raw heap compile-time selection through the private build configuration')
     parser.add_argument('--report', type=Path, default=ROOT/'.work/verification.json')
     parser.add_argument('--foundation', type=Path, help='Explicit previously staged NEW independent foundation sources')
     args = parser.parse_args()
+    selected_configs = [config for config in TARGET_CONFIGS if not args.target_os or config[0] in args.target_os]
     compiler = args.compiler.resolve(strict=True)
     work = ROOT/'.work/runs'/(args.report.stem+'-'+str(os.getpid()))
     work.mkdir(parents=True, exist_ok=True)
@@ -198,7 +202,7 @@ def main():
             members = [Declaration(m['signature'],m['condition']) for d in coverage['declarations'] for m in d.get('members',[])]
             symbols = Spec(declarations=spec.declarations+members)
             report['symbols'].extend(check_symbols(module, symbols, enabled, ROOT/'.work/native'))
-        for os_name, cpu in TARGET_CONFIGS:
+        for os_name, cpu in selected_configs:
             file = work/'module-check.jai'
             file.write_text('#import "' + module + '"; main :: () {}\n')
             command = [compiler, file, '-check', '-no_dce', '-os', os_name, '-cpu', cpu]
@@ -231,6 +235,8 @@ def main():
         ('GL', 'wgl-context.jai', [('windows','x64'),('windows','arm64')]),
         ('X11', 'x11-window-helpers.jai', [('linux','x64'),('linux','arm64')]),
         ('X11', 'x11-message-box.jai', [('linux','x64'),('linux','arm64')]),
+        ('X11', 'x11-clipboard-release.jai', [('linux','x64'),('linux','arm64')]),
+        ('X11', 'clipboard-owned-data.jai', TARGET_CONFIGS),
         ('dxc_compiler', 'dxc-reflect.jai', [('windows','x64'),('windows','arm64')]),
         ('dxc_compiler', 'dxc-wide.jai', [('windows','x64'),('windows','arm64')]),
         ('dxc_compiler', 'dxc-compile-unit.jai', [('windows','x64'),('windows','arm64')]),
@@ -252,6 +258,8 @@ def main():
         if source.stem in PRIVATE_UNITS:
             source = place_private_unit(source.stem,source,stdlib,report['staged_sources'])
         for os_name, cpu in configs:
+            if (os_name, cpu) not in selected_configs:
+                continue
             result = invoke([compiler,source,'-check','-no_dce','-os',os_name,'-cpu',cpu],env)
             result.update(module=module, os=os_name, cpu=cpu, check='source_regression',
                           source=str(source.relative_to(ROOT)), status='passed' if result['exit']==0 else 'failed')
@@ -268,6 +276,7 @@ def main():
                             ('SDL', 'NativeSDL'), ('SDL', 'Binding_File_RWops'),
                             ('SDL', 'Binding_RW_State'), ('SDL', 'binding_files'),
                             ('GL', 'NativeWGL'), ('X11', 'Native'),
+                            ('X11', 'ClipboardOwned'),
                             ('X11', 'Binding_Message_Choices'), ('X11', 'binding_message_event'),
                             ('X11', 'binding_message_button'), ('dxc_compiler', 'ID3D12ShaderReflection'),
                             ('dxc_compiler', 'Win'), ('dxc_compiler', 'D3D'),
@@ -295,7 +304,7 @@ def main():
                             ('rpmalloc','Statistics_Frames'), ('rpmalloc','Statistics_Bridge')]:
         if args.module and module.split('/')[0] not in args.module and module not in args.module:
             continue
-        for os_name, cpu in TARGET_CONFIGS:
+        for os_name, cpu in selected_configs:
             result = {'module':module, 'member':private, 'os':os_name, 'cpu':cpu}
             target = TARGETS.get(module.split('/')[0], '')
             if target and not enabled(target,os_name,cpu):
@@ -312,7 +321,7 @@ def main():
     if not args.module or 'iOS' in args.module:
         # The reviewed target condition makes all three iOS exports unavailable
         # on desktop. Validate absence, rather than inventing host conveniences.
-        for os_name, cpu in TARGET_CONFIGS:
+        for os_name, cpu in selected_configs:
             for member in ('get_ios_target_triple','get_ios_sdk_path','get_ios_simulator_sdk_path'):
                 source = work/('ios-availability-'+member+'-'+os_name+'-'+cpu+'.jai')
                 source.write_text('M :: #import "iOS"; leaked :: M.'+member+'; main :: () {}\n')
@@ -339,16 +348,20 @@ def main():
         runtime_tests.append('posix-stat')
         runtime_tests.append('dxc-options')
         runtime_tests.append('shader-bytes')
+        runtime_tests.append('clipboard-owned-data')
         runtime_tests.extend(rpmalloc_fixtures(args.rpmalloc_first_class_heaps))
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
             runtime_tests.append('x11-message-box')
+            runtime_tests.append('x11-clipboard-release')
         for name in runtime_tests:
             relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'objc-runtime':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
             if name == 'appkit':
                 relevant = ['Objective_C']
             if name in ('d3d-strings', 'shader-bytes'):
                 relevant = ['d3d_compiler']
+            if name in ('clipboard-owned-data', 'x11-clipboard-release'):
+                relevant = ['X11']
             if name == 'dxc-version':
                 relevant = ['dxc_compiler']
             if name == 'fsevents-context':

@@ -26,3 +26,11 @@ required Windows gate. Mac executes only the shared portable byte-copy safety
 regression: exact binary bytes including NUL, independent storage after source
 mutation, surrounding canaries, zero-length/null range and allocator cleanup.
 Those results do not claim HLSL compilation or native COM execution on Mac.
+
+Verification: both public Windows programs pass x64/ARM64 source checking.
+`.work/shader-helper-modules.json` passes 24 applicable source checks, four Mac
+portable-helper build/run checks and 24 applicable privacy checks; unavailable
+targets remain separately unsupported. Strict Windows-target production lint,
+owned formatting and regeneration pass. `.work/shader-helpers-current/` keeps
+the original missing-helper evidence and native/lint reports. No native COM
+compiler result is fabricated or counted from the Mac byte-copy fixture.

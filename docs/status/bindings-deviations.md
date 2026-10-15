@@ -8,6 +8,29 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **X11 clipboard and combined Mac evidence.** Clipboard buffers are freed
+  through canonical Basic hooks in the calling allocator domain under native
+  Display locking. The private generic operation is tested with real allocator
+  delegation, canaries and idempotence on both Mac CPUs; it is not a fake Xlib
+  implementation. Native Linux/X server behavior remains unverified. Other X11
+  helper policies remain unspecified and unimplemented, explicitly requested.
+  One combined current-producer worker Mac run has zero applicable failures;
+  unavailable targets remain unsupported and coordinator corpus/package proof
+  is not claimed. General --target-os scoping narrows source/privacy checks
+  without changing assertions, test oracles or the default full desktop scope.
+
+- **Shader helper platform and error evidence.** D3D ignored define slices are
+  an explicit refreshed public contract. Exact native blob byte counts include
+  embedded/terminal NUL if supplied; copies use canonical Preload memcpy and
+  caller Basic allocator ownership. Invalid UTF-8 filenames return E_INVALIDARG
+  before an impossible conversion/call. The private DXC HRESULT check uses
+  active assertion plus a guaranteed stop if a handler returns, retaining safe
+  COM ownership and the reviewed no-status-result interface. No legacy private
+  CheckCom body is restored or inferred. Native Windows SDK behavior remains
+  unverified; Mac verifies only portable copying/ownership. The absent console
+  SDK variant is not invented. No SDK patch or public record change was added.
+  Real Windows executions of the new public programs remain required.
+
 - **Objective-C helper scope and framework path.** The eight missing bodies
   are implemented with real native SDK calls. Seven encoding/class/method
   helpers remain partial for unsupported reflection categories and unreviewed

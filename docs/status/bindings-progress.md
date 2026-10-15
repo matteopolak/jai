@@ -1,5 +1,35 @@
 # Bindings worker progress
 
+Combined worker Mac baseline is green: `.work/bindings-mac-combined-current.json`
+has zero failures, with 146 source, 98 native build/run and 116 privacy passes.
+Unavailable target/iOS cases are separate, not passed. This stages current NEW
+producer sources and owned bindings; coordinator corpus/final integration is
+not claimed. X11 clipboard cleanup now has real locking/ownership behavior,
+Linux CPU source checks and both-CPU Mac allocator/canary/idempotence tests.
+Production lint, formatting, regeneration and 68 Python tests pass.
+
+Current missing declarations: X11 three (initialization/DND/predicate contracts),
+Android seven (glue/app/asset/logging behavior) and enabled telemetry fourteen
+(matching commercial SDK unavailable). D3D compiler and DXC have no missing
+public declarations; Objective_C all eight helper bodies execute but seven
+retain conservative partial compatibility status. rpmalloc retains its 80
+partial entries and 24 existing verified profiles. No optional matrix expansion
+or benchmark ran. Precise filtered requests are in native-bindings-questions.md.
+
+Shader compiler helper checkpoint `484c306`: d3d_compiler now has both missing
+string overloads; dxc_compiler now has its missing version procedure. These two
+modules have zero unresolved public declarations. D3D ignores define slices as
+reviewed, preserves HRESULT, copies exact blob bytes and releases native
+references only in the memory overload; file output references transfer to the
+caller. DXC formats the reviewed version text and releases native custom
+text/interfaces. Canonical Windows/bootstrap types remain exact. Both Windows
+CPU source programs pass. Module sweeps pass 24 source, four Mac portable-copy
+build/run and 24 privacy checks; formatting, strict Windows-target lint and
+regeneration pass. Actual Windows SDK execution remains a required later gate.
+Other-module unresolved count is 25; Objective_C seven and rpmalloc 80 partial
+entries remain honest. Next: X11 clipboard ownership cleanup. No optional
+profile expansion or benchmark ran.
+
 Objective_C helper batch after `5b6ac6f`: all eight missing public helper bodies
 now exist, including the newly reviewed runtime-size member-stub generator.
 Real x64/ARM64 Mac tests verify native encoding parsing, class/ivar layout,
