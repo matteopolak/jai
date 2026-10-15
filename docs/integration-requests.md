@@ -2,6 +2,25 @@
 
 ## Current native Mac candidate, 2026-10-15
 
+New SDL graphics/compiler reproducer after real C probes are built: original
+`stdlib/SDL/tests/sdl-wm.jai` passes native ARM64 O0, but interpreter fails actual
+SDL_Init with `No available video device`. All preceding SDK size/offset/union,
+null-window error and packet canaries pass. Build prerequisites with
+`python3 tools/native_bindings/build_dependencies.py --output artifacts/native-sdk
+--library sdl_abi_probe --library sdl_runtime_abi_probe`; run
+`tools/stdlib_runtime.py --filter SDL/tests/sdl-wm --modes interp,native --opt O0`
+with the candidate stdlib and that prefix first in JAIC_NATIVE_LIBS. Fixture now
+prints actual SDL error and caller assertion location instead of bare abort;
+none of its conditions changed. Please include this in graphics/compiler Cocoa
+investigation; do not install dummy video, skip interpreter or weaken canaries.
+
+Portable owner now explicitly owns Default_Metaprogram per inbox; compiler Mac
+repair owner owns remaining compiler catalogue and WASI tour from d30311a5.
+Integrator's production options repair is committed783f37c0: Natvis unsupported
+requests are diagnosed, supported interception totals/continuable errors pass,
+all18 CLI tests run with17 passed/one missing-Default failure. Avoid overlapping
+edits to that test batch when refreshing the compiler worker.
+
 Candidate path remains `artifacts/integration-clean/thread-fixtures`, branch
 `integration/thread-fixtures`; latest committed head `d30311a5` plus a focused
 reviewable compiler-options repair in progress. Frozen source90fea8ab measurement

@@ -1476,6 +1476,20 @@ expectation correction; the normal packaged false selector is restored byte for
 byte. This does not add further option coverage or native platform claims.
 # Native Mac measurement limitations, 2026-10-15
 
+Catalogue routing follow-up: input metadata names only actual fixture prerequisites,
+not expected failures. Scratch paths are isolated under the runner's existing
+owned temporary directory and cleaned by its existing finally block. The caller
+must supply a real font through `JAIC_TEST_FONT_PATH`; there is no fake metric,
+texture, hardcoded fallback or copied production library. Six OS-specific fixtures
+are now unavailable on Mac; native Windows/Linux evidence remains required and
+not green. Actual host/label mismatch is rejected. Source target guards and strict
+negative baselines are unchanged. SDL source-built C probes remove missing-symbol
+errors, but interpreted WM still fails `SDL_Init: No available video device`.
+Native WM passes. Its diagnostic helper uses Basic.assert with caller location
+and prints SDL's actual error, retaining all ABI/ownership/canary assertions.
+Proper fix requires diagnosing actual interpreted SDL/Cocoa initialization and
+native library selection; no cause or graphical fallback has been assumed.
+
 Compiler options follow-up: `stdlib/internal/compiler-api/workspaces.jai` now
 rejects `use_natvis_compatible_types = true` explicitly. The independent backend
 has no Natvis-specific type emitter; accepting this flag silently was reduced

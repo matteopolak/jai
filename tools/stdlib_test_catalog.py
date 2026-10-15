@@ -15,6 +15,22 @@ REGRESSION_FAMILIES = {
     "graphics": "graphics-regressions",
 }
 
+# Inputs required by the unchanged independently authored fixture programs.
+PROGRAM_INPUTS = {
+    "extensions/io-dependency-workers": "scratch-file",
+    "tests/portable-data-resource": "scratch-directory",
+    "SDL/tests/sdl-rwops": "scratch-file",
+    "Simp/tests/glyph-atlas": "font",
+}
+PLATFORM_REQUIREMENTS = {
+    "extensions/io-uring-dependency-repro": "linux",
+    "Input/tests/windows-device-decoding": "windows",
+    "tests/portable-data-console-windows": "windows",
+    "tests/portable-data-discovery-windows": "windows",
+    "tests/portable-data-manifest-windows": "windows",
+    "tests/portable-data-resource-windows": "windows",
+}
+
 
 def entries(root=ROOT):
     manifest = root / "tests/stdlib-contract/manifest.json"
@@ -38,6 +54,10 @@ def validated_entries(root=ROOT):
     result = list(entries(root))
     names = set()
     for case in result:
+        if case["id"] in PROGRAM_INPUTS:
+            case["input"] = PROGRAM_INPUTS[case["id"]]
+        if case["id"] in PLATFORM_REQUIREMENTS:
+            case["required_os"] = PLATFORM_REQUIREMENTS[case["id"]]
         if case["id"] in names:
             raise ValueError("duplicate test ID: " + case["id"])
         names.add(case["id"])
@@ -50,7 +70,11 @@ def validated_entries(root=ROOT):
     return result
 
 
-def unavailable_reason(case, mode):
+def unavailable_reason(case, mode, actual_platform=None):
+    target_os = "wasm" if mode.startswith("wasm") else (actual_platform or "").split("-")[0]
+    required = case.get("required_os")
+    if required and target_os and target_os != required:
+        return f"requires actual {required} host; native execution remains required, not passed on {target_os}"
     if mode.startswith("wasm") and case["family"] in {"native", "graphics"}:
         return "native SDK/OS/graphics regression requires native CI; no WASM runtime claim"
     return None

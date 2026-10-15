@@ -448,3 +448,7 @@ compiler's actual private provider; native-only public Thread remains guarded.
 
 The full CLI suite now reports17 passes/one missing-Default_Metaprogram failure.
 Unsupported Natvis emission is explicitly diagnosed; it remains unimplemented.
+
+Catalogue prepared inputs now execute real file/resource/font cases. Native SDL
+ABI/runtime tests pass with source-built probes; interpreted WM initialization
+still fails and remains reported. OS-specific unavailable cases are not passes.

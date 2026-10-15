@@ -84,6 +84,22 @@ def run_command(command, cwd, timeout, env):
                 error.read().decode("utf-8", "replace").replace("\r\n", "\n"))
 
 
+def program_arguments(case, scratch, env):
+    kind = case.get("input")
+    if kind is None:
+        return []
+    if kind == "font":
+        font = env.get("JAIC_TEST_FONT_PATH")
+        if not font or not Path(font).is_file():
+            raise ValueError("fixture requires JAIC_TEST_FONT_PATH naming a real caller-owned font")
+        return [str(Path(font).resolve())]
+    if kind not in {"scratch-file", "scratch-directory"}:
+        raise ValueError("unknown fixture input: " + kind)
+    directory = Path(scratch) / "inputs" / case["id"].replace("/", "-")
+    directory.mkdir(parents=True, exist_ok=True)
+    return [str(directory / "data" if kind == "scratch-file" else directory)]
+
+
 def run_mode(args, test, path, mode, scratch, metadata=None):
     """(passed, detail) of one test in one mode; passed is None when the build wrote nothing to
     run (the program did its work at compile time)."""
@@ -92,13 +108,18 @@ def run_mode(args, test, path, mode, scratch, metadata=None):
     # Tests may read the mode (docs/tools/stdlib-runtime-tests.md), for example to avoid what the
     # interpreter cannot do yet.
     env["JAIC_STDLIB_TEST_MODE"] = mode
+    try:
+        arguments = program_arguments(metadata or {}, scratch, env)
+    except ValueError as error:
+        return False, str(error)
     wasm = mode.startswith("wasm")
     target = ["-os", "wasm"] if wasm else []
     if mode in ("interp", "wasm-interp"):
         record = Path(scratch) / f"{test.replace('/', '-')}-{mode}.coverage"
         if args.coverage:
             env["JAIC_COVERAGE"] = str(record)
-        code, stdout, stderr = run_command([args.jaic, str(path), "-interp", *target], path.parent, args.timeout, env)
+        code, stdout, stderr = run_command([args.jaic, str(path), "-interp", *target,
+                                           *(["--", *arguments] if arguments else [])], path.parent, args.timeout, env)
         if args.coverage and record.exists():
             # One file per run, gathered under a lock: concurrent appends could interleave.
             with COVERAGE_LOCK, open(args.coverage, "a", encoding="utf-8") as into:
@@ -137,7 +158,7 @@ def run_mode(args, test, path, mode, scratch, metadata=None):
             for dll in Path(os.environ["JAIC_NATIVE_LIBS"]).glob("SDL2.dll"):
                 shutil.copy2(dll, exe.parent / dll.name)
         command = ["node", "--no-warnings", str(ROOT / "tools/wasi_run.mjs"), str(built[0])] if wasm else [str(built[0])]
-        code, stdout, stderr = run_command(command, path.parent, args.timeout, env)
+        code, stdout, stderr = run_command([*command, *arguments], path.parent, args.timeout, env)
         out = stdout + stderr
         return contract_result(metadata or {}, code, stdout, stderr), out if code is not None else f"timed out after {args.timeout:.0f}s\n{out}"
     finally:
@@ -160,6 +181,8 @@ def main():
                     help="copy this directory's DLLs next to each native executable (Mesa's opengl32.dll in CI)")
     ap.add_argument("--verbose", "-v", action="store_true", help="print the output of every failure in full")
     args = ap.parse_args()
+    if args.platform.removesuffix("-mingw") != host_platform():
+        ap.error(f"runtime platform must match actual host {host_platform()}; use target source checks for cross-target coverage")
     args.jaic = str(Path(args.jaic).resolve())
     if not Path(args.jaic).is_file() and not Path(args.jaic + ".exe").is_file():
         sys.exit(f"stdlib_runtime: no jaic at {args.jaic}")
@@ -182,7 +205,7 @@ def main():
         test, path = case["id"], case["path"]
         results = []
         for mode in modes:
-            reason = unavailable_reason(case, mode)
+            reason = unavailable_reason(case, mode, args.platform)
             started = time.monotonic()
             if reason:
                 passed, detail = None, reason
@@ -234,7 +257,7 @@ def main():
     print(f"\nstdlib runtime tests on {args.platform} ({len(todo)} tests):")
     for mode in modes:
         p, f, u, b, n = counts[mode]
-        print(f"  {mode:<12} {p} passed, {f} failed, {u} native-only unavailable, {b} compile-time only, {n} expected negative checks")
+        print(f"  {mode:<12} {p} passed, {f} failed, {u} platform unavailable, {b} compile-time only, {n} expected negative checks")
     return 1 if failures else 0
 
 

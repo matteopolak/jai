@@ -698,6 +698,26 @@ All seven workspace failures remain enabled. Failure classifications are triage,
 not expected-failure exemptions. No original application/vendor source was read.
 # Focused repairs after the frozen measurement
 
+Catalogue preparation now supplies isolated real scratch-file/directory arguments
+for Io worker, resource and SDL RWops programs; glyph atlas requires the explicit
+`JAIC_TEST_FONT_PATH` environment variable naming a real file. Missing fonts remain
+failures. Runtime platform labels must match the host. Six explicit Linux/Windows
+fixtures are reported platform-unavailable on Mac, with required native execution
+still outstanding; they are not positive or negative passes. All original source
+guards and the seven-target unused-code test remain unchanged. Nine runner tests
+pass, covering strict negatives, timeouts, inputs and platform classifications.
+
+Actual prepared-input runs pass Io workers and glyph atlas in interpreter/native
+ARM64 O0. Portable-data selection passes two local programs in each mode and
+reports four Windows programs unavailable. Build the real SDL C probes with
+`python3 tools/native_bindings/build_dependencies.py --output artifacts/native-sdk
+--library sdl_abi_probe --library sdl_runtime_abi_probe`. All three SDL fixtures
+pass native ARM64 O0; layout and RWops also pass interpreted execution. Interpreted
+WM remains failed at actual `SDL_Init` with `No available video device`, after
+passing the size/offset/union/null-window/canary checks. The fixture now reports
+assertion locations and SDL errors instead of an unexplained libc abort, preserving
+every check. No SDK/dummy video or memory-only substitute was added.
+
 Compiler-options follow-up: full `cargo test --locked -p jaic-cli --test cli`
 reports17 passed/one failed/zero ignored; only Default_Metaprogram remains in
 that suite. Original interception totals and continuable-error behavior pass;
