@@ -92,5 +92,24 @@
   "generator-platform": {
     "commit": "943637d9d02fcc6e29f13408e1a8d1703795fb70",
     "integrated_via": "7467b49de0175e6d43f2263092b82ccb9182356f"
+  },
+  "latest_consumed_independent_checkpoints": {
+    "compiler_mac": "114dda877b527d1fbb51dba19d772e0cef80e768",
+    "extensions_mac_basic": "b821bf6d6f5c10c70e9ae144bea423f224d598c1",
+    "generator_model": "ba878c70d9a93b2437c235ff597bb95181cfb853",
+    "generator_platform": "81c8217b47110f8eb7d48c23f4a6f1a9c3c4c30b",
+    "generator_names_android": "a795f0d757bde3fd584e2c3632b2fe8ea0d9f208",
+    "generator_modifiers": "2ee67369042370f584a6d596664d8d40fb102f00",
+    "bindings_native": "958af0a25df90db26092575b690d5e81dece94ea",
+    "developer_tools": "a2bb717529080a8d87fa4e15df691da4a3f8f609",
+    "debug_info": "baafd02e021c654d50320f9048f80bb3135e5270",
+    "executable_formats": "f68873b996c9be5018fac8ed7944da0dc2fe6a9a"
+  },
+  "latest_candidate": {
+    "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures",
+    "ref": "integration/thread-fixtures",
+    "snapshot": "ac9b8723813af8b108d92867932b97a084dbc6e4",
+    "root_tracking": "3b50fee6f4300a94c77eedaab422681694604895",
+    "root_tracking_updated": false
   }
 }

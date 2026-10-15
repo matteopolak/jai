@@ -1,5 +1,7 @@
 # Developer documentation
 
+Current frozen native ARM64 measurement: [machine-readable current baseline](status/mac-current-baseline.json), with exact candidate path/ref/snapshot and separate coordinator gates.
+
 - [Required native library initialization](compiler/native-required-libraries.md):
   real constructor effects in interpreted/linked programs, precise load failures
   and compile-time/SandboxHost capability boundaries.

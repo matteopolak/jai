@@ -907,3 +907,7 @@ Migration details and unresolved old invalid-state assumptions are recorded in
 as supported negative tests. The frozen full-workspace/catalogue counts remain
 unchanged until a new complete snapshot is measured. This closes two focused
 workspace failures, not the remaining integration gaps.
+
+## Frozen combined checkpoint ac9b8723
+
+Candidate: integration/thread-fixtures, artifacts/integration-clean/thread-fixtures. Approved Basic/Math39/39 combined checks pass; CodeView interpreter/native O0 and dependent template interpreter/native O0 pass with real independently authored C/C++ fixture inputs. Library declarations are not exhaustive functional certification. The complete workspace command and subsequent catalogue are recorded in status/mac-current-baseline.json; pending counts are null, never inferred from isolated producer totals. No second Mac architecture, optional allocator profile expansion, remote or release operation was performed. Root tracking remains3b50fee6 and has not been fast-forwarded while the combined gates remain red.

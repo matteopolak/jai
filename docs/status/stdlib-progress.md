@@ -1,5 +1,9 @@
 # Portable stdlib progress
 
+## Current combined candidate ac9b8723
+
+The combined production library now includes shared Basic print context and reviewed integer/Vector2 arithmetic, all508 executable-format declaration rows, and dependent generator template/signature handling. Basic focused39/39 and original CodeView/template interpreter/native O0 checks pass in this worktree. Declaration coverage is not functionality completion: missing modules and platform/runtime gaps below remain. The prior complete workspace53ecb3d3 was852 passed/2failed/1ignored; catalogue081ecbff had13interpreter/12native failed executions including the180s interpreted Json timeout. Current complete measurement is tracked separately in [mac-current-baseline.json](mac-current-baseline.json); no green aggregate is inferred.
+
 ## Combined candidate ad575d16
 
 The latest combined candidate adds Default_Metaprogram, Example_Plugin and
