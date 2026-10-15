@@ -133,6 +133,9 @@ def main():
         for name in integrations:
             subprocess.run([sys.executable, "-B", str(ROOT / f"tools/check_portable_{name}_integration.py"),
                             "--jaic", str(compiler), "--stdlib", str(root)], cwd=ROOT, env=env, check=True)
+        if sys.platform == "darwin":
+            subprocess.run([sys.executable, "-B", str(ROOT / "tools/check_portable_watcher.py"),
+                            "--jaic", str(compiler), "--stdlib", str(root)], cwd=ROOT, env=env, check=True)
     cases = [(p, EXPECTED.get(p.stem, "ok\n"))
              for p in sorted((ROOT / "tests/portable-stdlib").glob("*.jai"))
              if p.stem not in {"bootstrap", "process-parent", "float-power-sweep"} and (p.stem != "windows-foundations" or sys.platform == "win32")]
