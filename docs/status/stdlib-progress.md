@@ -1,5 +1,14 @@
 # Portable stdlib progress
 
+Metaprogram_Plugins FULL reviewed parser/initializer workflow now ACTIVE with
+source-built general compiler89560db9. Computed imports/parameters, real factory
+objects/options/workspace, aggregate status/no-init options, stable factory identity,
+empty/name consistency and ordinary module/privacy errors pass interpreter/O0/O2
+drivers. Parser native O0/O2 and full context-aware owned strict lint pass. Valid
+declared-placeholder/indirect mechanism; no pump/yield/undeclared continuation.
+Default actual builds/Check/plugins/lint also pass on new compiler. Exact source/
+commands/limits in portable-metaprogram-plugins.md; full Focus/corpus coordinator gate.
+
 JKS generator real SDK workflow source now implemented: reviewed RSA/DSA table,
 defaultECcurve/defaultalias/password, actual keytool command/status/output checks
 and canonical owned record. Negative SDK/size cases pass interpreter/native O0/O2

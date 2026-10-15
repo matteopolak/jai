@@ -1,6 +1,16 @@
 // Reviewed 2026-10-15 parser state/borrowing/terminator/parameter contracts.
 using #import "Basic";
 M :: #import "Metaprogram_Plugins";
+C :: #import "Compiler";
+
+#run,stallable {
+    empty: [] M.Plugin_To_Create;
+    initialized: [..] *C.Metaprogram_Plugin;
+    success := M.init_plugins(empty, *initialized, -1);
+
+    assert(success && initialized.count == 0);
+    array_free(initialized);
+}
 
 main :: () {
     assert(type_info(M.Plugin_To_Create).name == "Plugin_To_Create");

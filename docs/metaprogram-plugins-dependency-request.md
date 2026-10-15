@@ -1,5 +1,11 @@
 # Metaprogram_Plugins public contract and compiler handoff
 
+RESOLVED: general compiler89560db9 adopted from the NEW independent producer,
+active initializer and real computed-name/aggregate/empty/privacy/error workflows
+pass with full context-aware strict lint. See portable-metaprogram-plugins.md and
+target/metaprogram-plugins-active.log. Earlier dependency/draft text below is
+retained historical failure evidence, not active requirements or completion gaps.
+
 CURRENT reviewed capability: #placeholder Generated_Name; a typed procedure with
 #insert Generated_Name has an available signature/value while its body waits.
 Scoped add_build_string in the same workspace supplies its string declaration;

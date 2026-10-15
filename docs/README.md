@@ -162,6 +162,7 @@ The LLVM backend, C ABI and linking.
 - [Remaining exact portable contract requests and owned scope](portable-remaining-contract-requests.md)
 - [Reviewed S128/Apollo arithmetic foundation handoff](portable-wide-arithmetic-handoff.md)
 - [Metaprogram plugin public-contract/compiler handoff](metaprogram-plugins-dependency-request.md)
+- [Real compile-time plugin parser/initializer and required compiler capability](portable-metaprogram-plugins.md)
 - [POSIX crash diagnostics and native startup verification](portable-crash-handler.md)
 - [Classic ZIP directory parsing and ownership](portable-zip-directory.md)
 - [Atomics and verified bootstrap aliases](portable-atomics.md)

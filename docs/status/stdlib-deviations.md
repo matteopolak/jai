@@ -1,5 +1,13 @@
 # Portable stdlib worker deviations
 
+Metaprogram initializer dependency RESOLVED with general compiler89560db9. Active
+real workflow and full context-aware strict lint pass. Lint context executes valid
+empty initialization required by the reviewed module import contract; no failing
+body excluded/replaced. Computed factory/aggregate/status/identity/privacy/module
+diagnostic cases genuinely execute. Older pending/failed-dependency notes below are
+historical. Narrow starting-index prefix edge and invalid-index safety policy remain
+documented; no runtime/native-callback suspension promise or false corpus claim.
+
 JKS generation source uses actual Java keytool in supplied bin directory; host
 Java unavailable, so only negative/status/strict-lint evidence, NO positive SDK
 success claim. SDK positive fixture pending. Independent365-day/quoted-DN/default-
