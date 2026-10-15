@@ -2,6 +2,16 @@
 
 ## Stable combined native ARM64 replay, 2026-10-15
 
+Restricted application follow-up at17ab409a completed before coordinator corpus
+takeover:337 configured entries source checked by unchanged jailint,296 complete,
+41 failures,63/400 unexecuted; zero native output claims. IDE diagnostics reported
+706/776 permitted files,271 errored,70 unreported; Vk-Engine stopped at180.005s
+with33/101 reported. Full original corpus is now externally coordinator-owned;
+only metadata reports are retained as handoff, not raw diagnostic/source inputs.
+See [entry checks](../status/application-entry-checks-baseline.json),
+[type facts](../status/application-typefacts-baseline.json) and
+[overall corpus limits](../status/public-corpus-baseline.json).
+
 Application staging audit: the coordinator's1044-file allowlist includes249
 manifest paths under blocked module/library directories. No excluded bodies
 were opened. `tools/stage_application_corpus.py` additionally excludes library

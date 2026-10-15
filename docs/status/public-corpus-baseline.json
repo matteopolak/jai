@@ -16,5 +16,24 @@
   "unexecuted": 400,
   "status": "requires coordinator opaque originals or approved application-only staging",
   "reason": "Unrestricted sweep copies vendor/compiler trees and symlinks siblings. Session explicitly bars corpus module/stdlib/prelude access; no full corpus execution or parser-only success claimed.",
-  "coordinator_request": "Run all 400 configured entries against this NEW production library externally; return filtered diagnostics/minimal independent reproducers. Provide safe app-only staging with provenance for any local replay."
+  "coordinator_request": "Run all 400 configured entries against this NEW production library externally; return filtered diagnostics/minimal independent reproducers. Provide safe app-only staging with provenance for any local replay.",
+  "coordinator_status": "Full original 400-entry run active externally, filtered results pending",
+  "restricted_local_source_checks": {
+    "snapshot": "17ab409afbe55a500d39e7eb9262f9cd0f10877d",
+    "configurations": 400,
+    "attempted": 337,
+    "source_check_complete": 296,
+    "failed": 41,
+    "unexecuted": 63,
+    "native_builds_claimed": 0,
+    "method": "unchanged jailint strict program contexts with production library and SandboxHost",
+    "limitation": "stripped permitted application stage; not full original corpus acceptance"
+  },
+  "restricted_IDE_typefacts": {
+    "staged": 776,
+    "excluded": 268,
+    "reported": 706,
+    "check_errors": 271,
+    "unreported": 70
+  }
 }

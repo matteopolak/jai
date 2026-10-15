@@ -1,5 +1,19 @@
 # Integration requests
 
+## Corpus takeover metadata at17ab409a
+
+The restricted app-only stage excluded268/1044 records before source access,
+including all249 module-directory records found by the metadata audit. Existing
+unchanged jailint checked337 of400 configured entries using actual production
+stdlib/SandboxHost strict program contexts:296 complete source checks,41 failures,
+63 configurations unexecuted (excluded/opaque projects or required CLI capability).
+No native build/execution or full corpus success follows. IDE/type facts reported
+706/776 permitted files,271 with Check errors,70 unreported. Vk-Engine reached
+its180s deadline after180.005s, reporting33/101 files; no success is claimed.
+Reports retain only metadata; raw diagnostics are not handoff inputs. Both local
+commands completed before coordinator takeover. Full original400-entry run is
+the acceptance gate; provide only sanitized independent reductions to producers.
+
 ## Interpreter/native link-always discrepancy at8928fb1a
 
 Compiler owner: unchanged new producer `tests/native-bindings/objc-runtime.jai`
