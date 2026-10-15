@@ -1,5 +1,23 @@
 # Compiler progress
 
+Architectural x64 batch: real RDTSC/RDTSCP (including AUX), distinct RDRAND/RDSEED
+single-attempt value/CF and flag/partial-write semantics, real LFENCE/SFENCE/MFENCE,
+PAUSE and four prefetch hints now have typed IR/interpreter/LLVM support. Invalid
+operand/target/signature and unavailable-host/feature diagnostics are explicit.
+Generic counters use actual x64/ARM64 counters; WASM rejects missing capability.
+Original red/green tests, eight O0/O2 ABI opcode objects, actual translated x64
+native O0/O2 C oracle and six x64 interpreter tests pass. Full available core/backend
+suite: 317 pass, zero fail, one inherited corpus sweep ignored. Host core/LLVM,
+x64 Mac, Windows x64/ARM64, wasm32 core/browser clippy pass. Owned fixture format
+and target-aware strict lint pass using rebuilt tools. Actual wasm32 ISA/target/
+x64-child rejection and recovery pass. Real CPUID here
+has TSC/RDTSCP but no RDRAND/RDSEED: RNG hardware execution remains pending capable
+CI, not inferred from opcodes. Portable owns eight newly unblocked public macros;
+no peer edits or integration Pool/optimizer/assert-hook/LSP feature changes.
+Exact interface, commands, remaining ISA gaps and limits:
+compiler/x86-machine-instructions.md. Generic-pointer original reduction requested
+in compiler questions; private runtime adoption remains pending.
+
 Target-aware jailint implemented: -os/-cpu/-target selects real compiler options across roots/imports/loads, bootstrap, workspaces and fix passes. Source/runtime/preload/import options and config provenance retained. --context supplies a real enclosing program's module arguments/source origin without granting private-import access. --manifest records actual context targets/completeness and unvisited files. Failed body checks remain fatal and are marked incomplete; context visits are not skipped as target coverage. All 38 jailint cases pass, including ten new independent target/privacy/parameter/config/parallel/fix/workspace/context regressions. Host/Windows all-target clippy checks are scoped separately. Source-check evidence only; full-platform stdlib runner adoption remains integration-owned. No assertion-hook/LSP overlap or peer writes. Handoff: tools/jailint-targets.md.
 
 Narrow CI 7350b86 link repair: remove forced ucrt import from scheduler CRT entry; Rust's existing static/dynamic CRT selection now governs. Actual own static-library metadata red/green confirms the old libcmt + ucrt.lib mixture and passes x64/ARM64 in both CRT configurations after repair. KernelBase fix retained. Native gate now builds BOTH jaic and jailint, using existing target/CRT flags and workflow static LLVM; --build-only supports prompt CI link validation. Actual MSVC executable/runtime verification pending. Reviewed prefix casts include shifts and retain bottom-up operand typing; only narrow shift promotion remains unspecified. Details: compiler/windows-crt-linkage.md.

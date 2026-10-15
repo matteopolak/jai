@@ -1,5 +1,22 @@
 # Compiler integration handoff
 
+Machine_X64 instruction mechanisms are ready for portable adoption: #asm rdtsc hi,lo;
+rdtscp hi,lo[,aux]; rdrand/rdseed register (.w/.d/.q) with actual setc; zero-argument
+mfence/lfence/sfence/pause; prefetcht0/1/2 and prefetchnta memory operands. Typed IR
+and LLVM emit actual architectural instructions at O0/O2, preserving flags/ABI/
+ordering; x64 interpreter performs real CPUID-guarded instructions, ARM rejects.
+No new facade exports or module recognition. Eight missing reviewed public macros
+are compiler-unblocked; portable must author/check their bodies. Full core/backend
+317 pass (one inherited corpus sweep ignored), six x64 interpreter cases, eight ABI
+opcode objects and actual translated x64 native O0/O2 C tests pass. TSC/RDTSCP are
+available here; RDRAND/RDSEED are absent by real CPUID, so hardware RNG execution
+needs capable CI. Native Windows/Linux execution remains pending. See
+compiler/x86-machine-instructions.md for contracts, commands and remaining ISA
+gaps. Supply explicitly named original default-generic-pointer reduction before
+that binding repair; no peer-tree search/guess is performed. Runtime protocol
+adoption remains portable-owned and pending. No Pool/optimizer/assert-hook/LSP
+feature changes or peer writes in this batch.
+
 Target-aware jailint is ready for full-lint runner adoption. Pass -os/-cpu or -target (explicit MSVC triples where needed), --context for a real enclosing program with required module bindings, retain private library origin, and collect --manifest per target/context. Compiler Options source/target/runtime settings are cloned across roots and default workspaces; no fake OS guards or missing-body success. All 38 jailint cases pass; source checks, not native execution/full stdlib integration. New Outcome contexts/unvisited_files and driver compiler_options/source fields support runner evidence. See tools/jailint-targets.md. No integration assertion-hook/LSP files or peer checkouts changed.
 
 CI 7350b86 follow-up removes forced ucrt import from scheduler declarations, allowing existing Rust CRT selection to govern. KernelBase runtime fix retained. Four actual own core static-library dependency cases (x64/ARM64, dynamic/static CRT) pass red/green. For next native CI run python tools/check_windows_thread_sdk.py --build-only to link BOTH jaic and jailint with configured CRT/target/static LLVM; omit --build-only afterward for thread/name/alias execution. Actual Windows link/runtime remains pending. See compiler/windows-crt-linkage.md. Prefix grouping reviewed/resolved; narrow shift promotion remains unreviewed.

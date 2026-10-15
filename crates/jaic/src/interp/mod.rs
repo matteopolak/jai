@@ -17,6 +17,7 @@ mod crash;
 pub use crash::CRASH_STATUS;
 mod executable_path;
 mod fibers;
+mod machine;
 mod native;
 mod probe;
 pub mod profile;
@@ -2368,8 +2369,28 @@ impl Interp {
             I::Fabs => Rets::one(f64_of(a[0]).abs().to_bits()),
             I::Fma => Rets::one(f64_of(a[0]).mul_add(f64_of(a[1]), f64_of(a[2])).to_bits()),
             I::ReturnAddress => Rets::one(0),
-            I::CycleCounter => Rets::one(cycle_counter()),
+            I::CycleCounter => {
+                self.effects += 1;
+                Rets::one(machine::cycle_counter()?)
+            }
+            I::X86Timestamp {
+                ..
+            }
+            | I::X86Random {
+                ..
+            }
+            | I::X86Fence(_)
+            | I::X86Pause
+            | I::X86Prefetch(_) => {
+                self.effects += 1;
+                let results = machine::execute(op, a)?;
+                if op == I::X86Pause && self.multi && self.host.cooperative_threads() {
+                    self.inline_poll();
+                }
+                results
+            }
             I::CpuId => {
+                self.effects += 1;
                 #[cfg(target_arch = "x86_64")]
                 {
                     // CPUID is mandatory on x86-64; the standard wrapper preserves ABI registers.
@@ -2396,6 +2417,7 @@ impl Interp {
                 }
             }
             I::Pause => {
+                std::hint::spin_loop();
                 if self.multi && self.host.cooperative_threads() {
                     self.inline_poll();
                 }
@@ -2526,26 +2548,6 @@ impl Interp {
             W::ToS64 => Ok(vec![w::to_i64(fmt, &value(self, a[0])?) as u64]),
             W::ToU64 => Ok(vec![w::to_u64(fmt, &value(self, a[0])?)]),
         }
-    }
-}
-
-/// Native: nanoseconds since the epoch. wasm32 has no clock (`SystemTime::now` panics there), so
-/// it counts calls instead.
-fn cycle_counter() -> u64 {
-    #[cfg(target_arch = "wasm32")]
-    {
-        use std::cell::Cell;
-        thread_local! { static TICKS: Cell<u64> = const { Cell::new(0) }; }
-        TICKS.with(|t| {
-            t.set(t.get() + 1);
-            t.get()
-        })
-    }
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .map_or(0, |d| d.as_nanos() as u64)
     }
 }
 

@@ -1,5 +1,10 @@
 # Real x64 CPUID execution
 
+Follow-up: the separately recorded synthetic timestamp/random/WASM-counter gaps
+are repaired in [architectural x64 instruction semantics](x86-machine-instructions.md).
+Original failure evidence remains historical; optional RNG hardware execution
+still requires a capable CI machine.
+
 The assembler front end previously replaced all four CPUID outputs with zero.
 The original NEW portable reproducer exposed this in interpreter and native code.
 CPUID now lowers to an explicit two-input/four-result IR intrinsic. EAX selects
