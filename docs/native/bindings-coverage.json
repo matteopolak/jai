@@ -172731,7 +172731,8 @@
       "spec": "docs/specs/stdlib/modules/rpmalloc.md",
       "spec_sha256": "b48e3ee72411d9af591c65b3f81b7a2b5b0ffdcbcd8a72e04e54038c985e8bff",
       "counts": {
-        "unresolved": 80,
+        "unresolved": 66,
+        "partially_implemented": 14,
         "declared": 31
       },
       "member_counts": {},
@@ -172750,8 +172751,10 @@
           "signature": "initialize :: () -> s32",
           "condition": "",
           "spec_line": 9,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "initialize",
@@ -172766,8 +172769,10 @@
           "signature": "finalize :: ()",
           "condition": "",
           "spec_line": 11,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "initialize_config",
@@ -172790,16 +172795,20 @@
           "signature": "is_initialized :: inline () -> bool",
           "condition": "",
           "spec_line": 14,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "thread_initialize",
           "signature": "thread_initialize :: inline ()",
           "condition": "",
           "spec_line": 15,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "thread_finalize",
@@ -172814,8 +172823,10 @@
           "signature": "thread_finalize :: (release_caches: bool)",
           "condition": "",
           "spec_line": 17,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "thread_finalize",
@@ -172830,8 +172841,10 @@
           "signature": "is_thread_initialized :: () -> bool",
           "condition": "",
           "spec_line": 19,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "set_main_thread",
@@ -172854,48 +172867,60 @@
           "signature": "rpmalloc :: inline (size: s64) -> *void",
           "condition": "",
           "spec_line": 22,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "rpfree",
           "signature": "rpfree :: inline (ptr: *void)",
           "condition": "",
           "spec_line": 23,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "rprealloc",
           "signature": "rprealloc :: inline (ptr: *void, size: s64) -> *void",
           "condition": "",
           "spec_line": 24,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "rpaligned_realloc",
           "signature": "rpaligned_realloc :: (ptr: *void, alignment: s64, size: s64, oldsize: s64, flags: Realloc_Flags) -> *void",
           "condition": "",
           "spec_line": 25,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "rpaligned_alloc",
           "signature": "rpaligned_alloc :: (alignment: s64, size: s64) -> *void",
           "condition": "",
           "spec_line": 26,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "usable_size",
           "signature": "usable_size :: inline (ptr: *void) -> s64",
           "condition": "",
           "spec_line": 27,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "usable_size",
@@ -172910,16 +172935,20 @@
           "signature": "thread_statistics :: (stats: *rpmalloc_thread_statistics_t)",
           "condition": "",
           "spec_line": 29,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "global_statistics",
           "signature": "global_statistics :: (stats: *rpmalloc_global_statistics_t)",
           "condition": "",
           "spec_line": 30,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "dump_statistics",
@@ -173424,6 +173453,7 @@
           "signature": "rpmalloc_heap_t :: heap_t",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 94,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "declared"
         },
         {
@@ -173439,6 +173469,7 @@
           "signature": "Heap :: heap_t",
           "condition": "",
           "spec_line": 96,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173446,6 +173477,7 @@
           "signature": "initialize :: rpmalloc_initialize",
           "condition": "",
           "spec_line": 97,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173453,6 +173485,7 @@
           "signature": "initialize_config :: rpmalloc_initialize_config",
           "condition": "",
           "spec_line": 98,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173460,6 +173493,7 @@
           "signature": "finalize :: rpmalloc_finalize",
           "condition": "",
           "spec_line": 99,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173467,6 +173501,7 @@
           "signature": "is_initialized :: rpmalloc_is_initialized",
           "condition": "",
           "spec_line": 100,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173474,6 +173509,7 @@
           "signature": "thread_initialize :: rpmalloc_thread_initialize",
           "condition": "",
           "spec_line": 101,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173481,6 +173517,7 @@
           "signature": "thread_finalize :: rpmalloc_thread_finalize",
           "condition": "",
           "spec_line": 102,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173488,6 +173525,7 @@
           "signature": "is_thread_initialized :: rpmalloc_is_thread_initialized",
           "condition": "",
           "spec_line": 103,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173495,6 +173533,7 @@
           "signature": "set_main_thread :: rpmalloc_set_main_thread",
           "condition": "",
           "spec_line": 104,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173502,6 +173541,7 @@
           "signature": "config :: rpmalloc_config",
           "condition": "",
           "spec_line": 105,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173509,6 +173549,7 @@
           "signature": "usable_size :: rpmalloc_usable_size",
           "condition": "",
           "spec_line": 106,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173516,6 +173557,7 @@
           "signature": "thread_statistics :: rpmalloc_thread_statistics",
           "condition": "",
           "spec_line": 107,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173523,6 +173565,7 @@
           "signature": "global_statistics :: rpmalloc_global_statistics",
           "condition": "",
           "spec_line": 108,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173530,6 +173573,7 @@
           "signature": "dump_statistics :: rpmalloc_dump_statistics",
           "condition": "",
           "spec_line": 109,
+          "effective_condition": "USE_RAW",
           "status": "declared"
         },
         {
@@ -173537,6 +173581,7 @@
           "signature": "heap_acquire :: rpmalloc_heap_acquire",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 110,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "declared"
         },
         {
@@ -173544,6 +173589,7 @@
           "signature": "heap_release :: rpmalloc_heap_release",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 111,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "declared"
         },
         {
@@ -173551,6 +173597,7 @@
           "signature": "heap_alloc :: rpmalloc_heap_alloc",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 112,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "declared"
         },
         {
@@ -173558,6 +173605,7 @@
           "signature": "heap_aligned_alloc :: rpmalloc_heap_aligned_alloc",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 113,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "declared"
         },
         {
@@ -173565,6 +173613,7 @@
           "signature": "heap_realloc :: rpmalloc_heap_realloc",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 114,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "declared"
         },
         {
@@ -173572,6 +173621,7 @@
           "signature": "heap_aligned_realloc :: rpmalloc_heap_aligned_realloc",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 115,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "declared"
         },
         {
@@ -173579,6 +173629,7 @@
           "signature": "heap_free :: rpmalloc_heap_free",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 116,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "declared"
         },
         {
@@ -173586,6 +173637,7 @@
           "signature": "heap_free_all :: rpmalloc_heap_free_all",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 117,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "declared"
         },
         {
@@ -173593,6 +173645,7 @@
           "signature": "heap_thread_set_current :: rpmalloc_heap_thread_set_current",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 118,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "declared"
         }
       ],

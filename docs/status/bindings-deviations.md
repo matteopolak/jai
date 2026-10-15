@@ -8,6 +8,24 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Default public rpmalloc profile, incomplete option matrix.**
+  `stdlib/rpmalloc/wrappers.jai` now implements real default rewrite lifecycle,
+  allocation, thread status and fieldwise statistics conversion. A private
+  profile predicate prevents other cache/statistics/assertion options from
+  silently executing this native build. Missing implementations remain source
+  diagnostics; there is no unsupported assertion or success-returning stub.
+  Fourteen ledger entries are explicitly partial, with their implemented
+  condition, rather than complete across imports. Actual public-only programs
+  run on both Mac CPUs; six desktop source checks and scoped strict lint pass.
+  No callbacks/config/heap behavior is credited. The native SDK remains
+  process-global, so concurrent distinct import instances are not established;
+  lifecycle state is serialized, not an atomic cross-thread initialization API.
+  Risks: unsupported nondefault configurations and missing callback ownership,
+  no runtime Windows/Linux evidence. Proper fix: profile-isolated native builds
+  or a reusable independently authored allocator backend honoring every option,
+  plus canonical contextual heap representation and safe callback ownership.
+  See [public adapter scope](../native/rpmalloc-public-adapter.md).
+
 - **Private rpmalloc SDK, public implementation still incomplete.** Generated
   all native C functions and full SDK config/statistics storage from complete
   pinned official input. Native heaps are opaque private pointers, never aliases

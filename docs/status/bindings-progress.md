@@ -1,6 +1,23 @@
 # Bindings worker progress
 
-2026-10-15 verification checkpoint: `1ef2ea6` contains the complete private SDK
+2026-10-15 public implementation after `dd4dfcb`: default rewrite now has 14
+real lifecycle/allocation/statistics entries, classified **partial** because
+nondefault profiles and raw mode remain unfinished. The new public-only test
+uses public initialization and teardown, preserved ordinary/aligned realloc
+bytes, matching frees, actual nonzero counters and canaries. Both Mac CPUs run
+successfully; six desktop source configurations, actual formatter, scoped
+strict lint and regeneration pass. Generator tests: 53 passed. Complete reviewed
+rewrite Heap/Span/context records stay private; no native heap pointer is cast
+to them. Raw-only aliases are now mode-guarded. Current rpmalloc ledger: 66
+unresolved + 14 partial; other unresolved scope remains 36. This is real public
+progress, not completion or a reduction of the remaining configuration gate.
+New test is discovered by standard native verification; independent review
+remains pending. Nonmatching profiles intentionally remain missing code rather
+than receiving default native semantics. Next: safe callback/config lifetime,
+profile isolation/options, and proper canonical heap adapters. New detailed
+scope is `docs/native/rpmalloc-public-adapter.md`.
+
+Previous 2026-10-15 verification checkpoint: `1ef2ea6` contains the complete private SDK
 backend and checked boundary. Stronger follow-up tests require nonzero actual
 thread allocation/free totals and valid per-class current/peak counters; both
 Mac CPUs and the production-builder archive pass. Latest full owned matrix:

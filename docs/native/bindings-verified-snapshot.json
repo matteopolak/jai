@@ -2,11 +2,12 @@
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
     "declared": 28397,
-    "unresolved": 116,
+    "unresolved": 102,
     "implemented_manual": 52,
     "implemented": 544,
     "forwarded": 1262,
-    "duplicate": 1
+    "duplicate": 1,
+    "partially_implemented": 14
   },
   "reports": [
     {
@@ -575,6 +576,33 @@
         0,
         0
       ]
+    },
+    {
+      "report": ".work/rpmalloc-public-allocation-verification.json",
+      "sha256": "4b043b8bba81e53e48f690c8bc85e1989eaead9a540e45b2d15d66a8963128ca",
+      "scope": "Public default rewrite lifecycle/allocation/statistics; callback/config/heaps and nondefault profiles incomplete",
+      "checks": 14,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-10.json",
+      "sha256": "bf0efabb57ab41a04c5cdea756ddff2aa3314d6ce964b130ef6a00fcb97a7fe9",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 18,
+          "failed": 6
+        },
+        "native": {
+          "passed": 4
+        },
+        "privacy": {
+          "passed": 30
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

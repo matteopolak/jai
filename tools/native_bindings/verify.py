@@ -189,6 +189,7 @@ def main():
     for module, filename, configs in [
         ('macOS', 'fsevents-context.jai', [('macos','x64'),('macos','arm64')]),
         ('rpmalloc', 'rpmalloc-native-sdk.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-allocation.jai', TARGET_CONFIGS),
         ('d3d11', 'forward-overlay.jai', TARGET_CONFIGS),
         ('d3d12', 'd3d-interface-identity.jai', [('windows','x64'),('windows','arm64')]),
         ('SDL', 'sdl-layout.jai', TARGET_CONFIGS),
@@ -237,7 +238,9 @@ def main():
                             ('dxc_compiler', 'Win'), ('dxc_compiler', 'D3D'),
                             ('dxc_compiler', 'NativeCompile'), ('macOS', 'NativeEvents'),
                             ('d3d11', 'ID3DBlob'), ('d3d11', 'ID3D11ModuleInstance'),
-                            ('d3d12', 'ID3DBlob')]:
+                            ('d3d12', 'ID3DBlob'), ('rpmalloc','Heap'),
+                            ('rpmalloc','Span'), ('rpmalloc','Native'),
+                            ('rpmalloc','initialized'), ('rpmalloc','Native_Profile_Matches')]:
         if args.module and module.split('/')[0] not in args.module and module not in args.module:
             continue
         for os_name, cpu in TARGET_CONFIGS:
@@ -282,6 +285,7 @@ def main():
         runtime_tests.append('posix-stat')
         runtime_tests.append('dxc-options')
         runtime_tests.append('rpmalloc-native-sdk')
+        runtime_tests.append('rpmalloc-public-allocation')
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
             runtime_tests.append('x11-message-box')
@@ -304,12 +308,12 @@ def main():
             if name in ('x11-window-helpers','x11-message-box'):
                 relevant = ['X11']
             if name in PRIVATE_UNITS:
-                relevant = ['iOS'] if name=='ios-sdk-host' else ['rpmalloc'] if name=='rpmalloc-native-sdk' else ['dxc_compiler']
+                relevant = ['iOS'] if name=='ios-sdk-host' else ['rpmalloc'] if name.startswith('rpmalloc-') else ['dxc_compiler']
             if name == 'imgui-nested':
                 relevant = ['ImGui']
             if name == 'posix-stat':
                 relevant = ['POSIX']
-            if name == 'rpmalloc-native-sdk':
+            if name in ('rpmalloc-native-sdk','rpmalloc-public-allocation'):
                 relevant = ['rpmalloc']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']
@@ -335,6 +339,8 @@ def main():
                 scope = 'private_native_compile_route'
             if name == 'rpmalloc-native-sdk':
                 scope = 'private_native_allocator_sdk'
+            if name == 'rpmalloc-public-allocation':
+                scope = 'public_default_allocator_lifecycle_allocation_statistics'
             result.update(name=name, phase='build',scope=scope,status='passed' if result['exit']==0 else 'failed')
             if compiled_source != source:
                 result['private_unit_placement'] = str(compiled_source)

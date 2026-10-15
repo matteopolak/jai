@@ -9,9 +9,17 @@ import re
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'tools/native_bindings'))
 from vendor_rpmalloc import native_type, record
 from verify import ROOT, place_private_unit
+from generate import condition_for
+from spec import Declaration
 
 
 class NativeAllocatorTranslationTests(unittest.TestCase):
+    def test_raw_alias_conditions_do_not_capture_aggregate_declarations(self):
+        self.assertEqual(condition_for('rpmalloc',Declaration('Heap :: heap_t','')), 'USE_RAW')
+        self.assertEqual(condition_for('rpmalloc',Declaration('heap_acquire :: rpmalloc_heap_acquire','RPMALLOC_FIRST_CLASS_HEAPS')), 'USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)')
+        self.assertEqual(condition_for('rpmalloc',Declaration('rpmalloc_config_t :: struct','')), '')
+        self.assertEqual(condition_for('rpmalloc',Declaration('RPMALLOC_CONFIGURABLE :: CONFIGURABLE','')), '')
+
     def test_native_program_invokes_every_pinned_sdk_entry_point(self):
         metadata = json.loads((ROOT/'stdlib/internal/bindings/rpmalloc-sdk/provenance.json').read_text())
         source = (ROOT/'tests/native-bindings/rpmalloc-native-sdk.jai').read_text()

@@ -193,6 +193,11 @@ def authored_signatures(text):
 
 def condition_for(module, declaration, spec=None):
     condition = declaration.condition
+    alias = re.fullmatch(r'\w+\s*::\s*(\w+)\s*;?', declaration.code.strip())
+    if module == 'rpmalloc' and alias and alias[1] not in ('struct', 'union', 'enum', 'enum_flags') and declaration.name not in ('ENABLE_OVERRIDE', 'RPMALLOC_CONFIGURABLE'):
+        # The alias inventory belongs to the raw transliteration. The rewrite
+        # supplies its own procedures and keeps its contextual Heap private.
+        condition = 'USE_RAW' + (' && ('+condition+')' if condition else '')
     if condition == 'else branch':
         if module == 'Objective_C':
             condition = 'OS != .MACOS' if declaration.name == 'BOOL' else 'CPU != .X64'
@@ -348,6 +353,10 @@ def generate_facade(module, spec):
             continue
         if normalized_signature(d.code) in manual_signatures:
             record.update(status='implemented_manual', artifact=str(manual_path.relative_to(ROOT)))
+            if module == 'rpmalloc':
+                record.update(status='partially_implemented',
+                              implemented_condition='!USE_RAW && Native_Profile_Matches',
+                              reason='Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations')
             ledger.append(record)
             continue
         key = (condition, d.code)
@@ -580,6 +589,9 @@ def main():
         entry_code = '\n'.join(spec.parameter_blocks or [PARAMETERS.get(module, '')]) + '\n'
         if module in TARGETS:
             entry_code += '#assert ' + TARGETS[module] + ', "' + module + ' requires its documented native platform";\n'
+        contextual = ROOT / 'stdlib' / module / 'context.jai'
+        if contextual.exists():
+            entry_code += '#load "context.jai";\n'
         entry_code += '#load "declarations.jai";\n'
         wrappers = ROOT / 'stdlib' / module / 'wrappers.jai'
         if wrappers.exists():
