@@ -19,15 +19,15 @@ MODULES = {
 
 def remaining_matrix(inventory):
     questions = {
-        ("Bindings_Generator", "generate_bridge"): "Bindings_Generator question9: bridge naming/output/library contract",
+        ("Bindings_Generator", "generate_bridge"): "Reviewed C++ source adapter contract resolved; implementation and compiled round trips pending",
         ("Bindings_Generator", "ensure_local_libclang_exists"): "Bindings_Generator question11: installation/copy policy",
         ("Bindings_Generator", "clang_getFileTime"): "Bindings_Generator question12: canonical time_t dependency",
         ("Bindings_Generator", "is_same_type"): "Bindings_Generator question10: model equivalence",
         ("Bindings_Generator", "is_same_expression"): "Bindings_Generator question10: model equivalence",
         ("Bindings_Generator", "is_same_literal"): "Bindings_Generator question10: literal equivalence",
         ("Debug_Info", "parse_frame_description_entry"): "Debug_Info question4: remaining frame encodings/offset conventions",
-        ("Debug_Info", "parse_compilation_unit_v4"): "Debug_Info questions5/6: Parse_Context and Declaration.kind shapes",
-        ("Debug_Info", "parse_dwarf_debug_info"): "Debug_Info questions5/6: canonical parser dependencies",
+        ("Debug_Info", "parse_compilation_unit_v4"): "Reviewed Parse_Context and Declaration.kind resolved; canonical DWARF parser implementation pending",
+        ("Debug_Info", "parse_dwarf_debug_info"): "Reviewed canonical parser dependencies resolved; implementation pending",
         ("Debug_Info", "get_filename"): "Debug_Info question8: file/directory indexing and path text",
         ("Debug_Info", "get_filename_for_file_id"): "Debug_Info question8 for DWARF overload; CodeView implementation pending",
     }
@@ -47,11 +47,11 @@ def remaining_matrix(inventory):
             for name, entries in sorted(pending.items()):
                 reason = questions.get((module, name), "Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior.")
                 if module == "Debug_Info" and ("msf" in name or "stream" in name or name in {"parse_pdb", "get_stream_size", "stream_exists", "is_valid_page_number", "is_valid_stream_number", "is_valid_user_stream_number", "verify_integrity", "ensure_room", "is_free_page", "alloc_page", "free_page", "is_fpm_page_number"}):
-                    reason = "Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged"
+                    reason = "Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds"
                 if module == "Codex":
-                    reason = "Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined"
+                    reason = "Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details"
                 if module == "Iprof":
-                    reason = "Iprof questions1–3: instrumentation/timer/history/report semantics are being refined"
+                    reason = "Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2"
                 output.append(f"| `{name}` | {len(entries)} | {reason} |")
             output.append("")
         if source_only:
