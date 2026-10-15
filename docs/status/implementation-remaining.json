@@ -1,55 +1,42 @@
 {
   "Bindings_Generator": {
-    "assigned_function_names": 77,
+    "assigned_function_names": 61,
     "counts": {
-      "complete_committed": 1,
-      "complete_draft": 3,
-      "missing": 62,
-      "partial_committed": 6,
-      "partial_draft": 4,
+      "complete_committed": 4,
+      "complete_draft": 0,
+      "missing": 46,
+      "partial_committed": 10,
+      "partial_draft": 0,
       "staged_blocked": 1
     },
     "exact_names": {
       "complete_committed": [
-        "strip_type"
-      ],
-      "complete_draft": [
         "append_integer",
         "append_maybe_left_shift",
-        "append_maybe_right_shift"
+        "append_maybe_right_shift",
+        "strip_type"
       ],
+      "complete_draft": [],
       "missing": [
-        "add_access_flags",
-        "add_type_flags",
         "append_bitfield_helpers",
-        "append_calling_convention_directives",
         "append_cpp_wrapper",
         "append_elsewhere",
         "append_parent_field_path",
         "append_parent_path",
         "append_template_instantiation_params",
-        "append_type_info_directives",
         "as_str",
-        "avoid_cpp_keywords",
         "avoid_name_clash",
-        "avoid_reserved_names",
-        "check_if_foreign_function_should_be_omitted",
         "check_macro_value",
-        "compute_enum_names",
         "convert_children_to_expression",
-        "convert_objc_selector_name_to_function_identifier",
         "expect_tokens",
         "fill_template_arguments",
         "fill_template_arguments_for_expression",
         "finish_bitfield",
-        "function_has_a_valist_arg",
-        "get_enum_value_name",
         "get_scoped_token_string",
         "get_type_name",
         "handle_toplevel_cursors",
         "log",
         "log_error",
-        "make_valid_identifer",
         "maybe_add_to_bitfield",
         "maybe_append_cast",
         "maybe_convert_expression_zero_to_null",
@@ -64,15 +51,11 @@
         "print_enum_body",
         "print_function",
         "print_namespace",
-        "print_objc_selector_identifier",
         "print_struct",
         "print_struct_vtable",
         "print_typedef",
         "raw_string_from_macro_tokens",
         "raw_tokens_string_from_cursor",
-        "replace_operator_name",
-        "shared_type",
-        "should_be_moved_to_global_scope",
         "should_be_omitted",
         "should_unwrap_typedef",
         "size_from_number_flags",
@@ -83,30 +66,26 @@
         "type_has_name"
       ],
       "partial_committed": [
+        "append_as_signed_integer_hex",
+        "append_as_unsigned_integer_hex",
         "append_cpp_type",
         "append_cpp_type_modifiers",
         "exceeds_signed_int_value",
+        "print_expression_to_builder",
         "print_function_type_to_builder",
+        "print_literal_to_builder",
         "print_type_to_builder",
         "type_to_string"
       ],
-      "partial_draft": [
-        "append_as_signed_integer_hex",
-        "append_as_unsigned_integer_hex",
-        "print_expression_to_builder",
-        "print_literal_to_builder"
-      ],
+      "partial_draft": [],
       "staged_blocked": [
         "run_generator"
       ]
     },
     "per_name_effort": {
-      "add_access_flags": "M: reviewed helper behavior and coherent workflow fixture",
-      "add_type_flags": "M: reviewed helper behavior and coherent workflow fixture",
       "append_as_signed_integer_hex": "M: remaining model forms/context flags and native workflow coverage",
       "append_as_unsigned_integer_hex": "M: remaining model forms/context flags and native workflow coverage",
       "append_bitfield_helpers": "L: shared model/state or declarator/ABI integration",
-      "append_calling_convention_directives": "M: reviewed helper behavior and coherent workflow fixture",
       "append_cpp_type": "M: remaining model forms/context flags and native workflow coverage",
       "append_cpp_type_modifiers": "M: remaining model forms/context flags and native workflow coverage",
       "append_cpp_wrapper": "L: shared model/state or declarator/ABI integration",
@@ -117,29 +96,20 @@
       "append_parent_field_path": "M: reviewed helper behavior and coherent workflow fixture",
       "append_parent_path": "M: reviewed helper behavior and coherent workflow fixture",
       "append_template_instantiation_params": "L: shared model/state or declarator/ABI integration",
-      "append_type_info_directives": "M: reviewed helper behavior and coherent workflow fixture",
       "as_str": "S-M: local helper plus public effect fixture; some context/format details",
-      "avoid_cpp_keywords": "M: reviewed helper behavior and coherent workflow fixture",
       "avoid_name_clash": "M: reviewed helper behavior and coherent workflow fixture",
-      "avoid_reserved_names": "M: reviewed helper behavior and coherent workflow fixture",
-      "check_if_foreign_function_should_be_omitted": "M: reviewed helper behavior and coherent workflow fixture",
       "check_macro_value": "M: reviewed helper behavior and coherent workflow fixture",
-      "compute_enum_names": "M: reviewed helper behavior and coherent workflow fixture",
       "convert_children_to_expression": "L: shared model/state or declarator/ABI integration",
-      "convert_objc_selector_name_to_function_identifier": "M: reviewed helper behavior and coherent workflow fixture",
       "exceeds_signed_int_value": "M: remaining model forms/context flags and native workflow coverage",
       "expect_tokens": "M: reviewed helper behavior and coherent workflow fixture",
       "fill_template_arguments": "L: shared model/state or declarator/ABI integration",
       "fill_template_arguments_for_expression": "L: shared model/state or declarator/ABI integration",
       "finish_bitfield": "L: shared model/state or declarator/ABI integration",
-      "function_has_a_valist_arg": "M: reviewed helper behavior and coherent workflow fixture",
-      "get_enum_value_name": "M: reviewed helper behavior and coherent workflow fixture",
       "get_scoped_token_string": "M: reviewed helper behavior and coherent workflow fixture",
       "get_type_name": "S-M: local helper plus public effect fixture; some context/format details",
       "handle_toplevel_cursors": "M: reviewed helper behavior and coherent workflow fixture",
       "log": "M: reviewed helper behavior and coherent workflow fixture",
       "log_error": "M: reviewed helper behavior and coherent workflow fixture",
-      "make_valid_identifer": "M: reviewed helper behavior and coherent workflow fixture",
       "maybe_add_to_bitfield": "L: shared model/state or declarator/ABI integration",
       "maybe_append_cast": "M: reviewed helper behavior and coherent workflow fixture",
       "maybe_convert_expression_zero_to_null": "L: shared model/state or declarator/ABI integration",
@@ -157,17 +127,13 @@
       "print_function_type_to_builder": "M: remaining model forms/context flags and native workflow coverage",
       "print_literal_to_builder": "M: remaining model forms/context flags and native workflow coverage",
       "print_namespace": "M: reviewed helper behavior and coherent workflow fixture",
-      "print_objc_selector_identifier": "M: reviewed helper behavior and coherent workflow fixture",
       "print_struct": "L: shared model/state or declarator/ABI integration",
       "print_struct_vtable": "L: shared model/state or declarator/ABI integration",
       "print_type_to_builder": "M: remaining model forms/context flags and native workflow coverage",
       "print_typedef": "M: reviewed helper behavior and coherent workflow fixture",
       "raw_string_from_macro_tokens": "M: reviewed helper behavior and coherent workflow fixture",
       "raw_tokens_string_from_cursor": "M: reviewed helper behavior and coherent workflow fixture",
-      "replace_operator_name": "M: reviewed helper behavior and coherent workflow fixture",
       "run_generator": "L: canonical context mechanism, primitive/registry ownership and persistent parser integration",
-      "shared_type": "M: reviewed helper behavior and coherent workflow fixture",
-      "should_be_moved_to_global_scope": "M: reviewed helper behavior and coherent workflow fixture",
       "should_be_omitted": "M: reviewed helper behavior and coherent workflow fixture",
       "should_unwrap_typedef": "M: reviewed helper behavior and coherent workflow fixture",
       "size_from_number_flags": "M: reviewed helper behavior and coherent workflow fixture",
@@ -187,7 +153,8 @@
     "f30be51c POSIX Debug lifecycle",
     "9ba9fcd5 Check AST verification",
     "4d3a1106 seven owned type/query helpers",
-    "0105403a canonical clean model dependency staging"
+    "0105403a canonical clean model dependency staging",
+    "4805fc6f seven committed value/emission APIs, real foreign defaults and corrected context/overload classification"
   ],
   "count_unit": "Unique reviewed public function names, with overload/path limits recorded; type/field/native-SDK inventories remain in developer-tools-api.json.",
   "definitions": {
@@ -198,20 +165,20 @@
   "disjoint_batch_candidate": {
     "status": "The proposed ten-name batch is explicitly reassigned to generator-platform; Debug entirely to debug-info-impl. No edits to those names/modules continue here."
   },
-  "head": "0f6eb1eeb266711466abc3d48c1f71ebc02e4ff4",
+  "head": "4805fc6f7f03a3cd32b7c0e047964acdaa6ed081",
   "not_counted": [
     "generator-model",
     "generator-platform",
     "Debug_Info",
     "Iprof",
     "Codex",
-    "native libclang functions outside the89-name ownership manifest",
+    "native libclang functions outside the61-name ownership manifest",
     "Debug"
   ],
   "other_owned_modules": {
     "counts": {
       "Check": {
-        "complete": 4,
+        "complete": 5,
         "missing": 0,
         "partial": 3
       },
@@ -242,7 +209,8 @@
           "finish_error_checking",
           "is_of_fixed_array_type",
           "print_binding_check_memory_stats",
-          "should_skip"
+          "should_skip",
+          "get_plugin"
         ],
         "missing": [],
         "partial": [
@@ -302,6 +270,26 @@
       "deinit_generator",
       "init_generator"
     ],
+    "generator-modifiers": [
+      "add_access_flags",
+      "add_type_flags",
+      "append_calling_convention_directives",
+      "append_type_info_directives",
+      "check_if_foreign_function_should_be_omitted",
+      "function_has_a_valist_arg",
+      "shared_type",
+      "should_be_moved_to_global_scope"
+    ],
+    "generator-names": [
+      "avoid_cpp_keywords",
+      "avoid_reserved_names",
+      "compute_enum_names",
+      "convert_objc_selector_name_to_function_identifier",
+      "get_enum_value_name",
+      "make_valid_identifer",
+      "print_objc_selector_identifier",
+      "replace_operator_name"
+    ],
     "generator-platform": [
       "append_indentation",
       "append_postfix_comment",
@@ -317,11 +305,12 @@
     "retained": "run_generator and core emission orchestration"
   },
   "role": "stdlib-tools / generator emission",
-  "timestamp_utc": "2026-10-15T15:57:29.852987+00:00",
+  "shared_context_protocol": "docs/developer-tools-context-protocol.md (internal handoff contract; implementation owned by canonical model)",
+  "timestamp_utc": "2026-10-15T16:51:21.877103+00:00",
   "verification_gaps": [
-    "Local65-base-fixture gate plus dedicated public workflows passed before the canonical model staging/new value draft; combined coordinator Mac/corpus count unavailable.",
+    "Full isolated production tooling gate passed after committed value/model integration; new Check factory targeted tests pass and full gate rerun is pending. Combined coordinator Mac/corpus count unavailable.",
     "Canonical NEW model batch4675c90a copied unchanged and passed its own format/lint, two source targets, four interpreter/eight native executions locally.",
-    "New seven value helpers and generated values pass interpreter/native Mac O0/O2 plus strict format/lint; integer default foreign calls additionally pass configured C++ O0/O2.",
+    "Seven committed value helpers and generated values pass interpreter/native Mac O0/O2 plus strict format/lint; integer default foreign calls additionally pass configured C++ O0/O2.",
     "Check Windows-only code is staged on Mac: real LLVM types/accounting pass, but Windows native execution is unperformed and actual Compiler ELSEWHERE metadata remains missing.",
     "Only configured SDK23.1.2 native parser/demangler links are verified; SDK21 execution and other OS execution remain pending.",
     "The duplicate parameter/context case is a correct reviewed-language rejection, reclassified as architecture evidence; the actual ELSEWHERE metadata producer request remains failing.",

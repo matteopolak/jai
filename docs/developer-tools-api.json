@@ -1,7 +1,7 @@
 {
   "Bindings_Generator": {
     "spec": "docs/specs/stdlib/modules/bindings-generator.md",
-    "spec_sha256": "8df1743ce2a25aa8736b73422e49b42168b1b4b24def3f7df7a707b9df05465e",
+    "spec_sha256": "54a12c0a2891927bc81b568fc8d0f0c89343aef84c5817ceebfc7cc93d146b6d",
     "declarations": [
       {
         "name": "TARGET_OS",
@@ -23124,7 +23124,7 @@
   },
   "Check": {
     "spec": "docs/specs/stdlib/modules/check.md",
-    "spec_sha256": "c74bddcce6f2cea40d907b35b367373c063e2597e9642cd7c8d678482b54d0d4",
+    "spec_sha256": "4bdb4904d49b77953a1e15b6e3a4b4aa7f4a56b629c7e13e4926364739763682",
     "declarations": [
       {
         "name": "DEBUG_BINDINGS",
@@ -23195,6 +23195,20 @@
         "section": "Windows-specific declarations",
         "spec_line": 19,
         "implementation": "Windows-only supported mangled-signature subset; official LLVM AST/type comparisons, twelve continuable failures/false results, reusable parsing-pool/debug-finish effects; unchanged NEW code staged interpreter/native Mac O0/O2; Windows source/strict lint only, actual Compiler ELSEWHERE metadata integration pending"
+      },
+      {
+        "name": "get_plugin",
+        "declaration": "get_plugin :: () -> *Metaprogram_Plugin",
+        "section": "Behavioral contract and constraints",
+        "spec_line": 34,
+        "implementation": "persistent canonical Compiler plugin factory; real configured callbacks, interpreter/native Mac O0/O2 and Windows source/strict lint"
+      },
+      {
+        "name": "CHECK_BINDINGS",
+        "declaration": "CHECK_BINDINGS := true",
+        "section": "Behavioral contract and constraints; Default_Metaprogram default-on binding configuration",
+        "spec_line": 34,
+        "implementation": "configured module parameter; real enabled/disabled foreign-check diagnostic effects"
       }
     ],
     "reviewed_members": [

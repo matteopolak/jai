@@ -299,6 +299,19 @@ def main():
                 if item["name"] in {"Metrics", "collect_metrics"}:
                     item["implementation"] = "typed-tree metrics subset; real producer body and native public-node call/file/module/assignment/global/loop-depth effects; conditional forms and Basic allocator recognition explicitly rejected pending question2"
         if module == "Check":
+            # These reviewed entries occur in the behavioral paragraph, not its
+            # declaration list. Preserve that provenance instead of omitting them.
+            factory_line = next(index for index, line in enumerate(contents.splitlines(), 1)
+                                if "get_plugin :: () -> *Metaprogram_Plugin" in line)
+            declarations.extend([
+                {"name": "get_plugin", "declaration": "get_plugin :: () -> *Metaprogram_Plugin",
+                 "section": "Behavioral contract and constraints", "spec_line": factory_line,
+                 "implementation": "persistent canonical Compiler plugin factory; real configured callbacks, interpreter/native Mac O0/O2 and Windows source/strict lint"},
+                {"name": "CHECK_BINDINGS", "declaration": "CHECK_BINDINGS := true",
+                 "section": "Behavioral contract and constraints; Default_Metaprogram default-on binding configuration",
+                 "spec_line": factory_line,
+                 "implementation": "configured module parameter; real enabled/disabled foreign-check diagnostic effects"},
+            ])
             for item in declarations:
                 if item["name"] in {"DEBUG_BINDINGS", "C_Porting_Check_Settings", "check_c_porting", "should_skip",
                                      "is_of_fixed_array_type", "do_error_checking"}:

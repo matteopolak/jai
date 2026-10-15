@@ -171,6 +171,8 @@ The LLVM backend, C ABI and linking.
 - [Canonical generator model dependency](generator-model.md): staged NEW producer records/helpers and explicit ownership policies
 - [Public generator value-emission workflow](../tools/check_developer_value_emission.py): typed integer/float/string/enum values, expressions and native default calls
 - [Public generator type-emission workflow](../tools/check_developer_type_emission.py): C++ declarators, generated Jai callbacks, borrowed type identity and diagnosed failures
+- [Shared generator context protocol](developer-tools-context-protocol.md): internal canonical-owner handoff, supplied options and lifetime requirements
+- [Check factory workflow](../tools/check_developer_check_plugin.py): persistent plugin storage and real configured compiler-message effects
 - [Check mangled-signature workflow](../tools/check_developer_check.py): official LLVM AST parsing, staged Mac effects and real pool statistics
 - [Debug signal/assertion lifecycle tests](../tools/check_developer_debug_lifecycle.py): actual handler restoration and native fatal callback evidence
 - [Customized C++ binding workflow](../tools/check_developer_cpp_custom.py): visitors, overloads, argument callbacks and native POD/reference effects

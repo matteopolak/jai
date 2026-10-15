@@ -1,6 +1,14 @@
 # Developer tools progress
 
-Role: developer-tools emission. Current scope is the77 generator names and other modules in implementation-scope.json; prior ten-module checkpoint notes below are historical. No peer edits, alternate source inputs, reference binaries, corpus inputs, subagents or publication.
+Role: developer-tools emission. Current scope is the61 generator names and other modules in implementation-scope.json; prior ten-module checkpoint notes below are historical. No peer edits, alternate source inputs, reference binaries, corpus inputs, subagents or publication.
+
+## Reviewed Check factory and shared generator handoff
+
+Check.get_plugin now returns persistent canonical Metaprogram_Plugin storage, installs the actual checker callback and clears unused callbacks. Configured factories retain separate records. CHECK_BINDINGS=true runs the real verifier with workspace target options; false retains porting checks. The private engine owns one settings type and both existing implementations, while the facade retains Windows-only manual exports.
+
+Fresh check_developer_check_plugin.py evidence: two public fixtures passed interpreter/native Mac O0/O2, including real workspace interception, storage and callback reset. Two negative fixtures each produced exactly one expected diagnostic. Source-built jaifmt --check and warnings-denied jailint passed Mac and Windows source targets. This does not establish Windows execution or repair missing Compiler ELSEWHERE metadata.
+
+The internal shared context/options protocol is published in developer-tools-context-protocol.md; canonical-owner implementation remains a dependency. Explicit redistribution leaves61 generator names:4 complete,10 partial,46 missing and one unintegrated run draft. The integration-requested macro diagnostic fix is already committed in4d3a1106; the original assertion passed locally.
 
 ## Supported implementation and evidence
 
