@@ -217,6 +217,8 @@ Implementation work uses the API specification as its compatibility contract. Im
 - [Safe Linux ARM64 stat syscall and record marshalling](native/linux-arm64-stat.md)
 - [Generic GL current-context wrapper](native/gl-dispatch.md)
 - [Native binding lint target/root context blockers](native/lint-target-context.md)
+- [X11 modal message box and real-server verification boundary](native/x11-message-box.md)
+- [DXC reflection forwarding and SDK/source verification limits](native/dxc-reflection.md)
 - [Real GL SDK validation and reviewable integration fixes](native/gl-sdk-validation.md)
 - [Current compiler context-probing regression](native/compiler-context-probe.md)
 - [Jai language guide](specs/jai/README.md)

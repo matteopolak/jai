@@ -459,3 +459,31 @@ this report and the machine-readable evidence before production integration.
   target-aware module-root traversal in jailint, followed by all target runs,
   plus actual remaining declaration fixes. No rule/global suppression,
   visibility relaxation, compiler hack or fake target is used as a substitute.
+
+- **X11 modal presentation and execution boundary.** The new real
+  `x_message_box` uses independently chosen fixed geometry, core-font clipped
+  text, first-button focus and documented Escape/WM-close choices because the
+  public signatures specify button styles/responses but no exact UI policy.
+  It preserves other windows' events, accepts real mouse/keyboard/close events
+  and releases its actual window/optional connection. Risk: long/non-ASCII
+  messages and exact dismissal expectations need stronger reviewed contracts;
+  no scrolling/Unicode shaping claim is made. Proper longer-term solution is
+  reviewed UI policy plus accessible text layout/scrolling. The seven-style
+  automated regression requires isolated Linux Xvfb without a reparenting WM;
+  the event injector currently searches root children. Both Linux CPUs source
+  check, but Linux native execution and semantic lint remain required. Initial
+  source trial used nonpublic `IsViewable` and exposed the compiler's incomplete
+  infinite-loop return analysis; fixed by a private officially pinned protocol
+  constant with active C assertions and a real DestroyNotify exit path. No
+  fabricated post-loop success value or compiler special case was introduced.
+
+- **DXC reflection body not yet Jai-source/native verified.** The real COM
+  route and executable regression are present, but the required Windows checks
+  stop in the existing D3D12 forward overlay before this body is validated.
+  Complete official native SDK headers/source and host adapter layout probes
+  establish SDK buffer requirements only; they cannot substitute for Jai
+  source, strict lint or Windows execution. Risk: body/lowering issues remain
+  possible until those checks run. Proper fix is producer forward-overlay
+  support followed by the actual Windows SDK executable and ABI validation.
+  No fake COM objects, mock compiler/blob, altered D3D record order, test-only
+  compiler patch or native success claim was introduced.
