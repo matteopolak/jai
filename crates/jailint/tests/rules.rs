@@ -34,6 +34,8 @@ fn lint(file: &Path, levels: &[(&str, Level)]) -> (Vec<Lint>, String) {
         config.levels.insert(rule.to_string(), *level);
     }
     let options = jailint::driver::Options {
+        compiler_options: jaic::sema::Options::host(),
+        source: None,
         paths: vec![file.to_path_buf()],
         import_dirs: Vec::new(),
         stdlib: std::env::var_os("JAIC_STDLIB")

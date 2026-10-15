@@ -27,6 +27,8 @@ fn fixture(name: &str) -> PathBuf {
 
 fn options(root: &std::path::Path, path: PathBuf) -> Options {
     Options {
+        compiler_options: jaic::sema::Options::host(),
+        source: None,
         paths: vec![path],
         import_dirs: Vec::new(),
         stdlib: root.join("stdlib"),

@@ -18,6 +18,11 @@ options:
   -W <rule>           warn on a rule
   -D <rule>           deny a rule; `-D warnings` makes every warning an error
   -I <dir>            add an import directory (also -import_dir)
+  -os <os>           check linux, windows, macos or wasm (default: host)
+  -cpu <cpu>         check x64/x86_64 or arm64/aarch64 (default: target/host)
+  -target <triple>   select a target triple (overrides -os/-cpu; includes WASI)
+  --manifest <file> write JSON source-check coverage and actual target contexts
+  --context <file>  check an enclosing program; report only the requested paths
   -j <n>              compile n programs at once (default 1)
   --list              list the rules and their default levels
   --color <when>      auto, always or never
@@ -48,6 +53,9 @@ fn color_value(when: &str) -> Result<jaic::render::ColorChoice, String> {
 }
 
 struct Args {
+    context: Option<PathBuf>,
+    manifest: Option<PathBuf>,
+    target: jailint::target::Selection,
     paths: Vec<PathBuf>,
     fix: bool,
     config: Option<PathBuf>,
@@ -60,6 +68,9 @@ struct Args {
 
 fn parse_args() -> Result<Option<Args>, String> {
     let mut args = Args {
+        context: None,
+        manifest: None,
+        target: Default::default(),
         paths: Vec::new(),
         fix: false,
         config: None,
@@ -86,7 +97,12 @@ fn parse_args() -> Result<Option<Args>, String> {
             "--fix" => args.fix = true,
             "-v" | "--verbose" => args.verbose = true,
             "--config" => args.config = Some(PathBuf::from(value("--config")?)),
+            "--manifest" => args.manifest = Some(PathBuf::from(value(&a)?)),
+            "--context" => args.context = Some(PathBuf::from(value(&a)?)),
             "-I" | "-import_dir" | "--import-dir" => args.imports.push(value(&a)?.into()),
+            "-os" => args.target.os = Some(jailint::target::parse_os(&value(&a)?)?),
+            "-cpu" => args.target.cpu = Some(jailint::target::parse_cpu(&value(&a)?)?),
+            "-target" => args.target.triple = Some(value(&a)?),
             "-j" | "--jobs" => {
                 args.jobs = value(&a)?
                     .parse()
@@ -111,11 +127,16 @@ fn parse_args() -> Result<Option<Args>, String> {
                 let known = [
                     "--fix",
                     "--config",
+                    "--manifest",
+                    "--context",
                     "-A",
                     "-W",
                     "-D",
                     "-I",
                     "-import_dir",
+                    "-os",
+                    "-cpu",
+                    "-target",
                     "-j",
                     "--jobs",
                     "--list",
@@ -148,6 +169,21 @@ fn run() -> Result<ExitCode, String> {
         return Ok(ExitCode::SUCCESS);
     };
     let cwd = std::env::current_dir().map_err(|e| e.to_string())?;
+    if let Some(source) = &args.context {
+        let metadata = std::fs::metadata(source).map_err(|e| {
+            format!(
+                "cannot read context `{}`: {}",
+                source.display(),
+                jaic::io_reason(&e)
+            )
+        })?;
+        if !metadata.is_file() {
+            return Err(format!(
+                "context `{}` must be a program file",
+                source.display()
+            ));
+        }
+    }
     for path in &args.paths {
         if let Err(e) = std::fs::metadata(path) {
             let shown = path.display();
@@ -205,7 +241,11 @@ fn run() -> Result<ExitCode, String> {
         return Err(message);
     }
     let stdlib = stdlib.canonicalize().unwrap_or(stdlib);
+    let mut compiler_options = jaic::sema::Options::host();
+    args.target.apply(&mut compiler_options)?;
     let options = jailint::driver::Options {
+        compiler_options,
+        source: args.context,
         paths: args.paths.clone(),
         import_dirs: args.imports.clone(),
         stdlib,
@@ -214,6 +254,9 @@ fn run() -> Result<ExitCode, String> {
         verbose: args.verbose,
     };
     let outcome = jailint::driver::run(&options);
+    if let Some(path) = &args.manifest {
+        write_manifest(path, &options, args.target.triple.as_deref(), &outcome)?;
+    }
     // Lints go to stdout: its terminal decides the layout.
     let style = jaic::render::detect_with(args.color, std::io::stdout().is_terminal(), |key| {
         std::env::var(key).ok()
@@ -298,6 +341,45 @@ fn run() -> Result<ExitCode, String> {
     } else {
         ExitCode::SUCCESS
     })
+}
+
+fn write_manifest(
+    path: &std::path::Path,
+    options: &jailint::driver::Options,
+    triple: Option<&str>,
+    outcome: &jailint::driver::Outcome,
+) -> Result<(), String> {
+    use jailint::target::{cpu_name, os_name};
+    let contexts: Vec<_> = outcome
+        .contexts
+        .iter()
+        .map(|context| {
+            serde_json::json!({
+                "root": context.root, "os": os_name(context.os), "cpu": cpu_name(context.cpu),
+                "complete": context.complete, "visited_files": context.visited_files,
+            })
+        })
+        .collect();
+    let incomplete: Vec<_> = outcome
+        .incomplete
+        .iter()
+        .map(|(root, error)| serde_json::json!({"root":root,"error":error}))
+        .collect();
+    let document = serde_json::json!({
+        "version": 1,
+        "kind": "source-check",
+        "phase": "initial",
+        "target": {"os":os_name(options.compiler_options.os), "cpu":cpu_name(options.compiler_options.cpu), "triple":triple},
+        "config_source": options.config.source,
+        "source": options.source,
+        "roots": outcome.roots,
+        "contexts": contexts,
+        "unvisited_files": outcome.unvisited_files,
+        "incomplete": incomplete,
+    });
+    let mut text = serde_json::to_vec_pretty(&document).map_err(|e| e.to_string())?;
+    text.push(b'\n');
+    std::fs::write(path, text).map_err(|e| format!("cannot write manifest {}: {e}", path.display()))
 }
 
 fn count(n: usize, word: &str) -> String {
