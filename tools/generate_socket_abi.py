@@ -54,6 +54,8 @@ def main():
     output, ledger, exported, seen = [], [], [], set()
     fields_facade = ROOT / "stdlib/Socket/fields.jai"
     authored_fields = set(re.findall(r"^(\w+)\s*::\s*Fields\.", fields_facade.read_text(), re.MULTILINE)) if fields_facade.exists() else set()
+    scope_facade = ROOT / "stdlib/Socket/scope-fields.jai"
+    authored_scope = set(re.findall(r"^(\w+)\s*::\s*Fields\.", scope_facade.read_text(), re.MULTILINE)) if scope_facade.exists() else set()
     manual = {"Socket", "INVALID_SOCKET", "SOCKET_ERROR", "SOCKET_WOULDBLOCK", "SOCKET_WOULDBLOCK_CONNECT"}
     for declaration in sorted(spec.declarations, key=declaration_group):
         code, name = declaration.code.rstrip(";"), declaration.name
@@ -77,6 +79,8 @@ def main():
         if name in manual or (procedure and (":" in procedure[1] or not procedure[1]) and "#foreign" not in code and "#elsewhere" not in code):
             if name in authored_fields and guard == "OS == .MACOS":
                 record["status"] = "authored native field accessor; native SDK vector verification separate"
+            elif name in authored_scope and guard == "OS == .WINDOWS":
+                record["status"] = "authored native scope accessor; cross-target compile-time vectors verified, native Windows pending"
             else:
                 record["status"] = "authored wrapper or pending helper"
             ledger.append(record)

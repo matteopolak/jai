@@ -61,7 +61,7 @@ Unix CMSG_FIRSTHDR/CMSG_ALIGN/CMSG_SIZE/CMSG_LEN/CMSG_DATA are still missing;
 CMSG_SIZE's intended relationship to native SPACE/LEN needs review. The36 macOS
 tcphdr/tcp_connection_info accessors are now implemented and verified against
 actual SDK C records; see portable-socket-fields.md. Linux/Android TCP/tcp_info
-and Windows scope/flow native bitfield families are still missing. The exact named inventory is recorded in
+remain missing. Windows scope-ID helpers are implemented as described below. The exact named inventory is recorded in
 docs/socket-native-ledger.json as authored wrapper/pending helper, not completed
 declarations. SHUT and several native record variants have unresolved reviewed
 shapes; Windows common wrappers above do not establish the whole native surface.
@@ -87,8 +87,6 @@ Exact still-missing bitfield procedures (reviewed native declarations, no bodies
 - get_anon_struct_1_rst
 - get_anon_struct_1_syn
 - get_anon_struct_1_urg
-- get_anon_struct_Level
-- get_anon_struct_Zone
 - get_anon_struct_th_off
 - get_anon_struct_th_x2
 - get_tcpi_rcv_wscale
@@ -120,8 +118,6 @@ Exact still-missing bitfield procedures (reviewed native declarations, no bodies
 - set_anon_struct_1_rst
 - set_anon_struct_1_syn
 - set_anon_struct_1_urg
-- set_anon_struct_Level
-- set_anon_struct_Zone
 - set_anon_struct_th_off
 - set_anon_struct_th_x2
 - set_tcpi_rcv_wscale
@@ -157,3 +153,5 @@ Unresolved native shape variants:
 - protoent [OS == .MACOS]
 - servent [OS == .MACOS]
 - sockaddr [OS == .ANDROID]
+
+Four Windows SCOPE_ID accessors preserve canonical overlay storage and implement 28-bit Zone/four-bit Level extraction and mutation. Public SDK ws2def.h supplies ABI positions: https://raw.githubusercontent.com/microsoft/win32metadata/main/generation/WinSDK/RecompiledIdlHeaders/shared/ws2def.h . Unsigned setters truncate to native widths and retain the companion field. Private kernels pass host interpreter/native O2 and active strict lint. Both Windows CPU checks execute actual public accessors in #run assertions, including overlay identity and size. These pure interpreter assertions do not execute Winsock or establish a native Windows ABI pass. Native Windows execution and target-aware strict lint remain pending; the compile-time fixture requires OS==WINDOWS.

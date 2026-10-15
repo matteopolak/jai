@@ -40,7 +40,9 @@ loader or assertion was weakened. Passing evidence:
 target/socket-fields-both-cpus.log and target/socket-fields-final-lint.log.
 
 Only those36 accessor APIs are completed here. Linux/Android TCP/tcp_info and
-Windows scope/flow bitfield helpers, CMSG helpers and unresolved shapes remain
+CMSG helpers and unresolved shapes remain
 named in portable-windows-socket.md/socket-native-ledger.json. Whole strict lint,
 native Windows execution and active Windows lint remain separate failed/pending
 gates. No full Socket/native surface completeness claim.
+
+Windows SCOPE_ID adds four implemented accessors; verification limits are in portable-windows-socket.md.
