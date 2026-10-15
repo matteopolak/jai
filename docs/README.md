@@ -167,6 +167,7 @@ The LLVM backend, C ABI and linking.
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
 - [Portable implementation gaps](portable-stdlib-gaps.md): focused pending reproducers and unresolved behavior
+- [Assigned implementation remainder](status/implementation-remaining.json): fresh exact owned names, committed/draft status, effort and verification gaps
 - [Canonical generator model dependency](generator-model.md): staged NEW producer records/helpers and explicit ownership policies
 - [Public generator type-emission workflow](../tools/check_developer_type_emission.py): C++ declarators, generated Jai callbacks, borrowed type identity and diagnosed failures
 - [Check mangled-signature workflow](../tools/check_developer_check.py): official LLVM AST parsing, staged Mac effects and real pool statistics
