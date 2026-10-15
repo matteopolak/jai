@@ -1,5 +1,13 @@
 # Portable stdlib progress
 
+JKS generator real SDK workflow source now implemented: reviewed RSA/DSA table,
+defaultECcurve/defaultalias/password, actual keytool command/status/output checks
+and canonical owned record. Negative SDK/size cases pass interpreter/native O0/O2
+and strict lint. Host Java absent; POSITIVE GENERATION UNVERIFIED, source classified
+partial/no success credit. Actual-SDK positive fixture ready, no fake keytool or
+success file. Existing-target/preflight/partial-output/DN/validity policies and
+future atomic publication/native-positive gates documented in portable-jks-generation.md.
+
 Current owned snapshot:4076 reviewed rows,3571 complete-source,456 conservative
 partial,49 missing; source-only counts, no conformance inflation. Whole names/
 conditions in implementation-remaining.json; missing-module subset33 is smaller.

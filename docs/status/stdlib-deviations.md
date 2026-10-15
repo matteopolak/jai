@@ -1,5 +1,14 @@
 # Portable stdlib worker deviations
 
+JKS generation source uses actual Java keytool in supplied bin directory; host
+Java unavailable, so only negative/status/strict-lint evidence, NO positive SDK
+success claim. SDK positive fixture pending. Independent365-day/quoted-DN/default-
+EC-only and existing-file refusal policies documented. Existing-file check is
+non-atomic; caller requires exclusive destination. SDK failure may leave its own
+partial output at the supplied path. Proper long-term fix: exclusive scratch /
+atomic publication / verified cross-platform cleanup. This limitation is explicit
+and generator remains partial, not counted complete from passing failure tests.
+
 Native helper audit: absolute producer install name was a genuine packaging bug,
 now removed through @rpath Mac identity/basename Linux SONAME. Mac moved-package
 runtime/link evidence passes; Linux execution/deployment-minimum/architecture

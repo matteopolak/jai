@@ -156,6 +156,7 @@ The LLVM backend, C ABI and linking.
 - [Mail scramble numeric-alphabet review question](portable-mail-questions.md)
 - [Default allocator heaps, ownership and performance tradeoffs](portable-default-allocator.md)
 - [Real direct Android signing keys and crypto-tool dependency](portable-direct-signing-key.md)
+- [Java SDK JKS generation source and honest verification limits](portable-jks-generation.md)
 - [Canonical Android hexadecimal formatter aliases](portable-android-format-helpers.md)
 - [Relocated native crash-helper package lookup and override audit](portable-native-package-lookup.md)
 - [Remaining exact portable contract requests and owned scope](portable-remaining-contract-requests.md)
