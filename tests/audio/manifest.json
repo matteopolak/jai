@@ -332,5 +332,14 @@
       "source-desktop-six-targets"
     ],
     "limitation": "Controlled errors, not OS-generated faults or physical device event evidence"
+  },
+  "native_routing": {
+    "path": "tests/audio/native-routing.c",
+    "provenance": "Reviewed Audio_Channel identity plus official OS channel maps; independent byte permutation safety",
+    "modes": [
+      "native host controlled memory",
+      "six-platform SDK build/link when toolchains supplied"
+    ],
+    "hardware": "none; nonzero bytes are never submitted"
   }
 }

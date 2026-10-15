@@ -131,7 +131,14 @@ def build(target, out, cc, ar, mingw=False, runtime=False, require_device=False)
              *([out / ("focus" + objext)] if osname == "macos" else []),
              "-o", failure_test, *libraries])
     print(f"{target}: real-device SDK close fault-injection harness linked; execution not implied.", flush=True)
+    routing_test = out / ("native-routing-test.exe" if windows else "native-routing-test")
+    command([*cc, *flags, "-Wall", "-Wextra", "-Werror", "-DNDEBUG", "-I",
+             ROOT / "stdlib/internal/audio/native", ROOT / "tests/audio/native-routing.c",
+             "-o", routing_test])
     if runtime:
+        routing = subprocess.run([str(routing_test)], cwd=out, capture_output=True, text=True, timeout=30)
+        if routing.returncode or routing.stderr or routing.stdout != "ok\n":
+            raise RuntimeError("controlled channel-byte routing failed")
         result = subprocess.run([str(executable), *(["--require-device"] if require_device else [])],
                                 cwd=out, capture_output=True, text=True, timeout=30)
         record = {"platform": target, "kind": "exact-host SDK harness execution",

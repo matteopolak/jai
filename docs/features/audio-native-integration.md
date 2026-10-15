@@ -60,8 +60,21 @@ python3 tools/audio_verify.py --require-device --require-multichannel
 
 The last verifier currently expects host artifacts in target/audio-native and
 source-built tools in target/compiler/debug and target/jaifmt. For Linux headless
-CI, install the ALSA development package and set `JAI_AUDIO_ALSA_DEVICE=null`.
-ALSA's real null PCM opens, accepts samples and exercises device lifecycle without
+CI, install the ALSA development package. For ordinary stereo checks,
+`JAI_AUDIO_ALSA_DEVICE=null` opens ALSA's real null PCM. For strict 6/8-channel
+checks, use the tracked Debian/Ubuntu configuration with explicit channel maps:
+
+```sh
+export ALSA_CONFIG_PATH="$PWD/tests/audio/fixtures/alsa-null.conf"
+export JAI_AUDIO_ALSA_DEVICE=jai_audio_test
+python3 tools/audio_build_native.py --test-runtime --require-device
+python3 tools/audio_verify.py --require-device --require-multichannel
+```
+
+The configuration uses the installed `/usr/share/alsa/alsa.conf`; adjust that
+include for another distribution. In a standalone cross package, point
+ALSA_CONFIG_PATH at its copied `fixtures/alsa-null.conf`. The real null sink
+accepts samples and exercises device lifecycle without
 speaker output. Windows CI without an audio endpoint should omit
 `--require-device` and retain explicit unavailable markers; actual device evidence
 requires a real/virtual OS endpoint. No fake output handle is supplied.
@@ -226,4 +239,19 @@ stream disposal, using a real SDK device with an explicitly injected adapter
 error. It disables audio assertions and runs interpreter/native O0/O2. These
 tests require a real device or documented real dummy backend and are controlled
 failure injection, not native OS-generated failure or physical event evidence.
+
+The adapter preserves logical FL/FR/center/LFE/rear/extension storage order.
+Windows' 0x63f mask has that order directly, with extension slots on side speakers;
+macOS 8-channel descriptions now explicitly place rear labels in rear slots and
+side surround labels in extension slots. Linux queries the actual ALSA channel
+map, validates a complete supported permutation and reorders bytes before SDK
+submission. Unknown/missing multichannel maps fail opening instead of silently
+assuming an order. Stereo without a map uses the ordinary left/right convention.
+See official [Microsoft channel masks](https://learn.microsoft.com/en-us/windows-hardware/drivers/audio/channel-mask)
+and [ALSA channel-map APIs](https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html).
+The controlled `native-routing.c` test uses nonzero channel markers only in local
+memory, including odd alignment and frame boundaries; none reach a device.
+Linux adds a 96,000-byte private reorder buffer per output instance and copies
+only when its map differs. No realtime bound or physical routing is claimed.
+Linux SDK compilation/runtime of this addition still requires coordinator CI.
 

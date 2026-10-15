@@ -228,3 +228,15 @@ C harness linked without claiming Windows runtime. Minimal Thread handoff now
 reproduces SUCCESS enabled versus ERROR disabled at semaphore init/signal/wait,
 exit 1, with original global-configuration failure preserved in dependency docs.
 
+Continued platform audit after 0502633: added actual ALSA map discovery, rejection
+of unknown multichannel maps, validated byte permutation and a self-contained
+real-null-sink configuration with explicit 2/6/8 maps. Corrected macOS 8-channel
+rear/extension SDK descriptions to match explicit public role names and Windows
+mask ordering. Controlled nonzero byte routing is local-memory only; no loud
+device output. Linux-specific addition remains source-only pending real SDK CI.
+Fresh checks: host SDK silent lifecycle/NDEBUG cleanup and controlled routing
+passed; all 25 common Jai fixtures and logical 6/8 SDK opens passed again in
+interpreter/native O0/O2. macOS x64 and Windows x64 SDK artifacts/harnesses linked;
+Windows ARM64 output/routing/cleanup/decoder objects compiled with real target
+headers. Linux remains uncompiled here; no Linux/Windows runtime is claimed.
+

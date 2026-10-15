@@ -24,6 +24,7 @@ def main():
     native = ROOT / "stdlib/internal/audio/native"
     objects = []
     for source in [native / "output.c", ROOT / "tests/audio/native-output.c",
+                   ROOT / "tests/audio/native-routing.c",
                    ROOT / "tests/audio/failure-injection/sdk-close.c"] + ([native / "focus.m"] if entry["os"] == "macos" else []):
         destination = output / (source.stem + ".o")
         destination.unlink(missing_ok=True)

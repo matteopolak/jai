@@ -162,3 +162,14 @@ Thread defect, reported in dependency requests; owned audio assertions are
 disabled independently without changing peer sources. No assertion callback
 is accepted as a successful recovery signal.
 
+Native routing follow-up: the Linux adapter previously assumed input channel
+order; it now queries/validates ALSA's actual map and permutes supported layouts.
+Missing multichannel maps now fail rather than silently claiming correct routing;
+the self-contained CI null configuration supplies explicit 2/6/8 maps. macOS's
+8-channel descriptions were inconsistent with Windows' rear/side role labels;
+rear and extension labels now agree across adapters. Linux needs 96,000 additional
+bytes per native output and an extra PCM copy only for reordered maps. Portable
+controlled byte tests and host macOS SDK checks do not establish Linux SDK build,
+Linux runtime, or physical multichannel placement. Default private spatial angles
+are independently chosen, editable approximations, not physical calibration.
+
