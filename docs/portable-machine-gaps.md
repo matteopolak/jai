@@ -46,9 +46,14 @@ are genuine compiler gaps, not solely eager-lint quirks.
 
 ### Exact remaining public API inventory
 
-- get_machine_options_x86: missing. The reviewed declaration does not specify
-  the generic build-option storage/projection contract; no unchecked pointer
-  cast or substitute public storage is supplied.
+- get_machine_options_x86: implemented with the exact generic #modify signature.
+  Reviewed Compiler.Build_Options supplies machine_options:[128]u8, and the
+  reviewed44-byte Machine_Options_X86 overlays that caller-owned storage. A real
+  struct constraint, byte-array/extent checks and reflected-alignment check
+  reject unsupported storage. Interpreter/native O0/O2 tests use actual reviewed
+  Build_Options, check pointer identity and two-way edits, and preserve bytes44..127.
+  There is no allocation, snapshot, new field or separate feature storage. The
+  returned pointer lives only while the caller's build-options value remains live.
 - prefetch, rdtsc, rdtscp, rdseed, rdrand, mfence, lfence, sfence, pause: missing.
   The current compiler still makes fence mnemonics no-ops, random instructions
   synthetic and RDTSCP processor ID zero. Real architecture semantics or explicit

@@ -25,6 +25,16 @@ checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
 
+Post-f044252 work: get_machine_options_x86 now implements the reviewed generic
+#modify API as a checked in-place projection of actual Compiler.Build_Options
+byte storage. Interpreter/native O0/O2 verify storage identity, live feature edits
+and untouched trailing bytes; focused strict x64 lint passes. No synthetic
+instruction wrappers added. Windows shared-channel backend has
+actual native-call source/body checks and Unix
+regression evidence; no native Windows pass claimed. Latest rebuilt compiler
+still rejects the original general field-array element-type, forward-enum and
+workspace-hook reproducers. Continue Windows Socket and remaining public APIs.
+
 Previously verified checkpoint: POSIX native crash diagnostics and runtime startup
 flag integration. Native C builds with `-Wall -Wextra -Werror`. Actual protected
 memory faults and raised SIGSEGV terminate with preserved signals and a native

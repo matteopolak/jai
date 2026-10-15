@@ -173,3 +173,29 @@ Proper long-term gates are target-aware lint support, actual Windows interpreter
 native error/DST testing and reviewed minimum-version/ambiguity policy. No fake
 platform constants, native mocks or assertion weakening. Details/native ABI
 sources and supported range: portable-time.md.
+
+Machine options projection: resolved using reviewed Compiler.Build_Options
+machine_options:[128]u8 and canonical44-byte Machine_Options_X86 shape. Real
+#modify struct constraint, byte-array/extent checks and actual reflected alignment
+guard precede the in-place pointer cast. No separate storage, snapshot or guessed
+field offset. Pointer lifetime is caller-owned; native/interpreter tests verify
+two-way edits and trailing bytes. Actual instruction macros remain absent while
+compiler fences/random/processor-ID behavior is unsupported. No new workaround
+or blanket diagnostic suppression in this batch.
+
+Windows shared-channel backend: actual named mapping/view/extent/status calls
+and retryable teardown are implemented; both CPU lifecycle/packet/IPC fixtures
+check but native Windows execution and active Windows lint remain pending.
+Private failed-construction cleanup retains ownership in a pending retry queue;
+future lifecycle calls retry it, while final unrecoverable resources can remain
+until process exit. No background retry guarantee. Existing independent framing,
+OS-header magic/name/logical-capacity/reconnect policies still need reference
+review; no cross-reference wire interoperability claim. Native VirtualQuery
+extent replaces guessed page sizes. Registry validation retains existing lock/
+linear lookup cost per packet. Windows tests include a genuine protected-handle
+close failure with logged status and retry; not executed or mocked on this host.
+IPC driver uses cross-platform pipe handshake and real named-object absence
+checks on Windows, preserving real POSIX unlink. Full101 host cases/23 faults/14
+negatives and four2048-packet process pairings pass, not Windows runtime success.
+Proper remaining gate: actual Windows interpreter/native error/lifetime/concurrency
+tests and target-aware strict lint. See portable-windows-channel.md.

@@ -48,6 +48,8 @@ def main():
     source = ROOT / "tests/portable-stdlib/machine-x64/main.jai"
     for os_name in ["macos", "linux", "windows"]:
         checked([COMPILER, "-check", "-os", os_name, "-cpu", "x64", source])
+        checked([COMPILER, "-check", "-os", os_name, "-cpu", "x64",
+                 ROOT / "tests/portable-stdlib/machine-x64/options.jai"])
     for optimization in ["-O0", "-O2"]:
         executable = OUTPUT / f"machine{optimization}"
         checked([COMPILER, *jai_target, optimization, source, "-exe", executable])
@@ -56,6 +58,10 @@ def main():
         original = OUTPUT / f"original-vendor{optimization}"
         checked([COMPILER, *jai_target, optimization, vendor_probe, "-exe", original])
         checked([original], "")
+        projection = ROOT / "tests/portable-stdlib/machine-x64/options.jai"
+        projected = OUTPUT / f"options{optimization}"
+        checked([COMPILER, *jai_target, optimization, projection, "-exe", projected])
+        checked([projected], "ok\n")
         print(f"real Machine_X64/native C comparison {optimization} passed", flush=True)
     if cpu in {"x86_64", "amd64"}:
         checked([COMPILER, "-cpu", "x64", "-interp", source], "ok\n")
@@ -68,6 +74,9 @@ def main():
             raise RuntimeError(f"expected unsupported interpreter-host diagnostic:\n{result.stdout}{result.stderr}")
         (OUTPUT / "unsupported-host.log").write_text(result.stdout + result.stderr)
         print("ARM64 interpreter explicitly rejects x64 CPUID; no emulation pass claimed", flush=True)
+    checked([COMPILER, "-cpu", "x64", "-interp",
+             ROOT / "tests/portable-stdlib/machine-x64/options.jai"], "ok\n")
+    print("machine-options projection passed interpreter/native O0/O2", flush=True)
 
 
 if __name__ == "__main__":

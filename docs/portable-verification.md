@@ -104,3 +104,13 @@ lint; whole-scope strict lint still fails (target/calendar-owned-strict.log).
 Windows-only bodies are inactive under host jailint, which currently exposes no
 OS/CPU selector. Active Windows lint needs general tool support or an actual
 Windows linter host; cross-compilation body checks do not satisfy that lint gate.
+
+Post-f044252 native mapping/projection batch: refreshed own compiler build passes
+the101-case/23-fault/14-negative full suite. Four2048-packet IPC pairings rerun
+after the cross-platform handshake/fixture changes. Both Windows CPU lifecycle,
+variable-packet and IPC bodies check under tools/check_portable_windows_channel.py;
+native Windows and active Windows lint remain unverified. Actual Machine options
+projection passes interpreter/native O0/O2 and rebuilt source x64 strict lint.
+General field-array/forward-enum/workspace-hook probes still fail on the freshly
+built compiler; target/*-refreshed.log preserves evidence. Whole strict lint remains
+a separate failed gate, never replaced by these focused passes.
