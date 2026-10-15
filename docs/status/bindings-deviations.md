@@ -85,7 +85,8 @@ correctness. Previously recorded failures remain required work.
   earlier custom-stream adapter changed SDK pointer identity and introduced
   default-context/copy policies not established by the current reviewed spec.
   `SDL/wrappers.jai` no longer contains that owner, registry, or callback bridge;
-  the two entry points bind directly to their real native symbols. The 48-byte
+  the factory binds to its real symbol and the BMP loader now applies only the
+  documented scalar close-flag adapter. The 48-byte
   public prefix cannot be used as a complete native value or Jai callback table.
   Supported SDK-owned pointers remain safe to pass back to SDL. The private
   complete native record is used only for explicit C ABI access/probes. Tests
@@ -253,8 +254,8 @@ correctness. Previously recorded failures remain required work.
   `tests/native-bindings/sdl-layout.jai` intentionally reports the actual
   mismatch and fails; it has not been disabled or changed to accept it.
   Refreshed review explicitly supports SDK-owned pointers and does not support
-  constructed/copied Jai callback tables. Native foreign entry points now
-  preserve SDK pointer/symbol identity; no public record is allocated/passed
+  constructed/copied Jai callback tables. The factory preserves SDK pointer and
+  symbol identity; the BMP scalar adapter preserves stream identity. No public record is allocated/passed
   as native RWops. Whole SDL_Event storage remains native-sized and user-event
   payload bytes retain genuine native round-trip coverage. Risk: dereferencing
   public callback fields as Jai procedures is incompatible with native C.
@@ -487,3 +488,32 @@ this report and the machine-readable evidence before production integration.
   support followed by the actual Windows SDK executable and ABI validation.
   No fake COM objects, mock compiler/blob, altered D3D record order, test-only
   compiler patch or native success claim was introduced.
+
+- **DXC compile ownership/performance and source boundary.** Each native compile
+  creates independent compiler/utility/include-handler objects, copies UTF-8
+  arguments and owns separate UTF-16 argument storage. This avoids shared SDK
+  mutable/context lifetime and costs allocations/factory calls. Proper
+  optimization is measured per-thread reuse after SDK thread-safety review.
+  Native compilation and argument conversion source-check both Windows CPUs;
+  the host pure serializer builds/runs and passes strict lint. Full public
+  checks still stop at unchanged D3D12 forward overlays; Windows native and
+  target-aware lint remain required. Private SDK routing reuses the single
+  complete generated declaration schema, with no reduced fake interface or
+  public type identity change. Its unused D3D12 import was removed while public
+  reflection retains the canonical import. Private units are placed unchanged
+  in the real staged dependency tree. DXIL debug embedding and empty-name/entry
+  native defaults are explicit independent policies requiring review if exact
+  differences matter. Header/private-unit passes do not prove public DXC runtime.
+
+- **SDL scalar close flag ABI repair.** Public `freesrc: int` is 64-bit; the
+  complete native SDK accepts a 32-bit C int. Before repair, a real file passed
+  with `0x1_0000_0000` stayed open because native SDL saw zero. `SDL_LoadBMP_RW`
+  now forwards the identical SDK-owned pointer and native 0/1 from the full
+  public flag. The factory stays the actual SDK symbol. Observable tradeoff:
+  the loader function address belongs to the scalar adapter, with unchanged
+  public types/names/convention and stream identity. No layout expansion,
+  owner registry, custom callback context or new export is introduced.
+  Before/after native reports preserve the failure and successful repair;
+  original RWops/UserEvent size assertions still fail. Proper long-term
+  standalone shape/callback resolution requires reviewed API changes; this
+  scalar conversion is the safe boundary required by the existing contract.

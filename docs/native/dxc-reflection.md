@@ -28,6 +28,7 @@ remain active. Both Windows source targets and native execution are registered.
 Current Jai checks stop at the unchanged general D3D12 forward-overlay
 diagnostic before validating this body. Windows runtime is unavailable here.
 This is authored forwarding plus SDK layout evidence, **not a source-verified
-or native-verified completed DXC wrapper**. `DXC_Compile` and version-string
-helpers remain unresolved. Next: producer compiler forward-overlay semantics,
+or native-verified completed DXC wrapper**. `DXC_Compile` now has an independently
+source-checked SDK route; public/native verification remains required. The
+version-string helper remains unresolved. Next: producer forward-overlay semantics,
 actual Windows source/strict lint, then the real executable test.
