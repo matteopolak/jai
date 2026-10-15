@@ -6,7 +6,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Bindings_Generator
 
-159 function names have pending declarations; 217 native function names still lack invocation fixtures.
+155 function names have pending declarations; 217 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Next work / precise question |
 | --- | ---: | --- |
@@ -87,7 +87,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `function_has_a_valist_arg` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `function_is_missing_foreign_library` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `functions_are_equivalent` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `generate_bridge` | 1 | Bindings_Generator question9: bridge naming/output/library contract |
 | `get_enum_value_name` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_libc_paths` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_name_alignment` | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -108,9 +107,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `is_operator_name` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_pointer_type` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_prefix_comment` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_same_expression` | 1 | Bindings_Generator question10: model equivalence |
-| `is_same_literal` | 1 | Bindings_Generator question10: literal equivalence |
-| `is_same_type` | 1 | Bindings_Generator question10: model equivalence |
 | `is_struct_field` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_target_type_signed` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_target_type_unsigned` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -410,21 +406,21 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 | Function | Reviewed overload variants | Next work / precise question |
 | --- | ---: | --- |
-| `collect_metrics` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `communication_proc` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `deinit` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `dump_file` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `finish` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `get` | 2 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `get_plugin` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `get_short_string` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `init` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `log_help` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `make_help` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `message` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `put` | 2 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `put_short_string` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
-| `shutdown` | 1 | Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined |
+| `collect_metrics` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `communication_proc` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `deinit` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `dump_file` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `finish` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `get` | 2 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `get_plugin` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `get_short_string` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `init` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `log_help` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `make_help` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `message` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `put` | 2 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `put_short_string` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+| `shutdown` | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 
 ## Debug
 
@@ -455,46 +451,40 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Debug_Info
 
-36 function names have pending declarations; 0 native function names still lack invocation fixtures.
+30 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Next work / precise question |
 | --- | ---: | --- |
-| `alloc_page` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
+| `alloc_page` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `copy_and_truncate_blocks` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `decode_inline_site_line_info` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `describe_builtin` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `describe_id_type` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `describe_type` | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `dump_codeview_types` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `ensure_room` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
-| `free_page` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
+| `ensure_room` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
+| `free_page` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `get_filename` | 1 | Debug_Info question8: file/directory indexing and path text |
 | `get_filename_for_file_id` | 2 | Debug_Info question8 for DWARF overload; CodeView implementation pending |
 | `get_id_type` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `get_stream_data` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
-| `get_stream_size` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
 | `get_string_from_table` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_type` | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `init` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_fpm_page_number` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
-| `is_free_page` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
-| `is_msf` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
+| `is_fpm_page_number` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
+| `is_free_page` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `is_procedure` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_valid_page_number` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
-| `is_valid_stream_number` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
-| `is_valid_user_stream_number` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
+| `is_valid_user_stream_number` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `overlay_inlinesite` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `overlay_inlinesites` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `parse_codeview_symbols` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `parse_codeview_types` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `parse_compilation_unit_v4` | 1 | Debug_Info questions5/6: Parse_Context and Declaration.kind shapes |
-| `parse_dwarf_debug_info` | 1 | Debug_Info questions5/6: canonical parser dependencies |
-| `parse_msf` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
-| `parse_pdb` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
-| `parse_tpi_stream` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
+| `parse_compilation_unit_v4` | 1 | Reviewed Parse_Context and Declaration.kind resolved; canonical DWARF parser implementation pending |
+| `parse_dwarf_debug_info` | 1 | Reviewed canonical parser dependencies resolved; implementation pending |
+| `parse_msf` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
+| `parse_pdb` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
+| `parse_tpi_stream` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `set_all` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `stream_exists` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
-| `verify_integrity` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
+| `verify_integrity` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 
 ## Print_Vars
 
@@ -502,60 +492,56 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Iprof
 
-50 function names have pending declarations; 0 native function names still lack invocation fixtures.
+46 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Next work / precise question |
 | --- | ---: | --- |
-| `Automatic_Zone` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `Automatic_Zone_Guarded` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `Prepend_To_Main` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `Prof_init_highlevel` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `Stack_Push` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `add_hook` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `add_source` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `before_intercept` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `clear` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `clear_stack` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `compute_heat` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `count_recursion_depth` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `createStackNode` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `create_report` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `draw` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `draw_graph` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `eternity_set` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `finish` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `get_current_graph_scaling` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `get_plugin` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `get_value` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `graph_select_sample` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `hash` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `init` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `init_runtime` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `init_zone_hash` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `insert_node` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `log_help` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `message` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `move_cursor` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `move_frame` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `propagate_expanded` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `propagate_stack` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `propagate_to_zone` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `report_compare_slot` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `report_expand_compare` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `select` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `select_parent` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `set_cursor` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `set_cursor_screen_coordinates` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `set_frame` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `set_report_mode` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `set_smoothing` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `shutdown` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `sum_times` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `traverse` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `update` | 2 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `update_history` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `zone_begin` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
-| `zone_end` | 1 | Iprof questions1–3: instrumentation/timer/history/report semantics are being refined |
+| `Automatic_Zone` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `Automatic_Zone_Guarded` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `Prepend_To_Main` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `Prof_init_highlevel` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `Stack_Push` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `add_hook` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `add_source` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `before_intercept` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `clear_stack` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `compute_heat` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `createStackNode` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `create_report` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `draw` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `draw_graph` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `eternity_set` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `finish` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `get_current_graph_scaling` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `get_plugin` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `graph_select_sample` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `hash` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `init` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `init_runtime` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `init_zone_hash` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `insert_node` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `log_help` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `message` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `move_cursor` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `move_frame` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `propagate_expanded` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `propagate_stack` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `propagate_to_zone` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `report_compare_slot` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `report_expand_compare` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `select` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `select_parent` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `set_cursor` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `set_cursor_screen_coordinates` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `set_frame` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `set_report_mode` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `shutdown` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `sum_times` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `traverse` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `update` | 2 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `update_history` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `zone_begin` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
+| `zone_end` | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 
 ## Performance_Report
 

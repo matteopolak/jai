@@ -197,7 +197,7 @@
         "declaration": "generate_bridge :: (_options: Generate_Bindings_Options, filename: string) -> success: bool",
         "section": "Public declaration inventory",
         "spec_line": 34,
-        "implementation": "pending"
+        "implementation": "global C++17 adapter subset; POD result leading out pointer, reference argument/result pointers and original native consumer effects; scopes/overloads/custom callbacks/printf adapters pending"
       },
       {
         "name": "create_omit_cpp_functions_visitor",
@@ -470,14 +470,14 @@
         "declaration": "is_same_type :: (a: *CType, b: *CType) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 73,
-        "implementation": "pending"
+        "implementation": "reviewed finite equivalence subset; scalar/alias/pointer/reference/nominal/function and literal/expression identity effects; unreviewed raw payload/array/hardcoded/CHAR/nested qualifier/variadic differences and cyclic/deep graphs explicitly diagnosed"
       },
       {
         "name": "is_same_expression",
         "declaration": "is_same_expression :: (a: *Expression, b: *Expression) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 74,
-        "implementation": "pending"
+        "implementation": "reviewed finite equivalence subset; scalar/alias/pointer/reference/nominal/function and literal/expression identity effects; unreviewed raw payload/array/hardcoded/CHAR/nested qualifier/variadic differences and cyclic/deep graphs explicitly diagnosed"
       },
       {
         "name": "C_Kind",
@@ -512,7 +512,7 @@
         "declaration": "is_same_literal :: (a: *Literal, b: *Literal) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 79,
-        "implementation": "pending"
+        "implementation": "reviewed finite equivalence subset; scalar/alias/pointer/reference/nominal/function and literal/expression identity effects; unreviewed raw payload/array/hardcoded/CHAR/nested qualifier/variadic differences and cyclic/deep graphs explicitly diagnosed"
       },
       {
         "name": "Macro_Value",
@@ -25055,7 +25055,7 @@
         "declaration": "Free_Page_Map :: struct",
         "section": "Public declaration inventory",
         "spec_line": 132,
-        "implementation": "pending"
+        "implementation": "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
       },
       {
         "name": "init",
@@ -25132,14 +25132,14 @@
         "declaration": "Msf :: struct",
         "section": "Public declaration inventory",
         "spec_line": 143,
-        "implementation": "pending"
+        "implementation": "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
       },
       {
         "name": "is_msf",
         "declaration": "is_msf :: (file_content: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 144,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "parse_msf",
@@ -25153,21 +25153,21 @@
         "declaration": "get_stream_data :: (msf: Msf, stream_index: UNSN) -> [] u8, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 146,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "get_stream_size",
         "declaration": "get_stream_size :: (msf: Msf, stream_index: UNSN) -> s64",
         "section": "Public declaration inventory",
         "spec_line": 147,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "is_valid_stream_number",
         "declaration": "is_valid_stream_number :: (msf: Msf, stream_index: UNSN) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 148,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "is_valid_user_stream_number",
@@ -25181,14 +25181,14 @@
         "declaration": "stream_exists :: (msf: Msf, stream_index: UNSN) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 150,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "is_valid_page_number",
         "declaration": "is_valid_page_number :: (msf: Msf, pn: UPN) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 151,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "verify_integrity",
@@ -25202,7 +25202,7 @@
         "declaration": "is_pdb :: is_msf",
         "section": "Public declaration inventory",
         "spec_line": 153,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "Pdb",
@@ -33581,7 +33581,7 @@
         "declaration": "Zone_Profiling_Data :: struct",
         "section": "Public declaration inventory",
         "spec_line": 47,
-        "implementation": "pending"
+        "implementation": "reviewed canonical tracker/stack records and pointer-identity ancestor count; acyclic/cyclic parent effects and borrowed-storage preservation verified; timer-driven stack/profiling runtime pending"
       },
       {
         "name": "zone_begin",
@@ -33658,7 +33658,7 @@
         "declaration": "NUM_SMOOTHING_SLOTS :: 3",
         "section": "Public declaration inventory",
         "spec_line": 58,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "NUM_THROWAWAY_UPDATES",
@@ -33763,7 +33763,7 @@
         "declaration": "set_smoothing :: (x: s64)",
         "section": "Public declaration inventory",
         "spec_line": 73,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "init_runtime",
@@ -33791,7 +33791,7 @@
         "declaration": "count_recursion_depth :: (stack: *Zone_Profiling_Data, zone: *Zone) -> s32",
         "section": "Public declaration inventory",
         "spec_line": 77,
-        "implementation": "pending"
+        "implementation": "reviewed canonical tracker/stack records and pointer-identity ancestor count; acyclic/cyclic parent effects and borrowed-storage preservation verified; timer-driven stack/profiling runtime pending"
       },
       {
         "name": "createStackNode",
@@ -33812,14 +33812,14 @@
         "declaration": "History_Scalar :: struct",
         "section": "Public declaration inventory",
         "spec_line": 80,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "Profile_Tracker_Data_Record",
         "declaration": "Profile_Tracker_Data_Record :: struct",
         "section": "Public declaration inventory",
         "spec_line": 81,
-        "implementation": "pending"
+        "implementation": "reviewed canonical tracker/stack records and pointer-identity ancestor count; acyclic/cyclic parent effects and borrowed-storage preservation verified; timer-driven stack/profiling runtime pending"
       },
       {
         "name": "FRAME_TIME_INITIAL",
@@ -33833,7 +33833,7 @@
         "declaration": "clear :: (using s: *History_Scalar)",
         "section": "Public declaration inventory",
         "spec_line": 83,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "update",
@@ -33854,7 +33854,7 @@
         "declaration": "get_value :: (using s: *History_Scalar) -> float64",
         "section": "Public declaration inventory",
         "spec_line": 86,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "propagate_stack",
@@ -34106,7 +34106,7 @@
         "declaration": "slot: s64 = 1",
         "section": "Public declaration inventory",
         "spec_line": 123,
-        "implementation": "pending"
+        "implementation": "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
       },
       {
         "name": "speedstep_warning",

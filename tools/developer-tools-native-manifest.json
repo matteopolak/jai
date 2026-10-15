@@ -12,7 +12,9 @@
       "sdk_library": "libclang",
       "helper_install_path": "stdlib/internal/developer-tools/clang-bindings/developer-tools-clang",
       "native_library_link_directory": "stdlib/internal/developer-tools/clang-bindings",
-      "runtime_requirement": "configured official SDK remains installed; regenerate private symlink on destination",
+      "generated_compiler_configuration": "stdlib/internal/developer-tools/clang-bindings/compiler-path.txt",
+      "runtime_requirement": "configured official SDK remains installed; regenerate private symlink and compiler path on destination",
+      "configured_sdk_verification": "python3 tools/check_developer_sdk_configuration.py",
       "verification": "python3 tools/check_developer_tools.py"
     },
     {

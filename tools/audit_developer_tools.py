@@ -19,15 +19,15 @@ MODULES = {
 
 def remaining_matrix(inventory):
     questions = {
-        ("Bindings_Generator", "generate_bridge"): "Bindings_Generator question9: bridge naming/output/library contract",
+        ("Bindings_Generator", "generate_bridge"): "Reviewed C++ source adapter contract resolved; implementation and compiled round trips pending",
         ("Bindings_Generator", "ensure_local_libclang_exists"): "Bindings_Generator question11: installation/copy policy",
         ("Bindings_Generator", "clang_getFileTime"): "Bindings_Generator question12: canonical time_t dependency",
         ("Bindings_Generator", "is_same_type"): "Bindings_Generator question10: model equivalence",
         ("Bindings_Generator", "is_same_expression"): "Bindings_Generator question10: model equivalence",
         ("Bindings_Generator", "is_same_literal"): "Bindings_Generator question10: literal equivalence",
         ("Debug_Info", "parse_frame_description_entry"): "Debug_Info question4: remaining frame encodings/offset conventions",
-        ("Debug_Info", "parse_compilation_unit_v4"): "Debug_Info questions5/6: Parse_Context and Declaration.kind shapes",
-        ("Debug_Info", "parse_dwarf_debug_info"): "Debug_Info questions5/6: canonical parser dependencies",
+        ("Debug_Info", "parse_compilation_unit_v4"): "Reviewed Parse_Context and Declaration.kind resolved; canonical DWARF parser implementation pending",
+        ("Debug_Info", "parse_dwarf_debug_info"): "Reviewed canonical parser dependencies resolved; implementation pending",
         ("Debug_Info", "get_filename"): "Debug_Info question8: file/directory indexing and path text",
         ("Debug_Info", "get_filename_for_file_id"): "Debug_Info question8 for DWARF overload; CodeView implementation pending",
     }
@@ -47,11 +47,11 @@ def remaining_matrix(inventory):
             for name, entries in sorted(pending.items()):
                 reason = questions.get((module, name), "Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior.")
                 if module == "Debug_Info" and ("msf" in name or "stream" in name or name in {"parse_pdb", "get_stream_size", "stream_exists", "is_valid_page_number", "is_valid_stream_number", "is_valid_user_stream_number", "verify_integrity", "ensure_room", "is_free_page", "alloc_page", "free_page", "is_fpm_page_number"}):
-                    reason = "Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged"
+                    reason = "Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds"
                 if module == "Codex":
-                    reason = "Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined"
+                    reason = "Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details"
                 if module == "Iprof":
-                    reason = "Iprof questions1–3: instrumentation/timer/history/report semantics are being refined"
+                    reason = "Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2"
                 output.append(f"| `{name}` | {len(entries)} | {reason} |")
             output.append("")
         if source_only:
@@ -145,6 +145,8 @@ def main():
                                      "is_hex_digit", "is_valid_int_literal_suffix", "is_valid_float_literal_suffix",
                                      "convert_float_literal", "convert_literal_value", "generate_replacements_array"}:
                     item["implementation"] = "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
+                if item["name"] == "generate_bridge":
+                    item["implementation"] = "global C++17 adapter subset; POD result leading out pointer, reference argument/result pointers and original native consumer effects; scopes/overloads/custom callbacks/printf adapters pending"
                 if item["name"] in {"visit_declarations", "find_parent_enum", "create_type_of_enum", "change_type_to_enum",
                                      "change_return_type", "change_return_type_to_enum", "change_argument_type_to_enum",
                                      "create_pointer_to", "get_int_type"}:
@@ -153,6 +155,8 @@ def main():
                     item["implementation"] = "C++17 fragment subset; generated native consumers O0/O2 from interpreter/native emitter runs, unsupported output preservation"
                 if item["name"] in {"is_void_type", "is_bool_type", "is_same_location"}:
                     item["implementation"] = "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
+                if item["name"] in {"is_same_type", "is_same_expression", "is_same_literal"}:
+                    item["implementation"] = "reviewed finite equivalence subset; scalar/alias/pointer/reference/nominal/function and literal/expression identity effects; unreviewed raw payload/array/hardcoded/CHAR/nested qualifier/variadic differences and cyclic/deep graphs explicitly diagnosed"
                 if item["name"] in {"fill_location", "get_clang_type_alignment", "create_null_literal"}:
                     item["implementation"] = "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
                 if item["name"] == "clang_getFileTime":
@@ -168,6 +172,10 @@ def main():
                 item["implementation"] = "supported subset; actual compiler-message rewrite and edit safety fixture"
         if module == "Debug_Info":
             for item in declarations:
+                if item["name"] in {"Msf", "Free_Page_Map"}:
+                    item["implementation"] = "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
+                if item["name"] in {"is_msf", "is_pdb", "get_stream_data", "get_stream_size", "is_valid_stream_number", "stream_exists", "is_valid_page_number"}:
+                    item["implementation"] = "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
                 if item["name"] in {"Line_Info", "Line_Info_Sequence", "Line_Mapping", "File_Info", "Dwarf_File_Id",
                                      "get_line_mapping_for_address", "get_line_mappings_for_address_range"}:
                     item["implementation"] = "reviewed line records and DWARF interval queries; original x64/arm64 O0/O2 line-table SDK oracles, interpreter/native effects and malformed/overlap diagnostics"
@@ -196,6 +204,10 @@ def main():
             for item in declarations:
                 if item["name"] in supported:
                     item["implementation"] = "reporting subset; CSV/text, manual/history conditions verified"
+                if item["name"] in {"History_Scalar", "NUM_SMOOTHING_SLOTS", "slot", "set_smoothing", "clear", "get_value"}:
+                    item["implementation"] = "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
+                if item["name"] in {"Profile_Tracker_Data_Record", "Zone_Profiling_Data", "count_recursion_depth"}:
+                    item["implementation"] = "reviewed canonical tracker/stack records and pointer-identity ancestor count; acyclic/cyclic parent effects and borrowed-storage preservation verified; timer-driven stack/profiling runtime pending"
         if module == "Codex":
             for item in declarations:
                 if item["name"] in {"Math", "get_file_and_module", "is_global_ident"}:
