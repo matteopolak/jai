@@ -1,5 +1,17 @@
 # Portable stdlib worker deviations
 
+macOS addrinfo candidate excluded from active source while general forward-enum
+compiler defect persists. Location: pending/socket-macos-addrinfo.patch, generated
+staging target/portable-socket-resolver; gate tools/check_portable_socket_resolver.py.
+Observable effect: API remains missing, existing Socket code retains prior behavior.
+Evidence: both native C CPU probes pass; Jai resolver/strict lint fail ADDRCONFIG,
+minimal reduction fails LATER; activating shape regresses existing cmsg-layout.
+Risk: native Jai resolver remains unverified. Proper fix: compiler dependency graph
+retaining enum reflection order, then regenerate normally and run full gates.
+No source enum/member-order workaround or disabled assertions. Generated docs
+ledger manually marks the retained candidate; later normal generation removes
+that temporary documentation note. C-only evidence never counted as Jai support.
+
 ADB SDK/startup earlier gap is now implemented. Durable default-allocator cache
 retains one current executable path until rediscovery/process exit; allocator
 identity saved for proper Basic free on replacement. This prevents temporary reset

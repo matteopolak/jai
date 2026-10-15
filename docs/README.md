@@ -1,5 +1,8 @@
 # Developer documentation
 
+[macOS resolver candidate](portable-socket-resolver.md) records native C ABI
+evidence and the genuine forward-enum compiler gate, without a Jai success claim.
+
 Android host [ADB operations](portable-adb.md) now include app lifecycle status,
 force-stop, installation queries and reviewed SDK discovery/cache/startup, with
 protocol/assertion-configuration tests and device gaps recorded.

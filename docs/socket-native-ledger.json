@@ -27,7 +27,7 @@
     "name": "addrinfo",
     "condition": "OS == .MACOS",
     "spec_line": 3014,
-    "status": "unresolved shape"
+    "status": "reviewed shape candidate pending compiler forward-enum dependency; pending/socket-macos-addrinfo.patch"
   },
   {
     "name": "addrinfo_dns_server",

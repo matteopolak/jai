@@ -86,7 +86,6 @@ execution. This is not all-platform completion; see portable-socket-fields.md.
 Unresolved native shape variants:
 
 - SHUT [OS == .ANDROID]
-- addrinfo [OS == .MACOS]
 - hostent [OS == .MACOS]
 - in_addr [OS == .ANDROID]
 - in_pktinfo [OS == .ANDROID]
@@ -96,5 +95,10 @@ Unresolved native shape variants:
 - protoent [OS == .MACOS]
 - servent [OS == .MACOS]
 - sockaddr [OS == .ANDROID]
+
+macOS addrinfo shape is now reviewed. A generated source candidate, actual ARM64/
+x64 native C layout+numeric resolver probe and unchanged Jai gate are retained in
+portable-socket-resolver.md. Integration remains blocked by the general forward-
+enum ADDRCONFIG compiler dependency; it is still absent from the active facade.
 
 Four Windows SCOPE_ID accessors preserve canonical overlay storage and implement 28-bit Zone/four-bit Level extraction and mutation. Public SDK ws2def.h supplies ABI positions: https://raw.githubusercontent.com/microsoft/win32metadata/main/generation/WinSDK/RecompiledIdlHeaders/shared/ws2def.h . Unsigned setters truncate to native widths and retain the companion field. Private kernels pass host interpreter/native O2 and active strict lint. Both Windows CPU checks execute actual public accessors in #run assertions, including overlay identity and size. These pure interpreter assertions do not execute Winsock or establish a native Windows ABI pass. Native Windows execution and target-aware strict lint remain pending; the compile-time fixture requires OS==WINDOWS.
