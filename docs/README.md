@@ -1,5 +1,9 @@
 # Developer documentation
 
+- [Combined Mac integration commands and corpus boundaries](tools/cleanroom-integration.md):
+  exact frozen workspace/catalogue counts, production helper checks, and permitted
+  application staging with manifest provenance and exclusions before access.
+
 - [Mac Extensions dependency repairs](extensions/mac-dependency-repairs.md):
   Json ownership/numerics, Http time/atomics, and test-only dependency migrations;
   [measured results and remaining lint-context failure](status/extensions-mac-repairs.md).

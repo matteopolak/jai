@@ -1,5 +1,22 @@
 # Integration requests
 
+## Interpreter/native link-always discrepancy at8928fb1a
+
+Compiler owner: unchanged new producer `tests/native-bindings/objc-runtime.jai`
+passes actual native ARM64 O0 but interpreter fails `pool != null` immediately
+after `Objective_C.objc_new(NSAutoreleasePool)`. Same production library/native
+prefix, no staging. Objective_C/declarations.jai has unnamed
+`#library,system,link_always "Foundation"` and `QuartzCore`; the interpreter
+loads native libraries only lazily for foreign-symbol resolution. libobjc loads,
+but Foundation's classes have not registered before objc_getClass. Source-built
+native executable correctly links/loads both. Evidence:
+`artifacts/mac-baseline/canonical-generator-all-helpers/objc-runtime-{interp,native}.log`.
+Please repair general link_always loading/initialization for native interpreter
+execution and compile-time runs, preserving SandboxHost/IDE/tool capability
+distinctions and actual missing-library diagnostics. Add original independent
+constructor-side-effect tests, not Objective_C/library/name-specific activation
+or a fixture-only Foundation pre-load. No workaround was applied here.
+
 ## Canonical merged generator baseline db2962e7
 
 Compiler e9affab7 is merged as the sole ordering implementation; model b00aa052

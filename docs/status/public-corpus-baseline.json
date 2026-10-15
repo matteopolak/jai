@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "manifest": "tools/upstream-cases.json",
+  "manifest_entries": 400,
+  "unique_entry_paths": 391,
+  "projects": 32,
+  "modes": {
+    "run": 335,
+    "check": 55,
+    "build": 10
+  },
+  "snapshot": "8928fb1a",
+  "compiled": 0,
+  "passed": 0,
+  "failed": 0,
+  "unexecuted": 400,
+  "status": "requires coordinator opaque originals or approved application-only staging",
+  "reason": "Unrestricted sweep copies vendor/compiler trees and symlinks siblings. Session explicitly bars corpus module/stdlib/prelude access; no full corpus execution or parser-only success claimed.",
+  "coordinator_request": "Run all 400 configured entries against this NEW production library externally; return filtered diagnostics/minimal independent reproducers. Provide safe app-only staging with provenance for any local replay."
+}

@@ -2,6 +2,17 @@
 
 ## Stable combined native ARM64 replay, 2026-10-15
 
+Application staging audit: the coordinator's1044-file allowlist includes249
+manifest paths under blocked module/library directories. No excluded bodies
+were opened. `tools/stage_application_corpus.py` additionally excludes library
+entry files and other vendor-directory spellings before any source filesystem
+access:776 unchanged application/tutorial files staged,268 excluded. Six actual
+filesystem/provenance/traversal tests pass. The stage records original revisions,
+SHA256 and exact exclusions in ignored durable artifacts. Diagnostics/type facts
+against production stdlib are the next gate; they do not establish all400
+upstream configurations compiled or native Focus execution. Missing excluded
+dependencies stay real errors; no copied vendor library or symlink fills them.
+
 Candidate worktree: `artifacts/integration-clean/thread-fixtures`, branch
 `integration/thread-fixtures`, measured production snapshot
 `ad575d161e8705d839e7253f52a06c10b45d1732`. Older refresh sections below are historical.
