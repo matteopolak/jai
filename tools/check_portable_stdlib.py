@@ -107,6 +107,10 @@ def main():
     if args.hash_root:
         shutil.copytree(args.hash_root, root / "Hash", dirs_exist_ok=True)
         shutil.copytree(args.hash_root.parent / "internal/hash", root / "internal/hash", dirs_exist_ok=True)
+        # Only scalar Hash/shared facade completion is peer-owned. Keep this
+        # producer's current formatted MD5 and Meow sources in the composition.
+        shutil.copyfile(ROOT / "stdlib/internal/hash/md5.jai", root / "internal/hash/md5.jai")
+        shutil.copytree(ROOT / "stdlib/internal/hash/meow", root / "internal/hash/meow", dirs_exist_ok=True)
     curl_root = args.curl_root or args.posix_root.parent / "Curl"
     if not curl_root.is_dir():
         parser.error("supply the new Curl dependency with --curl-root")
@@ -179,6 +183,8 @@ def main():
         ("buildcpp-tool", "BuildCpp tool failed"),
         ("buildcpp-target", "BuildCpp object target validation failed"),
         ("mpeg-scalar-store", "cannot assign to constant"),
+        ("mpeg-quantizer-store", "cannot assign into the constant `M.QUANT_TAB`"),
+        ("mpeg-window-store", "cannot assign into the constant `M.SYNTHESIS_WINDOW`"),
         ("register-scalar", "expected a SIMD register operand"),
         ("meow-lane", "INDEX >= 0 && INDEX < 2"),
     ]:

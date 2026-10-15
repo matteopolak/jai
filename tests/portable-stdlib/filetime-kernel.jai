@@ -39,3 +39,13 @@ main :: () {
     assert(!valid);
     print("ok\n");
 }
+
+#scope_file
+from_ticks :: (ticks: u64) -> Apollo_Time {
+    low, high := ticks_to_words(ticks);
+    return .{ low, high };
+}
+
+to_ticks :: (at: Apollo_Time) -> u64, bool {
+    return words_to_ticks(at.low, at.high);
+}

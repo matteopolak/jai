@@ -29,3 +29,10 @@ main :: () {
 
     print("ok\n");
 }
+
+#scope_file
+from_counter :: (counter: s64, frequency: s64) -> Apollo_Time {
+    low, high, valid := counter_to_words(counter, frequency);
+    if !valid return APOLLO_TIME_INVALID;
+    return .{ low, high };
+}

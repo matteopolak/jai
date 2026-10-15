@@ -120,3 +120,51 @@ unverified on this host. The API/source first-call baseline is a confirmed
 contract, not a workaround.
 
 Elapsed final evidence: ordinary, eight-thread and compile-time-reset fixtures all pass interpreter/native O0/O2; full98-case/23-fault both-mode suite and prior rejection/integration/target checks pass. All305 owned files pass source-built formatting/check/strict lint. Windows ARM64 body checking also passes.
+
+
+## Parameterized Basic integration regressions
+
+The NEW foundations producer supplies its reviewed integer guards; this worker
+does not duplicate that implementation. A focused composition copies only NEW
+producer dependencies and portable-owned time files into target/, then adds the
+reviewed time facade/load-list entries. It never changes another checkout.
+tools/check_portable_time_foundation.py normalizes and regenerates those entries
+twice, checks byte stability and exercises default/nondefault Basic in interpreter
+and native O0/O2, with both Windows CPU body checks.
+
+That test exposed a real nominal-type error: private Windows kernels returned
+the default Basic instance's Apollo_Time into a nondefault instance. The compiler
+correctly rejected expected Apollo_Time/found Apollo_Time. Private arithmetic now
+exchanges primitive low/high words, and each wrapper constructs its own canonical
+type. This preserves signatures/reflected names without casts across instances.
+
+A stronger real-clock check exposed Native calls inside optional assert arguments.
+ENABLE_ASSERT=false discards those arguments in the NEW producer, so queries did
+not execute. Native clock calls now execute before independent status handling.
+Operational failures invoke context.assertion_failed with recursion protection
+even when optional assertions are disabled. If a handler continues, clocks return
+APOLLO_TIME_INVALID, calendar output uses invalid negative date/time fields and
+elapsed time returns quiet NaN. Failed first-origin initialization stays failed;
+it does not silently choose a later origin. Callback continuation/error-marker
+details remain independent policies needing review, distinct from the settled
+first-call baseline. No native result is mocked.
+
+Configured tests compare actual wall clocks and delay before checking positive
+elapsed time. A genuine invalid timestamp tests the disabled-assert calendar error
+path with a real caller-selected assertion callback. Production error-helper
+tests check callback delivery, recursion suppression, state restoration and NaN.
+These do not claim Windows native error injection or replace platform execution.
+
+Initial composition substring matching confused to_apollo with seconds_to_apollo;
+anchored declaration matching fixes that tool bug. An initial retry copied stale
+private kernels; composition now explicitly includes current owned internal/time.
+Failure logs remain target/time-foundation-integration*.log,
+target/time-foundation-words.log and
+target/time-configured-assert-off-failure.log. No assertion was removed.
+
+Current rerun: target/time-checkpoint-foundation.log verifies regeneration,
+interpreter/native O0/O2 and both Windows CPU bodies. Configured facade/private
+root/fixture strict lint exits0 (target/time-checkpoint-foundation-lint.log).
+The full99-case/23-fault runner exits0; whole owned strict lint still fails for
+the separately inventoried reasons in portable-verification.md. Earlier lint
+counts above are historical runs with the earlier tool, not current gate status.

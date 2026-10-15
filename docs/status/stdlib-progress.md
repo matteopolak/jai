@@ -3,7 +3,24 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `846781b`, protected MPEG audio checksums. Earlier
+Current reviewed batch: parameterized Basic time kernels now exchange primitive
+words, preserving each instance's canonical Apollo_Time. Native queries execute
+with ENABLE_ASSERT=false and deliver actual failures independently of optional
+assertions. NEW foundation regeneration, real clocks, invalid calendar callback,
+interpreter/native O0/O2 and Windows CPU body checks pass. Full99-case/23-fault
+host suite passes plus eight original compile negatives and integration checks;
+two newly promoted immutable-MPEG rejection probes pass separately. NEW Meow
+fixtures replace the inherited-test invocation and pass x64 interpreter/native.
+306 owned Jai files pass format/check; rebuilt full strict lint FAILS with exact
+remaining configuration/compiler categories in
+[verification inventory](../portable-verification.md). Configured time roots and
+fixture pass strict lint separately. Unicode literal/facade errors exposed by
+lint are fixed with new assertions. No Windows runtime or full integration claim.
+Next: resolve general linter fixture/semantic gaps and continue owned portable
+backlog; Flat_Pool init/default/global overwrite are resolved and implemented.
+
+Latest committed checkpoint before this batch: `f0057ed`, reviewed first-call
+elapsed-time origin. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -221,3 +238,6 @@ Windows clocks checkpoint: public realtime uses actual Kernel32 FILETIME, monoto
 Machine_X64 blocker confirmed: original leaf0 vendor assertion fails interpreter and native x64. Independently compiled C SDK counterpart executes real CPUID and returns vendor/maxleaf. No Machine module fake0 fallback added; minimal reproducer and generic lowering handoff in portable-machine-gaps.md. All301 owned Jai files still pass format/check/lint, pending case explicitly failing not counted green. New inbox resolves seconds_since_init as first-call baseline; implement next, superseding prior origin questions.
 
 Elapsed checkpoint verified: exact seconds_since_init lazily captures the FIRST CALL origin per refreshed oracle, with private CAS-safe shared publication. Ordinary before/after sleep, eight-thread first-use and actual-macOS compile-time-to-runtime reset all execute interpreter/native O0/O2. Windows ARM64 body checks pass, with actual Windows execution unclaimed. Full98-case/23-fault both-mode suite plus eight rejections/prior integration/target checks passes;305 owned files pass format/check/strict lint. Prior origin questions now resolved. Next review remaining portable contracts/Basic numeric guard updates without duplicating peer work.
+
+
+Parameterized time integration in progress: NEW foundation integer guards already exist and remain that producer's work. Focused composition exposed/fixed default-vs-configured Apollo_Time nominal return mismatch using primitive private word pairs. It also exposed real native clock queries disappearing inside ENABLE_ASSERT=false discarded assertions; queries now always execute, with independent operational diagnostics and explicit invalid results for continuing handlers. Configured real wall-clock/delayed-elapsed tests pass NEW composition interpreter/native O0/O2 and Windows body checks. Full own suite99 cases/23 faults passes both modes. Rebuilt strict jailint correctly rejects inputs outside configured library root; runner now maps byte-identical owned files into staged root. Shared Hash facade/scalar file is excluded by ownership, current portable MD5/Meow retained over peer snapshot. Final mapped lint pending; old failure logs retained.

@@ -112,3 +112,21 @@ Windows clocks: real typed Kernel32 code is type-checked both CPUs, with host-ex
 Machine_X64 remains withheld: source compiler Op::Cpuid hardcodes all outputs0. Both actual interpreter/native reproducer fail; real SDK C query succeeds. This compiler behavior is not counted as CPU detection or wrapped in fake get_cpu_info. Proper generic IR/interpreter/native lowering required across ownership, described in portable-machine-gaps.md. Native focused probe disables crash-handler installation only to isolate CPU assertion; all assertions remain active and existing crash coverage intact. Rdrand/Rdseed opcode conflation and synthetic timestamp-ID docs are additional unverified audit risks, not supported exports.
 
 Elapsed API resolved: the inbox/refreshed Basic page explicitly requires lazy FIRST CALL, so older statements calling that origin a workaround or withholding it are superseded. Exact public seconds_since_init now captures/publishes a real monotonic origin with existing general CAS, subtracts timestamps before float conversion and shares the same private storage across aliases. First return0 is the capture instant; private synchronization strengthens the source's first-use concurrency guarantee. Eight-thread and compile-time/reset fixtures execute genuine behavior, no fake clock/reset hook; the latter uses actual macOS ABI and diagnoses execution on another host rather than claiming portability. Windows clocks/elapsed code type-check but native execution remains a platform gate.
+
+
+Parameterized Basic fixes: no type-coercion workaround; private Windows arithmetic returns primitive words and wrappers construct their actual module instance's canonical Apollo_Time. NEW foundation composition is staging only, with explicit current facade/load-list merge and normalized regeneration, not production integration. Initial tool substring/stale-kernel failures fixed and retained. Native actions no longer occur only inside discardable assertions. Operational failure callback is unconditional, guarded by context.handling_assertion_failure; if caller continues, invalid timestamps/negative calendar fields/NaN are explicit failure markers. Failed first origin remains unavailable; this error-continuation policy and context guard require review. No native failure-success result invented. Actual Windows calls still unexecuted.
+
+Rebuilt jailint provenance repair: exact owned library bytes must match staged paths under JAIC_STDLIB; tests keep their real app paths. This preserves private-import rejection rather than bypassing it. Old all-input-original-path invocation failed and is retained. Scalar Hash/shared facade belongs to foundations and is excluded from this worker's lint mutation; portable MD5/Meow remain owned and explicitly restored after peer Hash staging (peer MD5 copy differed only by old formatting). No peer write or blanket diagnostic suppression. Final mapped verification pending at this update.
+
+Current mapped verification: full strict lint still fails, not a completed gate.
+Exact categories/evidence and proper remedies are in portable-verification.md:
+eager Random Context/Socket type checks, enum forward resolution, compile-time
+tools, required fixture flags, intentional negative fixtures and workspace hook.
+No categories are silently excluded; no allow-incomplete/suppression was added.
+Configured time roots pass strict lint separately. Risk: unlinted failed bodies
+may hide further findings; proper long-term fix is general compiler/linter and
+configured-fixture support plus a reviewed negative-fixture policy. Real Unicode
+literal/facade errors were fixed, not reclassified as tool failures. Meow runner
+now executes NEW public-contract/vector fixtures rather than the obsolete inherited
+test. Full99 host positives/23 faults pass; that does not establish full portable
+API completeness or native Windows correctness.
