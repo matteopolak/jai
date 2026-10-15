@@ -1,5 +1,27 @@
 # Platform I/O compiler/tool integration handoff
 
+## e8c312d thread native-handle interoperability
+
+The current independent producer's win32.rs::create_thread returns a synthetic
+Object::Thread handle after obtaining the actual native_id. SetThreadDescription
+is not intercepted, so it sees a scheduler value. Both CPUs' original named-thread
+interpreter tests exit zero but fail output checking. Exact stdout/stderr/status
+was requested; do not bless the warning as expected success.
+
+Original minimal SDK reproducer:
+docs/repros/platform-io-windows-thread-description.jai. It checks the public thread
+HANDLE with native GetThreadDescription, Unicode data and checked LocalFree, then
+retains start/wait/deinit assertions. It source-checks/lints on both Windows CPUs;
+native/interpreter execution is pending. No public API or peer source was edited.
+
+Required general compiler mechanism: retain/transfer the spawned OS thread handle,
+use that actual handle as the scheduler object's key, maintain native id equality,
+close it exactly once on CloseHandle or interpreter teardown, and keep scheduling,
+suspended-start and managed-wait behavior. Real native query/description calls
+must address the same OS thread. Do not special-case Thread module/name strings or
+return fake SetThreadDescription success. Native suspension through unmanaged
+duplicates has separate scheduling constraints and must be documented/diagnosed.
+
 ## Actual 0100a1f follow-up
 
 The minimal argv repair is now verified by signed-wheel regressions on both real

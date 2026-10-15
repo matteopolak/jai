@@ -20,6 +20,8 @@ OWNED = [
     "stdlib/Runtime_Support/tests/windows-crash-bootstrap.jai",
 
     "stdlib/internal/runtime/windows-arm64-crash",
+    "stdlib/internal/runtime/windows-crash-cleanup",
+    "docs/repros/platform-io-windows-thread-description.jai",
     "tests/platform-io",
 ]
 

@@ -1,5 +1,42 @@
 # Platform I/O worker progress
 
+## Actual e8c312d: ARM64 crash positives, x64/thread diagnosis in progress
+
+Filtered run38662728329 confirms all 12 private ARM64 native startup/fault cases
+pass OFF/ON/default at O0/O2. Preserve those as genuine native evidence for that
+candidate. x64 OFF/startup/compiled PE section fixtures pass; four ON/default
+faults fail. Both CPUs' thread-contract interpreter cases exit zero but fail output
+comparison. These failures remain open; no output/trace assertion was relaxed.
+
+Coordinator request pending: exact original thread stdout/stderr bytes/status for
+both CLI forms/CPUs, and exact x64 ON/default fault stdout/stderr/status O0/O2. Only
+own-test filtered output is needed, never raw/vendor logs. The current producer's
+virtual thread handle reaches real SetThreadDescription; an original SDK
+GetThreadDescription reproducer is in docs/repros/platform-io-windows-thread-description.jai.
+It needs the compiler's general real-kernel-handle/lifetime fix, not a name stub.
+
+Independent owned improvement: x64 native diagnostics now use a unique duplicated
+process handle for DbgHelp, with private Runtime_Support normal shutdown that
+SymCleanup/CloseHandle and restores prior filter/error mode. Public layouts,
+CurrentProcess default/storage, init idempotence and export inventory are retained.
+An original SDK lifecycle/isolation test first failed to link the missing finish
+entry, then cross-links with the implementation. Native execution remains pending.
+
+Added original SDK StackWalk64 first-transition probe and additional exported,
+non-inlined named-fault frames. Existing ARM64 fault source/cases stay unchanged.
+Named tests require actual leaf+middle symbols; real status, stderr and frame-count
+checks remain. Runner failures now preserve exact bytes/result JSON and individual
+fault predicate reasons under durable target/platform-io-tests. Four parser tests
+pass; synthetic protocol tests are not native execution evidence.
+
+Host interpreter/native O0/O2, four-target checks, x64 cross-builds and all 18
+ON/OFF/default startup/original-fault/named-fault builds pass locally. Source-built
+jaifmt check and strict four-target lint cover 49/49 owned Jai files. Native C
+backend/lifecycle/SDK probes compile with warnings denied. Logs:
+target/platform-io-e8c312d-{suite,lint}.log and platform-io-x64-cleanup-{red,green}.log.
+The remaining x64 traversal cause is not claimed fixed without actual results.
+See [follow-up plan and native contracts](../platform-io-e8c312d-follow-up.md).
+
 ## Actual 0100a1f CI and section-query follow-up
 
 Filtered ci-feedback-latest.md confirms signed-wheel/argv tests pass on BOTH
