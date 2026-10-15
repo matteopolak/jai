@@ -57,7 +57,7 @@ def main():
                 raise RuntimeError(f"Required helper diagnostic absent: {mode}\n{result.stdout}\n{result.stderr}")
     files = [facade, private, pure, native, *(fixture for fixture, _ in negative),
              ROOT / "stdlib/internal/developer-tools/generator-active-state.jai",
-             ROOT / "stdlib/internal/developer-tools/generator-context/module.jai"]
+             ROOT / "stdlib/internal/developer-tools/generator-session/module.jai"]
     run([ROOT / "target/jaifmt", "--check", *files], "")
     checked = ROOT / "target/generator-emission-checked.txt"
     checked.write_text("\n".join(str(path) for path in files) + "\n")

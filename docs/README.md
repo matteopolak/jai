@@ -64,6 +64,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [Private generator protocol](generator-session.md): the single active slot, ownership and nested callback restoration
 - [Module Context lint repair](status/generator-lint-context.md): independent reduction and general finalization fix
 - [Generator Mac integration repairs](status/generator-integration-repairs.md): real macro failure diagnostics and framework metadata hygiene
+- [Generator modifier helpers](generator-modifiers.md): all eight integrated public helpers, canonical shared context protocol, and measured public-import host/target verification
 - [Window/render progress](status/window-render-progress.md): scoped native window,
   native input, Windows pointer tracking and keyboard layouts, Keymap, window lifecycle, original native-font
   feature regressions, real font-atlas/text rendering and texture color-space transitions,

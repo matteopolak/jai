@@ -1,69 +1,161 @@
 {
   "module": "Bindings_Generator",
-  "batch": "generator-names",
-  "baseline": "7467b49d",
+  "scope": "Names and modifiers batches only; not exhaustive module completion",
   "complete": [
+    "add_access_flags",
+    "add_type_flags",
+    "append_calling_convention_directives",
+    "append_type_info_directives",
     "avoid_cpp_keywords",
     "avoid_reserved_names",
-    "make_valid_identifer",
-    "replace_operator_name",
+    "check_if_foreign_function_should_be_omitted",
+    "compute_enum_names",
     "convert_objc_selector_name_to_function_identifier",
-    "print_objc_selector_identifier",
+    "function_has_a_valist_arg",
     "get_enum_value_name",
-    "compute_enum_names"
-  ],
-  "partial": [],
-  "missing": [],
-  "committed_implementation_names": [
-    "avoid_cpp_keywords",
-    "avoid_reserved_names",
     "make_valid_identifer",
-    "replace_operator_name",
-    "convert_objc_selector_name_to_function_identifier",
     "print_objc_selector_identifier",
-    "get_enum_value_name",
-    "compute_enum_names"
+    "replace_operator_name",
+    "shared_type",
+    "should_be_moved_to_global_scope"
   ],
-  "draft_implementation_names": [],
-  "delivery_status": "Committed complete naming batch with integrated public imports, tests and reports.",
-  "commit_identification": "The commit containing this report; no self-referential commit hash embedded.",
-  "facade_integration": "Clean integrator loaded naming-helpers.jai and active-options.jai.",
-  "canonical_options": "context.bindings_generator_options: Generate_Bindings_Options; sole declaration in active-options.jai",
-  "integration_handoff": "Init/run owner notified through docs/worker-inbox.md to install active options; independent callers assign canonical field directly.",
-  "resolved_contract_requests": "Reviewed naming addendum resolves all previous naming gaps.",
-  "verification": {
-    "runner": "tools/verify_generator_names.py",
-    "result_count": 33,
-    "failed_commands": 0,
-    "fixtures": [
-      "tests/generator-names/names.jai",
-      "tests/generator-names/selector.jai"
-    ],
-    "import_mode": "actual public Bindings_Generator import",
-    "executed": [
-      "interpreter",
-      "macos-arm64-O0",
-      "macos-arm64-O2"
-    ],
-    "source_checked_and_linted": [
-      "macos-arm64",
-      "macos-x64",
-      "linux-x64",
-      "windows-x64",
-      "windows-arm64"
-    ],
-    "format": "source-built repository jaifmt --check",
-    "lint": "source-built jailint -D warnings in public-import fixture contexts",
-    "scope": "All eight helpers; cross-target checks source-only.",
-    "artifacts": "$CARGO_TARGET_DIR/generator-names-verification/results.json"
-  },
-  "independent_policies": [
-    "Detection requires at least two non-omitted values.",
-    "Empty source enum names do not remove a value prefix.",
-    "Nonempty delimiters absent from common prefixes prevent removal.",
-    "Empty enum output_name triggers anonymous fallback; existing names remain.",
-    "Collisions retained; allocator-backed results do not free unspecified original storage."
-  ],
-  "hacks": [],
-  "deviations": []
+  "batches": [
+    {
+      "module": "Bindings_Generator",
+      "batch": "generator-names",
+      "baseline": "7467b49d",
+      "complete": [
+        "avoid_cpp_keywords",
+        "avoid_reserved_names",
+        "make_valid_identifer",
+        "replace_operator_name",
+        "convert_objc_selector_name_to_function_identifier",
+        "print_objc_selector_identifier",
+        "get_enum_value_name",
+        "compute_enum_names"
+      ],
+      "partial": [],
+      "missing": [],
+      "committed_implementation_names": [
+        "avoid_cpp_keywords",
+        "avoid_reserved_names",
+        "make_valid_identifer",
+        "replace_operator_name",
+        "convert_objc_selector_name_to_function_identifier",
+        "print_objc_selector_identifier",
+        "get_enum_value_name",
+        "compute_enum_names"
+      ],
+      "draft_implementation_names": [],
+      "delivery_status": "Committed complete naming batch with integrated public imports, tests and reports.",
+      "commit_identification": "The commit containing this report; no self-referential commit hash embedded.",
+      "facade_integration": "Clean integrator loaded naming-helpers.jai and active-options.jai.",
+      "canonical_options": "context.bindings_generator_options: Generate_Bindings_Options; sole declaration in active-options.jai",
+      "integration_handoff": "Init/run owner notified through docs/worker-inbox.md to install active options; independent callers assign canonical field directly.",
+      "resolved_contract_requests": "Reviewed naming addendum resolves all previous naming gaps.",
+      "verification": {
+        "runner": "tools/verify_generator_names.py",
+        "result_count": 33,
+        "failed_commands": 0,
+        "fixtures": [
+          "tests/generator-names/names.jai",
+          "tests/generator-names/selector.jai"
+        ],
+        "import_mode": "actual public Bindings_Generator import",
+        "executed": [
+          "interpreter",
+          "macos-arm64-O0",
+          "macos-arm64-O2"
+        ],
+        "source_checked_and_linted": [
+          "macos-arm64",
+          "macos-x64",
+          "linux-x64",
+          "windows-x64",
+          "windows-arm64"
+        ],
+        "format": "source-built repository jaifmt --check",
+        "lint": "source-built jailint -D warnings in public-import fixture contexts",
+        "scope": "All eight helpers; cross-target checks source-only.",
+        "artifacts": "$CARGO_TARGET_DIR/generator-names-verification/results.json"
+      },
+      "independent_policies": [
+        "Detection requires at least two non-omitted values.",
+        "Empty source enum names do not remove a value prefix.",
+        "Nonempty delimiters absent from common prefixes prevent removal.",
+        "Empty enum output_name triggers anonymous fallback; existing names remain.",
+        "Collisions retained; allocator-backed results do not free unspecified original storage."
+      ],
+      "hacks": [],
+      "deviations": [],
+      "canonical_integrated_options": "model-owned generator-session borrowed pointer; no separate typed value or public Context module",
+      "producer_protocol_superseded": true
+    },
+    {
+      "module": "Bindings_Generator",
+      "batch": "generator-modifiers",
+      "baseline": "7467b49d",
+      "publication_status": "committed",
+      "commit_reference": "Commit containing this status file; no external publication",
+      "complete": [
+        "add_access_flags",
+        "add_type_flags",
+        "append_calling_convention_directives",
+        "append_type_info_directives",
+        "function_has_a_valist_arg",
+        "check_if_foreign_function_should_be_omitted",
+        "shared_type",
+        "should_be_moved_to_global_scope"
+      ],
+      "partial": [],
+      "missing": [],
+      "committed": [
+        "add_access_flags",
+        "add_type_flags",
+        "append_calling_convention_directives",
+        "append_type_info_directives",
+        "function_has_a_valist_arg",
+        "check_if_foreign_function_should_be_omitted",
+        "shared_type",
+        "should_be_moved_to_global_scope"
+      ],
+      "draft": [],
+      "facade_integration": "clean integrator loaded modifiers and shared context; both fixtures use actual public imports",
+      "remaining_contracts": [],
+      "context_protocol": "Single Bindings_Generator_Context module; borrowed generator and generator_options pointers; canonical per-instance casts; lifecycle owners notified in docs/worker-inbox.md",
+      "verification": {
+        "command": "python3 tools/check_generator_modifiers.py",
+        "source_built_tools": true,
+        "build_jobs": 2,
+        "format": "passed repository jaifmt --check",
+        "lint": "passed jailint -D warnings --context; all seven changed Jai files in measured checked-files union",
+        "interpreter": "2 public-import fixtures passed on Mac host; 2 model regression fixtures passed",
+        "native": [
+          "2 public-import fixtures passed Mac ARM64 O0",
+          "2 public-import fixtures passed Mac ARM64 O2"
+        ],
+        "source_only": [
+          "windows x64",
+          "windows arm64",
+          "linux x64",
+          "linux arm64"
+        ],
+        "source_check_count": 8,
+        "nominal_import_variants": [
+          "host",
+          "windows",
+          "ios"
+        ],
+        "ios_target_limit": "-os ios rejected by compiler; nominal iOS source and options policy tested on Mac host only",
+        "evidence": "$CARGO_TARGET_DIR/generator-modifiers-evidence.json"
+      },
+      "deviations": [
+        "No native Windows/Linux/iOS execution claim",
+        "Unspecified copy allocation, per-invocation counting and directive whitespace policies documented in docs/generator-modifiers.md"
+      ],
+      "hacks": [],
+      "canonical_integrated_options": "model-owned generator-session borrowed pointer; no separate typed value or public Context module",
+      "producer_protocol_superseded": true
+    }
+  ]
 }
