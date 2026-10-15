@@ -51,7 +51,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `android_get_helper_program_executable_name :: () -> string` | All reviewed hosts |
 | `ANDROID_HELPER_VERSION :: 2` | All reviewed hosts |
 | `Android_Install_Location :: enum u32` | All reviewed hosts |
-| `android_is_app_installed :: (package_name: string) -> bool` | All reviewed hosts |
 | `ANDROID_LOADER_LIB_NAME :: "loader"` | All reviewed hosts |
 | `Android_Manifest_Binary :: struct` | All reviewed hosts |
 | `android_maybe_compile_helper_program :: (app_name: string, package_name: string, output_path := "", activity := DEFAULT_ACTIVITY, debug := false) -> bool #compile_time` | All reviewed hosts |
@@ -100,7 +99,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `get_ndk_libclang_paths :: () -> [] string` | All reviewed hosts |
 | `get_ndk_paths :: () -> NDK_Paths` | All reviewed hosts |
 | `gradle_install_apk :: (project_path: string, release := false) -> bool` | All reviewed hosts |
-| `is_app_running :: (package_name: string) -> running: bool, success: bool` | All reviewed hosts |
 | `JAVA_ENV_NAME :: "JAVA_HOME"` | All reviewed hosts |
 | `jdk_decrypt_private_key :: (encrypted_data: string, password: string) -> bool, string` | All reviewed hosts |
 | `jks_read :: (data: string, password: string) -> bool, certificate: string, encrypted_private_key_info: string` | All reviewed hosts |
@@ -124,7 +122,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `SIGNING_BLOCK_ID_V31_SIGNATURE : u32` | All reviewed hosts |
 | `SIGNING_BLOCK_ID_V3_SIGNATURE : u32` | All reviewed hosts |
 | `SIGNING_BLOCK_ID_VERITY_PADDING : u32` | All reviewed hosts |
-| `stop_app :: (package_name: string) -> bool` | All reviewed hosts |
 | `to_hex_string :: (a: [8] $T) -> string` | All reviewed hosts |
 | `to_hex_string :: (s: string) -> string` | All reviewed hosts |
 | `USE_FULL_MODULE :: false` | All reviewed hosts |
@@ -222,7 +219,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 163 missing reviewed declaration/overload/nested-operation rows
+Total: 160 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

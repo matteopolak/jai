@@ -481,3 +481,13 @@ Python mathematical vectors are independent test inputs, not reference Jai code.
 No C/native crypto dependency, caller relocation tracking, mutable alias surrogate,
 blanket lint exclusion or fake parsing success. All negative checks restore fatal
 handlers before verification.
+
+ADB app lifecycle: no installed SDK/device is available. Source-built process
+protocol fixtures validate argv/status/parser/ownership on host native O0/O2 and
+interpreter; they are not device integration. Narrow pidof status1+empty capture
+means absent, other failures remain errors; package path responses require
+package:/ prefixes. These supported choices need public fine-policy review.
+Risk: future SDK output/status changes may require parser adjustment; proper
+follow-up is SDK/device CI plus reviewed failure-policy clarification, not treating
+arbitrary command errors as successful absence. No fake SDK success or test
+exclusions added. See docs/portable-adb.md and target/adb-apps-final.log.

@@ -1,5 +1,8 @@
 # Developer documentation
 
+Android host [ADB operations](portable-adb.md) now include app lifecycle status,
+force-stop and installation queries, with protocol tests and device gaps recorded.
+
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing

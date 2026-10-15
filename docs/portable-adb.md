@@ -59,3 +59,23 @@ checks pass again. Evidence: target/android-adb-red.log, android-adb-first.log,
 android-adb-final.log, adb-digest-dependency.log and adb-digest-dependency-final.log.
 The entire Android/Toolchain module remains incomplete; no declarations-only
 completion, Windows ADB support or device behavior success is credited.
+
+App lifecycle batch adds exact public stop_app, is_app_running and
+android_is_app_installed signatures. Official SDK command authority:
+https://developer.android.com/tools/adb (am force-stop and pm path).
+Package arguments use the same private remote-shell quoting. pm path must succeed
+and contain nonempty package:/ paths; malformed output is not installation proof.
+pidof must return positive decimal s32 process IDs, including every token in a
+multiple-process response. Hex prefixes, zero, overflow and malformed later IDs
+fail. adb_shell_pidof shares this parser and returns the first valid PID.
+The separate running/success result distinguishes an empty, diagnostic-free
+status1 no-match from malformed output/transport/launch failures. This narrow
+status policy is an independent supported choice pending review; no general
+claim that every status1 means absence. Stop reports the actual force-stop status.
+
+Evidence: target/adb-apps-red.log (missing exports), adb-apps-final.log (all five
+interpreter/native host+x64 O0/O2 runs, verbosity, Linux both CPUs, strict lint).
+The source-built CLI fixture exercises present/absent/offline/malformed paths,
+multiple PIDs and memory ownership. No inherited tests were corrected. One
+production tightening replaces generic integer parsing with decimal PID parsing.
+Actual SDK/device lifecycle and Windows execution remain unverified.

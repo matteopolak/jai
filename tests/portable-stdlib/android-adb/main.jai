@@ -76,6 +76,31 @@ exercise :: () {
     pid_ok, pid := A.adb_shell_pidof("org.example.app");
 
     assert(pid_ok && pid == 1234);
+    running, queried := A.is_app_running("org.example.app");
+
+    assert(running && queried);
+    running, queried = A.is_app_running("org.example.absent");
+    assert(!running && queried);
+    running, queried = A.is_app_running("org.example.offline");
+    assert(!running && !queried);
+    running, queried = A.is_app_running("org.example.badpid");
+    assert(!running && !queried);
+    pid_ok, pid = A.adb_shell_pidof("org.example.badpid");
+    assert(!pid_ok && pid == 0);
+
+    for name: string.["org.example.overflow", "org.example.zero", "org.example.badsecond"] {
+        running, queried = A.is_app_running(name);
+        assert(!running && !queried);
+        pid_ok, pid = A.adb_shell_pidof(name);
+        assert(!pid_ok && pid == 0);
+    }
+
+    assert(A.android_is_app_installed("org.example.app"));
+    assert(!A.android_is_app_installed("org.example.absent"));
+    assert(!A.android_is_app_installed("org.example.offline"));
+    assert(!A.android_is_app_installed("org.example.badpath"));
+    assert(A.stop_app("org.example.app"));
+    assert(!A.stop_app("org.example.offline"));
     assert(A.adb_uninstall("org.example.app"));
     A.__adb_path = "/definitely/unavailable/adb";
     ok, output, errors, code = A.adb("version");

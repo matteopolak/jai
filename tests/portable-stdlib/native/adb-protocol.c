@@ -50,8 +50,27 @@ int main(int argc, char **argv) {
             return arguments(argc - 1, argv + 1, 6, expected) ? 0 : 93;
         }
         if (!strcmp(argv[first + 1], "pidof")) {
-            if (argc != first + 3 || strcmp(argv[first + 2], "'org.example.app'")) return 94;
+            if (argc != first + 3) return 94;
+            if (!strcmp(argv[first + 2], "'org.example.absent'")) return 1;
+            if (!strcmp(argv[first + 2], "'org.example.offline'")) { fputs("device offline\n", stderr); return 1; }
+            if (!strcmp(argv[first + 2], "'org.example.badpid'")) { puts("0x1234"); return 0; }
+            if (!strcmp(argv[first + 2], "'org.example.overflow'")) { puts("2147483648"); return 0; }
+            if (!strcmp(argv[first + 2], "'org.example.zero'")) { puts("0"); return 0; }
+            if (!strcmp(argv[first + 2], "'org.example.badsecond'")) { puts("1234 nope"); return 0; }
+            if (strcmp(argv[first + 2], "'org.example.app'")) return 94;
             puts("1234 5678");
+            return 0;
+        }
+        if (!strcmp(argv[first + 1], "am") && argc == first + 4 && !strcmp(argv[first + 2], "force-stop")) {
+            if (!strcmp(argv[first + 3], "'org.example.offline'")) { fputs("device offline\n", stderr); return 1; }
+            return strcmp(argv[first + 3], "'org.example.app'") ? 97 : 0;
+        }
+        if (!strcmp(argv[first + 1], "pm") && argc == first + 4 && !strcmp(argv[first + 2], "path")) {
+            if (!strcmp(argv[first + 3], "'org.example.absent'")) return 0;
+            if (!strcmp(argv[first + 3], "'org.example.offline'")) { fputs("device offline\n", stderr); return 1; }
+            if (!strcmp(argv[first + 3], "'org.example.badpath'")) { puts("unexpected response"); return 0; }
+            if (strcmp(argv[first + 3], "'org.example.app'")) return 98;
+            puts("package:/data/app/base.apk\npackage:/data/app/split_config.apk");
             return 0;
         }
     }

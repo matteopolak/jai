@@ -1,9 +1,17 @@
 # Portable stdlib progress
 
+Latest app-lifecycle milestone: stop_app/is_app_running/android_is_app_installed
+implemented via actual Process/ADB commands; missing row inventory163 ->160.
+All five interpreter/native ARM64+x64 O0/O2 modes, verbosity, Linux both-CPU
+checking and changed strict lint pass (target/adb-apps-final.log). Memory tracking
+returns to zero. PID syntax is now decimal-only and validates every process ID.
+No test-oracle corrections, no device/Windows execution claim. Exact supported
+failure policies and remaining fine-review questions: docs/portable-adb.md.
+
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current implementation checkpoints: Registry1f1e568, ADB4fc510a, System049154a; time e81f1a5, SHA1579458, ISA c45ee67, critical Pool/Thread d6db68f. Opaque-pointer handoff:338a4a8. Pool/Unix Thread
+Current implementation checkpoints: ASN1 fff40be, Registry1f1e568, ADB4fc510a, System049154a; time e81f1a5, SHA1579458, ISA c45ee67, critical Pool/Thread d6db68f. Opaque-pointer handoff:338a4a8. Pool/Unix Thread
 critical corrections are committed: field-only Pool guard, no registry,
 allocator/options preserved by reset/release, genuine returned leak report fixed.
 Every owned essential Thread SDK operation now executes outside optional asserts;

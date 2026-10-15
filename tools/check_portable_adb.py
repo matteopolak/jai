@@ -52,7 +52,8 @@ def main():
                     str(library / "Android/Toolchain/module.jai"),
                     str(library / "internal/android-toolchain/adb-types.jai"),
                     str(library / "internal/android-toolchain/adb-process.jai"),
-                    str(library / "internal/android-toolchain/adb-transfer.jai"), str(source.parent)],
+                    str(library / "internal/android-toolchain/adb-transfer.jai"),
+                    str(library / "internal/android-toolchain/adb-apps.jai"), str(source.parent)],
                    env=env, check=True, timeout=90)
     print("ADB native CLI protocol fixture passes interpreter/native O0/O2, Linux both-CPU checking and strict lint; SDK/device integration remains pending")
 
