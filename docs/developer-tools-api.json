@@ -470,14 +470,14 @@
         "declaration": "is_same_type :: (a: *CType, b: *CType) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 73,
-        "implementation": "pending"
+        "implementation": "reviewed finite equivalence subset; scalar/alias/pointer/reference/nominal/function and literal/expression identity effects; unreviewed raw payload/array/hardcoded/CHAR/nested qualifier/variadic differences and cyclic/deep graphs explicitly diagnosed"
       },
       {
         "name": "is_same_expression",
         "declaration": "is_same_expression :: (a: *Expression, b: *Expression) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 74,
-        "implementation": "pending"
+        "implementation": "reviewed finite equivalence subset; scalar/alias/pointer/reference/nominal/function and literal/expression identity effects; unreviewed raw payload/array/hardcoded/CHAR/nested qualifier/variadic differences and cyclic/deep graphs explicitly diagnosed"
       },
       {
         "name": "C_Kind",
@@ -512,7 +512,7 @@
         "declaration": "is_same_literal :: (a: *Literal, b: *Literal) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 79,
-        "implementation": "pending"
+        "implementation": "reviewed finite equivalence subset; scalar/alias/pointer/reference/nominal/function and literal/expression identity effects; unreviewed raw payload/array/hardcoded/CHAR/nested qualifier/variadic differences and cyclic/deep graphs explicitly diagnosed"
       },
       {
         "name": "Macro_Value",

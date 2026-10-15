@@ -6,7 +6,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Bindings_Generator
 
-158 function names have pending declarations; 217 native function names still lack invocation fixtures.
+155 function names have pending declarations; 217 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Next work / precise question |
 | --- | ---: | --- |
@@ -107,9 +107,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `is_operator_name` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_pointer_type` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_prefix_comment` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_same_expression` | 1 | Bindings_Generator question10: model equivalence |
-| `is_same_literal` | 1 | Bindings_Generator question10: literal equivalence |
-| `is_same_type` | 1 | Bindings_Generator question10: model equivalence |
 | `is_struct_field` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_target_type_signed` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_target_type_unsigned` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |

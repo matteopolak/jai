@@ -155,6 +155,8 @@ def main():
                     item["implementation"] = "C++17 fragment subset; generated native consumers O0/O2 from interpreter/native emitter runs, unsupported output preservation"
                 if item["name"] in {"is_void_type", "is_bool_type", "is_same_location"}:
                     item["implementation"] = "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
+                if item["name"] in {"is_same_type", "is_same_expression", "is_same_literal"}:
+                    item["implementation"] = "reviewed finite equivalence subset; scalar/alias/pointer/reference/nominal/function and literal/expression identity effects; unreviewed raw payload/array/hardcoded/CHAR/nested qualifier/variadic differences and cyclic/deep graphs explicitly diagnosed"
                 if item["name"] in {"fill_location", "get_clang_type_alignment", "create_null_literal"}:
                     item["implementation"] = "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
                 if item["name"] == "clang_getFileTime":
