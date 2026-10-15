@@ -973,7 +973,10 @@ fn typechecked_events_use_selected_bootstrap_library_root() {
     let mut c = compiler(
         &[
             ("/lib/prelude/module.jai", ""),
-            ("/lib/M/module.jai", "library_value :: 47;"),
+            (
+                "/lib/M/module.jai",
+                "library_value :: 47; unused :: missing_unused_identifier;",
+            ),
             (
                 "/app/main.jai",
                 "M :: #import \"M\"; application_value :: M.library_value;",
@@ -1002,7 +1005,12 @@ fn typechecked_events_use_selected_bootstrap_library_root() {
             name.to_vec()
         })
         .collect();
-    assert_eq!(names, vec![b"application_value".to_vec()]);
+    // Resolved library declarations are eligible since canonical library body
+    // interception was implemented. Merely exporting must not force unused ones.
+    assert_eq!(
+        names,
+        vec![b"application_value".to_vec(), b"library_value".to_vec()]
+    );
 }
 
 #[test]

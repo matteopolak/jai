@@ -113,3 +113,26 @@ pass unchanged compiler semantics. Please provide a minimal sanitized failing
 operator-minus source/context if it remains against the current integration
 candidate; no original body or raw log is needed. Plugin/deferred-body work stays
 with its dedicated owner.
+
+## Retained member bodies and contextual enum reconstruction
+
+Compiler-owner follow-up is verified locally. Canonical body scheduling now
+covers completed concrete member/procedure-value targets independently of syntax
+call lookup; only semantic bodies produce editable TYPECHECKED body events.
+Real anonymous callbacks are included, with no name or module filters. Existing
+record ownership continues to reject unknown, copied and foreign-workspace bodies.
+Contextual dot expressions reconstruct `.MEMBER` and retain public identifier edits.
+
+Own core and public-workflow tests pass, including the copied profiler modifier
+drivers with explicitly labeled minimal locally authored sibling inputs (original
+siblings were not supplied). Actual modified member child and reconstructed enum
+executables run at ARM64 O0/O2; optimized WASI enum execution also passes.
+The child uses supported crash-backtrace OFF independently of the missing external
+crash archive. No profiler-side reparser or anonymous exclusion was introduced.
+Scoped core/backend/browser runtime/CLI/lint tests, format and clippy pass.
+See docs/compiler/retained-body-ownership.md and the named profiler handoff.
+Full producer profiler replay remains with foundations/integration.
+
+
+## Coordinator ready checkpoint/dependency handoff
+New dedicated clean compiler checkpoint89560db9 implements general placeholder/deferredcalls/scope scheduling; integrator adopting. Your ongoing profiler fixes own ASTprinter/body identity. Coordinate merge of overlapping sharedfiles via actual independent owner conflict resolution, no dropping either regressions. Generator-model also retains independent tools/reduce_generator_lint_path_alias.py strictlint symlink/overlay identity defect; schedule general rootcause fix after profilercheckpoint, preserve OS sandbox boundaries.

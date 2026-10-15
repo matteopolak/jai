@@ -84,6 +84,7 @@ fn source_reconstruction_executes_original_semantics_and_retains_rejections() {
         "literals",
         "assembly",
         "aliases",
+        "enum-members",
     ] {
         let output = Command::new(env!("CARGO_BIN_EXE_jaic"))
             .env("JAIC_STDLIB", root.join("stdlib"))
@@ -122,6 +123,29 @@ fn source_reconstruction_executes_original_semantics_and_retains_rejections() {
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
+}
+
+#[test]
+fn retained_member_and_real_library_bodies_are_modifiable() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+    for path in [
+        "tests/compiler-semantics/code-modify-members.jai",
+        "tests/developer-tools/compiler-requests/profiler-member-modify.jai",
+        "tests/developer-tools/compiler-requests/profiler-stdlib-modify.jai",
+    ] {
+        let output = Command::new(env!("CARGO_BIN_EXE_jaic"))
+            .env("JAIC_STDLIB", root.join("stdlib"))
+            .arg(root.join(path))
+            .arg("-check")
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{path}: {}{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+    }
 }
 
 #[test]
