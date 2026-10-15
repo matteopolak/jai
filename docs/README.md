@@ -3,7 +3,7 @@
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing
-- [Generator model helpers](generator-model.md): canonical model operations, ownership, verification and integration dependencies
+- [Generator model helpers](generator-model.md): canonical model operations, aggregate defaults, ownership, verification and integration dependencies
 - [Generator configured-SDK path check](status/generator-sdk-path.md): native test repair for symlinked T7 build storage
 - [Private generator protocol](generator-session.md): the single active slot, ownership and nested callback restoration
 - [Module Context lint repair](status/generator-lint-context.md): independent reduction and general finalization fix

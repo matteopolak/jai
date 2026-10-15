@@ -35,7 +35,7 @@ main :: () {
     capture.saved = context;
     B.clang_visitChildren(B.clang_getTranslationUnitCursor(unit), visit, *capture);
     defer array_free(capture.children);
-    assert(capture.children.count == 3);
+    assert(capture.children.count == 4);
     generator: B.Generator;
     generator.translation_unit = unit;
     session := S.open(*generator, B.TARGET_OS);
@@ -45,6 +45,14 @@ main :: () {
 
     push_context {
         S.activate(*generator, null, *session);
+        standalone_type := B.create_function_type(capture.children[3], B.clang_getCursorType(capture.children[3]));
+
+        assert(standalone_type != null && standalone_type.arguments.count == 1);
+        standalone := B.create_function(capture.children[3], B.clang_getTranslationUnitCursor(unit));
+
+        assert(standalone != null && standalone.type.type_of_function != null);
+        assert(standalone.type.type_of_function.arguments[0] == standalone_type.arguments[0]);
+        assert(standalone.type.type_of_function.arguments[0].parent == cast(*B.Declaration) standalone);
         // A first types-only lookup must not permanently erase later functions.
         namespace_shell := B.create_namespace(capture.children[0], true);
 
@@ -54,7 +62,7 @@ main :: () {
         assert(space == namespace_shell && space.declarations.count == 7);
         item := cast(*B.Struct) space.declarations[0];
 
-        assert(item.declarations.count == 8);
+        assert(item.declarations.count == 9);
         constructor := cast(*B.Function) item.declarations[1];
         destructor := cast(*B.Function) item.declarations[2];
         read := cast(*B.Function) item.declarations[3];
@@ -77,6 +85,11 @@ main :: () {
         assert((with_ref.decl_flags & .NEEDS_ARGUMENT_WRAPPER) != 0);
         assert((item.declarations[7].decl_flags & .PRIVATE) != 0);
         assert(item.virtual_functions.count == 1 && item.virtual_functions[0] == abstract_read);
+        factory := cast(*B.Function) item.declarations[8];
+        callback := factory.type.type_of_function.return_type.pointer_to.type_of_function;
+
+        assert(factory.type.type_of_function.arguments.count == 1);
+        assert(callback != null && callback.arguments.count == 1 && callback.flags == 0);
         assert((space.declarations[3].decl_flags & .OMIT_FROM_OUTPUT) != 0);
         later := cast(*B.Struct) space.declarations[4];
         before := cast(*B.Function) space.declarations[5];

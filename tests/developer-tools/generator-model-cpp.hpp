@@ -9,6 +9,9 @@ struct Item {
     int with_ref(const int &);
 private:
     int secret;
+public:
+    int (*factory())(int);
+    operator bool() const;
 };
 int duplicate(int);
 int duplicate(int);
@@ -22,3 +25,4 @@ struct Later { int member; };
 namespace Nested { int first; }
 }
 namespace OriginalModelSpace { namespace Nested { int second; } }
+int original_standalone(int named);
