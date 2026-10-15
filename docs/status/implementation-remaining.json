@@ -1,7 +1,7 @@
 {
   "module": "Debug",
-  "timestamp": "2026-10-15T16:08:21.897725+00:00",
-  "head": "b6d52ef6714bcf5191708a80fbc7b66e3b71bc63",
+  "timestamp": "2026-10-15T16:12:37.990487+00:00",
+  "head": "d34c1a74c4d8a3921df49a793442b59a1c06421f",
   "counts": {
     "complete": 2,
     "partial": 20,
@@ -44,11 +44,7 @@
     "set_minidump_state",
     "write_minidump"
   ],
-  "draft": [
-    "Windows lifecycle/init/logger: SDK x64 DLL/executable O0/O2 and arm64 object compilation; public target checks, format/strict lint; native Windows execution pending",
-    "Native context snapshot lifecycle fix on both platforms: original Mac SDK concurrency/ownership/fatal callback native O0/O2",
-    "Canonical public ignored_asserts storage: public Mac interpreter/native O0/O2"
-  ],
+  "draft": [],
   "committed_prior_scope": "Debug_Info complete at 530aee67; preserved",
   "classification": "All target variants required for complete; partial includes implemented hosts with outstanding platform execution evidence.",
   "verification_gaps": [
@@ -75,7 +71,7 @@
         "disable_signal_handler",
         "os_logger"
       ],
-      "effort": "implementation and available checks completed; ready for commit",
+      "effort": "implementation and available checks completed; committed d34c1a74",
       "dependency": "Windows/Linux native execution external"
     },
     {
@@ -107,7 +103,9 @@
     }
   ],
   "committed": {
-    "break_once": "b6d52ef6: actual SDK Mac traced/untraced interpreter/native O0/O2, ownership, format/strict lint"
+    "break_once": "b6d52ef6: actual SDK Mac traced/untraced interpreter/native O0/O2, ownership, format/strict lint",
+    "Windows lifecycle/init/logger and owned native contexts": "d34c1a74: all available Mac native/interpreter and Windows SDK checks pass; native Windows/Linux pending",
+    "ignored_asserts": "d34c1a74: canonical public table behavior Mac interpreter/native O0/O2"
   },
   "remaining_dependencies": {
     "attach_to_debugger": "Question2: real launch/selection/completion/failure contract",
@@ -125,5 +123,7 @@
     "Windows x64/arm64 public ignored_asserts canonical table checks",
     "WASM debugger-detection type check",
     "Full20-fixture Debug_Info SDK/public interpreter/native O0/O2 regression runner passed; prior code unchanged"
-  ]
+  ],
+  "combined_evidence": "docs/native/debug-public-evidence.json: all four suites exited0 at d34c1a74",
+  "handoff": "docs/status/debug-integration-handoff.md"
 }

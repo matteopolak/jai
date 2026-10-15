@@ -1,0 +1,36 @@
+{
+  "head": "d34c1a74c4d8a3921df49a793442b59a1c06421f",
+  "timestamp": "2026-10-15T16:11:09.626294+00:00",
+  "coverage": "Mac public interpreter/native O0/O2 and original SDK oracles; Windows SDK cross-build only",
+  "limitations": [
+    "No Windows/Linux native execution",
+    "No Android compiler target",
+    "Foreign-thread/fatal callbacks executed native only"
+  ],
+  "checks": [
+    {
+      "suite": "check_developer_debug_once.py",
+      "status": 0,
+      "stdout": "Debug.break_once passed actual SDK tracing and untraced Mac interpreter/native O0/O2, format and strict lint\n",
+      "stderr": ""
+    },
+    {
+      "suite": "check_developer_debug_lifecycle.py",
+      "status": 0,
+      "stdout": "Debug assertion ownership/diagnostics and POSIX lifecycle passed interpreter/native Mac O0/O2; fatal callbacks passed native O0/O2\n",
+      "stderr": ""
+    },
+    {
+      "suite": "check_developer_debug_windows.py",
+      "status": 0,
+      "stdout": "Windows Debug x64 SDK DLL/import/export checks and arm64 compilation passed; native runtime evidence pending\n",
+      "stderr": ""
+    },
+    {
+      "suite": "check_debug_info_public.py",
+      "status": 0,
+      "stdout": "Public Debug_Info parser checks passed\n",
+      "stderr": ""
+    }
+  ]
+}
