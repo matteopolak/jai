@@ -39,9 +39,9 @@ is explicitly labeled and is never treated as playback evidence.
 | Target | Build host/SDK | Actual evidence in this worker |
 | --- | --- | --- |
 | macos-arm64 | Apple ARM64 host, public macOS SDK | Owned C/ObjC and opaque decoder built; real silent SDK harness and relocated O0/O2 Jai tests run |
-| macos-x64 | Apple SDK with `-arch x86_64` | C/ObjC, decoder and SDK harness cross-built; not executed |
-| windows-x64 | Windows SDK + clang/LLVM, or MinGW-w64 | MinGW C/decoder/harness cross-built; not executed |
-| windows-arm64 | Windows ARM64 SDK + clang/LLVM | Build recipe and Jai source checks only; SDK unavailable here |
+| macos-x64 | Apple SDK with `-arch x86_64` | C/ObjC/decoder/harness and Jai O0/O2 cross-linked; translated Rosetta execution on ARM64, not physical x64 |
+| windows-x64 | Windows SDK + clang/LLVM, or MinGW-w64 | C/decoder/harness and Jai O0/O2 cross-linked as PE x64; not executed |
+| windows-arm64 | Windows ARM64 SDK + clang/LLVM | Owned/decoder/harness ARM64 objects compiled with common public MinGW headers; CRT/library link and runtime unavailable |
 | linux-x64 | Linux x64 libc + ALSA development SDK | Build recipe and Jai source checks only; runtime delegated to normal coordinator CI |
 | linux-arm64 | Linux ARM64 libc + ALSA development SDK | Build recipe and Jai source checks only; runtime delegated to normal coordinator CI |
 
@@ -60,8 +60,21 @@ python3 tools/audio_verify.py --require-device --require-multichannel
 
 The last verifier currently expects host artifacts in target/audio-native and
 source-built tools in target/compiler/debug and target/jaifmt. For Linux headless
-CI, install the ALSA development package and set `JAI_AUDIO_ALSA_DEVICE=null`.
-ALSA's real null PCM opens, accepts samples and exercises device lifecycle without
+CI, install the ALSA development package. For ordinary stereo checks,
+`JAI_AUDIO_ALSA_DEVICE=null` opens ALSA's real null PCM. For strict 6/8-channel
+checks, use the tracked Debian/Ubuntu configuration with explicit channel maps:
+
+```sh
+export ALSA_CONFIG_PATH="$PWD/tests/audio/fixtures/alsa-null.conf"
+export JAI_AUDIO_ALSA_DEVICE=jai_audio_test
+python3 tools/audio_build_native.py --test-runtime --require-device
+python3 tools/audio_verify.py --require-device --require-multichannel
+```
+
+The configuration uses the installed `/usr/share/alsa/alsa.conf`; adjust that
+include for another distribution. In a standalone cross package, point
+ALSA_CONFIG_PATH at its copied `fixtures/alsa-null.conf`. The real null sink
+accepts samples and exercises device lifecycle without
 speaker output. Windows CI without an audio endpoint should omit
 `--require-device` and retain explicit unavailable markers; actual device evidence
 requires a real/virtual OS endpoint. No fake output handle is supplied.
@@ -101,7 +114,8 @@ local-source facility, without fetching another implementation:
 This is a minimal proposed manifest fragment, not an applied shared edit. The
 coordinator builder also needs a macOS-only Objective-C unit `focus.m`, static
 and interpreter-shared outputs, and per-target system link dependencies from
-`tools/audio_native_plan.json`. If its current local-source builder assumes an
+`tools/audio_native_plan.json`. Include the local `output.h` and `routing.h`
+headers in source staging and build dependency hashing. If its current local-source builder assumes an
 external `source`, add general source-less local-unit support rather than
 inventing a vendor dependency. Retain the existing pinned stb_vorbis recipe.
 Install both libraries and the verified stb license in each normal
@@ -132,7 +146,11 @@ lost device, report an error outside the player lock and retry opening every
 250 ms. Stream cursors stop advancing during unavailable/paused producer updates.
 Already queued audio is discarded on reopen and is not replayed. The logical
 rate/channel format is retained; an incompatible new device can stay unavailable
-until a compatible endpoint returns. Failed disposal is fatal rather than freeing
+until a compatible endpoint returns. Failed disposal retains ownership and marks
+output unavailable until cleanup retries succeed. A failed shutdown preserves
+its resources for a later shutdown retry; it cannot report a fresh successful
+initialization for the retained failed handle. Cleanup failure while abandoning
+an unsuccessful native open still terminates explicitly rather than dropping
 possibly live callback state.
 
 Device enumeration queries the OS afresh on every call. Unchanged lists reuse
@@ -154,3 +172,92 @@ Official SDK inputs: [Apple running-application state](https://developer.apple.c
 [Windows high-level default-device routing](https://learn.microsoft.com/en-us/windows/win32/coreaudio/getting-the-default-device-endpoint-for-stream-routing),
 [WinMM pause/restart](https://learn.microsoft.com/en-us/windows/win32/multimedia/stopping-pausing-and-restarting-playback)
 and [ALSA PCM recovery](https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html).
+
+
+## Cross-linked packages and translated evidence
+
+The durable cross linker builds every common NEW manifest fixture in O0/O2,
+currently 26 fixtures / 52 executables, and verifies executable
+OS/CPU headers, records hashes and stages a self-contained runtime package:
+
+```sh
+python3 tools/audio_cross_link.py --platform macos-x64 --artifacts target/audio-native/macos-x64
+python3 tools/audio_cross_link.py --platform windows-x64 --artifacts target/audio-native/windows-x64-mingw
+```
+
+For macOS cross-CPU codegen, the compiler requires an explicit target triple;
+the tool supplies x86_64-apple-macosx11.0. MinGW uses JAIC_CROSS_LIBS for target
+archives, separating them from host JAIC_NATIVE_LIBS. Initial attempts with
+cross -os macos/-cpu or host archive variables failed; these were invocation
+errors, not production defects. No compiler special case or linker workaround
+was introduced.
+
+Each target/audio-cross-link/<platform> folder contains executables, fixture data,
+license and run.py. Copy that NEW package to a matching normal CI host and run:
+
+```sh
+python3 run.py --require-device
+```
+
+Add --require-multichannel only when logical 6/8 formats are expected to be
+available. The standalone runner needs Python and OS dependencies, no compiler or
+stdlib source. It checks hashes/architecture and records runtime-result.json.
+Native and translated execution remain separate; a mismatched CPU/OS is rejected.
+
+On this ARM64 Mac, the installed Rosetta runner can additionally execute the x64
+fixtures and logical 6/8 paths:
+
+```sh
+python3 tools/audio_run_translated.py --require-device --require-multichannel
+```
+
+Its translated-runtime.json explicitly disclaims physical x64 hardware. The
+cross-link result stays link-only; the separate runtime record carries execution.
+No translator is installed by these tools.
+
+A separate object-only check uses Clang's real Windows ARM64 target and common
+public MinGW-w64 headers. Example for the installed public SDK (adjust its path):
+
+```sh
+python3 tools/audio_compile_objects.py --platform windows-arm64 --cc "clang --target=aarch64-w64-windows-gnu -isystem /path/to/mingw-w64/include"
+```
+
+It compiles/validates owned adapter, SDK harness and opaque decoder object headers,
+without claiming ARM64 CRT libraries, a linked DLL/executable or runtime. This
+check exposed inconsistent DLL-export attributes between declarations/definitions;
+the header now consistently marks producer exports and leaves static consumers
+unmarked. Clang warnings remain denied; no suppression was added.
+# Close-failure ownership validation
+
+The six-platform SDK builder also compiles/links `failure-injection/sdk-close.c`
+with NDEBUG. On a host run with a real opened device, it injects a cleanup error,
+checks wrapper ownership, then performs real SDK cleanup on retry. Its metadata
+is `audio-close-runtime.json`, separate from ordinary device runtime. Windows
+reset/header cleanup errors leave ownership intact. Mac disposal errors retain
+callback state. ALSA consumes the PCM even when closing reports an error, so our
+wrapper clears that pointer and a retry frees only the wrapper; it never closes
+the consumed PCM again. This follows the official
+[ALSA close implementation](https://github.com/alsa-project/alsa-lib/blob/master/src/pcm/pcm.c).
+
+`python3 tools/audio_verify_failures.py` additionally checks Sound_Player's
+shutdown retry, initialization rejection, callback lock release and exactly-once
+stream disposal, using a real SDK device with an explicitly injected adapter
+error. It disables audio assertions and runs interpreter/native O0/O2. These
+tests require a real device or documented real dummy backend and are controlled
+failure injection, not native OS-generated failure or physical event evidence.
+
+The adapter preserves logical FL/FR/center/LFE/rear/extension storage order.
+Windows' 0x63f mask has that order directly, with extension slots on side speakers;
+macOS 8-channel descriptions now explicitly place rear labels in rear slots and
+side surround labels in extension slots. Linux queries the actual ALSA channel
+map, validates a complete supported permutation and reorders bytes before SDK
+submission. Unknown/missing multichannel maps fail opening instead of silently
+assuming an order. Stereo without a map uses the ordinary left/right convention.
+See official [Microsoft channel masks](https://learn.microsoft.com/en-us/windows-hardware/drivers/audio/channel-mask)
+and [ALSA channel-map APIs](https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html).
+The controlled `native-routing.c` test uses nonzero channel markers only in local
+memory, including odd alignment and frame boundaries; none reach a device.
+Linux adds a 96,000-byte private reorder buffer per output instance and copies
+only when its map differs. No realtime bound or physical routing is claimed.
+Linux SDK compilation/runtime of this addition still requires coordinator CI.
+

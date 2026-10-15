@@ -68,3 +68,14 @@ and the [per-export inventory](../status/audio-api-inventory.md) for remaining w
 Official native API inputs: [Apple AudioQueueNewOutput](https://developer.apple.com/documentation/audiotoolbox/audioqueuenewoutput(_:_:_:_:_:_:_:)),
 [Microsoft waveOutWrite](https://learn.microsoft.com/en-us/windows/win32/api/mmeapi/nf-mmeapi-waveoutwrite),
 and [ALSA PCM documentation](https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html).
+Factory creation publishes Ogg channel/rate/length metadata together under the
+same private lock used by mixing; codec setup runs outside that lock on its own
+handle. Independently created streams take dimensions from their own decoder.
+The concurrent-factory test is smoke coverage, not a race-detector guarantee.
+Panning inversion uses a wider determinant calculation so a small uniform scale
+does not incorrectly classify a well-conditioned basis as singular.
+
+PCM sampling uses explicit little-endian byte reads, retaining borrowed storage
+identity without requiring two-byte alignment. Known-lost retained devices report
+unavailable on backend initialization while keeping their cleanup ownership.
+

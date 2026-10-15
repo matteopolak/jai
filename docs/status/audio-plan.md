@@ -15,6 +15,10 @@ subagents, publication or release actions. Extensions remain intact.
 - [x] Implement documented desktop focus/recovery and fresh discovery.
 - [x] Split producer/stream locks, render in 256-frame chunks and reuse page windows.
 - [x] Maintain per-API inventory and NEW spec-provenance test manifest.
+- [x] Exercise owned essential operations with audio assertions disabled and
+      controlled SDK cleanup failures around real devices.
+- [ ] Thread owner fixes global assertion-disabled synchronization/lifecycle
+      dependency; audio-only assertion-disabled passes do not resolve it.
 - [ ] Coordinator independent review of NEW tests.
 - [ ] Coordinator shared native-manifest adoption and six native CI host runs.
 - [ ] Linux/Windows runtime, Windows ARM64 SDK build and physical event validation.

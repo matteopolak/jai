@@ -15,9 +15,10 @@ untouched. Native SDK/public C inputs are linked in the integration documentatio
   is never counted as Android. Reviewed AAudio hooks are private, not missing
   facade exports. PS5/Switch bodies are unavailable; nothing is inferred.
 - Host macOS ARM64 has actual silent SDK and Jai interpreter/native O0/O2 evidence.
-  macOS x64 and Windows x64 adapter/decoder/harness cross-build and link; neither
-  runs here. Linux x64/ARM64 and Windows ARM64 are SDK/recipe/source-check evidence
-  only. Linux ALSA recovery/rate-query code has not been compiled or run here.
+  macOS x64 also executes through Rosetta (not physical x64); Windows x64 adapter/
+  decoder/harness and Jai fixtures cross-link without execution. Windows ARM64
+  has SDK-header object compilation without CRT/library link. Linux x64/ARM64
+  remain recipe/source-check only; ALSA code has not compiled or run here.
 - Six desktop build/CI recipes and relocated host tests are self-contained.
   Shared manifest adoption and normal coordinator native CI remain pending.
   No shared manifest or peer source was edited. Static native executables embed
@@ -36,7 +37,9 @@ untouched. Native SDK/public C inputs are linked in the integration documentatio
   release disposes it without pretending those samples were submitted. Public
   byte counts are real queued bytes (zero when unavailable), never producer-state
   sentinels; sampling rate is zero when the device is absent/known lost. Failed
-  SDK disposal is fatal to avoid freeing possibly live callback state.
+  SDK disposal retains ownership for retry; failed shutdown keeps its remaining
+  resources until a later shutdown succeeds. Failed native-open cleanup still
+  terminates explicitly rather than dropping possibly live callback state.
 - Windows/macOS native byte counts retain entire SDK-owned queued buffers until
   completion, overestimating remaining playback bytes within the active buffer.
   ALSA nonblocking partial-write failure discards the affected submission through
@@ -113,3 +116,109 @@ untouched. Native SDK/public C inputs are linked in the integration documentatio
   suppression. Owned C/ObjC builds use -Werror and Jai uses warnings-denied lint.
   A native rebuild briefly overlapped verification; final verification is repeated
   against completed immutable artifacts, excluding mixed-phase evidence.
+
+## Cross-platform refinement after 11bc663
+
+- macOS x64 now has real translated Rosetta execution on this ARM64 host, clearly
+  separated from physical x64 hardware. Ten O0/O2 fixture binaries and four
+  logical 6/8 variants run successfully. Windows x64 has ten cross-linked PE
+  fixture binaries with checked machine headers; none is executed here.
+- Windows ARM64 now has actual adapter/SDK-harness/opaque-decoder object compilation
+  using a real ARM64 compiler target and common public MinGW headers. ARM64 CRT
+  libraries, a linked package and native execution remain unavailable. This is
+  object evidence, not substitution of an x64 binary or a full ARM64 SDK claim.
+- Clang's warnings-denied object check found inconsistent dllexport declarations.
+  Header and producer definitions now match; consumers remain plain static
+  declarations. No compiler warning suppression or ABI/type change was used.
+- Cross command configuration initially used unsupported macOS -os/-cpu native
+  flags and host archive variables for MinGW. Explicit -target and JAIC_CROSS_LIBS
+  are the source compiler's documented mechanisms; no shared compiler fix was
+  needed. Durable cross/package/translated runners record each evidence kind.
+- Native initialization cleanup failure now emits its real SDK status and aborts
+  instead of losing ownership of possibly retained callback state. Unsupported
+  Android C targets fail explicitly; no ALSA substitute is built. These exceptional
+  cleanup paths are source-checked, not physically fault-injected.
+# Assertion and cleanup audit follow-up
+
+The integrated audit identified genuine owned defects: optional assertions
+contained Vorbis open/seek, decode semaphore wait and both worker joins. Those
+operations now execute unconditionally; fatal decode/join failures cannot
+continue through a returning assertion callback. Decode nonprogress is an
+unconditional error instead of an assertion-disabled infinite loop.
+
+Failed device closes retain their reachable wrapper/handle and mark output
+unavailable. Shutdown preserves its remaining ownership and synchronization
+until a later shutdown retries cleanup. Reinit does not report success for the
+retained failed handle. This is an independently designed recovery policy;
+the reviewed public API has no shutdown status return. Device discovery/start
+failures are reported outside private locks, with nested producer calls tracked
+until the outer lock is released. Windows cleanup stops before disposing live
+headers after a reset/unprepare failure. ALSA's SDK consumes its PCM on close
+even on errors, so its pointer is cleared while our wrapper remains retryable.
+Official SDK input: https://github.com/alsa-project/alsa-lib/blob/master/src/pcm/pcm.c
+(`snd_pcm_close`). Native OS-generated close failures remain unexercised.
+
+NEW tests inject explicit errors around real SDK resources and label injection
+separately. Global assertion-disabled verification is staged by a genuine NEW
+Thread defect, reported in dependency requests; owned audio assertions are
+disabled independently without changing peer sources. No assertion callback
+is accepted as a successful recovery signal.
+
+Native routing follow-up: the Linux adapter previously assumed input channel
+order; it now queries/validates ALSA's actual map and permutes supported layouts.
+Missing multichannel maps now fail rather than silently claiming correct routing;
+the self-contained CI null configuration supplies explicit 2/6/8 maps. macOS's
+8-channel descriptions were inconsistent with Windows' rear/side role labels;
+rear and extension labels now agree across adapters. Linux needs 96,000 additional
+bytes per native output and an extra PCM copy only for reordered maps. Portable
+controlled byte tests and host macOS SDK checks do not establish Linux SDK build,
+Linux runtime, or physical multichannel placement. Default private spatial angles
+are independently chosen, editable approximations, not physical calibration.
+
+Spatial/lifetime follow-up: the old absolute determinant threshold rejected
+valid small, well-conditioned matrices. A NEW scaled-identity test reproduced
+that failure; inversion now computes its determinant/divisions in float64 and
+only rejects zero determinant before storing the reviewed float fields. This
+adds wider arithmetic during panning preparation; no realtime claim is made.
+Extreme inverses beyond float field range still have ordinary floating limits.
+
+Concurrent factory metadata publication now shares the player lock used by
+mixing. Codec open/metadata discovery retains independent handles outside that
+lock; stream setup snapshots shared fields and uses decoder-owned dimensions.
+A NEW concurrent-factory smoke test checks shared metadata, factory dimensions
+and disposal during real silent playback. The baseline also passed this smoke;
+the race was identified by source synchronization audit, not a deterministic
+test failure. No thread-sanitizer/race-detector evidence is claimed. Caller byte
+storage/lifetime requirements and serial init/shutdown remain unchanged.
+
+ADPCM page preparation no longer rescans the entire compressed file's headers
+for every page. Creation still validates every block; stable borrowed bytes are
+a reviewed lifetime requirement. Each page checks its own bounds and reports
+nonpositive decoder progress unconditionally. This removes repeated whole-file
+validation, but page decoding and WAV payload discovery still run synchronously
+where requested. No latency benchmark or realtime guarantee is claimed.
+
+Native cross packages include all 26 common fixtures at both optimization levels,
+with four additional logical multichannel runs. These do not automatically claim
+assertion-disabled production audio or injected SDK errors: those configurations
+have separate host/source runners. Windows ABI declarations are source checks.
+All six release targets have the same integration recipe, but absent Linux SDKs
+and Windows ARM64 CRT/link SDKs still prevent local six-platform native evidence.
+
+Borrowed PCM now reads explicit little-endian bytes without assuming two-byte
+alignment; the public samples pointer still aliases the supplied bytes. A NEW
+odd-aligned WAV/interpolation test passed on the old host code too, so this is
+portability hardening, not a reproduced alignment fault. The first reader draft
+caused a genuine clipping/mixing regression: a shift was evaluated at byte width
+before widening. Separate wide intermediates corrected it; the valid clipping
+oracle was preserved and its diagnostic made precise. The private reader has an
+inline hint and two byte loads; any extra cost is unbenchmarked. No compiler
+dependency was reported: the isolated typed-byte alias diagnostic passed.
+
+Extended controlled-failure coverage found a separate genuine status defect:
+after injected start and cleanup errors, backend_init returned initialized for a
+known-lost retained handle. It now returns an unavailable properties value while
+preserving actual handle ownership and private recovery metadata. Audio assertions
+remain disabled in that test; failures are injected around a real silent device,
+not generated by the OS or physical hotplug.
+
