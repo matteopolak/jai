@@ -8,6 +8,26 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Private rpmalloc SDK, public implementation still incomplete.** Generated
+  all native C functions and full SDK config/statistics storage from complete
+  pinned official input. Native heaps are opaque private pointers, never aliases
+  of reviewed Jai records. The fixed private C build profile is explicitly
+  separate from public module defaults/options. [Details](../native/rpmalloc-native-backend.md)
+  record both-CPU SDK execution, all field probes, untouched public failures,
+  custom-callback/concurrency coverage limits and the proper remaining public
+  implementation. No 80-declaration completion credit is assigned to this work.
+  A real alignment experiment failed; the private checked boundary now rejects
+  invalid SDK preconditions and preserves output on actual allocation failure.
+  Long-term: use/review that validation in real public wrappers and implement
+  the distinct Jai context/callback/config/heap semantics without native casts.
+  The initial host-only x64 archive failure is fixed by a real universal archive,
+  not a search-path/compiler override. General private-unit staging now copies
+  dependent test sources without editing bytes/facades or bypassing visibility.
+  The pinned SDK's native `thread_collect` body is empty; calling that real
+  symbol proves forwarding only, not deferred-collection behavior. Its native
+  linker-reference hook is intentionally empty. Neither receives public
+  implementation credit. Public collection semantics require proper completion.
+
 - **D3D dependency and compiler staging repair.** Refreshed only safe NEW
   producer compiler sources. Its general forward-overlay fix now passes our
   original storage-sharing regression; no local compiler patch remains.

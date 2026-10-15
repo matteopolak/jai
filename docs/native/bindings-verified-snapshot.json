@@ -435,6 +435,98 @@
         0,
         0
       ]
+    },
+    {
+      "report": ".work/checkpoint-8-full.json",
+      "sha256": "09cf31a0c15a0137d709958e4895ec118a652f7c4084ccc8ad0f1167e131c5ed",
+      "scope": "Full owned snapshot after FSEvents/SDL/D3D repair, before private rpmalloc backend; not coordinator integration",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "unsupported": 70,
+          "passed": 316,
+          "failed": 16
+        },
+        "privacy": {
+          "passed": 120,
+          "unsupported": 72
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 56
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-sdk-before-universal-archive.json",
+      "sha256": "6d0604cad9e333427f60d02f0eb77c3fbcac835a7fa269bfe2045fb14f9a1b07",
+      "scope": "Historical host-only archive rejected for x64; later corrected with real universal SDK archive",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "checks": {
+          "1": 1,
+          "None": 1,
+          "0": 6
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-sdk-alignment-before-guard.json",
+      "sha256": "0d09cd776e22a44920faea9dabdb970cf7f1ea6cbf524e75f4b84553a39389c3",
+      "scope": "Historical invalid native alignment experiment failure; actual checked boundary added with failure assertions retained",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "checks": {
+          "0": 6,
+          "-6": 2
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-sdk-both-cpus-tools.json",
+      "sha256": "404ae41019ad7b658778bb60d19fcc1e11298f836ef92e0ae53dd7e1e2a8a89c",
+      "scope": "Private native SDK only: real macOS x64/ARM64 calls, every SDK entry, ABI field probes, checked failure output, formatter/strict lint/regeneration",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "checks": {
+          "0": 8
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-sdk-private-current.json",
+      "sha256": "bffadb18b3ce2b678e92f1c6f9da1a52096b42e8a7c0e22699a6f2333ea2e0fd",
+      "scope": "Six public module failures remain; separately passing private SDK source checks and real host allocation behavior",
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "results": {
+        "targets": {
+          "failed": 6,
+          "passed": 6
+        },
+        "privacy": {},
+        "native": {
+          "passed": 2
+        }
+      }
+    },
+    {
+      "report": ".work/native-dependency-production-build.json",
+      "sha256": "d5da8d419617996f41f28c95b30dfe032784102d838c79c532a6ff7daee2e72c",
+      "scope": "Actual full pinned native dependency builder, including new SDK/probes; no final stdlib integration claim",
+      "compiler_sha256": null,
+      "results": {},
+      "exit": 0
+    },
+    {
+      "report": ".work/rpmalloc-production-sdk-unit.json",
+      "sha256": "00dc2270766c89e66c89323c4d3b72918bf431a5adfdf8094f9537fa636efe4c",
+      "scope": "Real private SDK program against production-builder outputs; regeneration and generator tests",
+      "command_exits": [
+        0,
+        0,
+        0,
+        0
+      ]
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

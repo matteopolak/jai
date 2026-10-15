@@ -1,5 +1,25 @@
 # Bindings worker progress
 
+Private rpmalloc SDK batch: generated all 34 real native C entry points and
+complete config/statistics records from the pinned official header; native heap
+types stay private and never alias public Jai records. Six desktop C/header and
+private Jai source checks are separate from actual x64/ARM64 host execution.
+The private unit exercises every SDK function, allocation/data/alignment/heap
+lifecycle/statistics I/O and 40 field probes. An invalid-alignment failure led
+to a real private checked adapter with unchanged-output/error tests, not a
+disabled assertion. Production native dependency build, scoped formatter and
+strict lint pass. Public rpmalloc's 80 unresolved declarations and all its
+configuration failures remain open. See `docs/native/rpmalloc-native-backend.md`.
+
+Stable preceding checkpoints: `d12f302` FSEvents native marshalling;
+`3afe321` SDL public-prefix/private-native oracle; `ea57dd9` canonical D3D imports.
+Broader checkpoint-8 verification before this private SDK batch: 316 source
+checks passed, 16 failed, 70 unsupported; 56 native build/run checks passed,
+one mobile public facade unsupported; privacy 120 passed/72 unsupported;
+1200 symbols resolved. Configuration failures: 36, down from 40 by real D3D
+debug repairs. Native counts include explicitly labeled private/compiler units,
+not that many native public programs. 116 public declarations remain unresolved.
+
 Direct3D batch: safe producer refresh resolves general forward overlays; the
 independent storage-sharing regression builds/runs. Corrected acyclic canonical
 interface imports unblock D3D11/12, D3D compiler, DXC and Aftermath Windows source

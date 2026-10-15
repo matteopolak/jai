@@ -6,6 +6,8 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [FSEvents context adapter](native/fsevents-context.md): exact public order,
   private SDK marshalling, callback lifetime and native canary/event checks
 - [Direct3D canonical interface dependencies and compiler repros](native/d3d-source-dependencies.md)
+- [Private rpmalloc SDK backend](native/rpmalloc-native-backend.md): complete
+  native forwarding, checked alignment boundary and remaining public work
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 
 ## Language

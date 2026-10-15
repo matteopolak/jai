@@ -21,6 +21,12 @@ NATIVE_ABI_ADAPTERS = {
     ('SDL', 'SDL_LoadBMP_RW'): 'SDL_LoadBMP_RW',
 }
 NATIVE_SHAPE_DELEGATES = {'POSIX':'android-posix-shapes.json'}
+# Explicit private C SDK build profile, not reviewed public Jai option defaults.
+RPMALLOC_SDK_BUILD_OPTIONS = {
+    'RPMALLOC_FIRST_CLASS_HEAPS': 1, 'RPMALLOC_CONFIGURABLE': 1,
+    'ENABLE_STATISTICS': 1, 'ENABLE_ASSERTS': 1,
+    'ENABLE_VALIDATE_ARGS': 1, 'ENABLE_OVERRIDE': 0,
+}
 LIBRARIES = {
     'glx': 'GLX', 'libX11': 'X11',
     'xxh_vendor': 'xxhash070', 'lib_stb_vorbis': 'stb_vorbis',

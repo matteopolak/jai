@@ -173595,6 +173595,404 @@
           "spec_line": 118,
           "status": "declared"
         }
+      ],
+      "supplemental_backends": [
+        {
+          "module": "internal/bindings/rpmalloc-sdk",
+          "artifact": "stdlib/internal/bindings/rpmalloc-sdk/module.jai",
+          "artifact_sha256": "ca9cc22e32d28f219d030c4c2b4eebfd7ec82a78d99b48fa00903584b8dda6c2",
+          "status": "private_native_backend",
+          "public_support": "Unresolved; this backend does not establish Jai callback/config/heap compatibility",
+          "provenance": {
+            "C_header_targets": [
+              "x86_64-linux-gnu",
+              "aarch64-linux-gnu",
+              "x86_64-apple-darwin",
+              "aarch64-apple-darwin",
+              "x86_64-pc-windows-msvc",
+              "aarch64-pc-windows-msvc"
+            ],
+            "configurations": {
+              "0": [
+                "rpmalloc_initialize",
+                "rpmalloc_initialize_config",
+                "rpmalloc_config",
+                "rpmalloc_finalize",
+                "rpmalloc_thread_initialize",
+                "rpmalloc_thread_finalize",
+                "rpmalloc_thread_collect",
+                "rpmalloc_is_thread_initialized",
+                "rpmalloc_thread_statistics",
+                "rpmalloc_global_statistics",
+                "rpmalloc_dump_statistics",
+                "rpmalloc",
+                "rpfree",
+                "rpcalloc",
+                "rprealloc",
+                "rpaligned_realloc",
+                "rpaligned_alloc",
+                "rpaligned_calloc",
+                "rpmemalign",
+                "rpposix_memalign",
+                "rpmalloc_usable_size",
+                "rpmalloc_linker_reference"
+              ],
+              "1": [
+                "rpmalloc_initialize",
+                "rpmalloc_initialize_config",
+                "rpmalloc_config",
+                "rpmalloc_finalize",
+                "rpmalloc_thread_initialize",
+                "rpmalloc_thread_finalize",
+                "rpmalloc_thread_collect",
+                "rpmalloc_is_thread_initialized",
+                "rpmalloc_thread_statistics",
+                "rpmalloc_global_statistics",
+                "rpmalloc_dump_statistics",
+                "rpmalloc",
+                "rpfree",
+                "rpcalloc",
+                "rprealloc",
+                "rpaligned_realloc",
+                "rpaligned_alloc",
+                "rpaligned_calloc",
+                "rpmemalign",
+                "rpposix_memalign",
+                "rpmalloc_usable_size",
+                "rpmalloc_linker_reference",
+                "rpmalloc_heap_acquire",
+                "rpmalloc_heap_release",
+                "rpmalloc_heap_alloc",
+                "rpmalloc_heap_aligned_alloc",
+                "rpmalloc_heap_calloc",
+                "rpmalloc_heap_aligned_calloc",
+                "rpmalloc_heap_realloc",
+                "rpmalloc_heap_aligned_realloc",
+                "rpmalloc_heap_free",
+                "rpmalloc_heap_free_all",
+                "rpmalloc_heap_thread_set_current",
+                "rpmalloc_get_heap_for_ptr"
+              ]
+            },
+            "fields": [
+              {
+                "path": "memory_map",
+                "record": "rpmalloc_config_t"
+              },
+              {
+                "path": "memory_unmap",
+                "record": "rpmalloc_config_t"
+              },
+              {
+                "path": "error_callback",
+                "record": "rpmalloc_config_t"
+              },
+              {
+                "path": "map_fail_callback",
+                "record": "rpmalloc_config_t"
+              },
+              {
+                "path": "page_size",
+                "record": "rpmalloc_config_t"
+              },
+              {
+                "path": "span_size",
+                "record": "rpmalloc_config_t"
+              },
+              {
+                "path": "span_map_count",
+                "record": "rpmalloc_config_t"
+              },
+              {
+                "path": "enable_huge_pages",
+                "record": "rpmalloc_config_t"
+              },
+              {
+                "path": "page_name",
+                "record": "rpmalloc_config_t"
+              },
+              {
+                "path": "huge_page_name",
+                "record": "rpmalloc_config_t"
+              },
+              {
+                "path": "mapped",
+                "record": "rpmalloc_global_statistics_t"
+              },
+              {
+                "path": "mapped_peak",
+                "record": "rpmalloc_global_statistics_t"
+              },
+              {
+                "path": "cached",
+                "record": "rpmalloc_global_statistics_t"
+              },
+              {
+                "path": "huge_alloc",
+                "record": "rpmalloc_global_statistics_t"
+              },
+              {
+                "path": "huge_alloc_peak",
+                "record": "rpmalloc_global_statistics_t"
+              },
+              {
+                "path": "mapped_total",
+                "record": "rpmalloc_global_statistics_t"
+              },
+              {
+                "path": "unmapped_total",
+                "record": "rpmalloc_global_statistics_t"
+              },
+              {
+                "path": "sizecache",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "spancache",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "thread_to_global",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "global_to_thread",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "span_use",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "span_use[0].current",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "span_use[0].peak",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "span_use[0].to_global",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "span_use[0].from_global",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "span_use[0].to_cache",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "span_use[0].from_cache",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "span_use[0].to_reserved",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "span_use[0].from_reserved",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "span_use[0].map_calls",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "size_use",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "size_use[0].alloc_current",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "size_use[0].alloc_peak",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "size_use[0].alloc_total",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "size_use[0].free_total",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "size_use[0].spans_to_cache",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "size_use[0].spans_from_cache",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "size_use[0].spans_from_reserved",
+                "record": "rpmalloc_thread_statistics_t"
+              },
+              {
+                "path": "size_use[0].map_calls",
+                "record": "rpmalloc_thread_statistics_t"
+              }
+            ],
+            "files": {
+              "LICENSE": "992dc09524f6c215f1ae0ff7d26e8ce548b7212df65a09919dbafc98e2323b41",
+              "rpmalloc/rpmalloc.c": "f9005d0e75ab052063ed8f574661557df56c161dba75277e700f1aee445a222a",
+              "rpmalloc/rpmalloc.h": "a45bfebb3122146c23b564f510d8605d32e201789e4668ea1a054da1b36f8ab1"
+            },
+            "functions": [
+              {
+                "name": "rpmalloc_config",
+                "signature": "rpmalloc_config :: () -> *rpmalloc_config_t #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_finalize",
+                "signature": "rpmalloc_finalize :: () #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_initialize",
+                "signature": "rpmalloc_initialize :: () -> s32 #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_initialize_config",
+                "signature": "rpmalloc_initialize_config :: (config: *rpmalloc_config_t) -> s32 #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_is_thread_initialized",
+                "signature": "rpmalloc_is_thread_initialized :: () -> s32 #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_thread_collect",
+                "signature": "rpmalloc_thread_collect :: () #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_thread_finalize",
+                "signature": "rpmalloc_thread_finalize :: (release_caches: s32) #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_thread_initialize",
+                "signature": "rpmalloc_thread_initialize :: () #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_dump_statistics",
+                "signature": "rpmalloc_dump_statistics :: (file: *void) #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_global_statistics",
+                "signature": "rpmalloc_global_statistics :: (stats: *rpmalloc_global_statistics_t) #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_thread_statistics",
+                "signature": "rpmalloc_thread_statistics :: (stats: *rpmalloc_thread_statistics_t) #foreign sdk;"
+              },
+              {
+                "name": "rpaligned_alloc",
+                "signature": "rpaligned_alloc :: (alignment: u64, size: u64) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpaligned_calloc",
+                "signature": "rpaligned_calloc :: (alignment: u64, num: u64, size: u64) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpaligned_realloc",
+                "signature": "rpaligned_realloc :: (ptr: *void, alignment: u64, size: u64, oldsize: u64, flags: u32) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpcalloc",
+                "signature": "rpcalloc :: (num: u64, size: u64) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpfree",
+                "signature": "rpfree :: (ptr: *void) #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc",
+                "signature": "rpmalloc :: (size: u64) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_usable_size",
+                "signature": "rpmalloc_usable_size :: (ptr: *void) -> u64 #foreign sdk;"
+              },
+              {
+                "name": "rpmemalign",
+                "signature": "rpmemalign :: (alignment: u64, size: u64) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpposix_memalign",
+                "signature": "rpposix_memalign :: (memptr: **void, alignment: u64, size: u64) -> s32 #foreign sdk;"
+              },
+              {
+                "name": "rprealloc",
+                "signature": "rprealloc :: (ptr: *void, size: u64) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_get_heap_for_ptr",
+                "signature": "rpmalloc_get_heap_for_ptr :: (ptr: *void) -> *rpmalloc_heap_t #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_acquire",
+                "signature": "rpmalloc_heap_acquire :: () -> *rpmalloc_heap_t #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_aligned_alloc",
+                "signature": "rpmalloc_heap_aligned_alloc :: (heap: *rpmalloc_heap_t, alignment: u64, size: u64) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_aligned_calloc",
+                "signature": "rpmalloc_heap_aligned_calloc :: (heap: *rpmalloc_heap_t, alignment: u64, num: u64, size: u64) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_aligned_realloc",
+                "signature": "rpmalloc_heap_aligned_realloc :: (heap: *rpmalloc_heap_t, ptr: *void, alignment: u64, size: u64, flags: u32) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_alloc",
+                "signature": "rpmalloc_heap_alloc :: (heap: *rpmalloc_heap_t, size: u64) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_calloc",
+                "signature": "rpmalloc_heap_calloc :: (heap: *rpmalloc_heap_t, num: u64, size: u64) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_free",
+                "signature": "rpmalloc_heap_free :: (heap: *rpmalloc_heap_t, ptr: *void) #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_free_all",
+                "signature": "rpmalloc_heap_free_all :: (heap: *rpmalloc_heap_t) #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_realloc",
+                "signature": "rpmalloc_heap_realloc :: (heap: *rpmalloc_heap_t, ptr: *void, size: u64, flags: u32) -> *void #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_release",
+                "signature": "rpmalloc_heap_release :: (heap: *rpmalloc_heap_t) #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_heap_thread_set_current",
+                "signature": "rpmalloc_heap_thread_set_current :: (heap: *rpmalloc_heap_t) #foreign sdk;"
+              },
+              {
+                "name": "rpmalloc_linker_reference",
+                "signature": "rpmalloc_linker_reference :: () #foreign sdk;"
+              }
+            ],
+            "native_build_options": {
+              "ENABLE_ASSERTS": 1,
+              "ENABLE_OVERRIDE": 0,
+              "ENABLE_STATISTICS": 1,
+              "ENABLE_VALIDATE_ARGS": 1,
+              "RPMALLOC_CONFIGURABLE": 1,
+              "RPMALLOC_FIRST_CLASS_HEAPS": 1
+            },
+            "repository": "mjansson/rpmalloc",
+            "revision": "e4393ff85585d91400bcbad2e7266c011075b673",
+            "scope": "Private native SDK only; reviewed public Jai callbacks/heaps require separate adapters"
+          },
+          "verification": "Source/header inventory only here; actual private SDK native evidence is indexed separately"
+        }
       ]
     },
     "SDL": {

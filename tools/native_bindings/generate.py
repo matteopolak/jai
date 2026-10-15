@@ -505,6 +505,19 @@ def main():
                               'member_counts':dict(Counter(m['status'] for e in entries for m in e.get('members',[]))),
                               'contextual_shapes':spec.contextual_blocks,
                               'declarations': entries}
+        if module == 'rpmalloc':
+            backend = ROOT/'stdlib/internal/bindings/rpmalloc-sdk'
+            provenance = backend/'provenance.json'
+            if provenance.exists():
+                native = json.loads(provenance.read_text())
+                all_ledger[module]['supplemental_backends'] = [{
+                    'module':'internal/bindings/rpmalloc-sdk',
+                    'artifact':str((backend/'module.jai').relative_to(ROOT)),
+                    'artifact_sha256':hashlib.sha256((backend/'module.jai').read_bytes()).hexdigest(),
+                    'status':'private_native_backend',
+                    'public_support':'Unresolved; this backend does not establish Jai callback/config/heap compatibility',
+                    'provenance':native,
+                    'verification':'Source/header inventory only here; actual private SDK native evidence is indexed separately'}]
         if module == 'Objective_C':
             appkit = ROOT/'stdlib/Objective_C/AppKit/module.jai'
             if appkit.exists():
