@@ -1,5 +1,12 @@
 # Portable stdlib progress
 
+Separate Socket test correction: resolver used unreviewed AF.INET. Replaced only
+both input/output checks with reviewed AF_INET; all resolver assertions retained,
+no API invented. Corrected compiler lets real interpreter/ARM64+x64 native O0/O2
+resolver and both source targets pass; full strict lint still fails on a general
+type-query gap. Production storage fix is a separate checkpoint. Evidence:
+target/socket-resolver-storage-corrected.log. No full suite/combined pass claim.
+
 Default parser audit fixed real duplicate warnings: generator now disables parser
 reporting/global actions, and actual build performs them once. New release-alias
 regression reproduced two warnings before the fix, then both aliases pass once.

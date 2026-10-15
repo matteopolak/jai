@@ -14,7 +14,7 @@ main :: () {
     assert(cast(u64) *info.ai_addr - cast(u64) *info == 32);
     hints: S.addrinfo;
     hints.ai_flags = .NUMERICHOST | .NUMERICSERV;
-    hints.ai_family = cast(s32) S.AF.INET;
+    hints.ai_family = S.AF_INET;
     hints.ai_socktype = .STREAM;
     hints.ai_protocol = .TCP;
     host := to_c_string("127.0.0.1");
@@ -27,7 +27,7 @@ main :: () {
 
     assert(status == 0 && result != null);
     defer S.freeaddrinfo(result);
-    assert(result.ai_family == cast(s32) S.AF.INET && result.ai_socktype == .STREAM && result.ai_protocol == .TCP);
+    assert(result.ai_family == S.AF_INET && result.ai_socktype == .STREAM && result.ai_protocol == .TCP);
     assert(result.ai_addrlen == size_of(S.sockaddr_in) && result.ai_addr != null);
     address := cast(*S.sockaddr_in) result.ai_addr;
 
