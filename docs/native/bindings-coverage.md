@@ -35,9 +35,11 @@ Eight additional Android POSIX records now have explicit pinned native header
 delegates; both target C layout assertions pass. All POSIX source declarations
 are emitted, without claiming Android Jai/runtime validation. ImGui's qualified
 nested member checks and a real Jai-to-C++ constructor/split ABI test now pass.
-The stable checkpoint-5 full report records 262 source checks passed/24 failed,
-51 native build/run checks passed/one retained SDL layout failure, 96 privacy
-checks passed/two blocked by D3D, and 1,200 symbols passed. Full configuration
+The stable checkpoint-7 full report records 268 source checks passed/26 failed,
+53 native build/run checks passed/one retained SDL layout failure, 102 privacy
+checks passed/ten blocked by D3D, and 1,200 symbols passed. Private units are
+explicitly scoped and do not prove public/native Windows support. Added public
+DXC executable/privacy requirements expose the existing D3D blocker. Configuration
 failures are now 40 after implementing GL dispatch. Refreshed broad strict lint
 records 16 incomplete scopes; earlier all-pass lint reports do not prove current
 complete semantic coverage. Subsequent X11 modal code has Linux source checks

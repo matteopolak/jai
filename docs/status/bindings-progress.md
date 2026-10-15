@@ -201,3 +201,21 @@ tree. Current root ledger: 28,398 declared, 1,262 forwarded, 544 generated,
 51 manual authored, 116 unresolved, one duplicate. Counts do not imply native
 completion. Full matrix/configuration reruns are running against a stable
 current snapshot; preceding full result remains explicitly historical.
+
+Current stable reruns completed (`.work/checkpoint-7-full.json`,
+`.work/checkpoint-7-configurations.json`): 268 source passed/26 failed,
+53 native build/run passed/one retained SDL layout failure, 102 privacy
+passed/ten blocked by D3D, and 1,200 symbols passed. Configurations retain
+40 failures. Totals include explicitly labeled private SDK/argv units, not
+extra public API/native Windows claims. Two added source failures are the
+required public DXC executable on both Windows CPUs, blocked at D3D12; eight
+added privacy failures expose that existing dependency blocker. Six new X11
+private helper privacy checks pass. No required checks were removed to improve
+totals.
+
+Latest implementation commit: `854405b`, after `4137f3c`, `40e37e9` and
+`1afd394`. Remaining declarations: rpmalloc 80, enabled telemetry 14,
+Objective_C 8, Android 7, X11 4, d3d_compiler 2, DXC version string 1.
+Additional declared/native ABI discrepancies, target-aware lint and unavailable
+native executions remain required. Questions/deviations distinguish missing
+contracts from code/compiler work; the scope is not reported complete.

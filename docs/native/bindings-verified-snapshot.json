@@ -240,6 +240,44 @@
       "report": ".work/sdl-wide-freesrc-after.json",
       "sha256": "d8f49d03f488ea9d388873189d9df92f69dd08aae9b77864470474bc514cabeb",
       "scope": "DXC private Windows source/host serializer checks are separate from blocked public/native DXC. SDL real native before/after flag repair preserves active record ABI failures."
+    },
+    {
+      "report": ".work/checkpoint-7-full.json",
+      "sha256": "169d5ffa4b4cbdd7158bb01b93e9cdce55df8a986ace4eff14d8a5e689730484",
+      "scope": "Stable current worker scope; private units separated; expanded required checks remain failing, no full integration claim",
+      "compiler_sha256": "75fd6e23452c090761d90352a00e786439d0971895c6c1708c7ba4bfdf2219ff",
+      "results": {
+        "targets": {
+          "unsupported": 70,
+          "passed": 268,
+          "failed": 26
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 53,
+          "failed": 1
+        },
+        "privacy": {
+          "passed": 102,
+          "unsupported": 56,
+          "failed": 10
+        },
+        "symbols": {
+          "passed": 1200
+        }
+      }
+    },
+    {
+      "report": ".work/checkpoint-7-configurations.json",
+      "sha256": "b56453cabd56c6839fe64bc949827c8b47873544e6a4f87f26080a211c9d6adb",
+      "scope": "Stable current worker scope; private units separated; expanded required checks remain failing, no full integration claim",
+      "compiler_sha256": "75fd6e23452c090761d90352a00e786439d0971895c6c1708c7ba4bfdf2219ff",
+      "results": {
+        "checks": {
+          "passed": 38,
+          "failed": 40
+        }
+      }
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",
