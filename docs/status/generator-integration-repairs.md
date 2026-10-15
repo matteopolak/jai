@@ -1,0 +1,7 @@
+# Combined Mac integration repairs
+
+After canonicalizing the configured SDK fixture root, the combined developer-tools suite advanced through configured SDK, Debug lifecycle and native SDK checks, then failed the original macro rejection fixture. The callback numeric-macro path reported only generic materialization failure when no evaluatable numeric expression/result was available. It now reports the unsupported-numeric-expression reason with the actual macro name before returning failure. Existing output remains preserved; no unsupported macro becomes a fabricated value. The unchanged original fixture passes interpreter/native Mac O0/O2.
+
+The next combined failure was external-filesystem metadata: macOS stored com.apple.provenance in AppleDouble ._header.h files under the generated framework. Clang's umbrella-header scan treated these as extra headers under -Werror. The owned fixture is now cleaned with the system dot_clean utility before consumer compilation. Actual framework C consumers pass O0/O2 with every warning still an error. No source/compiler path exception or warning suppression was added.
+
+Raw combined output is retained in the assigned CARGO_TARGET_DIR/generator-combined.log. These focused repairs do not imply that all later combined gates pass; the complete suite is rerun separately.
