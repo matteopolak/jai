@@ -11,9 +11,10 @@ Architecture: retain the archive parser. Canonical public records/constants live
 - [x] Run interpreter/native Mac O0/O2, formatter and warnings-denied lint. Record cross-target checks separately.
 - [x] Update feature docs, index and exact scope JSON; commit verified object/container phase with Conventional Commits.
 
-Remaining: four raw ABI declarations depend on reviewed nested nlist members and
-the canonical Debug_Info.Guid owner. Thirty-seven lexer/TBD procedure contracts
-are tracked separately in worker-inbox.md; they are not stubbed or counted as
-implemented. The first ABI checklist item therefore remains open.
+Remaining: two raw CodeView ABI declarations depend on the canonical Debug_Info.Guid
+owner. Nlist nested members are resolved and implemented. Thirty-seven lexer/TBD
+procedures are next, using safe independent policies for unspecified edges;
+they are not stubbed or counted as implemented. The first ABI checklist item
+therefore remains open.
 
 Source tools: `cargo build -j2 -p jaic-cli -p jailint`; use assigned `$CARGO_TARGET_DIR/debug` binaries. Fixture generator: tools/build_executable_fixtures.py. Runner: tools/check_executable_formats.py. Tests: tests/portable-stdlib/executable-objects.jai.

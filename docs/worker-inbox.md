@@ -43,3 +43,16 @@ Do not patch isolated cases merely to turn tests green. Compare interpreter/nati
 Fresh verification: `python3 tools/check_executable_formats.py` passes interpreter plus native Mac arm64 O0/O2 for objects, bitfields, relocations and the preserved archive suite. Strict lint and formatter pass; Linux/Windows x64 cross type checks pass, without target execution. Independent clang-produced Mach-O/ELF/COFF, lipo fat binaries, lld ELF/PE executables, SDK header layout assertions and readobj/otool oracles are used. Every real-object/PE prefix, four fat encodings, malformed overflows, borrowed storage and allocator cleanup are covered.
 
 Read-only independent review reproduced three issues; they are fixed and retested in both execution modes: section-extent bounds shared by ELF/COFF relocation application, Arm ABS32/16 mixed signed/unsigned overflow ranges, and ignored PT_NULL fields. The reviewer confirmed the repaired blocks and independently reran relocation regressions. Diagnostics are asserted, not suppressed. No compiler edits, format-specific compiler exceptions, reference reads, peer source edits or network publication occurred. Existing archive.jai is unchanged.
+
+
+## Remaining public object/TBD scope
+
+Reviewed nlist.n_un.n_strx and ELF_Endianness source values resolved. Parser-specific unspecified policies permit independent documented design, not reject-everything placeholders. Implement meaningful lexer/TBD workflows against independently authored positive fixtures and official Apple SDK TBD format/oracles, retaining bounds/error diagnostics. Canonical Debug_Info.Guid dependency is routed to its owning worker; do not create a local duplicate. Continue remaining public names rather than ending at an unresolved-policy checkpoint.
+
+Worker resumed: nlist/nlist_64 nested n_strx records implemented from the refreshed
+reviewed spec; 12/16-byte layouts and nested field behavior pass interpreter and
+native O0/O2 with the complete regression suite, format and strict lint. Public
+ELF values remain unchanged as newly clarified. Scope is 469/508, 39 remaining.
+Next batch implements real lexer/TBD workflows; official Xcode SDK samples and
+the SDK tapi archive tool are available as independent format oracles. Guid is
+still pending its canonical owner; no local substitute will be introduced.
