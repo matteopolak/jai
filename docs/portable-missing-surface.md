@@ -13,29 +13,15 @@ or legacy test expectations are inventory inputs.
 
 ### Android/Toolchain
 
-JNI ABI naming, counted OID identity, reviewed JKS constants and real SHA-1/SHA-256 digests are implemented. Device/build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
+JNI/OID/JKS/SHA, ASN.1 primitive/cursor parsing and ADB host operations are implemented with independent behavior tests. ASN1_Value/printer/prefix contracts, actual SDK/device and Windows Process integration remain pending. Install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
 
 Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 
 | Missing public declaration | Condition |
 | --- | --- |
-| `__adb_path: string` | All reviewed hosts |
 | `__debug_manifest_reading := false` | All reviewed hosts |
 | `__no_gradle_build_be_verbose := false` | All reviewed hosts |
-| `adb :: (command_args: .. string, device_serial := "", log_adb_command_errors := false, print_captured_output := false, loc := #caller_location, try_and_escape_spaces_in_shell_arguments := true) -> (bool, output_string := "", error_string := "", exit_code := 0)` | All reviewed hosts |
-| `adb_be_verbose := !true` | All reviewed hosts |
-| `Adb_Compression_Algorithm :: enum` | All reviewed hosts |
-| `Adb_Device :: struct` | All reviewed hosts |
-| `adb_device_serial: string` | All reviewed hosts |
-| `adb_devices :: (return_only_ready_devices := false) -> bool, [] Adb_Device` | All reviewed hosts |
 | `adb_install :: (apk_path: string, reinstall_keeping_data := false, allow_test_apk := false, allow_version_code_downgrade := false, uninstall_and_retry_on_key_mismatch := true, log_errors := true) -> bool` | All reviewed hosts |
-| `adb_pull :: (remote_source: string, local_destination := "", preserve_timestamps := true, disable_compression := false, compression_algorithm := Adb_Compression_Algorithm.UNSPECIFIED) -> bool` | All reviewed hosts |
-| `adb_push :: (local_source: string, remote_destination: string, only_update_newer_files := false, dry_run := false, compression_algorithm := Adb_Compression_Algorithm.UNSPECIFIED, disable_compression := false) -> bool` | All reviewed hosts |
-| `adb_shell_mkdir :: (path: string) -> bool` | All reviewed hosts |
-| `adb_shell_pidof :: (package_name: string) -> bool, s32` | All reviewed hosts |
-| `adb_uninstall :: (package_name: string) -> bool` | All reviewed hosts |
-| `adb_version :: () -> Adb_Version_Info, bool` | All reviewed hosts |
-| `Adb_Version_Info :: struct` | All reviewed hosts |
 | `Algorithm_Id :: enum u32` | All reviewed hosts |
 | `Android_Apk :: struct` | All reviewed hosts |
 | `Android_Apk_Entry :: struct` | All reviewed hosts |
@@ -45,8 +31,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `android_build_or_update_dynamic_loader :: (project_config: Android_Project_Config, build_options: Build_Options, android_build_options: Android_Build_Options, force_rebuild_loader := false) -> bool` | All reviewed hosts |
 | `android_check_for_adb_and_select_device :: (required_reason := "by metaprogram", preferred_model_name := "") #compile_time` | All reviewed hosts |
 | `android_compile_helper_program :: (app_name: string, package_name: string, output_path := "", activity := DEFAULT_ACTIVITY, debug := false) -> bool #compile_time` | All reviewed hosts |
-| `Android_Config_Changes :: enum_flags s32` | All reviewed hosts |
-| `android_config_changes_from_string :: (s: string) -> Android_Config_Changes` | All reviewed hosts |
 | `android_copy_directories_to_device :: (directories: [] string, app_id: string, dest_relative_path := "", only_update_newer_files := false, force_create_directories := false) -> bool` | All reviewed hosts |
 | `android_copy_directories_to_device_quest :: android_copy_directories_to_device` | All reviewed hosts |
 | `android_copy_file_to_device :: (file_path: string, app_id: string, external_storage_relative_path := "") -> bool` | All reviewed hosts |
@@ -65,7 +49,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `android_get_helper_program_executable_name :: () -> string` | All reviewed hosts |
 | `ANDROID_HELPER_VERSION :: 2` | All reviewed hosts |
 | `Android_Install_Location :: enum u32` | All reviewed hosts |
-| `android_is_app_installed :: (package_name: string) -> bool` | All reviewed hosts |
 | `ANDROID_LOADER_LIB_NAME :: "loader"` | All reviewed hosts |
 | `Android_Manifest_Binary :: struct` | All reviewed hosts |
 | `android_maybe_compile_helper_program :: (app_name: string, package_name: string, output_path := "", activity := DEFAULT_ACTIVITY, debug := false) -> bool #compile_time` | All reviewed hosts |
@@ -88,21 +71,11 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `Apk_Signing_Block_V2 :: struct` | All reviewed hosts |
 | `apk_verify :: (apk: Android_Apk, verbose := false) -> bool` | All reviewed hosts |
 | `apk_verify :: (filepath: string, verbose := false) -> bool` | All reviewed hosts |
-| `asn1_decode_integer :: (data: string) -> s64` | All reviewed hosts |
-| `asn1_decode_object_identifier :: (data: string) -> ASN1_Object_Identifier` | All reviewed hosts |
-| `ASN1_KNOWN_OIDS :: ASN1_Object_Identifier` | All reviewed hosts |
 | `asn1_print :: (data: string, depth := 0, hack_skip_depth := false)` | All reviewed hosts |
 | `asn1_print :: (name: string, data: string)` | All reviewed hosts |
 | `asn1_print :: (name: string, value: ASN1_Value)` | All reviewed hosts |
-| `asn1_read_length :: (s: *string) -> u64` | All reviewed hosts |
-| `asn1_read_tag :: (s: *string) -> ASN1_Tag` | All reviewed hosts |
 | `asn1_read_value :: (s: *string) -> ASN1_Value` | All reviewed hosts |
 | `asn1_read_value :: (s: *string, expected: ASN1_Tag) -> ASN1_Value` | All reviewed hosts |
-| `ASN1_Tag :: struct` | All reviewed hosts |
-| `ASN1_Tag_Class :: enum u8` | All reviewed hosts |
-| `ASN1_Tag_Length_Value :: enum u8` | All reviewed hosts |
-| `asn1_to_string :: (oid: ASN1_Object_Identifier) -> string` | All reviewed hosts |
-| `ASN1_Universal_Type :: enum u8` | All reviewed hosts |
 | `ASN1_Value :: struct` | All reviewed hosts |
 | `Certificiate :: struct` | All reviewed hosts |
 | `CheckSSL :: (result: s32, loc := #caller_location) #expand` | All reviewed hosts |
@@ -116,7 +89,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `fh2 :: #bake_arguments formatInt(minimum_digits = 2, base = 16)` | All reviewed hosts |
 | `fh4 :: #bake_arguments formatInt(minimum_digits = 4, base = 16)` | All reviewed hosts |
 | `fh8 :: #bake_arguments formatInt(minimum_digits = 8, base = 16)` | All reviewed hosts |
-| `find_java_bin_path_from_environment :: () -> bool, bin_path: string, exe_path: string` | All reviewed hosts |
 | `for_expansion :: (apk: Android_Apk, body: Code, flags: For_Flags) #expand` | All reviewed hosts |
 | `generate_android_project :: (using config: Android_Project_Config, recreate_existing_files := true) -> bool` | All reviewed hosts |
 | `get_android_target_triple :: (cpu: CPU_Tag) -> triple: string, triple_with_sdk: string` | All reviewed hosts |
@@ -124,9 +96,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `get_ndk_libclang_paths :: () -> [] string` | All reviewed hosts |
 | `get_ndk_paths :: () -> NDK_Paths` | All reviewed hosts |
 | `gradle_install_apk :: (project_path: string, release := false) -> bool` | All reviewed hosts |
-| `is_adb_installed :: () -> bool, string` | All reviewed hosts |
-| `is_app_running :: (package_name: string) -> running: bool, success: bool` | All reviewed hosts |
-| `JAVA_ENV_NAME :: "JAVA_HOME"` | All reviewed hosts |
 | `jdk_decrypt_private_key :: (encrypted_data: string, password: string) -> bool, string` | All reviewed hosts |
 | `jks_read :: (data: string, password: string) -> bool, certificate: string, encrypted_private_key_info: string` | All reviewed hosts |
 | `Kilobytes :: (x: int) -> int #expand` | All reviewed hosts |
@@ -137,13 +106,10 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `Megabytes :: (x: int) -> int #expand` | All reviewed hosts |
 | `NDK_Paths :: struct` | All reviewed hosts |
 | `print_binary_manifest :: (using manifest: Android_Manifest_Binary, print_strings := false, print_resource_ids := false)` | All reviewed hosts |
-| `read :: read_silly_alias` | All reviewed hosts |
 | `read_binary_manifest_from_apk :: (apk_filename: string) -> bool, Android_Manifest_Binary` | All reviewed hosts |
 | `read_binary_manifest_from_file :: (filename: string) -> bool, Android_Manifest_Binary` | All reviewed hosts |
 | `read_binary_manifest_from_memory :: (data: string, filename := "<memory>") -> bool, Android_Manifest_Binary` | All reviewed hosts |
-| `read_block :: (s: *string, length: int) -> string` | All reviewed hosts |
 | `read_length_prefixed_block :: (s: *string) -> string` | All reviewed hosts |
-| `read_silly_alias :: ($Int_Type: Type, s: *string, $BIG_ENDIAN := false) -> Int_Type` | All reviewed hosts |
 | `run_android_link_command :: (message: *Message_Phase, options: Build_Options, extra_args: [] string = .[])` | All reviewed hosts |
 | `run_gradle_task :: (project_path: string, task: string, print_output := true) -> bool` | All reviewed hosts |
 | `sign_data :: (private_key_info: string, message: string) -> bool, string` | All reviewed hosts |
@@ -152,7 +118,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `SIGNING_BLOCK_ID_V31_SIGNATURE : u32` | All reviewed hosts |
 | `SIGNING_BLOCK_ID_V3_SIGNATURE : u32` | All reviewed hosts |
 | `SIGNING_BLOCK_ID_VERITY_PADDING : u32` | All reviewed hosts |
-| `stop_app :: (package_name: string) -> bool` | All reviewed hosts |
 | `to_hex_string :: (a: [8] $T) -> string` | All reviewed hosts |
 | `to_hex_string :: (s: string) -> string` | All reviewed hosts |
 | `USE_FULL_MODULE :: false` | All reviewed hosts |
@@ -250,111 +215,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-## Images and resources
-
-### Ico_File
-
-Bitmap loading/resize/ICO encoding remain missing. Review image-size set, component/padding counts and returned-storage contract before claiming exact compatibility.
-
-Reviewed contract: [module page](specs/stdlib/modules/ico-file.md).
-
-| Missing public declaration | Condition |
-| --- | --- |
-| `create_ico_file :: (x: s32, y: s32, comp: s32, image_data: *u8) -> string` | All reviewed hosts |
-| `create_ico_file_from_bitmap_filename :: (bitmap_filename: string) -> string` | All reviewed hosts |
-| `get_bytes_for_image :: (comp: s32, size: s32) -> (image_bytes: s32, mask_bytes: s32, total_bytes: s32)` | All reviewed hosts |
-| `get_total_bytes_for_size :: (comp: s32, size: s32) -> s32` | All reviewed hosts |
-
-### Icon
-
-Plugin option parsing, diagnostics and real resource attachment remain missing; no fake plugin success or placeholder help string.
-
-Reviewed contract: [module page](specs/stdlib/modules/icon.md).
-
-| Missing public declaration | Condition |
-| --- | --- |
-| `get_plugin :: () -> *Metaprogram_Plugin` | All reviewed hosts |
-| `HELP_STRING :: #string DONE` | All reviewed hosts |
-| `init :: (p: *Metaprogram_Plugin, options: [] string) -> bool` | All reviewed hosts |
-| `log_help :: (p: *Metaprogram_Plugin)` | All reviewed hosts |
-| `message :: (p: *Metaprogram_Plugin, message: *Message)` | All reviewed hosts |
-| `shutdown :: (p: *Metaprogram_Plugin)` | All reviewed hosts |
-
-### Windows_Resources
-
-Resource updates, manifest generation, actual tool discovery and console workspace configuration remain missing. Exact resource-ID defaults and manifest DPI/ownership policy need review.
-
-Reviewed contract: [module page](specs/stdlib/modules/windows-resources.md).
-
-| Missing public declaration | Condition |
-| --- | --- |
-| `add_manifest_to_executable :: (exe_filename: string, options: Manifest_Options, resource_id: s32 = RESOURCE_ID_MANIFEST) -> bool` | OS == .WINDOWS |
-| `disable_runtime_console :: (w: Workspace = -1)` | OS == .WINDOWS |
-| `find_visual_studio_in_a_ridiculous_garbage_way :: () -> (library_path := "", linker_path := "")` | OS == .WINDOWS |
-| `find_windows_kit_root :: () -> (root: string, windows_version: s32)` | OS == .WINDOWS |
-| `find_windows_kit_root :: (version: string) -> string` | OS == .WINDOWS |
-| `generate_manifest :: (options: Manifest_Options) -> string` | OS == .WINDOWS |
-| `ICONDIR :: struct` | OS == .WINDOWS |
-| `ICONDIRENTRY :: struct` | OS == .WINDOWS |
-| `Manifest_Options :: struct` | OS == .WINDOWS |
-| `set_icon_by_data :: (exe_filename: string, icon_data: string, resource_id : s32 = RESOURCE_ID_FIRST_ICON, delete_existing_resources := false) -> bool` | OS == .WINDOWS |
-| `set_icon_by_filename :: (exe_filename: string, icon_filename: string, resource_id : s32 = RESOURCE_ID_FIRST_ICON, delete_existing_resources := false) -> bool` | OS == .WINDOWS |
-
-## Text and packages
-
-### Subtitles
-
-Parsing/serialization/formatting and real ownership remain missing; the versioned grammar, escaping/CSV/HTML and exact storage rules need review.
-
-Reviewed contract: [module page](specs/stdlib/modules/subtitles.md).
-
-| Missing public declaration | Condition |
-| --- | --- |
-| `csv_line_index_within_section: int` | All reviewed hosts |
-| `csv_line_number: int` | All reviewed hosts |
-| `csv_quote :: (s: string) -> string` | All reviewed hosts |
-| `flush_csv_lines :: (builder: *String_Builder, section_name: string, name_map: *Table(string, string), _speaker_name: string, lines: [] string, directions: [] string)` | All reviewed hosts |
-| `format_section_as_csv :: (builder: *String_Builder, section: *Subtitles_Section, name_map: *Table(string, string) = null)` | All reviewed hosts |
-| `format_section_as_html :: (builder: *String_Builder, section: *Subtitles_Section, character_to_emphasize := "", name_map: *Table(string, string) = null)` | All reviewed hosts |
-| `format_sections_as_csv :: (builder: *String_Builder, sections: [] *Subtitles_Section, name_map: *Table(string, string) = null)` | All reviewed hosts |
-| `format_sections_as_html :: (builder: *String_Builder, sections: [] *Subtitles_Section, character_to_emphasize := "", name_map: *Table(string, string) = null)` | All reviewed hosts |
-| `free :: (using subtitles: *Subtitles)` | All reviewed hosts |
-| `get_sections_for_characters :: (subtitles: Subtitles, names: .. string) -> [..] *Subtitles_Section` | All reviewed hosts |
-| `load_subtitles_from_file :: (path: string) -> bool, Subtitles` | All reviewed hosts |
-| `load_subtitles_from_memory :: (data: string, short_name: string) -> bool, Subtitles` | All reviewed hosts |
-| `SECTION_VERSION_NUMBER :: 1` | All reviewed hosts |
-| `serialize :: (using subtitles: *Subtitles) -> string` | All reviewed hosts |
-| `Subtitles :: struct` | All reviewed hosts |
-| `Subtitles_Event :: struct` | All reviewed hosts |
-| `Subtitles_Instant :: struct` | All reviewed hosts |
-| `Subtitles_Line :: struct` | All reviewed hosts |
-| `Subtitles_Section :: struct` | All reviewed hosts |
-
-### Simple_Package
-
-Archive creation/validation/loading remain missing; package/TOC magic and entry wire representation are unresolved. No substitute wire format.
-
-Reviewed contract: [module page](specs/stdlib/modules/simple-package.md).
-
-| Missing public declaration | Condition |
-| --- | --- |
-| `add :: (package: *Create_Package, entry_name: string, data: [] u8)` | All reviewed hosts |
-| `Create_Package :: struct` | All reviewed hosts |
-| `deinit :: (using package: *Create_Package)` | All reviewed hosts |
-| `Entry_Info :: struct` | All reviewed hosts |
-| `init :: (using package: *Create_Package)` | All reviewed hosts |
-| `init_from_file :: (package: *Load_Package, filename: string) -> bool` | All reviewed hosts |
-| `init_from_memory :: (package: *Load_Package, data: [] u8, name_for_debugging := "") -> bool` | All reviewed hosts |
-| `KNOWN_HEADER_SIZE :: 64` | All reviewed hosts |
-| `KNOWN_TABLE_OF_CONTENTS_SIZE :: 64` | All reviewed hosts |
-| `Load_Package :: struct` | All reviewed hosts |
-| `load_table_of_contents :: (package: *Load_Package, data: [] u8, base_file_data_if_file_is_loaded: *u8, name_for_debugging: string, offset_for_debugging: s64) -> bool` | All reviewed hosts |
-| `load_table_of_contents_only :: (filename: string, okay_if_it_does_not_exist := false) -> (success: bool, package: Load_Package)` | All reviewed hosts |
-| `Package_Header :: struct` | All reviewed hosts |
-| `Table_Of_Contents :: struct` | All reviewed hosts |
-| `write :: (package: *Create_Package, filename: string, sort_contents := true) -> bool` | All reviewed hosts |
-
-Total: 246 missing reviewed declaration/overload/nested-operation rows
+Total: 156 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

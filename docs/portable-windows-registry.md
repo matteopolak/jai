@@ -1,6 +1,6 @@
 # Windows Registry API inventory
 
-Twenty-three reviewed exports now bind actual Advapi32 procedures/native scalar
+All33 reviewed exports now bind actual Advapi32 procedures/native scalar
 types/constants. This is a low-level binding, not an automatic UTF conversion,
 allocation or handle-lifecycle wrapper. Independent groups put scalar ABI aliases,
 operations and access/type masks together; the public facade exports only reviewed
@@ -23,34 +23,37 @@ No native error is swallowed or mapped to success. Callers must check LSTATUS,
 size their buffers and close returned real handles. RegQueryValueEx string data
 need not include a terminator. No speculative resize/string convenience export.
 
-Ten predefined pseudo-handles remain MISSING, not completed constants:
-HKEY_CLASSES_ROOT, HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, HKEY_USERS,
-HKEY_PERFORMANCE_DATA, HKEY_PERFORMANCE_TEXT, HKEY_PERFORMANCE_NLSTEXT,
-HKEY_CURRENT_CONFIG, HKEY_DYN_DATA, HKEY_CURRENT_USER_LOCAL_SETTINGS.
-The reviewed expressions cast positive0x800000xx directly to HKEY; the official C
-SDK casts through signed32-bit LONG and ULONG_PTR, producing sign-extended64-bit
-handles. Do not silently change public observable values or assume zero extension
-is accepted. The precise ABI oracle question is recorded in the questions doc.
-Native tests obtain a real root using private test-only RegOpenCurrentUser;
-no substitute root constant is exported.
+All ten predefined handles now retain the reviewed immutable positive-pointer
+casts. Windows x64/ARM64 #assert checks require exact zero-extended values,
+canonical HKEY type identity and immutable assignment rejection. SDK macros
+sign-extend through LONG; that discrepancy is preserved, not normalized.
+The general compiler pointer-constant repair is adopted from authorized NEW Rust
+sources; the original module-independent reproducer passes checking, interpreter
+and native ARM64/translated x64 O0/O2. No mutable/function/whitelist workaround.
+
+The existing native fixture now uses public HKEY_CURRENT_USER for real ANSI/wide
+open and typed-get calls on its own volatile key. Native Windows execution is
+still UNEXECUTED and required; source checks do not prove Advapi32 accepts this
+reviewed positive value. Setup retains private RegOpenCurrentUser only to create
+and clean its exact test tree, not as a replacement public constant.
 
 Official native ABI inputs:
 - https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regopenkeyexw
 - https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryvalueexw
 - https://raw.githubusercontent.com/microsoft/win32metadata/main/generation/WinSDK/RecompiledIdlHeaders/um/winreg.h
 
-tools/generate_windows_registry.py reads reviewed declarations, deliberately
-omits those unresolved handles, emits independently grouped bindings and normalizes
-with source-built jaifmt. Two regenerations are byte-identical.
-tools/check_portable_windows_registry.py checks public constants/privacy and all
-seven call bodies for Windows x64/ARM64. --native requires actual Windows and runs
-interpreter/native O0/O2. That native gate has NOT run here. Its fixture creates
-a PID-named volatile key under HKCU Software, sets one DWORD and one child,
-checks wide/ANSI open/query, short-buffer status/required size, typed get, enum,
-closes every opened handle and deletes its test tree. It does not access arbitrary
-registry values, credentials or harness configuration. An abort can leave the
-volatile test key until cleanup/reboot; exact-path collision diagnoses rather
-than overwriting an existing key.
+tools/generate_windows_registry.py emits all33 reviewed declarations in independent
+ABI/operation/access/namespace groups, normalized by source-built jaifmt. Two
+regenerations are byte-identical. tools/check_portable_windows_registry.py checks
+all call bodies/constant values/privacy and deliberate constant-write rejection
+for Windows x64/ARM64. Target-aware strict lint passes byte-identical staged
+production sources and positive fixtures. The intentional write-negative is a
+compiler rejection test, not a claimed lint-positive source.
+
+--native still requires actual Windows and runs interpreter/native O0/O2. It has
+not run here. Test setup/cleanup does not access arbitrary registry values or
+credentials. An abort can leave its volatile test key until cleanup/reboot.
+Exact-path collisions diagnose rather than overwrite an existing key.
 
 Initial missing-module failure: target/registry-red.log. The initial fixture
 mistook utf8_to_wide's first return for an array; reviewed windows-utf8.md confirms
@@ -58,9 +61,11 @@ pointer/success/byte-count. Corrected to capture/check all three outputs; origin
 failure retained at target/registry-first-bodies.log. This was a test defect,
 not a changed conversion API. Passing source evidence: target/registry-final-bodies.log.
 
-Source-built jaifmt/check pass. Active Windows strict lint remains unavailable:
-fresh jailint --help has no target selector, and checking the private ABI root on
-this macOS host fails its honest Windows requirement. Evidence:
-target/registry-linter-capabilities.log and target/registry-target-lint-blocker.log.
-No global suppression, target constant substitution, emulation or native pass
-claim is used. Whole strict lint remains the previously recorded failed gate.
+Source-built jaifmt/check and active Windows x64/ARM64 strict lint now pass.
+The first updated lint attempt used production paths outside JAIC_STDLIB and
+correctly failed private-source access checks; the runner now verifies and uses
+byte-identical staged library paths. No private import capability was disabled.
+Evidence: target/registry-handles-final.log (staging error),
+target/registry-handles-verified-final.log (passing source/lint/rejection gates),
+target/opaque-pointer-constant-execution.log and target/raw-pointer-compiler-build.log.
+Native Windows and full integrated CI remain required.

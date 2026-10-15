@@ -167,10 +167,35 @@ remain coordinator gates. See cleanroom-integration.md, integration-requests.md,
 integration-deviations.md and legacy-contract-audit.md for exact commands/reasons.
 Platform-io now owns Windows File completion; no duplicated implementation begun.
 
+Manifest flags milestone: canonical reviewed s32 enum_flags plus actual16-name
+pipe parser, duplicates ORed, invalid components diagnosed without partial result.
+All16 single/256 pair cases and7 malformed cases pass interpreter/native both
+CPUs O0/O2, Linux/Windows both-CPU source checks and strict lint. Independent
+fine-policy questions are explicit in portable-android-values.md. No native
+Android/manifest generation or test-oracle correction claim. Missing158 ->156.
+
+Java host milestone: exact JAVA_ENV_NAME/find_java_bin_path_from_environment
+implemented, including copied environment value, argv-safe native launcher probe,
+real status/failure cleanup and Windows Unicode environment source backend.
+Thirty interpreter/native ARM64+x64 O0/O2 configurations plus Linux both-CPU
+checks and strict changed-code lint pass: target/android-java-final.log.
+No real JVM/SDK/device or native Windows verification claim. Test corrections
+(absolute fixture path due CLI cwd, interpreter argument separator) are separate
+from production code; see docs/portable-java-discovery.md. Missing rows160 ->158.
+
+Latest app-lifecycle milestone: stop_app/is_app_running/android_is_app_installed
+implemented via actual Process/ADB commands; missing row inventory163 ->160.
+All five interpreter/native ARM64+x64 O0/O2 modes, verbosity, Linux both-CPU
+checking and changed strict lint pass (target/adb-apps-final.log). Memory tracking
+returns to zero. PID syntax is now decimal-only and validates every process ID.
+No test-oracle corrections, no device/Windows execution claim. Exact supported
+failure policies and remaining fine-review questions: docs/portable-adb.md.
+
+
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint: 1579458 (critical Pool/Thread d6db68f, ISA c45ee67). Pool/Unix Thread
+Current implementation checkpoints: ASN1 fff40be, Registry1f1e568, ADB4fc510a, System049154a; time e81f1a5, SHA1579458, ISA c45ee67, critical Pool/Thread d6db68f. Opaque-pointer handoff:338a4a8. Pool/Unix Thread
 critical corrections are committed: field-only Pool guard, no registry,
 allocator/options preserved by reset/release, genuine returned leak report fixed.
 Every owned essential Thread SDK operation now executes outside optional asserts;
@@ -182,8 +207,8 @@ Evidence: target/lifecycle-all-green.log; original failures retained separately.
 The draft invalid locked-mutex oracle and staging corrections are documented
 separately from production fixes. Native Linux/Windows/Android execution, forced
 join failures and group transactional fault recovery are not claimed. Windows
-Thread is untouched. Digest sources preserved through the critical checkpoint are now verified for a
-separate checkpoint; all three provisional Performance_Report files stay excluded.
+Thread is untouched. Digest sources preserved through the critical checkpoint are committed separately
+as1579458; all three provisional Performance_Report files stay excluded.
 Broad regression subsequently passes112 cases (including pending digest fixture),
 27 expected faults and16 compile negatives plus IPC/SMTP/Linux+Windows source
 checks. Original Basic.exit staging dependency error is retained at
@@ -199,8 +224,8 @@ fence/prefetch original probes now emit real opcodes versus official C intrinsic
 386 owned files pass formatting/check, including preserved pending digests; whole
 strict lint remains a separate failed gate. No source compiler edits or fake ISA
 results. Full task remains unfinished; missing public surface inventory now names246
-rows after the two real digest APIs. Next: committed compiler ISA handoff and
-remaining portable APIs after the critical checkpoint.
+rows after the two real digest APIs. Next: opaque-pointer compiler handoff and
+remaining portable APIs after the critical/ISA/digest/time checkpoints.
 
 Post-f044252 work: get_machine_options_x86 now implements the reviewed generic
 #modify API as a checked in-place projection of actual Compiler.Build_Options
@@ -858,3 +883,82 @@ Integration worker refresh20: compiler093712a, portablee81f1a5, developer4f87fd6
 Integration worker refresh21: full frozen e2f9e22 partial-edit sweep PASS1091 files/28912 edits/3310574 assertions, no failed files. Current code has subsequent changes, so final integrated sweep still needed. SDL3 pinned native SDK rebuild plus four relocated C/C++ consumers PASS; helper40/Mesa19 PASS. CI2fa2bc2 merged; coordinator reports SDL3 six-target/fuzz green, broader Windows failures remain. Five prior native failures individually repaired/PASS (ABI/allocation, Windows runtime, stdin, empty workspaces, stack traces). General canonical preload workspace #compiler dispatch repaired, private helper NoDebug and real assertion frame locations implemented. Full prior workspace792PASS/16FAIL/1ignored retained; no inferred new full-pass claim. Concise compiler/integration-refresh21-requests.md sent via durable handoff; f92f10e9/78d73e86 safe objects still need refresh. Expanded target lint diagnostic interrupted for legitimate edits; stable rerun required.
 
 Integration worker refresh21 follow-up:54 contracts now PASS49 positives+5 precise negatives per interpreter/nativeO0 after fixing catalogue stdout/stderr separation and strengthening compile-only/timeout checks;9 protocol tests PASS.394-case broad diagnostic has313/308 positive passes and76/74 failures, not final stable proof. Foundation leak reports/graphs pass; canonical visualization channel remains failed with actual SDK EEXIST, unique-channel create/map/release succeeds, existing owner untouched. Six portable MPEG asset references repaired without data/assertion changes; intended PTS fault now reached. Wide public helper tests PASSinterp/nativeO0/O2; signed-byte conversion rejection retained independently. Public Protocol comparator and macOS addrinfo are genuine missing API/precision gaps, with earlier mistaken addrinfo classification corrected. Stable newer compiler/bindings/window snapshots still need sanitized ref import.
+
+Registry continuation reaches an exact general compiler blocker, not a stale
+contract question: positive pointer constants hit the constant freezer heuristic
+and diagnose unknown-size memory. Original module-independent reproducer
+pending/opaque-pointer-constant.jai fails host and Windows x64/ARM64 checking
+with exit1. General opaque address-bit versus owned-memory provenance support
+belongs to compiler; no whitelist/sign-extension/mutable workaround used.
+Ten reviewed handles remain INCOMPLETE. Six candidate production/generator/test
+files remain durable UNCOMMITTED/excluded, enumerated in portable-opaque-pointer-constants.md.
+Three provisional Performance_Report files remain independently excluded.
+Known committed functionality is preserved in checkpoints; candidate Registry
+checking currently fails and is not claimed green.246 largely unimplemented
+public rows remain plus partial/platform/compiler gaps, listed per API in linked
+module documents.
+
+System counter continuation: reviewed inline read_cpu_counter and x64 public
+M64 module alias implemented in owned Unix backend. x64 calls actual RDTSC;
+non-x64 Unix returns native CLOCK_MONOTONIC_RAW.tv_nsec, not generic CPU cycles
+or accumulated time.64 real bracketed samples and existing System regressions
+pass interpreter/ARM64+x64 native O0/O2. Strict target-aware lint passes both
+CPUs on macOS/Linux. SDK calls are outside optional assertions and failures log.
+The new fixture retains host/Linux checks and is explicitly unavailable under
+this Unix-only facade on Windows; peer Windows backend is not edited or claimed.
+Evidence and policy: portable-system-counter.md.
+Final System/time broad regression passes114 positives/28 expected faults/16
+compile rejections plus actual SMTP/IPC/runtime and Linux/Windows source checks
+(target/system-time-final-full.log).390 owned files pass format/check. Registry
+candidate failure remains independently documented, not counted as passing
+module functionality by that broad test total.
+
+Latest inbox ownership split adopted: Ico_File, Icon, Windows_Resources, Subtitles
+and Simple_Package now belong to the new independent data worker. No production
+code or pending implementation overlapped those five. Public/private/test
+formatting scope excludes them, ledger marks delegated, missing-row generator
+removes only the assigned modules. Current retained missing inventory is191
+rows, reduced from246 solely by transfer of55 rows, not implementation credit.
+Regeneration is byte-stable; current390 owned files still pass formatting/check.
+Compiler-dependent Registry/toolchain scope and six uncommitted Registry candidate
+files remain ours. No data-worker checkout access or mutation occurred.
+
+ADB host subsystem:15 reviewed public declarations implemented, including live
+path/serial/verbose storage, three canonical records/enums and nine command/
+query/transfer procedures. Source-built native SDK-protocol fixture passes real
+process/argv/output/exit/parser/quoting/allocator-cleanup tests in interpreter and
+ARM64+x64 native O0/O2. Strict scoped lint and Linux both-CPU checking pass;
+unrelated Windows digests retain their source checks after dependency isolation.
+Actual SDK is absent from PATH, no daemon/device/auth commands executed, and
+Windows ADB depends on peer Process integration.191 retained missing rows become
+176; fine ownership/escaping/serial policies are explicitly recorded as review
+questions, not assumed reference behavior. README-linked portable-adb.md contains
+exact evidence and remaining higher-level/build/install gaps.
+Registry original reproducer is committed at tests/portable-stdlib/pending/opaque-pointer-constant.jai;
+NEW compiler raw-pointer handoff is now available and will be rebuilt/validated next.
+
+Registry compiler handoff consumed: local --locked source rebuild repairs the
+exact committed opaque-pointer and default-generic-pointer probes. Opaque pointer
+probe executes interpreter/ARM64+x64 native O0/O2; Registry all33 declarations
+source-check/strictly lint Windows x64+ARM64, with immutable write rejection.
+Six retained candidates now become verified checkpoint inputs. Native Windows
+API calls remain unexecuted; public zero-extension is preserved despite SDK
+sign-extension discrepancy. First new lint staging failed private-source access
+and was fixed with byte-identical JAIC_STDLIB paths, no capability relaxation.
+Evidence: registry-handles-verified-final.log and opaque-pointer-constant-execution.log.
+
+ASN.1 primitive checkpoint-ready batch:13 more reviewed declarations implemented,
+including canonical enums/union tag/type alias and real tag/length/s64/OID/dotted
+string plus checked binary integer/block cursor operations.517 INTEGER and183
+OID vectors plus shape/overlay/alias/eight integer type/both-endian and seven
+malformed-cursor tests pass interpreter/ARM64+x64 native O0/O2. Both Linux/Windows
+CPUs source-check; scoped strict lint passes.176 retained rows become163.
+Unreviewed ASN1_Value content/value_data, printer/depth, prefix-width and accepted
+generic type/invalid-input semantics are precise reviewer questions, not guessed
+completion. No crypto/key/device/native SDK verification is inferred.
+Broad post-compiler/ADB/Registry/ASN.1 regression passes115 positives with
+28 expected faults and16 compile rejections plus prior SMTP/IPC/runtime and
+Linux/Windows target checks (adb-registry-asn1-full.log).402 owned files pass
+format/check. Native Windows Registry/device SDK remain unverified, no fake
+platform results. ASN.1 first-combined OID values beyond64 bits are tested, not
+rejected merely because a temporary u64 would overflow.

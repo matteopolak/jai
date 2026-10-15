@@ -22,10 +22,13 @@ RESERVED = {
     "Window_Creation", "Window_Type", "Input", "Keymap", "Gamepad", "Simp", "Srgb", "Clipboard", "File",
     "Sound_Player", "Bindings_Generator", "Generate_C_Header", "Check", "Codex",
     "Debug", "Debug_Info", "Print_Vars", "Iprof", "Performance_Report", "Rewrite", "Hash",
+    "Ico_File", "Icon", "Windows_Resources", "Subtitles", "Simple_Package",
 }
 RESERVED_FOLDED = {name.casefold() for name in RESERVED}
 RESERVED_INTERNAL = {"bindings", "numerics", "compiler-api", "jai-lexer", "code-visit", "program-print",
-                     "window", "rendering", "input", "gamepad", "clipboard", "file", "audio", "profiling"}
+                     "window", "rendering", "input", "gamepad", "clipboard", "file", "audio", "profiling",
+                     "ico-file", "icon", "windows-resources", "subtitles", "simple-package"}
+DATA_TEST_SCOPE = {"ico-file", "icon", "windows-resources", "subtitles", "simple-package"}
 
 
 def owned_paths():
@@ -44,6 +47,8 @@ def owned_paths():
         paths.append(path)
     for path in (ROOT / "tests/portable-stdlib").rglob("*.jai"):
         relative = path.relative_to(ROOT / "tests/portable-stdlib")
+        if relative.parts[0].casefold() in DATA_TEST_SCOPE or path.stem.casefold() in DATA_TEST_SCOPE:
+            continue
         if relative.parts[0] == "performance-report" or relative.name in {
             "sound-samples.jai", "sound-channels.jai", "sound-magic.jai"
         }:

@@ -235,3 +235,12 @@ Final target/sha-machine-full-final.log passes112 positives/28 expected faults/
 compiler independently reruns all50 critical lifecycle executions and both
 assertion-setting lint/target checks successfully (lifecycle-final-compiler.log).
 387 owned Jai files pass formatting/check.
+
+System/time checkpoint049154a:114 positives/28 expected faults/16 compile
+rejections pass, with existing SMTP/IPC/runtime checks and Linux/Windows source
+scope (target/system-time-final-full.log). The Unix counter and original System
+regression separately pass interpreter/ARM64+x64 native O0/O2; counter production/
+fixture roots pass strict target-aware lint for macOS/Linux both CPUs.390 owned
+files pass formatting/check. The six Registry candidate files fail opaque-pointer
+constant freezing and remain uncommitted/excluded; broad totals do not claim
+Registry completion. Full owned lint/native CI still require coordinator work.

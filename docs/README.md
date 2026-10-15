@@ -11,6 +11,14 @@
 
 Current replacement integration: [commands and results](tools/cleanroom-integration.md), [deviations](status/integration-deviations.md), [module inventory](status/integration-module-inventory.json).111/135 reviewed module facades are present; presence does not establish complete functionality. Native CI and opaque public corpus/Focus remain coordinator work; publication is held.
 
+Android host [ADB operations](portable-adb.md) now include app lifecycle status,
+force-stop and installation queries, with protocol tests and device gaps recorded.
+[JAVA_HOME discovery](portable-java-discovery.md) validates real launcher status
+and records its interpreter/native protocol coverage and Windows dependency.
+[Android configuration flags](portable-android-values.md) covers actual manifest
+mask parsing, diagnosed invalid input and independent target checks.
+
+
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing
@@ -228,6 +236,7 @@ The LLVM backend, C ABI and linking.
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
+- [System raw counter platform split](portable-system-counter.md): real RDTSC and Unix raw-clock nanosecond-member behavior
 - [Portable implementation gaps](portable-stdlib-gaps.md): focused pending reproducers and unresolved behavior
 - [Runtime configuration adoption](portable-runtime-configuration.md): actual settled allocations, CAPS and ownership handoff
 - [Time and calendar API inventory](portable-time.md): real clocks, calendar conversion, caller-return duration macro and remaining contracts
@@ -237,11 +246,14 @@ The LLVM backend, C ABI and linking.
 - [Unix Thread assertion configuration and lifecycle ownership](portable-thread-lifecycles.md)
 - [Windows calendar verification](../tools/check_portable_windows_calendar.py): source/ABI checks, explicit native-host requirement
 - [Windows shared-memory backend and remaining gates](portable-windows-channel.md)
+- [Resolved opaque pointer compiler handoff and Registry verification limits](portable-opaque-pointer-constants.md)
 - [Windows Socket wrappers, native ABI evidence and remaining public gaps](portable-windows-socket.md)
 - [Native Socket field accessors and independent SDK record oracles](portable-socket-fields.md)
 - [Socket ancillary helpers and actual native SDK vectors](portable-socket-cmsg.md)
 - [Windows Registry native APIs and unresolved pseudo-handle ABI](portable-windows-registry.md)
 - [Android toolchain ABI naming, OID identity, digests and remaining APIs](portable-android-toolchain.md)
+- [Android SDK ADB command subsystem](portable-adb.md): native host CLI protocol tests, canonical records and live configuration
+- [ASN.1 primitive parsing and byte cursors](portable-asn1.md): canonical tags, signed integers, full-width OIDs and unresolved value/printer contracts
 - [Exact missing owned public declarations](portable-missing-surface.md)
 - [Windows UTF-8 helpers](portable-windows-utf8.md): real Kernel32 conversion code, ABI checks and outstanding native execution
 - [Owned source format/lint runner](../tools/format_portable_stdlib.py): explicit scope and source-built jaifmt/jailint

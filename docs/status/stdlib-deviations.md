@@ -52,6 +52,24 @@ the absent Machine_X64 public System dependency. Reviewed Windows crash support
 is x64 only; ARM64 enabled-handler rejection is explicitly tested. The older
 private-root lint workaround has been replaced by general strict tool support.
 
+Manifest flag parser: exact reviewed16 names/masks and official SDK | grammar
+implemented. Empty input gives no flags; unknown/empty components log+assert and
+return zero if assertions continue. Whitespace/invalid recovery fine policy is
+not established by inventory; review requested in portable-android-values.md.
+Risk: public finer policy may differ and require correction, not silent token
+dropping. No newer SDK exports, partial-success fallback or native Android claim.
+
+JAVA_HOME discovery: require successful actual java -version execution before
+returning copied bin/executable paths. Environment lookup only reads explicitly
+authorized JAVA_HOME; no PATH/default SDK/credential scan. Fine success/storage/
+fallback policies need reviewer confirmation (portable-java-discovery.md).
+Windows Unicode environment source is implemented using official Kernel32 ABI;
+Windows Process integration and real JVM execution are not validated here.
+Thirty source-built launcher protocol cases are host process evidence, not Java
+or Android compatibility certification. Proper follow-up: real SDK/JVM Windows
+CI and reviewed fine policy; no fake JVM/native Android output or hidden bypass.
+
+
 This is the portable worker's current review record, not full release approval.
 The complete per-module completion inventory is in
 [the module ledger](../portable-stdlib-ledger.md). Unimplemented entries remain
@@ -464,3 +482,82 @@ only for modular high-word corrections; no fake arithmetic, inferred arrow,
 compiler hack or public helper export. Both producer compositions execute
 interpreter/ARM64+x64 native O0/O2. Further floating rounding/calendar policy and
 native platform gates remain separate; no new workaround introduced.
+
+Registry candidate is NOT completed: six owned files are deliberately left
+uncommitted/excluded pending general opaque pointer-constant freezing. Exact
+paths and failing evidence are in portable-opaque-pointer-constants.md. Public
+reviewed zero-extension is preserved; no sign-extension, mutable global, wrapper
+function, fake handle, whitelist or ignored test is substituted. Source checks
+and target-aware lint are blocked before native execution. Compiler source cause
+is the existing small-or-negative integer-handle heuristic; proper solution tracks
+opaque address bits versus memory requiring freezing/relocation. The unchanged
+committed23-export implementation remains the last verified checkpoint; the
+working candidate33-export source is explicitly unverified. No native Windows
+handle acceptance is claimed. Formatting/byte-stable generation alone is not
+functional completion.
+
+System raw counter adds no synthetic fallback: x64 RDTSC and Unix
+CLOCK_MONOTONIC_RAW.tv_nsec follow reviewed CPU-first selection. The Unix member
+wraps each second by contract; not represented as monotonic whole time or physical
+CPU cycles. Clock failure logs independently, then optional assertion; a disabled
+or explicitly continuing handler receives zero after diagnostics, not a counted
+valid sample. Native Linux/Android and peer Windows remain verification/ownership
+gaps. The new test is explicitly Unix-only for Windows target scope; every host
+assertion and Linux source check remains. Existing System test is unchanged.
+No blanket suppression or target constant substitution.
+
+Ownership metadata update only: latest resource/data split moves five modules
+and55 missing rows to the data worker.191 current retained missing rows do not
+mean those55 APIs were implemented. No code overlap/pending source existed in
+those modules; mutation/format scopes exclude their public/private/test names.
+Coordinator will merge new producer sources and exact private-root ownership
+when supplied; no other checkout was read or written for this update.
+
+ADB first batch: native C CLI fixture models official SDK protocol strictly for
+unit/process/argv/error/parser/ownership regression, not an Android SDK binary
+or device verification substitute. No actual SDK found on PATH; no device/daemon/
+auth accessed. Independent finer policies: context-owned return strings/array;
+explicit nonempty serial wins; optional generic escaping only spaces; high-level
+remote literal quoting; disable compression wins; malformed parse rejects and
+pidof returns the first positive signed32 PID. These remain precise questions
+where review is silent. No public convenience exports added. Windows Process
+remains unintegrated for ADB; the dependency is local to adb so digests/types
+retain Windows use. Original dependency/indexing/lint failures are retained.
+No test assertions were weakened, invalid SDK/device results manufactured or
+errors mapped to success. Registry candidates remain excluded until compiler
+rebuild and original-probe validation.
+
+Registry pointer workaround remains NONE: general compiler fix is rebuilt and
+original probes pass; public immutable positive values now validate on both
+Windows CPU targets. No whitelist, mutable surrogate, function replacement or
+sign extension. Native acceptance is still pending actual Windows. The new
+linter correctly rejected producer paths outside JAIC_STDLIB; byte-identical
+staged paths fix tool setup without changing capabilities or public imports.
+Intentional constant-write negative is compiler-rejection coverage, not a
+lint-positive claim. Earlier uncommitted/blocker notes are historical; six
+candidates now pass source/strict-lint gates and are checkpoint-ready.
+
+ASN.1 primitive supported-domain limits: definite lengths with at most eight
+length octets, u8 tag numbers, s64 INTEGER results and twelve u64 OID arcs.
+Indefinite/overflow/excess/truncated values log and assert; explicitly continuing
+or disabled assertions return non-success defaults and retain input cursor.
+Those invalid defaults are never counted as parsed functionality. Signed INTEGER
+redundant sign bytes are trimmed; invalid-recovery/noncanonical policy needs
+review. Binary integer reading supports reflected integer widths1/2/4/8 on the
+current little-endian compiler targets; broader generic kinds remain unsupported.
+OID dotted strings are context-owned. Field meaning/printing/prefix/endian finer
+questions remain recorded, so their API bodies are not invented. Standard wire/
+Python mathematical vectors are independent test inputs, not reference Jai code.
+No C/native crypto dependency, caller relocation tracking, mutable alias surrogate,
+blanket lint exclusion or fake parsing success. All negative checks restore fatal
+handlers before verification.
+
+ADB app lifecycle: no installed SDK/device is available. Source-built process
+protocol fixtures validate argv/status/parser/ownership on host native O0/O2 and
+interpreter; they are not device integration. Narrow pidof status1+empty capture
+means absent, other failures remain errors; package path responses require
+package:/ prefixes. These supported choices need public fine-policy review.
+Risk: future SDK output/status changes may require parser adjustment; proper
+follow-up is SDK/device CI plus reviewed failure-policy clarification, not treating
+arbitrary command errors as successful absence. No fake SDK success or test
+exclusions added. See docs/portable-adb.md and target/adb-apps-final.log.
