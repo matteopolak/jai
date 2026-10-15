@@ -36716,7 +36716,7 @@
     },
     "d3d_compiler": {
       "spec": "docs/specs/stdlib/modules/d3d-compiler.md",
-      "spec_sha256": "1aa06ff6072106cf93087cfc2bc5bb087168dd21a01496d86a19681ecaa8de60",
+      "spec_sha256": "3976934b7a3fb364d80a5122bdb87d3cc2b3257fc8977b6fb14d5fb277bcc082",
       "counts": {
         "declared": 62,
         "forwarded": 23,
@@ -37355,7 +37355,7 @@
     },
     "dxc_compiler": {
       "spec": "docs/specs/stdlib/modules/dxc-compiler.md",
-      "spec_sha256": "e6eb57d93dae4607d0aa335616611e8b16dead772b47110ed3fec0e31c35b083",
+      "spec_sha256": "44535caca5d8fb7fc19022db30aff88bb69954a1e112ae597327f5320a6cb70c",
       "counts": {
         "declared": 92,
         "implemented": 2,
@@ -99023,11 +99023,12 @@
     },
     "Objective_C": {
       "spec": "docs/specs/stdlib/modules/objective-c.md",
-      "spec_sha256": "e02767bf55fa0c1a53c7473aa4d15b8303c1b7405d3c46df1bdc76b078a2da8b",
+      "spec_sha256": "19ce6da183a8cc5abf66fbfa92bb6ed6a658ee0eef906eeacdcdab771c1ccbf1",
       "counts": {
         "implemented": 29,
         "declared": 449,
-        "unresolved": 8
+        "implemented_manual": 1,
+        "partially_implemented": 7
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -99262,32 +99263,35 @@
           "signature": "create_objc_class_member_stub :: (class_name: string, framework_name: string) -> string",
           "condition": "",
           "spec_line": 40,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Objective_C/wrappers.jai"
         },
         {
           "name": "objc_create_class",
           "signature": "objc_create_class :: ($type: Type, $parent: Type) -> Class",
           "condition": "",
           "spec_line": 41,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/Objective_C/wrappers.jai",
+          "reason": "Real native C-compatible encoding/class/method behavior; Jai-specific alias, ownership, naming, validation and unsupported-reflection contracts still need public review"
         },
         {
           "name": "objc_add_instance_method",
           "signature": "objc_add_instance_method :: (my_class: Class, proc: Any, selector_name: string)",
           "condition": "",
           "spec_line": 42,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/Objective_C/wrappers.jai",
+          "reason": "Real native C-compatible encoding/class/method behavior; Jai-specific alias, ownership, naming, validation and unsupported-reflection contracts still need public review"
         },
         {
           "name": "objc_add_class_method",
           "signature": "objc_add_class_method :: (my_class: Class, proc: Any, selector_name: string)",
           "condition": "",
           "spec_line": 43,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/Objective_C/wrappers.jai",
+          "reason": "Real native C-compatible encoding/class/method behavior; Jai-specific alias, ownership, naming, validation and unsupported-reflection contracts still need public review"
         },
         {
           "name": "objc_finalize_class",
@@ -99301,24 +99305,27 @@
           "signature": "objc_type_encode :: (builder: *String_Builder, info: *Type_Info, pointer_depth := 0)",
           "condition": "",
           "spec_line": 45,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/Objective_C/wrappers.jai",
+          "reason": "Real native C-compatible encoding/class/method behavior; Jai-specific alias, ownership, naming, validation and unsupported-reflection contracts still need public review"
         },
         {
           "name": "objc_type_encode",
           "signature": "objc_type_encode :: (info: *Type_Info) -> string",
           "condition": "",
           "spec_line": 46,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/Objective_C/wrappers.jai",
+          "reason": "Real native C-compatible encoding/class/method behavior; Jai-specific alias, ownership, naming, validation and unsupported-reflection contracts still need public review"
         },
         {
           "name": "objc_func_encode",
           "signature": "objc_func_encode :: (ty: *Type_Info_Procedure) -> string",
           "condition": "",
           "spec_line": 47,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/Objective_C/wrappers.jai",
+          "reason": "Real native C-compatible encoding/class/method behavior; Jai-specific alias, ownership, naming, validation and unsupported-reflection contracts still need public review"
         },
         {
           "name": "has_isa_member",
@@ -99332,8 +99339,9 @@
           "signature": "type_check_objc_method_type :: (ty: *Type_Info_Procedure)",
           "condition": "",
           "spec_line": 49,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/Objective_C/wrappers.jai",
+          "reason": "Real native C-compatible encoding/class/method behavior; Jai-specific alias, ownership, naming, validation and unsupported-reflection contracts still need public review"
         },
         {
           "name": "Objective_C_Block_Basic_Descriptor",
@@ -180211,7 +180219,7 @@
     },
     "telemetry3": {
       "spec": "docs/specs/stdlib/modules/telemetry3.md",
-      "spec_sha256": "e50e39b2dde24e6e03cf8f5b0578245000d0ebbce9db571835b7333022eccf03",
+      "spec_sha256": "80ec7178e5af199a18a76b3b8f4005e588a2bda1a171c7a6da1a4a895989e3b2",
       "counts": {
         "declared": 24,
         "implemented": 14,
@@ -214947,7 +214955,7 @@
     },
     "X11": {
       "spec": "docs/specs/stdlib/modules/x11.md",
-      "spec_sha256": "4a08c1afb5c9b826afabe65ecca056abd03112b1c4f697afdf4f43a0b33c62bc",
+      "spec_sha256": "6e7dad4c19bc188b0736a18f13e86173d1b1108a298abf4f65f9dff269b1fc06",
       "counts": {
         "declared": 1248,
         "unresolved": 4,

@@ -224,6 +224,7 @@ def main():
         ('SDL', 'sdl-rwops.jai', TARGET_CONFIGS),
         ('SDL', 'sdl-wm.jai', TARGET_CONFIGS),
         ('Objective_C', 'appkit.jai', [('macos','x64'),('macos','arm64')]),
+        ('Objective_C', 'objc-runtime.jai', [('macos','x64'),('macos','arm64')]),
         ('GL', 'gl-output-buffers.jai', TARGET_CONFIGS),
         ('GL', 'glx-context.jai', [('linux','x64'),('linux','arm64')]),
         ('GL', 'wgl-context.jai', [('windows','x64'),('windows','arm64')]),
@@ -256,6 +257,8 @@ def main():
     for module, private in [('lz4', 'liblz4'), ('xxHash', 'binding_XXH32'), ('stb_image', 'FILE'),
                             ('Curl', 'Native'), ('Curl', 'Varargs'), ('dxc_compiler', 'IMalloc'),
                             ('MojoShader', 'MOJOSHADER_uniformType'), ('Objective_C', 'binding_objc_class'),
+                            ('Objective_C', 'ObjCEncoding'), ('Objective_C', 'ObjCRegistration'),
+                            ('Objective_C', 'ObjCStub'), ('Objective_C', 'ObjCBasic'), ('Objective_C', 'String_Builder'),
                             ('Objective_C', 'NSWindow'), ('Objective_C/AppKit', 'NSView'),
                             ('Objective_C/AppKit', 'NSScreen'), ('Objective_C/AppKit', 'send_result'),
                             ('SDL', 'NativeSDL'), ('SDL', 'Binding_File_RWops'),
@@ -311,7 +314,7 @@ def main():
                               status='passed' if result['exit'] != 0 and 'has no exported member `'+member+'`' in result['stderr'] else 'failed')
                 report['privacy'].append(result)
     if args.runtime and not args.privacy_only:
-        runtime_tests = ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'posix-abi', 'curl', 'ios-sdk-host', 'objective-c', 'appkit', 'mojoshader', 'macos', 'metal', 'gl', 'nsgl', 'gl-context', 'reflection-procedure-flags', 'graphics-math', 'sdl', 'sdl-wm', 'sdl-layout']
+        runtime_tests = ['lz4', 'xxhash', 'images', 'meshoptimizer', 'freetype', 'posix', 'posix-abi', 'curl', 'ios-sdk-host', 'objective-c', 'objc-runtime', 'appkit', 'mojoshader', 'macos', 'metal', 'gl', 'nsgl', 'gl-context', 'reflection-procedure-flags', 'graphics-math', 'sdl', 'sdl-wm', 'sdl-layout']
         if not args.module or 'iOS' in args.module:
             report['native'].append({'name':'ios-public-facade','status':'unsupported',
                                      'reason':'Reviewed iOS-only exports are absent on the desktop host; required mobile source checks remain active'})
@@ -331,7 +334,7 @@ def main():
             runtime_tests.append('x11-window-helpers')
             runtime_tests.append('x11-message-box')
         for name in runtime_tests:
-            relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
+            relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'objc-runtime':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
             if name == 'appkit':
                 relevant = ['Objective_C']
             if name == 'fsevents-context':

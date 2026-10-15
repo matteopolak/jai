@@ -8,6 +8,23 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Objective-C helper scope and framework path.** The eight missing bodies
+  are implemented with real native SDK calls. Seven encoding/class/method
+  helpers remain partial for unsupported reflection categories and unreviewed
+  Jai-specific policy; natural C layouts are checked, arbitrary overlays and
+  implicit-context IMPs are rejected before unsafe calls. Returned strings are
+  owned by the active Basic allocator; original naming/collision/error policy
+  equivalence remains a public review question. The member stub tries the
+  documented framework path and then installed .framework bundle spelling,
+  closing its handle in both successful routes. This fallback is required
+  because the prose spelling omits the actual native bundle suffix. Proper
+  fix: clarify the public path selection contract and remove unnecessary
+  alternate routing. Native both-CPU ABI/lifetime tests and strict lint pass;
+  .work/objc-helper-module.json has zero applicable failures. The first
+  large-return fixture had a missing push_context in its C callback; this
+  fixture correction preserves the32-byte native return assertion. No compiler
+  exception, public type replacement or extra root AppKit export was added.
+
 - **Heap handle reservation and remaining graph OOM.** After `4fa38d7`,
   `rpmalloc-heaps/bridge.c` reserves typed HeapView storage before SDK acquisition.
   OOM returns null/ENOMEM before native mutation; actual native mapping failure

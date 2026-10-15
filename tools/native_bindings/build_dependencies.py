@@ -91,6 +91,7 @@ def main():
     units = {**{name: units[name] for name in rpmalloc_units}, **units}
     if platform.system() == 'Darwin':
         units['fsevents_context_probe'] = [ROOT/'tests/native-bindings/fsevents_context_probe.c']
+        units['objc_runtime_probe'] = [ROOT/'tests/native-bindings/objc_runtime_probe.m']
     macros = {'stb_image': 'STB_IMAGE_IMPLEMENTATION',
               'stb_image_resize': 'STB_IMAGE_RESIZE_IMPLEMENTATION',
               'stb_image_write': 'STB_IMAGE_WRITE_IMPLEMENTATION'}
@@ -123,6 +124,8 @@ def main():
         extra = ['-lffi'] if name == 'binding_ffi' else []
         if name == 'fsevents_context_probe':
             extra = ['-framework', 'CoreServices']
+        if name == 'objc_runtime_probe':
+            extra = ['-framework', 'Foundation']
         if name in rpmalloc_units and name == rpmalloc_units[name]['callbacks']:
             extra = ['-L', args.output, '-l'+rpmalloc_units[name]['sdk']]
         elif name == 'rpmalloc_callback_probe':

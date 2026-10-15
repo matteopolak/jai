@@ -3,6 +3,8 @@
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing
+- [Objective-C runtime helpers](native/objc-runtime-helpers.md): real encoding,
+  runtime class/method installation, member declarations and native ABI tests
 - [FSEvents context adapter](native/fsevents-context.md): exact public order,
   private SDK marshalling, callback lifetime and native canary/event checks
 - [Direct3D canonical interface dependencies and compiler repros](native/d3d-source-dependencies.md)

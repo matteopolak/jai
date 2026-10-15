@@ -390,6 +390,11 @@ def generate_facade(module, spec):
                 record.update(status='partially_implemented',
                               implemented_condition='Native_Profile_Matches' + (' && ('+condition+')' if condition else ''),
                               reason='Real native boundaries for twenty-four raw/rewrite/layout/statistics/cache profiles; adaptive-cache/assertion/page-advice and numeric build options remain incomplete')
+            if module == 'Objective_C' and d.name in {
+                    'objc_type_encode', 'objc_func_encode', 'type_check_objc_method_type',
+                    'objc_create_class', 'objc_add_instance_method', 'objc_add_class_method'}:
+                record.update(status='partially_implemented',
+                              reason='Real native C-compatible encoding/class/method behavior; Jai-specific alias, ownership, naming, validation and unsupported-reflection contracts still need public review')
             ledger.append(record)
             continue
         key = (condition, d.code)

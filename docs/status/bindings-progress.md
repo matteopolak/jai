@@ -1,5 +1,20 @@
 # Bindings worker progress
 
+Objective_C helper batch after `5b6ac6f`: all eight missing public helper bodies
+now exist, including the newly reviewed runtime-size member-stub generator.
+Real x64/ARM64 Mac tests verify native encoding parsing, class/ivar layout,
+instance/metaclass dispatch,32-byte return ABI, object release and failed class
+cleanup. Full module source/native/privacy sweep has zero applicable failures;
+formatting, strict lint, regeneration and68 Python tests pass. Seven helpers
+remain conservatively partial for unsupported reflected categories and exact
+Jai-specific policy review; no unsupported diagnostic is counted as completed
+functionality. Objective_C has0 unresolved declarations,7 partial helpers.
+Other-module unresolved count is now28; rpmalloc remains80 partial with its
+existing24 verified cache profiles. No profile expansion or benchmark ran.
+The framework-path fallback is documented in deviations; combined coordinator
+Mac corpus result remains unavailable to this isolated worker. Next: reviewed
+D3D string overloads, DXC version helper, then X11 missing helper group.
+
 Heap handle OOM batch after `4fa38d7`: typed canonical HeapView storage is now
 reserved before SDK ownership mutation. Reservation OOM returns null/ENOMEM;
 actual SDK mapping failure frees the reservation. The original fault injection
