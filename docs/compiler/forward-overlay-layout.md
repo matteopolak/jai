@@ -105,5 +105,5 @@ Remaining contract question: a conditional field set whose selection itself need
 the type of a field introduced only by that conditional has no reviewed fixed-point
 rule. Only known direct declarations and selected expansions participate; genuine
 cycles/unknown names diagnose. General AST/debugger/alternate-backend and portable
-runtime-adoption limits remain separate. Mailbox CPUID and tooling identity/typed
-result-descriptor reproducers are next compiler work, not completed by this batch.
+runtime-adoption limits remain separate. CPUID is fixed separately in compiler/cpuid.md. Tooling identity/typed
+result-descriptor reproducers remain pending and are not completed by this batch.

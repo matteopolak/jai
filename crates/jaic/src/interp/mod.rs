@@ -2369,6 +2369,20 @@ impl Interp {
             I::Fma => Rets::one(f64_of(a[0]).mul_add(f64_of(a[1]), f64_of(a[2])).to_bits()),
             I::ReturnAddress => Rets::one(0),
             I::CycleCounter => Rets::one(cycle_counter()),
+            I::CpuId => {
+                #[cfg(target_arch = "x86_64")]
+                {
+                    // CPUID is mandatory on x86-64; the standard wrapper preserves ABI registers.
+                    let info = std::arch::x86_64::__cpuid_count(a[0] as u32, a[1] as u32);
+                    Rets::collect(
+                        [info.eax, info.ebx, info.ecx, info.edx]
+                            .into_iter()
+                            .map(u64::from),
+                    )
+                }
+                #[cfg(not(target_arch = "x86_64"))]
+                return self.trap("CPUID execution requires an x86-64 interpreter host");
+            }
             I::Syscall => {
                 if !self.host.native_linking() {
                     // The sandbox never runs a system call: EPERM.

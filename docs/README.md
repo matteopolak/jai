@@ -10,6 +10,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 Jai language behavior as implemented by `jaic`.
 
 - [Casts and conversions](language/casts-and-conversions.md)
+- [Real x64 CPUID execution](compiler/cpuid.md)
 - [Forward overlay declaration and layout resolution](compiler/forward-overlay-layout.md)
 - [Interpreter Windows thread handles and naming](compiler/windows-thread-handles.md)
 - [Windows ABI unwind tables](compiler/windows-unwind.md)
