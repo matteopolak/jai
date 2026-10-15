@@ -1,5 +1,34 @@
 # Window/render worker handoff
 
+Implementation checkpoint `821adb4`; final runner186/zero, including final Windows
+lifecycle source checks. Strict host lint also covers standalone Cocoa and portable
+native fields; no incomplete roots/warnings. Mesa build on macOS correctly exits2
+requiring native Windows ARM64; do not count that guard/plan as a built driver.
+
+Latest WGL batch: filtered run38662728329 establishes actual x64 Mesa4.6 and
+passing public probe/events/drawing in interpreter/O0/O2. Lifecycle and native
+Windows lint remain failures; ARM64 has actual GDI Generic1.1. No raw logs read.
+Official Mesa's pre-procedure WM_DESTROY drawable release explains a concrete
+hazard in our close callback. Production now uses real matching-pixel-format
+retirement window/DCs, retains a usable share owner, and reports immediate WGL
+selection errors. Original lifecycle test adds actual owner rebinding and repeated
+MSAA teardown without removing shared-texture/PBO assertions.
+
+Validation: `python3 tools/check_window_render.py --font /System/Library/Fonts/Helvetica.ttc`
+passed186 invocations/zero failures on the context change; the extended lifecycle
+test additionally passes Windows x64/arm64 `-check`. Full owned jaifmt --check and
+integrated native-host jailint -D warnings pass, no incomplete-root notes. Three
+`python3 tests/window-render/test_mesa_source.py` safety regressions pass; both
+CI helpers and that test py_compile. `window_render_mesa_windows.py --plan` runs;
+actual build correctly requires native Windows ARM64. The pinned source build
+and deployment commands/evidence boundaries are in
+[WGL investigation](native/window-render-wgl-investigation.md). Native rerun must
+verify lifecycle and strict Windows lint on both CPUs, deploying real ARM64 Mesa
+first. Filtered summaries now provide native error stages and lint headers/locations.
+No native Windows success is inferred from local checks. Older creation-only
+diagnoses below are historical. Bindings owner still owns canonical WGL cleanup;
+no peer edits or staged binding replacements were made.
+
 Fresh tooling/lint scope: current NEW compiler and jailint rebuilt, jaifmt rebuilt with that compiler. Use actual integrated production library roots for lint, not local facade copies whose parent prepends inherited dependencies. Eight staged facades plus private context/lifecycle modules and macOS event test pass -D warnings with no incomplete roots. New Windows tool requires matching source-built jailint and rejects stderr/incomplete compilation as failure. Original all-local-root failure evidence and proper platform/negative-test distinctions are recorded in deviations. Cursor close search/retirement cleanup and retained-cursor native regression pass interpreter/O0/O2; no blanket lint suppression.
 
 Windows WGL investigation: authorized filtered CI candidate0100a1f confirms issue#1 signed wheels pass BOTH CPUs, but real renderer WGL creation fails all modes on both. New production diagnostics, canonical native driver probe, full public color/texture framebuffer regression and explicit real software-driver deployment tool are ready for native CI. Root cause/actual installed driver remain unverified; no API/coverage reduction or peer edits. Bindings-owner immediate native failure-stage/error capture is requested in native/window-render-wgl-investigation.md.

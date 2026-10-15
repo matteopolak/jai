@@ -1,5 +1,100 @@
 # WGL failure investigation and native CI handoff
 
+## Latest lifecycle evidence and correction (2026-10-14)
+
+Authorized filtered run38662728329 supersedes the historical creation-only
+diagnosis below. x64 actually loads Mesa llvmpipe/OpenGL4.6; probe, public events
+and public shader/texture draw/readback pass interpreter/O0/O2. Lifecycle fails
+context selection (native exits3221226505). ARM64 actually loads GDI Generic1.1,
+and still needs a matching real driver. Signed wheels pass both CPUs. No raw
+logs or forbidden implementation sources were consulted.
+
+Official Mesa25.2.5 `src/gallium/frontends/wgl/stw_framebuffer.c` installs a
+CALLWNDPROC hook and releases the window framebuffer on WM_DESTROY, before our
+window procedure executes. Our retirement callback selected that dying window's
+DC. This is a concrete source-level lifetime hazard consistent with the native
+failure; a new native run must still establish that it explains this CI failure.
+
+Each Windows context now owns a real hidden native STATIC window/common DC at
+the original display position, with the visible window's exact installed pixel
+format. During destruction only that retirement drawable is selected for GL
+cleanup. Non-root contexts delete their context, release this common DC and
+destroy its native window. The first share-owner context and its retirement
+drawable remain process-lived, so pending PBOs/textures survive closing all public
+windows and reopening. This is an actual SDK-backed resource, not a fake public
+window or simulated GL support. Retaining one native surface/context is a real
+resource/performance cost; see the deviations report. Different multisample
+formats receive distinct compatible retirement DCs.
+
+The original lifecycle regression now checks current-context/DC preservation when
+closing a noncurrent window, explicitly unbinds/rebinds the retained live owner
+after all public windows close, preserves real texture/readback assertions, and
+repeats multisample-window teardown. A current dying drawable is replaced before
+renderer retirement flushes pending immediate writes to surviving texture storage;
+the regression checks those pixels after reopen. Every failed native selection
+records stage, immediate GetLastError, requested handles and prior handles before
+asserting. Native CI filtered summaries include those records and lint diagnostic
+headers/locations without source excerpts. The previous filtered report gives no
+lint rule/location; native Windows strict lint is still unresolved until its
+actual findings are supplied. Native-host strict lint is a separate local check.
+
+## Pinned native ARM64 source route
+
+`tools/window_render_mesa_windows.py` builds the actual WGL pair from official
+Mesa25.2.5, LLVM20.1.8 and upstream WinFlexBison2.5.25 sources. URLs and SHA256s
+are immutable in the helper; the LLVM digest comes from its official release API,
+Mesa/WinFlexBison hashes were measured on downloaded upstream source archives.
+No Jai implementation is involved. Build inputs, exact commands, MSVC/SDK versions
+and output DLL hashes are recorded in target/window-mesa-arm64/source-build.json.
+
+Use native Windows ARM64 Python3.12+ and VS2022 ARM64 C/C++ tools (VS17.9+,
+Windows SDK20348+ per Mesa's installation documentation). Initialize vcvarsall
+for ARM64, then install build tools with these exact versions in an isolated
+environment: cmake3.31.6, ninja1.13.2, meson1.8.3, Mako1.3.10,
+MarkupSafe3.0.3, packaging25.0. CMake/Ninja/MarkupSafe native ARM64 wheel availability
+was checked against the public package index. For example, in the activated venv:
+
+```sh
+python -m pip install cmake==3.31.6 ninja==1.13.2 meson==1.8.3 Mako==1.3.10 MarkupSafe==3.0.3 packaging==25.0
+```
+
+Tool wheels may execute as host build tools; generator executables, LLVM tools
+and driver DLLs are verified as ARM64 PE images. No x64 driver is accepted.
+
+```sh
+python tools/window_render_mesa_windows.py --plan
+python tools/window_render_mesa_windows.py --jobs 4
+python tools/window_render_wgl_ci.py \
+  --jaic target/aarch64-pc-windows-msvc/debug/jaic.exe \
+  --jailint target/aarch64-pc-windows-msvc/debug/jailint.exe \
+  --stdlib stdlib --native-libs target/native-libs \
+  --driver-dir target/window-mesa-arm64/driver
+```
+
+LLVM is built with the AArch64 backend and static /MT CRT, matching Mesa;
+llvmpipe/draw LLVM are enabled, shared LLVM disabled. Unused Vulkan/EGL/GLES/GLX
+and optional compression/XML libraries are disabled to keep this WGL driver build
+self-contained; production OpenGL shaders/render/readback tests remain required.
+Upstream Mesa CTS is not claimed. WinFlexBison is itself built from source and
+installed with its parser data. Meson fallback downloads are disabled. A stale
+extracted source tree is rejected rather than silently trusted. No GL/GLSL version
+override is permitted. App-local deployment and actual llvmpipe identity/readback
+are required by the native runner; a successful DLL build alone is insufficient.
+
+Local evidence: pinned Mesa and WinFlexBison archives downloaded and inspected,
+LLVM official release digest and its AArch64 COFF runtime-linker support checked,
+plan and three source-cache safety regressions pass. This macOS host cannot build
+MSVC ARM64 DLLs or execute Windows graphics. ARM64 driver build/deployment/runtime
+remain **pending native CI**, with potentially substantial LLVM build time/memory
+and runner desktop/session constraints. No unavailable driver is counted as pass.
+
+Official native sources: [Mesa source archive](https://archive.mesa3d.org/mesa-25.2.5.tar.xz),
+[LLVM20.1.8](https://github.com/llvm/llvm-project/releases/tag/llvmorg-20.1.8),
+[WinFlexBison2.5.25](https://github.com/lexxmark/winflexbison/tree/1176da2adaf972b2216b1ac8dd611e128fe80bc5),
+[Mesa installation](https://docs.mesa3d.org/install.html),
+[Mesa llvmpipe](https://docs.mesa3d.org/drivers/llvmpipe.html),
+[Microsoft wglMakeCurrent](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-wglmakecurrent).
+
 ## Evidence boundary
 
 Authorized filtered feedback in `docs/ci-feedback-latest.md` reports candidate
@@ -128,7 +223,3 @@ must still run after this targeted diagnostic, without test exclusions.
 - [ReleaseDC](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-releasedc) and [private DC ownership](https://learn.microsoft.com/en-us/windows/win32/gdi/private-display-device-contexts): only common DCs need release; class/private DCs remain OS-owned.
 - [WGL context/profile attributes](https://registry.khronos.org/OpenGL/extensions/ARB/WGL_ARB_create_context.txt): version/profile requests and failure conditions.
 - [Mesa build prerequisites](https://docs.mesa3d.org/install.html), [Windows Meson configuration](https://docs.mesa3d.org/meson.html), [LLVMpipe application-local Windows deployment](https://docs.mesa3d.org/drivers/llvmpipe.html).
-
-## Integrated CI invocation
-
-The Windows workflow builds `jailint` alongside `jaic` and runs this probe on both native CPUs. x64 explicitly deploys the existing pinned Mesa distribution beside the interpreter and test executables; ARM64 records the installed native driver without substituting x64 DLLs. Both CPU platform runners enable `--windows-crash` for actual default/ON/OFF faults, trace and cleanup checks. A missing modern driver remains a failed rendering gate.
