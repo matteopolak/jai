@@ -934,3 +934,30 @@ this report and the machine-readable evidence before production integration.
   original RWops/UserEvent size assertions still fail. Proper long-term
   standalone shape/callback resolution requires reviewed API changes; this
   scalar conversion is the safe boundary required by the existing contract.
+
+## Shared logger verification transition (2026-10-15)
+
+Retired the old clone/artifact Runtime staging route in the owned logger
+runner. The canonical independent fixture now resides at
+stdlib/Android/tests/logger-output.jai so private imports originate within
+the normal library boundary; tests/native-bindings/android-logger-output.jai
+loads it. This is a static test-source relocation, not a compiler privacy
+exception, source overlay or exported helper. The original control body and
+assertions are preserved. Initial reverse-load privacy failures remain in
+worker-private receipts.
+
+Actual shared Runtime queue/lock/write/flush closure resolves the old missing
+dependency. Fresh Mac ARM64 interpreter/native O0/O2/address+undefined sanitizer
+output controls pass, plus strict lint/format and four host source targets.
+Eight Android target checks remain unverified (including the exact six
+AAudio/EGL/POSIX gates); no expected ledger or SDK success is fabricated.
+Production binding sources remain unchanged during integration's source hold.
+Only integration stages/commits this test/tool/docs batch.
+
+Longer-term remaining work: implement unsupported required rpmalloc
+configuration semantics through safe native build/adapters without optional
+matrix expansion; replace graph/default-thread metadata OOM aborts with
+transactional reservation/publication where feasible. Existing acquisition
+reservation is transactional, but does not solve graph-wide OOM. Keep
+serialization/copy costs explicit. Objective_C's precise seven API policy
+questions and genuinely unavailable enabled telemetry ABI remain distinct.

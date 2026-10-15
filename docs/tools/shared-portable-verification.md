@@ -13,6 +13,17 @@ with `python3 -B tools/build_android_crypto.py --openssl-prefix
 /opt/homebrew/opt/openssl@3 --stdlib stdlib`. Generated native outputs are ignored;
 the builder records their hashes, actual SDK version, licenses and loader closure.
 
+Before the workspace native tests, also run
+`python3 -B tools/build_portable_runtime.py`. The plugin/runtime-configuration
+fixtures require its real private crash helper, even when the ordinary compiler
+build succeeds. Missing this preparation caused three recorded shared-tree
+failures; all three passed exact frozen-source reruns after the source build.
+For the developer-tool suites, build their actual helpers with
+`tools/build_developer_bindings.py`, `tools/build_developer_check.py` and
+`tools/build_developer_debug.py` using the configured official LLVM SDK.
+Build `tools/build_portable_watcher.py` before watcher execution. These steps
+materialize native artifacts only; they do not alter library defaults or sources.
+
 Run `python3 -B tools/check_shared_portable.py` with that same CARGO_TARGET_DIR.
 The runner uses the actual combined `stdlib`, without replacing any source,
 facade, context, provider or compiler. It retains every assertion in nine public

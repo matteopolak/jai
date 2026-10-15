@@ -1,70 +1,80 @@
 {
   "role": "bindings",
-  "timestamp": "2026-10-15T21:32:57.432253+00:00",
-  "shared_head": "71c54d8e584789d5513b4786b5b4f8279b2da019",
+  "timestamp": "2026-10-15T23:04:10.060275+00:00",
+  "shared_head": "d3547c8855a719b3d42822c2dff5126e1f51cce7",
   "named_checkpoint": "0d57d88597c934d822ed3c208fccc1fad672673c",
   "adoption": [
     {
       "path": "stdlib/Android/wrappers.jai",
-      "state": "different",
+      "state": "identical",
       "checkpoint_sha256": "33c5d3f1f2dbae4dc29e036f2d95e93d5f43762ea86ae7f7197dd00094454b51",
-      "shared_sha256": "d966771c1e49281056e11b22ea5ec4ffb529c5f0e7bba42beadc52c49062fd62"
+      "shared_sha256": "33c5d3f1f2dbae4dc29e036f2d95e93d5f43762ea86ae7f7197dd00094454b51",
+      "initial_state": "different"
     },
     {
       "path": "stdlib/internal/bindings/android-log/module.jai",
-      "state": "absent",
+      "state": "identical",
       "checkpoint_sha256": "65ed3fcd779451b950974af1abeea1a3857816d1824e6e8b81a64cee0d41a0cf",
-      "shared_sha256": null
+      "shared_sha256": "65ed3fcd779451b950974af1abeea1a3857816d1824e6e8b81a64cee0d41a0cf",
+      "initial_state": "absent"
     },
     {
       "path": "tests/native-bindings/android-logger-output.jai",
-      "state": "absent",
+      "state": "identical",
       "checkpoint_sha256": "ee1606338a441e555166d3e1f530711918c94be3c59adbf6a7305ff25c5a59ea",
-      "shared_sha256": null
+      "shared_sha256": "ee1606338a441e555166d3e1f530711918c94be3c59adbf6a7305ff25c5a59ea",
+      "initial_state": "absent"
     },
     {
       "path": "tools/native_bindings/verify_android_logger.py",
-      "state": "absent",
+      "state": "identical",
       "checkpoint_sha256": "7ff6a51ec66e4b215c6be98ad58908ad9559fb87d858fa08b9d540774c461cdb",
-      "shared_sha256": null
+      "shared_sha256": "7ff6a51ec66e4b215c6be98ad58908ad9559fb87d858fa08b9d540774c461cdb",
+      "initial_state": "absent"
     },
     {
       "path": "tools/native_bindings/generate.py",
-      "state": "different",
+      "state": "identical",
       "checkpoint_sha256": "0669d87f3ba9b90c4076f52639d5b6ada9843f546ba5efceaa15c4074dc31834",
-      "shared_sha256": "1ee698f7bd190dce92cef692c2cf89852ae357d081f80a0c7fbc911e8a9cf83a"
+      "shared_sha256": "0669d87f3ba9b90c4076f52639d5b6ada9843f546ba5efceaa15c4074dc31834",
+      "initial_state": "different"
     },
     {
       "path": "tools/native_bindings/verify.py",
-      "state": "different",
+      "state": "identical",
       "checkpoint_sha256": "116225f491a089170cbf0d2ff5b7def2c5c93030440511c7c937b030635ee427",
-      "shared_sha256": "4ba55e76cc455e46e67419ef1eb8b88b3250d6b3b3386cf3cf6f821f51f81967"
+      "shared_sha256": "116225f491a089170cbf0d2ff5b7def2c5c93030440511c7c937b030635ee427",
+      "initial_state": "different"
     },
     {
       "path": "docs/native/android-logger-runtime-inputs.json",
-      "state": "absent",
+      "state": "identical",
       "checkpoint_sha256": "33dfb06555f030d2484fd72cdd4dff18622cec9f1bf35a9da768f7dcd10a006c",
-      "shared_sha256": null
+      "shared_sha256": "33dfb06555f030d2484fd72cdd4dff18622cec9f1bf35a9da768f7dcd10a006c",
+      "initial_state": "absent"
     },
     {
       "path": "docs/native/android-logger-discard.md",
-      "state": "absent",
+      "state": "identical",
       "checkpoint_sha256": "a189011ff90c8530536cc833a0ddc1a7c72c697525552573dffde58e89f4d1be",
-      "shared_sha256": null
+      "shared_sha256": "a189011ff90c8530536cc833a0ddc1a7c72c697525552573dffde58e89f4d1be",
+      "initial_state": "absent"
     },
     {
       "path": "docs/native/bindings-coverage.json",
       "state": "different",
       "checkpoint_sha256": "120f86aaa3e7411aa544948be0c0d9c8b3aea131020e2fdf660924b5535f526f",
-      "shared_sha256": "196ccc0ac5934c5d1f80981a402fc79796afe51944facd9528f2b4c98eb906c9"
+      "shared_sha256": "196ccc0ac5934c5d1f80981a402fc79796afe51944facd9528f2b4c98eb906c9",
+      "initial_state": "different"
     }
   ],
-  "source_edits_started": false,
+  "source_edits_started": true,
   "required_gates": [
-    "Current shared Runtime/logger host controls after checkpoint adoption",
-    "Android target source/type/lint and device validation remain required",
-    "Native Windows/Linux SDK ABI/runtime gates remain required",
-    "Enabled telemetry matching proprietary SDK ABI unavailable"
+    "Eight Android source gates remain unknown-target, including the exact six required AAudio/EGL/POSIX checks; full Android source/type/lint/device verification required.",
+    "Native Windows/Linux SDK ABI/runtime gates remain required; X11/WGL six current source checks are not native evidence.",
+    "Enabled telemetry matching proprietary SDK ABI unavailable.",
+    "rpmalloc unsupported required configuration bodies and graph metadata OOM transactionality; no optional performance/profile expansion.",
+    "Objective_C seven precise remaining public policy contracts."
   ],
   "worker_scratch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-bindings-66813",
   "tools": {
@@ -77,6 +87,11 @@
       "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/debug/jailint",
       "sha256": "99d8e4a581590d61fe9c1eeb7516c27aec972748d9b91717577be7fe2f5dd093",
       "source": "cargo --locked from actual shared source"
+    },
+    "jaifmt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/jaifmt-shared",
+      "sha256": "53b03699ccaae307c1a53dd46579cae5907d3149282f27d6fa4b1e6d0637a073",
+      "source": "Own jaic source-built actual shared jaifmt/main.jai -O2"
     }
   },
   "runtime_source_hashes": {
@@ -119,5 +134,2422 @@
       "evidence": "Reviewed GL page mentions type only in nsgl return signatures; shared alias is file-private; no extra root export inferred",
       "status": "request dirty public-visibility audit; no corpus body accessed"
     }
-  ]
+  ],
+  "adopted_in": "9d2f77936b36dd09bfc2a8db4e52cee79b27a341",
+  "source_freeze": "Released by root; owned production implementation resumed.",
+  "fresh_shared_verification": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-bindings-66813/shared-scoped-source-interpreter.json",
+    "passed": 8,
+    "failed": 6,
+    "source_unchanged": true,
+    "native": "held for integration baseline"
+  },
+  "per_api_remaining_inventory": [
+    {
+      "module": "Objective_C",
+      "name": "objc_create_class",
+      "signature": "objc_create_class :: ($type: Type, $parent: Type) -> Class",
+      "condition": "",
+      "classification": "body_present_contract_partial",
+      "missing_body": false,
+      "implemented_behavior": "Private Registration.create validates parent native size, isa header, per-ivar offsets and final instance size; disposes incomplete native classes on failure.",
+      "remaining_contract": "Exact reflected-name/collision/default-initialization compatibility policies are not specified; implementation uses canonical reflected name and null for collisions/layout mismatch.",
+      "source": "stdlib/Objective_C/wrappers.jai",
+      "verification": "Fresh shared Mac ARM64 helper interpreter/native O0/O2 with independent SDK layout/method parsing and rollback checks pass; strict context lint/format and active C-call failure safety pass. Mac x64 source passes; no iOS native execution."
+    },
+    {
+      "module": "Objective_C",
+      "name": "objc_add_instance_method",
+      "signature": "objc_add_instance_method :: (my_class: Class, proc: Any, selector_name: string)",
+      "condition": "",
+      "classification": "body_present_contract_partial",
+      "missing_body": false,
+      "implemented_behavior": "Private Registration.install validates C-call reflection and selector arity, installs real IMP on instance class.",
+      "remaining_contract": "Required compatibility failure channel for invalid/duplicate selectors and supported non-C reflected categories is not specified; active assertion plus terminal abort prevents unsafe continuation.",
+      "source": "stdlib/Objective_C/wrappers.jai",
+      "verification": "Fresh shared Mac ARM64 helper interpreter/native O0/O2 with independent SDK layout/method parsing and rollback checks pass; strict context lint/format and active C-call failure safety pass. Mac x64 source passes; no iOS native execution."
+    },
+    {
+      "module": "Objective_C",
+      "name": "objc_add_class_method",
+      "signature": "objc_add_class_method :: (my_class: Class, proc: Any, selector_name: string)",
+      "condition": "",
+      "classification": "body_present_contract_partial",
+      "missing_body": false,
+      "implemented_behavior": "Same real native installer targets object_getClass metaclass.",
+      "remaining_contract": "Same unresolved invalid/duplicate selector and reflected-category policies as instance installer; no class-name/returned-string policy dependency.",
+      "source": "stdlib/Objective_C/wrappers.jai",
+      "verification": "Fresh shared Mac ARM64 helper interpreter/native O0/O2 with independent SDK layout/method parsing and rollback checks pass; strict context lint/format and active C-call failure safety pass. Mac x64 source passes; no iOS native execution."
+    },
+    {
+      "module": "Objective_C",
+      "name": "objc_type_encode",
+      "signature": "objc_type_encode :: (builder: *String_Builder, info: *Type_Info, pointer_depth := 0)",
+      "condition": "",
+      "classification": "body_present_contract_partial",
+      "missing_body": false,
+      "implemented_behavior": "Private Encoding.encode handles native scalar/enum/pointer/fixed-array/natural-record types and appends to canonical Basic builder; string overload transfers builder output.",
+      "remaining_contract": "Selector alias *void versus arbitrary *void spelling, pointer_depth expansion, Jai-only string/Any/view/resizable categories remain unspecified; returned-string ownership additionally affects the allocating overload.",
+      "source": "stdlib/Objective_C/wrappers.jai",
+      "verification": "Fresh shared Mac ARM64 helper interpreter/native O0/O2 with independent SDK layout/method parsing and rollback checks pass; strict context lint/format and active C-call failure safety pass. Mac x64 source passes; no iOS native execution."
+    },
+    {
+      "module": "Objective_C",
+      "name": "objc_type_encode",
+      "signature": "objc_type_encode :: (info: *Type_Info) -> string",
+      "condition": "",
+      "classification": "body_present_contract_partial",
+      "missing_body": false,
+      "implemented_behavior": "Private Encoding.encode handles native scalar/enum/pointer/fixed-array/natural-record types and appends to canonical Basic builder; string overload transfers builder output.",
+      "remaining_contract": "Selector alias *void versus arbitrary *void spelling, pointer_depth expansion, Jai-only string/Any/view/resizable categories remain unspecified; returned-string ownership additionally affects the allocating overload.",
+      "source": "stdlib/Objective_C/wrappers.jai",
+      "verification": "Fresh shared Mac ARM64 helper interpreter/native O0/O2 with independent SDK layout/method parsing and rollback checks pass; strict context lint/format and active C-call failure safety pass. Mac x64 source passes; no iOS native execution."
+    },
+    {
+      "module": "Objective_C",
+      "name": "objc_func_encode",
+      "signature": "objc_func_encode :: (ty: *Type_Info_Procedure) -> string",
+      "condition": "",
+      "classification": "body_present_contract_partial",
+      "missing_body": false,
+      "implemented_behavior": "Private Registration.method_encoding emits return plus explicit @: prefix and native-compatible remaining arguments.",
+      "remaining_contract": "Exact alias/Jai-only-category encodings, offset-number text requirements and returned-string ownership remain unspecified.",
+      "source": "stdlib/Objective_C/wrappers.jai",
+      "verification": "Fresh shared Mac ARM64 helper interpreter/native O0/O2 with independent SDK layout/method parsing and rollback checks pass; strict context lint/format and active C-call failure safety pass. Mac x64 source passes; no iOS native execution."
+    },
+    {
+      "module": "Objective_C",
+      "name": "type_check_objc_method_type",
+      "signature": "type_check_objc_method_type :: (ty: *Type_Info_Procedure)",
+      "condition": "",
+      "classification": "body_present_contract_partial",
+      "missing_body": false,
+      "implemented_behavior": "Private Encoding.validate_method checks C calling convention, receiver/selector pointer arguments and at most one result.",
+      "remaining_contract": "Whether validation requires exact canonical receiver/selector types, variadic/context restrictions beyond C-call, and a recoverable error channel is unspecified.",
+      "source": "stdlib/Objective_C/wrappers.jai",
+      "verification": "Fresh shared Mac ARM64 helper interpreter/native O0/O2 with independent SDK layout/method parsing and rollback checks pass; strict context lint/format and active C-call failure safety pass. Mac x64 source passes; no iOS native execution."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_allocator_proc",
+      "signature": "rpmalloc_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/allocator.jai",
+          "line": 14,
+          "declaration": "rpmalloc_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Generic allocator mode dispatch through canonical prelude types and HeapBridge ownership",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "initialize",
+      "signature": "initialize :: () -> s32",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 240,
+          "declaration": "initialize :: rpmalloc_initialize;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 528,
+          "declaration": "initialize :: () -> s32 {"
+        }
+      ],
+      "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "initialize",
+      "signature": "initialize :: () -> _int",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 240,
+          "declaration": "initialize :: rpmalloc_initialize;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 528,
+          "declaration": "initialize :: () -> s32 {"
+        }
+      ],
+      "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "finalize",
+      "signature": "finalize :: ()",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 192,
+          "declaration": "finalize :: rpmalloc_finalize;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 536,
+          "declaration": "finalize :: () {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "initialize_config",
+      "signature": "initialize_config :: (config: *rpmalloc_config_t) -> s32",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 244,
+          "declaration": "initialize_config :: rpmalloc_initialize_config;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 532,
+          "declaration": "initialize_config :: (config: *rpmalloc_config_t) -> s32 {"
+        }
+      ],
+      "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "initialize_config",
+      "signature": "initialize_config :: (config: *rpmalloc_config_t) -> _int",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 244,
+          "declaration": "initialize_config :: rpmalloc_initialize_config;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 532,
+          "declaration": "initialize_config :: (config: *rpmalloc_config_t) -> s32 {"
+        }
+      ],
+      "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "is_initialized",
+      "signature": "is_initialized :: inline () -> bool",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 248,
+          "declaration": "is_initialized :: rpmalloc_is_initialized;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 540,
+          "declaration": "is_initialized :: inline () -> bool {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "thread_initialize",
+      "signature": "thread_initialize :: inline ()",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 270,
+          "declaration": "thread_initialize :: rpmalloc_thread_initialize;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 548,
+          "declaration": "thread_initialize :: inline () {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "thread_finalize",
+      "signature": "thread_finalize :: (release_caches: _int)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 266,
+          "declaration": "thread_finalize :: rpmalloc_thread_finalize;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 556,
+          "declaration": "thread_finalize :: (release_caches: bool) {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "thread_finalize",
+      "signature": "thread_finalize :: (release_caches: bool)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 266,
+          "declaration": "thread_finalize :: rpmalloc_thread_finalize;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 556,
+          "declaration": "thread_finalize :: (release_caches: bool) {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "thread_finalize",
+      "signature": "thread_finalize :: inline (release_caches: bool)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 266,
+          "declaration": "thread_finalize :: rpmalloc_thread_finalize;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 556,
+          "declaration": "thread_finalize :: (release_caches: bool) {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "is_thread_initialized",
+      "signature": "is_thread_initialized :: () -> bool",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 252,
+          "declaration": "is_thread_initialized :: rpmalloc_is_thread_initialized;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 560,
+          "declaration": "is_thread_initialized :: () -> bool {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "set_main_thread",
+      "signature": "set_main_thread :: ()",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 262,
+          "declaration": "set_main_thread :: rpmalloc_set_main_thread;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 552,
+          "declaration": "set_main_thread :: () {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "config",
+      "signature": "config :: () -> *rpmalloc_config_t",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 182,
+          "declaration": "config :: rpmalloc_config;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 544,
+          "declaration": "config :: () -> *rpmalloc_config_t {"
+        }
+      ],
+      "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc",
+      "signature": "rpmalloc :: inline (size: s64) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 564,
+          "declaration": "rpmalloc :: inline (size: s64) -> *void {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 750,
+          "declaration": "rpmalloc :: inline (size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpfree",
+      "signature": "rpfree :: inline (ptr: *void)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 568,
+          "declaration": "rpfree :: inline (ptr: *void) {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 754,
+          "declaration": "rpfree :: inline (ptr: *void) {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rprealloc",
+      "signature": "rprealloc :: inline (ptr: *void, size: s64) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 572,
+          "declaration": "rprealloc :: inline (ptr: *void, size: s64) -> *void {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 758,
+          "declaration": "rprealloc :: inline (ptr: *void, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpaligned_realloc",
+      "signature": "rpaligned_realloc :: (ptr: *void, alignment: s64, size: s64, oldsize: s64, flags: Realloc_Flags) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 580,
+          "declaration": "rpaligned_realloc :: (ptr: *void, alignment: s64, size: s64, oldsize: s64, flags: Realloc_Flags) -> *void {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 766,
+          "declaration": "rpaligned_realloc :: (ptr: *void, alignment: size_t, size: size_t, oldsize: size_t, flags: Realloc_Flags) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpaligned_alloc",
+      "signature": "rpaligned_alloc :: (alignment: s64, size: s64) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 576,
+          "declaration": "rpaligned_alloc :: (alignment: s64, size: s64) -> *void {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 762,
+          "declaration": "rpaligned_alloc :: (alignment: size_t, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "usable_size",
+      "signature": "usable_size :: inline (ptr: *void) -> s64",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 278,
+          "declaration": "usable_size :: rpmalloc_usable_size;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 584,
+          "declaration": "usable_size :: inline (ptr: *void) -> s64 {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "usable_size",
+      "signature": "usable_size :: inline (ptr: *void) -> size_t",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 278,
+          "declaration": "usable_size :: rpmalloc_usable_size;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 584,
+          "declaration": "usable_size :: inline (ptr: *void) -> s64 {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "thread_statistics",
+      "signature": "thread_statistics :: (stats: *rpmalloc_thread_statistics_t)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 274,
+          "declaration": "thread_statistics :: rpmalloc_thread_statistics;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 592,
+          "declaration": "thread_statistics :: (stats: *rpmalloc_thread_statistics_t) {"
+        }
+      ],
+      "implemented_behavior": "Native statistics copied field-by-field to exact conditional public records",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "global_statistics",
+      "signature": "global_statistics :: (stats: *rpmalloc_global_statistics_t)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 196,
+          "declaration": "global_statistics :: rpmalloc_global_statistics;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 588,
+          "declaration": "global_statistics :: (stats: *rpmalloc_global_statistics_t) {"
+        }
+      ],
+      "implemented_behavior": "Native statistics copied field-by-field to exact conditional public records",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "dump_statistics",
+      "signature": "dump_statistics :: (builder: *$T)",
+      "condition": "ENABLE_STATISTICS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 186,
+          "declaration": "dump_statistics :: rpmalloc_dump_statistics;"
+        },
+        {
+          "path": "stdlib/rpmalloc/statistics.jai",
+          "line": 11,
+          "declaration": "dump_statistics :: (builder: *$T) {"
+        },
+        {
+          "path": "stdlib/rpmalloc/statistics.jai",
+          "line": 70,
+          "declaration": "dump_statistics :: (builder: *void) #expand {}"
+        }
+      ],
+      "implemented_behavior": "Rewrite immutable native counter capture appended to canonical Basic builder; raw FILE route conditional on private PRETTY_PRINT",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "dump_statistics",
+      "signature": "dump_statistics :: (builder: *void) #expand",
+      "condition": "else branch",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 186,
+          "declaration": "dump_statistics :: rpmalloc_dump_statistics;"
+        },
+        {
+          "path": "stdlib/rpmalloc/statistics.jai",
+          "line": 11,
+          "declaration": "dump_statistics :: (builder: *$T) {"
+        },
+        {
+          "path": "stdlib/rpmalloc/statistics.jai",
+          "line": 70,
+          "declaration": "dump_statistics :: (builder: *void) #expand {}"
+        }
+      ],
+      "implemented_behavior": "Rewrite immutable native counter capture appended to canonical Basic builder; raw FILE route conditional on private PRETTY_PRINT",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "dump_statistics",
+      "signature": "dump_statistics :: (file: *void)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 186,
+          "declaration": "dump_statistics :: rpmalloc_dump_statistics;"
+        },
+        {
+          "path": "stdlib/rpmalloc/statistics.jai",
+          "line": 11,
+          "declaration": "dump_statistics :: (builder: *$T) {"
+        },
+        {
+          "path": "stdlib/rpmalloc/statistics.jai",
+          "line": 70,
+          "declaration": "dump_statistics :: (builder: *void) #expand {}"
+        }
+      ],
+      "implemented_behavior": "Rewrite immutable native counter capture appended to canonical Basic builder; raw FILE route conditional on private PRETTY_PRINT",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_acquire",
+      "signature": "heap_acquire :: inline () -> *Heap",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 204,
+          "declaration": "heap_acquire :: rpmalloc_heap_acquire;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 406,
+          "declaration": "heap_acquire :: inline () -> *Heap {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_acquire",
+      "signature": "heap_acquire :: inline () -> *rpmalloc_heap_t",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 204,
+          "declaration": "heap_acquire :: rpmalloc_heap_acquire;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 406,
+          "declaration": "heap_acquire :: inline () -> *Heap {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_release",
+      "signature": "heap_release :: inline (heap: *Heap)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 232,
+          "declaration": "heap_release :: rpmalloc_heap_release;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 418,
+          "declaration": "heap_release :: inline (heap: *Heap) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_release",
+      "signature": "heap_release :: inline (heap: *rpmalloc_heap_t)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 232,
+          "declaration": "heap_release :: rpmalloc_heap_release;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 418,
+          "declaration": "heap_release :: inline (heap: *Heap) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_is_this_yours",
+      "signature": "heap_is_this_yours :: (heap: *Heap, memory: *void) -> bool",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 502,
+          "declaration": "heap_is_this_yours :: (heap: *Heap, memory: *void) -> bool {"
+        }
+      ],
+      "implemented_behavior": "Live quiescent ownership-range queries through HeapBridge.contains",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "is_in_span",
+      "signature": "is_in_span :: inline (memory: *void, span: *Span) -> bool",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 514,
+          "declaration": "is_in_span :: inline (memory: *void, span: *Span) -> bool {"
+        }
+      ],
+      "implemented_behavior": "Live quiescent ownership-range queries through HeapBridge.contains",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_alloc",
+      "signature": "heap_alloc :: inline (heap: *Heap, size: s64) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 216,
+          "declaration": "heap_alloc :: rpmalloc_heap_alloc;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 427,
+          "declaration": "heap_alloc :: inline (heap: *Heap, size: s64) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_alloc",
+      "signature": "heap_alloc :: inline (heap: *rpmalloc_heap_t, size: size_t) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 216,
+          "declaration": "heap_alloc :: rpmalloc_heap_alloc;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 427,
+          "declaration": "heap_alloc :: inline (heap: *Heap, size: s64) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_aligned_alloc",
+      "signature": "heap_aligned_alloc :: inline (heap: *Heap, alignment: s64, size: s64) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 208,
+          "declaration": "heap_aligned_alloc :: rpmalloc_heap_aligned_alloc;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 439,
+          "declaration": "heap_aligned_alloc :: inline (heap: *Heap, alignment: s64, size: s64) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_aligned_alloc",
+      "signature": "heap_aligned_alloc :: inline (heap: *rpmalloc_heap_t, alignment: size_t, size: size_t) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 208,
+          "declaration": "heap_aligned_alloc :: rpmalloc_heap_aligned_alloc;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 439,
+          "declaration": "heap_aligned_alloc :: inline (heap: *Heap, alignment: s64, size: s64) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_realloc",
+      "signature": "heap_realloc :: inline (heap: *Heap, ptr: *void, size: s64, flags: Realloc_Flags) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 228,
+          "declaration": "heap_realloc :: rpmalloc_heap_realloc;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 451,
+          "declaration": "heap_realloc :: inline (heap: *Heap, ptr: *void, size: s64, flags: Realloc_Flags) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_realloc",
+      "signature": "heap_realloc :: inline (heap: *rpmalloc_heap_t, ptr: *void, size: size_t, flags: Realloc_Flags) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 228,
+          "declaration": "heap_realloc :: rpmalloc_heap_realloc;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 451,
+          "declaration": "heap_realloc :: inline (heap: *Heap, ptr: *void, size: s64, flags: Realloc_Flags) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_aligned_realloc",
+      "signature": "heap_aligned_realloc :: inline (heap: *Heap, ptr: *void, alignment: s64, size: s64, flags: Realloc_Flags) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 212,
+          "declaration": "heap_aligned_realloc :: rpmalloc_heap_aligned_realloc;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 463,
+          "declaration": "heap_aligned_realloc :: inline (heap: *Heap, ptr: *void, alignment: s64, size: s64, flags: Realloc_Flags) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_aligned_realloc",
+      "signature": "heap_aligned_realloc :: inline (heap: *rpmalloc_heap_t, ptr: *void, alignment: size_t, size: size_t, flags: Realloc_Flags) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 212,
+          "declaration": "heap_aligned_realloc :: rpmalloc_heap_aligned_realloc;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 463,
+          "declaration": "heap_aligned_realloc :: inline (heap: *Heap, ptr: *void, alignment: s64, size: s64, flags: Realloc_Flags) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_free",
+      "signature": "heap_free :: inline (heap: *Heap, ptr: *void)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 220,
+          "declaration": "heap_free :: rpmalloc_heap_free;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 475,
+          "declaration": "heap_free :: inline (heap: *Heap, ptr: *void) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_free",
+      "signature": "heap_free :: inline (heap: *rpmalloc_heap_t, ptr: *void)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 220,
+          "declaration": "heap_free :: rpmalloc_heap_free;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 475,
+          "declaration": "heap_free :: inline (heap: *Heap, ptr: *void) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_free_all",
+      "signature": "heap_free_all :: inline (heap: *Heap)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 224,
+          "declaration": "heap_free_all :: rpmalloc_heap_free_all;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 484,
+          "declaration": "heap_free_all :: inline (heap: *Heap) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_free_all",
+      "signature": "heap_free_all :: inline (heap: *rpmalloc_heap_t)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 224,
+          "declaration": "heap_free_all :: rpmalloc_heap_free_all;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 484,
+          "declaration": "heap_free_all :: inline (heap: *Heap) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_thread_set_current",
+      "signature": "heap_thread_set_current :: inline (heap: *Heap)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 236,
+          "declaration": "heap_thread_set_current :: rpmalloc_heap_thread_set_current;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 493,
+          "declaration": "heap_thread_set_current :: inline (heap: *Heap) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "heap_thread_set_current",
+      "signature": "heap_thread_set_current :: inline (heap: *rpmalloc_heap_t)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/declarations.jai",
+          "line": 236,
+          "declaration": "heap_thread_set_current :: rpmalloc_heap_thread_set_current;"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 493,
+          "declaration": "heap_thread_set_current :: inline (heap: *Heap) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_initialize",
+      "signature": "rpmalloc_initialize :: () -> _int",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 714,
+          "declaration": "rpmalloc_initialize :: () -> _int {"
+        }
+      ],
+      "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_is_initialized",
+      "signature": "rpmalloc_is_initialized :: inline () -> bool",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 726,
+          "declaration": "rpmalloc_is_initialized :: inline () -> bool {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_initialize_config",
+      "signature": "rpmalloc_initialize_config :: (config: *rpmalloc_config_t) -> _int",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 718,
+          "declaration": "rpmalloc_initialize_config :: (config: *rpmalloc_config_t) -> _int {"
+        }
+      ],
+      "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_finalize",
+      "signature": "rpmalloc_finalize :: ()",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 722,
+          "declaration": "rpmalloc_finalize :: () {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_thread_initialize",
+      "signature": "rpmalloc_thread_initialize :: inline ()",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 734,
+          "declaration": "rpmalloc_thread_initialize :: inline () {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_thread_finalize",
+      "signature": "rpmalloc_thread_finalize :: (release_caches: _int)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 742,
+          "declaration": "rpmalloc_thread_finalize :: inline (release_caches: bool) {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 782,
+          "declaration": "rpmalloc_thread_finalize :: (release_caches: _int) {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_is_thread_initialized",
+      "signature": "rpmalloc_is_thread_initialized :: () -> bool",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 746,
+          "declaration": "rpmalloc_is_thread_initialized :: () -> bool {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_config",
+      "signature": "rpmalloc_config :: () -> *rpmalloc_config_t",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 730,
+          "declaration": "rpmalloc_config :: () -> *rpmalloc_config_t {"
+        }
+      ],
+      "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc",
+      "signature": "rpmalloc :: inline (size: size_t) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 564,
+          "declaration": "rpmalloc :: inline (size: s64) -> *void {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 750,
+          "declaration": "rpmalloc :: inline (size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpcalloc",
+      "signature": "rpcalloc :: inline (num: size_t, size: size_t) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 786,
+          "declaration": "rpcalloc :: inline (num: size_t, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rprealloc",
+      "signature": "rprealloc :: inline (ptr: *void, size: size_t) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 572,
+          "declaration": "rprealloc :: inline (ptr: *void, size: s64) -> *void {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 758,
+          "declaration": "rprealloc :: inline (ptr: *void, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpaligned_realloc",
+      "signature": "rpaligned_realloc :: (ptr: *void, alignment: size_t, size: size_t, oldsize: size_t, flags: Realloc_Flags) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 580,
+          "declaration": "rpaligned_realloc :: (ptr: *void, alignment: s64, size: s64, oldsize: s64, flags: Realloc_Flags) -> *void {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 766,
+          "declaration": "rpaligned_realloc :: (ptr: *void, alignment: size_t, size: size_t, oldsize: size_t, flags: Realloc_Flags) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpaligned_alloc",
+      "signature": "rpaligned_alloc :: (alignment: size_t, size: size_t) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 576,
+          "declaration": "rpaligned_alloc :: (alignment: s64, size: s64) -> *void {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 762,
+          "declaration": "rpaligned_alloc :: (alignment: size_t, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpaligned_calloc",
+      "signature": "rpaligned_calloc :: inline (alignment: size_t, num: size_t, size: size_t) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 803,
+          "declaration": "rpaligned_calloc :: inline (alignment: size_t, num: size_t, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmemalign",
+      "signature": "rpmemalign :: inline (alignment: size_t, size: size_t) -> *void",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 821,
+          "declaration": "rpmemalign :: inline (alignment: size_t, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpposix_memalign",
+      "signature": "rpposix_memalign :: inline (memptr: **void, alignment: size_t, size: size_t) -> _int",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 825,
+          "declaration": "rpposix_memalign :: inline (memptr: **void, alignment: size_t, size: size_t) -> _int {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_usable_size",
+      "signature": "rpmalloc_usable_size :: inline (ptr: *void) -> size_t",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 770,
+          "declaration": "rpmalloc_usable_size :: inline (ptr: *void) -> size_t {"
+        }
+      ],
+      "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_thread_collect",
+      "signature": "rpmalloc_thread_collect :: inline ()",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 840,
+          "declaration": "rpmalloc_thread_collect :: inline () {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_thread_statistics",
+      "signature": "rpmalloc_thread_statistics :: (stats: *rpmalloc_thread_statistics_t)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 778,
+          "declaration": "rpmalloc_thread_statistics :: (stats: *rpmalloc_thread_statistics_t) {"
+        }
+      ],
+      "implemented_behavior": "Native statistics copied field-by-field to exact conditional public records",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_global_statistics",
+      "signature": "rpmalloc_global_statistics :: (stats: *rpmalloc_global_statistics_t)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 774,
+          "declaration": "rpmalloc_global_statistics :: (stats: *rpmalloc_global_statistics_t) {"
+        }
+      ],
+      "implemented_behavior": "Native statistics copied field-by-field to exact conditional public records",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_dump_statistics",
+      "signature": "rpmalloc_dump_statistics :: (file: *void)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 849,
+          "declaration": "rpmalloc_dump_statistics :: (file: *void) {"
+        }
+      ],
+      "implemented_behavior": "Rewrite immutable native counter capture appended to canonical Basic builder; raw FILE route conditional on private PRETTY_PRINT",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_acquire",
+      "signature": "rpmalloc_heap_acquire :: inline () -> *rpmalloc_heap_t",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 599,
+          "declaration": "rpmalloc_heap_acquire :: inline () -> *rpmalloc_heap_t {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_release",
+      "signature": "rpmalloc_heap_release :: inline (heap: *rpmalloc_heap_t)",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 611,
+          "declaration": "rpmalloc_heap_release :: inline (heap: *rpmalloc_heap_t) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_alloc",
+      "signature": "rpmalloc_heap_alloc :: inline (heap: *rpmalloc_heap_t, size: size_t) -> *void",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 620,
+          "declaration": "rpmalloc_heap_alloc :: inline (heap: *rpmalloc_heap_t, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_aligned_alloc",
+      "signature": "rpmalloc_heap_aligned_alloc :: inline (heap: *rpmalloc_heap_t, alignment: size_t, size: size_t) -> *void",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 630,
+          "declaration": "rpmalloc_heap_aligned_alloc :: inline (heap: *rpmalloc_heap_t, alignment: size_t, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_calloc",
+      "signature": "rpmalloc_heap_calloc :: inline (heap: *rpmalloc_heap_t, num: size_t, size: size_t) -> *void",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 642,
+          "declaration": "rpmalloc_heap_calloc :: inline (heap: *rpmalloc_heap_t, num: size_t, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_aligned_calloc",
+      "signature": "rpmalloc_heap_aligned_calloc :: inline (heap: *rpmalloc_heap_t, alignment: size_t, num: size_t, size: size_t) -> *void",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 652,
+          "declaration": "rpmalloc_heap_aligned_calloc :: inline (heap: *rpmalloc_heap_t, alignment: size_t, num: size_t, size: size_t) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_realloc",
+      "signature": "rpmalloc_heap_realloc :: inline (heap: *rpmalloc_heap_t, ptr: *void, size: size_t, flags: Realloc_Flags) -> *void",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 664,
+          "declaration": "rpmalloc_heap_realloc :: inline (heap: *rpmalloc_heap_t, ptr: *void, size: size_t, flags: Realloc_Flags) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_aligned_realloc",
+      "signature": "rpmalloc_heap_aligned_realloc :: inline (heap: *rpmalloc_heap_t, ptr: *void, alignment: size_t, size: size_t, flags: Realloc_Flags) -> *void",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 674,
+          "declaration": "rpmalloc_heap_aligned_realloc :: inline (heap: *rpmalloc_heap_t, ptr: *void, alignment: size_t, size: size_t, flags: Realloc_Flags) -> *void {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_free",
+      "signature": "rpmalloc_heap_free :: inline (heap: *rpmalloc_heap_t, ptr: *void)",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 686,
+          "declaration": "rpmalloc_heap_free :: inline (heap: *rpmalloc_heap_t, ptr: *void) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_free_all",
+      "signature": "rpmalloc_heap_free_all :: inline (heap: *rpmalloc_heap_t)",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 695,
+          "declaration": "rpmalloc_heap_free_all :: inline (heap: *rpmalloc_heap_t) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_heap_thread_set_current",
+      "signature": "rpmalloc_heap_thread_set_current :: inline (heap: *rpmalloc_heap_t)",
+      "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 704,
+          "declaration": "rpmalloc_heap_thread_set_current :: inline (heap: *rpmalloc_heap_t) {"
+        }
+      ],
+      "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_linker_reference",
+      "signature": "rpmalloc_linker_reference :: ()",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 861,
+          "declaration": "rpmalloc_linker_reference :: () {"
+        }
+      ],
+      "implemented_behavior": "Direct pinned SDK linker-retention call; no allocation or statistics fabrication",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "rpmalloc",
+      "name": "rpmalloc_thread_finalize",
+      "signature": "rpmalloc_thread_finalize :: inline (release_caches: bool)",
+      "condition": "",
+      "classification": "body_present_configuration_incomplete",
+      "missing_body": false,
+      "source_declarations": [
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 742,
+          "declaration": "rpmalloc_thread_finalize :: inline (release_caches: bool) {"
+        },
+        {
+          "path": "stdlib/rpmalloc/wrappers.jai",
+          "line": 782,
+          "declaration": "rpmalloc_thread_finalize :: (release_caches: _int) {"
+        }
+      ],
+      "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
+      "configuration_dependency": "Native_Profile_Matches (stdlib/rpmalloc/configuration.jai)",
+      "remaining_behavior": [
+        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
+        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+      ],
+      "verification": "Existing 24 profiles historically verified; no optional profile/performance expansion or fresh full allocator suite in this shared batch. Source declaration discovery alone is not a signature/behavior pass.",
+      "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion."
+    },
+    {
+      "module": "Android",
+      "name": "android_logger",
+      "signature": "android_logger :: (message: string, data: *void, info: Log_Info)",
+      "classification": "implemented_verification_gap",
+      "missing_body": false,
+      "implemented_behavior": "Exact reviewed tag/priority/data policy; canonical private Runtime discard; real Android log sink with owned temporary C strings.",
+      "remaining": "Android compiler target selection, Android source/type/lint and real SDK/device execution.",
+      "verification": "Fresh shared interpreter/native Mac ARM64 O0/O2/address+undefined sanitizer host controls, four Mac/Linux source checks, strict context lint and formatter pass. Host sink is not Android SDK execution."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_enabled",
+      "signature": "telemetry_enabled :: () -> bool #expand",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_init",
+      "signature": "telemetry_init :: (program_name: string, build_info: string, output_file := \"\") -> int",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_start",
+      "signature": "telemetry_start :: (frames := 0, output_file:= \"\") -> int",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_stop",
+      "signature": "telemetry_stop :: ()",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_shutdown",
+      "signature": "telemetry_shutdown :: ()",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_tick",
+      "signature": "telemetry_tick :: ()",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_enterzone",
+      "signature": "telemetry_enterzone :: (name: string, loc := #caller_location, is_dynamic := false) #expand",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_leavezone",
+      "signature": "telemetry_leavezone :: () #expand",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_plot",
+      "signature": "telemetry_plot :: (plot_name: string, plot_value: float64) #expand",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_message",
+      "signature": "telemetry_message :: (message: string) #expand",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_setthreadname",
+      "signature": "telemetry_setthreadname :: (name: string)",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_start_gpuzone",
+      "signature": "telemetry_start_gpuzone :: (frame_number: u32, gpu_freq: u64, cpu_freq: u64, gpu_begin: u64, cpu_begin: u64, fast_begin: u64)",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_end_gpuzone",
+      "signature": "telemetry_end_gpuzone :: ()",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    },
+    {
+      "module": "telemetry3",
+      "name": "telemetry_add_gpuzone",
+      "signature": "telemetry_add_gpuzone :: (name: string, frame_number: u32, level: u32, gpu_enter: u64, gpu_leave: u64)",
+      "condition": "else branch",
+      "classification": "missing_matching_external_sdk_abi",
+      "missing_body": true,
+      "remaining": "Enabled proprietary SDK ABI unavailable by reviewed contract; no invented declarations or implementation."
+    }
+  ],
+  "per_api_inventory_counts": {
+    "body_present_configuration_incomplete": 80,
+    "body_present_contract_partial": 7,
+    "implemented_verification_gap": 1,
+    "missing_matching_external_sdk_abi": 14
+  },
+  "rpmalloc_supported_configuration_predicate": "// One private support predicate shared by the independent facade responsibilities.\n#scope_module\nNative_Profile_Matches :: HEAP_ARRAY_SIZE == 47 && DEFAULT_SPAN_MAP_COUNT == 64 &&\n                         GLOBAL_CACHE_MULTIPLIER == 8 &&\n                         !ENABLE_ADAPTIVE_THREAD_CACHE &&\n                         !LINUX_HUGE_PAGES && !DISABLE_UNMAP && !ENABLE_UNLIMITED_CACHE &&\n                         LINUX_FREE_ADVICE == .DONTNEED;\n",
+  "rpmalloc_configuration_gaps": [
+    "HEAP_ARRAY_SIZE other than47",
+    "DEFAULT_SPAN_MAP_COUNT other than64",
+    "GLOBAL_CACHE_MULTIPLIER other than8",
+    "ENABLE_ADAPTIVE_THREAD_CACHE=true",
+    "LINUX_HUGE_PAGES=true",
+    "DISABLE_UNMAP=true",
+    "ENABLE_UNLIMITED_CACHE=true",
+    "LINUX_FREE_ADVICE=FREE"
+  ],
+  "android_logger_shared_verification": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-bindings-66813/android-logger-shared-final.json",
+    "passed": 14,
+    "required_android_unverified": 8,
+    "native_host": "Mac ARM64 interpreter/O0/O2/address+undefined sanitizer output comparisons pass",
+    "source_immutability": true
+  },
+  "owned_edits": [
+    "stdlib/Android/tests/logger-output.jai",
+    "tests/native-bindings/android-logger-output.jai",
+    "tools/native_bindings/verify_android_logger.py",
+    "docs/native/android-logger-discard.md",
+    "docs/status/bindings-shared-audit.json",
+    "docs/specs/stdlib/native-bindings-questions.md",
+    "docs/status/bindings-deviations.md"
+  ],
+  "production_source_edits": true,
+  "logger_relocated_fixture_sha256": "ee1606338a441e555166d3e1f530711918c94be3c59adbf6a7305ff25c5a59ea",
+  "objective_c_shared_verification": {
+    "interpreter_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-bindings-66813/objc-shared-native/verification.json",
+    "native_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-bindings-66813/objc-shared-native/native-library-path-verification.json",
+    "safety_lint_format_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-bindings-66813/objc-shared-native/safety-lint-format.json",
+    "passed": "Official SDK C/Objective-C probe, helper interpreter, native Mac ARM64 O0/O2, strict context lint, format and expected signal6 invalid-C-call rejection",
+    "setup_failure": "Initial system probe native link failed without LIBRARY_PATH; normal worker-private SDK probe library path corrected setup, no source/compiler exception.",
+    "official_sdk": {
+      "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+      "version": "27.0",
+      "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+      "headers": {
+        "usr/include/objc/objc.h": "24d244af818046702546269afbedbe2992ea9b6d8f6ad43e7b0750e53d3bfe2b",
+        "usr/include/objc/runtime.h": "0cd8f574aa6cf75f743f8bf60e235199792ee6686ae586909e99f151234e183e",
+        "System/Library/Frameworks/Foundation.framework/Headers/NSObjCRuntime.h": "702bfbdaa81fdd3893dbe039b74aa544813f36654b6b1bcccb6294d33301df2d",
+        "System/Library/Frameworks/Foundation.framework/Headers/NSMethodSignature.h": "5bf8654aa2e5b4bf546588c5b540716d1e7670008acaf87053907ae8b5573970"
+      }
+    }
+  },
+  "x11_wgl_source_verification": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-bindings-66813/x11-wgl-shared-source.json",
+    "passed": 6,
+    "scope": "Linux X11 initialization/window-helper and Windows WGL public behavior fixtures, each x64/ARM64; no native Linux/Windows claim"
+  },
+  "integrator_checkpoint_files": [
+    "stdlib/Android/tests/logger-output.jai",
+    "tests/native-bindings/android-logger-output.jai",
+    "tools/native_bindings/verify_android_logger.py",
+    "docs/native/android-logger-discard.md",
+    "docs/status/bindings-shared-audit.json",
+    "docs/specs/stdlib/native-bindings-questions.md",
+    "docs/status/bindings-deviations.md"
+  ],
+  "fixture_relocation_preserves_checkpoint_bytes": true,
+  "target_audit_preservation": {
+    "checkpoint": "9bc40a816cdaefe5015118397e282f985f02d777",
+    "six_android_required_checks": "Retained and freshly attempted, none waived.",
+    "shared_audit_files": "Named historical docs/status/bindings-integrated-target-audit.json/.md absent from shared source; integrator should reconcile exact clean checkpoint files. No recreated expected ledger or guessed rows."
+  },
+  "last_observed_shared_head": "6295584c42cf004999267d28835dfa8e1b00e95f",
+  "rpmalloc_diagnostic_option_completion": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/rpmalloc-option-completion/immutable-runs/rpmalloc-diagnostics-4zngmwl7/verification.json",
+    "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/rpmalloc-option-completion/immutable-runs/bindings-inputs-tw5qga4t",
+    "passed": 18,
+    "failed": 0,
+    "implementation": "ENABLE_ASSERTS and ENABLE_VALIDATE_ARGS independently select actual C SDK compile flags, isolated callbacks/heaps/ownership and matching checked imports; actual post-preprocessing native build flags validated before initialization.",
+    "native_evidence": "Mac ARM64 interpreter/native O0/O2 and both C SDK plus Jai address/undefined instrumentation; callback denial/rollback, allocator context, live ownership/data preservation and independent import lifetime.",
+    "source_evidence": "Six desktop configurations, strict context lint, production formatter and immutable complete input checks pass.",
+    "profiles": "Existing 24 identities preserved. Generator now describes 96 possible diagnostic/storage/cache domains; four required diagnostic settings tested natively here, not 96 native passes.",
+    "previous_attempt": "Immutable h5mh0cjz has genuine sanitizer compiler-version link failure; preserved and corrected through general explicit C compiler selection."
+  },
+  "refreshed_contracts": "Objective_C/rpmalloc pages received; former seven policy questions superseded. One new exact Selector transparent-alias contradiction routed through inbox; other implementations in progress."
 }

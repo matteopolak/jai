@@ -1,77 +1,65 @@
 # Android logger canonical discard integration
 
-The coordinator explicitly supplied the clean private Runtime queue module
-from `b2e90f76fcc39ea8ced96c2f93ca1bf442a67686`, with producer-reported discard
-origin `ca8570d`, at
-`artifacts/android-discard-dependency/stdlib/internal/runtime/android-output/module.jai`.
-Its SHA-256 is pinned in
-[android-logger-runtime-inputs.json](android-logger-runtime-inputs.json).
-No history or peer implementation checkout was accessed.
+The public Android logger uses the canonical private
+`internal/runtime/android-output.discard_pending_output()` through the owned
+typed C-sink core. Runtime owns both pending queues and their output lock.
+Bindings adds no buffer, lock, context field or public API. Tag and payload
+C-string copies live until the native sink returns, then are freed.
 
-The owned Android logger now calls the canonical private
-`internal/runtime/android-output.discard_pending_output()` through a small
-private logging core. The forced public Runtime flush has been removed. Runtime
-retains both queues and their synchronization; bindings create no output buffer,
-lock substitute, context field, or public export. Tag/payload C-string copies
-remain owned until the actual native log sink returns, then are freed. Existing
-reviewed priority/tag/data behavior and public signatures remain exact.
+In the shared tree, ordinary Android Runtime writes call this same module's
+`append_unsynchronized`; flush calls its `flush`. Discard acquires the same
+output lock, clears both counts and emits nothing. The previous missing
+transitive-lock/input handoff is resolved by current shared source. The old
+artifact pin documents historical provenance; it is not a build overlay.
 
-The discard operation acquires Runtime's existing lock, clears both counts and
-releases the lock without invoking its descriptor sink. No further fine flush
-policy review is needed for that operation. The private binding core accepts a
-typed C sink so the real Android facade supplies `__android_log_write`, while
-independent host controls can observe actual descriptor output without mocking
-the Android SDK. This adds one indirect sink call; it introduces no second
-pending queue or allocator/context mutation.
+The Android facade supplies the actual `__android_log_write` sink. Independent
+host controls use real descriptor writes, testing the production logging core
+and canonical Runtime queues without claiming Android SDK execution. This
+test seam adds one indirect sink call, with no second queue.
 
-The new host test appends stale bytes to both canonical queues through two
-import aliases, invokes the production binding core, forces the queues to flush,
-and requires no stale bytes to appear. Fresh stdout/stderr bytes must remain
-observable. It also tests retained partial lines, section/default tags, priority
-precedence and unchanged caller allocator identity. Interpreter, native O0/O2
-and native sanitizer executions compare complete stdout and stderr. A forced
-flush would produce extra stale bytes and fail these controls.
+The canonical static fixture is
+`stdlib/Android/tests/logger-output.jai`; the ordinary test entry in
+`tests/native-bindings/android-logger-output.jai` loads it. Keeping private
+imports in the library fixture satisfies the normal per-source privacy rule.
+The runner never copies source into stdlib during testing.
 
-Current execution evidence is **incomplete**:
+Fresh shared-tree evidence on Mac ARM64:
 
-- `.work/android-logger-discard-initial.json` preserves actual failures: the
-  supplied queue imports `internal/runtime/output-lock`, absent from both the
-  artifact and independent local test baseline. Four host source configurations,
-  interpreter/native builds and strict context lint fail on that exact missing
-  module. No placeholder lock was created and no host pass is claimed.
-- Android x64/ARM64 source checks still fail target selection with
-  `unknown OS android`. Device logging, full Android type/lint checking and
-  native SDK execution remain required and unverified.
-- Owned wrapper/core/test formatting passes, Python syntax checks pass and all
-  80 existing Python regressions pass. The producer's reported host/native/lint
-  passes are dependency provenance, not this worker's execution evidence.
-- The Android logger ledger remains partial for the missing transitive test
-  dependency; the old forced-flush reason is retired. Telemetry fourteen and the
-  other existing partial inventories are unchanged.
-- The exact target audit from `9bc40a8` and its six required Android controls
-  are unchanged. No shared expected ledger, ABI assertion, privacy rule or
-  Extensions source was modified or waived.
+- Interpreter, native O0/O2 and address/undefined sanitizer executions match
+  complete stdout and stderr. Stale bytes from both queues disappear; fresh
+  output, partial-line clearing, tags, priority precedence and caller allocator
+  identity remain checked.
+- Mac/Linux x64/ARM64 source checks pass. Linux and Mac x64 source checks are
+  not native runtime evidence.
+- Strict context lint, source-built production formatter checking and shared
+  source immutability pass.
+- Eight required Android checks remain unverified: logger helpers plus the
+  six AAudio/EGL/POSIX x64/ARM64 checks. The compiler rejects `-os android`.
+  Android type/lint/device execution remains a required platform gate.
+- Enabled telemetry's fourteen missing declarations require the genuinely
+  unavailable matching commercial ABI; no enabled implementation is invented.
 
-Portable owner/integrator handoff: provide the committed
-`stdlib/internal/runtime/output-lock/module.jai` and its transitive imports in
-the authorized artifact tree. Integrate the same canonical queue module with
-the portable owner's current Android write/flush path, rather than retaining
-an older separate buffer. The consumer imports the exact unparameterized module
-path above and does not need a public Runtime API change. The precise request
-is also at the top of the worker progress file; this is source dependency
-coordination, not a request to re-review the resolved discard behavior.
+The latest receipt is
+`/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-bindings-66813/android-logger-shared-final.json`.
+Earlier unsuccessful privacy/context attempts remain in that scratch directory.
+They are harness-setup failures, not Runtime behavioral failures or passes.
+Historical missing-lock results are superseded, not relabeled as successful.
 
-Reproduce once the transitive source dependency is supplied:
+Reproduce against actual shared source with independently source-built tools:
 
 ```sh
 python3 tools/native_bindings/verify_android_logger.py \
-  --compiler .work/target-producer-refresh/debug/jaic \
-  --jailint .work/target-producer-refresh/debug/jailint \
-  --existing-stdlib .work/runs/x11-android-reviewed-final-55114/stdlib \
-  --report .work/android-logger-discard-current.json
+  --compiler /path/to/worker-target/debug/jaic \
+  --jailint /path/to/worker-target/debug/jailint \
+  --formatter /path/to/worker-target/jaifmt-shared \
+  --output-root /path/to/worker-private-scratch \
+  --report /path/to/worker-private-scratch/logger-report.json \
+  --native
 ```
 
-The driver reads only the supplied artifact and existing independent stage,
-refreshes owned bindings, and retains source hashes and real output. Missing
-dependencies and required Android checks return a nonzero result. It does not
-convert producer-reported passes or unsupported targets into successful tests.
+Omit `--native` during a native-slot hold; the report records native work still
+required. Coordinate scoped native execution with the integration owner.
+The driver returns nonzero for any failed or unverified required gate, including
+unavailable Android targets. It records tool/source hashes and fails if shared
+source changes during the run. It never uses old clone staging or Runtime
+overlays, and does not mutate expected ledgers or immutable native fixtures.
