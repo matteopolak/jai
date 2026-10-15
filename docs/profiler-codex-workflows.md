@@ -178,3 +178,23 @@ platform, profile or performance matrices.
 Shared tooling integration must replace two obsolete expected Codex metric
 rejections with the positive reviewed behavior tests. The other tooling owner's
 runner is not edited here.
+
+## Verified checkpoint c6a1c083
+
+The114dda87 replay reached all189 recorded commands. All21 cases passed the
+interpreter and native Mac O0/O2; actual hook and size-boundary children, all16
+configuration children, both independent native C wire-consumer checks, owned
+format checks and full module-root warnings-denied lint passed. Six intentional
+option/scalar rejection commands matched their required diagnostics. Four
+required automatic CLI builds failed (O0/O2 with modules on/off), so the final
+runner exit is1 and complete=false. No failed command is counted as completed
+functionality. Native Windows/Linux remain pending; their existing checks are
+source-only. Original failure reductions were formatted and replayed separately.
+
+The owned inventory remains138 complete/1partial/0missing public names out of139.
+The sole partial name is Iprof.message at the exact compiler editing boundaries
+above; Codex has no remaining identified API gap. All52 Iprof and17 Codex public
+callable names have real production bodies. No public behavioral contract is
+currently blocking other owned implementation work. Compiler-owner corrections
+are needed before automatic instrumentation can complete its required module
+and general indexed-body workflow replay.

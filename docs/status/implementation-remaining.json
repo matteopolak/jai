@@ -5,9 +5,9 @@
     "Iprof",
     "Codex"
   ],
-  "timestamp_utc": "2026-10-15T16:43:06.368671+00:00",
-  "head": "c24bb2fef1f0eae5ae2d63eed5aa6c558d9b2164",
-  "state": "committed production implementation",
+  "timestamp_utc": "2026-10-15T17:25:20.898812+00:00",
+  "head": "c6a1c0836d5f3a2a9c02be7b70520cf0de598499",
+  "state": "committed production implementation; required producer editing failures retained",
   "denominator": "unique names from reviewed public declaration inventories; overload/conditional variants also counted separately; record members are audited as part of their aggregate, not additional API names",
   "totals": {
     "reviewed_declaration_variants": 144,
@@ -266,35 +266,36 @@
       "names": [
         "Iprof.message"
       ],
-      "kind": "producer dependency",
-      "rule": "The supplied compiler suppresses ordinary standard-library TYPECHECKED body messages. -modules can instrument received imported user-module bodies, but cannot edit missing Basic bodies. Original failing reproduction is compiler-requests/profiler-stdlib-bodies.jai.",
-      "library_effort_estimate": "under half a day to replay and resolve any exposed metadata issues after the general compiler fix"
-    },
-    {
-      "names": [
-        "Iprof module-root strict lint",
-        "private profiling/context module-root strict lint"
+      "kind": "producer editing dependency",
+      "rules": [
+        "Approved producer114dda87 now supplies ordinary called Basic bodies, resolving the former interception gap. Its exported anonymous struct-member body records cannot be passed back to compiler_modify_procedure: workspace body ownership is missing. Original reproduction: compiler-requests/profiler-member-modify.jai.",
+        "Canonical Program_Print cannot print the unchanged Basic.alloc return at its .ALLOCATE enum argument. Original reproduction: compiler-requests/profiler-stdlib-modify.jai.",
+        "Canonical Program_Print reports success but prints indexed assignment as (values [] 0) = 42; the modification parser rejects it. Original reproduction: compiler-requests/profiler-index-modify.jai."
       ],
-      "kind": "verification dependency",
-      "rule": "Context registration after bootstrap layout; compiler owner e9affab7 fix must be reconciled and supplied as a safe source snapshot. No compiler edits or duplicate merges by this worker.",
-      "effort_estimate": "one focused source build and verification replay after canonical integration"
+      "library_effort_estimate": "replay required actual O0/O2 CLI module/Basic checks after canonical compiler corrections; no missing public Jai contract or library body remains identified",
+      "affected_workflows": "automatic instrumentation of legitimate indexed bodies and imported standard-library/member procedures; no ad-hoc exclusions or replacement compiler API supplied"
     },
     {
       "names": [
         "shared tools/check_developer_tools.py Codex rejection expectations"
       ],
       "kind": "integration test classification",
-      "rule": "Replace obsolete conditional/Basic metric rejection expectations with the reviewed positive regressions. Other tooling owner/integrator owns that shared runner.",
-      "effort_estimate": "small test classification update; no implementation work"
+      "rule": "Other tooling owner/integrator must replace obsolete conditional/Basic metric rejection expectations with positive reviewed regressions. Shared runner remains unchanged by this worker.",
+      "effort_estimate": "small classification update; no implementation work"
     }
   ],
   "verification": {
     "native": "All21 listed cases passed interpreter/native Mac O0/O2; real CLI Iprof/Codex children, hook forwarding children, exact expression-boundary children and all16 generated client configuration children executed. Codex dump additionally passed interpreter/native O0/O2.",
     "format": "Unchanged repository formatter source-built; owned implementation and supported fixture format/idempotence checks passed.",
-    "strict_lint": "Program fixtures pass -D warnings. The full module-root check fails only on the documented context-layout ordering issue in this snapshot.",
+    "strict_lint": "Full scoped module-root and program fixtures pass -D warnings on authorized unchanged compiler114dda87, including configured context module. No exclusions or allow rules.",
     "other_targets": "Windows/Linux source-only checks; native execution pending later",
-    "report": "target/profiler-codex-checks.json:193 commands;6 expected rejection exits,1 unexpected required module-root lint failure; complete=false. Source hashes included.",
-    "context_dependent_fixture": "iprof-hook-input.jai is compiled and executed with real production add_hook-generated bindings through iprof-hooks.jai; no standalone fragment-lint success is claimed."
+    "report": "target/profiler-codex-checks.json:189 commands;6 expected rejection exits;4 required real O0/O2 module-toggle build failures, retained as failures; complete=false. All21 runtime cases pass interpreter/native Mac O0/O2; hook, size-boundary, all16 configuration children, real Codex CLI/C consumer, formatter and strict lint pass.",
+    "context_dependent_fixture": "iprof-hook-input.jai is compiled and executed with real production add_hook-generated bindings through iprof-hooks.jai; no standalone fragment-lint success is claimed.",
+    "compiler_source": "Exact approved independent checkpoint114dda87 in owned local target/profiler-compiler-source-114dda87; unchanged Rust content, own stdlib link; actual jaic/jaic-llvm/jaic-cli/jailint rebuilt into assigned T7 target after archive mtime freshness correction. No peer or compiler edits.",
+    "resolved_dependencies": [
+      "e9affab7 context-import ordering included and full strict lint replay passed",
+      "114dda87 ordinary called library body interception original reduction passed"
+    ]
   },
   "limitations": [
     "Public plugin base does not expose private predicate/hook-name configuration; no public setter or derived cast invented.",
@@ -303,7 +304,7 @@
   ],
   "disjoint_handoff_batch": {
     "owner": "compiler/integrator",
-    "work": "general module-root context ordering and called-standard-library body interception; no library scaffolding duplication"
+    "work": "general exported member-body ownership, enum/index expression round-trip support; original independent reductions in compiler handoff; no library scaffolding duplication"
   },
   "delegated_scope_excluded": true,
   "head_kind": "implementation checkpoint audited; subsequent inventory-only commits do not change implementation",
