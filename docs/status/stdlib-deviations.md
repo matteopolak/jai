@@ -271,3 +271,12 @@ key until cleanup/reboot. It never reads unrelated registry/credential data.
 Initial UTF conversion return-shape error belongs to the fixture and is fixed
 using reviewed pointer/success/byte-count, without changing production APIs.
 Generated declarations are normalized/idempotent; no copied Jai bodies.
+
+Android TCP accessors share actual tested Linux bodies only after official bionic
+public C header verification.22 reviewed Android exports, four Linux-only scales
+remain conditional, no invented Android APIs. Actual header C layout probes pass
+host ARM64/translated x64; these are NOT Android runtime/SDK execution. Compiler
+rejects -os android, so Android body/native validation remains blocked. No target
+constant overrides or fake backend. Old Linux-only implementation/facade files
+are removed. Public-header SHA/provenance and initial manual include-path staging
+error are documented in portable-socket-fields.md; no assertions skipped.

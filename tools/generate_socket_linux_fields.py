@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Reviewed Linux TCP accessors; public glibc netinet/tcp.h supplies ABI bits."""
+"""Reviewed TCP accessors; official glibc/bionic public headers supply ABI bits."""
 from pathlib import Path
 import subprocess
+from portable_api_spec import parse_spec
 
 ROOT = Path(__file__).resolve().parents[1]
 # Explicit ABI positions; independent declaration order groups adjacent operations.
@@ -24,10 +25,14 @@ FIELDS = {
 
 def main():
     spec = (ROOT / "docs/specs/stdlib/modules/socket.md").read_text()
-    lines = ['// Official glibc tcp.h little-endian ABI; reviewed signatures.',
-             '#assert OS == .LINUX;', '#assert CPU == .X64 || CPU == .ARM64;']
+    inventory = {(d.name, d.condition) for d in parse_spec(spec).declarations}
+    lines = ['// Official glibc/bionic TCP little-endian ABI; reviewed signatures.',
+             '#assert OS == .LINUX || OS == .ANDROID;', '#assert CPU == .X64 || CPU == .ARM64;']
     exports = []
+    linux_exports = []
     for field, (record, word, result, shift, width) in sorted(FIELDS.items()):
+        if record == 'tcp_info':
+            lines += ['#if OS == .LINUX {']
         mask = ((1 << width) - 1) << shift
         word_type = 'u16' if word == '__bitfield_1' else 'u8'
         maximum = (1 << width) - 1
@@ -40,19 +45,27 @@ def main():
         lines += [f'set_{field} :: (fields: *ABI.{record}, value: {result}) {{ {body} }}']
         for action in ['get', 'set']:
             name = f'{action}_{field}'
-            if f'`{name} ::' not in spec:
-                raise RuntimeError(f'Unreviewed export: {name}')
-            exports.append(name)
+            if (name, 'OS == .LINUX') not in inventory:
+                raise RuntimeError(f'Unreviewed Linux export: {name}')
+            if record == 'tcp_info':
+                linux_exports.append(name)
+            else:
+                if (name, 'OS == .ANDROID') not in inventory:
+                    raise RuntimeError(f'Unreviewed Android export: {name}')
+                exports.append(name)
+        if record == 'tcp_info':
+            lines += ['}']
     lines += ['#scope_file', 'ABI :: #import "internal/net/socket-abi";', '']
-    private = ROOT / 'stdlib/internal/net/socket-fields-linux.jai'
+    private = ROOT / 'stdlib/internal/net/socket-fields-tcp-unix.jai'
     private.write_text('\n'.join(lines))
-    facade = ROOT / 'stdlib/Socket/linux-fields.jai'
-    facade.write_text('#if OS == .LINUX {\n' + ''.join(f'{name} :: Fields.{name};\n' for name in exports)
-                      + '}\n#scope_file\n#if OS == .LINUX Fields :: #import "internal/net/socket-fields-linux";\n')
+    facade = ROOT / 'stdlib/Socket/tcp-unix-fields.jai'
+    facade.write_text('#if OS == .LINUX || OS == .ANDROID {\n' + ''.join(f'{name} :: Fields.{name};\n' for name in exports)
+                      + '}\n#if OS == .LINUX {\n' + ''.join(f'{name} :: Fields.{name};\n' for name in linux_exports)
+                      + '}\n#scope_file\n#if OS == .LINUX || OS == .ANDROID Fields :: #import "internal/net/socket-fields-tcp-unix";\n')
     for flags in [[], ['--check']]:
         subprocess.run([str(ROOT / 'target/jaifmt'), '--config', str(ROOT / 'jaifmt.toml'),
                         *flags, str(private), str(facade)], check=True)
-    print(f'Generated {len(exports)} Linux TCP accessor APIs')
+    print(f'Generated {len(exports)} shared Linux/Android TCP APIs and {len(linux_exports)} Linux scale APIs')
 
 
 if __name__ == '__main__':

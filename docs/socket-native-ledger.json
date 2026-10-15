@@ -6471,7 +6471,7 @@
     "name": "get_anon_struct_1_ack",
     "condition": "OS == .ANDROID",
     "spec_line": 2278,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_doff",
@@ -6483,7 +6483,7 @@
     "name": "get_anon_struct_1_doff",
     "condition": "OS == .ANDROID",
     "spec_line": 2268,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_fin",
@@ -6495,7 +6495,7 @@
     "name": "get_anon_struct_1_fin",
     "condition": "OS == .ANDROID",
     "spec_line": 2270,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_psh",
@@ -6507,7 +6507,7 @@
     "name": "get_anon_struct_1_psh",
     "condition": "OS == .ANDROID",
     "spec_line": 2276,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_res1",
@@ -6519,7 +6519,7 @@
     "name": "get_anon_struct_1_res1",
     "condition": "OS == .ANDROID",
     "spec_line": 2266,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_res2",
@@ -6531,7 +6531,7 @@
     "name": "get_anon_struct_1_res2",
     "condition": "OS == .ANDROID",
     "spec_line": 2282,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_rst",
@@ -6543,7 +6543,7 @@
     "name": "get_anon_struct_1_rst",
     "condition": "OS == .ANDROID",
     "spec_line": 2274,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_syn",
@@ -6555,7 +6555,7 @@
     "name": "get_anon_struct_1_syn",
     "condition": "OS == .ANDROID",
     "spec_line": 2272,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_urg",
@@ -6567,7 +6567,7 @@
     "name": "get_anon_struct_1_urg",
     "condition": "OS == .ANDROID",
     "spec_line": 2280,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_Level",
@@ -6585,7 +6585,7 @@
     "name": "get_anon_struct_th_off",
     "condition": "OS == .ANDROID",
     "spec_line": 2264,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_th_x2",
@@ -6597,7 +6597,7 @@
     "name": "get_anon_struct_th_x2",
     "condition": "OS == .ANDROID",
     "spec_line": 2262,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_Zone",
@@ -13995,7 +13995,7 @@
     "name": "set_anon_struct_1_ack",
     "condition": "OS == .ANDROID",
     "spec_line": 2277,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_doff",
@@ -14007,7 +14007,7 @@
     "name": "set_anon_struct_1_doff",
     "condition": "OS == .ANDROID",
     "spec_line": 2267,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_fin",
@@ -14019,7 +14019,7 @@
     "name": "set_anon_struct_1_fin",
     "condition": "OS == .ANDROID",
     "spec_line": 2269,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_psh",
@@ -14031,7 +14031,7 @@
     "name": "set_anon_struct_1_psh",
     "condition": "OS == .ANDROID",
     "spec_line": 2275,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_res1",
@@ -14043,7 +14043,7 @@
     "name": "set_anon_struct_1_res1",
     "condition": "OS == .ANDROID",
     "spec_line": 2265,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_res2",
@@ -14055,7 +14055,7 @@
     "name": "set_anon_struct_1_res2",
     "condition": "OS == .ANDROID",
     "spec_line": 2281,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_rst",
@@ -14067,7 +14067,7 @@
     "name": "set_anon_struct_1_rst",
     "condition": "OS == .ANDROID",
     "spec_line": 2273,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_syn",
@@ -14079,7 +14079,7 @@
     "name": "set_anon_struct_1_syn",
     "condition": "OS == .ANDROID",
     "spec_line": 2271,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_urg",
@@ -14091,7 +14091,7 @@
     "name": "set_anon_struct_1_urg",
     "condition": "OS == .ANDROID",
     "spec_line": 2279,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_Level",
@@ -14109,7 +14109,7 @@
     "name": "set_anon_struct_th_off",
     "condition": "OS == .ANDROID",
     "spec_line": 2263,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_th_x2",
@@ -14121,7 +14121,7 @@
     "name": "set_anon_struct_th_x2",
     "condition": "OS == .ANDROID",
     "spec_line": 2261,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_Zone",

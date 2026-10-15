@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint:3fd4e28, reviewed calendar text/native policy. Current reviewed
+Current durable checkpoint:db0006c, Windows Registry native bindings. Current reviewed
 batch adds26 Linux TCP/tcp_info accessors and Pool unmapping selection/lifetime
 guard. Linux public #run assertions execute both CPU targets; native Linux remains
 pending. Pool interpreter/native O2 and active strict lint pass. Full104 positives,
@@ -277,3 +277,14 @@ execution and active Windows strict lint remain unexecuted/blocked; private ABI
 lint fails honest Windows requirement, CLI has no target selector. Ten predefined
 pseudo-handles remain absent pending reviewed64-bit extension conflict with SDK.
 Exact API list, test-only setup/cleanup and failures: portable-windows-registry.md.
+
+Shared TCP increment:22 Android accessors now share actual Linux implementation,
+with per-platform export validation and four Linux-only scale helpers. Official
+bionic header65536-word C probes pass host ARM64/translated x64; Android CLI still
+rejects target selection, so no Android Jai/native pass. Linux x64/ARM64 public
+#run bodies pass; macOS36 native SDK record pairs rerun host+x64 O0/O2 successfully.
+Full107 positives/23 faults/14 negatives and integration/target checks pass
+(target/socket-tcp-unix-full.log).352 owned files format/check; whole strict lint
+still fails (target/socket-tcp-unix-whole-lint.log). Superseded Linux-only files
+removed. All reviewed bitfield variants now have real source bodies; remaining
+Socket CMSG algorithms/native shapes/reflection and native platform gates remain.

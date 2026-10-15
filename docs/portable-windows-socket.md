@@ -60,10 +60,9 @@ policy but still a resource-risk question for review. No success boolean hides i
 Unix CMSG_FIRSTHDR/CMSG_ALIGN/CMSG_SIZE/CMSG_LEN/CMSG_DATA are still missing;
 CMSG_SIZE's intended relationship to native SPACE/LEN needs review. The36 macOS
 tcphdr/tcp_connection_info accessors are now implemented and verified against
-actual SDK C records; see portable-socket-fields.md. Linux/Android TCP/tcp_info
-remain missing. Windows scope-ID helpers are implemented as described below. The exact named inventory is recorded in
-docs/socket-native-ledger.json as authored wrapper/pending helper, not completed
-declarations. SHUT and several native record variants have unresolved reviewed
+actual SDK C records; see portable-socket-fields.md. Linux TCP/tcp_info, Android
+TCP and Windows scope-ID helpers now have real source implementations. The exact
+per-platform verification state is recorded in docs/socket-native-ledger.json. SHUT and several native record variants have unresolved reviewed
 shapes; Windows common wrappers above do not establish the whole native surface.
 The Unix FD_BITS_ELEMENT_TYPE expression remains a general compiler dependency.
 Full native ABI/runtime coverage for every direct native declaration is unfinished.
@@ -75,70 +74,13 @@ Official native C sources:
 Reviewed specs remain the Jai API oracle; native sources supply ABI facts only.
 
 
-Exact still-missing bitfield procedures (reviewed native declarations, no bodies):
-
-- get___pad2
-- get_anon_struct_1_ack
-- get_anon_struct_1_doff
-- get_anon_struct_1_fin
-- get_anon_struct_1_psh
-- get_anon_struct_1_res1
-- get_anon_struct_1_res2
-- get_anon_struct_1_rst
-- get_anon_struct_1_syn
-- get_anon_struct_1_urg
-- get_anon_struct_th_off
-- get_anon_struct_th_x2
-- get_tcpi_rcv_wscale
-- get_tcpi_snd_wscale
-- get_tcpi_tfo_cookie_invalid
-- get_tcpi_tfo_cookie_rcv
-- get_tcpi_tfo_cookie_req
-- get_tcpi_tfo_cookie_req_rcv
-- get_tcpi_tfo_cookie_sent
-- get_tcpi_tfo_cookie_wrong
-- get_tcpi_tfo_heuristics_disable
-- get_tcpi_tfo_no_cookie_rcv
-- get_tcpi_tfo_onebyte_proxy
-- get_tcpi_tfo_recv_blackhole
-- get_tcpi_tfo_send_blackhole
-- get_tcpi_tfo_syn_data_acked
-- get_tcpi_tfo_syn_data_rcv
-- get_tcpi_tfo_syn_data_sent
-- get_tcpi_tfo_syn_loss
-- get_th_off
-- get_th_x2
-- set___pad2
-- set_anon_struct_1_ack
-- set_anon_struct_1_doff
-- set_anon_struct_1_fin
-- set_anon_struct_1_psh
-- set_anon_struct_1_res1
-- set_anon_struct_1_res2
-- set_anon_struct_1_rst
-- set_anon_struct_1_syn
-- set_anon_struct_1_urg
-- set_anon_struct_th_off
-- set_anon_struct_th_x2
-- set_tcpi_rcv_wscale
-- set_tcpi_snd_wscale
-- set_tcpi_tfo_cookie_invalid
-- set_tcpi_tfo_cookie_rcv
-- set_tcpi_tfo_cookie_req
-- set_tcpi_tfo_cookie_req_rcv
-- set_tcpi_tfo_cookie_sent
-- set_tcpi_tfo_cookie_wrong
-- set_tcpi_tfo_heuristics_disable
-- set_tcpi_tfo_no_cookie_rcv
-- set_tcpi_tfo_onebyte_proxy
-- set_tcpi_tfo_recv_blackhole
-- set_tcpi_tfo_send_blackhole
-- set_tcpi_tfo_syn_data_acked
-- set_tcpi_tfo_syn_data_rcv
-- set_tcpi_tfo_syn_data_sent
-- set_tcpi_tfo_syn_loss
-- set_th_off
-- set_th_x2
+The complete reviewed bitfield source inventory is now implemented:36 macOS,
+four Windows,26 Linux and22 Android conditional API variants. The Android22
+share actual Linux TCP bodies, with official bionic C header layout checked on
+host; compiler Android target selection is unavailable, so Android Jai body and
+native validation are still pending. Linux/Windows public pure-record #run checks
+execute both target CPUs. Only macOS currently has full native Jai/SDK vector
+execution. This is not all-platform completion; see portable-socket-fields.md.
 
 Unresolved native shape variants:
 

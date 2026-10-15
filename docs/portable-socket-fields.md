@@ -39,9 +39,8 @@ only test generation. Failure remains at target/socket-fields-green.log; no file
 loader or assertion was weakened. Passing evidence:
 target/socket-fields-both-cpus.log and target/socket-fields-final-lint.log.
 
-Only those36 accessor APIs are completed here. Linux/Android TCP/tcp_info and
-CMSG helpers and unresolved shapes remain
-named in portable-windows-socket.md/socket-native-ledger.json. Whole strict lint,
+The initial36 macOS accessor batch is followed by the platform batches below.
+CMSG helpers and unresolved shapes remain named in portable-windows-socket.md/socket-native-ledger.json. Whole strict lint,
 native Windows execution and active Windows lint remain separate failed/pending
 gates. No full Socket/native surface completeness claim.
 
@@ -63,8 +62,7 @@ inside #run for both Linux CPUs, checking256 original word patterns and all256
 input byte values for unsigned setters, plus bool set/clear and overlay-sized
 record checks. This is host interpreter execution of cross-target pure records,
 not native Linux execution or SDK C ABI validation. Both remain pending CI;
---native refuses a non-Linux host. Android's matching named APIs remain missing
-pending official bionic ABI verification and compiler target availability.
+--native refuses a non-Linux host. Android's22 matching TCP APIs now share these real bodies, as described below.
 
 Initial missing-export failure: target/socket-linux-fields-red.log. Initial
 fixture used an overflowing checked narrowing cast; the corrected test masks the
@@ -73,3 +71,43 @@ for runtime assert; adding its import fixes only test setup. Those failure logs
 remain target/socket-linux-fields-green.log and green2.log. Passing cross-target
 evidence: target/socket-linux-fields-final.log. Whole strict lint still fails;
 host lint cannot activate Linux-only implementation without target selection.
+
+
+Android TCP source batch: official bionic bits/tcphdr.h confirms identical
+little-endian twenty-byte overlay and bit positions. Shared code now lives in
+internal/net/socket-fields-tcp-unix.jai; Socket/tcp-unix-fields.jai exports22
+TCP accessors on Linux/Android and four tcp_info scale accessors only on Linux.
+No Android scale export is invented. Superseded Linux-only files are removed.
+Generator checks each per-OS export against parsed reviewed declarations, rather
+than accepting names merely because they occur on another platform.
+
+Official native C header input:
+https://raw.githubusercontent.com/aosp-mirror/platform_bionic/master/libc/include/bits/tcphdr.h
+SHA256 a0eff7a70a268072c0cd12c14a92ba38f8a40925cca86bc9cb90cacaad910d1f.
+Downloaded intact, including its native license, only to target/bionic-tcphdr.h.
+No external implementation bodies enter our library. Initial web-cache fetch
+failed; ordinary public-header HTTPS retrieval succeeded within the existing OS
+sandbox, with no permissions override or access to forbidden inputs.
+
+tools/check_portable_bionic_tcp_header.py --header target/bionic-tcphdr.h builds
+the actual supplied public C header and exercises65536 whole-word layout cases
+with neighboring-byte preservation. Host ARM64 and translated x64 probes pass.
+This is native host C layout evidence, not native Android execution. The same
+independent header-check helper is used by the prepared actual Linux SDK probe;
+Linux tcp_info-prefix checks remain separate. First manual probe used one excess
+parent directory in its include path; the runner now supplies the exact resolved
+header path directly, without assertion changes.
+
+Actual public shared Jai bodies still execute under Linux x64/ARM64 #run checks.
+Android compiler checking remains BLOCKED: current source-built CLI rejects
+-os android and lists linux/windows/macos/wasm. Evidence:
+target/socket-android-target-unavailable.log. No OS constant override, disguised
+Linux pass, fake Android SDK/system calls or completed Android test claim.
+Passing host C/header and Linux shared-body evidence:
+target/socket-bionic-header-verified.log and target/socket-tcp-unix-final.log.
+
+Complete reviewed accessor source inventory: macOS36, Windows4, Linux26, Android22
+conditional variants. Android body checking/native, Linux native, Windows native
+and active target-aware lint remain pending. Remaining missing Socket algorithms
+are CMSG_FIRSTHDR/CMSG_ALIGN/CMSG_SIZE/CMSG_LEN/CMSG_DATA, plus named unresolved
+native shapes and Unix reflected fd_set element-type compiler gap.
