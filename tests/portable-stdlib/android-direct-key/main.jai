@@ -8,8 +8,8 @@ main :: () {
     assert(args.count == 2 || args.count == 3);
 
     if args.count == 3 {
-        rejected, failed := A.android_generate_signing_key_direct(args[1], "invalid-country", country_code = "TOO_LONG");
-        assert(!rejected && failed.direct.private_key_path.count == 0);
+        rejected := A.android_generate_signing_key_direct(args[1], "invalid-country", country_code = "TOO_LONG");
+        assert(!rejected);
         print("rejected\n");
         return;
     }
@@ -23,9 +23,9 @@ main :: () {
     duplicate, unused := A.android_generate_signing_key_direct(args[1], "ec");
 
     assert(duplicate && unused.direct.certificate_path != ec.direct.certificate_path);
-    unsupported, invalid := A.android_generate_signing_key_direct(args[1], "dsa", .DSA);
+    unsupported := A.android_generate_signing_key_direct(args[1], "dsa", .DSA);
 
-    assert(!unsupported && invalid.direct.private_key_path.count == 0);
+    assert(!unsupported);
     print("%\n%\n%\n%\n", ec.direct.certificate_path, ec.direct.private_key_path, rsa.direct.certificate_path, rsa.direct.private_key_path);
     free(ec.direct.certificate_path);
     free(ec.direct.private_key_path);
