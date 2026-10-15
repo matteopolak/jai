@@ -11,6 +11,7 @@ capture :: (_text: string, _data: *void, info: Log_Info) {
 
 main :: () {
     args := get_command_line_arguments();
+
     defer array_free(args);
     assert(args.count == 3, "supply private output directory and native library path");
     one: B.Literal;

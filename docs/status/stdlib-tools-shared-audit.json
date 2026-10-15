@@ -1,7 +1,7 @@
 {
   "role": "stdlib-tools",
-  "timestamp_utc": "2026-10-15T21:34:36.002161+00:00",
-  "shared_head": "ebe1d61525600ae01e7453061797ff72ad06ff72",
+  "timestamp_utc": "2026-10-15T22:52:33.385240+00:00",
+  "shared_head": "8dcf542705a59f8afe12a1821a0bb5b706f85480",
   "checkpoint": "98b1581ccdc910fc6c5eecff10a9abd3133bc247",
   "ownership": "Bindings_Generator emission/parser/printing/native tooling and Print_Vars; model/type/context excluded",
   "adoption": [
@@ -99,8 +99,9 @@
           "line": 29
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "partial_supported_body",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Supports 8/16/32/64-bit target widths; wider target contract and default formatting audit pending."
     },
     {
       "name": "append_as_unsigned_integer_hex",
@@ -110,48 +111,64 @@
           "line": 24
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "partial_supported_body",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Supports 8/16/32/64-bit target widths; wider target contract audit pending."
     },
     {
       "name": "append_bitfield_helpers",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-bitfields.jai",
+          "line": 161
+        }
+      ],
+      "status": "implemented_verification_pending",
+      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
+      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
     },
     {
       "name": "append_cpp_type",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 1
+          "line": 63
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "partial_supported_body",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Standard scalar/pointer/array/function/nominal emission exists; method/template/unsupported flag and declaration workflow integration pending."
     },
     {
       "name": "append_cpp_type_modifiers",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 7
+          "line": 69
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "append_cpp_wrapper",
       "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "missing_body",
+      "shared_verification": "Missing public body confirmed in current combined owned sources.",
+      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
     },
     {
       "name": "append_elsewhere",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
+          "line": 15
+        }
+      ],
+      "status": "implemented_verification_pending",
+      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
+      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
     },
     {
       "name": "append_integer",
@@ -161,8 +178,9 @@
           "line": 1
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Fresh shared per-API interpreter/native regression rerun pending; historical authored tests/effects exist."
     },
     {
       "name": "append_maybe_left_shift",
@@ -172,8 +190,9 @@
           "line": 33
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Fresh shared per-API interpreter/native regression rerun pending; historical authored tests/effects exist."
     },
     {
       "name": "append_maybe_right_shift",
@@ -183,161 +202,232 @@
           "line": 39
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Fresh shared per-API interpreter/native regression rerun pending; historical authored tests/effects exist."
     },
     {
       "name": "append_parent_field_path",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-bitfields.jai",
+          "line": 111
+        }
+      ],
+      "status": "implemented_verification_pending",
+      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
+      "remaining_gap": "Nonempty anonymous containment needs native fixture"
     },
     {
       "name": "append_parent_path",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
+          "line": 96
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "append_template_instantiation_params",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 3
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "as_str",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
+          "line": 54
+        },
+        {
+          "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
+          "line": 71
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "avoid_name_clash",
       "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
-    },
-    {
-      "name": "check_macro_value",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
-    },
-    {
-      "name": "convert_children_to_expression",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "implemented_verification_pending",
+      "shared_verification": "Missing-member red then interpreter green for reserved/suffix/parent/overload/unique insertion behavior.",
+      "remaining_gap": "Native O0/O2 and final edge-policy review."
     },
     {
       "name": "exceeds_signed_int_value",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 46
+          "line": 105
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
-    },
-    {
-      "name": "expect_tokens",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Fresh shared per-API interpreter/native regression rerun pending; historical authored tests/effects exist."
     },
     {
       "name": "fill_template_arguments",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
+          "line": 1
+        }
+      ],
+      "status": "implemented_verification_pending",
+      "shared_verification": "Unchanged SDK-derived T[N] fixture now passes interpreter after canonical model-owner repair; native batch pending.",
+      "remaining_gap": "Current full source native O0/O2 and guarded snapshot verification."
     },
     {
       "name": "fill_template_arguments_for_expression",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
+          "line": 12
+        }
+      ],
+      "status": "implemented_verification_pending",
+      "shared_verification": "Unchanged SDK-derived T[N] fixture now passes interpreter after canonical model-owner repair; native batch pending.",
+      "remaining_gap": "Current full source native O0/O2 and guarded snapshot verification."
     },
     {
       "name": "finish_bitfield",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
-    },
-    {
-      "name": "get_scoped_token_string",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-bitfields.jai",
+          "line": 52
+        }
+      ],
+      "status": "implemented_verification_pending",
+      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
+      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
     },
     {
       "name": "get_type_name",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-queries.jai",
-          "line": 20
+          "line": 15
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
-    },
-    {
-      "name": "handle_toplevel_cursors",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "log",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
+          "line": 97
+        },
+        {
+          "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
+          "line": 109
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "log_error",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
+          "line": 103
+        },
+        {
+          "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
+          "line": 116
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "maybe_add_to_bitfield",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-bitfields.jai",
+          "line": 1
+        }
+      ],
+      "status": "implemented_verification_pending",
+      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
+      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
     },
     {
       "name": "maybe_append_cast",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/value-emission.jai",
+          "line": 69
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "maybe_convert_expression_zero_to_null",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-expression-normalization.jai",
-          "line": 1
+          "line": 31
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "partial_supported_body",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Integer-zero pointer conversion exists; ownership policy documented in existing emission questions, pending reviewer confirmation."
     },
     {
       "name": "maybe_convert_fixed_array_type",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-expression-normalization.jai",
+          "line": 27
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "maybe_convert_pointer_type_to_fixed_array_type",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-expression-normalization.jai",
+          "line": 1
+        }
+      ],
+      "status": "implemented_verification_pending",
+      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
+      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
     },
     {
       "name": "maybe_unwrap_bitfield_declaration",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-bitfields.jai",
+          "line": 97
+        }
+      ],
+      "status": "implemented_verification_pending",
+      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
+      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
     },
     {
       "name": "omit_cpp_functions_visitor",
@@ -347,38 +437,52 @@
           "line": 1
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Fresh shared per-API interpreter/native regression rerun pending; historical authored tests/effects exist."
     },
     {
       "name": "omit_unnecessary_typedefs_and_macros",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
-    },
-    {
-      "name": "parse_call_expression",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
+          "line": 143
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "print_declaration_to_builder",
       "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "missing_body",
+      "shared_verification": "Missing public body confirmed in current combined owned sources.",
+      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
     },
     {
       "name": "print_enum",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 33
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "print_enum_body",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 53
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "print_expression_to_builder",
@@ -388,25 +492,28 @@
           "line": 57
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "partial_supported_body",
+      "shared_verification": "aggregate public workflow fresh passed",
+      "remaining_gap": "Aggregate/cycle transaction now verified; general represented expression categories and template instantiation composition audit pending."
     },
     {
       "name": "print_function",
       "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "missing_body",
+      "shared_verification": "Missing public body confirmed in current combined owned sources.",
+      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
     },
     {
       "name": "print_function_type_to_builder",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 36
+          "line": 95
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "partial_supported_body",
+      "shared_verification": "aggregate public workflow fresh passed",
+      "remaining_gap": "Configured FOREIGN_FUNC_DECLARATION callback and represented directives now honored; new real default/native ABI fixture interpreter green, full native batch pending."
     },
     {
       "name": "print_literal_to_builder",
@@ -416,78 +523,94 @@
           "line": 45
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "partial_supported_body",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Standard numeric/string/null/enum expressions exist; all width/category/raw/macro limits require explicit per-domain audit."
     },
     {
       "name": "print_namespace",
       "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "missing_body",
+      "shared_verification": "Missing public body confirmed in current combined owned sources.",
+      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
     },
     {
       "name": "print_struct",
       "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "missing_body",
+      "shared_verification": "Missing public body confirmed in current combined owned sources.",
+      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
     },
     {
       "name": "print_struct_vtable",
       "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "missing_body",
+      "shared_verification": "Missing public body confirmed in current combined owned sources.",
+      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
     },
     {
       "name": "print_type_to_builder",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 20
+          "line": 79
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "partial_supported_body",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Plain type emission exists; existing_declarations-dependent generation and broader template/method workflow remain unfinished."
     },
     {
       "name": "print_typedef",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
-    },
-    {
-      "name": "raw_string_from_macro_tokens",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 14
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "raw_tokens_string_from_cursor",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
-          "line": 1
+          "line": 120
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
-    },
-    {
-      "name": "run_generator",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "partial_supported_body",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Copies libclang spellings and separates tokens; exact whitespace/comment compatibility question remains."
     },
     {
       "name": "should_be_omitted",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
+          "line": 74
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "should_unwrap_typedef",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
+          "line": 55
+        },
+        {
+          "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
+          "line": 68
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "size_from_number_flags",
@@ -497,70 +620,81 @@
           "line": 1
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
-    },
-    {
-      "name": "string_from_macro_value",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "strip_type",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 61
+          "line": 120
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Fresh shared per-API interpreter/native regression rerun pending; historical authored tests/effects exist."
     },
     {
       "name": "stripped_name",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
+          "line": 30
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "to_string",
-      "declarations": [],
-      "status": "not_found_in_owned_emission_sources",
-      "shared_verification": "not_run"
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
+          "line": 77
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "try_find_struct_in_type",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-queries.jai",
-          "line": 49
+          "line": 42
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "type_has_name",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-queries.jai",
-          "line": 13
+          "line": 10
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "implemented_supported_contract",
+      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
       "name": "type_to_string",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 26
+          "line": 85
         }
       ],
-      "status": "body_audit_required",
-      "shared_verification": "not_run"
+      "status": "partial_supported_body",
+      "shared_verification": "per-API fresh evidence not yet collected",
+      "remaining_gap": "Composes current plain type printer; inherits its declaration/template/method gaps."
     }
   ],
   "inventory_limit": "Declaration locations are discovery only, not body completeness or contract correctness. Other canonical model/helper files intentionally excluded.",
@@ -568,10 +702,11 @@
     {
       "fixture": "bindings-aggregate.jai",
       "assertion_line_in_checkpoint": 83,
-      "status": "historical_failure_unverified_shared",
+      "status": "resolved_fixture_setup_error_verified_aggregate_interpreter_native",
       "assertion": "cpp.failed && errors == 1 && builder_string_length(*cpp) == preserve.count",
       "policy": "Diagnose separate failed/logger/storage observations without weakening assertion after adoption.",
-      "diagnosis": "Checkpoint aggregate fixture reads unchanged via builder_to_string with default do_reset=true, then later expects the consumed preserve bytes. Reviewed Basic declares do_reset:=true; independent cycle reduction verifies default consumption plus do_reset=false retention, failure flag and exactly one diagnostic in interpreter. Aggregate itself awaits integration and rerun."
+      "diagnosis": "Checkpoint aggregate fixture reads unchanged via builder_to_string with default do_reset=true, then later expects the consumed preserve bytes. Reviewed Basic declares do_reset:=true; independent cycle reduction verifies default consumption plus do_reset=false retention, failure flag and exactly one diagnostic in interpreter. Aggregate itself awaits integration and rerun.",
+      "correction": "Pass do_reset=false when inspecting preserved output; original final preservation/error assertion unchanged."
     }
   ],
   "fresh_evidence": {
@@ -586,21 +721,204 @@
       "bindings-transaction-storage.jai": "passed before concurrent integration"
     },
     "native_O0": "compile interrupted by concurrent integration conflict marker in owned binding-value-emission.jai; not a stable-source regression result",
-    "native_O2": "not_run"
+    "native_O2": "not_run",
+    "aggregate": {
+      "passed": true,
+      "source_unchanged": true,
+      "command_count": 51,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/aggregate/verification.json",
+      "effects": [
+        "Interpreter and Mac O0/O2 emitter and cyclic-expression storage",
+        "Generated Jai default/by-value native C ABI calls, interpreter and Mac O0/O2",
+        "Generated C++ qualified aggregate passed configured LLVM SDK C++ O0/O2 consumer",
+        "Formatter --check and warnings-denied jailint"
+      ],
+      "cross_target": "not run"
+    },
+    "Print_Vars": {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/print-vars-verification.json",
+      "commands": 7,
+      "source_unchanged": true,
+      "passed": [
+        "interpreter",
+        "native Mac O0",
+        "native Mac O2",
+        "format --check",
+        "warnings-denied lint"
+      ],
+      "verification_gap": "Checkpoint compound expression fixture not adopted"
+    },
+    "new_batches": {
+      "enum": "stdlib-tools/shared-target/enum-printers/verification.json",
+      "policies": "stdlib-tools/shared-target/emission-policies-verification.json",
+      "casts": "stdlib-tools/shared-target/cast-tokens-verification.json",
+      "templates_and_diagnostics": "stdlib-tools/shared-target/templates-diagnostics-verification.json",
+      "root_module_strict_lint": "Fresh source-built jailint -D warnings stdlib/Bindings_Generator/module.jai passed",
+      "macro_probe": "Actual shared generator-macro-shared-state interpreter passes state ok via real model extraction/probe; native rerun pending."
+    },
+    "guarded_current_helpers": "stdlib-tools/shared-target/current-public-helpers-verification.json:43 commands,24runtime executions, source unchanged, Windows x64/Linux ARM64 source-only checks.",
+    "guarded_emission_workflows": "stdlib-tools/shared-target/emission-workflows-verification.json: all four original C/native or generic workflows pass; current signature-callback addition under verification."
   },
   "dependencies": [
-    "Integrator adoption of full owned checkpoint chain",
-    "Canonical generator-model adoption",
-    "Worker-specific build/output configuration; legacy staging/overlays prohibited"
+    "Integrator baseline freeze/native slot",
+    "Canonical native SDK libclang configuration requested by model owner",
+    "Dirty reviewer exact helper policies where output text/state policy missing"
   ],
-  "workarounds": [],
+  "workarounds": [
+    {
+      "kind": "test setup correction",
+      "detail": "Initial private runner passed full dylib filename as Jai library name; native linker appends extensions, so changed to logical stem. Interpreter also fails for absolute logical stem while native succeeds; final portable test uses relative logical stem next to generated module. No production loader changes or suppressed test failures. Absolute-stem compiler/platform question remains."
+    },
+    {
+      "kind": "obsolete independently authored test oracle corrected",
+      "detail": "Refreshed public review requires numeric/pointer type_has_name true, hardcoded get_type_name empty, struct traversal stopping at typedefs, and C_TYPE_DETAILS const-only. Existing tests explicitly updated; new red/green contract fixture added."
+    },
+    {
+      "kind": "fixture setup correction",
+      "detail": "Enum body helper prints complete enum construct per newly refreshed spec; removed invented surrounding enum wrapper in new draft test, added canonical count assertion."
+    },
+    {
+      "kind": "fixture setup correction",
+      "detail": "Native init does not allocate the long-lived input index; new SDK token tests explicitly create/store their own actual clang_index for deinit ownership. Parse flag argument uses reviewed u32 cast."
+    }
+  ],
   "unfinished": [
-    "Aggregate draft implementation is partial and historically failing",
-    "Complete per-API body/default/overload/visibility audit after adoption",
-    "Adapt owned test runners to isolated shared-tree outputs",
-    "Integrator currently reconciling binding-value-emission.jai conflict; do not race editor."
+    "Nine absent driver/function/record/bridge/clash public bodies",
+    "Ten original partial bodies require final contract completion (exact names in per-API table)",
+    "Two template helper bodies blocked by model T[N] conversion; original repro/assertions retained",
+    "Bitfield/linkage/pointer recovery native O0/O2 and nonempty anonymous containment verification",
+    "Canonical run_generator parse-input capture and old independently authored Native_Model path consolidation",
+    "Production generic/native integer128 type mapping remains unsupported; no fabricated extra payload/ABI",
+    "Required other-platform actual native execution not claimed"
   ],
   "tradeoffs": [
-    "Read-only adoption audit precedes production edits to avoid overwriting ongoing integration."
-  ]
+    "No optional performance/profile expansion; scoped host aggregate workflow only.",
+    "Shared source freeze prevents production API work until first combined baseline completes; pending contracts and native provenance audited meanwhile.",
+    "Current aggregate runner verifies Mac only; unsupported-host gate fails explicitly, no fabricated platform success.",
+    "Bitfield getter/setter source currently unrolls represented bits (<=64 each), increasing source/code size; correctness checked against actual C ABI, no optional performance matrix.",
+    "Native evaluation probe name collision scanning is linear per candidate, potentially quadratic for adversarial private-name collisions.",
+    "Pointer array recovery preserves already-inserted and pointer-to-array shapes to avoid double normalization; eligibility edge review requested, no broad ABI promise.",
+    "Unsupported template argument placeholder has independently chosen diagnostic spelling and false result; never treated as converted supported argument."
+  ],
+  "adoption_status": "Checkpoint adopted; public emitters in canonical facade, new bodies consume single canonical model/context. No index/branch mutation by this owner.",
+  "remaining_counts": {
+    "implemented_supported_contract": 26,
+    "implemented_verification_pending": 10,
+    "missing_body": 6,
+    "partial_supported_body": 10,
+    "assigned_names": 52
+  },
+  "native_dependency_identity": [
+    {
+      "image": "libclang.dylib",
+      "official_sdk_matches": true,
+      "staged_matches": true
+    },
+    {
+      "image": "libLLVM.23.1.dylib",
+      "official_sdk_matches": true,
+      "staged_matches": true
+    },
+    {
+      "image": "libzstd.1.dylib",
+      "official_sdk_matches": true,
+      "staged_matches": true
+    },
+    {
+      "image": "libz3.5.1.dylib",
+      "official_sdk_matches": true,
+      "staged_matches": true
+    }
+  ],
+  "Print_Vars_public_api_audit": [
+    {
+      "name": "append_indented",
+      "body": "implemented",
+      "contract": "reviewed signatures/defaults/config and existing workflow audited",
+      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+    },
+    {
+      "name": "print_helper",
+      "body": "implemented",
+      "contract": "reviewed signatures/defaults/config and existing workflow audited",
+      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+    },
+    {
+      "name": "get_code_name",
+      "body": "implemented",
+      "contract": "reviewed signatures/defaults/config and existing workflow audited",
+      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+    },
+    {
+      "name": "print_vars_helper",
+      "body": "implemented",
+      "contract": "reviewed signatures/defaults/config and existing workflow audited",
+      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+    },
+    {
+      "name": "print_vars_to",
+      "body": "implemented",
+      "contract": "reviewed signatures/defaults/config and existing workflow audited",
+      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+    },
+    {
+      "name": "print_vars",
+      "body": "implemented",
+      "contract": "reviewed signatures/defaults/config and existing workflow audited",
+      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+    },
+    {
+      "name": "log_vars",
+      "body": "implemented",
+      "contract": "reviewed signatures/defaults/config and existing workflow audited",
+      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+    }
+  ],
+  "question_document": "docs/specs/questions/stdlib-tools-shared.md",
+  "transferred_public_names": {
+    "owner": "portable-asn1-socket",
+    "names": [
+      "check_macro_value",
+      "raw_string_from_macro_tokens",
+      "string_from_macro_value",
+      "get_scoped_token_string",
+      "expect_tokens",
+      "parse_call_expression",
+      "convert_children_to_expression",
+      "run_generator",
+      "handle_toplevel_cursors"
+    ],
+    "policy": "No owned edits; canonical macro/model dependencies consumed only.",
+    "note": "Latest coordinator explicitly assigned canonical run_generator/handle_toplevel_cursors to ASN macro worker; tools retains emission/bindings-driver integration, supplies native evaluation probe."
+  },
+  "next_batch": {
+    "focus": "Finish verification/checkpoint current real public helper batch; then remaining nine driver/record/function/bridge/clash APIs",
+    "missing": [
+      "append_cpp_wrapper",
+      "avoid_name_clash",
+      "handle_toplevel_cursors",
+      "print_declaration_to_builder",
+      "print_function",
+      "print_namespace",
+      "print_struct",
+      "print_struct_vtable",
+      "run_generator"
+    ]
+  },
+  "native_macro_probe_dependency": {
+    "ownership": "Only native parse-input capture/probe boundary belongs tools; seven public macro APIs excluded",
+    "proposal": "Existing Session holds one exact Parse_Input receipt; model owns private record and canonical evaluated payload conversion",
+    "sdk_evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/unsaved-evaluation-sdk.json",
+    "passed": [
+      "official SDK O0",
+      "official SDK O2",
+      "immutable physical header remains1; evaluated unsaved contents42"
+    ],
+    "not_claimed": [
+      "Jai macro API implementation",
+      "arbitrary external TU configured argument recovery"
+    ],
+    "failed_attempt": "Nonexistent virtual include rejected; corrected using actual immutable primary filename per official CXUnsavedFile docs."
+  },
+  "source_hold": "Released; implementation active. Brief file verification window completed."
 }

@@ -145,5 +145,19 @@ main :: () {
     assert(tracker.live == 0 && caller.live == 1);
     array_free(replacement);
     assert(caller.live == 0);
+    borrowed_generator: B.Generator;
+    borrowed := S.open(*borrowed_generator, B.TARGET_OS);
+
+    push_context {
+        S.activate(*borrowed_generator, null, *borrowed);
+        B.init_generator(*borrowed_generator, .{});
+        assert(borrowed.live && !borrowed.lifecycle_owned);
+        B.deinit_generator(*borrowed_generator);
+        assert(context.generator == *borrowed_generator && borrowed.live);
+        assert(borrowed_generator.type_def_u64 != null);
+    }
+
+    S.close(*borrowed);
+
     print("ok\n");
 }

@@ -54,7 +54,7 @@ main :: () {
 
     B.clang_visitChildren(root, visit, *capture);
     defer array_free(capture.children);
-    assert(capture.children.count == 11);
+    assert(capture.children.count == 13);
     generator: B.Generator;
     generator.translation_unit = unit;
     session := S.open(*generator, B.TARGET_OS);
@@ -116,6 +116,19 @@ main :: () {
         S.close(*rejection);
     }
 
+    payload_rejection := S.open(*generator, B.TARGET_OS);
+
+    push_context {
+        S.activate(*generator, null, *payload_rejection);
+        context.logger = log;
+        native := B.clang_getCanonicalType(B.clang_getCursorType(capture.children[12]));
+
+        assert(native.kind == .Enum && B.clang_Type_getSizeOf(native) == 16);
+        assert(B.create_literal(capture.children[12], root) == null);
+        assert(payload_rejection.failed && errors == 3);
+    }
+
+    S.close(*payload_rejection);
     assert(!session.failed);
     print("ok\n");
 }

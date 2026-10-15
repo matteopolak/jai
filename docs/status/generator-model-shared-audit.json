@@ -1,6 +1,6 @@
 {
-  "timestamp_utc": "2026-10-15T21:32:23.171882+00:00",
-  "shared_head": "71c54d8e584789d5513b4786b5b4f8279b2da019",
+  "timestamp_utc": "2026-10-15T23:20:59.041102+00:00",
+  "shared_head": "540cadd3c1abf499b661d9b57d0f2f08e9f46a10",
   "checkpoint": "refs/remotes/coordinator/transition-generator-model",
   "checkpoint_counts": {
     "complete": 49,
@@ -64,7 +64,6 @@
     "create_struct",
     "create_type",
     "create_type_inner",
-    "find_and_check_macro_identifier",
     "find_or_create_extra_info"
   ],
   "adoption": [
@@ -153,8 +152,8 @@
       "adopted": true
     }
   ],
-  "source_edits": "Adopted checkpoint confirmed before source changes; source edits complete for current native virtual-member rejection batch.",
-  "verification": "Historical producer evidence only; shared verification pending.",
+  "source_edits": "Adoption confirmed before owned changes. Real lifecycle, exact-receipt macro conversion, widened-enum rejection and source-associated dependent array bounds implemented; no Git index/branch actions by owner.",
+  "verification": "Complete immutable current shared-input capture passed138 commands:22 interpreter,44 native O0/O2,8 SDK oracle executions,formatter,strict lint and2 cross-target source checks. Actual bytes/tool hashes stable; evidence applies to captured input identity, not later peer edits.",
   "remaining_batches": [
     {
       "names": [
@@ -165,509 +164,557 @@
         "create_type_inner"
       ],
       "effort": "native SDK representation/evidence dependency",
-      "dependencies": "Ordinary typed/value templates and resolved integral/Boolean/null defaults now work through official SDK specialization getters. Remaining limits: formal builtin/composite type defaults unavailable through public C API, unsupported dependent/expression/template-template argument kinds and pack expansion. Failed defaults diagnose and are not cached. Virtual bases and unsupported specializations remain explicit native ABI/accepted-domain boundaries.",
+      "dependencies": "Ordinary typed/value templates and resolved integral/Boolean/null defaults now work through official SDK specialization getters. Remaining limits: formal builtin/composite type defaults unavailable through public C API, unsupported dependent/expression/template-template argument kinds and pack expansion. Failed defaults diagnose and are not cached. Virtual bases and unsupported specializations remain explicit native ABI/accepted-domain boundaries. Ordinary dependent arrays and callback-bound domains are now implemented/verified; do not retain T[N] as pending.",
       "delegatable": "No other public implementation names reassigned; exact supported-domain/schema questions documented in docs/specs/questions/generator-model.md."
-    },
-    {
-      "names": [
-        "find_and_check_macro_identifier"
-      ],
-      "effort": "tools-owned routine integration plus real pending validation test",
-      "dependencies": "Reviewed NEEDS_CHECKING behavior is implemented as delegation to check_macro_value then KEEP-only decision. That tooling-owned public validator is absent from this sanitized checkout. The missing dependency diagnoses and preserves NEEDS_CHECKING; no second validator/parser or fake conversion."
     },
     {
       "names": [
         "find_or_create_extra_info"
       ],
       "effort": "additional target ABI evidence and shared emission integration",
-      "dependencies": "Actual verified Mac64 leaf/single-primary producer is implemented, including native overrides, typed slots, omitted placeholders, field gaps and cache parent-link repair. Remaining genuine limits: Windows overload ordering, virtual bases, multiple adjustments, destructor pairs, covariance, aggregate/extended/variadic slot calling ABIs and packed/bitfield polymorphic layouts. Tools emission must consume this SINGLE producer's modified_declarations/generated typed records, not prepopulate a second cache."
+      "dependencies": "Actual verified Mac64 leaf/single-primary producer is implemented, including native overrides, typed slots, omitted placeholders, field gaps and cache parent-link repair. Remaining genuine limits: Windows overload ordering, virtual bases, multiple adjustments, destructor pairs, covariance, aggregate/extended/variadic slot calling ABIs and packed/bitfield polymorphic layouts. Tools emission must consume this SINGLE producer's modified_declarations/generated typed records, not prepopulate a second cache. Ordinary dependent arrays and callback-bound domains are now implemented/verified; do not retain T[N] as pending."
     }
   ],
   "required_followup": [
-    "Reproduce missing virtual conversion slots with SDK then model regression.",
-    "Integrate tooling-owned macro validator and emission via one context/ledger/cache.",
-    "Reverify shared formatter/lint/SDK/interp/native O0/O2 without shared fixture writes."
+    "ASN-owned run_generator must capture its actual argv/overlays into Session.parse_input and use gm_release_generator_model after final emission/native cleanup.",
+    "Tools emission must consume the same canonical Struct_Extra_Info metadata and lifetime; no duplicated context/model/cache.",
+    "Independent additional ABI evidence or reviewed accepted-domain clarification for exact six partial rows; no hidden unsupported success.",
+    "Integrator owns narrow Conventional Commit and global README/index update; no worker index/branch operation performed."
   ],
   "current_surface_audit": {
-    "names": 56,
-    "signatures": 61,
+    "names": 58,
+    "signatures": 63,
     "missing_bodies": [],
-    "qualification": "Body presence is not contract completion; shared source predates reviewed fixes until adoption."
+    "complete_names": 52,
+    "partial_names": 6,
+    "qualification": "All assigned bodies present; six precise diagnosed template/SDK/ABI/emission limits remain, not whole-module missing functionality."
   },
   "per_api": [
     {
       "name": "_create_declaration",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-native.jai",
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "can_omit_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "contains_equivalent_function",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "count_asterisks",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-tokens.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "count_namespace_refs",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_elaborated_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
-        "tests/developer-tools/generator-model-templates.jai",
-        "tests/developer-tools/generator-model-construction.jai"
-      ]
+        "tests/developer-tools/generator-model-arrays.jai",
+        "tests/developer-tools/generator-model-construction.jai",
+        "tests/developer-tools/generator-model-templates.jai"
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_empty_struct_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_enum",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-typedefs.jai",
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-record-edges.jai",
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_expression_from_cursor",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_function",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-cpp.jai",
         "tests/developer-tools/generator-model-vtables.jai",
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_function_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
-        "tests/developer-tools/generator-model-templates.jai",
-        "tests/developer-tools/generator-model-cpp.jai"
-      ]
+        "tests/developer-tools/generator-model-arrays.jai",
+        "tests/developer-tools/generator-model-cpp.jai",
+        "tests/developer-tools/generator-model-templates.jai"
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_literal",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-tokens.jai",
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_macro_definition",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-macros.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_namespace",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-cpp.jai",
         "tests/developer-tools/generator-model-record-edges.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_objc_interface",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-objc.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_objc_type_param",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-objc.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_omit_cpp_functions_visitor",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_reference_expression",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-native.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_typedef",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-typedefs.jai",
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_variable_declaration",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
+        "tests/developer-tools/generator-model-arrays.jai",
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "find_closing_paren_token_index",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-macros.jai",
         "tests/developer-tools/generator-model-tokens.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "find_first_member_offset",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "find_name_clash",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "find_or_create_enum_for_macro",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "find_referenced_declaration",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-native.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "find_underlying_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "functions_are_equivalent",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "get_primitive_or_array_primitive_type_size",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "get_type_alignment",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_16byte_integer_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_assignment_operator",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_char_pointer_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_extern_declaration",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_function_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_incomplete_array",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_operator",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_operator_name",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_pointer_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_prefix_comment",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-native.jai",
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_struct_field",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_target_type_signed",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai",
         "tests/developer-tools/generator-model-literals.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_target_type_unsigned",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai",
         "tests/developer-tools/generator-model-literals.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_targeting_apple_os",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_token",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-macros.jai",
         "tests/developer-tools/generator-model-tokens.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_va_list",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_valid_identifier_start",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "is_zero_int_expression",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "macro_literals_are_equal",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-tokens.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "macro_values_are_equal",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "reviewed domain adopted; fresh17-fixture interpreter suite passed; native verification pending",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-tokens.jai"
-      ]
+      ],
+      "current_state": "complete"
     },
     {
       "name": "create_declaration",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "partial with exact remaining dependency/domain; fresh interpreter coverage recorded",
+      "shared_state": "Supported domain passes immutable22 interpreter/44 native batch; exact remaining accepted-domain/SDK/ABI/emission dependencies below.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-typedefs.jai",
@@ -676,27 +723,31 @@
         "tests/developer-tools/generator-model-record-edges.jai",
         "tests/developer-tools/generator-model-aggregates.jai",
         "tests/developer-tools/generator-model-construction.jai",
-        "tests/developer-tools/generator-model-literals.jai"
+        "tests/developer-tools/generator-model-literals.jai",
+        "tests/developer-tools/generator-model-arrays.jai"
       ],
-      "implemented": "Canonical cursor dispatch, reviewed unsupported-category null results, access flags, non-struct filter, all supported formal categories.",
-      "remaining": "Transitive native SDK/template representation domain: dependent/value/template-template arguments, packs, specialization bodies and some formal defaults; no missing facade body."
+      "implemented": "Canonical cursor dispatch, reviewed unsupported-category null results, access flags, non-struct filter, all supported formal categories. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers.",
+      "remaining": "Transitive native SDK/template representation domain: dependent/value/template-template arguments, packs, specialization bodies and some formal defaults; no missing facade body.",
+      "current_state": "partial"
     },
     {
       "name": "create_declaration_inner",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "partial with exact remaining dependency/domain; fresh interpreter coverage recorded",
+      "shared_state": "Supported domain passes immutable22 interpreter/44 native batch; exact remaining accepted-domain/SDK/ABI/emission dependencies below.",
       "direct_test_files": [
-        "tests/developer-tools/generator-model-construction.jai"
+        "tests/developer-tools/generator-model-construction.jai",
+        "tests/developer-tools/generator-model-arrays.jai"
       ],
-      "implemented": "Same canonical dispatch as create_declaration without final access decoration; supported formal category dispatch adopted.",
-      "remaining": "Same transitive constructor/template domain as create_declaration; no separate parser or guessed fallback."
+      "implemented": "Same canonical dispatch as create_declaration without final access decoration; supported formal category dispatch adopted. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers.",
+      "remaining": "Same transitive constructor/template domain as create_declaration; no separate parser or guessed fallback.",
+      "current_state": "partial"
     },
     {
       "name": "create_struct",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "partial with exact remaining dependency/domain; fresh interpreter coverage recorded",
+      "shared_state": "Supported domain passes immutable22 interpreter/44 native batch; exact remaining accepted-domain/SDK/ABI/emission dependencies below.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-virtual-conversion.jai",
@@ -704,54 +755,61 @@
         "tests/developer-tools/generator-model-cpp.jai",
         "tests/developer-tools/generator-model-vtables.jai",
         "tests/developer-tools/generator-model-record-edges.jai",
-        "tests/developer-tools/generator-model-construction.jai"
+        "tests/developer-tools/generator-model-construction.jai",
+        "tests/developer-tools/generator-model-arrays.jai"
       ],
-      "implemented": "Canonical record shells/full population, recursive fields, base identities, ordinary generic/formal/value construction, layout/category metadata.",
-      "remaining": "Unsupported explicit/partial bodies, pack/dependent/default representation and unverified virtual-base ABI; emission consumer integration separate."
+      "implemented": "Canonical record shells/full population, recursive fields, base identities, ordinary generic/formal/value construction, layout/category metadata. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers.",
+      "remaining": "Unsupported explicit/partial bodies, pack/dependent/default representation and unverified virtual-base ABI; emission consumer integration separate.",
+      "current_state": "partial"
     },
     {
       "name": "create_type",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "partial with exact remaining dependency/domain; fresh interpreter coverage recorded",
+      "shared_state": "Supported domain passes immutable22 interpreter/44 native batch; exact remaining accepted-domain/SDK/ABI/emission dependencies below.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-typedefs.jai",
         "tests/developer-tools/generator-model-record-edges.jai",
-        "tests/developer-tools/generator-model-construction.jai"
+        "tests/developer-tools/generator-model-construction.jai",
+        "tests/developer-tools/generator-model-arrays.jai"
       ],
-      "implemented": "Canonical primitive/qualifier/pointer/reference/array/callback/record/enum/ObjC and supported template construction; reviewed WChar/extended-float/Block mappings.",
-      "remaining": "Unsupported dependent/value/template-template specialization and pack forms, unavailable native metadata; half/member-pointer and extended16byte floating domains intentionally null/diagnosed."
+      "implemented": "Canonical primitive/qualifier/pointer/reference/array/callback/record/enum/ObjC and supported template construction; reviewed WChar/extended-float/Block mappings. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers.",
+      "remaining": "Unsupported dependent/value/template-template specialization and pack forms, unavailable native metadata; half/member-pointer and extended16byte floating domains intentionally null/diagnosed.",
+      "current_state": "partial"
     },
     {
       "name": "create_type_inner",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "partial with exact remaining dependency/domain; fresh interpreter coverage recorded",
+      "shared_state": "Supported domain passes immutable22 interpreter/44 native batch; exact remaining accepted-domain/SDK/ABI/emission dependencies below.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-construction.jai",
-        "tests/developer-tools/generator-model-literals.jai"
+        "tests/developer-tools/generator-model-literals.jai",
+        "tests/developer-tools/generator-model-arrays.jai"
       ],
-      "implemented": "Core native-kind conversion for the same supported type domain, preserving canonical slots/storage and supplied child views.",
-      "remaining": "Same native schema/SDK limits as create_type; no separate missing body."
+      "implemented": "Core native-kind conversion for the same supported type domain, preserving canonical slots/storage and supplied child views. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers.",
+      "remaining": "Same native schema/SDK limits as create_type; no separate missing body.",
+      "current_state": "partial"
     },
     {
       "name": "find_and_check_macro_identifier",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "partial with exact remaining dependency/domain; fresh interpreter coverage recorded",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-macros.jai",
         "tests/developer-tools/generator-model-construction.jai"
       ],
-      "implemented": "Reviewed lookup order, omit behavior, KEEP-only decision, pending-state delegation guarded by real routine availability.",
-      "remaining": "Tooling-owned check_macro_value is absent. Pending lookup diagnoses missing validator and preserves NEEDS_CHECKING; requires actual validation regression after hookup."
+      "implemented": "Reviewed lookup/omit/KEEP-only semantics, actual shared ASN check_macro_value and exact-input native evaluation; pending unavailable-input failures preserve state.",
+      "remaining": "No missing model behavior in reviewed lookup contract. Tools run_generator receipt capture is a workflow dependency, separately owned.",
+      "current_state": "complete"
     },
     {
       "name": "find_or_create_extra_info",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "partial with exact remaining dependency/domain; fresh interpreter coverage recorded",
+      "shared_state": "Supported domain passes immutable22 interpreter/44 native batch; exact remaining accepted-domain/SDK/ABI/emission dependencies below.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-virtual-conversion.jai",
@@ -760,7 +818,34 @@
         "tests/developer-tools/generator-model-construction.jai"
       ],
       "implemented": "Canonical cache, unknown sentinel, actual typed Mac64 single-primary vtables, omitted placeholders, native overrides, on-demand base population, field gaps, empty record storage, definition-based native virtual-member validation.",
-      "remaining": "Tools emission consumer/lifetime integration; Windows overload order, virtual bases/multiple adjustments, destructor pairs, covariance, aggregate/extended/variadic ABI and packed/bitfield layouts remain explicit diagnosed boundaries."
+      "remaining": "Tools emission consumer/lifetime integration; Windows overload order, virtual bases/multiple adjustments, destructor pairs, covariance, aggregate/extended/variadic ABI and packed/bitfield layouts remain explicit diagnosed boundaries.",
+      "current_state": "partial"
+    },
+    {
+      "name": "init_generator",
+      "body_present": true,
+      "checkpoint_state": "redistributed after checkpoint",
+      "current_state": "complete",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
+      "direct_test_files": [
+        "tests/developer-tools/generator-model-lifecycle.jai",
+        "tests/developer-tools/generator-model-session.jai"
+      ],
+      "implemented": "Single typed context/ledger initialization or ordered token/TU/index teardown; canonical primitive identity, captured allocator and nested caller Context restoration.",
+      "remaining": "No missing reviewed body; unsupported native targets/SDK versions remain explicit platform verification dependencies."
+    },
+    {
+      "name": "deinit_generator",
+      "body_present": true,
+      "checkpoint_state": "redistributed after checkpoint",
+      "current_state": "complete",
+      "shared_state": "Complete reviewed supported host domain; immutable22 interpreter/44 native batch,format/strict lint and SDK oracles passed.",
+      "direct_test_files": [
+        "tests/developer-tools/generator-model-lifecycle.jai",
+        "tests/developer-tools/generator-model-session.jai"
+      ],
+      "implemented": "Single typed context/ledger initialization or ordered token/TU/index teardown; canonical primitive identity, captured allocator and nested caller Context restoration.",
+      "remaining": "No missing reviewed body; unsupported native targets/SDK versions remain explicit platform verification dependencies."
     }
   ],
   "virtual_conversion_sdk": {
@@ -783,8 +868,11 @@
       "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/generator-model-shared-interp.json"
     },
     "format_and_strict_lint": "Passed during scoped runner before native dependency failure, including two source-only target checks.",
-    "native": "Pending canonical SDK linkage/provenance and integration native-slot availability. Broad suite NOT green.",
-    "historical_counts": "49 complete/7 partial preserved as historical reviewed-domain inventory, not a new full-platform claim."
+    "native": "Fresh scoped17 interpreter/34 Mac ARM64 native O0/O2 executions pass, with original SDK C/C++ O0/O2 layout/vtable oracles, format/strict lint and two source-only target checks. Source/native closure hashes unchanged.",
+    "historical_counts": "49 complete/7 partial preserved as historical reviewed-domain inventory, not a new full-platform claim.",
+    "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/generator-model-shared-snapshot.json",
+    "raw_commands": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/generator-model-evidence.json",
+    "combined": "Broad workspace/corpus/PDB/CIE suite remains integration-owned; scoped model pass does not certify combined green."
   },
   "virtual_conversion_regression": {
     "red": "With adopted producer and conversion-plus-following fixture: info == null && generated == null assertion failed (metadata incorrectly returned success).",
@@ -793,9 +881,169 @@
     "producer_sha256": "b0ab4acbc5d575f77c3f63570d9615c97f2e5602f3d60a931c7b3d95765aa18d",
     "regression_source": "tests/developer-tools/generator-model-virtual-conversion.jai"
   },
-  "shared_freeze": "Production edits held per integration inbox; no index/commit operations by model owner.",
+  "shared_freeze": "Released by root. Complete immutable current shared input captures permit independent implementation; broad corpus/native/GUI and Git integration remain integration-owned.",
   "native_library_provenance": {
     "stdlib/internal/developer-tools/clang-bindings/libclang.dylib": "55f8d95954655448d856a9f24597a242922f04d6e621ecf8bf633eb104d3060b",
     "/opt/homebrew/opt/llvm/lib/libclang.dylib": "813be91ac66163dc2aeea8bf7020bf24d3de3276c5e1193262f7dded5c735bd9"
+  },
+  "redistributed_lifecycle_scope": {
+    "source": "docs/implementation-scope.json additional_producer_scopes redistribution_2026_10_15.generator-model",
+    "names": [
+      "init_generator",
+      "deinit_generator"
+    ],
+    "body_count": 2,
+    "state": "Implemented and host-verified through real public initialization/construction/teardown, including captured allocator and nested native callbacks.",
+    "next_batch": "No missing lifecycle body. Tooling run_generator must consume the same typed cleanup and exact parse-input receipt.",
+    "coordination": "ASN/run owner retains run_generator and handle_toplevel_cursors; tools owns emission. Model owns typed init/deinit, same ledger/parse-input protocol and canonical cleanup."
+  },
+  "shared_production_sdk_verification": {
+    "manifest": "stdlib/internal/developer-tools/clang-bindings/runtime-sdk.json",
+    "provenance": "Official SDK/staged hashes of all4 relocated images independently matched manifest; expected install_name_tool/signing differences confirmed by integration/tools owner.",
+    "interpreter": {
+      "passed": 17,
+      "dyld_override": false,
+      "source_and_sdk_changes": [],
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/generator-model-shared-production-interp.json"
+    }
+  },
+  "review": {
+    "reviewer": "model_review",
+    "result": "Read-only final review reports no further concrete findings. Reported function-return bound reset, synthetic parameter-bound domain and dropped wrapper flag were independently reproduced and fixed with regressions.",
+    "limits": "Review is independent read-only source assessment, not additional test execution."
+  },
+  "current_owned_totals": {
+    "original_names": 56,
+    "original_signatures": 61,
+    "redistributed_lifecycle_names": 2,
+    "total_names": 58,
+    "required_signatures": 63,
+    "present_signatures": 63,
+    "complete": 52,
+    "partial": 6,
+    "missing_names": [],
+    "remaining_partial_names": [
+      "create_declaration",
+      "create_declaration_inner",
+      "create_struct",
+      "create_type",
+      "create_type_inner",
+      "find_or_create_extra_info"
+    ],
+    "qualification": "Completeness counts cover reviewed supported domains on host; external target/SDK compatibility and explicit representation/ABI limits remain separately recorded."
+  },
+  "next_atomic_batch": {
+    "ownership": "Integrator alone stages/commits; narrow owned source/test/tool/doc handoff in worker inbox.",
+    "files": [
+      "stdlib/Bindings_Generator/model-helpers.jai",
+      "stdlib/internal/developer-tools/generator-lifecycle.jai",
+      "stdlib/internal/developer-tools/generator-macro-evaluation.jai",
+      "stdlib/internal/developer-tools/generator-array-construction.jai",
+      "stdlib/internal/developer-tools/generator-canonical-construction.jai",
+      "stdlib/internal/developer-tools/generator-session/module.jai"
+    ],
+    "behavior": "Canonical lifecycle/macro/array producer fixes; no second registry, parser or emitter."
+  },
+  "lifecycle_design": {
+    "public_requirement": "init_generator must make public constructors usable without requiring callers to import the private session module; current constructors require the one ledger.",
+    "single_owner": "Reuse matching existing transaction ledger as borrowed. Otherwise public init owns one heap-backed instance of the SAME private Session in the existing Context slot, with a private lifecycle-owned flag; no generator registry or second state model.",
+    "nested": "Caller push_context restores outer generator/options/session; callbacks restore captured Context. Inner deinit releases only its own lifecycle-owned ledger and leaves context.generator installed as reviewed; caller-owned ledgers remain caller-owned.",
+    "primitive_policy": "Preserve existing canonical slots; populate missing ones from real official-SDK target type/layout metadata and documented semantic placeholder shapes. Do not fabricate CXType descriptors or shallow-copy Generator/maps.",
+    "deinit_policy": "Dispose registered native token sets, TU, index in order. Before closing an init-owned ledger, clear typed canonical retained pointers/maps/headers, then free that owner using its captured allocator. No repeated-disposal compatibility claim, no aggregate-free promise for caller-owned data.",
+    "overlap": "Private Session/ownership integration is model-owned; ASN/run owner supplies driver and exact receipt, ASN supplies macro state decisions, tools owns emission. Same native delegation/model/cache.",
+    "state": "Implemented, reviewed and verified; single typed cleanup protocol documented in docs/generator-session.md."
+  },
+  "dependent_array_batch": {
+    "red": "T[N] unsupported native model type; then reviewer case callbacks[N] returning pointer to array M reproduced wrong canonical bound before fix.",
+    "green": "Final immutable complete scope passes including original tools template assertion and generated roundtrip. Separate callback parameter/return domains, const-reference wrapper flags and consumed child counts have red/green regressions.",
+    "policy": "Match actual SDK expression extents to declarator bracket ranges in source order; propagate dimension through pointer/array/function return recursion. Unsupported/ambiguous extent shapes diagnose; no source parsing substitute for SDK types.",
+    "sdk": "Installed23 public C SDK probe proves reversed child order. Independent C++ O0/O2 static assertions prove eight field types/dimensions, pointer initialization, native offsets, size280/alignment8."
+  },
+  "shared_head_at_report": "540cadd3c1abf499b661d9b57d0f2f08e9f46a10",
+  "immutable_verification": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/model-outputs-vg8fi_fu/verification.json",
+    "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/immutable-runs/bindings-inputs-pgb0whz7",
+    "outputs": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/model-outputs-vg8fi_fu",
+    "input_files": 2092,
+    "passed": true,
+    "commands": 138,
+    "interpreter_executions": 22,
+    "native_executions": 44,
+    "sdk_oracle_executions": 8,
+    "source_target_checks": 2,
+    "inputs_unchanged": true,
+    "own_tools_unchanged": true,
+    "binary_sha256": {
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/debug/jaic": "2b19520d99c9157e5a53c0388a4d7884af01e816960040b67172e9261725a9c8",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/debug/jailint": "29440fcb8fd9456b654819e45e731246448ba7377cd05143aefaf032948abe93",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/jaifmt": "1c835f0154b423879d46e8f0d52883a3fc2cdcee554340fc00f9cc5b9144b386"
+    },
+    "qualification": "Own source-built tools; complete current shared stdlib/required source, fixture, config, native inputs; tools-owner assertions unchanged. Native host Mac ARM64 only; source checks Windows/Linux x64 are not native execution."
+  },
+  "remaining_inventory": [
+    {
+      "names": [
+        "create_declaration",
+        "create_declaration_inner"
+      ],
+      "variants": "All reviewed dispatcher signatures, including ignore_non_structs; native target-independent constructor paths.",
+      "kind": "transitive diagnosed accepted-domain limit; zero missing dispatcher bodies",
+      "remaining": "Pack expansion; explicit/partial specialization bodies; SDK-unavailable formal builtin/composite defaults; general template-template argument identity/arity and non-integral dependent argument recovery.",
+      "dependency": "Exact public SDK metadata/accepted-domain clarification, shared typed instantiation-name emission. Unsupported native expressions follow reviewed null/skip=false semantics.",
+      "effort": "Separate advanced template/SDK investigation after accepted-domain answers; ordinary template/value/default/array dispatch already implemented and verified."
+    },
+    {
+      "names": [
+        "create_struct"
+      ],
+      "variants": "Full and resolving_type_only reviewed paths on supported native record cursors.",
+      "kind": "advanced native template/ABI domain; zero missing record body",
+      "remaining": "Same exact template/default forms above; virtual-base/multiple-adjustment ABI evidence. Unknown native virtual entries diagnose before extra-info cache publication.",
+      "dependency": "Reviewed accepted-domain rules, independent target ABI oracle and shared metadata consumer; no guessed base offsets/vtable slots.",
+      "effort": "Native ABI evidence per target and advanced template producer work, not routine missing facade implementation."
+    },
+    {
+      "names": [
+        "create_type",
+        "create_type_inner"
+      ],
+      "variants": "Both signatures, accurate/supplied-child views, Objective-C type_arg_index; corresponding elaborated overloads tested.",
+      "kind": "diagnosed SDK/representation/accepted-domain limits; zero missing type bodies",
+      "remaining": "Same advanced template forms; half/member-pointer/extended16byte floating representation; ambiguous macro-expanded bound extents; runtime VariableArray non-const reference semantics.",
+      "dependency": "Exact wider/nominal schema and accepted-domain contracts or SDK evidence. Dependent T[N], multidimensional constants/expressions, pointer/callback parameter/return bounds are IMPLEMENTED, not remaining.",
+      "effort": "Contract/native-model investigation per unsupported domain; ordinary array/template producer gap is closed."
+    },
+    {
+      "names": [
+        "find_or_create_extra_info"
+      ],
+      "variants": "Shared canonical cache, uncached ordinary and supported native Mac64 single-primary polymorphic records.",
+      "kind": "additional native ABI verification and emission consumer dependency; zero missing cache/producer body",
+      "remaining": "Windows overload ordering; virtual bases/multiple adjustment thunks; destructor slot pairs; covariance; aggregate/extended/variadic slot ABI; packed/bitfield polymorphic layout; shared emitter consumption/lifetime.",
+      "dependency": "Independent target SDK/object/runtime oracles, and tools-owner canonical metadata emission. Current unsupported forms diagnose; ordinary supported producer is actual on-demand metadata.",
+      "effort": "Per-ABI evidence plus tools consumer integration; not a second cache or metadata producer."
+    }
+  ],
+  "verified_owned_current_match": {
+    "stdlib/Bindings_Generator/model-helpers.jai": true,
+    "stdlib/internal/developer-tools/generator-array-construction.jai": true,
+    "stdlib/internal/developer-tools/generator-canonical-construction.jai": true,
+    "stdlib/internal/developer-tools/generator-special-construction.jai": true,
+    "stdlib/internal/developer-tools/generator-session/module.jai": true,
+    "stdlib/internal/developer-tools/generator-lifecycle.jai": true,
+    "stdlib/internal/developer-tools/generator-macro-evaluation.jai": true,
+    "tests/developer-tools/generator-model-arrays.jai": true,
+    "tests/developer-tools/generator-model-arrays.hpp": true,
+    "tests/developer-tools/generator-model-arrays-sdk.cpp": true,
+    "tools/check_generator_model.py": true,
+    "tools/check_generator_model_shared.py": true
+  },
+  "handoff": {
+    "commit_ownership": "Integration only; source-only narrow checkpoint requested in append-only worker inbox. No worker staging/commit/branch/remote action.",
+    "suggested_subject": "feat(stdlib): complete canonical generator lifecycle and dependent arrays",
+    "global_docs_request": "Link docs/generator-model.md, docs/generator-session.md, docs/status/generator-model-shared-audit.json and tools/check_generator_model_shared.py in integrator-owned README/index.",
+    "driver_owner": "ASN/run owner",
+    "emission_owner": "stdlib-tools",
+    "model_owner": "generator-model"
   }
 }

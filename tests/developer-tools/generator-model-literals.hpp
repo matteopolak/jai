@@ -9,3 +9,5 @@ wchar_t original_wchar;
 long double original_longdouble;
 using OriginalBlock = int (^)(int);
 OriginalBlock original_block;
+enum class OriginalWideEnum : unsigned __int128 { Large = static_cast<unsigned __int128>(1) << 100 };
+OriginalWideEnum original_wide_enum = OriginalWideEnum::Large;

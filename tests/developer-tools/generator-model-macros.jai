@@ -81,6 +81,7 @@ main :: () {
 
     pending_generator: B.Generator;
     pending_generator.translation_unit = unit;
+    pending_generator.clang_index = index;
     scalar: B.CType;
     scalar.size = 4;
     scalar.alignment = 4;
@@ -90,6 +91,9 @@ main :: () {
     array_add(*pending_generator.global_scope.members, pending_value);
     defer array_free(pending_generator.global_scope.members);
     validation := S.open(*pending_generator, B.TARGET_OS);
+    input: type_of(validation.parse_input.*);
+    input.filename = to_string(filename);
+    validation.parse_input = *input;
 
     push_context {
         S.activate(*pending_generator, null, *validation);

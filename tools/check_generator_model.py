@@ -23,6 +23,9 @@ OWNED = [
     "stdlib/internal/developer-tools/generator-canonical-construction.jai",
     "stdlib/internal/developer-tools/generator-model-lookup.jai",
     "stdlib/internal/developer-tools/generator-record-metadata.jai",
+    "stdlib/internal/developer-tools/generator-lifecycle.jai",
+    "stdlib/internal/developer-tools/generator-macro-evaluation.jai",
+    "stdlib/internal/developer-tools/generator-array-construction.jai",
     "stdlib/internal/developer-tools/generator-special-construction.jai",
     "stdlib/internal/developer-tools/generator-aggregate-construction.jai",
     "stdlib/internal/developer-tools/generator-template-construction.jai",
@@ -43,13 +46,15 @@ OWNED = [
     "tests/developer-tools/generator-model-literals.jai",
     "tests/developer-tools/generator-model-vtables.jai",
     "tests/developer-tools/generator-model-virtual-conversion.jai",
+    "tests/developer-tools/generator-model-lifecycle.jai",
+    "tests/developer-tools/generator-model-arrays.jai",
 ]
 FIXTURES = [
     "generator-model-helpers", "generator-model-native",
     "generator-model-session", "generator-model-tokens",
     "generator-model-construction",
-    "generator-model-objc", "generator-model-macros", "generator-model-cpp", "generator-model-typedefs", "generator-model-aggregates", "generator-model-record-edges", "generator-model-templates", "generator-model-literals", "generator-model-virtual-conversion",
-    "bindings-tree", "bindings-equivalence", "generator-model-vtables",
+    "generator-model-objc", "generator-model-macros", "generator-model-cpp", "generator-model-typedefs", "generator-model-aggregates", "generator-model-record-edges", "generator-model-templates", "generator-model-literals", "generator-model-virtual-conversion", "generator-model-lifecycle",
+    "bindings-tree", "bindings-equivalence", "generator-model-vtables", "generator-model-arrays",
 ]
 evidence = []
 
@@ -105,10 +110,15 @@ def main():
             vtable_layout = output
         vtable_oracle = TARGET / "generator-model-vtable-layout-oracle.jai"
         vtable_oracle.write_text(vtable_layout)
+        for optimization in [0, 2]:
+            probe = TARGET / f"generator-model-arrays-sdk-O{optimization}"
+            run([prefix / "bin/clang++", "-std=c++17", "-Wall", "-Wextra", "-Werror",
+                 f"-O{optimization}", ROOT / "tests/developer-tools/generator-model-arrays-sdk.cpp", "-o", probe])
+            run([probe], "ok\n")
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", vtable_oracle])
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", vtable_oracle])
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", *OWNED])
-        run([TARGET / "debug/jailint", "-D", "warnings", "-I", TARGET, *OWNED])
+        run([TARGET / "debug/jailint", "-D", "warnings", "--manifest", TARGET / "generator-model-lint.json", "--checked-files", TARGET / "generator-model-lint.files", "-I", TARGET, *OWNED])
         for os_name in ["windows", "linux"]:
             run([JAIC, ROOT / "tests/developer-tools/generator-model-helpers.jai",
                  "-check", "-os", os_name, "-cpu", "x64", "-I", TARGET])

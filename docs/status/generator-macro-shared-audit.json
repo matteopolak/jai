@@ -1,0 +1,174 @@
+{
+  "worker": "portable-asn1-socket",
+  "scope": "seven host-verified macro/expression names plus transferred canonical runner/top-level pair",
+  "phase": "seven APIs verified on actual Mac host; final precise handoff",
+  "production_files": [
+    "stdlib/Bindings_Generator/macro-expressions.jai",
+    "stdlib/internal/developer-tools/generator-macro-expressions.jai"
+  ],
+  "canonical_state": "existing Generator/Declaration/Macro_Value/expression records, typed active context and generator-session allocation ledger only",
+  "rows": [
+    {
+      "name": "check_macro_value",
+      "status": "verified_host",
+      "required": "actual interpreter and native Mac ARM64 O0/O2 passed; other native platforms remain unverified",
+      "verification": "actual exact-input native evaluation, pending lookup, ten KEEP/twelve DISCARD cases, unavailable receipt remains pending, no cursor-map or expression/type replacement"
+    },
+    {
+      "name": "raw_string_from_macro_tokens",
+      "status": "verified_host",
+      "required": "actual interpreter and native Mac ARM64 O0/O2 passed; other native platforms remain unverified",
+      "verification": "single-space token copies, UTF8, independent writable storage surviving generator/TU teardown"
+    },
+    {
+      "name": "string_from_macro_value",
+      "status": "verified_host",
+      "required": "actual interpreter and native Mac ARM64 O0/O2 passed; other native platforms remain unverified",
+      "verification": "native token adjacency, literal/cast conversion, one outer parenthesis pair, renamed aliases and cross-enum/omission-aware qualification; exact fragments compile/execute in consumer"
+    },
+    {
+      "name": "get_scoped_token_string",
+      "status": "verified_host",
+      "required": "actual interpreter and native Mac ARM64 O0/O2 passed; other native platforms remain unverified",
+      "verification": "caller-scope native spelling lifetime with escaping defer; two live independent borrowed views"
+    },
+    {
+      "name": "expect_tokens",
+      "status": "verified_host",
+      "required": "actual interpreter and native Mac ARM64 O0/O2 passed; other native platforms remain unverified",
+      "verification": "consecutive varargs spelling matching, bounded short/mismatch/empty cases; malformed/negative independent diagnostics"
+    },
+    {
+      "name": "parse_call_expression",
+      "status": "verified_host",
+      "required": "actual interpreter and native Mac ARM64 O0/O2 passed; other native platforms remain unverified",
+      "verification": "record/functional-cast/scalar initializer conversion, native null and SDK sizeof, rejects runtime call/address shapes"
+    },
+    {
+      "name": "convert_children_to_expression",
+      "status": "verified_host",
+      "required": "actual interpreter and native Mac ARM64 O0/O2 passed; other native platforms remain unverified",
+      "verification": "final native child literal, empty child list, final non-expression returns null"
+    },
+    {
+      "name": "run_generator",
+      "status": "partial",
+      "required": "reviewed runner stages, canonical parse receipt, public interpreter/native O0/O2 and strict lint",
+      "verification": "private exact-parse-input capture/native parse implementation drafted; public body/stage reconciliation pending"
+    },
+    {
+      "name": "handle_toplevel_cursors",
+      "status": "partial",
+      "required": "facade integration, focused native system/header/redeclaration/context/lifetime verification and strict lint",
+      "verification": "canonical callback body and independent real-header test authored; no passing evidence yet"
+    }
+  ],
+  "counts": {
+    "missing": 0,
+    "partial": 0,
+    "verified_host": 7
+  },
+  "pending_handoffs": [
+    "integration sole staging/commit actor; exact own paths in developer doc/inbox",
+    "tools-owned canonical run_generator exact parse-input capture remains a separate missing workflow; external arbitrary TU configuration is not guessed",
+    "actual native Linux/Windows/Android/device gates; Android compiler target support remains unavailable"
+  ],
+  "verification": {
+    "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-macro-verify-fmxjw5z3",
+    "supported_commands_passed": 59,
+    "commands_failed": 0,
+    "runtime_executions_passed": 15,
+    "api_runtime_executions": 12,
+    "exact_text_consumer_runtime_executions": 3,
+    "native_program_builds_passed": 10,
+    "cross_target_source_checks_passed": 30,
+    "strict_lint": "warnings denied; six complete contexts, incomplete=[], unvisited=[]",
+    "formatter": "source-built formatter check passes",
+    "source_hashes_unchanged": 1320,
+    "source_changes": [],
+    "immutable_header_unchanged": true,
+    "android_target_gate": "blocked: exit2 unknown OS android; not pass",
+    "fresh_sdk_oracles": 4,
+    "sdk_evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-macro-oaxrf81h",
+    "sdk_version": "official installed LLVM/libclang23.1.2 matching canonical runtime-sdk.json original-image SHA; public LIBCLANG_VERSION21 unchanged; SDK21 not certified"
+  },
+  "platform_limits": [
+    "Mac native not yet run for this batch",
+    "Linux/Windows native unverified",
+    "Android compiler source gate blocked",
+    "Android/device native unverified"
+  ],
+  "global_inventory_modified": false,
+  "production_edits_during_hold": false,
+  "git_index_or_commits": false,
+  "private_handoff_received": "same-module gm_active_generator/options/current_session, gm_declaration_cursor, gm_native_literal/build_expression, GM_Sessions allocation helpers; exact pending-macro evaluation adapter still requested",
+  "sdk_findings": [
+    "Actual SDK MacroDefinition evaluation is null; scalar use cursors evaluate -17, u64 max and 2.5",
+    "UTF8 byte extent 3 agrees with char[4] minus terminator",
+    "Embedded-NUL evaluation C-string extent 1 differs from native literal extent 3",
+    "Wide-string source width 4 disagrees with byte-string assumption",
+    "Nonconstant call evaluation is null; constructor aggregate has children rather than scalar evaluation"
+  ],
+  "source_hold_released": true,
+  "public_contract_sync": "reviewed Shared emission and parser helper contracts read after root source release",
+  "private_cast_dependency": "tools maybe_append_cast handoff received and used directly",
+  "tests": [
+    "tests/developer-tools/generator-macro-shared-tokens.jai",
+    "tests/developer-tools/generator-macro-shared-calls.jai",
+    "tests/developer-tools/generator-macro-shared-invalid.jai",
+    "tests/developer-tools/generator-macro-shared-state.jai",
+    "stdlib/Bindings_Generator/tests/generator-macro-shared-state.jai",
+    "tests/developer-tools/generator-macro-shared-state.h",
+    "tests/developer-tools/generator-macro-shared-consumer.jai"
+  ],
+  "shared_baseline_head": "f506696bcbdb2a05ae8b94c032a4fb7d20e8151a",
+  "integration_wiring": "integration added exactly one #load macro-expressions.jai after value-emission.jai; new facade loads exactly one owned private file",
+  "remaining_platform_verification": [
+    "Linux native",
+    "Windows native",
+    "Android source/device native",
+    "Mac translated x64 native"
+  ],
+  "failed_or_invalidated_evidence": {
+    "owned_initial_failures": "generator-macro-verify-gu09_d07",
+    "fixture_missing_String_import": "macro-repair-1pwefzrk",
+    "prefix_address_red": "macro-prefix-red-2z5einf5",
+    "prefix_address_green": "macro-prefix-green-661e8x0z",
+    "source_drift_invalidated": [
+      "generator-macro-verify-bnyusqyc: binding-cursor-source.jai changed",
+      "generator-macro-verify-22slylg5: binding-expression-normalization.jai changed"
+    ],
+    "earlier_stable_green_before_final_cases": [
+      "generator-macro-verify-itrh2p0e",
+      "generator-macro-verify-ku0b6db0"
+    ]
+  },
+  "diagnostic_location_reductions": "An initial complex failed assertion showed differing interpreter/native locations. Two independent pure macro reductions in ku0b6db0 agree at source lines11/13; no general compiler defect reproduced or claimed, no production workaround.",
+  "owned_current_sha256": {
+    "stdlib/Bindings_Generator/macro-expressions.jai": "77b225ae24c0494d296f48addbb3c5f58737af48ad79c16e19c918661433f305",
+    "stdlib/internal/developer-tools/generator-macro-expressions.jai": "792ff0bf9363ee374b7b473f96c61db9db725ecbca70b2320daa195c2f11230a",
+    "tests/developer-tools/generator-macro-shared-tokens.jai": "7103002e694483454e4de4c6869fc0a68ab32c1add753831d82a89af35501c25",
+    "tests/developer-tools/generator-macro-shared-calls.jai": "7339a3459f584192c1f279e6a40625172afa48c845952cf946eef5da86530440",
+    "tests/developer-tools/generator-macro-shared-invalid.jai": "fc681695906e7b33cf4f06df1a739d4fba6167a74082f2905977a9f43d0a8481",
+    "tests/developer-tools/generator-macro-shared-state.jai": "4822c31029c13132f41f1307836c5884e27e30318fc6edbccd973a643566f60b",
+    "stdlib/Bindings_Generator/tests/generator-macro-shared-state.jai": "41c9e9b6396ce00cdad3559b642bf81ce8bb7fa8134879f636960af2496cdaec",
+    "tests/developer-tools/generator-macro-shared-state.h": "2c3a5010239b2dd323eb91f3b298dd661d0864546031af5c9436ee135af4caa3",
+    "tests/developer-tools/generator-macro-shared-consumer.jai": "b2d3209003ce5019e71b9003b98b43f29f576ae375939a8e96f0630c0268f57a",
+    "tools/check_generator_macro_shared.py": "8ca142fa754b7bcc78e816f811cab6f8f1a55518aeb3c56439cd065549e82096"
+  },
+  "tool": "tools/check_generator_macro_shared.py",
+  "source_mode": "fresh source-built compiler, current shared production stdlib directly; no old clone/archive/overlay or reference execution",
+  "run_batch": {
+    "phase": "implementation in progress; no runner verification claimed",
+    "production_files": [
+      "stdlib/Bindings_Generator/generator-run.jai",
+      "stdlib/internal/developer-tools/generator-run.jai"
+    ],
+    "pending_coordination": [
+      "integration single public facade load",
+      "reviewed run stage ordering/failure/lifetime contract",
+      "callback client_data captured Context shape"
+    ],
+    "evidence": "source-built jaic/jailint in generator-run-red-r5r7cmnd; independent public callback fixture currently fails for missing integration facade load"
+  }
+}

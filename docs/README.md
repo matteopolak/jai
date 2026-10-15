@@ -633,6 +633,8 @@ Android rows partial and other native platforms unverified.
 - [Retained portable shared audit](status/stdlib-shared-audit.json): per-API current audit distinct from 929 historical bookkeeping rows
 - [Current shared integration baseline](status/shared-integration-baseline.json): exact candidate, commands, measured counts and unresolved failures
 - [Shared IDE verification](tools/shared-ide-verification.md): strict scanner, independent definition regressions and separate actual-server protocol gate
+- [Shared generator checkpoint](tools/shared-generator-checkpoint.md): canonical lifecycle, dependent arrays, native macro evaluation and honest remaining emission domains
+- [Generator macro helpers](generator-macro-shared.md): seven reviewed public helpers and guarded native evidence
 - [C variadic header validation](compiler/c-variadic-header-validation.md): ordinary diagnostics replace invalid-header pack-lowering panic while valid native ABI calls remain checked
 
 
@@ -641,3 +643,5 @@ records a finite read-only handwritten stdlib audit, independent disabled-defaul
 text/keymap reproductions, precise owner routing, and explicit pure/diagnostic
 non-defect classifications. [Its scoped findings](status/optional-assert-side-effects.json)
 include exact file/line/source hashes and required platform limits.
+
+- [Stdlib completion backlog](tools/stdlib-completion-backlog.md): exact owner/API gaps, dependencies and acceptance evidence

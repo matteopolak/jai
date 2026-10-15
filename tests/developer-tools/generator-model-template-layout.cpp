@@ -3,6 +3,8 @@
 #include "generator-model-templates.hpp"
 #include "generator-model-literals.hpp"
 using OriginalConcrete = OriginalGeneric<int, double>;
+static_assert(sizeof(OriginalWideEnum) == 16);
+static_assert(static_cast<unsigned __int128>(OriginalWideEnum::Large) > ~static_cast<unsigned long long>(0));
 int main() {
     std::printf("Native_Template_Size :: %zu;\nNative_Template_Alignment :: %zu;\n",
                 sizeof(OriginalConcrete), alignof(OriginalConcrete));
