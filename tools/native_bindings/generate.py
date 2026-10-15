@@ -194,11 +194,26 @@ def authored_signatures(text):
 
 def condition_for(module, declaration, spec=None):
     condition = declaration.condition
+    if module == 'rpmalloc' and condition == 'else branch':
+        condition = '!ENABLE_STATISTICS'
     alias = re.fullmatch(r'\w+\s*::\s*(\w+)\s*;?', declaration.code.strip())
     if module == 'rpmalloc' and alias and alias[1] not in ('struct', 'union', 'enum', 'enum_flags') and declaration.name not in ('ENABLE_OVERRIDE', 'RPMALLOC_CONFIGURABLE'):
         # The alias inventory belongs to the raw transliteration. The rewrite
         # supplies its own procedures and keeps its contextual Heap private.
         condition = 'USE_RAW' + (' && ('+condition+')' if condition else '')
+    elif module == 'rpmalloc' and procedure_parts(declaration.code) and declaration.name != 'rpmalloc_allocator_proc':
+        # The reviewed prose explicitly separates the transliteration's size_t,
+        # _int, opaque typedef spelling and prefixed entry points from rewrite
+        # s64/contextual-Heap procedures. Shared spelling/signatures remain
+        # shared; their raw aliases still identify the canonical raw procedure.
+        raw = (declaration.name.startswith('rpmalloc_') or
+               bool(re.search(r'\b(size_t|_int|rpmalloc_heap_t)\b',declaration.code)) or
+               declaration.code.startswith('dump_statistics :: (file:'))
+        rewrite = (bool(re.search(r'\b(s64|Heap|Span)\b|\*\$T',declaration.code)) or
+                   declaration.name in ('initialize','initialize_config') and '-> s32' in declaration.code or
+                   declaration.name == 'dump_statistics' and '#expand' in declaration.code)
+        if raw or rewrite:
+            condition = ('USE_RAW' if raw else '!USE_RAW') + (' && ('+condition+')' if condition else '')
     if condition == 'else branch':
         if module == 'Objective_C':
             condition = 'OS != .MACOS' if declaration.name == 'BOOL' else 'CPU != .X64'

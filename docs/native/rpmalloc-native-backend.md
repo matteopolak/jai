@@ -2,12 +2,14 @@
 
 `internal/bindings/rpmalloc-sdk` is a complete private binding to the pinned
 official C SDK. It is not either public Jai allocator implementation. The
-public module still has 80 unresolved declarations and its configuration
+public module still has 64 unresolved and 16 partially implemented declarations; configuration
 failures remain active. No public callback/config/heap record is cast to C.
 
 `vendor_rpmalloc.py` verifies the complete native header/source/license pins in
 `dependencies.json`, parses the real header through Clang with first-class heaps
-disabled and enabled separately, and emits all 34 native function declarations.
+disabled and enabled separately, and emits all 35 native function declarations.
+The complete source-definition scan retains the main-thread setter omitted
+from the public C header; it never infers a Jai helper body from native code.
 It organizes functions by lifecycle, thread management, statistics, allocations
 and heaps. Native records retain field order and nested anonymous record arrays;
 unrecognized types, associations, unions, attributes and bitfields fail generation
@@ -40,7 +42,7 @@ host. Linux/Windows artifacts and execution are not supplied by the two-CPU Mac
 test archive. The returned native configuration pointer is borrowed/read-only,
 even though Jai has no C const-pointer qualifier in this private declaration.
 
-The real private native unit calls every one of the 34 SDK entry points. It
+The real private native unit calls every one of the 35 SDK entry points. It
 checks preserved realloc data, aligned allocations, calloc zeroing, actual
 usable sizes, matching heap ownership, bulk free/release, current-heap changes,
 thread/global lifecycle, both initialization routes, real nonempty statistics

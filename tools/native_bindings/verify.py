@@ -26,10 +26,14 @@ TARGET_CONFIGS = [(os_name, cpu) for os_name in ('linux', 'macos', 'windows') fo
 PRIVATE_UNITS = {'ios-sdk-host':'iOS/sdk-host-unit.jai',
                  'dxc-wide':'dxc_compiler/sdk-wide-unit.jai',
                  'dxc-compile-unit':'dxc_compiler/sdk-compile-unit.jai',
-                 'rpmalloc-native-sdk':'rpmalloc/sdk-native-unit.jai'}
+                 'rpmalloc-native-sdk':'rpmalloc/sdk-native-unit.jai',
+                 'rpmalloc-native-storage':'rpmalloc/sdk-storage-unit.jai'}
 PRIVATE_UNIT_DEPENDENCIES = {
     'rpmalloc-native-sdk': {
         'tests/native-bindings/generated/rpmalloc-sdk-layout.jai': 'rpmalloc/generated/rpmalloc-sdk-layout.jai',
+    },
+    'rpmalloc-native-storage': {
+        'tests/native-bindings/generated/rpmalloc-storage-layout.jai': 'rpmalloc/generated/rpmalloc-storage-layout.jai',
     },
 }
 
@@ -189,6 +193,7 @@ def main():
     for module, filename, configs in [
         ('macOS', 'fsevents-context.jai', [('macos','x64'),('macos','arm64')]),
         ('rpmalloc', 'rpmalloc-native-sdk.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-native-storage.jai', TARGET_CONFIGS),
         ('rpmalloc', 'rpmalloc-public-allocation.jai', TARGET_CONFIGS),
         ('rpmalloc', 'rpmalloc-public-callbacks.jai', TARGET_CONFIGS),
         ('rpmalloc', 'rpmalloc-public-configurable.jai', TARGET_CONFIGS),
@@ -293,6 +298,7 @@ def main():
         runtime_tests.append('posix-stat')
         runtime_tests.append('dxc-options')
         runtime_tests.append('rpmalloc-native-sdk')
+        runtime_tests.append('rpmalloc-native-storage')
         runtime_tests.append('rpmalloc-public-allocation')
         runtime_tests.append('rpmalloc-public-callbacks')
         runtime_tests.append('rpmalloc-public-configurable')
@@ -323,7 +329,7 @@ def main():
                 relevant = ['ImGui']
             if name == 'posix-stat':
                 relevant = ['POSIX']
-            if name in ('rpmalloc-native-sdk','rpmalloc-public-allocation','rpmalloc-public-callbacks','rpmalloc-public-configurable'):
+            if name in ('rpmalloc-native-sdk','rpmalloc-native-storage','rpmalloc-public-allocation','rpmalloc-public-callbacks','rpmalloc-public-configurable'):
                 relevant = ['rpmalloc']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']
@@ -349,6 +355,8 @@ def main():
                 scope = 'private_native_compile_route'
             if name == 'rpmalloc-native-sdk':
                 scope = 'private_native_allocator_sdk'
+            if name == 'rpmalloc-native-storage':
+                scope = 'private_native_allocator_storage_abi'
             if name == 'rpmalloc-public-allocation':
                 scope = 'public_default_allocator_lifecycle_allocation_statistics'
             if name == 'rpmalloc-public-callbacks':

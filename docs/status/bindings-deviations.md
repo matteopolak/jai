@@ -8,6 +8,21 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Native rpmalloc storage views are not canonical public heaps.** Complete
+  SDK source-derived records and all 66 field probes now pass both Mac CPUs;
+  six desktop Jai source checks are separate evidence. Public Heap/Span remain
+  independently generated reviewed layouts. Heap sizes match but cache/deferred
+  offsets differ; public Span is 96 bytes versus native 88. No cross-layout
+  pointer cast or fake snapshot is used. Atomic members in private storage
+  views are layout-only scalar representations, not atomic operations. A
+  header-only SDK export inventory caused duplicate main-thread setter symbols
+  in the probe; scanning complete source definitions resolves the cause and
+  also enables the real public setter. A new Span-size equality test was an
+  incorrect oracle and was corrected using actual C evidence, preserving all
+  native field assertions. Both original failures remain indexed. Proper
+  remaining fix: canonical field/identity/lifetime marshalling with reviewed
+  live-metadata semantics. See [ABI evidence](../native/rpmalloc-heap-abi.md).
+
 - **Public rpmalloc callback bridge and policies needing review.**
   `internal/bindings/rpmalloc-callbacks/bridge.c` owns copied names and mapping
   metadata; public config/ordinary callbacks never alias SDK storage. Full

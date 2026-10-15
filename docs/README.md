@@ -11,6 +11,8 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [Public rpmalloc adapter progress](native/rpmalloc-public-adapter.md): actual
   lifecycle/allocation/statistics and callback/configuration/lifetime tests,
   generated contextual layouts and remaining profile/heap work
+- [rpmalloc heap ABI evidence](native/rpmalloc-heap-abi.md): complete pinned
+  native storage probes and required separation from canonical public records
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 
 ## Language

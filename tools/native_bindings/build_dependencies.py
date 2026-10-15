@@ -75,6 +75,7 @@ def main():
         'binding_rpmalloc_callbacks': [ROOT/'stdlib/internal/bindings/rpmalloc-callbacks/bridge.c'],
         'rpmalloc_sdk_probe': [ROOT/'tests/native-bindings/generated/rpmalloc_sdk_probe.c'],
         'rpmalloc_callback_probe': [ROOT/'tests/native-bindings/rpmalloc_callback_probe.c'],
+        'rpmalloc_storage_probe': [ROOT/'tests/native-bindings/generated/rpmalloc_storage_probe.c'],
         'imgui_abi_probe': [ROOT/'tests/native-bindings/imgui_abi_probe.cpp'],
         'imgui': [vendor/manifest['imgui']['archive']['root']/name for name in
                   ('imgui.cpp','imgui_draw.cpp','imgui_tables.cpp','imgui_widgets.cpp','imgui_demo.cpp')],
@@ -99,7 +100,7 @@ def main():
                 includes = ['-isystem',vendor/manifest['sdl2-runtime-oracle']['archive']['root']/'include/SDL2']
             if name == 'imgui_abi_probe':
                 includes = ['-isystem',vendor/manifest['imgui']['archive']['root']]
-            if name in ('binding_rpmalloc_sdk', 'binding_rpmalloc_callbacks', 'rpmalloc_sdk_probe', 'rpmalloc_callback_probe'):
+            if name in ('binding_rpmalloc_sdk', 'binding_rpmalloc_callbacks', 'rpmalloc_sdk_probe', 'rpmalloc_callback_probe', 'rpmalloc_storage_probe'):
                 includes = ['-isystem', vendor/'rpmalloc/rpmalloc']
                 includes += ['-D'+name+'='+str(value) for name,value in RPMALLOC_SDK_BUILD_OPTIONS.items()]
             run(['c++' if path.suffix == '.cpp' else 'cc', '-O2', '-fPIC', '-I', vendor/'stb', *includes, '-c', path, '-o', obj])

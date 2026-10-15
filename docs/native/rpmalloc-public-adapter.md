@@ -21,11 +21,11 @@ statistics/assertions/argument validation enabled, adaptive/unlimited caches,
 huge pages and disabled unmapping off, and DONTNEED advice. Both CONFIGURABLE
 settings support configuration through the private callback/name/offset adapter.
 Nonmatching options retain missing-implementation diagnostics;
-they never silently execute the default archive. The ledger labels these 15
+they never silently execute the default archive. The ledger labels these 16
 entries **partially_implemented**, not complete across module configurations.
 
 Remaining production work includes raw mode, every heap operation,
-allocator-procedure integration, main-thread tracking, dump builders and
+allocator-procedure integration, dump builders and
 nondefault native profiles. Native errno is not mirrored into the public
 variable; its update/thread-storage contract is recorded as unclear. The archive is
 process-global; distinct concurrently initialized import instances need proper
@@ -99,3 +99,9 @@ precede conditional full spans; rewrite full spans precede caches. Raw default
 import remains blocked by the omitted private first-class-heap option. Complete
 record generation is not execution evidence or permission to pick a native
 default for that missing Jai contract.
+
+The actual source-only SDK main-thread export is now retained and the public
+set_main_thread wrapper calls it; both CPU allocation programs exercise that
+route. Complete native heap/span storage and 66 field probes are documented in
+[heap ABI evidence](rpmalloc-heap-abi.md). This proves private layouts and public
+storage separation, not public heap operation completion.
