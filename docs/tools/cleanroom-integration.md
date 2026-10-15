@@ -2,6 +2,26 @@
 
 ## Stable combined native ARM64 replay, 2026-10-15
 
+Stable workspace at53ecb3d3 completes852 passed/two failed/one inherited ignore
+across101 Cargo binaries. Remaining failures are the WASI tour and target ledger;
+constructor, ABI, ownership, CLI and LSP suites pass in that command. Focused new
+producer checks:137/147 commands pass; ten failures traced to one missing
+value-emission load after facade reconciliation. The production facade now loads
+the seven reviewed value emitters from `Bindings_Generator/value-emission.jai`
+with private algorithms in internal/developer-tools. All21 affected commands
+then pass, including real generated Jai round trips, negative Check callbacks
+and all seven module lints. This is scoped follow-up evidence; the original147
+result remains failed, without a projected full-green aggregate.
+
+SDK inputs for Debug_Info were generated from original C/COFF/ELF/PDB sources
+using the official installed LLVM tools. The existing private msf-wire unit uses
+an unchanged copied private source in target; that diagnostic unit is separate
+from public parser proof and does not replace or repair production library code.
+New Debug/Debug_Info, object/archive and three Android serialization/project
+fixtures pass actual interpreter/native ARM64 O0 in the focused run. Controlled
+Android SDK/ADB orchestration and actual device/build execution remain separate
+unverified gates; neither fake path sentinels nor source checks certify an APK.
+
 Restricted application follow-up at17ab409a completed before coordinator corpus
 takeover:337 configured entries source checked by unchanged jailint,296 complete,
 41 failures,63/400 unexecuted; zero native output claims. IDE diagnostics reported

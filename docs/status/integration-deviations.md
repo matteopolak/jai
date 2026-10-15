@@ -1,5 +1,35 @@
 # Independent integration deviations audit
 
+## Value-emission load reconciliation
+
+Preserving the newer canonical model/facade during tooling merge dropped the
+producer's independent value-emission load line. Ten focused commands correctly
+failed on missing jai_literal_fragment/printing exports. The final production
+facade loads seven reviewed public functions in
+`stdlib/Bindings_Generator/value-emission.jai`, with the existing algorithms
+remaining under internal/developer-tools. Original signatures/defaults/bodies
+and canonical types are preserved; no duplicate models or source overlays were
+introduced. All21 affected commands pass, including generated native/interpreted
+Jai consumers and whole-module strict lint. Prior failed147-command report is
+retained, not retroactively recounted as green.
+
+Debug_Info SDK preparation generates real original C objects, relocated ELF
+debug sections, MSF/PDB streams and CodeView data. Its existing msf-wire private
+unit copies the unchanged private helper into target; this is isolated private
+unit evidence, not public API or repaired-library proof. Twenty parser/regression
+fixtures execute interpreter/native ARM64 O0; the separate public facade is also
+strict-linted. Actual Windows/Linux execution remains unverified.
+
+Reviewed SDL contract explicitly restricts RWops to SDL-owned native pointers:
+the48-byte public record omits the native hidden union, and its ordinary Jai
+callback fields do not establish an installable native callback-table contract.
+Current factory paths preserve SDK pointer identity and the BMP scalar adapter
+normalizes nonzero64-bit close flags. No48-byte caller record is constructed and
+forwarded by these implementations/tests. UserEvent exposes only8 bytes, while
+the enclosing Event union has its declared56-byte padding; direct event APIs use
+that enclosing union. Neither record is certified layout-compatible with its
+native C counterpart, and no callback/native payload convenience is invented.
+
 ## General required-library initialization repair
 
 `interp/mod.rs` now honors link_always before runtime entry/native foreign lookup,
