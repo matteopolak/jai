@@ -145,8 +145,6 @@ def main():
         if name in implemented:
             continue
         variants = {platform: reviewed[platform].get(name) for platform in reviewed}
-        if any(value and re.search(r"\btime_t\b", value) for value in variants.values()):
-            continue  # Missing reviewed type dependency; see precise question12.
         bodies = {}
         for platform, declaration in variants.items():
             if declaration is None:
@@ -169,6 +167,7 @@ def main():
             extended_models += body + "\n"
     (directory / "native-extended-model.jai").write_text(extended_models)
     extended_api += '\n#scope_file\nlibclang :: #foreign_library "../internal/developer-tools/clang-bindings/clang";\n'
+    extended_api += '#if OS == .WINDOWS { time_t :: s64; } else { Native_POSIX :: #import "POSIX"; time_t :: Native_POSIX.time_t; }\n'
     (directory / "native-extended-api.jai").write_text(extended_api)
     # Exact compatibility arrays are specified in the reviewed refinement.
     names = ["RESERVED_NAMES", "RESERVED_TYPE_NAMES", "TYPEDEFS_TO_UNWRAP", "TYPEDEF_PREFIXES_TO_UNWRAP", "MACROS_TO_IGNORE"]

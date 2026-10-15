@@ -19,7 +19,7 @@
   },
   "compiler_version": "Homebrew clang version 23.1.2\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm/23.1.2/bin\nConfiguration file: /opt/homebrew/Cellar/llvm/23.1.2/etc/clang/arm64-apple-darwin27.cfg\n",
   "probe_generator_sha256": "25cc2d042a16585ec5262398fc6024fb5631342f5feb29e9412b736949531ac5",
-  "public_symbol_lookups": 359,
+  "public_symbol_lookups": 360,
   "missing_public_symbols": [],
   "native_expressions": [
     {

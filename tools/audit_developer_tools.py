@@ -151,6 +151,8 @@ def main():
                     item["implementation"] = "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
                 if item["name"] in {"fill_location", "get_clang_type_alignment", "create_null_literal"}:
                     item["implementation"] = "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
+                if item["name"] == "clang_getFileTime":
+                    item["implementation"] = "canonical POSIX/private Windows signed64 time_t binding; real future>32-bit and pre-epoch timestamps, reflected identity and private-name rejection verified"
         if module == "Performance_Report":
             for item in declarations:
                 item["implementation"] = "implemented; measured native compiler plugin fixture"

@@ -6,7 +6,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Bindings_Generator
 
-160 function names have pending declarations; 217 native function names still lack invocation fixtures.
+159 function names have pending declarations; 217 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Next work / precise question |
 | --- | ---: | --- |
@@ -38,7 +38,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `can_omit_type` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `check_if_foreign_function_should_be_omitted` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `check_macro_value` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `clang_getFileTime` | 2 | Bindings_Generator question12: canonical time_t dependency |
 | `compute_enum_names` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `contains_equivalent_function` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `convert_children_to_expression` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |

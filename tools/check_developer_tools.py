@@ -77,6 +77,10 @@ def main():
     (framework / "Headers").mkdir(parents=True, exist_ok=True)
     shutil.copyfile(ROOT / "tests/developer-tools/bindings-module-header.h", framework / "Headers/OriginalNative.h")
     visitor_oracle = prepare_cpp_visitors(prefix)
+    for suffix, timestamp in [("future", 0x100000123), ("past", -12345)]:
+        timed_file = ROOT / f"target/developer-tools-time-{suffix}.h"
+        timed_file.write_text("int original_time_value;\n")
+        os.utime(timed_file, (timestamp, timestamp))
     run([prefix / "bin/clang", "-target", "x86_64-unknown-linux-gnu", "-g", "-fno-omit-frame-pointer",
          "-c", "tests/developer-tools/dwarf-native.c", "-o", "target/developer-tools-dwarf.o"])
     run([prefix / "bin/llvm-objcopy", "--dump-section", ".eh_frame=target/developer-tools-eh-frame.bin",
@@ -149,6 +153,7 @@ def main():
     cases.append("bindings-clang-cpp")
     cases.append("dwarf-line-query")
     cases.append("dwarf-fde")
+    cases.append("bindings-clang-time")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -255,7 +260,7 @@ def main():
     for cpu in ["x64", "arm64"]:
         run([JAIC, "tests/developer-tools/debug-windows-contract.jai", "-check", "-os", "windows", "-cpu", cpu])
         for os_name in ["linux", "windows"]:
-            for case in ["msf-wire", "debug-int-set", "dwarf-cfa", "dwarf-line-query", "dwarf-fde", "bindings-clang-tokens", "bindings-clang-build-system", "bindings-clang-source", "bindings-clang-cpp"]:
+            for case in ["msf-wire", "debug-int-set", "dwarf-cfa", "dwarf-line-query", "dwarf-fde", "bindings-clang-time", "bindings-clang-tokens", "bindings-clang-build-system", "bindings-clang-source", "bindings-clang-cpp"]:
                 run([JAIC, f"tests/developer-tools/{case}.jai", "-check", "-os", os_name, "-cpu", cpu])
     for case, reason in [("check-array", "fixed array used as a pointer in assignment"),
                          ("check-small-driver", "small integer addition requires an explicit intermediate integer cast")]:
@@ -263,6 +268,10 @@ def main():
                                   cwd=ROOT, env=ENV, text=True, capture_output=True, timeout=60)
         if rejected.returncode != 1 or reason not in rejected.stderr:
             raise RuntimeError(f"Expected actual Check rejection {case}: {rejected.returncode}, {rejected.stderr}")
+    private_time = subprocess.run([str(JAIC), "tests/developer-tools/rejections/bindings-private-time.jai", "-check"],
+                                  cwd=ROOT, env=ENV, text=True, capture_output=True, timeout=60)
+    if private_time.returncode != 1 or "no exported member `time_t`" not in private_time.stderr:
+        raise RuntimeError("Bindings_Generator must not export its private native time_t alias")
     for os_name, cpu in [("linux", "x64"), ("windows", "x64"), ("wasm", "x64")]:
         run([JAIC, "tests/developer-tools/c-header.jai", "-check", "-os", os_name, "-cpu", cpu])
         run([JAIC, "tests/developer-tools/debug-target.jai", "-check", "-os", os_name, "-cpu", cpu])

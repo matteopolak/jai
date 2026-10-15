@@ -1940,7 +1940,7 @@
         "declaration": "clang_getFileTime :: (SFile: CXFile) -> time_t #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 323,
-        "implementation": "pending"
+        "implementation": "canonical POSIX/private Windows signed64 time_t binding; real future>32-bit and pre-epoch timestamps, reflected identity and private-name rejection verified"
       },
       {
         "name": "CXFileUniqueID",
@@ -5314,7 +5314,7 @@
         "declaration": "clang_getFileTime :: (SFile: CXFile) -> time_t #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 808,
-        "implementation": "pending"
+        "implementation": "canonical POSIX/private Windows signed64 time_t binding; real future>32-bit and pre-epoch timestamps, reflected identity and private-name rejection verified"
       },
       {
         "name": "CXFileUniqueID",
@@ -24173,7 +24173,7 @@
   },
   "Debug_Info": {
     "spec": "docs/specs/stdlib/modules/debug-info.md",
-    "spec_sha256": "9acf7a62b69906f55810d4c06a7e2a528184b98458f0e35db4f172244b4318e9",
+    "spec_sha256": "7efd5be2e80c3c1f8384debd1e8a874fdcb6b3919e56ec39e97699c0934b3968",
     "declarations": [
       {
         "name": "parse_codeview_types",
@@ -25251,6 +25251,300 @@
         "declaration": "parse_tpi_stream :: (msf: Msf, stream_index: UNSN, verbose := false) -> [] *Codeview_Type, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 160,
+        "implementation": "pending"
+      },
+      {
+        "name": "header",
+        "declaration": "header: Pdb_Header",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1731,
+        "implementation": "pending"
+      },
+      {
+        "name": "signature",
+        "declaration": "signature: GUID",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1732,
+        "implementation": "pending"
+      },
+      {
+        "name": "name_table",
+        "declaration": "name_table: Name_Table",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1733,
+        "implementation": "pending"
+      },
+      {
+        "name": "contains_id_stream",
+        "declaration": "contains_id_stream: bool",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1734,
+        "implementation": "pending"
+      },
+      {
+        "name": "no_type_merge",
+        "declaration": "no_type_merge:      bool",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1735,
+        "implementation": "pending"
+      },
+      {
+        "name": "minimal_debug_info",
+        "declaration": "minimal_debug_info: bool",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1736,
+        "implementation": "pending"
+      },
+      {
+        "name": "tpi",
+        "declaration": "tpi: [] *Codeview_Type",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1737,
+        "implementation": "pending"
+      },
+      {
+        "name": "ipi",
+        "declaration": "ipi: [] *Codeview_Type",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1738,
+        "implementation": "pending"
+      },
+      {
+        "name": "msf",
+        "declaration": "msf: Msf",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1739,
+        "implementation": "pending"
+      },
+      {
+        "name": "version",
+        "declaration": "version: Pdb_Version",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1743,
+        "implementation": "pending"
+      },
+      {
+        "name": "signature",
+        "declaration": "signature: u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1744,
+        "implementation": "pending"
+      },
+      {
+        "name": "age",
+        "declaration": "age: u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1745,
+        "implementation": "pending"
+      },
+      {
+        "name": "VC2",
+        "declaration": "VC2      :: 19941610",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1749,
+        "implementation": "pending"
+      },
+      {
+        "name": "VC4",
+        "declaration": "VC4      :: 19950623",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1750,
+        "implementation": "pending"
+      },
+      {
+        "name": "VC41",
+        "declaration": "VC41     :: 19950814",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1751,
+        "implementation": "pending"
+      },
+      {
+        "name": "VC50",
+        "declaration": "VC50     :: 19960307",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1752,
+        "implementation": "pending"
+      },
+      {
+        "name": "VC98",
+        "declaration": "VC98     :: 19970604",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1753,
+        "implementation": "pending"
+      },
+      {
+        "name": "VC70",
+        "declaration": "VC70     :: 20000404",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1754,
+        "implementation": "pending"
+      },
+      {
+        "name": "VC70Dep",
+        "declaration": "VC70Dep  :: 19990604",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1755,
+        "implementation": "pending"
+      },
+      {
+        "name": "VC80",
+        "declaration": "VC80     :: 20030901",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1756,
+        "implementation": "pending"
+      },
+      {
+        "name": "VC110",
+        "declaration": "VC110    :: 20091201",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1757,
+        "implementation": "pending"
+      },
+      {
+        "name": "VC140",
+        "declaration": "VC140    :: 20140508",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1758,
+        "implementation": "pending"
+      },
+      {
+        "name": "version",
+        "declaration": "version:                    Tpi_Stream_Version",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1762,
+        "implementation": "pending"
+      },
+      {
+        "name": "header_size",
+        "declaration": "header_size:                u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1763,
+        "implementation": "pending"
+      },
+      {
+        "name": "type_index_begin",
+        "declaration": "type_index_begin:           u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1764,
+        "implementation": "pending"
+      },
+      {
+        "name": "type_index_end",
+        "declaration": "type_index_end:             u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1765,
+        "implementation": "pending"
+      },
+      {
+        "name": "type_record_bytes",
+        "declaration": "type_record_bytes:          u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1766,
+        "implementation": "pending"
+      },
+      {
+        "name": "hash_stream_index",
+        "declaration": "hash_stream_index:          u16",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1767,
+        "implementation": "pending"
+      },
+      {
+        "name": "hash_aux_stream_index",
+        "declaration": "hash_aux_stream_index:      u16",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1768,
+        "implementation": "pending"
+      },
+      {
+        "name": "hash_key_size",
+        "declaration": "hash_key_size:              u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1769,
+        "implementation": "pending"
+      },
+      {
+        "name": "num_hash_buckets",
+        "declaration": "num_hash_buckets:           u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1770,
+        "implementation": "pending"
+      },
+      {
+        "name": "hash_value_buffer_offset",
+        "declaration": "hash_value_buffer_offset:   s32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1771,
+        "implementation": "pending"
+      },
+      {
+        "name": "hash_value_buffer_length",
+        "declaration": "hash_value_buffer_length:   u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1772,
+        "implementation": "pending"
+      },
+      {
+        "name": "index_offset_buffer_offset",
+        "declaration": "index_offset_buffer_offset: s32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1773,
+        "implementation": "pending"
+      },
+      {
+        "name": "index_offset_buffer_length",
+        "declaration": "index_offset_buffer_length: u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1774,
+        "implementation": "pending"
+      },
+      {
+        "name": "hash_adj_buffer_offset",
+        "declaration": "hash_adj_buffer_offset:     s32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1775,
+        "implementation": "pending"
+      },
+      {
+        "name": "hash_adj_buffer_length",
+        "declaration": "hash_adj_buffer_length:     u32",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1776,
+        "implementation": "pending"
+      },
+      {
+        "name": "V40",
+        "declaration": "V40 :: 19950410",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1780,
+        "implementation": "pending"
+      },
+      {
+        "name": "V41",
+        "declaration": "V41 :: 19951122",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1781,
+        "implementation": "pending"
+      },
+      {
+        "name": "V50",
+        "declaration": "V50 :: 19961031",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1782,
+        "implementation": "pending"
+      },
+      {
+        "name": "V70",
+        "declaration": "V70 :: 19990903",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1783,
+        "implementation": "pending"
+      },
+      {
+        "name": "V80",
+        "declaration": "V80 :: 20040203",
+        "section": "DWARF frame parser behavior",
+        "spec_line": 1784,
         "implementation": "pending"
       }
     ],
@@ -29541,7 +29835,7 @@
       },
       {
         "aggregate": "Declaration",
-        "reviewed_text": "- `kind: enum {`",
+        "reviewed_text": "- `kind: enum { PARAMETER; VARIABLE; }` (implicit values 0 and 1)",
         "section": "Public type members",
         "spec_line": 1093
       },
@@ -32792,256 +33086,106 @@
         "spec_line": 1691
       },
       {
-        "aggregate": "Pdb",
-        "reviewed_text": "- `header: Pdb_Header`",
+        "aggregate": "Msf",
+        "reviewed_text": "The following shapes are required to interpret public `Parse_Context`, `Msf`, and `Pdb` signatures or fields. Types identified as module-contextual below are dependencies of those public aggregate shapes; this does not add independent exports to the declaration inventory.",
         "section": "Public type members",
         "spec_line": 1695
       },
       {
-        "aggregate": "Pdb",
-        "reviewed_text": "- `signature: GUID`",
-        "section": "Public type members",
-        "spec_line": 1696
-      },
-      {
-        "aggregate": "Pdb",
-        "reviewed_text": "- `name_table: Name_Table`",
+        "aggregate": "Msf",
+        "reviewed_text": "`Parse_Context` is the contextual argument type named by `parse_compilation_unit_v4`:",
         "section": "Public type members",
         "spec_line": 1697
       },
       {
-        "aggregate": "Pdb",
-        "reviewed_text": "- `contains_id_stream: bool`",
-        "section": "Public type members",
-        "spec_line": 1698
-      },
-      {
-        "aggregate": "Pdb",
-        "reviewed_text": "- `no_type_merge:      bool`",
+        "aggregate": "Msf",
+        "reviewed_text": "- `debug_info: Debug_Info`",
         "section": "Public type members",
         "spec_line": 1699
       },
       {
-        "aggregate": "Pdb",
-        "reviewed_text": "- `minimal_debug_info: bool`",
+        "aggregate": "Msf",
+        "reviewed_text": "- `debug_string_data: [] u8`",
         "section": "Public type members",
         "spec_line": 1700
       },
       {
-        "aggregate": "Pdb",
-        "reviewed_text": "- `tpi: [] *Codeview_Type`",
+        "aggregate": "Msf",
+        "reviewed_text": "- `depth: int`",
         "section": "Public type members",
         "spec_line": 1701
       },
       {
-        "aggregate": "Pdb",
-        "reviewed_text": "- `ipi: [] *Codeview_Type`",
+        "aggregate": "Msf",
+        "reviewed_text": "- `verbose: bool`",
         "section": "Public type members",
         "spec_line": 1702
       },
       {
-        "aggregate": "Pdb",
-        "reviewed_text": "- `msf: Msf`",
+        "aggregate": "Msf",
+        "reviewed_text": "- `current_compilation_unit: *Compilation_Unit`",
         "section": "Public type members",
         "spec_line": 1703
       },
       {
-        "aggregate": "Pdb_Header",
-        "reviewed_text": "- `version: Pdb_Version`",
+        "aggregate": "Msf",
+        "reviewed_text": "- `subprogram_stack: [..] *Subprogram`",
+        "section": "Public type members",
+        "spec_line": 1704
+      },
+      {
+        "aggregate": "Msf",
+        "reviewed_text": "- `block_stack: [..] *Lexical_Block`",
+        "section": "Public type members",
+        "spec_line": 1705
+      },
+      {
+        "aggregate": "Msf",
+        "reviewed_text": "Its active compilation-unit and traversal stacks are parser context; `parse_compilation_unit_v4` sets and clears the active-unit pointer during the call. The supplied debug-string bytes and line-program bytes are borrowed inputs. Do not assume `Parse_Context` is a separately exported utility type beyond its appearance in that signature.",
         "section": "Public type members",
         "spec_line": 1707
       },
       {
-        "aggregate": "Pdb_Header",
-        "reviewed_text": "- `signature: u32`",
-        "section": "Public type members",
-        "spec_line": 1708
-      },
-      {
-        "aggregate": "Pdb_Header",
-        "reviewed_text": "- `age: u32`",
+        "aggregate": "Msf",
+        "reviewed_text": "`Msf` contains these contextual MSF types:",
         "section": "Public type members",
         "spec_line": 1709
       },
       {
-        "aggregate": "Pdb_Version",
-        "reviewed_text": "- `VC2      :: 19941610`",
+        "aggregate": "Msf",
+        "reviewed_text": "- `UPN` and `UNSN` are aliases of `u32` (universal page number and unified stream number).",
+        "section": "Public type members",
+        "spec_line": 1711
+      },
+      {
+        "aggregate": "Msf",
+        "reviewed_text": "- `Msf_Header_Big` is a union of `pg: Pg` and the named `data` header view. `Pg` contains `rgb: [4096] u8`. The `data` view contains `magic: [30] u8`, `page_size: s32`, `valid_fpm_page_no: UPN`, `page_count: UPN`, `st: Stream_Info_Persist`, and `mpspnpnSt: [2] u32`. `Stream_Info_Persist` contains `byte_count: s32` and `stream_page_numbers: s32`. The header magic is the 30-byte MSF signature already described by the format.",
+        "section": "Public type members",
+        "spec_line": 1712
+      },
+      {
+        "aggregate": "Msf",
+        "reviewed_text": "- `Msf_Parms` has fields `cbPg: s32`, `page_size_in_bytes: u32`, `mask_cb_pg_mod: u32`, `cbitsFpm: s32`, `cpgFileGrowth: s32`, `pnMax: UPN`, `cpnFpm: UPN`, `pnFpm0: UPN`, `pnFpm1: UPN`, and `pnDataMin: UPN`.",
         "section": "Public type members",
         "spec_line": 1713
       },
       {
-        "aggregate": "Pdb_Version",
-        "reviewed_text": "- `VC4      :: 19950623`",
+        "aggregate": "Msf",
+        "reviewed_text": "- `Stream_Table` contains `page_size_in_bytes: u32` and `stream_infos: [..] Stream_Info`.",
         "section": "Public type members",
         "spec_line": 1714
       },
       {
-        "aggregate": "Pdb_Version",
-        "reviewed_text": "- `VC41     :: 19950814`",
+        "aggregate": "Msf",
+        "reviewed_text": "- `Stream_Info` contains `byte_count: s32 = -1` and `stream_page_numbers: [..] UPN`; `-1` means no stream data.",
         "section": "Public type members",
         "spec_line": 1715
       },
       {
-        "aggregate": "Pdb_Version",
-        "reviewed_text": "- `VC50     :: 19960307`",
-        "section": "Public type members",
-        "spec_line": 1716
-      },
-      {
-        "aggregate": "Pdb_Version",
-        "reviewed_text": "- `VC98     :: 19970604`",
+        "aggregate": "Msf",
+        "reviewed_text": "`Pdb` uses contextual `Name_Table` and `GUID` fields. `Name_Table` contains `buffer: [] u8` and a string-offset-to-name-index map. The map's key and value types are distinct aliases `String_Offset :: s32` and `Name_Index :: u32`; its stored keys/values are arrays and its presence/deletion sets use `Int_Set`. `GUID` has `Data1: u32`, `Data2: u16`, `Data3: u16`, and `Data4: [8] u8`. These shapes describe fields needed to read the public `Pdb` aggregate; private map operations and storage policy are not exported API promises. `parse_msf` retains a view of the caller's input bytes and its header pointer refers into that view, so the input must stay alive while the returned `Msf` uses it. Stream and parser arrays use the active allocator; there is no public aggregate deinitializer. `get_stream_data` returns a newly allocated byte array for the caller to release. `parse_pdb` returns allocated parser arrays and a name-table buffer; its embedded `Msf.content` still refers to the supplied file bytes. The PDB/MSF aggregates have no public deinitializer, so ownership/release beyond allocator-managed storage is not separately specified.",
         "section": "Public type members",
         "spec_line": 1717
-      },
-      {
-        "aggregate": "Pdb_Version",
-        "reviewed_text": "- `VC70     :: 20000404`",
-        "section": "Public type members",
-        "spec_line": 1718
-      },
-      {
-        "aggregate": "Pdb_Version",
-        "reviewed_text": "- `VC70Dep  :: 19990604`",
-        "section": "Public type members",
-        "spec_line": 1719
-      },
-      {
-        "aggregate": "Pdb_Version",
-        "reviewed_text": "- `VC80     :: 20030901`",
-        "section": "Public type members",
-        "spec_line": 1720
-      },
-      {
-        "aggregate": "Pdb_Version",
-        "reviewed_text": "- `VC110    :: 20091201`",
-        "section": "Public type members",
-        "spec_line": 1721
-      },
-      {
-        "aggregate": "Pdb_Version",
-        "reviewed_text": "- `VC140    :: 20140508`",
-        "section": "Public type members",
-        "spec_line": 1722
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `version:                    Tpi_Stream_Version`",
-        "section": "Public type members",
-        "spec_line": 1726
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `header_size:                u32`",
-        "section": "Public type members",
-        "spec_line": 1727
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `type_index_begin:           u32`",
-        "section": "Public type members",
-        "spec_line": 1728
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `type_index_end:             u32`",
-        "section": "Public type members",
-        "spec_line": 1729
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `type_record_bytes:          u32`",
-        "section": "Public type members",
-        "spec_line": 1730
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `hash_stream_index:          u16`",
-        "section": "Public type members",
-        "spec_line": 1731
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `hash_aux_stream_index:      u16`",
-        "section": "Public type members",
-        "spec_line": 1732
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `hash_key_size:              u32`",
-        "section": "Public type members",
-        "spec_line": 1733
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `num_hash_buckets:           u32`",
-        "section": "Public type members",
-        "spec_line": 1734
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `hash_value_buffer_offset:   s32`",
-        "section": "Public type members",
-        "spec_line": 1735
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `hash_value_buffer_length:   u32`",
-        "section": "Public type members",
-        "spec_line": 1736
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `index_offset_buffer_offset: s32`",
-        "section": "Public type members",
-        "spec_line": 1737
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `index_offset_buffer_length: u32`",
-        "section": "Public type members",
-        "spec_line": 1738
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `hash_adj_buffer_offset:     s32`",
-        "section": "Public type members",
-        "spec_line": 1739
-      },
-      {
-        "aggregate": "Tpi_Stream_Header",
-        "reviewed_text": "- `hash_adj_buffer_length:     u32`",
-        "section": "Public type members",
-        "spec_line": 1740
-      },
-      {
-        "aggregate": "Tpi_Stream_Version",
-        "reviewed_text": "- `V40 :: 19950410`",
-        "section": "Public type members",
-        "spec_line": 1744
-      },
-      {
-        "aggregate": "Tpi_Stream_Version",
-        "reviewed_text": "- `V41 :: 19951122`",
-        "section": "Public type members",
-        "spec_line": 1745
-      },
-      {
-        "aggregate": "Tpi_Stream_Version",
-        "reviewed_text": "- `V50 :: 19961031`",
-        "section": "Public type members",
-        "spec_line": 1746
-      },
-      {
-        "aggregate": "Tpi_Stream_Version",
-        "reviewed_text": "- `V70 :: 19990903`",
-        "section": "Public type members",
-        "spec_line": 1747
-      },
-      {
-        "aggregate": "Tpi_Stream_Version",
-        "reviewed_text": "- `V80 :: 20040203`",
-        "section": "Public type members",
-        "spec_line": 1748
       }
     ]
   },
