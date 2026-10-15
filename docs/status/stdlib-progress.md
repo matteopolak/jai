@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint: f3ac2d9, Windows scope-ID accessors. Current reviewed
+Current durable checkpoint:3fd4e28, reviewed calendar text/native policy. Current reviewed
 batch adds26 Linux TCP/tcp_info accessors and Pool unmapping selection/lifetime
 guard. Linux public #run assertions execute both CPU targets; native Linux remains
 pending. Pool interpreter/native O2 and active strict lint pass. Full104 positives,
@@ -267,3 +267,13 @@ Whole strict lint remains failed at target/calendar-whole-strict.log.
 ConvertToApollo alone remains the named time API gap: exact no-result #expand
 header conflicts with value contract/current compiler. Original general
 reproducer and precise reviewer/compiler question recorded; no fake export.
+
+Windows Registry increment: seven native procedures/two scalar aliases/fourteen
+access constants source-check both CPUs and regenerate byte-identically.
+Non-Windows public import/privacy test passes actual interpreter/native.
+Full107 positives/23 faults/14 negatives plus prior integration/target checks pass
+(target/registry-full.log).352 owned Jai files pass format/check. Native Registry
+execution and active Windows strict lint remain unexecuted/blocked; private ABI
+lint fails honest Windows requirement, CLI has no target selector. Ten predefined
+pseudo-handles remain absent pending reviewed64-bit extension conflict with SDK.
+Exact API list, test-only setup/cleanup and failures: portable-windows-registry.md.

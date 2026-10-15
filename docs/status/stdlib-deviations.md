@@ -259,3 +259,15 @@ the exact reviewed no-result header cannot currently yield a value in the compil
 Minimal original language reproducer is pending/expand-return-inference.jai;
 do not classify its failed check as completed functionality or silently add an
 unreviewed return annotation. Remaining native/target-lint gates are unchanged.
+
+Windows Registry:23 real reviewed bindings implemented, ten pseudo-handles omitted
+because reviewed positive casts conflict with official signed-LONG64-bit SDK
+extension. No guessed ABI constants or extra public convenience exports.
+All seven native call bodies/source constants check both Windows CPUs; actual
+interpreter/native Windows execution and active target-aware strict lint pending.
+Fixture uses private SDK setup only, a PID-specific volatile HKCU Software test
+key, checked native statuses and explicit cleanup; abort can leave this test-only
+key until cleanup/reboot. It never reads unrelated registry/credential data.
+Initial UTF conversion return-shape error belongs to the fixture and is fixed
+using reviewed pointer/success/byte-count, without changing production APIs.
+Generated declarations are normalized/idempotent; no copied Jai bodies.
