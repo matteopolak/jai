@@ -13,13 +13,21 @@ summaries include four child-process repeats). Failures remain enabled:
 mixing stale diagnostics/successes and real missing platform functionality.
 No unsupported platform assertion is accepted as a completed implementation.
 
-The 414-case catalogue is running against this same production snapshot:
+The 414-case catalogue completed against this same production snapshot:
 `python3 tools/stdlib_runtime.py --jaic <own-root-target>/debug/jaic --modes interp,native --opt O0 --jobs 2 --timeout 180 --verbose`.
 Both commands select this worktree's production `JAIC_STDLIB`, actual source-built
 native dependencies, owned TMPDIR, and the catalogue additionally supplies a real
 system Arial font and native clipboard restoration guard. Exact environment,
 counts and failure classifications are maintained in
 [`mac-integration-baseline.json`](../status/mac-integration-baseline.json).
+Interpreter: 390 passed/13 failed; native ARM64 O0: 380 passed/12 failed,
+11 compile-time-only. Each mode has five precise negative passes and six
+explicit unavailable platform cases. Json numbers interpreter exceeds 180s;
+the runner discarded actual elapsed, so only the deadline/lower bound is known.
+No timeout is counted as passing. The own macOS event fixture was then corrected
+to pump its frame after native resize/close notifications; its unchanged size,
+window identity and close assertions pass interpreter/native O0 in a focused
+replay. This is a follow-up, not an arithmetic projection of a green full run.
 The root tracking branch has not been moved. Full opaque public corpus and Focus
 build/launch, signed mouse-wheel regression and user acceptance remain required
 coordinator gates. Windows/Linux native verification remains required later.

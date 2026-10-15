@@ -1,5 +1,34 @@
 # Integration requests
 
+## Current 414-case catalogue failures at ad575d16
+
+Compiler owner: five own fixtures fail both host modes. `lang-asm` and
+`rules-simd-asm` include unguarded x64-only pause/cpuid on ARM64, and the latter
+expects fabricated zero cpuid features. Keep meaningful real ISA checks and
+precise unsupported-ISA negative coverage; no fake compiler feature results.
+`rules-prelude-and-runtime-support`, `runtime-support-output` and
+`runtime-support-source` explicitly request runtime params conflicting with
+the one configured canonical bootstrap instance. Migrate to reviewed canonical
+runtime tests, retaining output/duplication/context assertions and strict
+parameter negatives. Do not restore arbitrary multiple bootstrap instances.
+
+Window/numerics owner: six own graphics regressions still use old unreviewed
+APIs: GetRect.set_asset_root, GetRect_LeftHanded.Font,
+Input(ENABLE_NATIVE_INPUT_ADAPTERS=false) in three fixtures, and
+Window_Creation.set_window_dimensions. Please migrate their real rendering,
+widget/focus/published-event/temporary-allocator assertions to the reviewed
+public APIs without fixture-only modules or invented exports. Exact names and
+diagnostics are in the current machine baseline report. The separate actual
+macos-events fixture now passes both modes after pumping queued native
+notifications before reading frame records, preserving every assertion.
+
+Extensions/compiler performance owners: Json/tests/numbers interpreter times
+out at 180s with two catalogue jobs; native O0 passes. Earlier isolated same
+Json sources passed in149.45s at7467b49d, before the general Mac FFI affinity
+repair. This is a real deadline failure, not evidence of assertion failure or
+permission to reduce the random/edge-case coverage. Investigate actual cost;
+full sweep is already false. No tests or assertions were skipped.
+
 ## Combined ad575d16 replay: active failures
 
 Compiler owner: stable full workspace replay now has only native-test
