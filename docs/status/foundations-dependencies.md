@@ -25,13 +25,22 @@ conditional compiler API/library dependencies so unused runtime reflection
 does not require unsupported native file declarations. No module-specific
 compiler bypass or fabricated FILE layout is requested; no peer file is edited.
 
-## Allocator capabilities and debugger macro review
+## Allocator CAPS provider and host/target support
 
-Basic's reviewed get_capabilities must return flags and the allocator-supplied
-name, while Allocator_Proc has one *void result. Specify the CAPS output-name
-calling convention precisely. NEW runtime currently returns flag bits only.
-Specify Preamble's caller-scope initialization/locking/defer effects as well.
-These questions do not gate the other real implementations.
+The new sync supplies the exact name-out ABI: CAPS receives zero sizes, *string
+as old_memory, and null allocator_data; its return encodes flags. Basic now
+implements it and the owned temporary allocator supplies a name. NEW runtime
+and Pool providers still require audit: the runtime returns flags without a
+name, and the snapshot Pool asserts allocator_data is non-null before handling
+CAPS even though get_capabilities passes null. Correct their producer bodies
+without changing Basic's reviewed ABI. Basic must not manufacture their names.
+Original pending/pool-capabilities-name.jai reproduces the Pool failure using
+only public APIs; it is not counted as a completed runtime case.
+
+Preamble native scoped effects are implemented; genuine cross-target detection
+is blocked because BUILD_OS/BUILD_CPU alias the target. See the separate general
+predicate request with explicit native/WASI test evidence. No Basic-specific
+compiler bypass or accepted-but-ignored cross behavior is counted as support.
 
 ## Visualization producer coverage
 

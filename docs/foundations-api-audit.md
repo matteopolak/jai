@@ -43,6 +43,17 @@ are recorded separately. Full Basic completion is still in progress.
   logging. Visualizer mode skips both scans and includes pre-baseline objects.
   Module-qualified matching remains explicitly unsupported pending metadata
   mapping review; diagnostic/reporting is not claimed fully complete there.
+- All reviewed visualization hook names now have the real version-2 channel
+  implementation, with initialization/retry timing, deduplication, definition
+  packets, live/alloc/free snapshots, queue-full retry and reader reconnection.
+  macOS/Linux shared-memory transport is tested; other producer transports are
+  explicitly unavailable. The old textual snapshot path is removed.
+- get_capabilities follows the exact zero-size/name-out/null-data convention
+  and returns the allocator-owned name view. The owned temporary allocator
+  supplies its real static name. Preamble has real native caller-scope flags,
+  logger defers, allocator-family exclusions and first-use initialization;
+  cross-compilation is blocked by compiler host/target metadata, with a failing
+  genuine regression retained instead of accepting the broken comparison.
 
 Original regressions exercise callback effects, nested context restoration,
 default stdout/stderr routing, temporary message storage, numeric boundaries,
@@ -56,10 +67,9 @@ Missing exports are not replaced with inert bodies.
 
 | Responsibility | Outstanding declarations / contracts |
 | --- | --- |
-| Allocator capability | `get_capabilities`: capability/name behavior is specified, but the Allocator_Proc name-out ABI still needs an exact convention. |
-| Debugger macro | `Preamble`: exact caller-scope effects are still absent from the supplied contract. |
+| Debugger macro | Preamble's native effects pass; its cross early return fails because supplied BUILD_* constants alias target values. General compiler request/probe is recorded. |
 | Leak reporting | No missing ordinary names besides Preamble. Module-qualified frame matching needs source/module identity mapping; current explicit diagnostics are not full support. |
-| Visualization | `vis_init`, `maybe_add_string`, `vis_update_if_it_has_been_long_enough`, `vis_update`, `vis_fini`; per-frame textual snapshots do not supply these missing APIs or establish the native visualization protocol. |
+| Visualization | No missing names. Native macOS/Linux channel is real and tested; Windows/WASI shared-memory producers remain unavailable and are diagnosed explicitly. |
 
 ## Preserved portable responsibility
 
@@ -76,8 +86,9 @@ checkout was modified.
 The latest logging paragraph confirms the implemented contextual dispatch,
 temporary lifetime, no extra verbosity filtering/newline/null-logger check,
 and suppression of empty messages. Typed enum-array lifetime is also resolved.
-Remaining review questions concern CAPS name-out ABI, Preamble, module-qualified
-frame identity and exact leaf/root trimming boundaries. Conservative scanner
+Remaining review questions concern module-qualified frame identity, exact
+allocator-family matching and leaf/root trimming boundaries. Preamble requires
+a real host/target compiler distinction. Conservative scanner
 and ownership heuristics are implementation policy under the reviewed contract.
 
 Name matching does not prove completeness: overload gaps and conditional

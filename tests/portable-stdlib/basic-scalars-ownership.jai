@@ -16,6 +16,10 @@ main :: () {
     assert(min(8, 3, -1, 6) == -1 && max(8, 3, -1, 6) == 8);
     assert(min(cast(float64) 1.25, 3.0, -2.0) == -2.0);
     assert(max(E.LOW, E.HIGH, E.LOW) == .HIGH);
+    pointers: [4] u8;
+
+    assert(min(pointers.data + 2, pointers.data + 1, pointers.data + 3) == pointers.data + 1);
+    assert(max(pointers.data, pointers.data + 1, pointers.data + 3) == pointers.data + 3);
     assert(clamp(17, 0, 10) == 10);
     initial: [3] int = .[1, 2, 3];
     values := array_copy(initial);
@@ -26,7 +30,7 @@ main :: () {
     array_add(*dynamic, 4);
     assert(dynamic.count == 4 && dynamic[0] == 1 && dynamic[3] == 4);
     array_free(dynamic);
-    detached: [0] int;
+    detached: [] int;
     unset := resizable(detached, set_allocators = false);
     unset.allocator = context.allocator;
     array_free(unset);
