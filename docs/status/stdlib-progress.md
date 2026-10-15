@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint: 1579458 (critical Pool/Thread d6db68f, ISA c45ee67). Pool/Unix Thread
+Current durable checkpoint: e81f1a5 (critical Pool/Thread d6db68f, ISA c45ee67, SHA1579458). Pool/Unix Thread
 critical corrections are committed: field-only Pool guard, no registry,
 allocator/options preserved by reset/release, genuine returned leak report fixed.
 Every owned essential Thread SDK operation now executes outside optional asserts;
@@ -15,8 +15,8 @@ Evidence: target/lifecycle-all-green.log; original failures retained separately.
 The draft invalid locked-mutex oracle and staging corrections are documented
 separately from production fixes. Native Linux/Windows/Android execution, forced
 join failures and group transactional fault recovery are not claimed. Windows
-Thread is untouched. Digest sources preserved through the critical checkpoint are now verified for a
-separate checkpoint; all three provisional Performance_Report files stay excluded.
+Thread is untouched. Digest sources preserved through the critical checkpoint are committed separately
+as1579458; all three provisional Performance_Report files stay excluded.
 Broad regression subsequently passes112 cases (including pending digest fixture),
 27 expected faults and16 compile negatives plus IPC/SMTP/Linux+Windows source
 checks. Original Basic.exit staging dependency error is retained at
@@ -32,8 +32,8 @@ fence/prefetch original probes now emit real opcodes versus official C intrinsic
 386 owned files pass formatting/check, including preserved pending digests; whole
 strict lint remains a separate failed gate. No source compiler edits or fake ISA
 results. Full task remains unfinished; missing public surface inventory now names246
-rows after the two real digest APIs. Next: committed compiler ISA handoff and
-remaining portable APIs after the critical checkpoint.
+rows after the two real digest APIs. Next: opaque-pointer compiler handoff and
+remaining portable APIs after the critical/ISA/digest/time checkpoints.
 
 Post-f044252 work: get_machine_options_x86 now implements the reviewed generic
 #modify API as a checked in-place projection of actual Compiler.Build_Options
@@ -385,3 +385,17 @@ configured Windows source checks. The stale ordinary macro value-expression
 probe is retained and explicitly classified as superseded for this API, not a
 required compatibility oracle or an established compiler gap. No public result
 annotation, compiler special case, fake value or peer write.
+
+Registry continuation reaches an exact general compiler blocker, not a stale
+contract question: positive pointer constants hit the constant freezer heuristic
+and diagnose unknown-size memory. Original module-independent reproducer
+pending/opaque-pointer-constant.jai fails host and Windows x64/ARM64 checking
+with exit1. General opaque address-bit versus owned-memory provenance support
+belongs to compiler; no whitelist/sign-extension/mutable workaround used.
+Ten reviewed handles remain INCOMPLETE. Six candidate production/generator/test
+files remain durable UNCOMMITTED/excluded, enumerated in portable-opaque-pointer-constants.md.
+Three provisional Performance_Report files remain independently excluded.
+Known committed functionality is preserved in checkpoints; candidate Registry
+checking currently fails and is not claimed green.246 largely unimplemented
+public rows remain plus partial/platform/compiler gaps, listed per API in linked
+module documents.

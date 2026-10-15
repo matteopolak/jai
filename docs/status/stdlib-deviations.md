@@ -412,3 +412,16 @@ only for modular high-word corrections; no fake arithmetic, inferred arrow,
 compiler hack or public helper export. Both producer compositions execute
 interpreter/ARM64+x64 native O0/O2. Further floating rounding/calendar policy and
 native platform gates remain separate; no new workaround introduced.
+
+Registry candidate is NOT completed: six owned files are deliberately left
+uncommitted/excluded pending general opaque pointer-constant freezing. Exact
+paths and failing evidence are in portable-opaque-pointer-constants.md. Public
+reviewed zero-extension is preserved; no sign-extension, mutable global, wrapper
+function, fake handle, whitelist or ignored test is substituted. Source checks
+and target-aware lint are blocked before native execution. Compiler source cause
+is the existing small-or-negative integer-handle heuristic; proper solution tracks
+opaque address bits versus memory requiring freezing/relocation. The unchanged
+committed23-export implementation remains the last verified checkpoint; the
+working candidate33-export source is explicitly unverified. No native Windows
+handle acceptance is claimed. Formatting/byte-stable generation alone is not
+functional completion.

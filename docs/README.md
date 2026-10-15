@@ -113,6 +113,7 @@ The LLVM backend, C ABI and linking.
 - [Unix Thread assertion configuration and lifecycle ownership](portable-thread-lifecycles.md)
 - [Windows calendar verification](../tools/check_portable_windows_calendar.py): source/ABI checks, explicit native-host requirement
 - [Windows shared-memory backend and remaining gates](portable-windows-channel.md)
+- [Opaque pointer constant compiler handoff and pending Registry candidates](portable-opaque-pointer-constants.md)
 - [Windows Socket wrappers, native ABI evidence and remaining public gaps](portable-windows-socket.md)
 - [Native Socket field accessors and independent SDK record oracles](portable-socket-fields.md)
 - [Socket ancillary helpers and actual native SDK vectors](portable-socket-cmsg.md)

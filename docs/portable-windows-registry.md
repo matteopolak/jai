@@ -23,14 +23,16 @@ No native error is swallowed or mapped to success. Callers must check LSTATUS,
 size their buffers and close returned real handles. RegQueryValueEx string data
 need not include a terminator. No speculative resize/string convenience export.
 
-Ten predefined pseudo-handles remain MISSING, not completed constants:
+Ten predefined pseudo-handles remain INCOMPLETE due to compiler constant freezing:
 HKEY_CLASSES_ROOT, HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, HKEY_USERS,
 HKEY_PERFORMANCE_DATA, HKEY_PERFORMANCE_TEXT, HKEY_PERFORMANCE_NLSTEXT,
 HKEY_CURRENT_CONFIG, HKEY_DYN_DATA, HKEY_CURRENT_USER_LOCAL_SETTINGS.
 The reviewed expressions cast positive0x800000xx directly to HKEY; the official C
 SDK casts through signed32-bit LONG and ULONG_PTR, producing sign-extended64-bit
-handles. Do not silently change public observable values or assume zero extension
-is accepted. The precise ABI oracle question is recorded in the questions doc.
+handles. Refreshed review explicitly establishes positive zero-extension as the
+public contract. Do not change that value or assume native acceptance. The new
+candidate is blocked by compiler opaque-pointer freezing, not an API question;
+see portable-opaque-pointer-constants.md for exact reproducer/candidate files.
 Native tests obtain a real root using private test-only RegOpenCurrentUser;
 no substitute root constant is exported.
 
@@ -39,8 +41,9 @@ Official native ABI inputs:
 - https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regqueryvalueexw
 - https://raw.githubusercontent.com/microsoft/win32metadata/main/generation/WinSDK/RecompiledIdlHeaders/um/winreg.h
 
-tools/generate_windows_registry.py reads reviewed declarations, deliberately
-omits those unresolved handles, emits independently grouped bindings and normalizes
+The committed23-export generator omitted these previously unreviewed handles.
+The uncommitted candidate generator now includes their resolved values, emits
+independently grouped bindings and normalizes
 with source-built jaifmt. Two regenerations are byte-identical.
 tools/check_portable_windows_registry.py checks public constants/privacy and all
 seven call bodies for Windows x64/ARM64. --native requires actual Windows and runs
@@ -58,9 +61,10 @@ pointer/success/byte-count. Corrected to capture/check all three outputs; origin
 failure retained at target/registry-first-bodies.log. This was a test defect,
 not a changed conversion API. Passing source evidence: target/registry-final-bodies.log.
 
-Source-built jaifmt/check pass. Active Windows strict lint remains unavailable:
-fresh jailint --help has no target selector, and checking the private ABI root on
-this macOS host fails its honest Windows requirement. Evidence:
+Source-built jaifmt/check pass. Earlier active Windows strict lint was unavailable:
+that older jailint had no target selector. The NEW rebuilt target-aware linter
+is now available and the candidate runner invokes both Windows target triples,
+but the pointer-constant compiler failure stops source checking first. Evidence:
 target/registry-linter-capabilities.log and target/registry-target-lint-blocker.log.
 No global suppression, target constant substitution, emulation or native pass
 claim is used. Whole strict lint remains the previously recorded failed gate.
