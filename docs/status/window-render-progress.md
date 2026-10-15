@@ -1,5 +1,26 @@
 # Window/render progress
 
+2026-10-15 native install checkpoint: authorizede223538 feedback reaches Mesa
+install but helpera68544c cannot find required WGL DLLs. Official pinned source
+confirms names/expectation correct; our -Dplatforms=[] disabled the WGL targets.
+Changed to explicit Windows platform and canonical ICD-name option. Added real
+Meson configuration/target/install introspection, persistent install file-tree
+evidence, source-target/install/hash validation, native ARM64 exports/dependency
+checks through SDK dumpbin/OS loader, and actual deployed-DLL identity requirement
+in the real GL probe runner. No filenames fabricated, targets substituted or
+assertions removed. Existing1f66dc1 LLVM cache/full receipts remain compatible;
+only fresh Mesa/driver output is accepted. Coordinatorc68d19d cache workflow remains
+coordinator-owned and was not modified here.
+
+Local tests:16 pass (8 new installer/config/metadata/file-identity, 7 source/cache,
+1 real Meson child interpreter). Native ARM64 WGL build/load/draw/readback,
+lifecycle and Windows strict lint remain pending; compiler link/headless WARP and
+signed-wheel ARM64 positives are separate authorized feedback. No native GL pass
+is inferred. Exact rerun/evidence instructions are in native/window-render-wgl-investigation.md.
+Final local verification also passes full owned formatting and integrated host
+warnings-denied lint, no incomplete diagnostics. Five native Meson oracle files
+match the pinned source archive. Extensions diff remains empty.
+
 Prepared Python fix committed as `a68544c`. Follow-up verified LLVM-only cache:
 exact source/toolchain/configuration key, selected SDK/tool content fingerprints,
 atomic full installed-file receipt before Mesa setup, native identity/prefix checks
