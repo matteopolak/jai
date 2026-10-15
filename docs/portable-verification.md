@@ -114,3 +114,12 @@ projection passes interpreter/native O0/O2 and rebuilt source x64 strict lint.
 General field-array/forward-enum/workspace-hook probes still fail on the freshly
 built compiler; target/*-refreshed.log preserves evidence. Whole strict lint remains
 a separate failed gate, never replaced by these focused passes.
+
+Socket batch:102 positives/23 faults/14 compile negatives and prior integration/
+target checks pass (target/socket-full-regression.log). Pure production Winsock
+control kernels execute65536 ioctl combinations and descriptor boundary cases in
+interpreter/native O2, with active host strict lint. Windows loopback/error/wrapper
+bodies and ABI assertions check both CPUs (target/socket-final-bodies.log), but
+native Windows and active Windows lint remain unverified. Generation repeats with
+identical ABI/facade/ledger bytes.331 owned Jai files pass formatter/check; whole
+strict lint still fails with all configured groups attempted.

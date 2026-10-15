@@ -199,3 +199,19 @@ checks on Windows, preserving real POSIX unlink. Full101 host cases/23 faults/14
 negatives and four2048-packet process pairings pass, not Windows runtime success.
 Proper remaining gate: actual Windows interpreter/native error/lifetime/concurrency
 tests and target-aware strict lint. See portable-windows-channel.md.
+
+Windows Socket: real Winsock source paths implemented and both CPU bodies check;
+actual Windows/active Windows strict lint remain pending. Pure production ioctl/
+descriptor kernels execute host tests, not a simulated Winsock backend. Explicit
+u32 locals accommodate the still-failing general widening-cast/shift compiler
+semantics; original FIONBIO failure0x8004007e versus SDK0x8004667e and existing
+widened-bitwise reproducer remain. Proper long-term fix is general compiler width
+propagation, followed by regression rerun; no Native status/instruction is faked.
+The generator's wildcard Windows import caused GUI MSG to capture Socket foreign
+flags. Explicit qualified reviewed dependencies fix that source namespace defect,
+without changing signatures to raw integers. Native keepalive units/ignored
+attempt count are reviewed compatibility, not a workaround. Startup refs remain
+caller-balanced with WSACleanup. Negative timing inputs diagnose checked casts;
+close failure logs then resets the handle, with retry/resource risk awaiting
+review. Missing CMSG/bitfield/shape APIs are explicitly inventoried and not counted
+complete. See portable-windows-socket.md for locations, evidence and SDK provenance.
