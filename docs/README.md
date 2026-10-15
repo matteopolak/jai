@@ -215,6 +215,8 @@ The WebAssembly compiler bundle and its releases. The hosted playground UI lives
 
 ## Tools and workflow
 
+- [Developer tooling](developer-tools.md): reflected C header generation, original C/Jai round trips, API audit and outstanding tooling scope; [progress](status/developer-tools-progress.md) and [deviations](status/developer-tools-deviations.md).
+
 Scripts, CI and project policies.
 
 - [The `jaic` command line](tools/cli.md): modes, options, plugins, and what changed from 0.16
