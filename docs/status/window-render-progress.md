@@ -1,5 +1,24 @@
 # Window/render progress
 
+Latesta6371ec infrastructure fix: absent VS2026 VC/Auxiliary/VS/include search
+entry was incorrectly treated as a required SDK directory. Cache configuration
+now records configured/resolved paths and missing/present state in order, hashes
+every real selected native search directory, and admits auxiliary directories
+under explicit VS/VC installation roots. Later creation/content changes invalidate
+the key. Required selected ARM64 headers/static CRT/platform libraries and tools
+are checked separately for existence/search reachability; shadows/missing inputs
+still fail. Configuration schema2 changes the key, preserving full receipt/file
+integrity with no unsafe old-cache adoption. Mesa-only changes remain independent.
+
+Local tests19 pass (10 source/cache,8 install/identity,1 real Meson child-Python).
+No Jai/Rust/Extensions/renderer changes. Windows platform=windows, target/install
+hash validation, native export/dependency checks and actual loaded-driver identity
+remain required. Both CPUs' headless/windowed WebGPU positives are authorized
+filtered evidence only; WGL/native cache reuse/driver execution remain unverified.
+No raw vendor Jai/logs/reference/quarantine inputs and no publication.
+Python compilation/plan, full owned formatter check and integrated native-host
+warnings-denied lint pass on this tools-only batch. Native Windows remains pending.
+
 2026-10-15 native install checkpoint: authorizede223538 feedback reaches Mesa
 install but helpera68544c cannot find required WGL DLLs. Official pinned source
 confirms names/expectation correct; our -Dplatforms=[] disabled the WGL targets.
