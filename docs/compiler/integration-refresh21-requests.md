@@ -49,9 +49,12 @@ when merging the queued raw-pointer/default-binding checkpoints.
   on unreviewed Basic.free(ptr,allocator)/WASI exit. Preserve Extensions and public
   Basic APIs. A proper permitted dependency architecture/review is needed;
   extra exports or module-specific compiler rewrites are forbidden.
-- Native C ABI1: legacy macOS addrinfo expectation is outside Socket's reviewed
-  public platform availability. Retain genuine SDK ABI comparisons; use legitimate
-  private native-boundary tests where appropriate, not surrogate public records.
+- Native C ABI1: reviewed Socket inventory line3014 includes macOS addrinfo;
+  it is a genuine missing public declaration (the earlier unavailable-API
+  classification was incorrect). The page omits its macOS type-shape block.
+  Official Apple netdb.h:147–156 supplies the C ABI, but exact Jai field types
+  (especially enum versus integer flags) need reviewed shape precision. Keep
+  every ABI assertion; do not substitute another platform record or retire it.
 - Native WASI tour1: native-only Thread dependency in our example. Public corpus
   remains unchanged/opaque. Separate supported example/platform behavior from
   compiler scheduler tests without inventing standard-library exports.

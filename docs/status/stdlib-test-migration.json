@@ -1768,9 +1768,15 @@
       "destination": "tests/compiler-regressions/compiler-reflection-pure.jai",
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "",
-      "imports": [],
+      "imports": [
+        "Jai_Lexer",
+        "Protocol_For_Memory_Visualization"
+      ],
       "migration_status": "moved; operational consumers use replacement catalogue/paths",
-      "migrated_sha256": "b2bf49cc19db3e0474c89603214444cf765f7e130336b071b51bae1bba69596b"
+      "migrated_sha256": "761412d8a53bf8abfa96dffcc2b60dd6ca6968e92f3fd22cefa88edacb7e6ae4",
+      "reviewed_revision": {
+        "reason": "Private file loads replaced by public Jai_Lexer and Protocol_For_Memory_Visualization imports; classifier and comparator assertions retained. Missing reviewed comparator is still a real unresolved implementation/contract gap, not a pass."
+      }
     },
     {
       "original": "tests/stdlib/compiler-resolved-nodes.jai",
@@ -3061,9 +3067,26 @@
       "destination": "tests/compiler-regressions/int128-arithmetic.jai",
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "Concrete arithmetic boundary inputs. Integration runs this authored body;",
-      "imports": [],
+      "imports": [
+        "Basic"
+      ],
       "migration_status": "moved; operational consumers use replacement catalogue/paths",
-      "migrated_sha256": "7c415734ecc570284e7648a660516777e9cc16f1c9c99588953f89325de41d15"
+      "migrated_sha256": "4b39f7710ecc09367cacc7e5c75d5e107520d1a5b058bc445478b1ed9bbc7862",
+      "reviewed_revision": {
+        "reason": "Reviewed Basic named wide helpers replace old private-file load; unreviewed struct arithmetic/equality/shift operator expectations retired. Signed to_u128 byte input is a required separate rejection; to_s128 follows reviewed sign extension.",
+        "retired_private_operator_cases": [
+          1,
+          2,
+          3,
+          5,
+          14,
+          15,
+          16,
+          20
+        ],
+        "negative_replacement": "tests/portable-stdlib/negative/wide-to-u128-negative-byte.jai",
+        "public_shape_comparison": "fixture-local limb comparison, not invented public operator exports"
+      }
     },
     {
       "original": "tests/stdlib/integer-constant-fit.jai",

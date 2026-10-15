@@ -380,3 +380,5 @@ Agreed designs that are not built yet.
 - [Production-source lifecycle integration](tools/cleanroom-integration.md#refresh20-merged-production-verification): Pool movement, real Thread imports and enabled/disabled assertion execution without library overlays.
 
 - [Refresh21 compiler integration requests](compiler/integration-refresh21-requests.md): original enum dependency reduction, repaired bootstrap primitive and classified full-suite gaps.
+
+- [Catalogue output and compile-only verification](tools/stdlib-runtime-tests.md#independent-catalogue-channel-and-compile-only-checks): separate exact diagnostic channels and preserved failure status.
