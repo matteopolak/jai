@@ -1,5 +1,9 @@
 # Compiler integration handoff
 
+Default generic pointer implementation checkpoint: 6abf47a. Rebuilt own
+target/debug/jaic and target/debug/jailint include it; use the canonical compiler
+build command below. Fixture strict lint/format and host core/LLVM clippy pass.
+
 Default generic pointer binding is repaired generally in expr/decls/structs:
 *Generic with all defaults now names *Generic(defaults), using canonical instance
 cache/type identity. Type arguments validate before insertion even when unused.

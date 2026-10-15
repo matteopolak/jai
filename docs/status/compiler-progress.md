@@ -1,5 +1,10 @@
 # Compiler progress
 
+Verified generic-pointer checkpoint: 6abf47a,
+`fix(sema): canonicalize default generic pointees before binding`. Implementation,
+original regressions and documentation are committed. Producer restored-fixture/
+watcher integration remains the next gate; no publication.
+
 Default generic pointer defect repaired: pointer construction now instantiates
 all-default generic pointees through the same canonical binder/cache as ordinary
 type positions. Type parameters validate actual type operands before binding,
