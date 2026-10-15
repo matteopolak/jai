@@ -254,3 +254,4 @@ unsigned long long binding_rpmalloc_storage_field_size(unsigned index) {
 }
 long long binding_rpmalloc_native_heap_id(const void *heap) { return ((const heap_t*)heap)->id; }
 unsigned long long binding_rpmalloc_native_heap_owner(const void *heap) { return ((const heap_t*)heap)->owner_thread; }
+long long binding_rpmalloc_public_atomic32(void *value) { return atomic_load32((atomic32_t*)value); }

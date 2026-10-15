@@ -1,5 +1,17 @@
 # Public rpmalloc adapter progress
 
+Raw heap follow-up: eleven raw SDK-backed procedures and nine exact aliases now
+execute through their own reviewed public mirror, with actual atomic members
+and typed SDK ownership. `configure_rpmalloc.py` supplies the missing source
+profile privately; it does not change the public import parameters/default
+contract. Raw reflection/alias identity, allocation/calloc, reallocation,
+callback-context/lifetime/failure and thread handoff all execute. The independent
+raw ABI program checks every reviewed field offset/width and 2,027 native
+counters. Six desktop source configurations and both Mac CPUs pass; native
+Windows/Linux remains outstanding. Ledger: 3 unresolved and 77 partial rpmalloc
+declarations; eighteen configuration-name failures still need generic/dump APIs.
+See the [explicit raw profile](rpmalloc-raw-heap-plan.md) for setup and limitations.
+
 The canonical heap and native configurable mapping milestones are committed
 as `7fedc8e` and `bc597af`. All eleven rewrite heap procedures have real typed
 SDK forwarding and separate complete public records. The public configurable

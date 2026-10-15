@@ -1,14 +1,36 @@
 """C mirror layouts from reviewed public records; never SDK layout aliases."""
 import re
-from rpmalloc_context import ORDER, rewrite_records
+from rpmalloc_context import ORDER, RAW_NAMES, rewrite_records, raw_records
 
 
-def public_c_header(spec):
+def mirror_records(spec, raw=False):
     records = rewrite_records(spec)
+    if not raw:
+        return records
+    source = raw_records(spec, records)
+    inverse = {v: k for k, v in RAW_NAMES.items()}
+    return {owner: [(name, re.sub(r'\b(?:'+ '|'.join(inverse)+r')\b',
+                                 lambda m: inverse[m[0]], ty), condition)
+                    for name, ty, condition in source[RAW_NAMES[owner]]]
+            for owner in ORDER}
+
+
+def mirror_c_header(spec, raw):
+    records = mirror_records(spec, raw)
     lines = ['/* Generated reviewed public layouts, independently organized. */',
              '#include <stdint.h>', '#include <stddef.h>']
     lines += ['typedef struct Public_'+name+' Public_'+name+';' for name in ORDER]
-    scalars = {'s64':'int64_t','u64':'uint64_t','s32':'int32_t','u32':'uint32_t','void':'void'}
+    scalars = {'s64':'int64_t','u64':'uint64_t','s32':'int32_t','u32':'uint32_t','void':'void',
+               'size_t':'uint64_t', '_int':'int32_t', 'int32_t':'int32_t',
+               'atomic32_t':'Public_Atomic32', 'atomic64_t':'Public_Atomic64', 'atomicptr_t':'Public_AtomicPtr'}
+    if raw:
+        lines += ['#if defined(_MSC_VER)',
+                  'typedef volatile int32_t Public_Atomic32;',
+                  'typedef volatile int64_t Public_Atomic64;',
+                  'typedef volatile void* Public_AtomicPtr;', '#else',
+                  'typedef volatile _Atomic(int32_t) Public_Atomic32;',
+                  'typedef volatile _Atomic(int64_t) Public_Atomic64;',
+                  'typedef volatile _Atomic(void*) Public_AtomicPtr;', '#endif']
     for name in ORDER:
         outer = name == 'Size_Class_Use'
         if outer: lines += ['#if ENABLE_STATISTICS']
@@ -32,8 +54,12 @@ def public_c_header(spec):
     return '\n'.join(lines)+'\n'
 
 
-def layout_probes(spec):
-    records = rewrite_records(spec)
+def public_c_header(spec):
+    return '#if BINDING_RPMALLOC_RAW\n'+mirror_c_header(spec, True)+'#else\n'+mirror_c_header(spec, False)+'#endif\n'
+
+
+def layout_probes(spec, raw=False):
+    records = mirror_records(spec, raw)
     rows = [(owner,name,condition) for owner in ORDER for name,_,condition in records[owner]]
     code = '/* Generated reviewed public C mirror layout measurements. */\n'
     groups = [('layout_size',[(name,'','ENABLE_STATISTICS' if name=='Size_Class_Use' else '') for name in ORDER]),
@@ -54,8 +80,8 @@ def layout_probes(spec):
                        Size_Class_Use='heap.size_class_use[0]',Span='heap.span_reserve.*',Heap='heap.*')
     jai = '// Generated reviewed public record/C mirror ABI assertions.\n'
     for stats in (True,False):
-        function = 'statistics' if stats else 'no_statistics'
-        bridge = 'Bridge' if stats else 'NoStatsBridge'
+        function = ('raw_' if raw else '')+('statistics' if stats else 'no_statistics')
+        bridge = ('Raw' if raw else '')+('Bridge' if stats else 'NoStatsBridge')
         def active(condition):
             return not condition or condition=='ENABLE_THREAD_CACHE' or bool(stats)
         jai += 'canonical_layout_'+function+' :: (heap: *$T) {\n'

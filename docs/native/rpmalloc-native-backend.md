@@ -2,7 +2,7 @@
 
 `internal/bindings/rpmalloc-sdk` is a complete private binding to the pinned
 official C SDK. It is not either public Jai allocator implementation. The
-public module still has 23 unresolved and 57 partially implemented declarations; configuration
+public module still has 3 unresolved and 77 partially implemented declarations; configuration
 failures remain active. No public callback/config/heap record is cast to C.
 
 Production SDK compilation now uses `rpmalloc-heaps/bridge.c`, which includes
@@ -10,6 +10,13 @@ the pinned official SDK source with the hash-recorded heap-pool page fix and add
 atomic field marshalling, real deferred-free routing and unmap-driven retirement.
 The original 35 native SDK functions and storage ABI remain unchanged. Public
 and private evidence are distinguished in the canonical heap design document.
+
+The private RAW and STATISTICS selections now describe four independently
+compiled SDK/callback domains, generated from `rpmalloc_profiles.py`. Enabled
+raw heap builds select their distinct public mirror; rewrite and disabled raw
+packaging retain the prior supported domain selection. `build_rpmalloc.py`
+builds these real archives directly and can produce both Mac architectures.
+The full dependency builder uses the same profile inventory and ordered links.
 
 The private STATISTICS module parameter selects separately compiled enabled
 and disabled SDK libraries. Disabled exports use the generated

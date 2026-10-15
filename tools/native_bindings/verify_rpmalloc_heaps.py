@@ -17,6 +17,8 @@ from contextlib import ExitStack
 from config import RPMALLOC_SDK_BUILD_OPTIONS
 from prepare_rpmalloc import prepare
 from verify import select_stdlib, place_private_unit, ROOT
+from configure_rpmalloc import select_for_verification
+
 
 
 def verify(cleanup):
@@ -28,6 +30,7 @@ def verify(cleanup):
                         help='Use this actual production library without source overlays')
     parser.add_argument('--macos-both-cpus', action='store_true',
                         help='Execute both Mac targets; requires universal native archives and x64 execution support')
+    parser.add_argument('--rpmalloc-first-class-heaps', action='store_true')
     parser.add_argument('--report', type=Path, default=ROOT/'.work/rpmalloc-heaps.json')
     args = parser.parse_args()
     if args.macos_both_cpus and platform.system() != 'Darwin':
@@ -39,6 +42,8 @@ def verify(cleanup):
     work = ROOT/'.work/runs'/('canonical-heaps-'+str(os.getpid()))
     work.mkdir(parents=True)
     stdlib = select_stdlib(work, production=args.stdlib)
+    select_for_verification(stdlib, args.rpmalloc_first_class_heaps, args.stdlib is not None)
+
     unit = place_private_unit('rpmalloc-heap-marshalling',
                               ROOT/'tests/native-bindings/rpmalloc-heap-marshalling.jai', stdlib, {}, cleanup)
     prepared = prepare(ROOT/'.work/vendor/rpmalloc', work/'rpmalloc-source')
@@ -46,7 +51,14 @@ def verify(cleanup):
                JAIC_NATIVE_LIBS=str(libraries))
     programs = [ROOT/'tests/native-bindings'/name for name in
                 ('rpmalloc-public-heaps.jai', 'rpmalloc-public-heap-lifecycle.jai',
-                 'rpmalloc-public-configurable.jai')]+[unit]
+                 'rpmalloc-public-configurable.jai')]+[unit,
+                     place_private_unit('rpmalloc-native-error-callback',
+                                        ROOT/'tests/native-bindings/rpmalloc-native-error-callback.jai', stdlib, {}, cleanup)]
+    if args.rpmalloc_first_class_heaps:
+        programs += [ROOT/'tests/native-bindings/rpmalloc-public-raw-heaps.jai',
+                     ROOT/'tests/native-bindings/rpmalloc-public-raw-heap-lifecycle.jai',
+                     place_private_unit('rpmalloc-raw-heap-marshalling',
+                                        ROOT/'tests/native-bindings/rpmalloc-raw-heap-marshalling.jai', stdlib, {}, cleanup)]
     commands = []
     for program in programs:
         for target_os in ('macos', 'linux', 'windows'):
@@ -58,10 +70,10 @@ def verify(cleanup):
             exe = work/(program.stem+'-'+str(index))
             commands.append([compiler, program, *(['-target', target] if target else []), '-exe', exe])
             commands.append([exe])
-    for stats in (1, 0):
-        options = dict(RPMALLOC_SDK_BUILD_OPTIONS, ENABLE_STATISTICS=stats)
+    for raw, stats in [(r, s) for r in ((0, 1) if args.rpmalloc_first_class_heaps else (0,)) for s in (1, 0)]:
+        options = dict(RPMALLOC_SDK_BUILD_OPTIONS, ENABLE_STATISTICS=stats, BINDING_RPMALLOC_RAW=raw)
         for name in ('rpmalloc_heap_safety', 'rpmalloc_sdk_page_granularity'):
-            exe = work/(name+'-'+str(stats))
+            exe = work/(name+'-'+str(raw)+'-'+str(stats))
             commands.append(['cc', '-std=c11', '-Wall', '-Wextra', '-Werror', '-O1', '-g',
                              '-fsanitize=address,undefined', '-isystem', prepared,
                              *['-D'+k+'='+str(v) for k, v in options.items()],
@@ -71,18 +83,27 @@ def verify(cleanup):
                               text=True).stdout.strip()
     for target in ('x86_64-apple-darwin', 'aarch64-apple-darwin', 'x86_64-linux-gnu',
                    'aarch64-linux-gnu', 'x86_64-pc-windows-msvc', 'aarch64-pc-windows-msvc'):
-        for stats in (1, 0):
+        for raw, stats in [(r, s) for r in ((0, 1) if args.rpmalloc_first_class_heaps else (0,)) for s in (1, 0)]:
             commands.append(['clang', '-target', target, '-std=c11', '-ffreestanding', '-nostdinc',
                              '-isystem', resource+'/include', '-DENABLE_THREAD_CACHE=1',
                              '-DENABLE_STATISTICS='+str(stats), '-fsyntax-only',
+                             '-DBINDING_RPMALLOC_RAW='+str(raw),
                              ROOT/'stdlib/internal/bindings/rpmalloc-heaps/public-layout.h'])
     scopes = ['stdlib/rpmalloc', 'stdlib/internal/bindings/rpmalloc-heaps',
               *[str(p.relative_to(ROOT)) for p in programs[:-1]],
               'tests/native-bindings/rpmalloc-heap-marshalling.jai',
-              'tests/native-bindings/generated/rpmalloc-heap-facade-layout.jai']
+              'tests/native-bindings/generated/rpmalloc-heap-facade-layout.jai',
+              'stdlib/internal/bindings/rpmalloc-build',
+              'stdlib/internal/bindings/rpmalloc-sdk', 'stdlib/internal/bindings/rpmalloc-callbacks',
+              'stdlib/internal/bindings/rpmalloc-checked']
+    if args.rpmalloc_first_class_heaps:
+        scopes += ['tests/native-bindings/rpmalloc-raw-heap-marshalling.jai',
+                   'tests/native-bindings/generated/rpmalloc-raw-heap-facade-layout.jai']
     commands += [[formatter, '--check', '--config', 'jaifmt.toml', *scopes],
                  [compiler.with_name('jailint'), '-D', 'warnings', '--config', 'jailint.toml',
-                  stdlib/'rpmalloc', stdlib/'internal/bindings/rpmalloc-heaps', *programs],
+                  *[stdlib/'rpmalloc'/p.name for p in sorted((ROOT/'stdlib/rpmalloc').glob('*.jai'))],
+                  *[stdlib/'internal/bindings'/name for name in
+                    ('rpmalloc-heaps', 'rpmalloc-sdk', 'rpmalloc-callbacks', 'rpmalloc-checked', 'rpmalloc-build')]],
                  ['clang-format', '--style=LLVM', '--dry-run', '--Werror',
                   'stdlib/internal/bindings/rpmalloc-heaps/bridge.c',
                   'tests/native-bindings/rpmalloc_heap_safety.c',
@@ -90,6 +111,10 @@ def verify(cleanup):
                  ['python3', 'tools/native_bindings/generate.py', '--check', '--formatter', formatter],
                  ['python3', 'tools/native_bindings/vendor_rpmalloc.py', '--check', '--formatter', formatter],
                  ['python3', '-m', 'unittest', 'discover', '-s', 'tests/native-bindings', '-p', 'test_*.py']]
+    # Staged private units are standalone programs, not newly imported modules.
+    # Explicit roots preserve their context additions and check every body.
+    commands += [[compiler.with_name('jailint'), '-D', 'warnings', '--config', 'jailint.toml',
+                  '--context', program, program] for program in programs]
     report = dict(scope='Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers',
                   stdlib=str(stdlib), production_library=args.stdlib is not None,
                   compiler_sha256=hashlib.sha256(compiler.read_bytes()).hexdigest(),
