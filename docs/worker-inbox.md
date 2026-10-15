@@ -56,3 +56,37 @@ ELF values remain unchanged as newly clarified. Scope is 469/508, 39 remaining.
 Next batch implements real lexer/TBD workflows; official Xcode SDK samples and
 the SDK tapi archive tool are available as independent format oracles. Guid is
 still pending its canonical owner; no local substitute will be introduced.
+
+Worker text phase: all 37 lexer/TBD procedures have real independent implementations.
+Interpreter/native Mac O0/O2, strict lint and formatter pass. Official SDK tapi
+accepts the original v3/v4 fixtures; every returned exported symbol matches tapi
+per architecture for those fixtures and SDK libobjc/libSystem. TBD deep-owned
+returns survive freeing input; success/failure and all-prefix cleanup reach zero
+tracked allocations. Read-only clean-room code review is in progress.
+
+Working inventory is 506/508 with 37 draft procedures beyond 469 committed rows.
+Only Coff_Raw_Codeview_Info and Coff_Codeview_Info remain, waiting on canonical
+Debug_Info.Guid. Coordinator: please deliver the owner declaration in this
+independent checkout when ready; executable_formats will import its identity
+directly without local duplication. No lexical policy questions remain blockers.
+
+Worker review repairs complete: Apple-tapi-accepted fixtures now include embedded
+hashes in plain scalars/install names and YAML hex escapes. Both initially failed;
+YAML comment separation and Unicode normalization are corrected without changing
+the generic lexer's raw-byte policy. Reviewer independently confirmed both fixes
+in interpreter/native O2. Full symbol equality includes these cases. All text
+APIs have real bodies; only the canonical Guid-dependent two records are missing.
+
+Text batch verification is now complete: all eight executable suites pass
+interpreter and native Mac arm64 O0/O2, full SDK tapi symbol comparisons, format
+and warnings-denied lint. Linux/Windows x64 type checks cover objects and every
+new text test; neither target was executed. Diagnostics match across modes and
+are retained in target/executable-verification. Inventory is 506 committed
+declarations, zero draft declarations, two missing canonical Guid-dependent
+records. This snapshot is committed with the text workflow batch. No legacy
+aliases or /Users/matthew/projects/jai-reference/corpus-driven exceptions were added.
+
+
+## User-required reference oracle
+
+Some public corpus targets use old Jai versions. Dirty coordinator is running suspect cases with reference Jai0.2.030 in a no-network/restricted-write sandbox. Do not add old aliases or modify current APIs solely to satisfy corpus before reference behavior is confirmed. Continue independently established current-contract bugs. Clean implementers never read reference source, vendor bodies or raw reference logs; only sanitized reviewed contracts and independent reductions will be supplied.

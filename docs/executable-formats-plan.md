@@ -12,9 +12,9 @@ Architecture: retain the archive parser. Canonical public records/constants live
 - [x] Update feature docs, index and exact scope JSON; commit verified object/container phase with Conventional Commits.
 
 Remaining: two raw CodeView ABI declarations depend on the canonical Debug_Info.Guid
-owner. Nlist nested members are resolved and implemented. Thirty-seven lexer/TBD
-procedures are next, using safe independent policies for unspecified edges;
-they are not stubbed or counted as implemented. The first ABI checklist item
-therefore remains open.
+owner. Nlist nested members are resolved and implemented. All 37 lexer/TBD
+procedures now have independent implementations and positive/negative tests,
+including SDK tapi symbol equality and interpreter/native O0/O2 verification.
+The first ABI checklist item remains open only for that canonical dependency.
 
 Source tools: `cargo build -j2 -p jaic-cli -p jailint`; use assigned `$CARGO_TARGET_DIR/debug` binaries. Fixture generator: tools/build_executable_fixtures.py. Runner: tools/check_executable_formats.py. Tests: tests/portable-stdlib/executable-objects.jai.

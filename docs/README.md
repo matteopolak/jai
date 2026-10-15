@@ -75,6 +75,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [macOS bundles and plist helpers](portable-macos-bundler.md): native bundle/icon tools, validated XML and new formatting dependency
 - [Portable sound](portable-sound-player.md): canonical audio records, real sample arithmetic and shared mutable topology
 - [Executable objects and containers](portable-executable-formats.md): canonical ABI, bounded Mach-O/ELF/COFF/PE/universal/ar workflows, ownership, native checks and [exact remaining rows](implementation-scope.json)
+- [Executable lexer and TBD](executable-text-formats.md): real token workflows, owned Apple text-stub parsing, SDK tapi symbol equality and error/allocation regressions
 - [Portable SIMD](portable-simd.md): reviewed scalar kernels, byte gathers/scatters and complete reductions
 - [Portable Meow](portable-meow.md): canonical register macros, real calico hashing and native C vector provenance
 
