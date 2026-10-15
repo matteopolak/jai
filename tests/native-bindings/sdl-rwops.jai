@@ -19,9 +19,8 @@ main :: () {
     check(size_of(S.SDL_RWops) == 48);
     check(size_of(RWops) == native_size());
     check(offset_of(RWops, "hidden") == native_hidden());
-    // Both public entry points are the actual SDK symbols, preserving identity.
+    // File factory returns the actual SDK object and retains symbol identity.
     check(cast(*void) S.SDL_RWFromFile == cast(*void) rw_from_file);
-    check(cast(*void) S.SDL_LoadBMP_RW == cast(*void) load_bmp_rw);
     bytes: [58] u8;
     // 1x1 bottom-up BGR24 BMP, with native row padding.
     bytes[0] = 0x42;
@@ -75,6 +74,14 @@ main :: () {
     check(close_count() == before && native.size(native) == 0);
     check(S.SDL_GetError() != null && S.SDL_GetError()[0] != 0);
     check(S.SDL_LoadBMP_RW(file, 1) == null);
+    check(close_count() == before + 1);
+    file = S.SDL_RWFromFile(path.data, "rb");
+    check(file != null);
+    track_close(cast(*RWops) file);
+    before = close_count();
+    // Public int is 64-bit; every nonzero freesrc must close, even when its
+    // low C-int bits are zero. This is not a copied/custom public record.
+    check(S.SDL_LoadBMP_RW(file, 0x1_0000_0000) == null);
     check(close_count() == before + 1);
     check(unlink(path.data) == 0);
     check(S.SDL_RWFromFile(path.data, "rb") == null);

@@ -1,9 +1,9 @@
 {
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
-    "declared": 28399,
-    "unresolved": 117,
-    "implemented_manual": 49,
+    "declared": 28398,
+    "unresolved": 116,
+    "implemented_manual": 51,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1
@@ -215,6 +215,31 @@
       "report": ".work/dxc-sdk-layout-both-host-cpus.json",
       "sha256": "dd9d2dec18bfc0b681451a7d87cf094443a7a39b19f75193838ceda7219efdb7",
       "scope": "Worker evidence only. X11 modal source verified, Linux native absent; DXC Jai blocked by D3D forward-overlay, host SDK header layout verified only."
+    },
+    {
+      "report": ".work/dxc-final-source-and-units.json",
+      "sha256": "372ef7fa9eaab259f83b3090b298cbc493c1b4bd39ee8e8e615d215efbb9768e",
+      "scope": "DXC private Windows source/host serializer checks are separate from blocked public/native DXC. SDL real native before/after flag repair preserves active record ABI failures."
+    },
+    {
+      "report": ".work/dxc-compile-production-tools.json",
+      "sha256": "02a4c5d65e6c112207040f401bb877750c09100dc432ea7c0c129e2e4fdb518a",
+      "scope": "DXC private Windows source/host serializer checks are separate from blocked public/native DXC. SDL real native before/after flag repair preserves active record ABI failures."
+    },
+    {
+      "report": ".work/checkpoint-7-production-tools.json",
+      "sha256": "04afaa91584b15b68ee3ca88387d835a33ae2eca02223bd5bdee46e51785d7de",
+      "scope": "DXC private Windows source/host serializer checks are separate from blocked public/native DXC. SDL real native before/after flag repair preserves active record ABI failures."
+    },
+    {
+      "report": ".work/sdl-wide-freesrc-before.json",
+      "sha256": "115c4883bcba02c42dfb16c9e43e25a80d024b395fd94c0e9430f5c38be5e057",
+      "scope": "DXC private Windows source/host serializer checks are separate from blocked public/native DXC. SDL real native before/after flag repair preserves active record ABI failures."
+    },
+    {
+      "report": ".work/sdl-wide-freesrc-after.json",
+      "sha256": "d8f49d03f488ea9d388873189d9df92f69dd08aae9b77864470474bc514cabeb",
+      "scope": "DXC private Windows source/host serializer checks are separate from blocked public/native DXC. SDL real native before/after flag repair preserves active record ABI failures."
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

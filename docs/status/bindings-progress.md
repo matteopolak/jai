@@ -173,3 +173,31 @@ These host adapter probes are not Windows ABI/runtime execution. Ledger now
 records 49 manual authored bodies and 117 unresolved; unverified authored code
 is explicitly not completed functionality. Next: remaining DXC compile helper
 and supported reviewed convenience work; compiler/target/native gaps stay open.
+
+Next batch: `DXC_Compile` has complete real SDK routing, checked HRESULTs,
+include handling, native diagnostic bytes, owned result copying and COM cleanup.
+Its private compile route and strict UTF-16 conversion each source-check both
+Windows CPUs. The pure argument serialization unit builds/runs on the host and
+passes production strict lint. The public DXC program still fails at unchanged
+D3D12 forward overlays; native Windows execution and target-aware lint are not
+claimed. Declaration source is shared rather than replacing SDK interfaces with
+test sketches. Native HLSL/SPIR-V and invalid-source executable tests stay active.
+Evidence: `.work/dxc-final-source-and-units.json`,
+`.work/dxc-compile-production-tools.json`, native/dxc-compilation.md.
+
+A new actual SDL native regression found 64-bit freesrc truncation to C int:
+`0x1_0000_0000` failed to close a genuine SDK file. A thin scalar adapter now
+normalizes every public nonzero flag to native 1, keeping the same SDK-owned
+pointer. The native before report has two failures; after repair only the
+original record layout failure remains. Actual BMP/file/close-lifetime tests
+pass. Factory symbol identity is unchanged; loader adapter address difference
+is documented. No custom callback/owner registry returned.
+
+Formatting, regeneration, 44 Python regressions and strict host SDL/serializer
+lint pass (`.work/checkpoint-7-production-tools.json`). Latest SDK C++ buffer
+and interface-header layout assertions pass both host CPU compilations. Strict
+Windows lint still reports actual target guards in the fully staged dependency
+tree. Current root ledger: 28,398 declared, 1,262 forwarded, 544 generated,
+51 manual authored, 116 unresolved, one duplicate. Counts do not imply native
+completion. Full matrix/configuration reruns are running against a stable
+current snapshot; preceding full result remains explicitly historical.

@@ -37360,8 +37360,8 @@
         "declared": 92,
         "implemented": 2,
         "forwarded": 155,
-        "unresolved": 2,
-        "implemented_manual": 1
+        "unresolved": 1,
+        "implemented_manual": 2
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -39045,8 +39045,8 @@
           "signature": "DXC_Compile :: (args: Dxc_Shader_Compiler_Args) -> [..]u8",
           "condition": "",
           "spec_line": 252,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/dxc_compiler/wrappers.jai"
         },
         {
           "name": "DXC_Reflect",
@@ -173599,9 +173599,9 @@
       "spec": "docs/specs/stdlib/modules/sdl.md",
       "spec_sha256": "6da7ac5449cc99a4714d4d5d58691978d4e8dcd8d3ade2ec27c745fab220f6da",
       "counts": {
-        "declared": 521,
+        "declared": 520,
         "implemented": 17,
-        "implemented_manual": 1
+        "implemented_manual": 2
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -174423,7 +174423,9 @@
           "signature": "SDL_LoadBMP_RW :: (src: *SDL_RWops, freesrc: int) -> *SDL_Surface #foreign SDL2",
           "condition": "",
           "spec_line": 133,
-          "status": "declared"
+          "status": "implemented_manual",
+          "artifact": "stdlib/SDL/wrappers.jai",
+          "native_abi_adapter": "SDL_LoadBMP_RW"
         },
         {
           "name": "SDL_FreeSurface",
