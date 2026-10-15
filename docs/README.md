@@ -4,8 +4,8 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 
 - [Features](features.md): what works, performance and what is missing
 - [Window/render progress](status/window-render-progress.md): scoped native window,
-  native input and keyboard layouts, Keymap, window lifecycle, original native-font
-  feature regressions and real font-atlas/text rendering,
+  native input, Windows pointer tracking and keyboard layouts, Keymap, window lifecycle, original native-font
+  feature regressions, real font-atlas/text rendering and texture color-space transitions,
   textures, depth/stencil and asynchronous readback evidence;
   [remaining deviations](status/window-render-deviations.md).
 - [Window/render clean-room incident](status/window-render-cleanroom-incident-2026-10-14.md):
@@ -158,6 +158,8 @@ The LLVM backend, C ABI and linking.
 - [Platform I/O backends and native/WASI runner](platform-io.md), [worker progress](status/platform-io-progress.md), and [deviations](status/platform-io-deviations.md)
 - [Platform I/O compiler and lint handoff](platform-io-compiler-handoff.md)
 - [Windows startup CI regressions and default-policy review](platform-io-startup-regressions.md)
+- [Windows device notifications](native/window-render-device-notifications.md): real
+  interface registration, bounded payload decoding, callbacks and native verification limits.
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
