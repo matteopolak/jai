@@ -42,3 +42,52 @@ MPEG rejection fixtures, staged under target/producer-fixtures, both diagnose
 numerics dependencies. Earlier stale-overlay/missing-Math logs are retained.
 This repairs direct language assignment; immutable pointer types or protection
 against intentional writes through raw addresses are not claimed.
+
+## Managed Windows interpreter threads
+
+`CreateThread` and `_beginthreadex` create gated scheduler threads. Suspension
+counts are independent of blocking reasons, so wait expiration cannot release a
+suspended thread. Resume reports the previous count, including zero. Interpreted
+SuspendThread supports nested counts and self-suspension; suspending a thread
+inside native code diagnoses the unavailable OS-level operation. A return or
+explicit `_endthreadex`/ExitThread unwinds only that managed thread, records its
+exit code and signals its handle. Entry/adopted native-thread termination is
+explicitly unsupported. Windows thread ids are recorded on the actual OS thread
+before creation returns, and GetThreadId agrees with the creation output.
+
+The [official CRT contract](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/beginthread-beginthreadex)
+establishes gated startup, unsigned callback results and caller-owned handles;
+[explicit CRT exit](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/endthread-endthreadex)
+terminates the current thread. This implementation uses Rust-owned OS threads
+to execute interpreted procedures under the existing baton scheduler.
+Entry validation requires the actual scalar C ABI (one pointer argument and one
+32-bit result, no aggregate/variadic adaptation); an original wide-result callback
+previously accepted is now rejected before spawning.
+
+Original tests execute both APIs, zero/timed waits, nested suspend counts,
+resumption, exit-code queries, explicit CRT exit and handle closure on this host.
+Cross-target Rust checking/clippy is separate from Windows execution. The exact
+NEW Windows producer repro is staged under target/producer-fixtures/windows-threads
+for platform validation. Non-Windows scheduler tests use scheduler ids because
+they have no Windows OS identity. Actual Windows x64/ARM64 runtime remains a gate.
+
+## Public alias completion documentation
+
+The tolerant export index retains simple dotted constant alias paths and lexical
+visibility. A separate alias resolver follows named imports, module/load graphs
+and local alias chains, then rewrites callable header names to the exported alias.
+Parameter names/defaults and each overload header come from the actual target.
+Public facade comments take precedence; target comments supply missing docs.
+File-private qualifiers resolve only in their declaring file; external lookups
+accept exports only. A visited-path guard and finite depth bound stop cycles.
+
+Original LSP tests cover loaded overloads, private qualifiers, renamed public
+headers, valid aliases to private local procedures, inaccessible private targets
+and cycles. The unchanged Basic print/ranking assertions pass against the selected
+NEW independent library. The auto-import test setup now honors JAIC_STDLIB so this
+dependency can be selected explicitly; no assertion/library substitute was used.
+Complex computed aliases, struct-member namespaces and unnamed import/filter
+resolution retain their original expression documentation in this token index;
+they are not represented as fabricated callable headers. Existing display limits
+of four headers and 200 bytes per scanned header remain unchanged. This is an IDE
+documentation improvement and does not change callable/type/storage identity.

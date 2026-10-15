@@ -1,5 +1,25 @@
 # Compiler progress
 
+Windows batch committed as 1a120b4. LSP alias documentation now resolves original
+loaded overload/private-qualifier cases with public names/defaults intact. All
+25 LSP library tests and 16 auto-import tests pass with the independent overlay;
+all-target clippy and scoped formatting/item spacing pass. The Basic print and
+ranking assertions remain unchanged. Test setup explicitly selects JAIC_STDLIB.
+No peer LSP source was edited; this canonical change is ready for coordinator
+overlap review with the separate LSP worker. Runtime storage propagation is next.
+The staged exact NEW foundations alias probe also prints ok in interpreter and
+actual native O2 execution. An additional original project-file alias test caught
+and repaired resolution before the file has been loaded into the program.
+
+Constant assignment batch committed as 2f36a1e. Windows scheduler follow-up now
+passes original host tests for gated Win32/CRT startup, counts, timeout/resume,
+native-thread identity lookup, explicit CRT termination, exit code and cleanup.
+Core/atomic regressions, native/wasm32 clippy pass. x64/ARM64 Rust cross-checks
+pass; ARM64 exposed a real unused x64-only import, now gated at its implementation.
+Windows x64/ARM64 all-target clippy with warnings denied now passes; the cfg-only
+needless return was repaired too. Actual Windows runtime
+is not verified on this macOS host; the NEW producer repro is staged locally.
+
 Current continuation: qualified constant aggregate assignment rejects through
 module/type/alias qualifiers and mixed existing-target declarations. Macro caller
 scope and mutable pointer writes remain supported. Original core regressions,
