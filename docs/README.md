@@ -1,5 +1,8 @@
 # Developer documentation
 
+- Sound_Player: [plan](status/audio-plan.md), [progress](status/audio-progress.md),
+  [deviations](status/audio-deviations.md), [questions](specs/questions/sound-player.md)
+
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing
@@ -297,3 +300,5 @@ Agreed designs that are not built yet.
 - [Async IO, HTTP and JSON](plans/async-io.md): fibers over io_uring/epoll/kqueue/IOCP, typed JSON, and an HTTP server and client
 
 - [Native integration CI](tools/native-integration-ci.md): temporary branch checks and real Windows File execution
+
+- [Sound_Player implementation and verification](features/sound-player.md)
