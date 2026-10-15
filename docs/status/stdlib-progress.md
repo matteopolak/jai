@@ -318,3 +318,14 @@ default constraint reproducer preserved, no API changed to hide it. Last broad
 later watcher-only changes reran the dedicated full native matrix. Linux/Windows
 watcher backends and full integrated CI remain unfinished. Detailed test triage/
 private-protocol limits and source deployment prerequisite: portable-file-watcher.md.
+
+Machine spin-hint increment: exact pause macro now emits real native instructions
+and passes C-intrinsic/no-call baseline comparison O0/O2 (0 baseline,1/2 public,
+8 C static instruction counts). Actual x64 compile-time interpreter/strict lint
+and three OS x64 body checks pass; interpreter hint models no fixed delay/order.
+Existing CPU/projection suite and full109 positives/26 faults/14 negatives plus
+integration/target checks pass (target/machine-pause-full.log).371 owned Jai files
+format/check; whole strict lint still fails. New original prefetch/fence native
+probes emit0 instructions against C1 each, and their dependency checker fails
+explicitly (target/machine-instruction-dependencies.log). Those APIs remain absent,
+not fabricated completion. Eight instruction APIs/native platforms remain gaps.
