@@ -19,7 +19,9 @@ TRIPLES = {
     "windows-x64": "x86_64-pc-windows-gnu",
     "windows-arm64": "aarch64-pc-windows-msvc",
 }
-CASES = ("entity-phase", "compressed-stream", "region-lifetime", "controlled-output", "signatures")
+CASES = tuple(sorted(Path(entry["path"]).stem for entry in
+                     json.loads((ROOT / "tests/audio/manifest.json").read_text())["cases"]
+                     if Path(entry["path"]).stem != "windows-abi"))
 
 
 def binary_target(path):

@@ -103,3 +103,11 @@ mistakes and verify all eight interleaved source channels with independently
 constructed constant-predictor blocks. The concurrent-factory case runs 32 Ogg
 factories while a real muted output worker mixes; its baseline also passed, so it
 is smoke coverage rather than evidence that a sanitizer detected a race.
+
+Self-contained cross packages now include every common manifest fixture at O0/O2,
+not a handpicked subset. Their standalone runner uses always-required expected
+stdout and separate unavailable-device markers, checks executable hashes/target,
+then exercises logical 6/8 output separately. Current packages contain 52 binaries
+and four extra multichannel executions. Windows-only ABI declaration checks stay
+in the source verifier; injected-failure and disabled-audio-assert configurations
+remain separately labeled runners rather than being claimed by this package.

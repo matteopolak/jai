@@ -265,3 +265,13 @@ Disabled-audio-assert execution and injected close ownership were refreshed;
 ARM64 relocated packages passed. Native package cross-linking is being expanded
 to all current common fixtures, with per-binary execution records kept separate.
 
+Self-contained full native packages now verified: all 26 common fixtures linked
+at O0/O2 for macOS ARM64, macOS x64 and Windows x64 (52 binaries per platform).
+The ARM64 standalone package executed all 52 plus four logical multichannel cases
+with loader overrides removed and no compiler/stdlib runtime dependency. The
+x64 Mac package passed the same 56 executions under installed Rosetta, explicitly
+translated rather than physical x64 evidence. Windows x64 remains link-only;
+Linux and Windows ARM64 full SDK/runtime remain coordinator dependencies. The
+source-only Windows ABI fixture and assertion/fault-injection variants retain
+their distinct evidence labels. No whole-audio completion is claimed.
+

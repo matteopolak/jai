@@ -57,13 +57,14 @@ def main():
         if target_of(binary) != host_target():
             raise RuntimeError("Executable target differs from host")
         case = binary.stem.rsplit("-O", 1)[0]
-        if case == "signatures":
-            expected = ("ok\n",)
-        elif case == "controlled-output":
+        if case == "controlled-output":
             expected = ("native-2-channel-output-opened\nok\n", "native-6-channel-output-opened\nok\n",
                         "native-8-channel-output-opened\nok\n", "native-device-unavailable\nok\n")
-        else:
+        elif case in {"compressed-stream", "concurrent-render-stop", "concurrent-factories",
+                      "device-lifecycle", "entity-phase", "entity-lifecycle", "region-lifetime", "streams"}:
             expected = ("native-device-opened\nok\n", "native-device-unavailable\nok\n")
+        else:
+            expected = ("ok\n",)
         result = subprocess.run([str(binary)], cwd=package, env=env, capture_output=True, text=True, timeout=30)
         if result.returncode or result.stderr or result.stdout not in expected:
             raise RuntimeError(f"{binary.name}: runtime failed, exit {result.returncode}")

@@ -6,12 +6,12 @@ No peer sources or shared manifest files were changed.
   library for all supported targets. Audio builds a local copy solely for tests.
   No public codec type changes or pl_mpeg dependency are needed.
 - Coordinator/native packaging: integrate stdlib/internal/audio/native/output.c
-  as an owned native library. macOS needs AudioToolbox/CoreAudio/CoreFoundation;
-  Linux needs ALSA; Windows source uses WinMM. Source-relative local dylib loading
-  is tested, but relocated/release installations are not verified. Coordinate
+  as an owned native library, staging `output.h` and `routing.h` too. macOS needs
+  AudioToolbox/CoreAudio/CoreFoundation/AppKit/CoreGraphics; Linux needs ALSA;
+  Windows source uses WinMM/user32. Coordinate
   tools/native-libs.json and shared build changes outside this worker's checkout.
-  Superseded source-relative limitation: bare native-library search and static
-  archives are now implemented and host relocation tests pass. The concrete
+  Bare native-library search and static archives are implemented, and actual
+  ARM64 host relocation tests pass. The concrete
   source-less local manifest fragment, conditional focus.m unit, six target SDK
   recipes and validation plan are in ../features/audio-native-integration.md.
 - Compiler owner: nested COM overlay names are rejected at the field parser.

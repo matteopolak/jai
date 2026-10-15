@@ -114,7 +114,8 @@ local-source facility, without fetching another implementation:
 This is a minimal proposed manifest fragment, not an applied shared edit. The
 coordinator builder also needs a macOS-only Objective-C unit `focus.m`, static
 and interpreter-shared outputs, and per-target system link dependencies from
-`tools/audio_native_plan.json`. If its current local-source builder assumes an
+`tools/audio_native_plan.json`. Include the local `output.h` and `routing.h`
+headers in source staging and build dependency hashing. If its current local-source builder assumes an
 external `source`, add general source-less local-unit support rather than
 inventing a vendor dependency. Retain the existing pinned stb_vorbis recipe.
 Install both libraries and the verified stb license in each normal
@@ -145,7 +146,11 @@ lost device, report an error outside the player lock and retry opening every
 250 ms. Stream cursors stop advancing during unavailable/paused producer updates.
 Already queued audio is discarded on reopen and is not replayed. The logical
 rate/channel format is retained; an incompatible new device can stay unavailable
-until a compatible endpoint returns. Failed disposal is fatal rather than freeing
+until a compatible endpoint returns. Failed disposal retains ownership and marks
+output unavailable until cleanup retries succeed. A failed shutdown preserves
+its resources for a later shutdown retry; it cannot report a fresh successful
+initialization for the retained failed handle. Cleanup failure while abandoning
+an unsuccessful native open still terminates explicitly rather than dropping
 possibly live callback state.
 
 Device enumeration queries the OS afresh on every call. Unchanged lists reuse
@@ -171,7 +176,8 @@ and [ALSA PCM recovery](https://www.alsa-project.org/alsa-doc/alsa-lib/group___p
 
 ## Cross-linked packages and translated evidence
 
-The durable cross linker builds five NEW fixtures in O0/O2, verifies executable
+The durable cross linker builds every common NEW manifest fixture in O0/O2,
+currently 26 fixtures / 52 executables, and verifies executable
 OS/CPU headers, records hashes and stages a self-contained runtime package:
 
 ```sh

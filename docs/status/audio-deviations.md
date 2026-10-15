@@ -37,7 +37,9 @@ untouched. Native SDK/public C inputs are linked in the integration documentatio
   release disposes it without pretending those samples were submitted. Public
   byte counts are real queued bytes (zero when unavailable), never producer-state
   sentinels; sampling rate is zero when the device is absent/known lost. Failed
-  SDK disposal is fatal to avoid freeing possibly live callback state.
+  SDK disposal retains ownership for retry; failed shutdown keeps its remaining
+  resources until a later shutdown succeeds. Failed native-open cleanup still
+  terminates explicitly rather than dropping possibly live callback state.
 - Windows/macOS native byte counts retain entire SDK-owned queued buffers until
   completion, overestimating remaining playback bytes within the active buffer.
   ALSA nonblocking partial-write failure discards the affected submission through
@@ -195,4 +197,11 @@ a reviewed lifetime requirement. Each page checks its own bounds and reports
 nonpositive decoder progress unconditionally. This removes repeated whole-file
 validation, but page decoding and WAV payload discovery still run synchronously
 where requested. No latency benchmark or realtime guarantee is claimed.
+
+Native cross packages include all 26 common fixtures at both optimization levels,
+with four additional logical multichannel runs. These do not automatically claim
+assertion-disabled production audio or injected SDK errors: those configurations
+have separate host/source runners. Windows ABI declarations are source checks.
+All six release targets have the same integration recipe, but absent Linux SDKs
+and Windows ARM64 CRT/link SDKs still prevent local six-platform native evidence.
 

@@ -49,13 +49,15 @@ def main():
             raise RuntimeError("Owned cross binary path/checksum mismatch")
         if binary_target(path) != ("macos", "x64"):
             raise RuntimeError("Cross binary architecture mismatch")
-        if path.name.startswith("signatures"):
-            expected = ("ok\n",)
-        elif path.name.startswith("controlled-output"):
+        case = path.stem.rsplit("-O", 1)[0]
+        if case == "controlled-output":
             expected = ("native-2-channel-output-opened\nok\n", "native-6-channel-output-opened\nok\n",
                         "native-8-channel-output-opened\nok\n", "native-device-unavailable\nok\n")
-        else:
+        elif case in {"compressed-stream", "concurrent-render-stop", "concurrent-factories",
+                      "device-lifecycle", "entity-phase", "entity-lifecycle", "region-lifetime", "streams"}:
             expected = ("native-device-opened\nok\n", "native-device-unavailable\nok\n")
+        else:
+            expected = ("ok\n",)
         record = execute(path, env, expected, args.require_device)
         records.append(record)
         print(f"translated macos-x64 {path.name}: {record['marker']}; no physical x64 claim", flush=True)
