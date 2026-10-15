@@ -13,7 +13,7 @@ or legacy test expectations are inventory inputs.
 
 ### Android/Toolchain
 
-JNI/OID/JKS/SHA primitives and ADB command/version/device-parser/transfer operations are implemented. ADB host protocol fixtures pass; actual SDK/device and Windows Process integration remain pending. Install recovery, higher-level device/build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
+JNI/OID/JKS/SHA, ASN.1 primitive/cursor parsing and ADB host operations are implemented with independent behavior tests. ASN1_Value/printer/prefix contracts, actual SDK/device and Windows Process integration remain pending. Install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
 
 Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 
@@ -74,21 +74,11 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `Apk_Signing_Block_V2 :: struct` | All reviewed hosts |
 | `apk_verify :: (apk: Android_Apk, verbose := false) -> bool` | All reviewed hosts |
 | `apk_verify :: (filepath: string, verbose := false) -> bool` | All reviewed hosts |
-| `asn1_decode_integer :: (data: string) -> s64` | All reviewed hosts |
-| `asn1_decode_object_identifier :: (data: string) -> ASN1_Object_Identifier` | All reviewed hosts |
-| `ASN1_KNOWN_OIDS :: ASN1_Object_Identifier` | All reviewed hosts |
 | `asn1_print :: (data: string, depth := 0, hack_skip_depth := false)` | All reviewed hosts |
 | `asn1_print :: (name: string, data: string)` | All reviewed hosts |
 | `asn1_print :: (name: string, value: ASN1_Value)` | All reviewed hosts |
-| `asn1_read_length :: (s: *string) -> u64` | All reviewed hosts |
-| `asn1_read_tag :: (s: *string) -> ASN1_Tag` | All reviewed hosts |
 | `asn1_read_value :: (s: *string) -> ASN1_Value` | All reviewed hosts |
 | `asn1_read_value :: (s: *string, expected: ASN1_Tag) -> ASN1_Value` | All reviewed hosts |
-| `ASN1_Tag :: struct` | All reviewed hosts |
-| `ASN1_Tag_Class :: enum u8` | All reviewed hosts |
-| `ASN1_Tag_Length_Value :: enum u8` | All reviewed hosts |
-| `asn1_to_string :: (oid: ASN1_Object_Identifier) -> string` | All reviewed hosts |
-| `ASN1_Universal_Type :: enum u8` | All reviewed hosts |
 | `ASN1_Value :: struct` | All reviewed hosts |
 | `Certificiate :: struct` | All reviewed hosts |
 | `CheckSSL :: (result: s32, loc := #caller_location) #expand` | All reviewed hosts |
@@ -122,13 +112,10 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `Megabytes :: (x: int) -> int #expand` | All reviewed hosts |
 | `NDK_Paths :: struct` | All reviewed hosts |
 | `print_binary_manifest :: (using manifest: Android_Manifest_Binary, print_strings := false, print_resource_ids := false)` | All reviewed hosts |
-| `read :: read_silly_alias` | All reviewed hosts |
 | `read_binary_manifest_from_apk :: (apk_filename: string) -> bool, Android_Manifest_Binary` | All reviewed hosts |
 | `read_binary_manifest_from_file :: (filename: string) -> bool, Android_Manifest_Binary` | All reviewed hosts |
 | `read_binary_manifest_from_memory :: (data: string, filename := "<memory>") -> bool, Android_Manifest_Binary` | All reviewed hosts |
-| `read_block :: (s: *string, length: int) -> string` | All reviewed hosts |
 | `read_length_prefixed_block :: (s: *string) -> string` | All reviewed hosts |
-| `read_silly_alias :: ($Int_Type: Type, s: *string, $BIG_ENDIAN := false) -> Int_Type` | All reviewed hosts |
 | `run_android_link_command :: (message: *Message_Phase, options: Build_Options, extra_args: [] string = .[])` | All reviewed hosts |
 | `run_gradle_task :: (project_path: string, task: string, print_output := true) -> bool` | All reviewed hosts |
 | `sign_data :: (private_key_info: string, message: string) -> bool, string` | All reviewed hosts |
@@ -235,7 +222,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 176 missing reviewed declaration/overload/nested-operation rows
+Total: 163 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

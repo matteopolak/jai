@@ -466,3 +466,18 @@ staged paths fix tool setup without changing capabilities or public imports.
 Intentional constant-write negative is compiler-rejection coverage, not a
 lint-positive claim. Earlier uncommitted/blocker notes are historical; six
 candidates now pass source/strict-lint gates and are checkpoint-ready.
+
+ASN.1 primitive supported-domain limits: definite lengths with at most eight
+length octets, u8 tag numbers, s64 INTEGER results and twelve u64 OID arcs.
+Indefinite/overflow/excess/truncated values log and assert; explicitly continuing
+or disabled assertions return non-success defaults and retain input cursor.
+Those invalid defaults are never counted as parsed functionality. Signed INTEGER
+redundant sign bytes are trimmed; invalid-recovery/noncanonical policy needs
+review. Binary integer reading supports reflected integer widths1/2/4/8 on the
+current little-endian compiler targets; broader generic kinds remain unsupported.
+OID dotted strings are context-owned. Field meaning/printing/prefix/endian finer
+questions remain recorded, so their API bodies are not invented. Standard wire/
+Python mathematical vectors are independent test inputs, not reference Jai code.
+No C/native crypto dependency, caller relocation tracking, mutable alias surrogate,
+blanket lint exclusion or fake parsing success. All negative checks restore fatal
+handlers before verification.

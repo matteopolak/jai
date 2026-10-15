@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current implementation checkpoint: 049154a (System); time e81f1a5, SHA1579458, ISA c45ee67, critical Pool/Thread d6db68f. Opaque-pointer handoff:338a4a8. Pool/Unix Thread
+Current implementation checkpoints: Registry1f1e568, ADB4fc510a, System049154a; time e81f1a5, SHA1579458, ISA c45ee67, critical Pool/Thread d6db68f. Opaque-pointer handoff:338a4a8. Pool/Unix Thread
 critical corrections are committed: field-only Pool guard, no registry,
 allocator/options preserved by reset/release, genuine returned leak report fixed.
 Every owned essential Thread SDK operation now executes outside optional asserts;
@@ -448,3 +448,19 @@ API calls remain unexecuted; public zero-extension is preserved despite SDK
 sign-extension discrepancy. First new lint staging failed private-source access
 and was fixed with byte-identical JAIC_STDLIB paths, no capability relaxation.
 Evidence: registry-handles-verified-final.log and opaque-pointer-constant-execution.log.
+
+ASN.1 primitive checkpoint-ready batch:13 more reviewed declarations implemented,
+including canonical enums/union tag/type alias and real tag/length/s64/OID/dotted
+string plus checked binary integer/block cursor operations.517 INTEGER and183
+OID vectors plus shape/overlay/alias/eight integer type/both-endian and seven
+malformed-cursor tests pass interpreter/ARM64+x64 native O0/O2. Both Linux/Windows
+CPUs source-check; scoped strict lint passes.176 retained rows become163.
+Unreviewed ASN1_Value content/value_data, printer/depth, prefix-width and accepted
+generic type/invalid-input semantics are precise reviewer questions, not guessed
+completion. No crypto/key/device/native SDK verification is inferred.
+Broad post-compiler/ADB/Registry/ASN.1 regression passes115 positives with
+28 expected faults and16 compile rejections plus prior SMTP/IPC/runtime and
+Linux/Windows target checks (adb-registry-asn1-full.log).402 owned files pass
+format/check. Native Windows Registry/device SDK remain unverified, no fake
+platform results. ASN.1 first-combined OID values beyond64 bits are tested, not
+rejected merely because a temporary u64 would overflow.
