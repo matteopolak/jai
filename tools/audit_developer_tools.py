@@ -22,6 +22,9 @@ def remaining_matrix(inventory):
     questions = {
         ("Bindings_Generator", "generate_bridge"): "Reviewed C++ source adapter contract resolved; implementation and compiled round trips pending",
         ("Bindings_Generator", "ensure_local_libclang_exists"): "Bindings_Generator question11: installation/copy policy",
+        ("Bindings_Generator", "find_lib_for_foreign_name"): "generator-platform question1: canonical Generator context/libraries and ambiguity policy",
+        ("Bindings_Generator", "os_get_symbol_names_from_file_fixed_and_cached"): "generator-platform question2: canonical public cache state, normalization, invalidation and ownership",
+        ("Bindings_Generator", "get_libc_paths"): "generator-platform question4: meaning and relationship of the two path outputs",
         ("Bindings_Generator", "clang_getFileTime"): "Bindings_Generator question12: canonical time_t dependency",
         ("Bindings_Generator", "is_same_type"): "Bindings_Generator question10: model equivalence",
         ("Bindings_Generator", "is_same_expression"): "Bindings_Generator question10: model equivalence",
@@ -159,6 +162,11 @@ def main():
                     item["implementation"] = "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
                     if item["name"] in abi_names:
                         item["implementation"] = "reviewed native record/enum ABI; host official SDK size/alignment/member offsets/enum values verified; target runtime pending"
+                if item["name"] in {"ensure_local_libclang_exists", "os_get_symbol_names_from_file",
+                                     "os_get_symbol_names_from_file_content", "os_load_library",
+                                     "os_symbol_exists_in_library", "fix_macos_foreign_name",
+                                     "function_is_missing_foreign_library"}:
+                    item["implementation"] = "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
                 if item["name"].startswith("clang_") and item["name"] in models:
                     item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
                     if item["name"] in extended_apis:

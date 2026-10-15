@@ -491,3 +491,5 @@ restoration and bounded child cleanup; no clipboard substitute is used.
 - [Rejected-overload lint audit](compiler/rejected-overload-audit.md): speculative instances stay outside declaration audit roots; selected and invalid concrete bodies remain checked.
 
 - [Developer tools status and remaining APIs](status/developer-tools-remaining.md): canonical model emission, native Check/Debug subsets and unresolved integration gates.
+
+- [Generator model helpers](generator-model.md) and [native platform helpers](generator-platform.md): shared canonical Generator/Token_Info/Library_Symbols, supported subsets and ownership limits.

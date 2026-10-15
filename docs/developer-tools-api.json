@@ -78,14 +78,14 @@
         "declaration": "ensure_local_libclang_exists :: ()",
         "section": "Public declaration inventory",
         "spec_line": 17,
-        "implementation": "pending"
+        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
       },
       {
         "name": "ensure_local_libclang_exists",
         "declaration": "ensure_local_libclang_exists :: (source_path: string)",
         "section": "Public declaration inventory",
         "spec_line": 18,
-        "implementation": "pending"
+        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
       },
       {
         "name": "RESERVED_NAMES",
@@ -1541,7 +1541,7 @@
         "declaration": "function_is_missing_foreign_library :: (func: *Function) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 226,
-        "implementation": "pending"
+        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
       },
       {
         "name": "print_function",
@@ -1569,7 +1569,7 @@
         "declaration": "fix_macos_foreign_name :: (name: *string)",
         "section": "Public declaration inventory",
         "spec_line": 230,
-        "implementation": "pending"
+        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
       },
       {
         "name": "append_elsewhere",
@@ -8646,14 +8646,14 @@
         "declaration": "os_get_symbol_names_from_file :: (full_path: string) -> success: bool, [] string",
         "section": "Windows-specific declarations",
         "spec_line": 1285,
-        "implementation": "pending"
+        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
       },
       {
         "name": "os_get_symbol_names_from_file_content",
         "declaration": "os_get_symbol_names_from_file_content :: (file_content: string, full_path: string) -> success: bool, [] string",
         "section": "Windows-specific declarations",
         "spec_line": 1286,
-        "implementation": "pending"
+        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
       },
       {
         "name": "os_get_symbol_names_from_file_fixed_and_cached",
@@ -8667,14 +8667,14 @@
         "declaration": "os_load_library :: (paths: [] string, identifier: string, library_path: string, treat_as_system_library: bool, static_library_suffix := \"\", shared_library_suffix := \"\") -> *Library_Info",
         "section": "Windows-specific declarations",
         "spec_line": 1288,
-        "implementation": "pending"
+        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
       },
       {
         "name": "os_symbol_exists_in_library",
         "declaration": "os_symbol_exists_in_library :: (lib: *Library_Info, name: string) -> bool",
         "section": "Windows-specific declarations",
         "spec_line": 1289,
-        "implementation": "pending"
+        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
       },
       {
         "name": "print_namespace",
