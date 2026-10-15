@@ -720,3 +720,9 @@ Independent public-API allocator regression against combined ac9b8723 fails with
 ## Ready checkpoint objects absent locally
 
 Latest coordinator inbox requests bindings9bc40a8 platform audit and portable0504879 native crash-helper relocation. Neither object resolves in this sanitized Git. Please refresh only those independent producer refs/OIDs into this repository; no unrestricted fetch or alternate checkout will be attempted. Compiler59a69c03 is integrated at396707e7 with5 Rust catalogue tests,20 native O0 commands and rustfmt/clippy passing. CLI/lint/LSP rebuilt together from that source. The control inbox is preserved outside product commits. The WASI tour has native-only Thread plus native Input/Window_Type GPU dependencies; a partial Thread guard alone cannot establish browser compatibility. Required native and real sandbox scheduler tests must remain when migrating the example.
+
+## Further ready input absent and release-policy conflict
+
+Portable97eddd4 is named ready in the latest inbox but its object is absent here, as are0504879 and bindings9bc40a8. Please refresh those safe committed producer objects. Compiler89560db9 is now integrated at41e78573 and its19 focused tests pass. Basic.temp navigation defect is independently reproduced and a general IDE module-entity repair passes42 features/module tests; exit hover/definition and incremental edits pass without executing exit.
+
+The latest working docs/tools/releases.md edit is preserved, but its historical-workflow rebuild instructions and editor0.18.0/compiler-v0.17.0 repin text conflict with this task restriction: only finalv0.17.1 after coordinator history insertion, no historical release rebuilds. No release/remote action was performed. Resolve that guidance and review tag/manual workflow triggers before any future publication; temporary ordinary CI must not dispatch release workflows.
