@@ -1476,6 +1476,17 @@ expectation correction; the normal packaged false selector is restored byte for
 byte. This does not add further option coverage or native platform claims.
 # Native Mac measurement limitations, 2026-10-15
 
+Socket generator correction: reviewed Unix select declarations refer to TIMEVAL,
+while the reviewed public TIMEVAL export is Windows-only. The implementation now
+defines a private type alias to canonical POSIX.timeval for Unix signatures. The
+official installed SDK sys/_select.h and sys/_types/_timeval.h establish the C
+parameter/layout; the reviewed POSIX record supplies canonical Jai identity.
+This is independently designed ABI glue, not a copied public declaration or a
+new compatibility export. All public parameter names/overloads/defaults/native
+symbols are retained. New actual host select call and enclosing canaries pass;
+original full C ABI also passes. Generated output matches a second generation.
+Cross-platform runtime/select variant behavior remains unverified, not hidden.
+
 System facade correction: CPU-X64 `M64` now directly imports the reviewed
 Machine_X64 module rather than assuming the private Windows backend exports it.
 Canonical module/type/enum identity is asserted; ARM64 still has no M64 export.

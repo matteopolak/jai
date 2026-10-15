@@ -23,6 +23,7 @@ PROGRAM_INPUTS = {
     "Simp/tests/glyph-atlas": "font",
 }
 PLATFORM_REQUIREMENTS = {
+    "compiler/socket-select-canonical-timeval": ("linux", "macos"),
     "extensions/io-uring-dependency-repro": "linux",
     "Input/tests/windows-device-decoding": "windows",
     "tests/portable-data-console-windows": "windows",
@@ -73,8 +74,9 @@ def validated_entries(root=ROOT):
 def unavailable_reason(case, mode, actual_platform=None):
     target_os = "wasm" if mode.startswith("wasm") else (actual_platform or "").split("-")[0]
     required = case.get("required_os")
-    if required and target_os and target_os != required:
-        return f"requires actual {required} host; native execution remains required, not passed on {target_os}"
+    required = [required] if isinstance(required, str) else required
+    if required and target_os and target_os not in required:
+        return f"requires actual {'/'.join(required)} host; native execution remains required, not passed on {target_os}"
     if mode.startswith("wasm") and case["family"] in {"native", "graphics"}:
         return "native SDK/OS/graphics regression requires native CI; no WASM runtime claim"
     return None

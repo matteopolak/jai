@@ -15,6 +15,9 @@ class CatalogueTests(unittest.TestCase):
         self.assertIsNotNone(unavailable_reason(case, "native", "macos-arm64"))
         self.assertIsNone(unavailable_reason(case, "native", "windows-arm64"))
         self.assertIsNotNone(unavailable_reason(case, "wasm-interp", "windows-arm64"))
+        case["required_os"] = ("linux", "macos")
+        self.assertIsNone(unavailable_reason(case, "native", "macos-arm64"))
+        self.assertIsNotNone(unavailable_reason(case, "native", "windows-x64"))
 
     def test_prepared_inputs_are_real_and_isolated(self):
         with TemporaryDirectory() as temporary:

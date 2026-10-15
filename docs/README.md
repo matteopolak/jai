@@ -459,3 +459,6 @@ The unsupported live-constant-alias implementation and history remain excluded.
 System's reviewed x64 Machine_X64 alias now resolves canonically on Windows;
 host behavior and dependent unused-code source checks pass, without a Windows
 runtime claim.
+
+Unix Socket.select now uses canonical POSIX.timeval through private ABI glue;
+real host select/canary, strict unused-code and original C ABI checks pass.

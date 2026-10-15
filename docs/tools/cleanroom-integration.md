@@ -698,6 +698,17 @@ All seven workspace failures remain enabled. Failure classifications are triage,
 not expected-failure exemptions. No original application/vendor source was read.
 # Focused repairs after the frozen measurement
 
+Another genuine unused-code defect was Unix Socket.select's unresolved TIMEVAL
+spelling. The generator now supplies a file-private alias to canonical POSIX
+timeval, matching the reviewed Unix declarations and installed official SDK
+select prototype. Public TIMEVAL remains Windows-only; no new Unix export, copied
+record or renamed reflected type was introduced. The unchanged public facade and
+ledger regenerate byte-for-byte. New real zero-timeout select/canary/visibility
+fixture passes interpreter/native ARM64 O0; full unused-code host checking,
+contextual strict lint and the original complete host C ABI regression pass.
+Regeneration equality covers all three generated outputs. Other native platforms
+are not inferred passed from this host evidence.
+
 Unused-code baseline also exposed a genuine general System facade error:
 its reviewed CPU-X64 `M64 :: #import "Machine_X64"` alias was forwarded through
 a backend that did not export it on Windows. The facade now imports the canonical
