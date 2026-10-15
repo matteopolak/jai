@@ -227,3 +227,5 @@ must still run after this targeted diagnostic, without test exclusions.
 ## Native ARM64 software-driver CI
 
 The ARM64 job builds the pinned official Mesa/LLVM sources with the helper's pinned Python build tools, then explicitly deploys only ARM64 driver DLLs to the probe and public rendering tests. Source digest and CPU checks remain mandatory. The job budget is 120 minutes for this source build; successful configuration or compilation is not counted as runtime acceptance. The existing x64 Mesa deployment remains separate.
+
+The ARM64 source build initializes the installed Visual Studio C++ developer shell for an ARM64 target before invoking CMake/Meson, and uses a dedicated Python virtual environment so pinned build dependencies do not alter runner tools. See [Microsoft developer-shell architecture configuration](https://learn.microsoft.com/en-us/dotnet/framework/tools/developer-command-prompt-for-vs). Native output identity checks remain mandatory.
