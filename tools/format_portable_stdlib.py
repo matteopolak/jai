@@ -32,7 +32,8 @@ def owned_paths():
     paths = []
     for path in (ROOT / "stdlib").rglob("*.jai"):
         relative = path.relative_to(ROOT / "stdlib")
-        if relative.parts[0].casefold() in RESERVED_FOLDED:
+        owned_android_toolchain = relative.parts[:2] == ("Android", "Toolchain")
+        if relative.parts[0].casefold() in RESERVED_FOLDED and not owned_android_toolchain:
             continue
         if relative.parts[0] == "internal" and relative.parts[1] in RESERVED_INTERNAL:
             continue

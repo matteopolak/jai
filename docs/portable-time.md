@@ -12,29 +12,55 @@ adds no public helper types. Native conversions use the NEW POSIX types directly
 | to_apollo | NEW exact binary-significand scaling into two words; finite fractions truncate toward zero at femtosecond resolution. Supports durations exceeding s64 seconds. Nonfinite/overflow returns APOLLO_TIME_INVALID |
 | timespec_to_apollo; to_timespec | NEW macOS/Linux/Android native ABI conversions; reviewed Unix epoch constant, normalized seconds/nanoseconds, negative timestamps use floor seconds; reverse conversion reports out-of-range/invalid failure |
 | current_time_consensus; current_time_monotonic | Native POSIX realtime/monotonic queries execute on host; NEW Windows system-FILETIME/QPC code and fixture bodies type-check both CPUs. Counter arithmetic executes host interpreter/native. Realtime includes epoch, monotonic has arbitrary native origin; errors assert. Actual Windows calls/cache remain unverified |
-| to_calendar; calendar_to_apollo | Reentrant native UTC/local conversions on macOS/Linux/Android execute. NEW Windows SYSTEMTIME/FILETIME and dynamic-zone conversions type-check both CPUs, including configured Basic; native Windows execution remains unverified. Exact zero-based fields and millisecond resolution; invalid inputs return invalid sentinel, unrepresentable outputs diagnose |
-| ConvertToApollo | Expansion caller-local requirements remain unspecified; not exported |
-| calendar_to_string; calendar_to_iso_string | Exact text/zone/fraction formats unresolved; not exported |
+| to_calendar; calendar_to_apollo | Reentrant native UTC/local conversions on macOS/Linux/Android execute. NEW Windows SYSTEMTIME/FILETIME and dynamic-zone conversions type-check both CPUs, including configured Basic; native Windows execution remains unverified. Exact zero-based fields/milliseconds; POSIX delegates normalization and -1 sentinel collision to libc. Output failures log and return zero; Windows invalid input reports through assertion handling |
+| ConvertToApollo | Reviewed value contract resolved; exact no-result header conflicts with current compiler expression typing. Original general reproducer pending/expand-return-inference.jai; not exported or counted complete |
+| calendar_to_string; calendar_to_iso_string | Reviewed English/ISO layouts, month clamping, UTC Z/local no suffix, minimum digit widths and real temporary storage implemented; all twelve English months and configured Basic tested |
 | filetime_to_apollo; to_filetime | NEW exact Windows FILETIME wrappers, two-word integer scaling and bounded unsigned100ns conversion. Production arithmetic source executes interpreter/native O0/O2 on host; public canonical Windows ABI/body checks pass both CPUs, actual Windows execution unverified |
 | seconds_since_init | Reviewed lazy FIRST CALL origin implemented; exact first-call capture, shared alias storage and private CAS publication. Actual host interpreter/native and eight-thread race tests pass; Windows body checks retain native-execution gate |
 
-The reviewed constants and existing duration conversions establish the working
-femtosecond representation. Detailed floating rounding, invalid-date/leap-second,
-DST ambiguity/gap and native clock-origin policies need oracle clarification.
-Current explicit policy: no leap-second input; reject normalized invalid dates
-or local DST-gap times by checking the native round trip. Ambiguous local times
-use libc's tm_isdst=-1 selection. day_of_week input is derived, not used to resolve
-a date. Native output floors discarded sub-millisecond precision. No UTC/local
-offset field or new type is invented. Host timezone configuration remains libc
-process-global state; no new synchronization guarantee is claimed.
+The refreshed reviewed policy supersedes the earlier strict invalid-date and
+sentinel handling. POSIX tm_isdst=-1 and timegm/mktime choose normalization and
+local DST behavior; no round-trip rejection is imposed. A seconds result of -1
+returns zero Apollo_Time, including the valid Unix-epoch predecessor collision.
+Millisecond components add exact duration units after native conversion.
+day_of_week input is ignored. Output failures log ERROR and return a fully zero
+Calendar_Time. Native output floors sub-millisecond precision. No local offset or
+new type is invented; host timezone configuration remains native process state.
 
-Original tests cover exact integer/binary fractional/large duration conversion,
-NaN/infinity/overflow, native nanosecond round trips including negative epochs,
-one femtosecond before Unix epoch, epoch Thursday, leap day and non-leap-century
-rejection, -1 as a valid native second, UTC/local millisecond round trips and real
-clock comparison with native time(). Interpreter, native default and native O2
-execute these assertions. Full focused suite passes 93 cases in both modes,
-22 faults/eight rejections and existing integration/target checks.
+Windows invalid input/native conversion failures invoke assertion handling;
+continuing handlers receive APOLLO_TIME_INVALID, never a fabricated timestamp.
+Removed the stricter local DST round-trip rejection: native Windows rules remain
+authoritative. Actual native Windows execution stays pending; both CPU bodies and
+configured Basic source checks pass.
+
+calendar-native.jai compares normalization cases to actual native C calls for UTC
+and LOCAL, including overflow/negative components and milliseconds, ignored
+weekday and -1 sentinel collision. calendar-text.jai checks all twelve English
+months, exact ISO milliseconds/suffix, month clamps and independent result lifetime
+until the temporary mark. Private bounded decimal assembly avoids introducing
+generic formatting exports or modifying the foundations worker's implementation.
+All field widths fit its128-byte scratch buffer; output is copied to real temporary
+storage. Native O0/O2 execute with NEW foundations composition; strict active
+implementation/tests pass. No fabricated backend or library oracle is used.
+
+Tests corrected separately from production fixes: earlier2100 invalid-day
+rejection and -1 round-trip assertions were this producer's obsolete policy
+assumptions. They now assert native normalization and the reviewed sentinel
+collision. Configured output-failure test now asserts ERROR logging/zero fields,
+rather than assertion callback/negative fields. Windows invalid input fixture now
+asserts actual callback invocation before accepting the continuing-handler
+sentinel. All useful failure assertions remain. A newly written month text test
+incorrectly assumed minimum23 characters (May is shorter); exact twelve-month
+expected strings replace that faulty oracle. Failure evidence is retained at
+target/calendar-text-green2.log and target/calendar-foundation-verified.log.
+
+ConvertToApollo remains a precise declaration/language handoff: reviewed
+(m:s64, FACTOR:s64) #expand has no result annotation, while the new reviewed body
+contract returns a value. Current compiler rejects value use of even the original
+general macro in pending/expand-return-inference.jai as void. Review whether the
+public signature needs a result annotation or general macro return inference is
+required. No arrow/signature change, invented caller local, fake success or broken
+production facade is introduced. Evidence: target/calendar-expand-generic.log.
 
 The first missing-export compile failure is retained at target/time-conversion-red.log.
 No reference compiler or old library supplied input. Foundation facade/load-list
@@ -179,9 +205,9 @@ cross-year limitation. Native date range1601..30827 is explicit; month/day field
 are adjusted to the reviewed zero-based representation. Milliseconds are retained
 and finer precision is truncated by native SYSTEMTIME output.
 
-Public local wall times are validated as Gregorian dates and checked by a native
-UTC/local round trip to reject skipped DST times. Ambiguous repeated times retain
-the native selection; no reference ambiguity policy is claimed. Tests compare
+Public local wall times validate Gregorian fields; native zone conversion selects
+DST behavior without additional round-trip rejection. Invalid native conversions
+report through assertion handling. Tests compare
 local calendar fields after round trip, not arbitrary timestamp identity inside
 a repeated hour. UTC timestamps compare exactly at millisecond resolution.
 The date validator exchanges only primitive integers, preserving parameterized

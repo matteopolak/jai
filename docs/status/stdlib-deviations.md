@@ -254,3 +254,87 @@ caller-balanced with WSACleanup. Negative timing inputs diagnose checked casts;
 close failure logs then resets the handle, with retry/resource risk awaiting
 review. Missing CMSG/bitfield/shape APIs are explicitly inventoried and not counted
 complete. See portable-windows-socket.md for locations, evidence and SDK provenance.
+
+Native TCP fields: no new production workaround. Explicit ABI offsets come only from official Apple C declarations and are measured by independent C record output on host/x64. Values truncate to native bitfield width; whole-record comparisons verify neighboring data preservation. Unsupported big-endian/other-platform behavior is not claimed. Source-generated C includes SDK headers, with no header/library body copied. Initial nested fixture used process-relative file path; #file anchoring repairs test staging only, with original failure retained. Active scoped strict lint passes; whole strict lint remains failed. Public CMSG/other field/shape inventory is still incomplete and separately named. Details/evidence/risks: portable-socket-fields.md.
+
+Windows scope-ID: unsigned bitfield truncation is explicit in internal/net/scope-word.jai, not a compiler workaround. Public pure-record #run tests execute on the host interpreter, without native Windows C layout validation. Native Windows and target-aware strict lint remain required; no fake native functions or platform substitution.
+
+Pool lifecycle state: internal/allocation/pool.jai adds one C-allocated private
+record per used pool, a256-bucket address table and short CAS lock. Necessary to
+retain first-use state across reset without adding public fields; C allocation
+prevents recursion through a Pool context allocator. Records are freed at release,
+not reset; omitting release leaks this metadata along with ordinary pool resources.
+Bump calls with existing storage skip the table. Risks: first-use malloc failure,
+registry contention with many independent instances, caller reuse without release.
+A reviewed explicit lifecycle-state field would permit simpler lower-overhead
+state, but changing the exact public layout is not authorized. Post-release/new
+lifetime and failed-first-attempt policy remain narrow questions. No selected
+Unmapping_Allocator is destroyed by Pool. Pointer-to-integer bucketing uses a typed
+u64 local: the direct widening-cast shift still triggers the generic compiler
+cast/shift typing defect; target/pool-policy-full.log preserves its diagnostic.
+
+Linux TCP accessors: little-endian current x64/ARM64 only. Cross-target public
+#run execution is real interpreter behavior; Linux native and SDK C ABI tests
+remain pending, Android APIs are not completed. Initial test-only narrowing/import
+errors are retained, corrected without lowering coverage. No target substitution,
+native-call emulation, blanket lint exclusion or ABI-layout relaxation.
+
+Pool test platform classification: pool-unmapping depends on currently Unix-only Unmapping_Allocator. Added that fixture to the existing explicit Unix target-check list after the real Windows availability diagnostic (target/pool-policy-full2.log). Host interpreter/native assertions and Linux checking remain required; no Windows pass or completed Windows unmapping backend is claimed.
+
+Calendar policy adoption: removed this producer's stricter POSIX round-trip
+validation and Windows local DST round-trip rejection; refreshed specs delegate
+to native normalization/rules. Changed POSIX -1 result to zero, output error to
+ERROR log plus zero record, Windows input failures to assertion handling. These
+are production compatibility fixes, with old policy-test corrections separately
+recorded in portable-time.md. Continuing Windows assertion handlers get explicit
+invalid sentinel, not a valid fabricated timestamp. Native Windows pending.
+
+Calendar text uses a128-byte private bounded scratch buffer and real temporary
+copy. All public fields fit this bound; decimal padding/English month names are
+private calendar responsibilities, not duplicate public formatter APIs. An
+initial minimum-length test oracle was wrong for May; replaced with exact twelve
+reviewed English outputs, failure logs preserved. ConvertToApollo is NOT exported:
+the exact reviewed no-result header cannot currently yield a value in the compiler.
+Minimal original language reproducer is pending/expand-return-inference.jai;
+do not classify its failed check as completed functionality or silently add an
+unreviewed return annotation. Remaining native/target-lint gates are unchanged.
+
+Windows Registry:23 real reviewed bindings implemented, ten pseudo-handles omitted
+because reviewed positive casts conflict with official signed-LONG64-bit SDK
+extension. No guessed ABI constants or extra public convenience exports.
+All seven native call bodies/source constants check both Windows CPUs; actual
+interpreter/native Windows execution and active target-aware strict lint pending.
+Fixture uses private SDK setup only, a PID-specific volatile HKCU Software test
+key, checked native statuses and explicit cleanup; abort can leave this test-only
+key until cleanup/reboot. It never reads unrelated registry/credential data.
+Initial UTF conversion return-shape error belongs to the fixture and is fixed
+using reviewed pointer/success/byte-count, without changing production APIs.
+Generated declarations are normalized/idempotent; no copied Jai bodies.
+
+Android TCP accessors share actual tested Linux bodies only after official bionic
+public C header verification.22 reviewed Android exports, four Linux-only scales
+remain conditional, no invented Android APIs. Actual header C layout probes pass
+host ARM64/translated x64; these are NOT Android runtime/SDK execution. Compiler
+rejects -os android, so Android body/native validation remains blocked. No target
+constant overrides or fake backend. Old Linux-only implementation/facade files
+are removed. Public-header SHA/provenance and initial manual include-path staging
+error are documented in portable-socket-fields.md; no assertions skipped.
+
+Ancillary helpers: four real functions match native SDK vectors, CMSG_SIZE omitted
+pending exact relationship to native SPACE/LEN. CMSG_ALIGN uses native macOS4/
+Linux-Android64-bit8 boundary, not a universal guessed pointer-size rule. Negative
+sizes and unrepresentable alignment/u32 result diagnose; this is an independent
+safety policy for unspecified invalid inputs, not claimed reference wrapping.
+Live-record/control-storage preconditions remain with caller. Native Linux/
+Android still pending despite Linux pure #run execution. Initial signed/unsigned
+test mismatch fixed by explicit boundary conversions; no signature/assertion
+change. No copied Jai bodies, fake kernel calls or test/lint suppressions.
+
+Android JNI ABI helper: static immutable native directory strings for the only
+reviewed real CPU targets X64/ARM64. Other tags diagnose explicitly; fine
+invalid-tag behavior remains independent. This is host tooling functionality,
+not evidence of an Android backend/device integration. No ADB/auth/credential
+action executed. Parent Android bindings untouched; formatting ownership exception
+is scoped only to Android/Toolchain, not a lint suppression. All other toolchain
+APIs remain missing, now explicitly listed with other untouched portable modules
+in portable-missing-surface.md (253 rows, no functionality credited).

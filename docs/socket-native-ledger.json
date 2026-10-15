@@ -5859,25 +5859,25 @@
     "name": "CMSG_ALIGN",
     "condition": "OS != .WINDOWS",
     "spec_line": 138,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native ancillary helper; host SDK vectors verified, other native platforms pending"
   },
   {
     "name": "CMSG_DATA",
     "condition": "OS != .WINDOWS",
     "spec_line": 141,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native ancillary helper; host SDK vectors verified, other native platforms pending"
   },
   {
     "name": "CMSG_FIRSTHDR",
     "condition": "OS != .WINDOWS",
     "spec_line": 137,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native ancillary helper; host SDK vectors verified, other native platforms pending"
   },
   {
     "name": "CMSG_LEN",
     "condition": "OS != .WINDOWS",
     "spec_line": 140,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native ancillary helper; host SDK vectors verified, other native platforms pending"
   },
   {
     "name": "CMSG_SIZE",
@@ -6459,151 +6459,151 @@
     "name": "get___pad2",
     "condition": "OS == .MACOS",
     "spec_line": 3008,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_anon_struct_1_ack",
     "condition": "OS == .LINUX",
     "spec_line": 1645,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_1_ack",
     "condition": "OS == .ANDROID",
     "spec_line": 2278,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_doff",
     "condition": "OS == .LINUX",
     "spec_line": 1635,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_1_doff",
     "condition": "OS == .ANDROID",
     "spec_line": 2268,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_fin",
     "condition": "OS == .LINUX",
     "spec_line": 1637,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_1_fin",
     "condition": "OS == .ANDROID",
     "spec_line": 2270,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_psh",
     "condition": "OS == .LINUX",
     "spec_line": 1643,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_1_psh",
     "condition": "OS == .ANDROID",
     "spec_line": 2276,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_res1",
     "condition": "OS == .LINUX",
     "spec_line": 1633,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_1_res1",
     "condition": "OS == .ANDROID",
     "spec_line": 2266,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_res2",
     "condition": "OS == .LINUX",
     "spec_line": 1649,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_1_res2",
     "condition": "OS == .ANDROID",
     "spec_line": 2282,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_rst",
     "condition": "OS == .LINUX",
     "spec_line": 1641,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_1_rst",
     "condition": "OS == .ANDROID",
     "spec_line": 2274,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_syn",
     "condition": "OS == .LINUX",
     "spec_line": 1639,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_1_syn",
     "condition": "OS == .ANDROID",
     "spec_line": 2272,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_1_urg",
     "condition": "OS == .LINUX",
     "spec_line": 1647,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_1_urg",
     "condition": "OS == .ANDROID",
     "spec_line": 2280,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_Level",
     "condition": "OS == .WINDOWS",
     "spec_line": 778,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native scope accessor; cross-target compile-time vectors verified, native Windows pending"
   },
   {
     "name": "get_anon_struct_th_off",
     "condition": "OS == .LINUX",
     "spec_line": 1631,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_th_off",
     "condition": "OS == .ANDROID",
     "spec_line": 2264,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_th_x2",
     "condition": "OS == .LINUX",
     "spec_line": 1629,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_anon_struct_th_x2",
     "condition": "OS == .ANDROID",
     "spec_line": 2262,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "get_anon_struct_Zone",
     "condition": "OS == .WINDOWS",
     "spec_line": 776,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native scope accessor; cross-target compile-time vectors verified, native Windows pending"
   },
   {
     "name": "get_last_socket_error",
@@ -6621,115 +6621,115 @@
     "name": "get_tcpi_rcv_wscale",
     "condition": "OS == .LINUX",
     "spec_line": 1656,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_tcpi_snd_wscale",
     "condition": "OS == .LINUX",
     "spec_line": 1654,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "get_tcpi_tfo_cookie_invalid",
     "condition": "OS == .MACOS",
     "spec_line": 2994,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_cookie_rcv",
     "condition": "OS == .MACOS",
     "spec_line": 2980,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_cookie_req",
     "condition": "OS == .MACOS",
     "spec_line": 2978,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_cookie_req_rcv",
     "condition": "OS == .MACOS",
     "spec_line": 2990,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_cookie_sent",
     "condition": "OS == .MACOS",
     "spec_line": 2992,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_cookie_wrong",
     "condition": "OS == .MACOS",
     "spec_line": 2996,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_heuristics_disable",
     "condition": "OS == .MACOS",
     "spec_line": 3000,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_no_cookie_rcv",
     "condition": "OS == .MACOS",
     "spec_line": 2998,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_onebyte_proxy",
     "condition": "OS == .MACOS",
     "spec_line": 3006,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_recv_blackhole",
     "condition": "OS == .MACOS",
     "spec_line": 3004,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_send_blackhole",
     "condition": "OS == .MACOS",
     "spec_line": 3002,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_syn_data_acked",
     "condition": "OS == .MACOS",
     "spec_line": 2986,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_syn_data_rcv",
     "condition": "OS == .MACOS",
     "spec_line": 2988,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_syn_data_sent",
     "condition": "OS == .MACOS",
     "spec_line": 2984,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_tcpi_tfo_syn_loss",
     "condition": "OS == .MACOS",
     "spec_line": 2982,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_th_off",
     "condition": "OS == .MACOS",
     "spec_line": 2975,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "get_th_x2",
     "condition": "OS == .MACOS",
     "spec_line": 2973,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "GetAddrInfo",
@@ -13983,151 +13983,151 @@
     "name": "set___pad2",
     "condition": "OS == .MACOS",
     "spec_line": 3007,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_anon_struct_1_ack",
     "condition": "OS == .LINUX",
     "spec_line": 1644,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_1_ack",
     "condition": "OS == .ANDROID",
     "spec_line": 2277,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_doff",
     "condition": "OS == .LINUX",
     "spec_line": 1634,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_1_doff",
     "condition": "OS == .ANDROID",
     "spec_line": 2267,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_fin",
     "condition": "OS == .LINUX",
     "spec_line": 1636,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_1_fin",
     "condition": "OS == .ANDROID",
     "spec_line": 2269,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_psh",
     "condition": "OS == .LINUX",
     "spec_line": 1642,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_1_psh",
     "condition": "OS == .ANDROID",
     "spec_line": 2275,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_res1",
     "condition": "OS == .LINUX",
     "spec_line": 1632,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_1_res1",
     "condition": "OS == .ANDROID",
     "spec_line": 2265,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_res2",
     "condition": "OS == .LINUX",
     "spec_line": 1648,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_1_res2",
     "condition": "OS == .ANDROID",
     "spec_line": 2281,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_rst",
     "condition": "OS == .LINUX",
     "spec_line": 1640,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_1_rst",
     "condition": "OS == .ANDROID",
     "spec_line": 2273,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_syn",
     "condition": "OS == .LINUX",
     "spec_line": 1638,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_1_syn",
     "condition": "OS == .ANDROID",
     "spec_line": 2271,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_1_urg",
     "condition": "OS == .LINUX",
     "spec_line": 1646,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_1_urg",
     "condition": "OS == .ANDROID",
     "spec_line": 2279,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_Level",
     "condition": "OS == .WINDOWS",
     "spec_line": 777,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native scope accessor; cross-target compile-time vectors verified, native Windows pending"
   },
   {
     "name": "set_anon_struct_th_off",
     "condition": "OS == .LINUX",
     "spec_line": 1630,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_th_off",
     "condition": "OS == .ANDROID",
     "spec_line": 2263,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_th_x2",
     "condition": "OS == .LINUX",
     "spec_line": 1628,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_anon_struct_th_x2",
     "condition": "OS == .ANDROID",
     "spec_line": 2261,
-    "status": "authored wrapper or pending helper"
+    "status": "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
   },
   {
     "name": "set_anon_struct_Zone",
     "condition": "OS == .WINDOWS",
     "spec_line": 775,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native scope accessor; cross-target compile-time vectors verified, native Windows pending"
   },
   {
     "name": "set_blocking",
@@ -14145,115 +14145,115 @@
     "name": "set_tcpi_rcv_wscale",
     "condition": "OS == .LINUX",
     "spec_line": 1655,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_tcpi_snd_wscale",
     "condition": "OS == .LINUX",
     "spec_line": 1653,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
   },
   {
     "name": "set_tcpi_tfo_cookie_invalid",
     "condition": "OS == .MACOS",
     "spec_line": 2993,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_cookie_rcv",
     "condition": "OS == .MACOS",
     "spec_line": 2979,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_cookie_req",
     "condition": "OS == .MACOS",
     "spec_line": 2977,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_cookie_req_rcv",
     "condition": "OS == .MACOS",
     "spec_line": 2989,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_cookie_sent",
     "condition": "OS == .MACOS",
     "spec_line": 2991,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_cookie_wrong",
     "condition": "OS == .MACOS",
     "spec_line": 2995,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_heuristics_disable",
     "condition": "OS == .MACOS",
     "spec_line": 2999,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_no_cookie_rcv",
     "condition": "OS == .MACOS",
     "spec_line": 2997,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_onebyte_proxy",
     "condition": "OS == .MACOS",
     "spec_line": 3005,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_recv_blackhole",
     "condition": "OS == .MACOS",
     "spec_line": 3003,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_send_blackhole",
     "condition": "OS == .MACOS",
     "spec_line": 3001,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_syn_data_acked",
     "condition": "OS == .MACOS",
     "spec_line": 2985,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_syn_data_rcv",
     "condition": "OS == .MACOS",
     "spec_line": 2987,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_syn_data_sent",
     "condition": "OS == .MACOS",
     "spec_line": 2983,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_tcpi_tfo_syn_loss",
     "condition": "OS == .MACOS",
     "spec_line": 2981,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_th_off",
     "condition": "OS == .MACOS",
     "spec_line": 2974,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "set_th_x2",
     "condition": "OS == .MACOS",
     "spec_line": 2972,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native field accessor; native SDK vector verification separate"
   },
   {
     "name": "SetAddrInfoEx",
