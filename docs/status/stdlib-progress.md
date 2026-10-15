@@ -1,5 +1,19 @@
 # Portable stdlib progress
 
+Fresh assigned-scope inventory published at docs/status/implementation-remaining.json:
+4636 reviewed declaration/overload/condition/nested-procedure rows across62 owned
+module pages; source classification3559 complete,448 partial,629 missing (76.77%
+complete source rows, NOT conformance/runtime percentage). Includes exact names,
+committed/draft split, head/timestamp, verification gates and disjoint transfer
+estimates. Most absent rows are501 executable_formats headers/constants/parsers
+plus88 Android/toolchain rows; earlier95 only covered four largely-unimplemented
+module groups and was never an exhaustive denominator. Partial counts are
+conservative module/source audit states, not448 fabricated missing bodies. Native
+foreign ABI declarations count as implementation, with runtime verification
+separate; missing bodies/shape/dependencies never count complete. Reserved roles,
+Basic except owned time, and Windows peer backends excluded. Runtime private
+discard is a passing host-tested DRAFT in this inventory; source handoff follows.
+
 Default build ownership replay fixed: shutdown used by-value array_free, leaving
 the public plugin descriptor pointing at freed allocation. New public build-twice
 fixture reproduced stale count/data; cleanup now uses Basic.array_reset. Two real
