@@ -1,5 +1,7 @@
 # Developer documentation
 
+Clean-room boundary incident: [compiler exposure report](status/compiler-cleanroom-incident-2026-10-14.md). Implementation stopped after the verified checkpoints.
+
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing
