@@ -398,13 +398,14 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Check
 
-3 function names have pending declarations; 0 native function names still lack invocation fixtures.
+0 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
-| Function | Reviewed overload variants | Pending variants | Next work / precise question |
-| --- | ---: | ---: | --- |
-| `finish_error_checking` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `print_binding_check_memory_stats` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `verify_elsewhere_binding` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+
+| Implemented function with remaining paths | Remaining work |
+| --- | --- |
+| `verify_elsewhere_binding` | SDK AST-backed scalar/pointer/reference/function/array/nominal subset executes from staged NEW code on Mac. Variadic/member-pointer/unsupported builtin/template forms and renamed nominal matching remain open. Actual Compiler header ELSEWHERE flags are missing: minimal producer request is preserved. Windows native execution remains pending. |
+| `print_binding_check_memory_stats` | Actual reusable normalized-type pool peak/cumulative effects verified in staged DEBUG_BINDINGS=true configuration; metrics exclude opaque LLVM allocator internals. Windows native execution pending. |
+| `finish_error_checking` | Reviewed default false is silent; debug=true prints actual pool statistics. No cache resource finalizer is invented. Windows native execution pending. |
 
 ## Codex
 

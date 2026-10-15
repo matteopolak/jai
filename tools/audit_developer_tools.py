@@ -71,6 +71,11 @@ def remaining_matrix(inventory):
             output += ["", "| Implemented generator with remaining paths | Remaining work |", "| --- | --- |",
                        "| `generate_bindings` | Global POD aggregate/reference C++ declarations and custom overload/argument mappings execute; namespace/method/template/printf adapters, arbitrary ABI-changing callbacks and broader parsing remain unfinished. |",
                        "| `generate_bridge` | Global POD aggregate/reference adapters and custom overload/argument mappings execute; namespace/method/template/printf adapters and arbitrary ABI-changing callbacks remain unfinished. |", ""]
+        if module == "Check":
+            output += ["", "| Implemented function with remaining paths | Remaining work |", "| --- | --- |",
+                       "| `verify_elsewhere_binding` | SDK AST-backed scalar/pointer/reference/function/array/nominal subset executes from staged NEW code on Mac. Variadic/member-pointer/unsupported builtin/template forms and renamed nominal matching remain open. Actual Compiler header ELSEWHERE flags are missing: minimal producer request is preserved. Windows native execution remains pending. |",
+                       "| `print_binding_check_memory_stats` | Actual reusable normalized-type pool peak/cumulative effects verified in staged DEBUG_BINDINGS=true configuration; metrics exclude opaque LLVM allocator internals. Windows native execution pending. |",
+                       "| `finish_error_checking` | Reviewed default false is silent; debug=true prints actual pool statistics. No cache resource finalizer is invented. Windows native execution pending. |", ""]
         if module == "Debug_Info":
             output += ["", "| Implemented map helper with remaining paths | Remaining work |", "| --- | --- |",
                        "| `is_free_page` | Initialized in-range words execute; capacity/active-word policy awaits question14. |",
@@ -279,6 +284,8 @@ def main():
                 if item["name"] in {"DEBUG_BINDINGS", "C_Porting_Check_Settings", "check_c_porting", "should_skip",
                                      "is_of_fixed_array_type", "do_error_checking"}:
                     item["implementation"] = "Windows-only porting subset; actual typed-message and manual diagnostic fixtures"
+                if item["name"] in {"verify_elsewhere_binding", "print_binding_check_memory_stats", "finish_error_checking"}:
+                    item["implementation"] = "Windows-only supported mangled-signature subset; official LLVM AST/type comparisons, twelve continuable failures/false results, reusable parsing-pool/debug-finish effects; unchanged NEW code staged interpreter/native Mac O0/O2; Windows source/strict lint only, actual Compiler ELSEWHERE metadata integration pending"
         inventory[module] = {"spec": str(spec.relative_to(ROOT)),
                              "spec_sha256": hashlib.sha256(contents.encode()).hexdigest(),
                              "declarations": declarations, "reviewed_members": members}

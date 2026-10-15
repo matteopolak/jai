@@ -23112,7 +23112,7 @@
   },
   "Check": {
     "spec": "docs/specs/stdlib/modules/check.md",
-    "spec_sha256": "25b91a39cf2649cf95a135bcdb4f780c593502b8f26dce41fe9234a164fe9bb5",
+    "spec_sha256": "c74bddcce6f2cea40d907b35b367373c063e2597e9642cd7c8d678482b54d0d4",
     "declarations": [
       {
         "name": "DEBUG_BINDINGS",
@@ -23126,14 +23126,14 @@
         "declaration": "verify_elsewhere_binding :: (header: *Code_Procedure_Header, os: Operating_System_Tag, cpu: CPU_Tag) -> bool",
         "section": "Windows-specific declarations",
         "spec_line": 11,
-        "implementation": "pending"
+        "implementation": "Windows-only supported mangled-signature subset; official LLVM AST/type comparisons, twelve continuable failures/false results, reusable parsing-pool/debug-finish effects; unchanged NEW code staged interpreter/native Mac O0/O2; Windows source/strict lint only, actual Compiler ELSEWHERE metadata integration pending"
       },
       {
         "name": "print_binding_check_memory_stats",
         "declaration": "print_binding_check_memory_stats :: ()",
         "section": "Windows-specific declarations",
         "spec_line": 12,
-        "implementation": "pending"
+        "implementation": "Windows-only supported mangled-signature subset; official LLVM AST/type comparisons, twelve continuable failures/false results, reusable parsing-pool/debug-finish effects; unchanged NEW code staged interpreter/native Mac O0/O2; Windows source/strict lint only, actual Compiler ELSEWHERE metadata integration pending"
       },
       {
         "name": "C_Porting_Check_Settings",
@@ -23182,7 +23182,7 @@
         "declaration": "finish_error_checking :: ()",
         "section": "Windows-specific declarations",
         "spec_line": 19,
-        "implementation": "pending"
+        "implementation": "Windows-only supported mangled-signature subset; official LLVM AST/type comparisons, twelve continuable failures/false results, reusable parsing-pool/debug-finish effects; unchanged NEW code staged interpreter/native Mac O0/O2; Windows source/strict lint only, actual Compiler ELSEWHERE metadata integration pending"
       }
     ],
     "reviewed_members": [

@@ -11,6 +11,7 @@ import platform
 import csv
 import check_developer_bindings
 import check_developer_cpp_custom
+import check_developer_check
 import build_developer_debug
 import check_developer_debug_lifecycle
 import check_developer_debug_windows
@@ -122,6 +123,7 @@ def check_profiler_client_children():
 def main():
     check_developer_bindings.main()
     check_developer_cpp_custom.main()
+    check_developer_check.main()
     configured_cases = check_developer_sdk_configuration.main()
     build_developer_debug.main()
     check_developer_debug_lifecycle.main()
@@ -348,8 +350,12 @@ def main():
                     ROOT / "tests/developer-tools/iprof-client-input.jai.inc"]
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *format_paths])
     shutil.copyfile(ROOT / "tests/developer-tools/rewrite-input.jai", rewritten)
-    run([ROOT / "target/debug/jailint", "-D", "warnings", "-I", ROOT / "target", *paths])
+    # This private source requires the Windows facade's DEBUG_BINDINGS constant;
+    # lint it below with the actual public platform active, not in a host main module.
+    host_lint_paths = [path for path in paths if path != ROOT / "stdlib/internal/developer-tools/check-bindings.jai"]
+    run([ROOT / "target/debug/jailint", "-D", "warnings", "-I", ROOT / "target", *host_lint_paths])
     check_paths = [ROOT / "stdlib/Check/module.jai", ROOT / "stdlib/internal/developer-tools/porting-check.jai",
+                   ROOT / "stdlib/internal/developer-tools/check-bindings.jai",
                    ROOT / "tests/developer-tools/check-porting.jai"]
     run([ROOT / "target/debug/jailint", "-D", "warnings", "--os", "windows", "--cpu", "x64", *check_paths])
     run([JAIC, "tests/developer-tools/check-porting.jai", "-check", "-os", "windows", "-cpu", "x64"])
