@@ -18,6 +18,11 @@ invalidate :: (decl: *B.Declaration, _parent: *B.Declaration) -> B.Declaration_V
     return .STOP;
 }
 
+invalidate_variadic :: (decl: *B.Declaration, _parent: *B.Declaration) -> B.Declaration_Visit_Result {
+    if decl.kind == .FUNCTION decl.type.type_of_function.flags |= .VARIADIC;
+    return .STOP;
+}
+
 get_arguments :: (func: *B.Function, type: *B.Function_Type, mode: B.Arg_Print_Mode) -> [] *B.Declaration {
     assert(func != null && mode == .FOREIGN_FUNC_DECLARATION);
     printed_arguments += type.arguments.count;
@@ -95,11 +100,13 @@ main :: () {
     push_context {
         context.logger = capture_error;
         assert(!B.generate_bindings(options, path, log_results = false));
+        options.visitor = invalidate_variadic;
+        assert(!B.generate_bindings(options, path, log_results = false));
     }
 
     preserved, preserved_ok := read_entire_file(path);
 
     defer free(preserved);
-    assert(errors == 1 && preserved_ok && preserved == "existing output");
+    assert(errors == 2 && preserved_ok && preserved == "existing output");
     print("ok\n");
 }

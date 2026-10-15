@@ -2465,14 +2465,14 @@
         "declaration": "clang_getFile :: (tu: CXTranslationUnit, file_name: *u8) -> CXFile #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 398,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getFileContents",
         "declaration": "clang_getFileContents :: (tu: CXTranslationUnit, file: CXFile, size: *u64) -> *u8 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 399,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getLocation",
@@ -2738,7 +2738,7 @@
         "declaration": "clang_getNullCursor :: () -> CXCursor #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 437,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTranslationUnitCursor",
@@ -2801,7 +2801,7 @@
         "declaration": "clang_isExpression :: (unknown0: CXCursorKind) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 446,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_isStatement",
@@ -4551,63 +4551,63 @@
         "declaration": "CXEvalResultKind :: enum u32",
         "section": "Unix-specific declarations",
         "spec_line": 696,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "CXEvalResult",
         "declaration": "CXEvalResult :: *void",
         "section": "Unix-specific declarations",
         "spec_line": 697,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "clang_Cursor_Evaluate",
         "declaration": "clang_Cursor_Evaluate :: (C: CXCursor) -> CXEvalResult #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 698,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getKind",
         "declaration": "clang_EvalResult_getKind :: (E: CXEvalResult) -> CXEvalResultKind #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 699,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsInt",
         "declaration": "clang_EvalResult_getAsInt :: (E: CXEvalResult) -> s32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 700,
-        "implementation": "pending"
+        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
       },
       {
         "name": "clang_EvalResult_getAsLongLong",
         "declaration": "clang_EvalResult_getAsLongLong :: (E: CXEvalResult) -> s64 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 701,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_isUnsignedInt",
         "declaration": "clang_EvalResult_isUnsignedInt :: (E: CXEvalResult) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 702,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsUnsigned",
         "declaration": "clang_EvalResult_getAsUnsigned :: (E: CXEvalResult) -> u64 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 703,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsDouble",
         "declaration": "clang_EvalResult_getAsDouble :: (E: CXEvalResult) -> float64 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 704,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsStr",
@@ -4621,7 +4621,7 @@
         "declaration": "clang_EvalResult_dispose :: (E: CXEvalResult) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 706,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXVisitorResult",
@@ -5839,14 +5839,14 @@
         "declaration": "clang_getFile :: (tu: CXTranslationUnit, file_name: *u8) -> CXFile #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 883,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getFileContents",
         "declaration": "clang_getFileContents :: (tu: CXTranslationUnit, file: CXFile, size: *u64) -> *u8 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 884,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getLocation",
@@ -6112,7 +6112,7 @@
         "declaration": "clang_getNullCursor :: () -> CXCursor #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 922,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTranslationUnitCursor",
@@ -6175,7 +6175,7 @@
         "declaration": "clang_isExpression :: (unknown0: CXCursorKind) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 931,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_isStatement",
@@ -7925,63 +7925,63 @@
         "declaration": "CXEvalResultKind :: enum s32",
         "section": "Windows-specific declarations",
         "spec_line": 1181,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "CXEvalResult",
         "declaration": "CXEvalResult :: *void",
         "section": "Windows-specific declarations",
         "spec_line": 1182,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
       },
       {
         "name": "clang_Cursor_Evaluate",
         "declaration": "clang_Cursor_Evaluate :: (C: CXCursor) -> CXEvalResult #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1183,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getKind",
         "declaration": "clang_EvalResult_getKind :: (E: CXEvalResult) -> CXEvalResultKind #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1184,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsInt",
         "declaration": "clang_EvalResult_getAsInt :: (E: CXEvalResult) -> s32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1185,
-        "implementation": "pending"
+        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
       },
       {
         "name": "clang_EvalResult_getAsLongLong",
         "declaration": "clang_EvalResult_getAsLongLong :: (E: CXEvalResult) -> s64 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1186,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_isUnsignedInt",
         "declaration": "clang_EvalResult_isUnsignedInt :: (E: CXEvalResult) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1187,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsUnsigned",
         "declaration": "clang_EvalResult_getAsUnsigned :: (E: CXEvalResult) -> u64 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1188,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsDouble",
         "declaration": "clang_EvalResult_getAsDouble :: (E: CXEvalResult) -> float64 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1189,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsStr",
@@ -7995,7 +7995,7 @@
         "declaration": "clang_EvalResult_dispose :: (E: CXEvalResult) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1191,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXVisitorResult",

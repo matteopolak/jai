@@ -64,7 +64,7 @@ def main():
         "native-model.jai": ["CXToken", "CX_StorageClass", "CXTypeLayoutError"],
         "native-parser-model.jai": ["CXString", "CXCursorKind", "CXCursor", "CXTypeKind", "CXType",
                                      "CXErrorCode", "CXTranslationUnitImpl", "CXUnsavedFile", "CXChildVisitResult",
-                                     "CXSourceLocation", "CXSourceRange", "CXDiagnosticSeverity", "CXIndexOptions"],
+                                     "CXSourceLocation", "CXSourceRange", "CXDiagnosticSeverity", "CXIndexOptions", "CXEvalResultKind"],
     }
     directory = ROOT / "stdlib/Bindings_Generator"
     directory.mkdir(exist_ok=True)
@@ -105,7 +105,11 @@ def main():
                  "clang_isVolatileQualifiedType", "clang_isFunctionTypeVariadic", "clang_Cursor_isBitField",
                  "clang_getFieldDeclBitWidth", "clang_getCursorExtent", "clang_getRangeStart", "clang_getRangeEnd",
                  "clang_Cursor_getRawCommentText", "clang_createIndexWithOptions", "clang_getCursorDefinition",
-                 "clang_Cursor_isNull", "clang_tokenize", "clang_disposeTokens"]
+                 "clang_Cursor_isNull", "clang_tokenize", "clang_disposeTokens", "CXEvalResult",
+                 "clang_Cursor_Evaluate", "clang_EvalResult_getKind", "clang_EvalResult_getAsInt",
+                 "clang_EvalResult_getAsLongLong", "clang_EvalResult_isUnsignedInt", "clang_EvalResult_getAsUnsigned",
+                 "clang_EvalResult_getAsDouble", "clang_EvalResult_dispose", "clang_isExpression",
+                 "clang_getFile", "clang_getFileContents", "clang_getNullCursor"]
     source = "// Native parser subset; declarations from the reviewed platform-specific inventories.\n"
     for name in api_names:
         def declaration(inventory):

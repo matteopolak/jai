@@ -74,6 +74,8 @@ def main():
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib",
          "tests/developer-tools/bindings-macro-values.c", "-o", "target/libdeveloper_tools_macros.dylib"])
     run([JAIC, "tests/developer-tools/bindings-macros.jai", "-interp"], output="ok\n")
+    run([JAIC, "tests/developer-tools/bindings-macro-custom.jai", "-interp"], output="ok\n")
+    cases.extend(["bindings-macro-custom", "bindings-macro-custom-roundtrip"])
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
