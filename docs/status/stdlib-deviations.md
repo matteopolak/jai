@@ -2,8 +2,10 @@
 
 Platform-io cc07c00 follow-up is recorded in [its deviations](platform-io-deviations.md):
 actual native Platform subset passes are distinct from full-matrix failures; the
-fabricated empty-argv SDK failure is removed; ARM64 default crash policy still
-requires reviewed clarification without changing ON/AUTO defaults or hiding errors.
+fabricated empty-argv SDK failure is removed. Coordinator direction resolves ARM64
+default policy through a private native backend with unchanged ON/AUTO defaults.
+Its Windows 11/Server 2022 minimum, symbol/global-state limits, real DLL dependency
+and pending native execution are explicit; no public x64 context cast is used.
 
 Platform-io role report: [platform I/O deviations](platform-io-deviations.md)
 enumerates native verification limits, crash DLL packaging/stack bounds, staged

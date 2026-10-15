@@ -15,10 +15,12 @@ wheel/renderer interpretation failed and ARM64 default backtraces blocked corpus
 The current independent producer already contains suspended CRT threads and real
 event interoperation, so the older thread-gap section below is historical.
 
-Default ARM64 crash selection still needs the narrow reviewed rule: the public
-Build_Options defaults ON/AUTO and complete serialization make unchanged ON and
-explicit ON identical. No guessed mask or changed default was implemented. Direct
-unsupported Runtime_Support enablement must retain the x64-only diagnostic.
+The coordinator decision in windows-arm64-backtrace-decision.md resolves default
+ARM64 selection by authorizing a private SDK backend. ON/AUTO are unchanged; both
+default and explicit ON select native ARM64 handling from Runtime_Support entry.
+The public x64 callback facade still rejects ARM64. No compiler provenance or
+target mask was introduced. Native Windows 11/Server 2022 ARM64 execution of the
+RtlVirtualUnwind2 backend is required; source checks are positive, not runtime proof.
 
 The worker now includes a small general IDE dependency-order fix and generic
 jailint driver/rule fixes. Compiler-owned integration is required; no module/path

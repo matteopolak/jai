@@ -17,6 +17,7 @@ OWNED = [
     "stdlib/internal/runtime/windows-io.jai",
     "stdlib/internal/runtime/windows-arguments.jai", "stdlib/Runtime_Support_Crash_Handler/module.jai",
     "stdlib/internal/runtime/windows-crash-types.jai", "stdlib/internal/runtime/windows-crash-handler.jai",
+    "stdlib/internal/runtime/windows-arm64-crash",
     "tests/platform-io",
 ]
 
@@ -51,13 +52,15 @@ def lint_owned(binary, stdlib):
             if os_target == "windows" and cpu == "arm64" and (
                     "Runtime_Support_Crash_Handler" in relative or "windows-crash" in relative or "windows-arm64-crash-handler" in relative):
                 continue  # Reviewed x64-only handler; negative ARM64 checks live in the test runner.
+            if os_target == "windows" and cpu != "arm64" and "windows-arm64-crash/module.jai" in relative:
+                continue  # Private native context adapter is ARM64-only.
             if os_target == "linux" and "native-macos" in relative:
                 continue
             selected.append(str(path))
         manifest = output / f"{os_target}-{cpu}.txt"
         definitions = []
         if os_target == "windows":
-            definitions = ["--add", f'OPTIMIZED :: false; BACKTRACE_ENABLED :: {str(cpu == "x64").lower()}; '
+            definitions = ["--add", f'OPTIMIZED :: false; BACKTRACE_ENABLED :: true; '
                            f'OUTPUT_PATH :: "{output.as_posix()}"; '
                            f'CHILD_SOURCE :: "{(ROOT / "tests/platform-io/windows-fault.jai").as_posix()}";']
         result = subprocess.run([str(binary), "-D", "warnings", "--os", os_target, "--cpu", cpu,

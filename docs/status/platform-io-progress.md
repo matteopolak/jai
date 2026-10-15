@@ -1,5 +1,33 @@
 # Platform I/O worker progress
 
+## Private ARM64 crash backend checkpoint
+
+Coordinator direction in windows-arm64-backtrace-decision.md resolves the review
+request without changing ON/AUTO or inventing option provenance. Runtime startup
+now selects a private ARM64 SDK exception/unwind backend; direct public x64
+callback imports still diagnose ARM64 use. A native context copy, bounded native
+RtlVirtualUnwind2 walk, DbgHelp serialization and unique process handle implement
+real diagnostics. Normal shutdown restores filter/error mode and releases the
+symbol session/handle. Windows 11/Server 2022 minimum and process-global policy
+limitations are explicit in the deviations report.
+
+The original untouched-default reproducer failed with the real x64-only diagnostic
+before the change, and now passes ARM64 -check/-no_dce. It is restored as a positive
+fixture. The native runner retains explicit public-ABI rejection and exercises
+ON/OFF/default ordinary startup and actual faults at O0/O2 on both Windows CPUs;
+enabled faults require at least two real frames and no unwind failure. ARM64
+native C tests assert init/refcount/fini/reinit/filter/error-mode behavior.
+
+Source-built jaifmt check and strict four-target jailint cover all 45 owned Jai
+files. ARM64 C backend compiles to COFF at O0/O2 with -Wall -Wextra -Werror; native
+C lifecycle source checks with warnings denied. Host interpreter/native O0/O2,
+four-target checks and x64 Windows cross-builds pass; expanded source matrix
+verification is recorded in target/platform-io-arm64-suite.log. The exact CLI
+unwritten-workspace warning is required only for metaprogram source checks; its
+initial runner mismatch is preserved in platform-io-arm64-source-warning-red.log.
+Actual Windows execution of the newer argv patch and ARM64 backend remains for
+coordinator CI. cc07c00's real positive Platform subset is distinct evidence.
+
 ## cc07c00 actual native feedback and startup follow-up
 
 Argv fix checkpoint: `acda8e2`. Additional supplied-argv coverage includes an
@@ -34,13 +62,9 @@ four-target -no_dce checks and x64 cross-builds. Durable logs are
 target/platform-io-argv-{red,green,all-unit,clippy,lint,suite}.log. The first two
 logs preserve the failing native-query adapter tests and their corrected results.
 
-Untouched ARM64 Compiler.Build_Options reproduces the x64-handler diagnostic.
-Reviewed defaults are .ON/.AUTO; the full-record serializer cannot distinguish an
-untouched .ON from assignment of .ON. A narrow policy review was requested, with
-an original reproducer in [startup regressions](../platform-io-startup-regressions.md).
-No public default, explicit unsupported-handler diagnostic, or assertion was changed
-to conceal this remaining full-matrix blocker. The pending example is documentation,
-not a claimed positive executable fixture.
+The initial untouched ARM64 default failure and narrow review request are now
+resolved by the private-backend direction above. The restored reproducer preserves
+the reviewed default fields and the original failure evidence.
 
 Latest code checkpoint: `6d71f26` (full finite Windows waits and final Unix
 preservation audit); preceding checkpoints are `556330b`, `2b1d623`, `27b719c`
