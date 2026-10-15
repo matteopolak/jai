@@ -173,6 +173,7 @@ The LLVM backend, C ABI and linking.
 - [Public generator cursor/type-query workflow](../tools/check_developer_cursor_source.py): copied SDK source tokens, compiled C++ effects, borrowed model identity and cycle diagnostics
 - [Multiple-header generation workflow](../tools/check_developer_multi_input.py): shared types/macros, callback renaming, C/C++ bridges and native calls
 - [Pointer-default generation workflow](../tools/check_developer_pointer_defaults.py): shared-literal-safe null normalization and real omitted/explicit foreign arguments
+- [Byte-string macro workflow](../tools/check_developer_string_macros.py): SDK initializer evaluation, copied callback payloads and real native byte/count comparisons
 - [Public generator type-emission workflow](../tools/check_developer_type_emission.py): C++ declarators, generated Jai callbacks, borrowed type identity and diagnosed failures
 - [Shared generator context protocol](developer-tools-context-protocol.md): internal canonical-owner handoff, supplied options and lifetime requirements
 - [Check factory workflow](../tools/check_developer_check_plugin.py): persistent plugin storage and real configured compiler-message effects

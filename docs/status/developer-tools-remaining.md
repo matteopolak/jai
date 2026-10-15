@@ -6,7 +6,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Bindings_Generator
 
-108 function names have pending declarations; 217 native function names still lack invocation fixtures.
+108 function names have pending declarations; 216 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
@@ -180,7 +180,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `clang_Cursor_isObjCOptional` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
 | `clang_Cursor_isVariadic` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
 | `clang_EnumDecl_isScoped` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
-| `clang_EvalResult_getAsStr` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
 | `clang_IndexAction_create` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
 | `clang_IndexAction_dispose` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
 | `clang_Module_getASTFile` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |

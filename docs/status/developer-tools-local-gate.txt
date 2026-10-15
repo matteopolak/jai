@@ -1,5 +1,6 @@
 Fresh isolated gate: Exit status0
 Command: python3 -u tools/check_developer_tools.py
-Source baseline: a2bb7175 plus five cursor/type helpers in this checkpoint
-Verified: dedicated generator/Check/cursor/type workflows and65 base fixtures; interpreter/native Mac O0/O2, configured official SDK links, real C/C++ consumers, diagnostics, formatter --check and warnings-denied lint.
-Not verified: combined coordinator integration/corpus; Windows native runtime. This is a supported subset gate, not full API completion.
+Source baseline:18d8604b plus byte-string macro checkpoint
+Verified: all dedicated generator/Check/string/multi-header/pointer/type workflows plus65 base fixtures; interpreter/native Mac O0/O2, configured official SDK links, real C/C++ consumers, diagnostics, formatter --check and warnings-denied lint.
+Original C/C++ SDK declaration-initializer oracle passed. Wide/embedded-NUL string failures preserve output.
+Not verified: combined coordinator integration/corpus; Windows native runtime; active Generator context integration. This is a supported subset gate, not full API completion.

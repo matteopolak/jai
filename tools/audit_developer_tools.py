@@ -166,6 +166,10 @@ def main():
                     item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
                     if item["name"] in extended_apis:
                         item["implementation"] = "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+                        if item["name"] in {"clang_Cursor_Evaluate", "clang_EvalResult_getKind", "clang_EvalResult_getAsLongLong",
+                                             "clang_EvalResult_isUnsignedInt", "clang_EvalResult_getAsUnsigned",
+                                             "clang_EvalResult_getAsDouble", "clang_EvalResult_getAsStr", "clang_EvalResult_dispose"}:
+                            item["implementation"] = "direct native constant evaluation/ownership APIs; real integer/float/string macro probes and copied post-disposal callback payloads execute interpreter/native Mac O0/O2; original C/C++ SDK declaration-initializer oracle and native byte comparisons"
                         if item["name"] in {"clang_getNullLocation", "clang_equalLocations", "clang_getNullRange",
                                              "clang_Range_isNull", "clang_equalRanges", "clang_getFileUniqueID",
                                              "clang_File_isEqual", "clang_File_tryGetRealPathName", "clang_getLocation",

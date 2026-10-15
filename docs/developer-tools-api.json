@@ -4614,7 +4614,7 @@
         "declaration": "clang_EvalResult_getAsStr :: (E: CXEvalResult) -> *u8 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 705,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native constant evaluation/ownership APIs; real integer/float/string macro probes and copied post-disposal callback payloads execute interpreter/native Mac O0/O2; original C/C++ SDK declaration-initializer oracle and native byte comparisons"
       },
       {
         "name": "clang_EvalResult_dispose",
@@ -7988,7 +7988,7 @@
         "declaration": "clang_EvalResult_getAsStr :: (E: CXEvalResult) -> *u8 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1190,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native constant evaluation/ownership APIs; real integer/float/string macro probes and copied post-disposal callback payloads execute interpreter/native Mac O0/O2; original C/C++ SDK declaration-initializer oracle and native byte comparisons"
       },
       {
         "name": "clang_EvalResult_dispose",

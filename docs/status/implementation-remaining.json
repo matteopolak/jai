@@ -157,7 +157,8 @@
     "4805fc6f seven committed value/emission APIs, real foreign defaults and corrected context/overload classification",
     "a2bb7175 persistent configured Check factory; fresh interpreter/native Mac O0/O2 plus source/strict lint",
     "9592edfb five cursor/type helpers and fresh full isolated tooling gate",
-    "02d5e1a4 multiple-header C/C++ workflows and native calls"
+    "02d5e1a4 multiple-header C/C++ workflows and native calls",
+    "18d8604b real pointer default normalization and native calls"
   ],
   "count_unit": "Unique reviewed public function names, with overload/path limits recorded; type/field/native-SDK inventories remain in developer-tools-api.json.",
   "definitions": {
@@ -168,7 +169,7 @@
   "disjoint_batch_candidate": {
     "status": "The proposed ten-name batch is explicitly reassigned to generator-platform; Debug entirely to debug-info-impl. No edits to those names/modules continue here."
   },
-  "head": "02d5e1a4f930a75951e8dcec9314bad0c2e68089",
+  "head": "18d8604b9f267c710dfd0fcc871c2dfab1a43c19",
   "not_counted": [
     "generator-model",
     "generator-platform",
@@ -309,15 +310,16 @@
   },
   "role": "stdlib-tools / generator emission",
   "shared_context_protocol": "docs/developer-tools-context-protocol.md (internal handoff contract; implementation owned by canonical model)",
-  "timestamp_utc": "2026-10-15T17:20:45.406883+00:00",
+  "timestamp_utc": "2026-10-15T17:39:31.598847+00:00",
   "verification_gaps": [
-    "Full isolated gate passed at9592edfb. Multiple-header and pointer-default workflows plus shared C++/type regressions pass interpreter/native Mac O0/O2 and strict lint; no fresh combined coordinator run. Filtered frozen corpus:304/400 runtime cases pass96 fail; compile-only316 pass84 fail.",
+    "Fresh full isolated tooling gate passed after byte-string macros, multi-header generation, pointer defaults and Check factory, including configured SDK links, native Mac O0/O2, source-built formatter --check and strict lint. Combined coordinator result remains frozen: runtime304 pass96 fail; compile-only316 pass84 fail out of400.",
     "Canonical NEW model batch4675c90a copied unchanged and passed its own format/lint, two source targets, four interpreter/eight native executions locally.",
     "Seven committed value helpers and generated values pass interpreter/native Mac O0/O2 plus strict format/lint; integer default foreign calls additionally pass configured C++ O0/O2.",
     "Check Windows-only code is staged on Mac: real LLVM types/accounting pass, but Windows native execution is unperformed and actual Compiler ELSEWHERE metadata remains missing.",
     "Only configured SDK23.1.2 native parser/demangler links are verified; SDK21 execution and other OS execution remain pending.",
     "The duplicate parameter/context case is a correct reviewed-language rejection, reclassified as architecture evidence; the actual ELSEWHERE metadata producer request remains failing.",
     "Staged lifecycle source passed an initial single-module draft test only, remains unintegrated and has primitive/registry/ownership paths unfinished.",
-    "Independent separate spec-derived test review remains coordinator-owned; no legacy suite gate or source is restored."
+    "Independent separate spec-derived test review remains coordinator-owned; no legacy suite gate or source is restored.",
+    "Byte-string macro workflows pass both parser paths on Mac; original SDK C/C++ initializer oracle passes. Wide/embedded-NUL/nonliteral strings explicitly fail; private operation string type is not active Generator primitive storage."
   ]
 }
