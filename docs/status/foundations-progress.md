@@ -1,5 +1,11 @@
 # Foundations progress
 
+Latest stable checkpoints: ad84008 implements refined leak filters; e3d9052
+verifies the real runtime CAPS provider and retains the Pool failure. Current
+supported execution is 45 host / 37 WASI cases as detailed below. Remaining
+owned contract gaps and producer/lint dependencies are explicit in the audit;
+this is not a completed-all-APIs or full-lint success claim.
+
 Stable implementation checkpoint: ad84008, conventional fix(basic) commit for
 refined leak matching/trim/lifetime and the four-facade audit. Its full driver
 completed all six native unused-code targets; overall status remains failure

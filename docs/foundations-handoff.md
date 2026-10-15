@@ -20,8 +20,6 @@ cross-checked for Linux; Windows/WASI transport remains
 unavailable, with explicit connection diagnostics. The File/integration owner
 has the minimal original WASI -no_dce repro and a proper private ABI-guard request.
 
-The following paragraph records the previous stable checkpoint before this batch.
-
 Portable runtime CAPS follow-up: the NEW producer heap now supplies its actual
 name. The exact source file was integrated read-only into selected staging;
 normalized comparison shows only the CAPS name-out block changed, preserving
@@ -30,6 +28,8 @@ checks failed before integration and now pass interpreter/native O0/O2 and
 WASI O0/O2 within the full 45/37-case rerun, plus six native unused-code checks.
 Pool still aborts on null CAPS data; its original positive public-call gate fails
 and is now retained in the driver's integration failure ledger.
+
+The following paragraph records the previous stable checkpoint before this batch.
 
 Latest stable checkpoint is 5c5e27b; continuation improves canonical context
 lint usage and adds array aliasing safety. NEW compiler host constants resolve
