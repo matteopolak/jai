@@ -807,5 +807,31 @@
       "suite": "workspace clippy --locked --workspace --all-targets -- -D warnings",
       "exit_code": 0
     }
-  ]
+  ],
+  "merged_extensions": {
+    "snapshot": "b99d2f02fab3ca9901b65a8b6c572bb0b43c5226",
+    "command_template": "python3 tools/stdlib_runtime.py --jaic <own-root-target>/debug/jaic --filter Extensions/{Json,Http,Io,Byte_Search}/tests --modes interp,native --opt O0 --jobs 2 --timeout 120 --verbose",
+    "cases": 28,
+    "interp": {
+      "passed": 27,
+      "failed": 1,
+      "ignored": 0
+    },
+    "native_arm64_O0": {
+      "passed": 28,
+      "failed": 0,
+      "ignored": 0
+    },
+    "failures": [
+      {
+        "name": "Extensions/Json/tests/numbers",
+        "mode": "interp",
+        "classification": "deadline exceeded; not a passing numeric assertion suite",
+        "timeout_seconds": 120,
+        "runtime_lower_bound_seconds": 120,
+        "exact_elapsed_seconds": null,
+        "note": "Existing runner retained deadline but not exact per-case elapsed time; process was killed and independent cases finished."
+      }
+    ]
+  }
 }

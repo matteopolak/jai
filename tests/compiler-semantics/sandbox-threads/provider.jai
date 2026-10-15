@@ -1,4 +1,5 @@
 // Private SandboxHost token protocol; never linked to a native pthread library.
+#assert OS == .WASM, "opaque scheduler tokens require the private WASM provider";
 #import "Basic";
 
 pthread_create :: (thread: *u64, attributes: *void, entry: *void, data: *void) -> s32 #foreign;

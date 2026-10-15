@@ -1476,6 +1476,45 @@ expectation correction; the normal packaged false selector is restored byte for
 byte. This does not add further option coverage or native platform claims.
 # Native Mac measurement limitations, 2026-10-15
 
+Merged Mac repair snapshots: Extensions34c06fa3 and graphics7a5cce7a, through normal
+merge commits e026e5f3/b99d2f02. Latest reviewed specs/guidance are byte-identical
+to the saved authoritative copies. Producer mailbox was excluded from the merge
+index before committing. Extensions parsing delegates slow conversions and
+float32/subnormal formatting to public Basic APIs; transient output allocations
+are freed. Shared formatter comparisons are not independent numeric oracles;
+native strtod/strtof bits and fixed spellings remain independent checks. Empty
+error paths and keys have real ownership cleanup. Http/Io use sequentially
+consistent canonical atomics, a stronger-order cost. Http elapsed time uses an
+explicit checked 128-bit subtraction, not an unreviewed Apollo operator.
+
+Graphics uses the canonical NSString byte-length initializer via getTempString,
+not an invented selector. Native notifications are retained across pump boundaries
+and released on consumption; queue capacity and the observer remain process-lived.
+This adds one retain/release and queue operation per notification. It fixes lost
+between-frame events; it is not a compiler callback bypass. Unreviewed bitmap,
+arrow-cursor, contextless-swap and helper-type expectations were removed/migrated
+as detailed in the producer report, not counted as supported negative coverage.
+Actual image samples, input/window identities and GL effects remain asserted.
+
+Native clipboard restoration guard preserves materialized bytes/types, not lazy
+provider identity, changeCount or external files. Concurrent external clipboard
+changes can be overwritten; verification requires an isolated session. Catalogue
+clipboard cases now require that real guard and serialize within one runner.
+The guard enforces a child deadline, kills/reaps a stuck child, restores/verifies
+native clipboard bytes and reports124, never success. A real source-built hanging
+child verifies this path at50ms (measured0.188s including restoration). Native
+polling adds up to10ms completion latency to these tests. Outer guard failure or
+unavailable native services remain failures; no fake clipboard is used. Private
+WASM scheduler token fixtures now explicitly reject native execution to prevent
+accidental undersized pthread calls.
+
+At b99d2f02, merged Extensions catalogue results are28 native ARM64 O0 passes and
+27 interpreter passes/one120s timeout (Json/tests/numbers). Exact per-case elapsed
+was not retained by the existing runner; its runtime is at least120s. This is not
+a numeric pass. Original assertions/sweep sizes remain unchanged. Full client
+context lint remains incomplete as reported by its producer; a smaller passing
+context is not accepted as its replacement. Other platform execution is pending.
+
 Socket generator correction: reviewed Unix select declarations refer to TIMEVAL,
 while the reviewed public TIMEVAL export is Windows-only. The implementation now
 defines a private type alias to canonical POSIX.timeval for Unix signatures. The

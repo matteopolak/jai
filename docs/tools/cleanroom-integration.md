@@ -698,6 +698,24 @@ All seven workspace failures remain enabled. Failure classifications are triage,
 not expected-failure exemptions. No original application/vendor source was read.
 # Focused repairs after the frozen measurement
 
+Approved Extensions34c06fa3 and graphics7a5cce7a are merged through e026e5f3 and
+b99d2f02; inbox/control guidance was excluded and latest authoritative specs
+preserved. Against committed b99d2f02, all28 affected Extensions cases pass native
+ARM64 O0, while interpreter gives27 passes/one120-second timeout in Json numbers.
+All independent cases finish; that timeout remains a failure. See the JSON report.
+
+Mac clipboard catalogue cases require `JAIC_CLIPBOARD_GUARD` naming the actual
+source-built guard (`clang -Wall -Wextra -Werror -fobjc-arc
+tests/window-render/clipboard-guard.m -framework AppKit -o <owned-output>`).
+The guard restores actual materialized clipboard bytes even after child failure
+or its native deadline. The runner serializes those cases and gives restoration
+30 seconds beyond the child budget. Timeout cleanup is tested with a real hanging
+C child: expected124, actual native restoration verification, measured0.188s for
+a50ms child deadline. No source-library overlay or dummy video/clipboard exists.
+Use repeatable `--case <catalogue-id>` to rerun exact affected source entries;
+unknown IDs fail instead of silently reducing coverage. Native services remain
+required. The private sandbox token fixture is explicitly WASM-only.
+
 Another genuine unused-code defect was Unix Socket.select's unresolved TIMEVAL
 spelling. The generator now supplies a file-private alias to canonical POSIX
 timeval, matching the reviewed Unix declarations and installed official SDK

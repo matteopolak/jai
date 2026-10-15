@@ -468,3 +468,7 @@ Unix Socket.select now uses canonical POSIX.timeval through private ABI glue;
 real host select/canary, strict unused-code and original C ABI checks pass.
 
 - [Verified Mac graphics catalogue repairs](native/mac-graphics-catalogue-repairs.md): real clipboard, notification, fullscreen and context lifecycle fixes with explicit native limits.
+
+Merged Extensions:28 native ARM64 O0 passes;27 interpreter passes and one Json
+numbers timeout, recorded as failure. Native clipboard fixtures now require
+restoration and bounded child cleanup; no clipboard substitute is used.

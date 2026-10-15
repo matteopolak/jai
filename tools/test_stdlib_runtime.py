@@ -5,11 +5,16 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 from stdlib_coverage import code_lines, declarations
-from stdlib_runtime import contract_result, run_mode, program_arguments
+from stdlib_runtime import contract_result, run_mode, program_arguments, runtime_prefix
 from stdlib_test_catalog import validated_entries, unavailable_reason
 
 
 class CatalogueTests(unittest.TestCase):
+    def test_mac_clipboard_requires_a_restoration_guard(self):
+        with self.assertRaises(ValueError):
+            runtime_prefix({"clipboard_guard": True}, {}, "darwin")
+        self.assertEqual(runtime_prefix({}, {}, "darwin"), [])
+
     def test_native_platform_requirement_is_not_a_success(self):
         case = {"family": "modules", "required_os": "windows"}
         self.assertIsNotNone(unavailable_reason(case, "native", "macos-arm64"))

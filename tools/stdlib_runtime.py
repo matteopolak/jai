@@ -21,6 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 MODES = ["interp", "native", "wasm-interp", "wasm-native"]
 COVERAGE_LOCK = threading.Lock()
+CLIPBOARD_LOCK = threading.Lock()
 
 
 def host_platform():
@@ -100,6 +101,26 @@ def program_arguments(case, scratch, env):
     return [str(directory / "data" if kind == "scratch-file" else directory)]
 
 
+def runtime_prefix(case, env, host=sys.platform):
+    if not case.get("clipboard_guard") or host != "darwin":
+        return []
+    guard = env.get("JAIC_CLIPBOARD_GUARD")
+    if not guard or not Path(guard).is_file() or not os.access(guard, os.X_OK):
+        raise ValueError("Mac clipboard fixture requires source-built JAIC_CLIPBOARD_GUARD for native restoration")
+    return [str(Path(guard).resolve())]
+
+
+def run_program(command, cwd, timeout, env, case):
+    prefix = runtime_prefix(case, env)
+    if not prefix:
+        return run_command(command, cwd, timeout, env)
+    guarded_env = dict(env, JAIC_TEST_CHILD_TIMEOUT_MS=str(max(1, round(timeout * 1000))))
+    # The native guard enforces the child deadline, reaps it and restores before
+    # returning. Give that cleanup time; serialize clipboard fixtures in this run.
+    with CLIPBOARD_LOCK:
+        return run_command([*prefix, *command], cwd, timeout + 30, guarded_env)
+
+
 def run_mode(args, test, path, mode, scratch, metadata=None):
     """(passed, detail) of one test in one mode; passed is None when the build wrote nothing to
     run (the program did its work at compile time)."""
@@ -110,6 +131,7 @@ def run_mode(args, test, path, mode, scratch, metadata=None):
     env["JAIC_STDLIB_TEST_MODE"] = mode
     try:
         arguments = program_arguments(metadata or {}, scratch, env)
+        runtime_prefix(metadata or {}, env)
     except ValueError as error:
         return False, str(error)
     wasm = mode.startswith("wasm")
@@ -118,8 +140,8 @@ def run_mode(args, test, path, mode, scratch, metadata=None):
         record = Path(scratch) / f"{test.replace('/', '-')}-{mode}.coverage"
         if args.coverage:
             env["JAIC_COVERAGE"] = str(record)
-        code, stdout, stderr = run_command([args.jaic, str(path), "-interp", *target,
-                                           *(["--", *arguments] if arguments else [])], path.parent, args.timeout, env)
+        code, stdout, stderr = run_program([args.jaic, str(path), "-interp", *target,
+                                           *(["--", *arguments] if arguments else [])], path.parent, args.timeout, env, metadata or {})
         if args.coverage and record.exists():
             # One file per run, gathered under a lock: concurrent appends could interleave.
             with COVERAGE_LOCK, open(args.coverage, "a", encoding="utf-8") as into:
@@ -158,7 +180,7 @@ def run_mode(args, test, path, mode, scratch, metadata=None):
             for dll in Path(os.environ["JAIC_NATIVE_LIBS"]).glob("SDL2.dll"):
                 shutil.copy2(dll, exe.parent / dll.name)
         command = ["node", "--no-warnings", str(ROOT / "tools/wasi_run.mjs"), str(built[0])] if wasm else [str(built[0])]
-        code, stdout, stderr = run_command([*command, *arguments], path.parent, args.timeout, env)
+        code, stdout, stderr = run_program([*command, *arguments], path.parent, args.timeout, env, metadata or {})
         out = stdout + stderr
         return contract_result(metadata or {}, code, stdout, stderr), out if code is not None else f"timed out after {args.timeout:.0f}s\n{out}"
     finally:
@@ -173,6 +195,7 @@ def main():
     ap.add_argument("--opt", choices=("O0", "O2"), default="O0", help="native optimization level")
     ap.add_argument("--platform", default=host_platform(), help="actual host/target platform")
     ap.add_argument("--filter", default="", help="only tests whose id contains this")
+    ap.add_argument("--case", action="append", default=[], help="select an exact catalogue ID (repeatable)")
     ap.add_argument("--coverage", type=Path, help="append the procedures the interpreter runs to this file")
     ap.add_argument("--strict", action="store_true", help="retained CLI spelling; selected supported failures are always fatal")
     ap.add_argument("--timeout", type=float, default=180)
@@ -195,7 +218,10 @@ def main():
     if "native" in modes:
         use_native_libs(args.platform)
     catalogue = validated_entries()
-    todo = [case for case in catalogue if args.filter in case["id"]]
+    unknown = set(args.case) - {case["id"] for case in catalogue}
+    if unknown:
+        ap.error("unknown catalogue IDs: " + ", ".join(sorted(unknown)))
+    todo = [case for case in catalogue if args.filter in case["id"] and (not args.case or case["id"] in args.case)]
     if not todo:
         ap.error("test selection is empty")
     scratch = tempfile.mkdtemp(prefix="jaic-stdlib-runtime-")
