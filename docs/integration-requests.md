@@ -744,3 +744,11 @@ OID clarification:62b8f173 here is qualified C++ adapter generation, whose hando
 ## Shared transition: compiler-owned filtered parameter using
 
 The independently verified b02bf2da regression is retained in tests/stdlib-contract/compiler-using-records/main.jai. Its production Program_Print fix is intentionally not copied because compiler owns static-filter reconstruction/scanning in the shared tree. The retained parameter roundtrip currently needs that owner checkpoint. No c018dd52 live::alias semantics are admitted.
+
+## Shared source ownership and remaining test integration
+
+ASN1/Socket 67c9dc52, crypto/JKS 47bf26ec + cd8a6c33 and APK 3e89682b owned files are reconciled into shared production. Existing Socket null check and TIMEVAL alias are retained. Integration target: /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target; scratch: artifacts/shared-integration. Forward enums and corrected filtered storage reexports already exist in adc1e8f1. No unsupported live::alias behavior is adopted.
+
+ASN1/Socket owner: replace archive/staging runner with shared production checks; coordinator must synchronize missing reviewed CMSG_SIZE/domain/hex paragraphs without replacing latest root specs. Crypto/APK owners: preserve all private framing/EVP assertions while replacing facade aliases/staged-library proof with independent unit coverage plus unchanged production public consumers. tools/check_shared_portable.py supplies the latter for nine fixtures, O0 native ARM64. Other platform/package execution remains open.
+
+Generator/tools owner: all-zero PDB/CIE corruption is NOT waived. Shared tree initially has no target fixtures; 17 inputs in integrator retained target are nonzero (hashes: ignored artifacts/shared-integration/old-native-input-audit.json). Please name exact failing input, command and pre/post hash or supply independent reduction; preserve failed bytes before regeneration. Native fixture generation/consumption must be serialized with unique outputs and hash invariants. Root original corpus/Focus remains coordinator-owned.

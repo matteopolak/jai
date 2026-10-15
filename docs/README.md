@@ -619,3 +619,12 @@ the earlier120-second timeout is retained. Full aggregate replay remains require
 - [Basic LSP resolution verification](tools/lsp-basic-resolution-verification.md): reported Basic.temp and exit(1) checks on the merged server
 
 - [Shared stdlib worktree](tools/shared-stdlib-worktree.md): source ownership, shared commits and independent build/test outputs
+- [Shared portable verification](tools/shared-portable-verification.md): combined ASN.1, Socket, JKS and APK source checks and native baseline limits
+
+
+ASN1/Socket shared-tree verification now uses current production dependencies and
+a fresh source-built compiler, with separate worker outputs and no old overlays.
+[The scoped handoff](portable-asn1-socket-handoff.md) records 54 actual host
+executions, 34 supported-platform source/lint gates, and the blocked Android
+compiler gate. [The API inventory](status/asn1-socket-remaining.json) keeps six
+Android rows partial and other native platforms unverified.

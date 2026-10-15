@@ -1,5 +1,26 @@
 # Independent integration deviations audit
 
+## Shared portable transition, 2026-10-15
+
+- `tools/check_asn1_socket_closure.py`, `tools/check_portable_jks_crypto.py` and
+  `tools/check_portable_apk_signing.py` retain producer source/facade staging.
+  Their old passes are historical diagnostic evidence, not current production
+  proof. `tools/check_shared_portable.py` executes nine unchanged public fixtures
+  against the combined tree with input hash checks. Private APK framing/EVP
+  assertions still need owner integration; that unexecuted coverage is open.
+- `stdlib/internal/android-toolchain/crypto-provider.jai` uses OpenSSL3 native
+  ABI under reviewed compatibility names. Package construction is Mac-only;
+  three actual construction/rejection tests pass. Windows/Linux/device, x64 and
+  minimum-deployment native verification remain open. No new runtime fallback
+  or public native handles were introduced.
+- `stdlib/internal/android-toolchain/apk-signing-orchestration.jai` preserves
+  reviewed log-and-true cryptographic mismatch behavior. Callers cannot use this
+  as a general signature-validity predicate; changing it requires spec review.
+- Reported all-zero PDB/CIE corruption is unresolved. Seventeen inputs in the
+  integrator's retained target are nonzero; this does not disprove the reported
+  failure. Preserve corrupt bytes, identify the generating/consuming command,
+  serialize native suites and check input hashes throughout verification.
+
 ## Mac native loader constructor affinity
 
 The strengthened original C constructor's pthread_main_np assertion reproduced
