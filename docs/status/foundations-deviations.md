@@ -4,7 +4,34 @@ Review scope: owned Basic builder/formatter, String utilities, scalar Hash,
 File_Utilities, focused tests and unchanged repository jaifmt integration.
 This is a deviations inventory, not a claim of completed production integration.
 
-- **Preamble cross predicate remains broken in the supplied compiler** — native
+Latest resolution: NEW producer compiler_host semantics fix BUILD_* generally.
+Preamble cross early return now passes the genuine WASI test and independent
+predicate. The historical failure below is retained, not still treated as a gap.
+
+- **Wide integer conversion guard gap** — integer128.jai implements real wide
+  arithmetic and scalar conversion bodies, but to_s128/to_u128 lack the
+  inventory's #modify guard. Accepted source kinds, negative unsigned extension
+  and unsigned-to-signed overflow policy are not specified. Risk: unsupported
+  kinds may be accepted or produce misleading diagnostics. The precise contract
+  request is in foundations-questions.md; no arbitrary guard is invented.
+- **Array aliasing safety resolved** — bulk append formerly read stale source
+  storage after growth when given its own slice. The original moving allocator
+  regression failed before the fix and now passes. A single reserve/rebase and
+  overlap-safe element copying fix the general ownership cause; ordinary
+  nonoverlapping copies still use memcpy. No API or fixture special case exists.
+
+- **Strict lint coverage newly exposed** — newer jailint reports incomplete
+  semantic bodies. Byte-identical library paths must lie under the selected
+  stdlib root to preserve correct private-module identity; the driver verifies
+  every mapped copy rather than using a substitute. Native active code has no
+  remaining lint finding after improving the replacement free-hook check.
+  Full inventory still reports Windows-only files under a host-only CLI and
+  intentionally invalid/cross-only tests; current runner preserves failure.
+  Proper target-aware analyzer and explicit negative-fixture workflow are
+  requested. Earlier blank-output passes used the earlier producer and are
+  not reinterpreted as proof of newer complete semantic coverage.
+
+- **Historical Preamble cross predicate failure (now resolved)** — native
   scoped behavior is implemented/tested, but OS/BUILD_OS and CPU/BUILD_CPU are
   currently identical target constants. The provisional comparison therefore
   cannot implement the reviewed cross return; the WASI behavior test and an

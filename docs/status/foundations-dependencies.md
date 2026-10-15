@@ -37,10 +37,10 @@ without changing Basic's reviewed ABI. Basic must not manufacture their names.
 Original pending/pool-capabilities-name.jai reproduces the Pool failure using
 only public APIs; it is not counted as a completed runtime case.
 
-Preamble native scoped effects are implemented; genuine cross-target detection
-is blocked because BUILD_OS/BUILD_CPU alias the target. See the separate general
-predicate request with explicit native/WASI test evidence. No Basic-specific
-compiler bypass or accepted-but-ignored cross behavior is counted as support.
+Preamble native scoped effects and cross early return now pass with the NEW
+compiler general BUILD_OS/BUILD_CPU host fix. The separate predicate request
+retains the original failure and current native/WASI verification evidence.
+No Basic-specific compiler bypass was introduced.
 
 ## Visualization producer coverage
 

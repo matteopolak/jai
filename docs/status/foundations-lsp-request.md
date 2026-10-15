@@ -1,5 +1,11 @@
 # Public alias signature documentation
 
+Resolved in the NEW producer: the current unchanged complete auto_import test
+file passes all 13 tests, including alias signature documentation and Basic/Math
+ranking. Rechecked from the durable own source build after the host-constant
+refresh. The original general probe remains regression coverage; no facade
+wrapper or peer edit was introduced. Historical failure/request follows.
+
 The NEW compiler producer's unchanged `jai-language-server/tests/auto_import.rs`
 now passes the Basic/Math logging ranking test against production Basic and NEW
 numerics Math. No library/test substitute was used. The full test file passes

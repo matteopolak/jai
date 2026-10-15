@@ -14,15 +14,15 @@ No source implementation outside the authorized NEW producers is an input.
   allocation/output effects. Record unresolved edge contracts precisely.
 - [x] Stack traces: test explicit and contextual linked frames, implement owned
   packing/strings/output/logging, verify caller metadata and lifetime.
-- [ ] Leak service: independently design private allocation/trace records and
+- [x] Leak service: independently design private allocation/trace records and
   real synchronized lifecycle bookkeeping; preserve public report layouts;
   implement baseline/exemptions, reachability/grouping/report ownership and
   logging with actual allocations. Request general compiler/runtime root
   enumeration if the supplied APIs cannot implement global-root scanning.
 - [x] Native macOS/Linux visualization: implement lifecycle, string management, throttling and
   actual live-state publication using reviewed transport once synchronized.
-- [ ] Finish Preamble cross semantics through a genuine compiler host predicate;
-  retain the failing WASI behavior regression until that general fix lands.
+- [x] Finish Preamble cross semantics through a genuine compiler host predicate;
+  the unchanged WASI behavior regression now passes.
 - [ ] Finish module-qualified leak matching when exact module mapping is supplied;
   current explicit unsupported diagnostics are not full behavior.
 - [ ] Retest unavailable Windows/WASI transport when producers supply it.

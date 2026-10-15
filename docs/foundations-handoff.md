@@ -4,18 +4,32 @@ This work owns Basic builder/formatting, String utilities, Hash scalars and
 File_Utilities. Inherited spec, argument/runtime and Command_Line edits are
 retained in the worktree and excluded from foundations commits.
 
-Current continuation includes the real memory-visualization protocol/channel,
-CAPS name-out ABI and native Preamble. The old text snapshot is removed. All
-42 host cases pass interpreter/native O0/O2; 33 supported WASI cases pass both
-levels, then the additional Preamble cross test FAILS on supplied host/target
-constants (request/repro retained). Current real jaifmt CLI/check and strict
-lint pass. No native/cross completion is claimed for the still-failing WASI
-Preamble or unused File dependency. Native channel tests exercise real packets,
-timing, queue pressure/retry, free-before-retry, empty strings and reconnect.
-The final six native unused-code scopes pass. Producer Pool CAPS null-data
-assertion has an original public-API reproducer, kept outside positive runtime
-counts. Both compiler/producer failures remain strict blockers rather than
-weakened assertions or substituted production code.
+Latest stable checkpoint is f9cd1c3; continuation improves canonical context
+lint usage and adds array aliasing safety. NEW compiler host constants resolve
+the Preamble cross failure: the 43-case suite passes interpreter/native O0/O2,
+and 35 supported WASI cases pass O0/O2. Six native unused-code scopes pass;
+WASI -no_dce still fails on the producer File unavailable POSIX.FILE declaration.
+The unchanged LSP auto_import file now passes all 13 tests, resolving the old
+alias documentation failure as well as Basic/Math ranking.
+
+Real unchanged jaifmt CLI/check passes. Newer strict lint reports incomplete
+coverage for Windows-only files with its host-only CLI and deliberately invalid
+or cross-only regression roots. Canonical byte-verified staged library paths
+fix private-module identity; focused changed production roots and positive tests
+pass -D warnings. Full lint is still pending the general producer workflow;
+no blanket suppression or ignored stderr is used. Module-qualified leak filters,
+allocator-family matching and Windows/WASI transport limits remain explicit in
+the questions/deviations, with original producer reproducers retained.
+
+The new array ownership regression uses a deterministic moving allocator that
+poisons old storage; it exposed invalid reads during bulk self-append. The
+production implementation now reserves once, rebases aliased inputs and copies
+overlapping storage safely. Tests cover full/interior/empty append and self/
+overlapping copy. Current focused changed code passes real -D warnings lint.
+
+## Historical checkpoint evidence
+
+Later resolutions above supersede the earlier blocker/status statements below.
 
 The next synchronized behavioral batch is implemented: exact helper output/
 copying/empty cases, scalar #modify guards and ownership helpers, temporary

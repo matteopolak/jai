@@ -142,6 +142,7 @@ The LLVM backend, C ABI and linking.
 - [Remaining Basic implementation plan](status/foundations-completion-plan.md)
 - [Basic producer dependency requests](status/foundations-dependencies.md)
 - [General cross-compilation predicate request](status/foundations-preamble-request.md)
+- [Strict lint target and program-context request](status/foundations-lint-request.md)
 - [Public alias completion signature request](status/foundations-lsp-request.md)
 - [Core foundations native ABI notes](foundations-native-abi.md)
 - [Core foundations deviations and remaining limits](status/foundations-deviations.md)
