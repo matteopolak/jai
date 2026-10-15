@@ -68,6 +68,15 @@ def main():
                     item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
                     if item["name"] in extended_apis:
                         item["implementation"] = "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+                        if item["name"] in {"clang_getNullLocation", "clang_equalLocations", "clang_getNullRange",
+                                             "clang_Range_isNull", "clang_equalRanges", "clang_getFileUniqueID",
+                                             "clang_File_isEqual", "clang_File_tryGetRealPathName", "clang_getLocation",
+                                             "clang_getExpansionLocation", "clang_getInstantiationLocation", "clang_getFileLocation",
+                                             "clang_getLocationForOffset", "clang_getPresumedLocation", "clang_isBeforeInTranslationUnit",
+                                             "clang_getRange", "clang_isDeclaration", "clang_isReference", "clang_isInvalid",
+                                             "clang_isInvalidDeclaration", "clang_createCXCursorSet", "clang_disposeCXCursorSet",
+                                             "clang_CXCursorSet_contains", "clang_CXCursorSet_insert"}:
+                            item["implementation"] = "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
                 if item["name"] in {"set_ExcludeDeclarationsFromPCH", "get_ExcludeDeclarationsFromPCH",
                                      "set_DisplayDiagnostics", "get_DisplayDiagnostics",
                                      "set_StorePreamblesInMemory", "get_StorePreamblesInMemory"}:

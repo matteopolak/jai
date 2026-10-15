@@ -114,6 +114,7 @@ def main():
     cases.append("bindings-clang-tokens")
     cases.append("bindings-clang-build-system")
     cases.append("bindings-native-abi")
+    cases.append("bindings-clang-source")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -218,7 +219,7 @@ def main():
     for cpu in ["x64", "arm64"]:
         run([JAIC, "tests/developer-tools/debug-windows-contract.jai", "-check", "-os", "windows", "-cpu", cpu])
         for os_name in ["linux", "windows"]:
-            for case in ["msf-wire", "debug-int-set", "dwarf-cfa", "bindings-clang-tokens", "bindings-clang-build-system"]:
+            for case in ["msf-wire", "debug-int-set", "dwarf-cfa", "bindings-clang-tokens", "bindings-clang-build-system", "bindings-clang-source"]:
                 run([JAIC, f"tests/developer-tools/{case}.jai", "-check", "-os", os_name, "-cpu", cpu])
     for case, reason in [("check-array", "fixed array used as a pointer in assignment"),
                          ("check-small-driver", "small integer addition requires an explicit intermediate integer cast")]:

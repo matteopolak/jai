@@ -1954,21 +1954,21 @@
         "declaration": "clang_getFileUniqueID :: (file: CXFile, outID: *CXFileUniqueID) -> s32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 325,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_File_isEqual",
         "declaration": "clang_File_isEqual :: (file1: CXFile, file2: CXFile) -> s32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 326,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_File_tryGetRealPathName",
         "declaration": "clang_File_tryGetRealPathName :: (file: CXFile) -> CXString #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 327,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "CXSourceLocation",
@@ -1989,21 +1989,21 @@
         "declaration": "clang_getNullLocation :: () -> CXSourceLocation #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 330,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_equalLocations",
         "declaration": "clang_equalLocations :: (loc1: CXSourceLocation, loc2: CXSourceLocation) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 331,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_isBeforeInTranslationUnit",
         "declaration": "clang_isBeforeInTranslationUnit :: (loc1: CXSourceLocation, loc2: CXSourceLocation) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 332,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_Location_isInSystemHeader",
@@ -2024,49 +2024,49 @@
         "declaration": "clang_getNullRange :: () -> CXSourceRange #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 335,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getRange",
         "declaration": "clang_getRange :: (begin: CXSourceLocation, end: CXSourceLocation) -> CXSourceRange #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 336,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_equalRanges",
         "declaration": "clang_equalRanges :: (range1: CXSourceRange, range2: CXSourceRange) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 337,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_Range_isNull",
         "declaration": "clang_Range_isNull :: (range: CXSourceRange) -> s32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 338,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getExpansionLocation",
         "declaration": "clang_getExpansionLocation :: (location: CXSourceLocation, file: *CXFile, line: *u32, column: *u32, offset: *u32) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 339,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getPresumedLocation",
         "declaration": "clang_getPresumedLocation :: (location: CXSourceLocation, filename: *CXString, line: *u32, column: *u32) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 340,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getInstantiationLocation",
         "declaration": "clang_getInstantiationLocation :: (location: CXSourceLocation, file: *CXFile, line: *u32, column: *u32, offset: *u32) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 341,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getSpellingLocation",
@@ -2080,7 +2080,7 @@
         "declaration": "clang_getFileLocation :: (location: CXSourceLocation, file: *CXFile, line: *u32, column: *u32, offset: *u32) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 343,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getRangeStart",
@@ -2479,14 +2479,14 @@
         "declaration": "clang_getLocation :: (tu: CXTranslationUnit, file: CXFile, line: u32, column: u32) -> CXSourceLocation #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 400,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getLocationForOffset",
         "declaration": "clang_getLocationForOffset :: (tu: CXTranslationUnit, file: CXFile, offset: u32) -> CXSourceLocation #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 401,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getSkippedRanges",
@@ -2780,21 +2780,21 @@
         "declaration": "clang_isDeclaration :: (unknown0: CXCursorKind) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 443,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_isInvalidDeclaration",
         "declaration": "clang_isInvalidDeclaration :: (unknown0: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 444,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_isReference",
         "declaration": "clang_isReference :: (unknown0: CXCursorKind) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 445,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_isExpression",
@@ -2829,7 +2829,7 @@
         "declaration": "clang_isInvalid :: (unknown0: CXCursorKind) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 450,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_isTranslationUnit",
@@ -2962,28 +2962,28 @@
         "declaration": "clang_createCXCursorSet :: () -> CXCursorSet #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 469,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_disposeCXCursorSet",
         "declaration": "clang_disposeCXCursorSet :: (cset: CXCursorSet) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 470,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_CXCursorSet_contains",
         "declaration": "clang_CXCursorSet_contains :: (cset: CXCursorSet, cursor: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 471,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_CXCursorSet_insert",
         "declaration": "clang_CXCursorSet_insert :: (cset: CXCursorSet, cursor: CXCursor) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 472,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getCursorSemanticParent",
@@ -5328,21 +5328,21 @@
         "declaration": "clang_getFileUniqueID :: (file: CXFile, outID: *CXFileUniqueID) -> s32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 810,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_File_isEqual",
         "declaration": "clang_File_isEqual :: (file1: CXFile, file2: CXFile) -> s32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 811,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_File_tryGetRealPathName",
         "declaration": "clang_File_tryGetRealPathName :: (file: CXFile) -> CXString #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 812,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "CXSourceLocation",
@@ -5363,21 +5363,21 @@
         "declaration": "clang_getNullLocation :: () -> CXSourceLocation #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 815,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_equalLocations",
         "declaration": "clang_equalLocations :: (loc1: CXSourceLocation, loc2: CXSourceLocation) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 816,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_isBeforeInTranslationUnit",
         "declaration": "clang_isBeforeInTranslationUnit :: (loc1: CXSourceLocation, loc2: CXSourceLocation) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 817,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_Location_isInSystemHeader",
@@ -5398,49 +5398,49 @@
         "declaration": "clang_getNullRange :: () -> CXSourceRange #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 820,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getRange",
         "declaration": "clang_getRange :: (begin: CXSourceLocation, end: CXSourceLocation) -> CXSourceRange #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 821,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_equalRanges",
         "declaration": "clang_equalRanges :: (range1: CXSourceRange, range2: CXSourceRange) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 822,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_Range_isNull",
         "declaration": "clang_Range_isNull :: (range: CXSourceRange) -> s32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 823,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getExpansionLocation",
         "declaration": "clang_getExpansionLocation :: (location: CXSourceLocation, file: *CXFile, line: *u32, column: *u32, offset: *u32) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 824,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getPresumedLocation",
         "declaration": "clang_getPresumedLocation :: (location: CXSourceLocation, filename: *CXString, line: *u32, column: *u32) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 825,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getInstantiationLocation",
         "declaration": "clang_getInstantiationLocation :: (location: CXSourceLocation, file: *CXFile, line: *u32, column: *u32, offset: *u32) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 826,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getSpellingLocation",
@@ -5454,7 +5454,7 @@
         "declaration": "clang_getFileLocation :: (location: CXSourceLocation, file: *CXFile, line: *u32, column: *u32, offset: *u32) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 828,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getRangeStart",
@@ -5853,14 +5853,14 @@
         "declaration": "clang_getLocation :: (tu: CXTranslationUnit, file: CXFile, line: u32, column: u32) -> CXSourceLocation #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 885,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getLocationForOffset",
         "declaration": "clang_getLocationForOffset :: (tu: CXTranslationUnit, file: CXFile, offset: u32) -> CXSourceLocation #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 886,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getSkippedRanges",
@@ -6154,21 +6154,21 @@
         "declaration": "clang_isDeclaration :: (unknown0: CXCursorKind) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 928,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_isInvalidDeclaration",
         "declaration": "clang_isInvalidDeclaration :: (unknown0: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 929,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_isReference",
         "declaration": "clang_isReference :: (unknown0: CXCursorKind) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 930,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_isExpression",
@@ -6203,7 +6203,7 @@
         "declaration": "clang_isInvalid :: (unknown0: CXCursorKind) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 935,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_isTranslationUnit",
@@ -6336,28 +6336,28 @@
         "declaration": "clang_createCXCursorSet :: () -> CXCursorSet #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 954,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_disposeCXCursorSet",
         "declaration": "clang_disposeCXCursorSet :: (cset: CXCursorSet) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 955,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_CXCursorSet_contains",
         "declaration": "clang_CXCursorSet_contains :: (cset: CXCursorSet, cursor: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 956,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_CXCursorSet_insert",
         "declaration": "clang_CXCursorSet_insert :: (cset: CXCursorSet, cursor: CXCursor) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 957,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native source/file/range/cursor-set APIs; original physical and presumed source metadata, ownership and set effects verified interpreter/native O0/O2"
       },
       {
         "name": "clang_getCursorSemanticParent",
