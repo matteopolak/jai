@@ -455,3 +455,7 @@ still fails and remains reported. OS-specific unavailable cases are not passes.
 
 Corrected compiler storage/immutability regressions pass58 core/module checks.
 The unsupported live-constant-alias implementation and history remain excluded.
+
+System's reviewed x64 Machine_X64 alias now resolves canonically on Windows;
+host behavior and dependent unused-code source checks pass, without a Windows
+runtime claim.

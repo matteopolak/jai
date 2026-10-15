@@ -1476,6 +1476,13 @@ expectation correction; the normal packaged false selector is restored byte for
 byte. This does not add further option coverage or native platform claims.
 # Native Mac measurement limitations, 2026-10-15
 
+System facade correction: CPU-X64 `M64` now directly imports the reviewed
+Machine_X64 module rather than assuming the private Windows backend exports it.
+Canonical module/type/enum identity is asserted; ARM64 still has no M64 export.
+Host native/interpreter behavior and the original Windows-x64 source failure are
+verified. Android/Toolchain's dependent source error is also resolved. Native
+Windows runtime verification is outstanding; source checks do not substitute it.
+
 Corrected compiler storage checkpoint eaf39199 was reviewed as a net snapshot
 against6080ff0a, including producer handoff/status/deviation reports. Its only
 production delta is anonymous filtered using registration already present here

@@ -698,6 +698,15 @@ All seven workspace failures remain enabled. Failure classifications are triage,
 not expected-failure exemptions. No original application/vendor source was read.
 # Focused repairs after the frozen measurement
 
+Unused-code baseline also exposed a genuine general System facade error:
+its reviewed CPU-X64 `M64 :: #import "Machine_X64"` alias was forwarded through
+a backend that did not export it on Windows. The facade now imports the canonical
+module directly, preserving reflected type/enum identity and the CPU condition.
+The new positive/absence fixture passes host interpreter/native ARM64 O0 and
+strict lint. Windows-x64 `-check -no_dce` reproduced the error before and passes
+after; Android/Toolchain's original Windows-x64 unused-code check also passes.
+These are source checks, not native Windows executions. No new export was invented.
+
 Corrected storage/immutability review eaf39199 contributes only reviewed net tests
 and documentation; existing proper production registration57cb0b51 is retained.
 Unsupported live-alias commits are not merged. Exact selected file provenance is
