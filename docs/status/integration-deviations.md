@@ -1,5 +1,20 @@
 # Independent integration deviations audit
 
+## Refresh-ten rejected SDL adapter
+
+Bindings `fddae00` was inspected directly. Its RWFromFile proxy changes SDL-owned
+native object identity and installs ordinary Jai callback pointers into an object
+that native C clients would interpret as SDL_RWops. It is not safe native
+interoperability; its BMP wrapper additionally fabricates a default callback
+context with no reviewed capture policy. Integration rejects those two adapter
+entries and retains direct foreign factory/BMP calls on actual SDL-owned native
+pointers. No C receives a 48-byte Jai-created object from our supported helpers.
+Custom/copy callback records remain outside the supported native ABI contract.
+The safe WM-info adapter and other new binding work are retained. Generator
+metadata is regenerated from this actual composition; proxy-only test successes
+are not counted as production evidence. Exact reproducer/required owner action
+are in integration-requests.md. Public RWops/UserEvent layout gaps remain visible.
+
 ## Native linking and test-oracle audit
 
 - Production native dependency `xxhash070` was missing from

@@ -7,3 +7,5 @@
 uint64_t binding_runtime_wm_size(void) { return sizeof(SDL_SysWMinfo); }
 uint64_t binding_runtime_wm_offset(void) { return offsetof(SDL_SysWMinfo, info); }
 uint64_t binding_runtime_wm_union_size(void) { return sizeof(((SDL_SysWMinfo *)0)->info); }
+uint64_t binding_runtime_rw_size(void) { return sizeof(SDL_RWops); }
+uint64_t binding_runtime_rw_hidden_offset(void) { return offsetof(SDL_RWops, hidden); }

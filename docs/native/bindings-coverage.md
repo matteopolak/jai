@@ -15,12 +15,20 @@ Objective_C helpers. The explicit SDL WM-info adapter is recorded as a manual
 implementation with its original native symbol and full matched signature;
 its safety evidence does not resolve RWops/UserEvent layout mismatches.
 
-Current root ledger counts are 28,332 declared, 1,262 forwarded, 548 generated
-implementations, 36 manual implementations, 193 unresolved and one exact
+Current root ledger counts are 28,389 declared, 1,262 forwarded, 547 generated
+implementations, 45 manual implementations, 128 unresolved and one exact
 duplicate. These counts measure source dispositions, not completed binding
 scope. Remaining declared ABI discrepancies and unverified native platforms
 remain required work; newly resolved AppKit return semantics do not establish
 complete AppKit lifecycle support.
+The new POSIX availability association emits 59 formerly unresolved entries.
+Both macOS CPUs execute source-built C/Jai ABI and runtime probes successfully;
+x64 uses OS translation on this ARM64 host. WGL, four X11 helpers and safe SDL
+RWops forwarding have real bodies; WGL/X11 runtime still needs those platforms.
+Android EGL's new body is explicitly unverified while the compiler rejects its
+target. iOS host behavior is tested privately with exact public target absence;
+no desktop convenience export is added. All unresolved/configuration/ABI gaps
+remain required work. See [worker progress](../status/bindings-progress.md).
 Actual failures, scope and hashes are in the [verified evidence index](bindings-verified-snapshot.json)
 and [deviations report](../status/bindings-deviations.md).
 
@@ -32,7 +40,7 @@ implementations, where built, come from pinned official vendor repositories.
 
 ## Validation so far
 
-- Thirty-one Python parser/generator regressions pass, including configuration
+- Thirty-five Python parser/generator regressions pass, including configuration
   labels between aggregate names and kinds, multi-type fences, GL parent/field
   relationships across metadata sections, and implicit native enum dependencies.
 - lz4, xxHash, meshoptimizer, freetype, stb_image, stb_image_resize,

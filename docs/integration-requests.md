@@ -122,6 +122,33 @@ null-deref-plain-load mismatch; supply a minimal independent semantic reproducer
 through the compiler owner rather than relaxing pointer safety or expected output.
 # Refresh-nine request: foundations helper contract synchronization
 
+## Bindings refresh-ten: SDL proxy violates native-pointer contract
+
+Snapshot `fddae00`, `stdlib/SDL/wrappers.jai:SDL_RWFromFile`, returns a newly
+allocated `Binding_File_RWops.surface` rather than the pointer returned by SDL.
+Its callbacks use the ordinary Jai ABI. A native C client calling official
+`SDL_RWsize(stream)`/`SDL_RWclose(stream)` therefore receives a proxy with the wrong
+callback ABI and no native hidden union. It cannot interoperate as the SDL-owned
+native pointer required by the latest reviewed sdl.md. The default #Context used
+by the BMP callback bridge is also an unresolved policy, not established source
+behavior. The newly authored proxy tests do not establish that contract.
+
+Integration retains the prior direct native SDL_RWFromFile/SDL_LoadBMP_RW paths
+and the already-safe full-storage WM-info adapter; it does not import the proxy
+or invent a caller context. Root pointer-only supported behavior remains actual
+SDL-owned objects; a Jai-created/copied 48-byte record is not a native RWops and
+must not be supplied to C. The rejected code remains available in the permitted
+producer commit for owner review, not production integration proof.
+
+Required producer regression: open an independently authored BMP through the
+public factory, pass its result to an official-header C helper that calls native
+SDL_RWsize and SDL_RWclose, and verify real bytes/status and freesrc failure
+cleanup. Preserve the exact public 48-byte record and Jai callback types. Do not
+replace native object identity or fabricate context capture. Any future custom
+callback support needs reviewed context/ownership semantics and full private C
+storage. Preserve original ABI mismatch evidence and classify proxy-only test
+expectations against the reviewed native-pointer boundary.
+
 Additional reviewed mismatch: `internal/basic/logging.jai::dispatch_log` invokes
 the logger for an empty formatted message. Latest Basic requires no dispatch for
 empty messages; retain nonempty metadata/lifetime/default logger assertions.

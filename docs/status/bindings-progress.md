@@ -1,13 +1,13 @@
 # Bindings worker progress
 
 Active implementation; full integration/corpus/release verification remains
-coordinator-owned. Last committed checkpoint before this batch: `b8e492b`.
+coordinator-owned. POSIX/WGL checkpoint: `79af73e`.
 
 2026-10-14 current batch:
 
 - Fixed distinct-shape association with per-CPU inventory availability. A sole
   shape within an OS is shared by that OS's declared CPUs; distinct CPU shapes
-  remain separate. No borrowing across OS boundaries. 34 generator regressions
+  remain separate. No borrowing across OS boundaries. 35 generator regressions
   pass. POSIX unresolved declarations reduced from 67 to 8 by emitting actual
   reviewed records/enums, including all missing macOS x64 declarations.
 - Implemented `GL.wgl_create_context` through private native WGL setup. It
@@ -22,6 +22,22 @@ coordinator-owned. Last committed checkpoint before this batch: `b8e492b`.
 - New host public C SDK probe passes seven POSIX sizes and seven offsets, plus
   a real `getitimer` call. POSIX declaration/public-name checks pass on both
   Linux CPUs and both macOS CPUs. Linux cross-target checks are source evidence.
+- Both macOS CPUs now execute source-built C/Jai ABI and ordinary POSIX tests:
+  all 12 checks pass, with x64 running through OS translation on this ARM64
+  host. Evidence: `.work/posix-sdk-both-cpus.json`.
+- Safe SDL RWops adapters preserve the public 48-byte record and Jai callback
+  ABI. Complete private C storage, custom UNKNOWN tagging, range checks and a
+  synchronized live-address registry prevent native overreads and copied-file
+  callback overreads. Real BMP/custom-stream/canary/file/close/copy tests pass;
+  original RWops/UserEvent ABI mismatch assertions remain active failures.
+- Four X11 window/UI helpers have real bodies and Linux source checks. Real
+  X-server drawing/pixel tests are supplied but not executed on this host.
+- Android EGL has a real ES2/config/MSAA/context/surface implementation with
+  checked native calls and retained failure handles. Neither Android type
+  checking nor device execution is claimed while the compiler rejects its OS.
+- All iOS helpers now obey iOS-only public visibility. Eighteen desktop absence
+  checks and the private native SDK/pipe/cache unit pass; two required iOS CPU
+  source checks still fail on unsupported compiler targets.
 
 Evidence: `.work/posix-wgl-current.json` retains the initial WGL array-literal
 failure; that syntax was corrected and both Windows CPU checks pass afterward.
@@ -39,3 +55,18 @@ and configuration gaps. Eight Android shape associations, general GL dispatcher,
 rpmalloc, enabled telemetry, Objective-C class helpers, D3D/DXC convenience
 wrappers and X11 helpers remain required. See deviations/questions for exact
 limitations; declaration counts are not a claim of native completeness.
+
+Current source ledger: 28,389 declared, 1,262 forwarded, 547 generated bodies,
+45 manual bodies, 128 unresolved, one duplicate. Manual includes unverified
+Android code; no native completion is inferred. Configurations still have 58
+required failures. The intermediate broad matrix recorded 1,200 symbols passed,
+45 native checks passed and two native failures (invalid host iOS expectation
+and retained SDL layout mismatch). It preceded the iOS fix and straddled an
+X11 fixture update; two X11 source failures are an incoherent intermediate
+snapshot, not current source results. Preserve `.work/current-owned-full.json`;
+rerun a stable fresh snapshot before reporting final broad counts.
+Current reports: `.work/checkpoint-2-production-tools.json` (40 passed),
+`.work/sdl-rwops-native-final.json`, `.work/ios-sdk-paths-current.json`,
+`.work/adapter-privacy-current.json`, `.work/windows-render-current.json`.
+The actual Windows renderer remains blocked by the independent fixed-array
+literal reproducer in NEW producer Unicode, after integrating the File owner.

@@ -17,5 +17,13 @@
       "X11",
       "COCOA"
     ]
+  },
+  "rwops_adapter_oracle": {
+    "archive_sha256": "e4a8bd5a7052418b8f9cb031e31927389051c22b81d9069806d70b047d856d12",
+    "files": {
+      "include/SDL2/SDL_rwops.h": "4262fe54e2752a2db76fa5526bb985d782d0fe4f2aec53a73059f7fe41b229ec",
+      "src/sdl2_compat.c": "6fab2ce02abf0ac3de83acef3e7394d4a244fcdeff928bedc8790b5288196d76"
+    },
+    "scope": "Complete desktop private C record/callback ABI; custom bridge uses SDL_RWOPS_UNKNOWN; synchronous close-callback ownership reviewed in native SDK source"
   }
 }
