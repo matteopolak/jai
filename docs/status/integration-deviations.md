@@ -1,5 +1,24 @@
 # Independent integration deviations audit
 
+## General required-library initialization repair
+
+`interp/mod.rs` now honors link_always before runtime entry/native foreign lookup,
+and `sema/modules.rs` resolves named literal required-library metadata during
+expansion. Native handles retain existing cache/process lifetime. Each lookup
+scans library metadata; O(library count) work is an explicit performance cost,
+not benchmarked. Proper optimization is an incremental append-aware cursor with
+dynamic source/failed-load regressions. Pure compile-time constants and
+SandboxHost do not load native output requirements; no unavailable native SDK is
+counted as successful. Actual original C constructor and Objective-C runtime
+checks pass. Linux/Windows native loader verification remains required.
+
+Existing `foreign_addr` still permits process-global symbol lookup when a
+non-required explicit library cannot open. Its exact compatibility policy is
+not established by these tests. Risk: a global symbol may satisfy a declaration
+whose named library failed. Proper follow-up is a reviewed explicit-library
+lookup policy and original failure/interposition tests, not an invented alias
+or blanket successful fallback. This repair does not certify that separate path.
+
 ## Combined scope refresh through7b6e8de9 and privacy follow-up
 
 Stable workspace at7b6e8de9:848 passed/four failed/one inherited ignore in100

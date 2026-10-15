@@ -1,5 +1,16 @@
 # Integration requests
 
+## General link_always repair owned by integration
+
+Integration independently repaired the Objective-C interpreter/native discrepancy
+with generic native required-library loading and named-library metadata ordering.
+No Objective-C name/path activation or fixture preload was added. Original real C
+constructor cases, native O0 executions, precise failure/pure compile-time/
+SandboxHost boundaries and the actual Objective-C interpreter fixture pass.
+Compiler owner should avoid a duplicate patch; see
+compiler/native-required-libraries.md. Current non-required explicit library
+global-symbol fallback still needs reviewed policy before changing its behavior.
+
 ## Current shared generator type/protocol review
 
 All model/names/platform/emission/modifier helpers consume the single
