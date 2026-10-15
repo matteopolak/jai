@@ -629,3 +629,13 @@ All21 refactor tests pass; no missing Example_Plugin export was invented.
 Authorized candidatea78721d only changes native ARM64 Mesa developer-shell/isolated
 pinned Python setup and documentation. Integrated those workflow changes without
 push/dispatch or superseding coordinator's long-running native build.
+
+## LSP project-settings notification timing
+
+The resilience fixture discarded didOpen responses, then required the sole
+malformed-project notification specifically at completion. Current semantic
+project discovery correctly emits it earlier while opening the main document.
+The test now collects config-open/main-open/completion messages, still requires
+exactly one jai.toml unknown-setting diagnostic and requires no repeat on a
+second completion. All four resilience tests pass. No server diagnostic is
+suppressed, no malformed configuration is accepted, and no assertion is skipped.
