@@ -22,6 +22,7 @@ EXPECTED = {
     "print-color": "\x1b[1;31mcolor 42\x1b[0m\x1b[4;32mscope\x1b[0mok\n",
     "runtime": "runtime -9223372036854775808 ff\n",
     "foundations": "-42 true text 55\n",
+    "meow-dump": "state\n0: 1 2\n1: 3 4\n2: 5 6\n3: 7 8\n4: 9 10\n5: 11 12\n6: 13 14\n7: 15 16\nok\n",
     "command-help": lambda out: all(text in out for text in ["configuration comment", "last option", "--alpha", "--zeta", "--help"]) and out.index("--alpha") < out.index("--zeta") and out.endswith("ok\n"),
 }
 EXPECTED_STDERR = {"print-color": "\x1b[0;44merror\x1b[0m"}
@@ -39,6 +40,7 @@ FAULT_EXPECTATIONS = {
     "mpeg-program-pts": ("assertion failed", "invalid MPEG timestamp marker"),
     "mpeg-program-truncated": ("assertion failed", "truncated MPEG PES packet"),
     "mpeg-no-delay-b": ("assertion failed", "MPEG B picture violates no-delay assumption"),
+    "meow-null": ("assertion failed", "MeowHash invalid source/length"),
     "overwriting-double-free": ("assertion failed", "invalid overwriting-allocator pointer"),
     "xar-capacity": ("assertion failed", "Xar configured capacity exceeded"),
     "crash-handler": ("crash signal 11", "native stack:"),
@@ -83,6 +85,7 @@ def main():
     subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_zip_fixtures.py")], cwd=ROOT, check=True)
     subprocess.run([sys.executable, "-B", str(ROOT / "tools/check_portable_mpeg_matrix.py")], cwd=ROOT, check=True)
     subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_mpeg_fixtures.py")], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_meow_fixtures.py")], cwd=ROOT, check=True)
     shutil.copytree(ROOT / "stdlib", root, dirs_exist_ok=True)
     shutil.copytree(args.posix_root, root / "POSIX", dirs_exist_ok=True)
     if args.hash_root:
@@ -160,6 +163,8 @@ def main():
         ("buildcpp-tool", "BuildCpp tool failed"),
         ("buildcpp-target", "BuildCpp object target validation failed"),
         ("mpeg-scalar-store", "cannot assign to constant"),
+        ("register-scalar", "expected a SIMD register operand"),
+        ("meow-lane", "INDEX >= 0 && INDEX < 2"),
     ]:
         negative = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
         result = subprocess.run([str(compiler), "-check", str(negative)], cwd=ROOT,
@@ -186,7 +191,7 @@ def main():
         subprocess.run([sys.executable, "-B", str(ROOT / "tools/check_portable_crash.py"),
                         "--jaic", str(compiler), "--stdlib", str(root)], cwd=ROOT, env=env, check=True)
     dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler", "zip-directory", "buildcpp", "shared-channel", "autorun", "mpeg-buffer"}
-    posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "crash-handler-init", "atomic-cas-threads", "mpeg-pixels", "mpeg-idct", "mpeg-sequence", "mpeg-motion", "mpeg-video", "mpeg-audio", "mpeg-program", "mpeg-video-synthetic", "mpeg-audio-stereo", "mixed-varargs-spread"}
+    posix_only = {"module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "crash-handler-init", "atomic-cas-threads", "mpeg-pixels", "mpeg-idct", "mpeg-sequence", "mpeg-motion", "mpeg-video", "mpeg-audio", "mpeg-program", "mpeg-video-synthetic", "mpeg-audio-stereo", "mixed-varargs-spread", "meow-vectors"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)
         for source, _ in cases:

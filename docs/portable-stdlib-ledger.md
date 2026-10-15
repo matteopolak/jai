@@ -73,7 +73,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [math](specs/stdlib/modules/math.md) | Reserved for numerics worker; not implemented or modified here |
 | [md5](specs/stdlib/modules/md5.md) | Implemented 32-character digest; empty, abc and message-digest vectors pass interpreter/native |
 | [memory](specs/stdlib/modules/memory.md) | Generic and optional candidate/unwrap exports implemented with portable backend; overlap, widths and mutable capability state checked interpreter/native |
-| [meow-hash](specs/stdlib/modules/meow-hash.md) | Not implemented: canonical __reg macro operand binding fails in source compiler; original pending reproducer retained, no surrogate type or fake hash exports |
+| [meow-hash](specs/stdlib/modules/meow-hash.md) | Reviewed exports implemented over canonical SIMD registers: calico one-shot/stream/block/finalize/lane/dump APIs and live mutable arrays. 317 independent C vectors include both 128-byte outputs and edited globals; interpreter/native O0/O2 pass. Ancillary scratch/store/dump/state-byte contracts and performance remain explicit review limits |
 | [meshoptimizer](specs/stdlib/modules/meshoptimizer.md) | Reserved for bindings worker; not implemented or modified here |
 | [metal](specs/stdlib/modules/metal.md) | Reserved for bindings worker; not implemented or modified here |
 | [metaprogram-plugins](specs/stdlib/modules/metaprogram-plugins.md) | Owned portable scope; not implemented |
