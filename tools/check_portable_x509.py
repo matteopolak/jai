@@ -4,9 +4,8 @@ import argparse
 import os
 from pathlib import Path
 import platform
-import shutil
 import subprocess
-from check_portable_time_foundation import compose, LIBRARY
+from portable_android_stage import compose, LIBRARY
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -27,9 +26,6 @@ def main():
     if result.stderr or len(result.stdout) < 16:
         raise RuntimeError("native public certificate construction failed")
     (output / "public-vectors.bin").write_bytes(result.stdout)
-    baseline = ROOT / "target/portable-integration-stdlib"
-    for relative in ["Android/Toolchain", "internal/android-toolchain"]:
-        shutil.copytree(ROOT / "stdlib" / relative, baseline / relative, dirs_exist_ok=True)
     compose()
     env = dict(os.environ, JAIC_STDLIB=str(LIBRARY))
     compiler = str(ROOT / "target/compiler/debug/jaic")

@@ -1,5 +1,15 @@
 # Portable stdlib worker deviations
 
+ZIP wire supported policy: version minor0..9 and low byte<=255; complete correctly
+signed EOCD input, writable setter backing; invalids log/assert with no mutation.
+Finer reference recovery policy unestablished, documented portable-zip-wire.md.
+CRC32 uses portable bit loops (deliberate slower tableless strategy); no CRC64/API
+substitution. Unit macros preserve language arithmetic/argument semantics.
+Header sizes32/24 versus wire30/22 await reviewed distinction; no #pack/ABI guess,
+public default-version guess or writer stub. Native other-OS runtime pending.
+Shared staging explicitly copies real owned source dependencies plus NEW foundation
+read-only inputs, replacing repeated incomplete lists without fixture API shims.
+
 X.509 extractor supports DER structural key-info location, versions0..2; does not
 claim signature/trust validation. PEM/concatenation/trailing/error-recovery finer
 policy is not established by reviewed declaration; supported first-object policy

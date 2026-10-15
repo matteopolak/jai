@@ -4,10 +4,9 @@ import os
 from pathlib import Path
 import platform
 import random
-import shutil
 import struct
 import subprocess
-from check_portable_time_foundation import compose, LIBRARY
+from portable_android_stage import compose, LIBRARY
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -40,9 +39,6 @@ def main():
         wire += struct.pack('<I', len(data)) + data + struct.pack('<I', len(arcs))
         wire += b''.join(struct.pack('<Q', arc) for arc in arcs) + struct.pack('<I', len(text)) + text
     (output / 'vectors.bin').write_bytes(wire)
-    library = ROOT / 'target/portable-integration-stdlib'
-    for relative in ['Android/Toolchain', 'internal/android-toolchain']:
-        shutil.copytree(ROOT / 'stdlib' / relative, library / relative, dirs_exist_ok=True)
     compose()
     library = LIBRARY
     env = dict(os.environ, JAIC_STDLIB=str(library))

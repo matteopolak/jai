@@ -1,5 +1,15 @@
 # Portable stdlib progress
 
+ZIP wire batch:12 public declarations implemented, including canonical version,
+exact constants, CRC32, observable EOCD backing mutation and single-evaluation unit
+macros.65536 words/264 native-zlib vectors/5 diagnosed invalid cases pass15
+interpreter/native runs, Linux/Windows source checks and strict lint. Shared exact
+owned source staging now serves seven focused runners; ADB config/native matrix
+rerun passes. Evidence: target/android-zip-wire-staged.log and
+android-stage-adb-regression.log. Header32/end24 own-size probe versus wire30/22
+is an explicit review question, not a guessed compiler bug or packing workaround.
+Writer/APK APIs remain missing; portable-zip-wire.md. Missing147 ->135.
+
 X.509 structural extraction implemented: optional v1/v2/v3 version handling,
 20-byte serial skip, correct SubjectPublicKeyInfo views into caller DER. Four
 genuine native C-created/signed/verified Ed25519/RSA certs match native SPKI output,

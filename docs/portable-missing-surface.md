@@ -13,7 +13,7 @@ or legacy test expectations are inventory inputs.
 
 ### Android/Toolchain
 
-JNI/OID/JKS/SHA, ASN.1 primitive/cursor/value/diagnostic APIs, manifest flags, Java launcher and reviewed ADB discovery/server/quoting/storage/cache operations have independent behavior tests. Real SDK/device and Windows Process integration remain pending. Install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
+JNI/OID/JKS constants/SHA, ASN.1 primitive/cursor/value/diagnostic/X509 APIs, ZIP wire/CRC/unit helpers, manifest flags, Java launcher and reviewed ADB discovery/server/quoting/storage/cache operations have independent behavior tests. Real SDK/device and Windows Process integration remain pending. Archive writer/APK, install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
 
 Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 
@@ -91,12 +91,10 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `gradle_install_apk :: (project_path: string, release := false) -> bool` | All reviewed hosts |
 | `jdk_decrypt_private_key :: (encrypted_data: string, password: string) -> bool, string` | All reviewed hosts |
 | `jks_read :: (data: string, password: string) -> bool, certificate: string, encrypted_private_key_info: string` | All reviewed hosts |
-| `Kilobytes :: (x: int) -> int #expand` | All reviewed hosts |
 | `LAUNCH_MODE_SINGLE_TASK : u32` | All reviewed hosts |
 | `libressl_error_callback :: (str: *u8, len: u64, u: *void) -> s32 #c_call` | All reviewed hosts |
 | `libressl_get_private_key :: (private_key_info: string) -> *evp_pkey_st` | All reviewed hosts |
 | `libressl_get_public_key :: (subject_public_key_info: string) -> *evp_pkey_st` | All reviewed hosts |
-| `Megabytes :: (x: int) -> int #expand` | All reviewed hosts |
 | `NDK_Paths :: struct` | All reviewed hosts |
 | `print_binary_manifest :: (using manifest: Android_Manifest_Binary, print_strings := false, print_resource_ids := false)` | All reviewed hosts |
 | `read_binary_manifest_from_apk :: (apk_filename: string) -> bool, Android_Manifest_Binary` | All reviewed hosts |
@@ -118,22 +116,12 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `write_binary_app_manifest_to_memory :: (config: Android_Project_Config) -> bool, string` | All reviewed hosts |
 | `zip_add_file :: (using w: *Zip_Writer, filepath: string, zip_filename: string, compression := Zip_Compression_Method.NONE, alignment := 0) -> bool` | All reviewed hosts |
 | `zip_add_file_from_memory :: (using w: *Zip_Writer, file_data: string, zip_filename: string, compression := Zip_Compression_Method.NONE, alignment := 0) -> bool` | All reviewed hosts |
-| `ZIP_CENTRAL_DIRECTORY_FILE_HEADER_SIGNATURE : u32` | All reviewed hosts |
 | `Zip_Central_Directory_Header :: struct` | All reviewed hosts |
 | `Zip_Compression_Method :: enum u16` | All reviewed hosts |
-| `zip_crc32 :: (s: string) -> u32` | All reviewed hosts |
-| `zip_decode_version :: (version_word: u16) -> Zip_Version` | All reviewed hosts |
-| `zip_encode_version :: (version: Zip_Version) -> u16` | All reviewed hosts |
 | `Zip_End_Of_Central_Directory_Record :: struct` | All reviewed hosts |
-| `ZIP_END_OF_CENTRAL_DIRECTORY_RECORD_SIGNATURE : u32` | All reviewed hosts |
-| `ZIP_END_OF_CENTRAL_DIRECTORY_RECORD_SIZE :: 22` | All reviewed hosts |
-| `zip_eocd_get_start_of_central_directory_offset :: (eocd: string) -> u32` | All reviewed hosts |
-| `ZIP_EOCD_OFFSET_FIELD_OFFSET :: 16` | All reviewed hosts |
-| `zip_eocd_set_start_of_central_directory_offset :: (eocd: string, new_offset: u32)` | All reviewed hosts |
 | `zip_init_writer :: (using w: *Zip_Writer, do_crcs := true, max_alignment := 0)` | All reviewed hosts |
 | `Zip_Local_File_Header :: struct` | All reviewed hosts |
 | `ZIP_LOCAL_HEADER_SIZE :: size_of(Zip_Local_File_Header)` | All reviewed hosts |
-| `Zip_Version :: struct` | All reviewed hosts |
 | `ZIP_VERSION_DEFAULT : u16` | All reviewed hosts |
 | `zip_write_central_directory :: (using w: *Zip_Writer)` | All reviewed hosts |
 | `Zip_Writer :: struct` | All reviewed hosts |
@@ -165,7 +153,7 @@ Reviewed contract: [module page](specs/stdlib/modules/example-plugin.md).
 | `before_intercept :: (p: *Metaprogram_Plugin, flags: *Intercept_Flags)` | All reviewed hosts |
 | `finish :: (p: *Metaprogram_Plugin)` | All reviewed hosts |
 | `get_plugin :: () -> *Metaprogram_Plugin` | All reviewed hosts |
-| `HELP_STRING :: #string DONE -option arg This is just an option. You pass it one argument. DONE` | All reviewed hosts |
+| `HELP_STRING :: #string` | All reviewed hosts |
 | `init :: (p: *Metaprogram_Plugin, options: [] string) -> bool` | All reviewed hosts |
 | `log_help :: (p: *Metaprogram_Plugin)` | All reviewed hosts |
 | `message :: (p: *Metaprogram_Plugin, message: *Message)` | All reviewed hosts |
@@ -206,7 +194,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 147 missing reviewed declaration/overload/nested-operation rows
+Total: 135 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.
