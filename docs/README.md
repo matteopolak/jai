@@ -19,7 +19,7 @@
   close-failure tests, NEW spec provenance, independent
   review request, hardware/source distinctions and legacy-gate migration.
 
-Current replacement integration: [commands and results](tools/cleanroom-integration.md), [deviations](status/integration-deviations.md), [module inventory](status/integration-module-inventory.json).129/135 reviewed module facades are present; six modules and one constant-table supplement remain absent. Presence does not establish complete functionality. Native CI and opaque public corpus/Focus remain coordinator work; publication is held.
+Current replacement integration: [commands and results](tools/cleanroom-integration.md), [deviations](status/integration-deviations.md), [module inventory](status/integration-module-inventory.json).132/135 reviewed module facades are available (including canonical Preload); three modules and one constant-table supplement remain absent. The [native ARM64 baseline report](status/mac-integration-baseline.json) records the exact combined snapshot, commands and outstanding failures. Presence does not establish complete functionality. Native CI and opaque public corpus/Focus remain coordinator work; publication is held.
 
 [macOS resolver candidate](portable-socket-resolver.md) records native C ABI
 evidence and the genuine forward-enum compiler gate, without a Jai success claim.

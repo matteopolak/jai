@@ -1,5 +1,19 @@
 # Portable stdlib progress
 
+## Combined candidate ad575d16
+
+The latest combined candidate adds Default_Metaprogram, Example_Plugin and
+Project_Generator: 131 physical facades plus canonical Preload mapped to the
+single prelude, 132/135 reviewed module pages available. Minimal_Metaprogram,
+Metaprogram_Plugins and linux_build remain missing, as does the supplementary
+pl_mpeg table. Availability is not completion: zero exhaustive module
+certifications. Default Check integration, Project compile-time executable-path
+query, profiler hooks and generator helper inventories retain explicit gaps.
+
+Stable native ARM64 workspace replay at ad575d16 records 840 passing tests, two failures, one inherited ignore; the exact machine report retains
+the failed WASI tour and 186 target-ledger differences. The current 414-case
+catalogue is still running. Counts below refer to older snapshots.
+
 ## Native Mac candidate measurement, 2026-10-15
 
 Candidate `integration/thread-fixtures` at `90fea8ab84fa881b96a327d2bb117541e83429b4`

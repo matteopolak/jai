@@ -1,5 +1,29 @@
 # Clean-room integration verification
 
+## Stable combined native ARM64 replay, 2026-10-15
+
+Candidate worktree: `artifacts/integration-clean/thread-fixtures`, branch
+`integration/thread-fixtures`, measured production snapshot
+`ad575d161e8705d839e7253f52a06c10b45d1732`. Older refresh sections below are historical.
+`cargo test --locked --workspace --all-targets --no-fail-fast` completed with
+840 passing tests, two failures and one inherited ignore across 98 Cargo test binaries (102 raw
+summaries include four child-process repeats). Failures remain enabled:
+`wasm_target::wasm_tour_runs_as_a_wasi_command` imports native-only Thread;
+`every_stdlib_module_checks_for_every_target` reports 186 ledger differences,
+mixing stale diagnostics/successes and real missing platform functionality.
+No unsupported platform assertion is accepted as a completed implementation.
+
+The 414-case catalogue is running against this same production snapshot:
+`python3 tools/stdlib_runtime.py --jaic <own-root-target>/debug/jaic --modes interp,native --opt O0 --jobs 2 --timeout 180 --verbose`.
+Both commands select this worktree's production `JAIC_STDLIB`, actual source-built
+native dependencies, owned TMPDIR, and the catalogue additionally supplies a real
+system Arial font and native clipboard restoration guard. Exact environment,
+counts and failure classifications are maintained in
+[`mac-integration-baseline.json`](../status/mac-integration-baseline.json).
+The root tracking branch has not been moved. Full opaque public corpus and Focus
+build/launch, signed mouse-wheel regression and user acceptance remain required
+coordinator gates. Windows/Linux native verification remains required later.
+
 ## Current combined refresh twelve
 
 Source checkpoint d485811 contains every approved refresh-twelve snapshot,

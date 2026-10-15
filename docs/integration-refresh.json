@@ -1,18 +1,20 @@
 {
   "compiler": {
     "ref": "coordinator/compiler",
-    "commit": "6080ff0a080af64b6896427a0cdbfb7940f44a52",
+    "commit": "328b6c46436ace81b2344f9e57f280b4723e4cb7",
     "corrected_storage_review": {
       "source_snapshot": "eaf3919929c00a2a49cba5b630d1068dafc1aaea",
       "consumption": "corrected net test/doc snapshot only; unsupported live-alias history not merged",
       "production": "anonymous filtered reexport registration already integrated in57cb0b51; immutable baseline retained",
       "verified": "52 module and six corrected core storage/constant cases; workspace clippy warnings denied",
-      "pending": "new native/WASM LLVM, jailint target and actual wasm32 runners remain required; not counted as executed"
-    }
+      "pending": "Native/WASM LLVM and jailint target regressions included in ad575d16 full workspace replay; external wasm32 runners not inferred."
+    },
+    "integrated_via": "cf0b40d69531ceabf430322152b097f1739c4689"
   },
   "stdlib": {
     "ref": "coordinator/stdlib",
-    "commit": "b174fa2236396fa1bfbbff68c0571febd4ea04ec"
+    "commit": "70eb7fb0269f654d57395fe88c4986ffd794a72a",
+    "integrated_via": "25bf890d6ea773b296eb4605bde650b044d1faba"
   },
   "bindings": {
     "ref": "coordinator/bindings",
@@ -41,7 +43,8 @@
   },
   "window-render": {
     "ref": "coordinator/window-render",
-    "commit": "39404f301ec723f188cb004b6e06fc16a48869a5"
+    "commit": "7a5cce7ad1b6d9d18753bb5549e6cf691c741edb",
+    "integrated_via": "b99d2f02fab3ca9901b65a8b6c572bb0b43c5226"
   },
   "platform-io": {
     "ref": "coordinator/platform-io",
@@ -53,7 +56,8 @@
   },
   "stdlib-tools": {
     "ref": "coordinator/stdlib-tools",
-    "commit": "8554e42bba86a40ac619acec0ed9dad1228f3544"
+    "commit": "4d3a1106bbfef931251dd1a3362de20c26c977ee",
+    "integrated_via": "7d159a03d5b523038100416fec0b798bb06dd55f"
   },
   "ci-candidate": {
     "ref": "coordinator/ci-candidate",
@@ -67,8 +71,8 @@
   },
   "extensions-dependencies": {
     "ref": "codex/extensions-integration",
-    "commit": "6b0f22291bdfd4b601e69538f2d61a76e2b82bf3",
-    "integrated_via": "38e4c0c",
+    "commit": "34c06fa3f3fd27fdf5a6d1d4c00f4c8b0549e0c8",
+    "integrated_via": "e026e5f32bfc377a29741f431febcc0283a2df14",
     "additional_integration_fix": "e8cf1a29"
   },
   "native-build-repair": {
@@ -76,5 +80,17 @@
     "source_commit": "cad699d4",
     "integrated_via": "1d9885f3",
     "note": "Scoped approved source commit cherry-picked; original source OID not claimed ancestor"
+  },
+  "profiler": {
+    "commit": "8a284119b763fd9fbf79e0a6f21d0180b60fe482",
+    "integrated_via": "cbd3062720654f434262681f5bf619ebd9fa7484"
+  },
+  "generator-model": {
+    "commit": "4675c90a4df388d14e92f79b64332fb945d35297",
+    "integrated_via": "d5337b42d784c091e91b35538445ab43c5aee27e"
+  },
+  "generator-platform": {
+    "commit": "943637d9d02fcc6e29f13408e1a8d1703795fb70",
+    "integrated_via": "7467b49de0175e6d43f2263092b82ccb9182356f"
   }
 }

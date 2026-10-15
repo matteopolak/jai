@@ -1,5 +1,24 @@
 # Integration requests
 
+## Combined ad575d16 replay: active failures
+
+Compiler owner: stable full workspace replay now has only native-test
+`wasm_target::wasm_tour_runs_as_a_wasi_command` and target-ledger failures.
+The exact tour reproducer is `jaic examples/tour/main.jai -os wasm -exe tour.wasm`;
+`examples/tour/threads/threads.jai:5` unconditionally imports native-only Thread.
+Keep the platform guard and actual threading behavior; the own browser tour
+needs an honest target-specific demonstration, not a fake successful thread API.
+Please provide a committed corrected application fixture with native behavior
+preserved and the original WASI output checks passing.
+
+Full target checking reports 186 differences: 35 stale success entries, 71
+changed diagnostics and 80 new failures. They include real unsupported backend
+assertions and Windows TLS allocation API errors, not just stale bookkeeping.
+Do not blanket-regenerate accepted failures. Reviewed target availability must
+justify negative entries; actual missing behavior remains failed. All Mac ARM64
+differences are platform/CPU guard diagnostics or stale passing entries; the
+cross-target failures remain part of the complete command.
+
 ## Current native Mac candidate, 2026-10-15
 
 Shared clean baseline7467b49d is ready for worker dependency adoption: compiler,

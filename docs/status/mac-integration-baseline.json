@@ -770,7 +770,8 @@
   },
   "evidence": {
     "artifacts/mac-baseline/workspace.log": "8547f97a2fa070c769f09b725479b982e8158a5305bdfcd15f0572fb1c8b384a",
-    "artifacts/mac-baseline/catalogue.log": "04be03b4d387483d4111924664bfb000610b784c4959e3639e03d8c053a49d48"
+    "artifacts/mac-baseline/catalogue.log": "04be03b4d387483d4111924664bfb000610b784c4959e3639e03d8c053a49d48",
+    "artifacts/mac-baseline/workspace-ad575d16.log": "f29e0cc8e3f6fe65459f25b19d6b94c3a3ac55cfe80770cd5c6e4b7bd0ea29b4"
   },
   "timeouts": [],
   "source_changes_during_measurement": false,
@@ -875,5 +876,41 @@
     "default_whole_module_lint": "failed: missing reviewed Check factory",
     "project_generator_lint": "failed: unavailable sandbox executable-path query",
     "whole_workspace_replay": "pending after scoped commit"
+  },
+  "current_replay": {
+    "snapshot": "ad575d161e8705d839e7253f52a06c10b45d1732",
+    "workspace": {
+      "status": "failed",
+      "command": "cargo test --locked --workspace --all-targets --no-fail-fast",
+      "passed": 840,
+      "failed": 2,
+      "ignored": 1,
+      "exit_code": 101,
+      "result_summaries": 102,
+      "failures": [
+        {
+          "name": "wasm_target::wasm_tour_runs_as_a_wasi_command",
+          "classification": "application fixture imports native-only Thread on WASM; reviewed platform guard rejects"
+        },
+        {
+          "name": "every_stdlib_module_checks_for_every_target",
+          "classification": "mixed stale expectation ledger and real unused-body/API/platform failures; no acceptance or suppression"
+        }
+      ],
+      "ignored_names": [
+        "corpus_sweep"
+      ],
+      "cargo_test_binaries": 98,
+      "raw_summary_passed": 844,
+      "counting": "Last summary per Cargo Running binary; four nested fault-safety summaries excluded from unique suite totals"
+    },
+    "catalogue": {
+      "status": "running",
+      "command": "python3 tools/stdlib_runtime.py --modes interp,native --opt O0 --jobs 2 --timeout 180 --verbose",
+      "passed": null,
+      "failed": null,
+      "ignored": null,
+      "cases": 414
+    }
   }
 }
