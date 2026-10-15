@@ -1,15 +1,25 @@
 {
   "compiler": {
-    "ref": "producer/compiler",
-    "commit": "308437761b8822a214936ac38125137cfcf358c4"
+    "ref": "coordinator/compiler",
+    "commit": "6e000b34629a38f22574fd6e9b77535d9a85df35",
+    "additional_repairs": {
+      "source": "6904b4a52d50fb405d31491c158bb7ad17866bc3",
+      "integrated_via": "e223538f34c89b4122088e8a76a066f4cf61cdfa",
+      "cherry_picks": [
+        "13b706a",
+        "4c9180b",
+        "7cfd527",
+        "447e05f"
+      ]
+    }
   },
   "stdlib": {
-    "ref": "producer/stdlib",
-    "commit": "2f54d0c4d8b77b3309fd1541a1cbf5f45ca391ea"
+    "ref": "coordinator/stdlib",
+    "commit": "eab33836d833ef622bd3aab97e7ec1ac2a78ebbf"
   },
   "bindings": {
-    "ref": "producer/bindings",
-    "commit": "204f6f6f9cd6ebd4d73831c8e2c40a5495f50037"
+    "ref": "coordinator/bindings",
+    "commit": "fc6c681276fbadc331c1d2f4ced8ddc5a9119cf2"
   },
   "numerics": {
     "ref": "producer/numerics",
@@ -20,27 +30,31 @@
     "commit": "e3ec42657e645e674593c14ef6d87a7d197ef21a"
   },
   "sdl3": {
-    "ref": "producer/sdl3",
-    "commit": "bb3eaaa32c129f3ef161466a4e1f9527f02a3ce2"
+    "ref": "coordinator/sdl3",
+    "commit": "0b2dc3cd1de80681041f00eeedcca195080f47ef"
   },
   "foundations": {
-    "ref": "producer/foundations",
-    "commit": "ad84008c58944889f51dd23679f8a12649fbf0f1"
+    "ref": "coordinator/foundations",
+    "commit": "5e24d1db1f6dde8bbdb96c6f434866083bc36713"
   },
   "window-render": {
-    "ref": "producer/window-render",
-    "commit": "37d38399ed120de477116e52125b89b0706ff0b5"
+    "ref": "coordinator/window-render",
+    "commit": "1f66dc1595e6e7c33684f9ce078f4ff05a167898"
   },
   "platform-io": {
     "ref": "producer/platform-io",
     "commit": "2d36a0852e6508a13f7f1d6f0c39bf8d35e4d820"
   },
   "audio": {
-    "ref": "codex/stdlib-audio",
-    "commit": "7d641f82db5cb7f6558ed9c319c4e261b106a92a"
+    "ref": "coordinator/audio",
+    "commit": "498046ba41c152070602de9c8b061c1150937884"
   },
   "stdlib-tools": {
-    "ref": "codex/stdlib-developer-tools",
-    "commit": "a553de2fc3d7ad6b9248681fb838863912fc798b"
+    "ref": "coordinator/stdlib-tools",
+    "commit": "af8b5f412b448d0b2d3dffdb98664518fb2b992d"
+  },
+  "ci-candidate": {
+    "ref": "coordinator/ci-candidate",
+    "commit": "e223538f34c89b4122088e8a76a066f4cf61cdfa"
   }
 }

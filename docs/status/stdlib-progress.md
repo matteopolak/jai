@@ -1,5 +1,43 @@
 # Portable stdlib progress
 
+## Integration refresh18: durable verified checkpoint
+
+Reviewable combined source/test head1f2a3e02e36dfb0be6e19275b24dad14435aef94.
+Private assertion transport29ec8f9, merge corrections and production VBAP scope
+5dc7b14 retained. Approved CIe223538, SDL30b2dc3c, audio498046b, bindingsfc6c681,
+toolingaf8b5f4 and portableeab3383 are merged. Exact consumed source/provenance in
+integration-refresh.json; newer ready heads remain queued, not counted consumed.
+
+Actual production results:54publiccontracts interpreter/nativeO0/O2 PASS;
+audio27fixtures allthreehostmodes/sixdesktopbodychecks/strictformatlint/privacy
+PASS with real silent2/6/8SDKstreams; tooling39fixtures/C/C++consumers PASS;
+window188invocations PASS after actual source-built GL/clipboard probes.
+Focused compiler/native migrations PASS: diagnostics25, IDElayout4, optimizer2,
+selector3/805runtimepairs, browser assertion1, namespace fix1, callback/deadlock1,
+native stored-Cprocedure1 and caller-backtrace1. Optimizer address-escape growth
+fix and native NSThread selector forwarding are proper production fixes.
+Workspace Rustfmt and warnings-denied clippy PASS after this batch.
+
+Broad immutable prior run755aggregatePASS27FAIL/one inheritedignored, sevenfailed
+targets. Quality1107format/checkPASS but56/190strictlintgatesFAIL,source_stable=true.
+Four producer gates foundations/portable/platform/numerics FAIL; corrective
+numerics-native25/25PASS. Pool value-return lifetime registry is a genuine
+foundations/portable blocker with active-owner reproducer; no assertions weakened.
+Full binding source matrix18failures retained; actual scopedrpmalloc native
+programs pass but public heaps/raw/options incomplete. All-dependencySDKretry
+againfails officialX.org connectionreset; pinned hashes unchanged.
+
+Current partial-edit run1086ownfiles is still running; no corpus/vendor sources
+selected and no success claim. Compiler's proper target/context lint checkpoint
+4de36d6 is now ready; integration will consume it and classify real positive,
+negative, platform and loaded-fragment contexts without skip baselines. Newer
+stable producer heads and local reviewedCIcache change are queued. Native
+ARM64WindowsMesa build remains coordinator-owned/active; no overlapping push.
+Release HOLD; no publishing/push/dispatch by this worker. Remaining module
+inventory135modulepages:124facadespresent/11missing plus one supplement,
+zero whole-module certification. Full opaque public corpus/Focus remain external.
+
+
 ## Integration refresh17: production fixes under review
 
 Committed combined producer head: 7aec510. The integration assertion transport
