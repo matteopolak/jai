@@ -54,6 +54,9 @@ def main():
         if module == "Print_Vars":
             for item in declarations:
                 item["implementation"] = "implemented; original caller-code, formatting and logging fixture"
+        if module == "Rewrite":
+            for item in declarations:
+                item["implementation"] = "supported subset; actual compiler-message rewrite and edit safety fixture"
         inventory[module] = {"spec": str(spec.relative_to(ROOT)),
                              "spec_sha256": hashlib.sha256(contents.encode()).hexdigest(),
                              "declarations": declarations, "reviewed_members": members}

@@ -25,3 +25,7 @@ The [official libclang C API documentation](https://clang.llvm.org/doxygen/group
 ## Print_Vars
 
 `print_vars_to`, `print_vars` and `log_vars` expand over caller expressions. They retain caller scope, use Program_Print for source names, evaluate each expression once, render values/types and align name/value columns. The helper accepts the exact reviewed fixed Code array; the variadic entry points create that array at compile time. `Print_Vars_Config` controls fields, delimiters, indentation and line separators. Logging forwards the caller location. Widths currently count UTF-8 bytes; see questions and deviations for display-cell and source-whitespace limits.
+
+## Rewrite
+
+Initialize a `My_Plugin` through `init`, feed its `gather` hook compiler messages, and call `finish`. Default mode reports edits; explicit `write` enables mutation. No public factory absent from the reviewed contract is added. Deprecated `<<expr` becomes `(expr).*` using the original source expression span. Source snapshots are reread and compared before writes. Overlapping/invalid edits and stale files are refused with diagnostics. Public edit helpers also support independently supplied edits with multiline/CRLF data. Plugin-owned resources are released by its shutdown hook; direct helper callers retain ownership of their input records and strings.

@@ -34676,63 +34676,63 @@
         "declaration": "Single_Rewrite :: struct",
         "section": "Public declaration inventory",
         "spec_line": 8,
-        "implementation": "pending"
+        "implementation": "supported subset; actual compiler-message rewrite and edit safety fixture"
       },
       {
         "name": "File_To_Rewrite",
         "declaration": "File_To_Rewrite :: struct",
         "section": "Public declaration inventory",
         "spec_line": 9,
-        "implementation": "pending"
+        "implementation": "supported subset; actual compiler-message rewrite and edit safety fixture"
       },
       {
         "name": "My_Plugin",
         "declaration": "My_Plugin :: struct",
         "section": "Public declaration inventory",
         "spec_line": 10,
-        "implementation": "pending"
+        "implementation": "supported subset; actual compiler-message rewrite and edit safety fixture"
       },
       {
         "name": "init",
         "declaration": "init :: (p: *Metaprogram_Plugin, options: [] string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 11,
-        "implementation": "pending"
+        "implementation": "supported subset; actual compiler-message rewrite and edit safety fixture"
       },
       {
         "name": "gather",
         "declaration": "gather :: (p: *Metaprogram_Plugin, message: *Message)",
         "section": "Public declaration inventory",
         "spec_line": 12,
-        "implementation": "pending"
+        "implementation": "supported subset; actual compiler-message rewrite and edit safety fixture"
       },
       {
         "name": "finish",
         "declaration": "finish :: (p: *Metaprogram_Plugin)",
         "section": "Public declaration inventory",
         "spec_line": 13,
-        "implementation": "pending"
+        "implementation": "supported subset; actual compiler-message rewrite and edit safety fixture"
       },
       {
         "name": "rewrite_one_file",
         "declaration": "rewrite_one_file :: (my: *My_Plugin, file: *File_To_Rewrite)",
         "section": "Public declaration inventory",
         "spec_line": 14,
-        "implementation": "pending"
+        "implementation": "supported subset; actual compiler-message rewrite and edit safety fixture"
       },
       {
         "name": "make_new_file_data",
         "declaration": "make_new_file_data :: (my: *My_Plugin, file: *File_To_Rewrite, sorted: [] *Single_Rewrite) -> string",
         "section": "Public declaration inventory",
         "spec_line": 15,
-        "implementation": "pending"
+        "implementation": "supported subset; actual compiler-message rewrite and edit safety fixture"
       },
       {
         "name": "compare_single_rewrites",
         "declaration": "compare_single_rewrites :: (a: *Single_Rewrite, b: *Single_Rewrite) -> int",
         "section": "Public declaration inventory",
         "spec_line": 16,
-        "implementation": "pending"
+        "implementation": "supported subset; actual compiler-message rewrite and edit safety fixture"
       }
     ],
     "reviewed_members": [

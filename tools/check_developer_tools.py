@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import shutil
 import check_developer_bindings
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,7 +22,7 @@ def run(command, *, output=None, error=""):
 
 def main():
     check_developer_bindings.main()
-    cases = ["c-header", "c-header-roundtrip", "c-header-reject", "print-vars"]
+    cases = ["c-header", "c-header-roundtrip", "c-header-reject", "print-vars", "rewrite"]
     run([JAIC, "tests/developer-tools/c-header.jai", "-interp"], output="ok\n")
     run(["clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-I", "target",
          "tests/developer-tools/point.c", "-o", "target/libdeveloper_tools_point.dylib"])
@@ -50,12 +51,24 @@ def main():
                              cwd=ROOT, env=ENV, text=True, capture_output=True, timeout=60)
     if missing.returncode or "warning: Performance_Report: compiler did not provide a performance report" not in missing.stderr:
         raise RuntimeError("Missing performance message did not produce its diagnostic")
+    rewritten = ROOT / "target/developer-tools-rewrite-program.jai"
+    shutil.copyfile(ROOT / "tests/developer-tools/rewrite-input.jai", rewritten)
+    rewrite_report = run([JAIC, "tests/developer-tools/rewrite-driver.jai", "-check"])
+    if " -> (pointer).*" not in rewrite_report or "<<pointer" in rewritten.read_text():
+        raise RuntimeError("Actual compiler-message rewrite did not replace the deprecated expression")
+    run([JAIC, rewritten, "-interp"], output="ok\n")
+    for optimization in [0, 2]:
+        exe = ROOT / f"target/developer-tools-rewritten-o{optimization}"
+        run([JAIC, rewritten, f"-O{optimization}", "-exe", exe])
+        run([exe], output="ok\n")
     paths = [ROOT / "stdlib/Generate_C_Header/module.jai",
              ROOT / "stdlib/Performance_Report/module.jai",
              ROOT / "stdlib/Print_Vars/module.jai",
+             ROOT / "stdlib/Rewrite/module.jai",
              *sorted((ROOT / "stdlib/internal/developer-tools").glob("*.jai")),
              *sorted((ROOT / "tests/developer-tools").glob("*.jai"))]
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *paths])
+    shutil.copyfile(ROOT / "tests/developer-tools/rewrite-input.jai", rewritten)
     run([ROOT / "target/debug/jailint", "-D", "warnings", "-I", ROOT / "target", *paths])
     for os_name, cpu in [("linux", "x64"), ("windows", "x64"), ("wasm", "x64")]:
         run([JAIC, "tests/developer-tools/c-header.jai", "-check", "-os", os_name, "-cpu", cpu])
