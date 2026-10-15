@@ -28,8 +28,8 @@ Focus check is optional under latest steering.
 | Production runtime allocation.jai -os wasm -cpu x64 at O0/O2 + tools/run_foundations_wasm.mjs | Both actual WASI executions print ok; configured65536 size, original/data identity and last-byte access |
 | build_scripting_wasm.py --release --output artifacts/integration-clean/browser-refresh12; node tools/check_jai_format_wasm.mjs artifacts/integration-clean/browser-refresh12 | Actual wasm32 source build and24 formatter goldens plus414-line source pass; broader browser/API suite is not green |
 | tests/numerics/run.py --compiler target/debug/jaic --stdlib stdlib --output artifacts/integration-clean/numerics-refresh12 |129/143 checks pass;14 actual failures retained |
-| stdlib_runtime.py --jaic target/debug/jaic --modes interp,native --strict --jobs4 --timeout120 --verbose |482 current cases execute: interpreter275pass207fail; native269pass205fail8compile-time-only, zero skips. Includes two newly library-owned fixtures; argument/dependency requirements are distinct from invalid legacy public APIs and genuine compatibility failures |
-| lsp_partial_edits.py --stdlib stdlib --max-lines8 --jobs4 --timeout60 --report artifacts/integration-clean/lsp-refresh12.json stdlib |639-file full sweep in progress; do not report final totals until complete |
+| stdlib_runtime.py --jaic target/debug/jaic --modes interp,native --strict --jobs 4 --timeout 120 --verbose |482 current cases execute: interpreter275pass207fail; native269pass205fail8compile-time-only, zero skips. Includes two newly library-owned fixtures; argument/dependency requirements are distinct from invalid legacy public APIs and genuine compatibility failures |
+| lsp_partial_edits.py --stdlib stdlib --max-lines 8 --jobs 4 --timeout 60 --report artifacts/integration-clean/lsp-refresh12.json stdlib |639-file full sweep in progress; do not report final totals until complete |
 
 All logs/reports are under artifacts/integration-clean unless a secondary
 artifact path is stated. The module inventory records111 present facades out
@@ -362,3 +362,26 @@ LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm RUSTC_WRAPPER= cargo test --locked -p
 ```
 
 Actual canonical library, no overlays: 65536-byte allocation and last-byte access, zero/null and131072 child allocations, late child update of root size, nativeO0/O2 and interpreter all pass (secondary artifacts/runtime-config-production-tests.log; prior rejection retained). No native Windows or production WASI allocation claim yet. Compiler/LSP/jailint production source build passes (secondary artifacts/build-refresh11.log). Native SDL pointer correction is integrated; broad new tests and final integrated lint remain pending. Coordinator CIe8c312d proves wheelbothCPUs and ARM64 crash12cases, while x64 crash, thread output and WGLshared lifecycle failures and ARM64driver capability remain real gates. Full opaque corpus is coordinator-only.
+
+## Refresh12 settled evidence after checkpoint ef5be13
+
+The complete639-file LSP sweep reports17073edits/2762443assertions/zero failed
+files (lsp-refresh12.json). Full workspace completes698aggregate passes/56failures,
+one inherited ignored across75 result summaries; this includes child-process
+output rather than a unique-case count. All11 failed targets remain in
+workspace-refresh12.log. Four real caller-font cases plus Linux FreeType execution
+pass21 extra invocations (window-font-refresh12/results.json).
+
+The source-built release compiler passes all2300 exact intervals in interpreter,
+nativeO0/O2 and WASIO0/O2 (float-power-release-refresh12.log). Full portable retry
+now134/134ordinary cases passes, preserving six Windows backend/fixture-target
+failures (portable-release-refresh12.log). Broad frozen quality reports833files,
+52/171failed checks and unchanged source hashes; full lint is not green.
+
+Latest reviewed SDL prefix policy is implemented with stronger independent public
+and native-record checks plus canaries. Actual SDK verifier reports zero failures
+(sdl-prefix-verified.json); prefix fixture interpreter/nativeO0/O2 and strict lint
+pass (sdl-prefix-modes.log/sdl-prefix-lint.log). Historical equality failures remain.
+See native/sdl-native-abi.md. Native other-platform execution remains required.
+Latest manifest13 adds compiler Windows unwind and portable SIMD/CAPS/adoption
+snapshots; these are pending consumption, not covered by refresh12 totals.

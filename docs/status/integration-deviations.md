@@ -567,3 +567,34 @@ still fails its pre-existing default_overall_theme dependency; this is not a
 strict lint pass. A minimal original self-address initialization reproducer and
 proper lifecycle requirements are in integration-requests.md. The provisional
 callback-only candidate passed; it is not falsely cited as a failure.
+## Reviewed SDL oracle correction and final refresh12 results
+
+Coordinator's latest explicit policy distinguishes required public prefixes from
+complete native values. Corrected the impossible size-equality expectations,
+retaining all five full-native records, exact public48/8 sizes/alignments, every
+native RWops/User_Event offset/alignment/size, prefix offsets and actual C writes
+with canaries. Added a private complete User_Event; no public fields/signatures
+changed. Historical failures remain in sdl-sdk-refresh12*.json and earlier logs.
+Production SDL verifier now reports zero failures; actual prefix test passes
+interpreter/nativeO0/O2 and strict lint. This is host native and six source-target
+evidence, not all-platform runtime or safe standalone public-native-value use.
+See native/sdl-native-abi.md for extension/dependency rules and the representation
+limit. Public callback fields still must not be treated as native C callbacks.
+
+Optimized own-source compiler makes all2300 float oracle rows pass in all five
+modes within the existing bound. Full portable134/134 ordinary cases pass; only
+six Windows target failures remain (two visualization fixtures and Socket fd-set
+on eachCPU). Socket check_fd_set itself is Unix-only per reviewed inventory;
+Windows Socket backend is still independently absent and requires its own
+reviewed fd_set/loopback fixture. Original target failures retained, no backend
+success is claimed. Native fonts/glyph atlas/dynamic font/real GPU text rendering
+pass21 additional source/program invocations with the caller's system Arial font,
+without copying it into the repository.
+
+Full partial-edit sweep finishes639files/17073edits/2762443assertions/zero failures.
+This samples8 nonempty lines per file and exercises all IDE assertions; it is
+not full application compilation/runtime. Changed SDL fixtures/private ABI need
+the separately scheduled follow-up. Broad quality finishes833files with52/171
+failed checks and source_stable=true: ordinary target/body failures remain,
+including actual unused results in UI/archive. Those source cleanups are being
+verified in the own secondary worktree. No blanket lint suppression was added.
