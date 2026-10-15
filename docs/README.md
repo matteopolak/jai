@@ -215,8 +215,8 @@ The WebAssembly compiler bundle and its releases. The hosted playground UI lives
 
 ## Tools and workflow
 
-- [Profiler/Codex reduced compiler requests](profiler-codex-compiler-handoff.md): approved69e971b1 replay, resolved member/enum editing, growable-array flag reduction, and actual interpreted instrumentation.
-- [Iprof/Codex workflow progress](profiler-codex-workflows.md): real frame/history/report collection and Codex v2 plugin/reader/writer, verification and active gaps.
+- [Profiler/Codex reduced compiler requests](profiler-codex-compiler-handoff.md): passing9b3d4932 dependency replay, owned startup/zone-entry fixes, and actual native/interpreted instrumentation.
+- [Iprof/Codex workflow progress](profiler-codex-workflows.md): complete reviewed owned APIs, real frame/history/report and Codex v2 workflows, passing Mac verification and platform limits.
 - [Iprof/Codex owned implementation and per-API audit](profiler-codex.md): canonical records, helper lifetime, real profiling traversal, focused verification and exact remaining gaps.
 
 - [Developer tooling](developer-tools.md): reflected C headers, configured-SDK C/C++ bindings, measured manual profiler, typed Codex metrics, native ABI probes, DWARF/CodeView queries, staged DWARF byte decoding and canonical MSF readers/page bits; [test provenance](developer-tools-testing.md), [native integration plan](developer-tools-native-integration.md), [remaining functions](status/developer-tools-remaining.md), [progress](status/developer-tools-progress.md) and [deviations](status/developer-tools-deviations.md).

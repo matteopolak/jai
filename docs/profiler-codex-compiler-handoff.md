@@ -1,5 +1,49 @@
 # Profiler/Codex compiler-owner requests
 
+## Final owned Mac replay9b3d4932: all required checks pass
+
+Approved9b3d4932 fixes the growable-array flag reduction. All original retained
+member/enum/Basic.alloc/INDEX/array-local reductions and the interpreted modules
+workflow pass unchanged. No outstanding compiler reconstruction request remains
+for the assigned Iprof/Codex scope.
+
+The newly executable native workflow exposed two owned initialization defects.
+profile_zone_begin now enables the existing runtime guard before any init or
+validation, preventing recursively instrumented assertion failure handling.
+Generated instrumentation additionally preserves that guard and disables
+collection outside the initialized entry-point window through a private
+per-context lifecycle field. This prevents native runtime startup from accessing
+an uninitialized zone table. Public direct/manual zone operations retain their
+behavior. No module/name exclusion, compiler edit, library reparser or manually
+instrumented replacement is added. Generated LLVM verifies crash-handler init
+still contains its instrumentation and main retains its byte store, alloc/free,
+zone entry and exit. The collection-window policy remains an explicit precise
+compatibility-review question, without an invented public API.
+
+Final target/profiler-codex-checks.json:198 commands, complete=true,
+zero required failures, six required option/scalar rejection exits. All four
+real profiler CLI module-toggle O0/O2 builds and executions pass, with positive
+allocator/helper/imported-child calls and actual timing checks. All22 runtime
+cases pass interpreter/native Mac O0/O2, as do hooks, exact expression boundaries,
+all16 generated configurations, actual Codex exports/native C consumers,
+unchanged source-built formatter and full scoped warnings-denied module lint.
+The fixture explicitly invokes assert_helper under a recoverable context handler
+and checks its effect; successful assert is not presumed to invoke it.
+
+The nine-command target/profiler-codex-dependency-replay.json is also complete:
+seven retained reductions/workflows and emitted-IR native build/run all exit0.
+Compiler and API source intake is the established unchanged own snapshot plus
+exact approved compiler-owned public/private modules. The focused runner checks
+owned implementations are byte-identical. Canonical peer/compiler/other-owner
+sources and shared manifests remain untouched.
+
+Integrate the owned library checkpoint together with approved9b3d4932 compiler
+and API dependencies. The shared tooling runner still has two obsolete Codex
+expected-rejection cases at lines380-381; its owner must replace them with the
+positive reviewed metric/lifecycle tests. Native Windows/Linux execution remains
+later work; only source-check evidence is claimed here. Iprof.message partial
+is closed. Earlier failure-specific sections below are historical and superseded.
+
 ## Current approved replay69e971b1: growable-array flags
 
 Exact approved69e971b1 Rust and compiler-owned API sources were source-built

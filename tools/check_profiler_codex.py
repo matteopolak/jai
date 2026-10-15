@@ -103,6 +103,17 @@ def main():
                         raise RuntimeError(f"Iprof -modules did not control real Basic.{name} instrumentation")
                 if "temporary_allocator_proc" in names or "IsScalar" in names:
                     raise RuntimeError("Iprof instrumented a reviewed runtime-sensitive Basic exclusion")
+                by_name = {row["name"]: row for row in rows}
+                if "main" not in by_name or float(by_name["main"]["calls"]) != 1:
+                    raise RuntimeError("Imported-module workflow lost its actual entry-point measurement")
+                if include_modules:
+                    for name in ["child_call", "alloc", "free", "assert_helper"]:
+                        if name not in by_name or float(by_name[name]["calls"]) < 1:
+                            raise RuntimeError(f"Iprof did not measure actual calls to {name}")
+                    if float(by_name["child_call"]["self (ms)"]) < 2:
+                        raise RuntimeError("Iprof lost real imported child timing")
+                    if float(by_name["main"]["hier (ms)"]) < float(by_name["child_call"]["self (ms)"]):
+                        raise RuntimeError("Iprof lost inclusive imported-module timing")
             try:
                 check_module_case()
             except (RuntimeError, subprocess.TimeoutExpired) as error:
@@ -142,8 +153,9 @@ def main():
         run([args.jaic, source, "-interp"], expected=interpreted_output)
         if name == "iprof-intercept-interpreter":
             rows = list(csv.DictReader((ROOT / "target/profiler-codex-interpreted-edited.csv").read_text().splitlines()[1:]))
-            if len(rows) != 1 or rows[0]["name"] != "main" or float(rows[0]["calls"]) != 1 or float(rows[0]["hier (ms)"]) <= 0:
-                raise RuntimeError("Interpreted edited main did not produce one real measured zone")
+            by_name = {row["name"]: row for row in rows}
+            if set(by_name) != {"main", "recover_assertion"} or any(float(row["calls"]) != 1 for row in rows) or float(by_name["main"]["hier (ms)"]) <= 0:
+                raise RuntimeError("Interpreted edited main/callback did not produce real measured zones")
         for optimization in [0, 2]:
             exe = ROOT / f"target/profiler-codex-{name}-o{optimization}"
             run([args.jaic, source, f"-O{optimization}", "-exe", exe])
