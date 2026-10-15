@@ -4,7 +4,7 @@ H :: #import "Hash_Table";
 
 S :: type_of(context._bindings_generator_session.*);
 
-#load "generator-model-vtable-layout-oracle.jai";
+#import "generator-model-vtable-layout-oracle";
 
 Capture :: struct {
     children: [..] B.CXCursor;

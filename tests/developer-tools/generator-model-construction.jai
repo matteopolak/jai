@@ -9,7 +9,7 @@ capture_error :: (_text: string, _data: *void, info: Log_Info) {
     if (info.common_flags & .ERROR) != 0 errors += 1;
 }
 
-#load "generator-model-layout-oracle.jai";
+#import "generator-model-layout-oracle";
 
 Capture :: struct {
     saved: #Context;

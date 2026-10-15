@@ -3,7 +3,7 @@ B :: #import "Bindings_Generator";
 
 S :: type_of(context._bindings_generator_session.*);
 
-#load "generator-model-template-layout-oracle.jai";
+#import "generator-model-template-layout-oracle";
 
 Capture :: struct {
     saved: #Context;
