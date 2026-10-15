@@ -214,3 +214,24 @@ format/check; full strict lint remains a failed gate. Review numeric JKS values
 preserved, incorrect byte-swap rationale questioned without invented correction.
 Exact largely-unimplemented public inventory now248 rows; no signing/DER/device
 completion credited. Native platform and compiler gaps remain named separately.
+
+Critical lifecycle checkpoint d6db68f:50 targeted executions cover actual returned
+Pool/leak reports and both DEFAULT Basic assertion configurations, interpreter
+and native ARM64/translated x64 O0/O2. Each configuration passes focused strict
+lint and Linux x64/ARM64 source checks. Broad target/lifecycle-full-final.log
+passes112 positives (including then-pending digest fixture),27 expected faults,
+16 compile negatives and prior integration/target checks. Source-built compiler
+ISA handoff and all eight public instruction wrappers separately pass native
+O0/O2, actual x64 interpreter, opcode inspection and target-aware strict lint;
+RNG hardware execution is pending capable CI, with explicit diagnostics verified.
+SHA270 vectors match native hashlib in both native CPU O0/O2 modes and interpreter;
+focused strict lint and both Linux/Windows CPU source checks pass. Independent
+negative signed-length fault exits nonzero with exact diagnostic in both tested
+modes; it is now required in the broad suite. Formatting/check covers386 owned
+files before the additional length fixture. Full integrated/native CI and all-
+owned strict lint remain separate gates, not inferred from these focused passes.
+Final target/sha-machine-full-final.log passes112 positives/28 expected faults/
+16 compile rejections plus existing SMTP/IPC/runtime/target checks. The revised
+compiler independently reruns all50 critical lifecycle executions and both
+assertion-setting lint/target checks successfully (lifecycle-final-compiler.log).
+387 owned Jai files pass formatting/check.

@@ -390,3 +390,15 @@ Timestamp/AUX exact cross-SDK tests are compiler-owner evidence, not independent
 repeated public-wrapper evidence. Native Windows/Linux remains unexecuted.
 Public prefetch invalid compile-time hints diagnose explicitly. The forty-four-byte
 options projection and all prior canonical feature types remain unchanged.
+
+Digest batch: scalar SHA-1/SHA-256 uses no native acceleration and bounded local
+word schedules; this is a deliberate portable performance choice, not a reduced
+algorithm. Only compression arithmetic uses #no_aoc for required modulo2^32
+additions. Standard mathematical constants are private immutable arrays. Valid
+readable strings hash completely; invalid length always logs independently of
+optional assertions, then asserts. Disabled/explicitly continuing assertions yield
+a zero array after the error; no invalid-input digest success is claimed or
+reviewed. No streaming API, signing, key management or native crypto exports
+are fabricated. Actual native hashlib vectors are independent test oracles only.
+Tests execute unaligned/NUL/padding boundaries and million-a, both native CPUs
+O0/O2 and interpreter. Native Linux/Windows/Android execution remains pending.

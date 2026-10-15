@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint: d6db68f. Pool/Unix Thread
+Current durable checkpoint: c45ee67 (critical Pool/Thread checkpoint d6db68f). Pool/Unix Thread
 critical corrections are committed: field-only Pool guard, no registry,
 allocator/options preserved by reset/release, genuine returned leak report fixed.
 Every owned essential Thread SDK operation now executes outside optional asserts;
@@ -15,8 +15,8 @@ Evidence: target/lifecycle-all-green.log; original failures retained separately.
 The draft invalid locked-mutex oracle and staging corrections are documented
 separately from production fixes. Native Linux/Windows/Android execution, forced
 join failures and group transactional fault recovery are not claimed. Windows
-Thread is untouched. Pending digest/signing sources remain durable and excluded
-from this checkpoint, as do all three provisional Performance_Report files.
+Thread is untouched. Digest sources preserved through the critical checkpoint are now verified for a
+separate checkpoint; all three provisional Performance_Report files stay excluded.
 Broad regression subsequently passes112 cases (including pending digest fixture),
 27 expected faults and16 compile negatives plus IPC/SMTP/Linux+Windows source
 checks. Original Basic.exit staging dependency error is retained at
@@ -31,8 +31,8 @@ lacks both RNG features, so capable-hardware execution remains a CI gate. Generi
 fence/prefetch original probes now emit real opcodes versus official C intrinsics.
 386 owned files pass formatting/check, including preserved pending digests; whole
 strict lint remains a separate failed gate. No source compiler edits or fake ISA
-results. Full task remains unfinished; missing public surface inventory still names248
-rows before pending digest changes. Next: committed compiler ISA handoff and
+results. Full task remains unfinished; missing public surface inventory now names246
+rows after the two real digest APIs. Next: committed compiler ISA handoff and
 remaining portable APIs after the critical checkpoint.
 
 Post-f044252 work: get_machine_options_x86 now implements the reviewed generic
@@ -358,3 +358,20 @@ format/check; full strict lint remains a failed gate. Review numeric JKS values
 preserved, incorrect byte-swap rationale questioned without invented correction.
 Exact largely-unimplemented public inventory now248 rows; no signing/DER/device
 completion credited. Native platform and compiler gaps remain named separately.
+
+Digest continuation: reviewed Android/Toolchain.sha1/sha256 now return real fixed
+20/32-byte digests from independent scalar Jai compression/padding code. All270
+native hashlib vectors pass interpreter and host ARM64/translated x64 O0/O2,
+including padding boundaries, embedded NUL/unaligned input and million-a.
+Focused strict lint and both Linux/Windows CPU body checks pass. Invalid signed
+length independently logs then asserts in interpreter/native O2 (both exit-6);
+registered as a separate safety fault, not a reference invalid-input guarantee.
+Signing/key/APK/ASN.1 decoding/device operations remain missing, not credited.
+No credentials, auth, device or native crypto implementation bodies accessed.
+Final digest/ISA regression:112 positives,28 expected faults and16 compile
+rejections pass in the broad runner, with real SMTP/IPC/runtime configuration
+and Linux/Windows source checks (target/sha-machine-full-final.log). The critical
+50-execution lifecycle matrix is independently rerun after the compiler rebuild
+and passes again (target/lifecycle-final-compiler.log).387 owned Jai files pass
+format/check; focused new production/test strict lint passes. Full owned lint
+and native platform CI remain separately open.

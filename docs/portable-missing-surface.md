@@ -13,7 +13,7 @@ or legacy test expectations are inventory inputs.
 
 ### Android/Toolchain
 
-JNI ABI naming, counted OID identity and reviewed JKS constants are implemented. Device/build/signing/manifest and remaining helpers are missing; no device, SDK, signing or crypto success is fabricated.
+JNI ABI naming, counted OID identity, reviewed JKS constants and real SHA-1/SHA-256 digests are implemented. Device/build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
 
 Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 
@@ -146,8 +146,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `read_silly_alias :: ($Int_Type: Type, s: *string, $BIG_ENDIAN := false) -> Int_Type` | All reviewed hosts |
 | `run_android_link_command :: (message: *Message_Phase, options: Build_Options, extra_args: [] string = .[])` | All reviewed hosts |
 | `run_gradle_task :: (project_path: string, task: string, print_output := true) -> bool` | All reviewed hosts |
-| `sha1 :: (s: string) -> [SHA_DIGEST_LENGTH] u8` | All reviewed hosts |
-| `sha256 :: (s: string) -> [SHA256_DIGEST_LENGTH] u8` | All reviewed hosts |
 | `sign_data :: (private_key_info: string, message: string) -> bool, string` | All reviewed hosts |
 | `Signature :: struct` | All reviewed hosts |
 | `SIGNING_BLOCK_ID_V2_SIGNATURE : u32` | All reviewed hosts |
@@ -356,7 +354,7 @@ Reviewed contract: [module page](specs/stdlib/modules/simple-package.md).
 | `Table_Of_Contents :: struct` | All reviewed hosts |
 | `write :: (package: *Create_Package, filename: string, sort_contents := true) -> bool` | All reviewed hosts |
 
-Total: 248 missing reviewed declaration/overload/nested-operation rows
+Total: 246 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.
