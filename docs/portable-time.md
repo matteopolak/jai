@@ -12,7 +12,7 @@ adds no public helper types. Native conversions use the NEW POSIX types directly
 | to_apollo | NEW exact binary-significand scaling into two words; finite fractions truncate toward zero at femtosecond resolution. Supports durations exceeding s64 seconds. Nonfinite/overflow returns APOLLO_TIME_INVALID |
 | timespec_to_apollo; to_timespec | NEW macOS/Linux/Android native ABI conversions; reviewed Unix epoch constant, normalized seconds/nanoseconds, negative timestamps use floor seconds; reverse conversion reports out-of-range/invalid failure |
 | current_time_consensus; current_time_monotonic | Native POSIX realtime/monotonic queries execute on host; NEW Windows system-FILETIME/QPC code and fixture bodies type-check both CPUs. Counter arithmetic executes host interpreter/native. Realtime includes epoch, monotonic has arbitrary native origin; errors assert. Actual Windows calls/cache remain unverified |
-| to_calendar; calendar_to_apollo | NEW reentrant native UTC/local conversions on macOS/Linux/Android, exact zero-based fields and millisecond resolution. Invalid calendar inputs return invalid sentinel; unrepresentable calendar output asserts |
+| to_calendar; calendar_to_apollo | Reentrant native UTC/local conversions on macOS/Linux/Android execute. NEW Windows SYSTEMTIME/FILETIME and dynamic-zone conversions type-check both CPUs, including configured Basic; native Windows execution remains unverified. Exact zero-based fields and millisecond resolution; invalid inputs return invalid sentinel, unrepresentable outputs diagnose |
 | ConvertToApollo | Expansion caller-local requirements remain unspecified; not exported |
 | calendar_to_string; calendar_to_iso_string | Exact text/zone/fraction formats unresolved; not exported |
 | filetime_to_apollo; to_filetime | NEW exact Windows FILETIME wrappers, two-word integer scaling and bounded unsigned100ns conversion. Production arithmetic source executes interpreter/native O0/O2 on host; public canonical Windows ABI/body checks pass both CPUs, actual Windows execution unverified |
@@ -168,3 +168,46 @@ root/fixture strict lint exits0 (target/time-checkpoint-foundation-lint.log).
 The full99-case/23-fault runner exits0; whole owned strict lint still fails for
 the separately inventoried reasons in portable-verification.md. Earlier lint
 counts above are historical runs with the earlier tool, not current gate status.
+
+## Windows calendar implementation
+
+The exact two public signatures now also exist on Windows. UTC uses native
+FileTimeToSystemTime/SystemTimeToFileTime with the existing FILETIME arithmetic.
+Local conversion uses the dynamic-daylight-saving Ex pair, passing null for the
+current active timezone. This avoids selecting the older API's documented
+cross-year limitation. Native date range1601..30827 is explicit; month/day fields
+are adjusted to the reviewed zero-based representation. Milliseconds are retained
+and finer precision is truncated by native SYSTEMTIME output.
+
+Public local wall times are validated as Gregorian dates and checked by a native
+UTC/local round trip to reject skipped DST times. Ambiguous repeated times retain
+the native selection; no reference ambiguity policy is claimed. Tests compare
+local calendar fields after round trip, not arbitrary timestamp identity inside
+a repeated hour. UTC timestamps compare exactly at millisecond resolution.
+The date validator exchanges only primitive integers, preserving parameterized
+Basic type identity. Its exact production source executes host interpreter/native
+tests, checking leap-century boundaries and146097 days over400 years.
+
+Private Ex function completions use SYSTEMTIME from the NEW Windows producer.
+Their dynamic-zone argument is an opaque pointer and is **always null**; there
+is no guessed aggregate layout, allocation or dereference. The ABI is the official
+timezoneapi.h three-pointer/BOOL signature. These APIs require Windows7 clients/
+Server2012 according to native documentation; older target support is unfinished.
+Native Windows default/nondefault UTC/local, leap-day, invalid-date and clock
+round trips have fixtures, but have not executed on this host. Both CPU fixture
+bodies check; no substituted Kernel32 or fake native result is used.
+
+Official native C documentation (ABI/platform facts, not Jai API oracle):
+[SYSTEMTIME](https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime),
+[SystemTimeToFileTime](https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetofiletime),
+[FileTimeToSystemTime](https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-filetimetosystemtime),
+[UTC to dynamic local time](https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-systemtimetotzspecificlocaltimeex),
+[dynamic local time to UTC](https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-tzspecificlocaltimetosystemtimeex).
+
+Focused reproduction: tools/check_portable_windows_calendar.py checks CPU bodies;
+--native requires a real Windows host and runs interpreter/native O0/O2. NEW
+foundation composition includes current calendar/kernel sources and checks
+configured Windows exports. Host strict lint passes its requested roots, but
+Windows-only bodies are inactive: jailint currently has no target selector.
+Active Windows strict lint and actual Windows runtime remain required gates.
+No synthetic OS constants or dropped assertions replace those gates.

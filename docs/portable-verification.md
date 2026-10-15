@@ -92,3 +92,15 @@ four additions; there is no claimed fourteen-negative full rerun. All318 owned
 Jai files pass formatting/check. Pool's focused strict lint and interpreter/native
 O0/O2 pass. Whole-scope strict lint remains failed, including intentional negatives,
 with no new exclusion or suppression.
+
+Windows calendar batch rerun passes101 positives/23 faults in both modes and all
+fourteen required compile rejections, retaining SMTP/IPC/startup/parent and target
+checks (target/calendar-full-suite.log). Its pure production Gregorian validator
+also executes native O2, and NEW foundation/default/nondefault time composition
+regenerates stably and passes interpreter/native O0/O2. Both Windows CPU calendar
+bodies check; actual Windows execution remains unavailable. All322 owned Jai
+files pass formatting/check. Focused host and configured-time roots pass strict
+lint; whole-scope strict lint still fails (target/calendar-owned-strict.log).
+Windows-only bodies are inactive under host jailint, which currently exposes no
+OS/CPU selector. Active Windows lint needs general tool support or an actual
+Windows linter host; cross-compilation body checks do not satisfy that lint gate.

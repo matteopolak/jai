@@ -14,7 +14,7 @@ BASELINE = ROOT / "target/portable-integration-stdlib"
 PEER = ROOT.parent / "foundations/stdlib"
 LIBRARY = ROOT / "target/portable-time-foundation/stdlib"
 OWN_FILES = ["apollo.jai", "time-errors.jai", "clock-calendar.jai", "filetime.jai",
-             "windows-clock.jai", "elapsed-time.jai"]
+             "windows-clock.jai", "windows-calendar.jai", "elapsed-time.jai"]
 
 
 def compose():
@@ -41,7 +41,7 @@ def compose():
               "current_time_consensus", "current_time_monotonic", "to_calendar",
               "calendar_to_apollo", "filetime_to_apollo", "to_filetime"]
     portable = ["to_apollo"]
-    unix = ["timespec_to_apollo", "to_timespec", "to_calendar", "calendar_to_apollo"]
+    unix = ["timespec_to_apollo", "to_timespec"]
     windows = ["filetime_to_apollo", "to_filetime"]
     common = [name for name in public if name not in portable + unix + windows]
     additions = []

@@ -158,3 +158,18 @@ or fabricated success; the test's supplied allocator deliberately returns null
 above its budget to exercise failure. USE_UNMAPPING_ALLOCATOR specialization
 remains rejected and unfinished pending exact reviewed retention/ownership
 contract. Details/risk/evidence and long-term review need: portable-pool.md.
+
+Windows calendar batch: real Kernel32 UTC/local conversions are implemented and
+both CPU bodies/configured Basic instances check, but native Windows execution is
+unverified. Dynamic-zone Ex APIs require Windows7/Server2012; older support is
+unfinished. Private ABI completions take an opaque dynamic-zone pointer that is
+always null, never allocated/dereferenced, plus actual NEW SYSTEMTIME pointers
+and s32 BOOL result. No peer edit or guessed struct layout. Local ambiguity follows
+native selection; gap detection/invalid-date rejection are independent policies
+needing review. Pure Gregorian production validation executes a400-year cycle
+on host. Focused host strict lint passes but Windows branches are inactive; the
+current linter lacks target selection, so active Windows lint is a genuine gap.
+Proper long-term gates are target-aware lint support, actual Windows interpreter/
+native error/DST testing and reviewed minimum-version/ambiguity policy. No fake
+platform constants, native mocks or assertion weakening. Details/native ABI
+sources and supported range: portable-time.md.

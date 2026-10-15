@@ -88,10 +88,10 @@ def main():
                                   *[str(path) for path in checked_paths]], cwd=ROOT, env=env)]
         foundation_library = ROOT / "target/portable-time-foundation/stdlib"
         for filename in ["apollo.jai", "time-errors.jai", "clock-calendar.jai",
-                         "filetime.jai", "windows-clock.jai", "elapsed-time.jai"]:
+                         "filetime.jai", "windows-clock.jai", "windows-calendar.jai", "elapsed-time.jai"]:
             if (foundation_library / "internal/basic" / filename).read_bytes() != (ROOT / "stdlib/internal/basic" / filename).read_bytes():
                 raise RuntimeError("regenerate the NEW foundation time composition before lint")
-        for filename in ["counter.jai", "filetime.jai"]:
+        for filename in ["counter.jai", "filetime.jai", "gregorian.jai"]:
             if (foundation_library / "internal/time" / filename).read_bytes() != (ROOT / "stdlib/internal/time" / filename).read_bytes():
                 raise RuntimeError("regenerate the NEW foundation time kernels before lint")
         foundation_env = dict(os.environ, JAIC_STDLIB=str(foundation_library))

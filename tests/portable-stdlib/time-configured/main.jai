@@ -58,6 +58,10 @@ main :: () {
 
         ft, valid = Configured.to_filetime(now);
         assert(valid);
+        epoch_calendar := Configured.to_calendar(Configured.APOLLO_TIME_FOR_JAN_1_1970);
+
+        assert(epoch_calendar.year == 1970 && epoch_calendar.day_of_week_starting_at_0 == 4);
+        assert(Configured.compare_apollo_times(Configured.calendar_to_apollo(epoch_calendar), Configured.APOLLO_TIME_FOR_JAN_1_1970) == 0);
     }
 
     print("ok\n");
