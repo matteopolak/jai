@@ -19,12 +19,18 @@ fn finalized_workspace_sizes_allocate_real_runtime_storage() {
         .join("../..")
         .canonicalize()
         .unwrap();
+    // Keep destructive fixture staging private, including concurrent cargo invocations.
+    let dir = root.join(format!(
+        "target/runtime-configuration-cli/{}",
+        std::process::id()
+    ));
+    let library = dir.join("stdlib");
     checked(
         Command::new("python3")
-            .arg(root.join("tests/compiler-semantics/runtime-configuration/stage-candidate.py")),
+            .arg(root.join("tests/compiler-semantics/runtime-configuration/stage-candidate.py"))
+            .arg("--destination")
+            .arg(&library),
     );
-    let dir = root.join("target/runtime-configuration-candidate");
-    let library = dir.join("stdlib");
     let source = root.join("tests/compiler-semantics/runtime-configuration/allocation.jai");
     let interpreted = checked(
         Command::new(env!("CARGO_BIN_EXE_jaic"))

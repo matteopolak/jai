@@ -1,10 +1,10 @@
 # Interpreter Windows thread handle and naming interoperability
 
-Managed Windows threads now expose their actual kernel thread handle. The Rust
-spawn JoinHandle transfers ownership into GThread in the shared scheduler state;
-the handle is registered as the Object::Thread key. The interpreter still manages
-waits, suspend counts, start gates and interpreted exit codes. The shared registry
-recognizes native-range thread handles independently of event creation.
+Managed Windows threads expose their actual kernel object. The current CRT-entry/
+private-join follow-up is documented in [native entry and ownership](windows-thread-entry-lifecycle.md).
+It preserves native exit results through duplicates and joins workers before
+compiler-owned state is freed. The prior naming checkpoint evidence follows.
+
 
 SetThreadDescription and GetThreadDescription remain ordinary native calls.
 Windows stores the UTF-16 description, checks handle rights, returns the actual
@@ -20,7 +20,7 @@ identity and restores the captured native last-error after registry updates. A
 successful close removes the mapping and consumes ownership exactly once, while
 the running scheduler thread can finish independently. Closing a duplicate affects
 only its kernel reference. Interpreter teardown releases remaining owned references
-even if parked threads/callbacks still retain Shared; private cleanup removes a
+after managed OS entries are joined, while callbacks may still retain Shared; private cleanup removes a
 caller-set protection flag at that boundary and reports failure to clear it.
 
 Native description queries through duplicated handles observe the same object.
@@ -28,10 +28,10 @@ Unmanaged duplicates are not registered scheduler aliases: suspension/resumption
 through such a duplicate of a live interpreted thread now diagnoses unsupported
 behavior, rather than changing the OS suspend count while leaving the scheduler
 start gate unchanged. Use the scheduler-managed handle for those operations.
-Duplicate exit-code queries/waits remain native OS queries; they do not gain a
-new guarantee of the interpreter return value or scheduler completion boundary.
-Full alias scheduling/exit-code integration would require an explicit alias
-ownership registry and additional regressions. No unrelated API stubs were added.
+Duplicate exit-code queries/waits remain native OS queries. The follow-up CRT
+entry now returns the actual Jai result to that OS object, and managed waits
+require true OS completion. Native alias suspend/resume control is still an
+explicit separate gap; object identity checks cover aliases without query rights. No unrelated API stubs were added.
 
 Official ABI contracts:
 
@@ -102,9 +102,9 @@ fixed by moving tests to the end, without suppression.
 
 Windows native descriptions and HRESULTs are delegated, not emulated on other
 hosts. Host-independent scheduler tests still use synthetic handles there.
-The existing scheduler parks unfinished OS workers after interpreter teardown;
-this batch closes owned Windows handle references but does not redesign worker
-cancellation. No benchmark claim is made for the extra registry mutex lookup on
+The follow-up cancels scheduler waits and joins OS workers at teardown; it no
+longer parks unfinished workers forever. Nonreturning native work must return
+before destruction, and external callback ownership still requires coordination. No benchmark claim is made for the extra registry mutex lookup on
 native handles. See [runtime configuration](runtime-configuration.md) and the
 mandatory deviations report for remaining independent integration/platform gates.
 No peer writes, /Users/matthew/projects/jai-reference/quarantined/vendor body access or publication occurred.
