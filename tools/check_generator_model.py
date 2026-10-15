@@ -24,6 +24,7 @@ OWNED = [
     "stdlib/internal/developer-tools/generator-model-lookup.jai",
     "stdlib/internal/developer-tools/generator-special-construction.jai",
     "stdlib/internal/developer-tools/generator-aggregate-construction.jai",
+    "stdlib/internal/developer-tools/generator-template-construction.jai",
     "stdlib/internal/developer-tools/binding-native-model.jai",
     "tests/developer-tools/generator-model-helpers.jai",
     "tests/developer-tools/generator-model-native.jai",
@@ -36,12 +37,13 @@ OWNED = [
     "tests/developer-tools/generator-model-typedefs.jai",
     "tests/developer-tools/generator-model-aggregates.jai",
     "tests/developer-tools/generator-model-record-edges.jai",
+    "tests/developer-tools/generator-model-templates.jai",
 ]
 FIXTURES = [
     "generator-model-helpers", "generator-model-native",
     "generator-model-session", "generator-model-tokens",
     "generator-model-construction",
-    "generator-model-objc", "generator-model-macros", "generator-model-cpp", "generator-model-typedefs", "generator-model-aggregates", "generator-model-record-edges", "bindings-macros",
+    "generator-model-objc", "generator-model-macros", "generator-model-cpp", "generator-model-typedefs", "generator-model-aggregates", "generator-model-record-edges", "generator-model-templates", "bindings-macros",
     "bindings-tree", "bindings-equivalence",
 ]
 evidence = []
