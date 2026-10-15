@@ -1,6 +1,6 @@
 """Transcribe explicit reviewed declarations, never implementation/reference source.
 
-Incomplete public shapes are withheld and tracked in docs/worker-inbox.md.
+Records provided by the other private executable files are excluded here.
 """
 from pathlib import Path
 import re

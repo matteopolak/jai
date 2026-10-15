@@ -9,7 +9,7 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "target/executable-verification"
 SOURCES = ["executable-objects", "executable-bitfields", "executable-relocations", "executable-archive",
-           "executable-lexer", "executable-lexer-errors", "executable-tbd", "executable-tbd-errors"]
+           "executable-lexer", "executable-lexer-errors", "executable-tbd", "executable-tbd-errors", "executable-codeview"]
 
 
 def run(command):
@@ -92,7 +92,7 @@ def main():
              *[ROOT / "tests/portable-stdlib" / (name + ".jai") for name in SOURCES if name != "executable-archive"]])
     for target in ["linux", "windows"]:
         checks = []
-        for source_name in ["executable-objects", "executable-lexer", "executable-lexer-errors", "executable-tbd", "executable-tbd-errors"]:
+        for source_name in ["executable-objects", "executable-lexer", "executable-lexer-errors", "executable-tbd", "executable-tbd-errors", "executable-codeview"]:
             result = run([compiler, "-check", "-os", target, "-cpu", "x64", ROOT / "tests/portable-stdlib" / (source_name + ".jai")])
             checks.append(dict(source=source_name, returncode=result.returncode, stdout=result.stdout, stderr=result.stderr))
         report["cross_checks"][target] = dict(kind="type check only; no target execution",

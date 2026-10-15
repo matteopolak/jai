@@ -4,28 +4,11 @@
   "reviewed_row_count": 508,
   "original_reviewed_row_count": 507,
   "refinement": "Arch_File adds one reviewed row; counts include types and constants",
-  "implemented_row_count": 506,
-  "committed_implemented_row_count": 506,
+  "implemented_row_count": 508,
+  "committed_implemented_row_count": 508,
   "draft_implemented_row_count": 0,
   "implementation_source_state": "committed",
-  "remaining_row_count": 2,
+  "remaining_row_count": 0,
   "audit_kind": "declaration coverage; semantic support and verification in portable-executable-formats.md",
-  "remaining": [
-    {
-      "module": "executable_formats",
-      "name": "Coff_Raw_Codeview_Info",
-      "declaration": "Coff_Raw_Codeview_Info :: struct",
-      "condition": "",
-      "status": "missing",
-      "source_state": "committed"
-    },
-    {
-      "module": "executable_formats",
-      "name": "Coff_Codeview_Info",
-      "declaration": "Coff_Codeview_Info :: struct",
-      "condition": "",
-      "status": "missing",
-      "source_state": "committed"
-    }
-  ]
+  "remaining": []
 }

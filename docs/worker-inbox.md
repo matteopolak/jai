@@ -90,3 +90,39 @@ aliases or /Users/matthew/projects/jai-reference/corpus-driven exceptions were a
 ## User-required reference oracle
 
 Some public corpus targets use old Jai versions. Dirty coordinator is running suspect cases with reference Jai0.2.030 in a no-network/restricted-write sandbox. Do not add old aliases or modify current APIs solely to satisfy corpus before reference behavior is confirmed. Continue independently established current-contract bugs. Clean implementers never read reference source, vendor bodies or raw reference logs; only sanitized reviewed contracts and independent reductions will be supplied.
+
+
+## Reference-confirmed correction 2026-10-15 17:45 UTC
+
+Canonical Guid is ALREADY present in approved independent Debug_Info commit822da42b and verified9a961389: stdlib/Debug_Info/codeview-type-model.jai exported by module.jai. Exact fields/data1:u32,data2:u16,data3:u16,data4:[8]u8,size16,align4,offsets0/4/6/8. Current shared independent candidate8b134bdb contains canonical type module. Adopt that approved clean dependency rather than wait or duplicate Guid. Finish two CodeView records, real public-import layout/tests and handoff.
+
+## Final worker checkpoint / clean-integrator handoff
+
+Canonical dependency adopted: commit 1432c9f4 imports the 13 differing files in
+the approved 8b134bdb Debug_Info load closure byte-for-byte. Provenance and hashes
+are in docs/executable-formats-dependency.json. No owner algorithms were edited,
+and no duplicate/local Guid type or fallback alias was introduced.
+
+Coff_Raw_Codeview_Info and Coff_Codeview_Info now directly use Debug_Info.Guid.
+The public-import test checks nominal identity/reflection, all Guid/raw/derived
+offsets/sizes/alignments and real LLD PE RSDS bytes/age/path against llvm-readobj.
+Fresh nine-suite interpreter/native Mac arm64 O0/O2 verification, strict lint,
+formatting, no-DCE import checks and Linux/Windows x64 cross type checks pass.
+Cross targets were not executed. Approved Debug_Info passes strict lint and its
+adopted files remain formatted and identical to the approved source. Archive
+parser is unchanged. Exact inventory: 508 committed, zero draft, zero remaining.
+
+No local adoption/import/layout/lint/format conflicts were encountered. Integrator
+already on 8b134bdb can keep its existing canonical dependency and take the final
+executable checkpoint after earlier worker batches. This is a local verification
+report, not a claim that a shared merge was performed. Full handoff is in
+docs/executable-formats-handoff.md.
+
+Review deviation: optional reviewer accidentally searched documentation outside
+its assigned file list; it reported incidental local status/plan/inbox matches,
+with truncated output preventing a complete match list. It reported no original/
+reference bodies, raw reference logs, harness/auth or quarantined source access.
+The worker did not read the incidental text and used direct tests as completion
+evidence. The handoff records this for clean integration review.
+
+Canonical Guid verification9a961389 already notified at17:45; use shared independent Debug_Info records, not another duplicate.
