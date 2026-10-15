@@ -2,10 +2,10 @@
   "Bindings_Generator": {
     "assigned_function_names": 61,
     "counts": {
-      "complete_committed": 4,
+      "complete_committed": 5,
       "complete_draft": 0,
       "missing": 39,
-      "partial_committed": 17,
+      "partial_committed": 16,
       "partial_draft": 0,
       "staged_blocked": 1
     },
@@ -14,6 +14,7 @@
         "append_integer",
         "append_maybe_left_shift",
         "append_maybe_right_shift",
+        "exceeds_signed_int_value",
         "strip_type"
       ],
       "complete_draft": [],
@@ -63,7 +64,6 @@
         "append_as_unsigned_integer_hex",
         "append_cpp_type",
         "append_cpp_type_modifiers",
-        "exceeds_signed_int_value",
         "get_type_name",
         "maybe_convert_expression_zero_to_null",
         "omit_cpp_functions_visitor",
@@ -100,7 +100,7 @@
       "avoid_name_clash": "M: reviewed helper behavior and coherent workflow fixture",
       "check_macro_value": "M: reviewed helper behavior and coherent workflow fixture",
       "convert_children_to_expression": "L: shared model/state or declarator/ABI integration",
-      "exceeds_signed_int_value": "M: remaining model forms/context flags and native workflow coverage",
+      "exceeds_signed_int_value": "validation/integration only; standard8/16/32/64/128 targets and null default verified",
       "expect_tokens": "M: reviewed helper behavior and coherent workflow fixture",
       "fill_template_arguments": "L: shared model/state or declarator/ABI integration",
       "fill_template_arguments_for_expression": "L: shared model/state or declarator/ABI integration",
@@ -159,7 +159,8 @@
     "9592edfb five cursor/type helpers and fresh full isolated tooling gate",
     "02d5e1a4 multiple-header C/C++ workflows and native calls",
     "18d8604b real pointer default normalization and native calls",
-    "951c6105 real byte-string macro workflows and fresh full isolated tooling gate"
+    "951c6105 real byte-string macro workflows and fresh full isolated tooling gate",
+    "0eadb3f5 public canonical omission visitor with native closure/STOP effects"
   ],
   "count_unit": "Unique reviewed public function names, with overload/path limits recorded; type/field/native-SDK inventories remain in developer-tools-api.json.",
   "definitions": {
@@ -170,7 +171,7 @@
   "disjoint_batch_candidate": {
     "status": "The proposed ten-name batch is explicitly reassigned to generator-platform; Debug entirely to debug-info-impl. No edits to those names/modules continue here."
   },
-  "head": "951c6105f2030533a8ed272ca7e751016192caf0",
+  "head": "0eadb3f5ad0eb0328489112ecbfd3f96f627baba",
   "not_counted": [
     "generator-model",
     "generator-platform",
@@ -311,9 +312,9 @@
   },
   "role": "stdlib-tools / generator emission",
   "shared_context_protocol": "docs/developer-tools-context-protocol.md (internal handoff contract; implementation owned by canonical model)",
-  "timestamp_utc": "2026-10-15T17:51:41.505835+00:00",
+  "timestamp_utc": "2026-10-15T17:56:06.923878+00:00",
   "verification_gaps": [
-    "Fresh full isolated tooling gate passed at951c6105. New public omission visitor targeted interpreter/native Mac O0/O2 plus formatter/strict lint passes; combined coordinator result remains frozen: runtime304 pass96 fail, compile-only316 pass84 fail out of400.",
+    "Fresh full isolated tooling gate passed at951c6105. Public omission visitor and signed8/16/32/64/128 range tests pass interpreter/native Mac O0/O2, formatter/strict lint; range oracle also passes C O0/O2 and Windows source/object checks. No fresh combined coordinator run; frozen corpus runtime304 pass96 fail, compile-only316 pass84 fail out of400.",
     "Canonical NEW model batch4675c90a copied unchanged and passed its own format/lint, two source targets, four interpreter/eight native executions locally.",
     "Seven committed value helpers and generated values pass interpreter/native Mac O0/O2 plus strict format/lint; integer default foreign calls additionally pass configured C++ O0/O2.",
     "Check Windows-only code is staged on Mac: real LLVM types/accounting pass, but Windows native execution is unperformed and actual Compiler ELSEWHERE metadata remains missing.",

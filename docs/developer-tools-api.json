@@ -1408,7 +1408,7 @@
         "declaration": "exceeds_signed_int_value :: (value: u64, target_type: *CType) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 207,
-        "implementation": "public type-emission/stripping/integer-width subset; actual generated Jai/C++ callback/array/reference/qualified-name types, numeric/bool foreign defaults and storage mutation execute interpreter/native Mac O0/O2 with configured C++ O0/O2, diagnostics and strict lint; raw/template defaults, special methods/bitfields/inheritance and remaining print flags pending"
+        "implementation": "signed8/16/32/64/128 representability, null-target64 default and alias/enum chains; all u64 boundary classes verified against original configured C O0/O2 oracle, interpreter/native Mac O0/O2; Windows object/source evidence, formatting and strict lint"
       },
       {
         "name": "print_literal_to_builder",

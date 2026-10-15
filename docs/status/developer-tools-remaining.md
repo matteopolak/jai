@@ -131,7 +131,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `print_type_to_builder` | Standard represented types and output paths execute; default expressions, existing-declaration synthesis and wider flags remain open. |
 | `type_to_string` | Standard printer and caller-owned result execute; exact lifetime policy awaits question14. |
 | `print_function_type_to_builder` | C-call signatures and literal/operator defaults execute, including inferred bool defaults and NO_ARGUMENT_DEFAULTS. Special methods/variadics/raw/template defaults remain unfinished. |
-| `exceeds_signed_int_value` | 8/16/32/64-bit thresholds execute; larger represented integer widths remain unsupported. |
+| `exceeds_signed_int_value` | Signed8/16/32/64/128 thresholds, null-target64-bit default and alias/enum chains execute against an original native SDK oracle. Invalid/noninteger models remain outside the represented integer contract. |
 | `strip_type` | Selected alias/enum/pointer traversal retains original component identity and diagnoses cycles; wider implicit-generator behavior is not inferred. |
 
 | Native function | Evidence / next check |

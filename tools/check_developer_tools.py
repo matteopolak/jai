@@ -20,6 +20,7 @@ import check_developer_multi_input
 import check_developer_pointer_defaults
 import check_developer_string_macros
 import check_developer_declaration_visitors
+import check_developer_integer_range
 import build_developer_debug
 import check_developer_debug_lifecycle
 import check_developer_debug_windows
@@ -141,6 +142,7 @@ def main():
     check_developer_pointer_defaults.main()
     check_developer_string_macros.main()
     check_developer_declaration_visitors.main()
+    check_developer_integer_range.main()
     configured_cases = check_developer_sdk_configuration.main()
     build_developer_debug.main()
     check_developer_debug_lifecycle.main()
