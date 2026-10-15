@@ -1,5 +1,23 @@
 # Integration requests
 
+## Canonical merged generator baseline db2962e7
+
+Compiler e9affab7 is merged as the sole ordering implementation; model b00aa052
+is merged with its alternate linter driver excluded and both original test sets
+retained. Names83ba1961 is integrated through canonical gm_active_options; no
+separate bindings_generator_options Context value remains. Actual shared library
+passes52 focused commands and both module-context regression sets (12 tests).
+Lifecycle owners must install the one borrowed options pointer and preserve its
+lifetime through native callbacks; see generator-session.md. Options defaults
+apply only when no caller options are active, not as fake replacement state.
+
+Platform status discrepancy: approved3cecb481 still contains only seven of the
+original ten platform helper names in platform-helpers.jai, identical to943637d9.
+Its changes add macro diagnostics tests and integrate the already-consumed
+compiler ordering fix, not find_lib_for_foreign_name/get_libc_paths/cache helper
+bodies. Please supply the actual committed all-ten checkpoint rather than count
+the draft as integrated. No peer dirty source or alternate checkout was read.
+
 ## Current 414-case catalogue failures at ad575d16
 
 Compiler owner: five own fixtures fail both host modes. `lang-asm` and

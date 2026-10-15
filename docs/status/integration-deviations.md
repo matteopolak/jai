@@ -1,5 +1,37 @@
 # Independent integration deviations audit
 
+## Canonical generator merge db2962e7
+
+Compiler e9affab7 supplies the single general module-context ordering fix. The
+model worker's overlapping driver implementation was excluded during merge;
+both independent regression sets remain. Its test constructors were adapted
+to current Rust Options fields, retaining all assertions (12 tests pass).
+
+Model b00aa052 supplies one unparameterized private generator-session owner,
+borrowed options pointer and optional allocator ledger. Names83ba1961 originally
+added a separate typed Context options value; that value/load was removed.
+`naming-helpers.jai` reads `gm_active_options`, using canonical options field
+defaults when no caller options are installed. Fixtures install/restore the
+one borrowed pointer. Caller options must outlive callbacks; ledger records do
+not dispose canonical libclang handles or tables. Shared generator state is
+not copied. Public init/run/deinit lifecycle integration remains tooling work.
+
+Construction retains explicit unsupported native-type diagnostics, limited
+function equivalence, borrowed TU location/token data and map-value pointers
+invalidated by structural mutation; it does not certify every C++/vtable case.
+`generator-special-construction.jai` independently filters macro suffixes `_H`,
+`_H_`, `_INCLUDED` as header-guard heuristics; exact reference equivalence is not
+established, and valid constants with those suffixes may be omitted. Proper fix
+is reviewed filtering rules plus actual preprocessor guard information. Existing
+type comparison/traversal caps documented below remain performance/correctness
+limitations, not a completed arbitrary-depth domain.
+
+Actual production verification:52 commands pass, covering twelve interpreter
+and twelve native ARM64 O0 fixtures, twelve strict fixture lints, whole-generator
+module lint, Http client lint and an actual C record-layout oracle. These are
+focused follow-ups; the frozen ad575d16 full-run counts remain unchanged. No
+second CPU/optimization sweep or staged repaired library was used.
+
 ## Combined ad575d16 measurement limits
 
 The stable workspace command completes with 840 passed/two failed/one inherited
