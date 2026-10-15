@@ -38,6 +38,9 @@ def main():
     try:
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", *OWNED])
         run([TARGET / "debug/jailint", "-D", "warnings", *OWNED])
+        for os_name in ["windows", "linux"]:
+            run([JAIC, ROOT / "tests/developer-tools/generator-model-helpers.jai",
+                 "-check", "-os", os_name, "-cpu", "x64"])
         for name in FIXTURES:
             source = ROOT / f"tests/developer-tools/{name}.jai"
             run([JAIC, source, "-interp"], "ok\n")
@@ -45,7 +48,7 @@ def main():
                 exe = TARGET / f"generator-model-{name}-O{optimization}"
                 run([JAIC, source, f"-O{optimization}", "-exe", exe])
                 run([exe], "ok\n")
-        print("generator model: format, strict lint, 4 interpreter and 8 native executions passed")
+        print("generator model: format, strict lint, 2 cross-target source checks, 4 interpreter and 8 native executions passed")
     finally:
         (TARGET / "generator-model-evidence.json").write_text(json.dumps(evidence, indent=2) + "\n")
 
