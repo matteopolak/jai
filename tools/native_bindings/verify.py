@@ -20,6 +20,7 @@ from spec import parse_spec, Declaration, Spec
 from symbols import check_symbols
 import re
 from conditions import evaluate
+from rpmalloc_tests import fixtures as rpmalloc_fixtures
 
 ROOT = Path(__file__).resolve().parents[2]
 TARGET_CONFIGS = [(os_name, cpu) for os_name in ('linux', 'macos', 'windows') for cpu in ('x64', 'arm64')]
@@ -28,8 +29,13 @@ PRIVATE_UNITS = {'ios-sdk-host':'iOS/sdk-host-unit.jai',
                  'dxc-compile-unit':'dxc_compiler/sdk-compile-unit.jai',
                  'rpmalloc-native-sdk':'rpmalloc/sdk-native-unit.jai',
                  'rpmalloc-native-storage':'rpmalloc/sdk-storage-unit.jai',
-                 'rpmalloc-heap-marshalling':'rpmalloc/sdk-heap-marshalling-unit.jai'}
+                 'rpmalloc-heap-marshalling':'rpmalloc/sdk-heap-marshalling-unit.jai',
+                 'rpmalloc-raw-heap-marshalling':'rpmalloc/sdk-raw-heap-marshalling-unit.jai',
+                 'rpmalloc-native-error-callback':'rpmalloc/sdk-error-callback-unit.jai'}
 PRIVATE_UNIT_DEPENDENCIES = {
+    'rpmalloc-raw-heap-marshalling': {
+        'tests/native-bindings/generated/rpmalloc-raw-heap-facade-layout.jai': 'rpmalloc/generated/rpmalloc-raw-heap-facade-layout.jai',
+    },
     'rpmalloc-heap-marshalling': {
         'tests/native-bindings/generated/rpmalloc-heap-facade-layout.jai': 'rpmalloc/generated/rpmalloc-heap-facade-layout.jai',
     },
@@ -148,6 +154,8 @@ def main():
     parser.add_argument('--module', action='append', choices=MODULES)
     parser.add_argument('--runtime', action='store_true')
     parser.add_argument('--privacy-only', action='store_true', help='Run the full target privacy matrix without repeating declaration/runtime suites')
+    parser.add_argument('--rpmalloc-first-class-heaps', action='store_true',
+                        help='Supply the missing raw heap compile-time selection through the private build configuration')
     parser.add_argument('--report', type=Path, default=ROOT/'.work/verification.json')
     parser.add_argument('--foundation', type=Path, help='Explicit previously staged NEW independent foundation sources')
     args = parser.parse_args()
@@ -156,6 +164,9 @@ def main():
     work.mkdir(parents=True, exist_ok=True)
     stdlib = work/'stdlib'
     stage(stdlib, args.foundation)
+    if args.rpmalloc_first_class_heaps:
+        from configure_rpmalloc import configure
+        configure(stdlib, True)
     env = dict(os.environ, JAIC_STDLIB=str(stdlib), JAIC_NATIVE_LIBS=str(ROOT/'.work/native'), TMPDIR=str(ROOT/'.work/tmp'))
     report = {'compiler': str(compiler), 'compiler_sha256': hashlib.sha256(compiler.read_bytes()).hexdigest(), 'staging_root': str(work),
               'targets': [], 'native': [], 'privacy': []}
@@ -197,17 +208,7 @@ def main():
             print(module, os_name+'-'+cpu, result['status'])
     for module, filename, configs in [
         ('macOS', 'fsevents-context.jai', [('macos','x64'),('macos','arm64')]),
-        ('rpmalloc', 'rpmalloc-native-sdk.jai', TARGET_CONFIGS),
-        ('rpmalloc', 'rpmalloc-native-storage.jai', TARGET_CONFIGS),
-        ('rpmalloc', 'rpmalloc-public-allocation.jai', TARGET_CONFIGS),
-        ('rpmalloc', 'rpmalloc-public-callbacks.jai', TARGET_CONFIGS),
-        ('rpmalloc', 'rpmalloc-public-configurable.jai', TARGET_CONFIGS),
-        ('rpmalloc', 'rpmalloc-public-raw.jai', TARGET_CONFIGS),
-        ('rpmalloc', 'rpmalloc-public-raw-callbacks.jai', TARGET_CONFIGS),
-        ('rpmalloc', 'rpmalloc-public-profiles.jai', TARGET_CONFIGS),
-        ('rpmalloc', 'rpmalloc-public-heaps.jai', TARGET_CONFIGS),
-        ('rpmalloc', 'rpmalloc-public-heap-lifecycle.jai', TARGET_CONFIGS),
-        ('rpmalloc', 'rpmalloc-heap-marshalling.jai', TARGET_CONFIGS),
+        *[('rpmalloc', name+'.jai', TARGET_CONFIGS) for name in rpmalloc_fixtures(args.rpmalloc_first_class_heaps)],
         ('d3d11', 'forward-overlay.jai', TARGET_CONFIGS),
         ('d3d12', 'd3d-interface-identity.jai', [('windows','x64'),('windows','arm64')]),
         ('SDL', 'sdl-layout.jai', TARGET_CONFIGS),
@@ -267,7 +268,8 @@ def main():
                             ('rpmalloc','invoke_error'), ('rpmalloc','Checked'),
                             ('rpmalloc','Boundary_Size'), ('rpmalloc','boundary_initialize'),
                             ('rpmalloc','boundary_config'), ('rpmalloc','boundary_rpmalloc'),
-                            ('rpmalloc','HeapBridge')]:
+                            ('rpmalloc','HeapBridge'), ('rpmalloc','Build_Settings'),
+                            ('rpmalloc','Raw_Heap_Profile')]:
         if args.module and module.split('/')[0] not in args.module and module not in args.module:
             continue
         for os_name, cpu in TARGET_CONFIGS:
@@ -311,17 +313,7 @@ def main():
         runtime_tests.append('imgui-nested')
         runtime_tests.append('posix-stat')
         runtime_tests.append('dxc-options')
-        runtime_tests.append('rpmalloc-native-sdk')
-        runtime_tests.append('rpmalloc-native-storage')
-        runtime_tests.append('rpmalloc-public-allocation')
-        runtime_tests.append('rpmalloc-public-callbacks')
-        runtime_tests.append('rpmalloc-public-configurable')
-        runtime_tests.append('rpmalloc-public-raw')
-        runtime_tests.append('rpmalloc-public-raw-callbacks')
-        runtime_tests.append('rpmalloc-public-profiles')
-        runtime_tests.append('rpmalloc-public-heaps')
-        runtime_tests.append('rpmalloc-public-heap-lifecycle')
-        runtime_tests.append('rpmalloc-heap-marshalling')
+        runtime_tests.extend(rpmalloc_fixtures(args.rpmalloc_first_class_heaps))
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
             runtime_tests.append('x11-message-box')
@@ -349,7 +341,7 @@ def main():
                 relevant = ['ImGui']
             if name == 'posix-stat':
                 relevant = ['POSIX']
-            if name in ('rpmalloc-native-sdk','rpmalloc-native-storage','rpmalloc-public-allocation','rpmalloc-public-callbacks','rpmalloc-public-configurable','rpmalloc-public-raw','rpmalloc-public-raw-callbacks','rpmalloc-public-profiles','rpmalloc-public-heaps','rpmalloc-public-heap-lifecycle'):
+            if name in rpmalloc_fixtures(True):
                 relevant = ['rpmalloc']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']
@@ -395,6 +387,14 @@ def main():
                 scope = 'public_canonical_heap_callbacks_cross_thread_free_and_failure'
             if name == 'rpmalloc-heap-marshalling':
                 scope = 'private_public_record_mirror_abi_and_independent_native_counters'
+            if name == 'rpmalloc-public-raw-heaps':
+                scope = 'public_explicit_raw_heap_profile_aliases_allocation_and_lifecycle'
+            if name == 'rpmalloc-public-raw-heap-lifecycle':
+                scope = 'public_explicit_raw_heap_callback_context_thread_handoff_failure'
+            if name == 'rpmalloc-raw-heap-marshalling':
+                scope = 'private_raw_public_layout_and_actual_atomic_native_counters'
+            if name == 'rpmalloc-native-error-callback':
+                scope = 'private_matching_sdk_error_callback_context_and_native_origin'
             result.update(name=name, phase='build',scope=scope,status='passed' if result['exit']==0 else 'failed')
             if compiled_source != source:
                 result['private_unit_placement'] = str(compiled_source)

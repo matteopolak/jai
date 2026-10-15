@@ -1,5 +1,42 @@
 # Bindings worker progress
 
+Raw heap milestone after `78d73e8`: all eleven reviewed raw heap procedures,
+nine canonical aliases and the exact conditional raw Heap/Span records now
+have a real independent native domain for each statistics setting. The private
+false build default remains explicit; configure_rpmalloc.py selects the
+otherwise undeclared compile-time option without adding public parameters.
+Distinct raw/rewrite public layouts are marshalled field by field; raw atomic
+members use actual C atomic storage/publication. Both mirrors retain complete
+SDK separation. Checked calloc uses real SDK heap calls, with overflow rollback.
+
+Fresh source-built compiler/lint tools came from the authorized compiler
+producer, using own target output and offline locked dependencies; no peer
+checkout edits. Raw/default heap scope passes 134 checks, including sixteen
+actual Mac executions, 48 desktop source checks, all 66 raw field offset/width
+probes in both statistics settings, 2,027 real raw native counters, and eight
+host C sanitizer programs. Every owned scoped module/program is strictly linted
+with proper program roots, and formatting/regeneration/66 Python tests pass.
+The ordinary enabled-raw verifier records 96 source passes/six inventory
+failures, 144 privacy passes and 30 host build/run passes. All 18 configuration
+name failures remain, with declaration checks passing. Ledger: 3 unresolved,
+77 partial and 31 declared rpmalloc entries; other36 remain unresolved.
+
+Two test/backend assumptions were corrected with retained independent evidence:
+SDK introspection now occupies a separate archive object from libc/thread
+helpers, and raw C error injection selects the actual private SDK instead of
+assuming the default domain. The native callback/context/lifetime assertions
+remain active. A general lint module-context reproducer and precise questions
+are in native-bindings-questions.md; standalone staged programs use --context,
+with no exclusions or weakened compiler diagnostics. Metadata OOM remains
+fail-fast, and full-graph copying/serialization and extra SDK domains retain
+their documented costs. Native Windows/Linux remains unverified.
+
+The latest mailbox now resolves generic allocator mode/result/old_size behavior
+and statistics builder appending/no-op contracts. Those three public procedures
+and the 18 related configuration failures are next, followed by the newly
+reported Windows ARM64 official xxHash intrinsic failure. Exact CAPS name bytes
+are still requested because the reviewed page states only "stable name string".
+
 Stable canonical heap implementation: `7fedc8e`; configurable native fix and
 durable verification runner: `bc597af`. Follow-up tests now exercise
 multi-element full/partial list prev/next links, current-heap replacement with

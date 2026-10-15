@@ -38,6 +38,7 @@ def main():
     parser.add_argument('--compiler', type=Path, required=True)
     parser.add_argument('--foundation', type=Path)
     parser.add_argument('--module', action='append', choices=MODULES)
+    parser.add_argument('--rpmalloc-first-class-heaps', action='store_true')
     parser.add_argument('--report', type=Path, default=ROOT/'.work/configuration-verification.json')
     args = parser.parse_args()
     compiler = args.compiler.resolve(strict=True)
@@ -45,6 +46,9 @@ def main():
     work.mkdir(parents=True,exist_ok=True)
     stdlib = work/'stdlib'
     stage(stdlib,args.foundation)
+    if args.rpmalloc_first_class_heaps:
+        from configure_rpmalloc import configure
+        configure(stdlib,True)
     env = dict(os.environ,JAIC_STDLIB=str(stdlib),JAIC_NATIVE_LIBS=str(ROOT/'.work/native'),TMPDIR=str(ROOT/'.work/tmp'))
     report = {'compiler':str(compiler),'compiler_sha256':hashlib.sha256(compiler.read_bytes()).hexdigest(),
               'staging_root':str(work),'staged_sources':{
@@ -55,6 +59,8 @@ def main():
             continue
         page = ROOT/'docs/specs/stdlib/modules'/(MODULES[module]+'.md')
         spec = parse_spec(page.read_text())
+        if module=='rpmalloc' and args.rpmalloc_first_class_heaps:
+            parameters = dict(parameters,RPMALLOC_FIRST_CLASS_HEAPS=True)
         for os_name in systems:
             for cpu in ('x64','arm64'):
                 file = work/'configuration-check.jai'

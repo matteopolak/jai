@@ -172729,10 +172729,10 @@
     },
     "rpmalloc": {
       "spec": "docs/specs/stdlib/modules/rpmalloc.md",
-      "spec_sha256": "6cd8efdf1201d72c9c1552ae54f53035b27e4d457d5c7810870f8d47cbc67051",
+      "spec_sha256": "bf94dcdc843a2910d4b74ef295ea4702469bdbbf1d840e9d5ae6256043d6d3bd",
       "counts": {
-        "unresolved": 23,
-        "partially_implemented": 57,
+        "unresolved": 3,
+        "partially_implemented": 77,
         "declared": 31
       },
       "member_counts": {},
@@ -173029,8 +173029,11 @@
           "condition": "",
           "spec_line": 35,
           "effective_condition": "USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "canonical_alias_target": "rpmalloc_heap_acquire",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "heap_release",
@@ -173049,8 +173052,11 @@
           "condition": "",
           "spec_line": 37,
           "effective_condition": "USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "canonical_alias_target": "rpmalloc_heap_release",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "heap_is_this_yours",
@@ -173091,8 +173097,11 @@
           "condition": "",
           "spec_line": 41,
           "effective_condition": "USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "canonical_alias_target": "rpmalloc_heap_alloc",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "heap_aligned_alloc",
@@ -173111,8 +173120,11 @@
           "condition": "",
           "spec_line": 43,
           "effective_condition": "USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "canonical_alias_target": "rpmalloc_heap_aligned_alloc",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "heap_realloc",
@@ -173131,8 +173143,11 @@
           "condition": "",
           "spec_line": 45,
           "effective_condition": "USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "canonical_alias_target": "rpmalloc_heap_realloc",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "heap_aligned_realloc",
@@ -173151,8 +173166,11 @@
           "condition": "",
           "spec_line": 47,
           "effective_condition": "USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "canonical_alias_target": "rpmalloc_heap_aligned_realloc",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "heap_free",
@@ -173171,8 +173189,11 @@
           "condition": "",
           "spec_line": 49,
           "effective_condition": "USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "canonical_alias_target": "rpmalloc_heap_free",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "heap_free_all",
@@ -173191,8 +173212,11 @@
           "condition": "",
           "spec_line": 51,
           "effective_condition": "USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "canonical_alias_target": "rpmalloc_heap_free_all",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "heap_thread_set_current",
@@ -173211,8 +173235,11 @@
           "condition": "",
           "spec_line": 53,
           "effective_condition": "USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "canonical_alias_target": "rpmalloc_heap_thread_set_current",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "errno",
@@ -173479,8 +173506,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 79,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "rpmalloc_heap_release",
@@ -173488,8 +173517,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 80,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "rpmalloc_heap_alloc",
@@ -173497,8 +173528,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 81,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "rpmalloc_heap_aligned_alloc",
@@ -173506,8 +173539,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 82,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "rpmalloc_heap_calloc",
@@ -173515,8 +173550,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 83,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "rpmalloc_heap_aligned_calloc",
@@ -173524,8 +173561,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 84,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "rpmalloc_heap_realloc",
@@ -173533,8 +173572,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 85,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "rpmalloc_heap_aligned_realloc",
@@ -173542,8 +173583,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 86,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "rpmalloc_heap_free",
@@ -173551,8 +173594,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 87,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "rpmalloc_heap_free_all",
@@ -173560,8 +173605,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 88,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "rpmalloc_heap_thread_set_current",
@@ -173569,8 +173616,10 @@
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 89,
           "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
+          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
         },
         {
           "name": "ENABLE_OVERRIDE",
@@ -173812,7 +173861,7 @@
         {
           "module": "internal/bindings/rpmalloc-sdk",
           "artifact": "stdlib/internal/bindings/rpmalloc-sdk/module.jai",
-          "artifact_sha256": "a896a1a129448691afb0bac06e426af5bb232b9e33a9d2b566af7a18c00cbfd7",
+          "artifact_sha256": "79a3b2474ab25e7cdfd5013a0a868790e2afd657b1c4355865375eaa11b13ce6",
           "status": "private_native_backend",
           "public_support": "Unresolved; this backend does not establish Jai callback/config/heap compatibility",
           "provenance": {
@@ -174246,19 +174295,13 @@
               "RPMALLOC_FIRST_CLASS_HEAPS": 1
             },
             "native_profiles": {
-              "no_statistics": {
+              "binding_rpmalloc_sdk": {
+                "callback_prefix": "binding_rpmalloc_",
+                "callbacks": "binding_rpmalloc_callbacks",
+                "condition": "!RAW && STATISTICS",
+                "facade_prefix": "binding_rpmalloc_facade_",
                 "options": {
-                  "ENABLE_ASSERTS": 1,
-                  "ENABLE_OVERRIDE": 0,
-                  "ENABLE_STATISTICS": 0,
-                  "ENABLE_VALIDATE_ARGS": 1,
-                  "RPMALLOC_CONFIGURABLE": 1,
-                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
-                },
-                "symbol_prefix": "binding_rpmalloc_nostats_"
-              },
-              "statistics": {
-                "options": {
+                  "BINDING_RPMALLOC_RAW": 0,
                   "ENABLE_ASSERTS": 1,
                   "ENABLE_OVERRIDE": 0,
                   "ENABLE_STATISTICS": 1,
@@ -174266,7 +174309,67 @@
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
                 },
+                "raw": false,
+                "sdk": "binding_rpmalloc_sdk",
+                "statistics": true,
                 "symbol_prefix": ""
+              },
+              "binding_rpmalloc_sdk_nostats": {
+                "callback_prefix": "binding_rpmalloc_nostats_",
+                "callbacks": "binding_rpmalloc_callbacks_nostats",
+                "condition": "!RAW && !STATISTICS",
+                "facade_prefix": "binding_rpmalloc_nostats_facade_",
+                "options": {
+                  "BINDING_RPMALLOC_RAW": 0,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "raw": false,
+                "sdk": "binding_rpmalloc_sdk_nostats",
+                "statistics": false,
+                "symbol_prefix": "binding_rpmalloc_nostats_"
+              },
+              "binding_rpmalloc_sdk_raw": {
+                "callback_prefix": "binding_rpmalloc_raw_",
+                "callbacks": "binding_rpmalloc_callbacks_raw",
+                "condition": "RAW && STATISTICS",
+                "facade_prefix": "binding_rpmalloc_raw_facade_",
+                "options": {
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 1,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw",
+                "statistics": true,
+                "symbol_prefix": "binding_rpmalloc_raw_"
+              },
+              "binding_rpmalloc_sdk_raw_nostats": {
+                "callback_prefix": "binding_rpmalloc_raw_nostats_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_nostats",
+                "condition": "RAW && !STATISTICS",
+                "facade_prefix": "binding_rpmalloc_raw_nostats_facade_",
+                "options": {
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_nostats",
+                "statistics": false,
+                "symbol_prefix": "binding_rpmalloc_raw_nostats_"
               }
             },
             "native_storage": {
@@ -174919,7 +175022,7 @@
           "verification": "Source/header inventory only here; actual private SDK native evidence is indexed separately",
           "checked_boundary": {
             "artifact": "stdlib/internal/bindings/rpmalloc-checked/module.jai",
-            "artifact_sha256": "bb9bc3f41b46b6bd0d380a5bfc96931402fbbb36369a0d2758885fce196c42da",
+            "artifact_sha256": "bbc4431b87360da78b109af40e774db6ba7ab376c2ad2d8594b00edb602d47c4",
             "signature": "posix_memalign :: (output: **void, alignment: u64, size: u64) -> s32",
             "scope": "Private SDK precondition validation and commit-on-success output; not public API completion"
           }
@@ -174929,10 +175032,10 @@
           "status": "partial_public_profile_adapter",
           "artifacts": {
             "stdlib/internal/bindings/rpmalloc-callbacks/bridge.c": "8b6476dd20ce5249d271f133e49656911e528eeff720be93e4628b16d2aff964",
-            "stdlib/internal/bindings/rpmalloc-callbacks/module.jai": "8a809eafb9924a145bc0c77081af16b31286618449e7974aacbd7790ad8bebd4"
+            "stdlib/internal/bindings/rpmalloc-callbacks/module.jai": "e3fdad6c4b0c9d570edd0d7bdcb0ef766ff1577ec0d64c6d3ae3a58d6255d2cc"
           },
-          "scope": "Owned callback/name lifetime, 64-bit public offset registry, actual init failure; default native profile only",
-          "limitations": "Raw/heaps/nondefault profiles and exact native-error Jai location provenance unresolved",
+          "scope": "Owned callback/name lifetime, bounded wide public offset registry, actual init failure; raw/rewrite and both statistics profiles",
+          "limitations": "Other cache/assertion/page-advice profiles and exact native-error Jai location provenance unresolved",
           "caller_context_artifacts": {
             "stdlib/internal/bindings/callback-context/bridge.c": "472a5a8dbc8871f7ccca1d5f0b9a445c5712c5d624ae75936d0d7cf71de62331",
             "stdlib/internal/bindings/callback-context/module.jai": "f7fa635fa781b43732b63a49cf7ca4882b3978511ea1ed6dadb7fd270895cb1a"
@@ -174946,18 +175049,21 @@
           "module": "internal/bindings/rpmalloc-heaps",
           "status": "partial_public_canonical_heap_adapter",
           "artifacts": {
-            "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "4dc07103f92de6d5f914386aff168e75fd185ed40fd1b40a4130ba3a62ef4fc8",
-            "stdlib/internal/bindings/rpmalloc-heaps/layout-probes.inc": "2c936ff5a3e0ae669825b4e2f6f53ff2971f42469f9557fadff5750b20856cf7",
-            "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "b6eb17e3f59eba1ad10859df03b39da1c3de928ce0bf293d33278c62c5c21dc6",
-            "stdlib/internal/bindings/rpmalloc-heaps/public-layout.h": "0f343ace3f147df160147f0d4ebf067cb3a4e960ecf9c455a17facbd71d2918e",
+            "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "b2d245e3d5c4b700b17f719f9fdd3495971fae0a086212afdcbd63548fc2dd6b",
+            "stdlib/internal/bindings/rpmalloc-heaps/layout-probes.inc": "f6e3db8ead78681e458a4d3a9d172f2817cfe086b7a0b346d00b6174b2722f47",
+            "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "80b80dff134244ce0ea67d727e9036987340ee51330b84e0fbb65b3d7d25e99f",
+            "stdlib/internal/bindings/rpmalloc-heaps/public-layout.h": "daec500093fd19e35e650bb5f26891b7ad898f1f1ada0b09e94193af09cb4eca",
             "stdlib/internal/bindings/rpmalloc-heaps/sdk-page-granularity.patch": "4ee8af6bc941251310da5ccea8810c158eeb8152b6960923a9d5a9e5a05394ff"
           },
-          "scope": "Canonical reviewed records, private typed native ownership, all real SDK counters, defined span graph and unmap-driven retirement; both statistics profiles",
-          "limitations": "Only reviewed live/quiescent field observations; other native options and raw first-class heap profile remain incomplete; metadata OOM is fail-fast",
+          "scope": "Separate canonical reviewed raw/rewrite records, actual atomic members, private typed native ownership, real SDK counters, span graph and unmap-driven retirement; both statistics profiles",
+          "limitations": "Raw heaps require explicit private build selection; only live/quiescent observations; other native options remain incomplete; metadata OOM is fail-fast",
           "tests": [
             "tests/native-bindings/rpmalloc-public-heaps.jai",
             "tests/native-bindings/rpmalloc-public-heap-lifecycle.jai",
-            "tests/native-bindings/rpmalloc-heap-marshalling.jai"
+            "tests/native-bindings/rpmalloc-heap-marshalling.jai",
+            "tests/native-bindings/rpmalloc-public-raw-heaps.jai",
+            "tests/native-bindings/rpmalloc-public-raw-heap-lifecycle.jai",
+            "tests/native-bindings/rpmalloc-raw-heap-marshalling.jai"
           ]
         }
       ]

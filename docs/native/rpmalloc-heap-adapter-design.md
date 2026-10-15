@@ -11,6 +11,13 @@ boundary, so making a canonical heap current does not bypass its metadata.
 SDK heap pointers only reach SDK calls after private association resolution.
 Public records retain the generated reviewed layout and reflected names.
 
+The raw first-class heap source profile now uses the same ownership algorithm
+against a separately generated raw mirror, preserving its different cache/list
+field order and actual C atomic member storage. All eleven raw operations and
+nine exact aliases execute for both statistics settings. The explicit private
+build selection and verification are in [the raw profile plan](rpmalloc-raw-heap-plan.md).
+No raw/public pointer is forwarded to SDK functions or the rewrite mirror.
+
 The SDK is included from its verified pinned C source with the separately
 hash-recorded page-granularity build fix described below in the adapter
 translation unit. This permits actual C atomic loads and checked heap acquisition

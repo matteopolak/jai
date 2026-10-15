@@ -15,6 +15,7 @@ import tarfile
 import urllib.request
 from config import RPMALLOC_SDK_BUILD_OPTIONS
 from prepare_rpmalloc import prepare as prepare_rpmalloc
+from rpmalloc_profiles import PROFILES, c_definitions
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -73,17 +74,21 @@ def main():
         'sdl_abi_probe': [ROOT/'tests/native-bindings/sdl_abi_probe.c'],
         'sdl_runtime_abi_probe': [ROOT/'tests/native-bindings/sdl_runtime_abi_probe.c'],
         'posix_abi_probe': [ROOT/'tests/native-bindings/posix_abi_probe.c'],
-        'binding_rpmalloc_sdk': [ROOT/'stdlib/internal/bindings/rpmalloc-heaps/bridge.c'],
-        'binding_rpmalloc_sdk_nostats': [ROOT/'stdlib/internal/bindings/rpmalloc-heaps/bridge.c'],
-        'binding_rpmalloc_callbacks': [ROOT/'stdlib/internal/bindings/rpmalloc-callbacks/bridge.c'],
-        'binding_rpmalloc_callbacks_nostats': [ROOT/'stdlib/internal/bindings/rpmalloc-callbacks/bridge.c'],
         'rpmalloc_sdk_probe': [ROOT/'tests/native-bindings/generated/rpmalloc_sdk_probe.c'],
-        'rpmalloc_callback_probe': [ROOT/'tests/native-bindings/rpmalloc_callback_probe.c'],
+        'rpmalloc_callback_probe': [ROOT/'tests/native-bindings/rpmalloc_callback_probe.c',
+                                   ROOT/'tests/native-bindings/rpmalloc_sdk_config_probe.c'],
         'rpmalloc_storage_probe': [ROOT/'tests/native-bindings/generated/rpmalloc_storage_probe.c'],
         'imgui_abi_probe': [ROOT/'tests/native-bindings/imgui_abi_probe.cpp'],
         'imgui': [vendor/manifest['imgui']['archive']['root']/name for name in
                   ('imgui.cpp','imgui_draw.cpp','imgui_tables.cpp','imgui_widgets.cpp','imgui_demo.cpp')],
     }
+    rpmalloc_units = {}
+    for profile in PROFILES:
+        for kind, source in [('sdk', 'rpmalloc-heaps'), ('callbacks', 'rpmalloc-callbacks')]:
+            units[profile[kind]] = [ROOT/'stdlib/internal/bindings'/source/'bridge.c']
+            rpmalloc_units[profile[kind]] = profile
+    # Callback/probe shared libraries must link already built matching SDKs.
+    units = {**{name: units[name] for name in rpmalloc_units}, **units}
     if platform.system() == 'Darwin':
         units['fsevents_context_probe'] = [ROOT/'tests/native-bindings/fsevents_context_probe.c']
     macros = {'stb_image': 'STB_IMAGE_IMPLEMENTATION',
@@ -106,15 +111,11 @@ def main():
                 includes = ['-isystem',vendor/manifest['imgui']['archive']['root']]
             if name.startswith('binding_rpmalloc_') or name in ('rpmalloc_sdk_probe', 'rpmalloc_callback_probe', 'rpmalloc_storage_probe'):
                 includes = ['-isystem', rpmalloc_source]
-                options = dict(RPMALLOC_SDK_BUILD_OPTIONS)
-                if name.endswith('_nostats'):
-                    options['ENABLE_STATISTICS'] = 0
+                if name in rpmalloc_units:
                     api = json.loads((ROOT/'stdlib/internal/bindings/rpmalloc-sdk/provenance.json').read_text())
-                    includes += ['-D'+item['name']+'=binding_rpmalloc_nostats_'+item['name'] for item in api['functions']]
-                    if name == 'binding_rpmalloc_callbacks_nostats':
-                        includes += ['-Dbinding_rpmalloc_initialize=binding_rpmalloc_nostats_initialize',
-                                     '-Dbinding_rpmalloc_finalize=binding_rpmalloc_nostats_finalize']
-                includes += ['-D'+option+'='+str(value) for option,value in options.items()]
+                    includes += c_definitions(rpmalloc_units[name], api['functions'])
+                else:
+                    includes += ['-D'+option+'='+str(value) for option,value in RPMALLOC_SDK_BUILD_OPTIONS.items()]
             run(['c++' if path.suffix == '.cpp' else 'cc', '-O2', '-fPIC', '-I', vendor/'stb', *includes, '-c', path, '-o', obj])
             compiled.append(obj)
         run(['ar', 'rcs', args.output / ('lib' + name + '.a'), *compiled])
@@ -122,7 +123,9 @@ def main():
         extra = ['-lffi'] if name == 'binding_ffi' else []
         if name == 'fsevents_context_probe':
             extra = ['-framework', 'CoreServices']
-        if name in ('binding_rpmalloc_callbacks','binding_rpmalloc_callbacks_nostats','rpmalloc_callback_probe'):
+        if name in rpmalloc_units and name == rpmalloc_units[name]['callbacks']:
+            extra = ['-L', args.output, '-l'+rpmalloc_units[name]['sdk']]
+        elif name == 'rpmalloc_callback_probe':
             # Shared adapters must use the same SDK instance as allocations.
             # Statically embedding a second allocator would split ownership.
             extra = ['-L', args.output, '-lbinding_rpmalloc_sdk'+('_nostats' if name.endswith('_nostats') else '')]

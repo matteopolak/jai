@@ -8,6 +8,46 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Explicit raw heap source profile and native domain cost.** Private
+  `rpmalloc-build` (false FIRST_CLASS_HEAPS default) supplies the missing
+  compile-time selection through `configure_rpmalloc.py`, without changing
+  public module parameters. Raw records have their own complete reviewed
+  mirror, order and actual atomic members; they never alias native storage or
+  the rewrite mirror. Both statistics profiles use real independently prefixed
+  SDK/callback/facade domains. Consequence: enabled raw/rewrite imports can
+  coexist safely, at the cost of separate native caches and the accepted
+  metadata allocations/graph copying/serialization. This is independent
+  packaging architecture, not a claim about a missing source default. Public
+  type/alias identity and all matching-family lifetimes remain exact. Metadata
+  OOM is still explicitly fail-fast; transactional handling remains required.
+  Long-term: complete other public option profiles, optimize only with real
+  lifecycle/dirty notifications, and resolve the remaining generic/dump contracts.
+
+- **Native test dependency and error-probe correction.** The first enabled-raw
+  sweep failed three native links: one libc/thread fixture object also contained
+  functions querying the default SDK. Split its SDK introspection into a
+  separate archive object, so raw-only programs depend on their actual domain.
+  The raw error injection itself now lives in a private integration fixture
+  selecting the matching SDK; it tests real C thunk, caller writes and fresh
+  native-origin context. Public raw callback tests retain config copy, mapping,
+  offset/lifetime/failure assertions. The profile isolation test now accepts
+  either guarded shared-domain rejection or genuinely separate domains and
+  verifies that finalization cannot invalidate the other live owner. These are
+  corrections to our private backend assumptions, not reference API changes.
+  Failure evidence: `.work/rpmalloc-raw-before-probe-migration.json`. No valid
+  assertion was dropped without replacement behavior coverage. The fixture
+  registry now drives source/runtime ownership from one shared inventory.
+
+- **Standalone-program lint root selection.** An SDK error fixture staged
+  inside stdlib was inferred as a module; lint finished bootstrap layout before
+  its context additions. Fresh producer tools reproduce this general module
+  issue. The existing `--context` option selects the actual standalone program;
+  every program and every owned facade/private module is still strictly linted.
+  Minimal original module reproducer is under `compiler-repros/lint-module-context`.
+  Proper fix belongs in generic lint bootstrap/target-module scheduling. This
+  root selection is documented tooling configuration, not a blanket suppression
+  or compiler module-name exception. Initial lint failures remain recorded.
+
 - **Native SDK heap-pool page-granularity fix.** The new public configurable
   heap regression and independent pristine-C reproducer both hit the SDK's
   active mmap-size assertion with 4 KiB spans/16 KiB pages. The defect is native

@@ -2,12 +2,12 @@
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
     "declared": 28397,
-    "unresolved": 59,
+    "unresolved": 39,
     "implemented_manual": 52,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1,
-    "partially_implemented": 57
+    "partially_implemented": 77
   },
   "reports": [
     {
@@ -578,6 +578,96 @@
       ]
     },
     {
+      "report": ".work/rpmalloc-patch-format-idempotence.json",
+      "sha256": "3d4555a0fc45f76055608a5613bc116fe97510df95de97dbd7f0cd6c2478d024",
+      "scope": "Zero-context patch produces byte-identical prepared pinned C source",
+      "observed_identical": true,
+      "prepared_source_sha256": "35ff487986188f2a605990f3f765c665e352b4e178e9292f3b0a56d01356fff0"
+    },
+    {
+      "report": ".work/rpmalloc-raw-heaps-final-24.json",
+      "sha256": "aba624756bbed54b094914b951fe62fe1f76acfd84fed795cec763fa0d853059",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "checks": 134,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-raw-public-checkpoint-24.json",
+      "sha256": "7edc5bbdf637ca5aa32cc48dc4cd4f2ca41d30521a8661e5b7dc579f8df6a59a",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 96,
+          "failed": 6
+        },
+        "native": {
+          "passed": 30
+        },
+        "privacy": {
+          "passed": 144
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-raw-configurations-24.json",
+      "sha256": "580265eb34471af898365b261afad0d4e0edfde5a8fef5886c9f8b53df2cabf1",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "checks": 36,
+      "failures": 18
+    },
+    {
+      "report": ".work/rpmalloc-raw-before-probe-migration.json",
+      "sha256": "fa558b5f7690786bc241be83e58404352d35cb06fbe83cd877623169a420ef46",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 90,
+          "failed": 6
+        },
+        "native": {
+          "passed": 22,
+          "failed": 3
+        },
+        "privacy": {
+          "passed": 144
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-raw-heap-production-scope-first.json",
+      "sha256": "69528401ebc186d5a7dbc7d0c616623192f2957806887b3ed5e335b7dcc6d973",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "checks": 102,
+      "failures": 2
+    },
+    {
+      "report": ".work/raw-owned-format-24.json",
+      "sha256": "984d4a1cbcc92b6e48952aa8bfd756958bff1226a36782e65bf928f9f34be6e3",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 1,
+      "failures": 0
+    },
+    {
+      "report": ".work/raw-probe-build-final.json",
+      "sha256": "bf6cedb2457cbf816015b675045ece1ef7f94ab35dbae06f3d8f577e279d064c",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 12,
+      "failures": 0
+    },
+    {
+      "report": ".work/native/rpmalloc-build.json",
+      "sha256": "2aecd2fb456f2ec6cf7fd91d9753663526471f9211de76117b1d495e8bc2edca",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 32,
+      "failures": 0
+    },
+    {
       "report": ".work/rpmalloc-canonical-heaps-checkpoint-22.json",
       "sha256": "d40d367a0e31d4fe395c19762502ae16ad976a23a4a63a972a3fd9b59ebce0e0",
       "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
@@ -1019,13 +1109,6 @@
       "sha256": "d5f6f7da97b308fae5e489ce7674132f7c18220045e5697ddb1844b8847b87a3",
       "scope": "Observed regression with fresh-only callback contexts before synchronous context borrowing",
       "observed_failure": 134
-    },
-    {
-      "report": ".work/rpmalloc-patch-format-idempotence.json",
-      "sha256": "3d4555a0fc45f76055608a5613bc116fe97510df95de97dbd7f0cd6c2478d024",
-      "scope": "Zero-context patch produces byte-identical prepared pinned C source",
-      "observed_identical": true,
-      "prepared_source_sha256": "35ff487986188f2a605990f3f765c665e352b4e178e9292f3b0a56d01356fff0"
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",
