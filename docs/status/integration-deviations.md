@@ -1111,3 +1111,38 @@ window-native, production188invocationsPASS with real hostGL/clipboard/fonts.
 No failed initial run hidden. New fullpartial-edit sweep1086ownfiles running,
 excluding all public corpus/vendor directories. Opaque applicationcorpus/Focus/
 crosshardware remain coordinator gates; no publication/push/dispatch occurred.
+
+Refresh18 retained regression migration follow-up:
+- tests/extensions/extensions-long-double.jai explicitly casts only presentation
+  arguments to float64 and checks type identity directly. All wide arithmetic,
+  mantissa/rounding/range/reflection/C-varargs assertions remain; four wide target
+  interpreter scenarios PASS. Basic's current formatter supports IEEE32/64
+  rather than arbitrary extension floats; this is an explicit capability gap,
+  not a production narrowing implementation or full wide-formatting claim.
+- c-callback-threads fixtures follow reviewed thread_deinit completion precondition
+  for positive lifecycle calls. The compiler deadlock fixture now uses direct
+  documented SDK thread create/join signatures and condition-variable waits:
+  public thread_is_done is timed polling and macOS public Semaphore uses opaque
+  libdispatch waits, so those do not prove scheduler-blocked-state diagnostics.
+  Two attempted polling/dispatch variants stalled and were terminated explicitly;
+  original logs retained. Neither is a passed test. Actual kernel-wait variant
+  PASS preserves both immediate Jai join deadlock and C-callback grace timing,
+  exact positive outputs and native callback execution. A60-second watchdog
+  now kills/states a hard failure on reporting stalls, never accepting timeout.
+  Missing C compilers fail both touched Ccallback tests instead of optional skip.
+  Native Windows/Linux execution of the new SDK fixture remains CI-required;
+  current supported hosts/targets are64bit, pthread_t/uintptr ABI accordingly.
+  No fake handle, unreviewed Thread export or native callback adapter added.
+- backtrace caller regression removes unreviewed Debug.USE_GRAPHICS parameter;
+  exact same frame-depth/deallocation assertions PASS nativeO0/O2.
+- unsupported Compiler requests use current precise scope/user-segment/type-table/
+  custom-link precondition diagnostics and reviewed one-argument link completion
+  signature, still require every case to fail. Six-case CLI test PASS.
+- broad source compile/lint/matrix failures remain. The25diagnostics,4IDElayout,
+  namespace edit resolution, browser negative assertion, two optimizer tests,
+  three selector tests and focused native callbacks/backtrace are actual focused
+  results only. No new all-workspace total inferred from them.
+
+All private source/header/probe substitutions remain labeled. Source pins,
+C ABI guards, native foreign errors, public visibility and old failure evidence
+are retained. No global lint suppression, test disable or release action.
