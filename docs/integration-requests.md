@@ -234,3 +234,25 @@ records and reader/writer lifecycle variants. Reproducer: #import "Shared_Memory
 main :: () {} under either Windows CPU. Implement real Winsock/mapping backends,
 preserve exact public layouts and require real loopback/IPC native CI. Combined
 target failures remain visible; Unix runtime passes do not cover these gaps.
+
+## Generic global-initialization address dependency / UI strict lint
+
+Actual combined production strict lint of stdlib/GetRect/module.jai and
+stdlib/GetRect_LeftHanded/module.jai rejects circular dependency while resolving
+default_overall_theme. This predates the unused-result cleanup; original broad
+logs retain it. Positive UI execution is not proof of complete library body lint.
+A minimal original related address-initialization reproducer is
+tests/compiler-semantics/pending/typed-global-address.jai: a typed global record
+has a default owner pointer to its own address. -check -no_dce reports a circular
+dependency on settings. The initial callback-only candidate passed and is not
+claimed a reproducer; adding the real self-address dependency demonstrates it.
+
+Compiler decls.rs::resolve_global_var allocates storage before initializers, but
+its comment claims pending_globals support which has no corresponding state.
+Proper resolution needs declaration/type/storage availability for legitimate
+address/procedure references while still rejecting cyclic value evaluation and
+compile-time reads before initialization. Do not mark a global fully initialized
+early and silently supply zero values. Compiler owner should fix the general
+dependency lifecycle and retain cyclic-value and self-address regressions, then
+rerun actual production UI strict lint. No public theme/layout or initializer is
+changed to evade this defect.

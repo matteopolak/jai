@@ -553,3 +553,17 @@ and both production runtime configuration regressions pass without test changes.
 - Six skip-list rows named nonexistent files: GetRect_LeftHanded/tests/{geometry-tests,legacy-compatibility-tests,text-interaction-tests}, Simp/tests/{readback-tests,software-render-tests}, Sound_Player/tests/offline-mix. They are absent from the permitted independent baseline and current tree, and the runner reported each invalid ID. Removed these phantom inventory entries only; no actual test, assertion or skip was deleted. All480 original behavior cases remain required; earlier error evidence retained.
 - The first refresh12 broad quality invocation enumerated an old moved SDL fixture from HEAD and failed its missing path; it is not a source-format pass. Freeze/commit current paths before retrying. Broad host-only lint still cannot establish target-specific/private fragment coverage; strict target-aware positive subsets and every real failure remain separate.
 - An accidental all-lines LSP sweep was stopped after its first four completed files, retaining its partial log; it is not a full pass. The complete639-file sweep uses the established8 sampled nonempty lines per file with full IDE assertions, matching prior broad coverage. New moved fixtures require a follow-up path check. No public application corpus has been inspected or modified.
+
+## Scoped unused-result cleanup
+
+Detected45 unused-binding findings in private UI/archive sources. Removed unused
+trailing results, retained underscore discards only when a later result is used,
+and preserved every call (all-unused calls remain statements). A follow-up found
+one now-unneeded released binding and removed it. No rule suppression, public
+signature/default/type/storage or assertion changed. Archive strict lint and
+original archive interpreter behavior pass. Nine existing UI suites are running
+in interpreter/nativeO0/O2. UI strict lint has no remaining ordinary findings but
+still fails its pre-existing default_overall_theme dependency; this is not a
+strict lint pass. A minimal original self-address initialization reproducer and
+proper lifecycle requirements are in integration-requests.md. The provisional
+callback-only candidate passed; it is not falsely cited as a failure.
