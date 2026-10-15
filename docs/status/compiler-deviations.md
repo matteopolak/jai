@@ -1,5 +1,39 @@
 # Compiler deviations and implementation gaps
 
+Default generic pointer scope: no workaround, nominal matcher relaxation, module
+exception, fabricated binding or unsafe operation. Locations: sema/expr.rs,
+decls.rs, structs.rs. Default pointees reuse canonical instance binding; unused
+Type parameters reject non-type operands. Cache allocation/evaluation costs are
+the existing instantiation costs; no throughput claim. Required-argument source
+types remain symbolic and wider restriction/null-Type/variadic-only contracts
+are not claimed newly supported. User-named producer file is missing at its exact
+authorized path; independently authored source reproduces the identical defect,
+but actual restored producer/watcher integration remains required. Scoped
+reflection prelude and native/WASM harness are test infrastructure, not production
+stdlib integration. Three initial test setup/oracle errors were corrected with
+failure logs retained and meaningful identity/constraint assertions preserved.
+Exact evidence, effects, risk and proper follow-up: compiler/default-generic-pointers.md.
+
+Architectural instruction scope: no fabricated timestamp/AUX/random/CF, noop fence,
+module exception or external assembler fallback remains in the implemented batch.
+Locations: sema/asm{,/scalar}.rs, ir.rs, interp/machine.rs, LLVM lower.rs. Real x64
+host execution/CPUID is required; ARM rejects x86 execution and WASM has no generic
+counter. Interpreter CPUID probes/effect accounting add overhead/serialization;
+no timing/throughput equivalence claim. Native raw instructions rely on caller CPU/OS
+checks and may fault where unsupported. Capable-machine RNG/native Windows/Linux
+execution remains pending; opcode/source checks do not substitute. Other cache
+operations now explicitly reject rather than silently noop; unrelated synthetic
+rdpid/xgetbv/MXCSR remain concrete gaps. The scoped unsafe allowance is confined to
+one CPUID-guarded independent Rust SDK oracle test; no blanket lint suppression.
+Exact effects, original failures, tests, risks and proper next steps:
+compiler/x86-machine-instructions.md. Public macro adoption belongs to portable;
+generic-pointer reduction and private runtime adoption are pending dependencies.
+Initial browser build omitted the staged independent prelude: its actual failure
+is retained in target/x86-machine-wasm-runtime.log. Correct JAIC_STDLIB rebuild and
+actual Node regression pass, with no source/assertion workaround. Scoped positive
+Jai fixture format/strict lint passes; deliberately invalid Rust/JS embedded
+program strings remain negative regression inputs, not positive lint roots.
+
 Target-aware lint has no module-specific exception or fabricated platform constant. driver/target/main use real cloned compiler options; failed compiler/IDE contexts remain failures. --context uses an actual program with real bindings and unchanged source provenance. Manifest counts visited sources, labels incomplete contexts and initial pre-fix phase, and exposes inactive/unvisited loads rather than claiming coverage. Backend/foreign compile-time operations unavailable on the host still fail; generic sketch limits are unchanged. Existing cross-root finding ownership remains first-root policy; repeated workspace visits now actually run and identical findings deduplicate afterward. Metadata retains source/target/config context with linear path storage; no throughput claim. New serde_json dependency reuses the pinned existing lockfile version; Cargo's unrelated stale-entry pruning was restored, with only jailint's dependency addition retained. Three invalid new fixture assertions corrected separately without weakening privacy/findings or CLI value parsing; original logs retained. Full-runner adoption/platform runtime remains pending, with no fixture-only pass called production integration. Locations, evidence, precise bounds and integration steps: tools/jailint-targets.md.
 
 CI 7350b86 CRT link defect: forced ucrt library in interp/threads/win32.rs mixed DLL UCRT with configured static Rust/LLVM CRT. Attribute removed; selected Rust CRT resolves the real entry/error APIs. No blanket linker flags, API substitution or configuration workaround. Four Windows core CRT dependency metadata cases pass after original red; native executable linking/runtime remains pending, not inferred from metadata/clippy. Native build gate covers both tool binaries and preserves caller CRT configuration. Exact rationale, evidence and next CI commands: compiler/windows-crt-linkage.md. Prefix grouping and inward type-flow questions are now resolved by reviewed spec; numeric narrow shift promotion alone stays open.
