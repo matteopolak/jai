@@ -88,6 +88,7 @@ main :: () {
         variable := generator.global_scope.members[3];
 
         assert(variable.name == "original_counter" && variable.type == generator.type_def_s32);
+        assert(B.is_prefix_comment(variable.comment));
         assert((cast(*B.Literal) variable.expression).int_value == 9);
         native_type := B.clang_getCursorType(capture.children[3]);
 
@@ -122,6 +123,9 @@ main :: () {
         assert((generator.type_def_char.flags & .CONST) == 0);
         assert(ft.arguments[2].type.pointer_to.type_of_function.arguments.count == 1);
         expr := generator.global_scope.members[5].expression;
+
+        assert(generator.global_scope.members[5].comment.text == "///< trailing model comment.");
+        assert(!B.is_prefix_comment(generator.global_scope.members[5].comment));
 
         assert(expr.kind == .BINARY_OPERATOR);
         binary := cast(*B.Binary_Operator) expr;

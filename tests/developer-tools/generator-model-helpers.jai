@@ -131,9 +131,15 @@ main :: () {
     assert(!B.is_operator(null));
     comment: B.Comment;
     comment.text = "/// before";
+    assert(!B.is_prefix_comment(comment));
+    comment.location.line = 3;
     assert(B.is_prefix_comment(comment));
     comment.text = "///< after";
+    assert(B.is_prefix_comment(comment));
+    comment.location.line = 0;
     assert(!B.is_prefix_comment(comment));
+    comment.text = "one\ntwo";
+    assert(B.is_prefix_comment(comment));
     comment.text = "";
     assert(!B.is_prefix_comment(comment));
     alias.name = "va_list";
