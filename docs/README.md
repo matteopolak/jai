@@ -110,7 +110,8 @@ The LLVM backend, C ABI and linking.
 - [Windows device notifications](native/window-render-device-notifications.md): real
   interface registration, bounded payload decoding, callbacks and native verification limits.
 - [Native WGL investigation](native/window-render-wgl-investigation.md): filtered CI
-  failure evidence, production diagnostics, actual driver probe and explicit real-driver CI deployment.
+  failure evidence, real retirement-surface lifetime, native diagnostics and pinned
+  official-source ARM64 Mesa build/deployment with explicit runtime verification limits.
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping and Unix System coverage

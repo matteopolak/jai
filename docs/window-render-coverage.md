@@ -1,5 +1,14 @@
 # Window/render public API coverage ledger
 
+Latest native evidence (filtered run38662728329): x64 real Mesa4.6 passes probe,
+events and public shader/texture draw/readback in interpreter/O0/O2; lifecycle and
+native strict lint fail. ARM64 GDI Generic1.1 lacks required context support.
+Issue#1 signed-wheel regressions pass both CPUs. New real same-pixel-format WGL
+retirement surfaces, live-owner/repeated-MSAA lifecycle assertions and pinned
+official-source ARM64 Mesa build/deployment route are locally source-checked;
+native lifecycle fix/driver execution and Windows strict lint are pending. These
+facts supersede historical creation-only Windows entries in the ledger below.
+
 This is a partial implementation, not completion of the assigned reviewed inventory.
 The companion [questions](specs/stdlib/window-render-questions.md) identify contract and
 dependency gates. Missing exports remain missing rather than returning fabricated success.

@@ -1,5 +1,31 @@
 # Window/render progress
 
+2026-10-14 lifecycle batch, awaiting native rerun: filtered run38662728329
+confirms x64 real Mesa4.6 probe/events/public rendering pass all modes; issue#1
+passes both CPUs. Lifecycle fails context selection and Windows strict lint fails
+without a supplied rule/location. ARM64 has GDI Generic1.1.
+
+Official Mesa25.2.5 source reveals its WM_DESTROY hook releases the drawable before
+our procedure. Windows contexts now own real same-pixel-format native retirement
+surfaces; cleanup selects these, retains the share-owner drawable across
+close-all/reopen, and deletes non-root retirement resources. Added immediate WGL
+selection diagnostics and live-owner/repeated-MSAA lifecycle assertions.
+
+Local evidence:186 focused invocations pass/zero fail on the context change;
+extended Windows lifecycle checks pass x64/arm64. Full owned jaifmt --check and
+integrated native-host jailint -D warnings pass. Three source-cache safety tests,
+source-builder plan and Python compilation pass. Pinned upstream-source ARM64
+Mesa/LLVM/WinFlexBison build/deployment helper prepared; no MSVC driver build or
+runtime is claimed on macOS. Source/configuration evidence and bindings-owner
+request: docs/native/window-render-wgl-investigation.md. No peer/API/Extensions
+changes or reduced renderer assertions.
+
+Next: coordinator runs native WGL helper on both CPUs, building/deploying ARM64
+Mesa first. Filtered summary now includes immediate selection errors and lint
+headers/locations. Native lifecycle success, Windows strict lint and ARM64 driver
+execution remain blockers. Historical entries below are superseded where they
+describe unknown x64 driver identity or an unbound Windows share owner.
+
 Durable WGL investigation checkpoint: `5173209`. Final current-tree verification:
 186 focused compiler/program invocations pass, zero fail, using fresh source-built
 compiler/tools. Formatting passes on all owned Jai; strict lint passes on the

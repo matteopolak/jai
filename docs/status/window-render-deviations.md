@@ -1,5 +1,37 @@
 # Window/render deviations and implementation gaps
 
+Latest WGL lifetime correction supersedes the historical unbound-root description
+below. `internal/rendering/window-contexts.jai` now allocates one actual native
+hidden STATIC window/common DC per context, copying the visible surface's exact
+pixel format. Official Mesa25.2.5 releases visible drawables in a WM_DESTROY hook
+before our callback; selecting them there is unsafe. Cleanup uses the retirement
+DC and destroys non-root context/DC/window resources. One root context plus its
+native surface/DC remains process-lived to preserve public texture/PBO resources
+across close-all/reopen. Observable cost: an extra real native window/DC per live
+renderer, plus one process-lived owner. This is a deliberate lifetime design, not
+simulated windows or a tool-only replacement. Possible performance/resource risk:
+many contexts increase native handle use. A reviewed offscreen pbuffer design may
+reduce window overhead, but must preserve driver/profile/pixel-format support and
+all live-resource assertions. No pbuffer fallback is silently claimed. Cross-thread
+context destruction and foreign HWND lifecycle notification remain unsupported
+integration gaps. New native Windows validation remains pending.
+
+`tools/window_render_mesa_windows.py` pins upstream Mesa25.2.5, LLVM20.1.8 and
+WinFlexBison2.5.25 sources and build-tool versions; source hashes, commands and
+native DLL architecture are checked. Native Windows ARM64 execution is required.
+Only plan/source-integrity tests run here; no driver build or GPU test is fabricated.
+LLVM build time/memory and CI desktop/session availability remain platform risks.
+Optional non-WGL native library features are excluded from this driver build;
+required production OpenGL drawing/readback/lifecycle tests are retained, and no
+upstream Mesa CTS pass is claimed. Proper completion requires native build and
+actual llvmpipe runtime evidence with source-build.json plus filtered CI summary.
+
+Run38662728329 gives a real Windows strict-lint failure but no diagnostic rule or
+location. Native-host strict lint passes; it does not substitute for Windows lint.
+The CI helper now exports diagnostic headers/locations only, without source bodies
+or raw logs. No lint rule suppression/exclusion or invented fix is counted.
+Bindings-owner private-DC failure cleanup remains requested in the WGL handoff.
+
 Fresh linter evidence: the all-local-path host command initially failed with a cursor remove-in-for finding and incomplete roots (wrong platform, intentional negative programs, and local inherited dependency precedence). Those failures are not claimed as successful body lint. Proper lint of byte-identical integrated production roots removes dependency precedence/private-import problems; eight facade roots, private context/lifecycle modules and native macOS event test pass warnings-denied lint without incomplete diagnostics. All54 owned staged Jai files match originals. Windows native strict lint is mandatory in window_render_wgl_ci.py; cross-platform/negative-program semantic lint is not silently counted as native-host completion. No suppressions, rule/config changes or import patches are used. Cursor retirement was refactored into search then mutation outside traversal; original ordering still removes the registry entry before native release, with a real close-while-disabled test.
 
 Current WGL release blocker supersedes earlier source-only Windows context evidence: filtered candidate0100a1f WindowsCI links graphics but creation fails in interpreter/O0/O2 on both CPUs; signed-wheel issue#1 actually passes both. Source review of NEW bindings found no proved root cause. System GL capability is an unverified hypothesis until actual driver identity/stage/error is returned. Production diagnostics cannot recover the original native error after binding cleanup, so label post_cleanup_error and request owner-side immediate capture. Target PFD descriptors are logged only when native DescribePixelFormat succeeds. A successful constructor now checks prior context/DC restoration. No requested-version/profile downgrade or fabricated driver capability.
