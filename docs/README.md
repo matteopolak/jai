@@ -187,6 +187,10 @@ The LLVM backend, C ABI and linking.
 
 ## Standard library
 
+- Data/resource [plan](portable-data-plan.md), [public API evidence](portable-data-api.md),
+  [progress](status/portable-data-progress.md), [deviations](status/portable-data-deviations.md),
+  and [questions](specs/questions/portable-data.md).
+
 - [Independent integration commands and limits](tools/cleanroom-integration.md)
 - [Integration deviations audit](status/integration-deviations.md) and [requests](integration-requests.md)
 - [Integration contract questions](specs/questions/cleanroom-integration.md): unresolved runtime instance and ABI labels, distinct from specified implementation gaps
