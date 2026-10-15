@@ -1,11 +1,11 @@
 {
   "compiler": {
     "ref": "producer/compiler",
-    "commit": "72bdba5a51704a92f3cdf7f3c1f4fc1d91e7c419"
+    "commit": "995685c09ce3f9ca6fff48c6737facb914d89c8b"
   },
   "stdlib": {
     "ref": "producer/stdlib",
-    "commit": "31e453e4e36f4a51bdeb82dc2205d4fc63bbaaa2"
+    "commit": "235594318b9b2cf01393cff35354d08f400e62b2"
   },
   "bindings": {
     "ref": "producer/bindings",
@@ -25,7 +25,7 @@
   },
   "foundations": {
     "ref": "producer/foundations",
-    "commit": "5c5e27b93c605b00590a68d594d255dd5a35e0a1"
+    "commit": "3d218cbd9c928491ac6e381da4cb3dde64a10e27"
   },
   "window-render": {
     "ref": "producer/window-render",
