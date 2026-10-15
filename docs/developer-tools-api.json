@@ -176,14 +176,14 @@
         "declaration": "generate_bindings :: (options: Generate_Bindings_Options, filename: string, log_results := true) -> success: bool",
         "section": "Public declaration inventory",
         "spec_line": 31,
-        "implementation": "C and global POD C++ generation subset; actual generated 8/16/24-byte record aggregate/reference adapter declarations, native original argument/result/storage-identity effects, diagnostics and destination preservation; scopes/methods/overloads/custom C++ callbacks/printf paths pending"
+        "implementation": "C and global POD C++ generation subset; original aggregate/reference effects, custom overload/argument/record/field mappings and destination-preserving diagnostics verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
       },
       {
         "name": "generate_bindings",
         "declaration": "generate_bindings :: (_options: Generate_Bindings_Options, log_results := false) -> generated_result: String_Builder, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 32,
-        "implementation": "C and global POD C++ generation subset; actual generated 8/16/24-byte record aggregate/reference adapter declarations, native original argument/result/storage-identity effects, diagnostics and destination preservation; scopes/methods/overloads/custom C++ callbacks/printf paths pending"
+        "implementation": "C and global POD C++ generation subset; original aggregate/reference effects, custom overload/argument/record/field mappings and destination-preserving diagnostics verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
       },
       {
         "name": "Bridge_Data",
@@ -197,7 +197,7 @@
         "declaration": "generate_bridge :: (_options: Generate_Bindings_Options, filename: string) -> success: bool",
         "section": "Public declaration inventory",
         "spec_line": 34,
-        "implementation": "global C++17 adapter subset; POD result leading out pointer, reference argument/result pointers and original native consumer effects; scopes/overloads/custom callbacks/printf adapters pending"
+        "implementation": "global C++17 adapter subset; original native POD/reference effects and customized overload/argument/record/field mappings verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
       },
       {
         "name": "create_omit_cpp_functions_visitor",
@@ -23736,7 +23736,7 @@
   },
   "Debug": {
     "spec": "docs/specs/stdlib/modules/debug.md",
-    "spec_sha256": "cf851e25ee5bb67d9c8f9886946fa01cfcc0cff740b8583bdb49a85e923737ea",
+    "spec_sha256": "b660fef0cf73f7a3ff83b1a711a5f957b3d8bb5b9025c4050c398f5982c683e0",
     "declarations": [
       {
         "name": "CRASH_HANDLER_USE_SEPARATE_THREAD",
@@ -23757,14 +23757,15 @@
         "declaration": "Crash_Handler :: #type (trace: [] string)",
         "section": "Public declaration inventory",
         "spec_line": 9,
-        "implementation": "pending"
+        "implementation": "reviewed canonical enum/callback/storage; actual native Mac O0/O2 fault-PC callback effect"
       },
       {
         "name": "init",
         "declaration": "init :: ()",
         "section": "Public declaration inventory",
         "spec_line": 10,
-        "implementation": "pending"
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "backtrace",
@@ -23858,99 +23859,105 @@
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
+        "name": "Assert_Response",
+        "declaration": "Assert_Response :: enum",
+        "section": "Public declaration inventory",
+        "spec_line": 24,
+        "implementation": "reviewed canonical enum/callback/storage; actual native Mac O0/O2 fault-PC callback effect"
+      },
+      {
         "name": "set_minidump_state",
         "declaration": "set_minidump_state :: (state: Minidump_State)",
         "section": "Public declaration inventory",
-        "spec_line": 24,
+        "spec_line": 25,
         "implementation": "pending"
       },
       {
         "name": "set_report_mode",
         "declaration": "set_report_mode :: (interactive : bool)",
         "section": "Public declaration inventory",
-        "spec_line": 25,
-        "implementation": "pending"
+        "spec_line": 26,
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "enable_signal_handler",
         "declaration": "enable_signal_handler :: (interactive:=false)",
         "section": "Public declaration inventory",
-        "spec_line": 26,
-        "implementation": "pending"
+        "spec_line": 27,
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "disable_signal_handler",
         "declaration": "disable_signal_handler :: ()",
         "section": "Public declaration inventory",
-        "spec_line": 27,
-        "implementation": "pending"
+        "spec_line": 28,
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "no_assert",
         "declaration": "no_assert :: (loc: Source_Code_Location, message: string)",
         "section": "Public declaration inventory",
-        "spec_line": 28,
-        "implementation": "pending"
+        "spec_line": 29,
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "print_assert",
         "declaration": "print_assert :: (loc: Source_Code_Location, message: string)",
         "section": "Public declaration inventory",
-        "spec_line": 29,
-        "implementation": "pending"
+        "spec_line": 30,
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "trace_assert",
         "declaration": "trace_assert :: (loc: Source_Code_Location, message: string)",
         "section": "Public declaration inventory",
-        "spec_line": 30,
-        "implementation": "pending"
+        "spec_line": 31,
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "break_assert",
         "declaration": "break_assert :: (loc: Source_Code_Location, message: string) -> bool",
         "section": "Public declaration inventory",
-        "spec_line": 31,
+        "spec_line": 32,
         "implementation": "pending"
       },
       {
         "name": "interactive_assert",
         "declaration": "interactive_assert :: (loc: Source_Code_Location, message: string) -> bool",
         "section": "Public declaration inventory",
-        "spec_line": 32,
+        "spec_line": 33,
         "implementation": "pending"
       },
       {
         "name": "is_valid_pointer",
         "declaration": "is_valid_pointer :: (ptr : *void) -> bool",
         "section": "Public declaration inventory",
-        "spec_line": 33,
+        "spec_line": 34,
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "write_minidump",
         "declaration": "write_minidump :: (pExceptionInfo: *EXCEPTION_POINTERS, large_dump := false) -> string",
         "section": "Public declaration inventory",
-        "spec_line": 34,
+        "spec_line": 35,
         "implementation": "pending"
       },
       {
         "name": "write_minidump",
         "declaration": "write_minidump :: (pExceptionInfo: *void, large_dump := false) -> string",
         "section": "Public declaration inventory",
-        "spec_line": 35,
+        "spec_line": 36,
         "implementation": "pending"
       },
       {
         "name": "os_is_debugger_present",
         "declaration": "os_is_debugger_present :: inline () -> bool",
-        "section": "Unix-specific declarations",
-        "spec_line": 39,
-        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
-      },
-      {
-        "name": "os_is_debugger_present",
-        "declaration": "os_is_debugger_present :: () -> bool",
         "section": "Unix-specific declarations",
         "spec_line": 40,
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
@@ -23963,136 +23970,147 @@
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
+        "name": "os_is_debugger_present",
+        "declaration": "os_is_debugger_present :: () -> bool",
+        "section": "Unix-specific declarations",
+        "spec_line": 42,
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
+      },
+      {
         "name": "os_attach_to_debugger",
         "declaration": "os_attach_to_debugger :: () -> bool",
         "section": "Unix-specific declarations",
-        "spec_line": 42,
+        "spec_line": 43,
         "implementation": "pending"
       },
       {
         "name": "os_abort",
         "declaration": "os_abort :: (exit_code: Exit_Code)",
         "section": "Unix-specific declarations",
-        "spec_line": 43,
+        "spec_line": 44,
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_enable_signal_handler",
         "declaration": "os_enable_signal_handler :: ()",
         "section": "Unix-specific declarations",
-        "spec_line": 44,
-        "implementation": "pending"
+        "spec_line": 45,
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "os_disable_signal_handler",
         "declaration": "os_disable_signal_handler :: ()",
         "section": "Unix-specific declarations",
-        "spec_line": 45,
-        "implementation": "pending"
+        "spec_line": 46,
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "os_backtrace",
         "declaration": "os_backtrace :: (trace: [] *void, maxcount: int, skip := 0) -> int",
         "section": "Unix-specific declarations",
-        "spec_line": 46,
+        "spec_line": 47,
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_backtrace_symbols",
         "declaration": "os_backtrace_symbols :: (trace: []*void, n: int) -> [] string",
         "section": "Unix-specific declarations",
-        "spec_line": 47,
+        "spec_line": 48,
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_show_assert_dialog",
         "declaration": "os_show_assert_dialog :: (loc: Source_Code_Location, message: string) -> Assert_Response",
         "section": "Unix-specific declarations",
-        "spec_line": 48,
+        "spec_line": 49,
         "implementation": "pending"
       },
       {
         "name": "os_logger",
         "declaration": "os_logger :: (message: string, data: *void, info: Log_Info)",
         "section": "Windows-specific declarations",
-        "spec_line": 52,
+        "spec_line": 53,
         "implementation": "pending"
       },
       {
         "name": "os_is_debugger_present",
         "declaration": "os_is_debugger_present :: inline () -> bool",
         "section": "Windows-specific declarations",
-        "spec_line": 53,
+        "spec_line": 54,
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_attach_to_debugger",
         "declaration": "os_attach_to_debugger :: () -> bool",
         "section": "Windows-specific declarations",
-        "spec_line": 54,
+        "spec_line": 55,
         "implementation": "pending"
       },
       {
         "name": "os_abort",
         "declaration": "os_abort :: (exit_code: Exit_Code)",
         "section": "Windows-specific declarations",
-        "spec_line": 55,
+        "spec_line": 56,
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_enable_signal_handler",
         "declaration": "os_enable_signal_handler :: ()",
         "section": "Windows-specific declarations",
-        "spec_line": 56,
-        "implementation": "pending"
+        "spec_line": 57,
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "os_disable_signal_handler",
         "declaration": "os_disable_signal_handler :: ()",
         "section": "Windows-specific declarations",
-        "spec_line": 57,
-        "implementation": "pending"
+        "spec_line": 58,
+        "implementation": "pending",
+        "verified_scope": "Mac interpreter/native O0/O2 lifecycle, assertion ownership/diagnostics and non-swallowed failure; native fatal callbacks only. Windows implementation pending; Linux source only."
       },
       {
         "name": "os_backtrace",
         "declaration": "os_backtrace :: (trace: [] *void, maxcount: int, skip:=0) -> int",
         "section": "Windows-specific declarations",
-        "spec_line": 58,
+        "spec_line": 59,
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_backtrace_symbols",
         "declaration": "os_backtrace_symbols :: (trace: [] *void, n: int) -> [] string",
         "section": "Windows-specific declarations",
-        "spec_line": 59,
+        "spec_line": 60,
         "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "init_crash_handler_thread",
         "declaration": "init_crash_handler_thread :: ()",
         "section": "Windows-specific declarations",
-        "spec_line": 60,
+        "spec_line": 61,
         "implementation": "pending"
       },
       {
         "name": "os_show_assert_dialog",
         "declaration": "os_show_assert_dialog :: (loc: Source_Code_Location, message: string) -> Assert_Response",
         "section": "Windows-specific declarations",
-        "spec_line": 61,
+        "spec_line": 62,
         "implementation": "pending"
       },
       {
         "name": "crash_handler",
         "declaration": "crash_handler: Crash_Handler",
         "section": "Windows-specific declarations",
-        "spec_line": 63,
-        "implementation": "pending"
+        "spec_line": 64,
+        "implementation": "reviewed canonical enum/callback/storage; actual native Mac O0/O2 fault-PC callback effect"
       },
       {
         "name": "ignored_asserts",
         "declaration": "ignored_asserts : Table(Source_Code_Location, bool, hash_scl, compare_scl)",
         "section": "Windows-specific declarations",
-        "spec_line": 64,
+        "spec_line": 65,
         "implementation": "pending"
       }
     ],
@@ -24101,73 +24119,91 @@
         "aggregate": "Exit_Code",
         "reviewed_text": "- `Success   :: 0`",
         "section": "Public type members",
-        "spec_line": 70
+        "spec_line": 71
       },
       {
         "aggregate": "Exit_Code",
         "reviewed_text": "- `Failure   :: 1`",
         "section": "Public type members",
-        "spec_line": 71
+        "spec_line": 72
       },
       {
         "aggregate": "Exit_Code",
         "reviewed_text": "- `Abort     :: 2`",
         "section": "Public type members",
-        "spec_line": 72
+        "spec_line": 73
       },
       {
         "aggregate": "Exit_Code",
         "reviewed_text": "- `Assert    :: 3`",
         "section": "Public type members",
-        "spec_line": 73
+        "spec_line": 74
       },
       {
         "aggregate": "Exit_Code",
         "reviewed_text": "- `Exception :: 4`",
         "section": "Public type members",
-        "spec_line": 74
+        "spec_line": 75
       },
       {
         "aggregate": "Minidump_State",
         "reviewed_text": "```jai",
         "section": "Public type members",
-        "spec_line": 78
+        "spec_line": 79
       },
       {
         "aggregate": "Minidump_State",
         "reviewed_text": "Minidump_State :: enum {",
         "section": "Public type members",
-        "spec_line": 79
+        "spec_line": 80
       },
       {
         "aggregate": "Minidump_State",
         "reviewed_text": "    None;",
         "section": "Public type members",
-        "spec_line": 80
+        "spec_line": 81
       },
       {
         "aggregate": "Minidump_State",
         "reviewed_text": "    Mini;",
         "section": "Public type members",
-        "spec_line": 81
+        "spec_line": 82
       },
       {
         "aggregate": "Minidump_State",
         "reviewed_text": "    Full;",
         "section": "Public type members",
-        "spec_line": 82
+        "spec_line": 83
       },
       {
         "aggregate": "Minidump_State",
         "reviewed_text": "}",
         "section": "Public type members",
-        "spec_line": 83
+        "spec_line": 84
       },
       {
         "aggregate": "Minidump_State",
         "reviewed_text": "```",
         "section": "Public type members",
-        "spec_line": 84
+        "spec_line": 85
+      },
+      {
+        "aggregate": "Assert_Response",
+        "reviewed_text": "- `Ignore :: 0`",
+        "section": "Public type members",
+        "spec_line": 89
+      },
+      {
+        "aggregate": "Assert_Response",
+        "reviewed_text": "- `Debug :: 1`",
+        "section": "Public type members",
+        "spec_line": 90
+      },
+      {
+        "aggregate": "Assert_Response",
+        "reviewed_text": "- `Abort :: 2`",
+        "section": "Public type members",
+        "spec_line": 91
       }
     ]
   },

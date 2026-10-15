@@ -169,8 +169,8 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 | Implemented generator with remaining paths | Remaining work |
 | --- | --- |
-| `generate_bindings` | Global POD aggregate/reference C++ declarations execute; namespace/method/overload/custom C++ mapping/printf adapters and broader parsing remain unfinished. |
-| `generate_bridge` | Global POD aggregate/reference adapters execute; namespace/method/overload/custom declaration mapping/printf adapters remain unfinished. |
+| `generate_bindings` | Global POD aggregate/reference C++ declarations and custom overload/argument mappings execute; namespace/method/template/printf adapters, arbitrary ABI-changing callbacks and broader parsing remain unfinished. |
+| `generate_bridge` | Global POD aggregate/reference adapters and custom overload/argument mappings execute; namespace/method/template/printf adapters and arbitrary ABI-changing callbacks remain unfinished. |
 
 | Native function | Evidence / next check |
 | --- | --- |
@@ -441,22 +441,22 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `attach_to_debugger` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `break_assert` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `break_once` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `disable_signal_handler` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `enable_signal_handler` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+| `disable_signal_handler` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
+| `enable_signal_handler` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
 | `get_written_minidump_filename` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `init` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+| `init` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
 | `init_crash_handler_thread` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `interactive_assert` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `no_assert` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+| `no_assert` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
 | `os_attach_to_debugger` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `os_disable_signal_handler` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `os_enable_signal_handler` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+| `os_disable_signal_handler` | 2 | 2 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
+| `os_enable_signal_handler` | 2 | 2 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
 | `os_logger` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `os_show_assert_dialog` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `print_assert` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+| `print_assert` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
 | `set_minidump_state` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `set_report_mode` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `trace_assert` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+| `set_report_mode` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
+| `trace_assert` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
 | `write_minidump` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 
 ## Debug_Info

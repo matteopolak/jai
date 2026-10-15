@@ -12,6 +12,7 @@ import csv
 import check_developer_bindings
 import check_developer_cpp_custom
 import build_developer_debug
+import check_developer_debug_lifecycle
 import check_developer_debug_windows
 import check_developer_msf
 import check_developer_native_abi
@@ -123,6 +124,7 @@ def main():
     check_developer_cpp_custom.main()
     configured_cases = check_developer_sdk_configuration.main()
     build_developer_debug.main()
+    check_developer_debug_lifecycle.main()
     check_developer_debug_windows.main()
     check_developer_msf.main()
     check_developer_native_abi.main()

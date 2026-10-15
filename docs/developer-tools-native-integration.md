@@ -18,6 +18,8 @@ The measured manual core uses existing canonical POSIX/Windows dependencies dire
 
 ## Debug native runtime
 
+The Debug build honors DEVELOPER_TOOLS_LLVM_PREFIX for its official Clang compiler. The new Unix lifecycle symbols are in the same helper library; no separate manifest dependency is needed. Execute tools/check_developer_debug_lifecycle.py after the build to check actual signal action restoration and native crash callbacks. Windows lifecycle implementation remains absent and must not be certified from these POSIX results.
+
 Build the owned `debug-native` sources with `tools/build_developer_debug.py` for the destination host. Install the resulting library beside its sources, matching the existing facade's private foreign-library reference. The Windows backend additionally links public SDK DbgHelp/kernel APIs; its cross-build evidence does not certify Windows execution. Coordinator integration must also provide common DbgHelp serialization if other components use that process-global API concurrently.
 
 ## Coordinator-owned acceptance steps
