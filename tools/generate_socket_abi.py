@@ -53,9 +53,11 @@ def main():
         shapes[shape.name].append(shape)
     output, ledger, exported, seen = [], [], [], set()
     fields_facade = ROOT / "stdlib/Socket/fields.jai"
-    authored_fields = set(re.findall(r"^(\w+)\s*::\s*Fields\.", fields_facade.read_text(), re.MULTILINE)) if fields_facade.exists() else set()
+    authored_fields = set(re.findall(r"^\s*(\w+)\s*::\s*Fields\.", fields_facade.read_text(), re.MULTILINE)) if fields_facade.exists() else set()
     scope_facade = ROOT / "stdlib/Socket/scope-fields.jai"
-    authored_scope = set(re.findall(r"^(\w+)\s*::\s*Fields\.", scope_facade.read_text(), re.MULTILINE)) if scope_facade.exists() else set()
+    authored_scope = set(re.findall(r"^\s*(\w+)\s*::\s*Fields\.", scope_facade.read_text(), re.MULTILINE)) if scope_facade.exists() else set()
+    linux_facade = ROOT / "stdlib/Socket/linux-fields.jai"
+    authored_linux = set(re.findall(r"^\s*(\w+)\s*::\s*Fields\.", linux_facade.read_text(), re.MULTILINE)) if linux_facade.exists() else set()
     manual = {"Socket", "INVALID_SOCKET", "SOCKET_ERROR", "SOCKET_WOULDBLOCK", "SOCKET_WOULDBLOCK_CONNECT"}
     for declaration in sorted(spec.declarations, key=declaration_group):
         code, name = declaration.code.rstrip(";"), declaration.name
@@ -81,6 +83,8 @@ def main():
                 record["status"] = "authored native field accessor; native SDK vector verification separate"
             elif name in authored_scope and guard == "OS == .WINDOWS":
                 record["status"] = "authored native scope accessor; cross-target compile-time vectors verified, native Windows pending"
+            elif name in authored_linux and guard == "OS == .LINUX":
+                record["status"] = "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
             else:
                 record["status"] = "authored wrapper or pending helper"
             ledger.append(record)

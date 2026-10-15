@@ -219,3 +219,25 @@ complete. See portable-windows-socket.md for locations, evidence and SDK provena
 Native TCP fields: no new production workaround. Explicit ABI offsets come only from official Apple C declarations and are measured by independent C record output on host/x64. Values truncate to native bitfield width; whole-record comparisons verify neighboring data preservation. Unsupported big-endian/other-platform behavior is not claimed. Source-generated C includes SDK headers, with no header/library body copied. Initial nested fixture used process-relative file path; #file anchoring repairs test staging only, with original failure retained. Active scoped strict lint passes; whole strict lint remains failed. Public CMSG/other field/shape inventory is still incomplete and separately named. Details/evidence/risks: portable-socket-fields.md.
 
 Windows scope-ID: unsigned bitfield truncation is explicit in internal/net/scope-word.jai, not a compiler workaround. Public pure-record #run tests execute on the host interpreter, without native Windows C layout validation. Native Windows and target-aware strict lint remain required; no fake native functions or platform substitution.
+
+Pool lifecycle state: internal/allocation/pool.jai adds one C-allocated private
+record per used pool, a256-bucket address table and short CAS lock. Necessary to
+retain first-use state across reset without adding public fields; C allocation
+prevents recursion through a Pool context allocator. Records are freed at release,
+not reset; omitting release leaks this metadata along with ordinary pool resources.
+Bump calls with existing storage skip the table. Risks: first-use malloc failure,
+registry contention with many independent instances, caller reuse without release.
+A reviewed explicit lifecycle-state field would permit simpler lower-overhead
+state, but changing the exact public layout is not authorized. Post-release/new
+lifetime and failed-first-attempt policy remain narrow questions. No selected
+Unmapping_Allocator is destroyed by Pool. Pointer-to-integer bucketing uses a typed
+u64 local: the direct widening-cast shift still triggers the generic compiler
+cast/shift typing defect; target/pool-policy-full.log preserves its diagnostic.
+
+Linux TCP accessors: little-endian current x64/ARM64 only. Cross-target public
+#run execution is real interpreter behavior; Linux native and SDK C ABI tests
+remain pending, Android APIs are not completed. Initial test-only narrowing/import
+errors are retained, corrected without lowering coverage. No target substitution,
+native-call emulation, blanket lint exclusion or ABI-layout relaxation.
+
+Pool test platform classification: pool-unmapping depends on currently Unix-only Unmapping_Allocator. Added that fixture to the existing explicit Unix target-check list after the real Windows availability diagnostic (target/pool-policy-full2.log). Host interpreter/native assertions and Linux checking remain required; no Windows pass or completed Windows unmapping backend is claimed.

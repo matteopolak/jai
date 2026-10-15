@@ -113,7 +113,7 @@ The LLVM backend, C ABI and linking.
 - [Windows calendar verification](../tools/check_portable_windows_calendar.py): source/ABI checks, explicit native-host requirement
 - [Windows shared-memory backend and remaining gates](portable-windows-channel.md)
 - [Windows Socket wrappers, native ABI evidence and remaining public gaps](portable-windows-socket.md)
-- [Native TCP accessors and independent SDK record oracle](portable-socket-fields.md)
+- [Native Socket field accessors and independent SDK record oracles](portable-socket-fields.md)
 - [Windows UTF-8 helpers](portable-windows-utf8.md): real Kernel32 conversion code, ABI checks and outstanding native execution
 - [Owned source format/lint runner](../tools/format_portable_stdlib.py): explicit scope and source-built jaifmt/jailint
 - [WAV parser design and validation](portable-wav.md)

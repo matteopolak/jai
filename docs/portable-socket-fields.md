@@ -46,3 +46,30 @@ native Windows execution and active Windows lint remain separate failed/pending
 gates. No full Socket/native surface completeness claim.
 
 Windows SCOPE_ID adds four implemented accessors; verification limits are in portable-windows-socket.md.
+
+Twenty-six Linux TCP/tcp_info accessors now implement the reviewed canonical
+record signatures. ABI positions come from official native glibc netinet/tcp.h:
+https://raw.githubusercontent.com/bminor/glibc/master/sysdeps/gnu/netinet/tcp.h .
+Only the baseline reviewed tcp_info record is used, without claiming the current
+larger native version is identical. tcphdr low/high nibbles, six single-bit flags,
+reserved fields and tcp_info scales preserve all neighboring bits. No C source
+implementation is copied. Explicit little-endian x64/ARM64 scope is enforced.
+tools/generate_socket_linux_fields.py groups declarations independently by field
+and validates export names against the reviewed inventory. Repeated generation
+is normalized by source-built jaifmt.
+
+tools/check_portable_linux_socket_fields.py executes actual public accessors
+inside #run for both Linux CPUs, checking256 original word patterns and all256
+input byte values for unsigned setters, plus bool set/clear and overlay-sized
+record checks. This is host interpreter execution of cross-target pure records,
+not native Linux execution or SDK C ABI validation. Both remain pending CI;
+--native refuses a non-Linux host. Android's matching named APIs remain missing
+pending official bionic ABI verification and compiler target availability.
+
+Initial missing-export failure: target/socket-linux-fields-red.log. Initial
+fixture used an overflowing checked narrowing cast; the corrected test masks the
+low byte explicitly and retains every assertion. Another fixture omitted Basic
+for runtime assert; adding its import fixes only test setup. Those failure logs
+remain target/socket-linux-fields-green.log and green2.log. Passing cross-target
+evidence: target/socket-linux-fields-final.log. Whole strict lint still fails;
+host lint cannot activate Linux-only implementation without target selection.
