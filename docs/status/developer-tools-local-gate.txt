@@ -1,10 +1,12 @@
-Exit status: 1
+Exit status: 0
 Private libclang pipeline: C/Jai effects and callback round trips, rejection preservation, deterministic output and two target ABI checks passed
 Customized C++ overload/POD/reference/argument callbacks and C-model regressions passed interpreter/native Mac O0/O2
+Seven public generator type/query helpers passed interpreter/native Mac O0/O2 and configured C++ O0/O2 consumers, diagnostics, formatting and strict lint
 Check staged public mangled-signature effects passed interpreter/native Mac O0/O2; Windows native execution remains unverified
 Configured SDK production helper/links/discovery and two public interpreter/native O0/O2 fixtures passed
 Debug assertion ownership/diagnostics and POSIX lifecycle passed interpreter/native Mac O0/O2; fatal callbacks passed native O0/O2
 Windows Debug x64 SDK DLL/import/export checks and arm64 compilation passed; native runtime evidence pending
 Native SDK oracle prepared 1176 layout/enum comparisons; 360 public symbols resolve (not invoked)
 Windows profiler SDK ABI/import links passed; native timing execution pending
-RuntimeError: [PosixPath('/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/target/debug/jaic'), 'tests/developer-tools/bindings-macros.jai', '-interp']: exit -6; diagnostic=['/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/bindings-macros.jai:43: assertion failed: ', '  runtime_support_assertion_failed']
+Developer tooling supported suite: 65 interpreter/native O0/O2 fixtures, native C/C++ round trips, diagnostics, scoped format/lint and target ABI checks passed
+
