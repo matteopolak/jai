@@ -231,3 +231,5 @@ Record raw scratch/store/dump/state-byte/window contracts and untuned backend co
 Keep NEW-foundation legacy verification in a dedicated target overlay.
 
 SIMD increment: execute allocation-free reviewed scalar operations first; retain exact canonical aggregate ABI, public flags and qualified imports. Record missing load result and gather/looping/interleaving contracts rather than invent signatures. Next implement bounded executable container parsers from reviewed records and official native format documentation, with malformed-input and native/interpreter verification.
+
+Audio increment: establish canonical sample/stream/page records and real scalar sample operations, then verify mutable public topology and accumulator identities before implementing device/lifecycle paths. Explicitly retain unfinished panning/resampling/volume/decoder contracts. Subsequent supported bundle/property-list operations use native format docs with real external-tool verification; no signing/publication is authorized.

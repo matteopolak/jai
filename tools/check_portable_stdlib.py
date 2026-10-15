@@ -27,6 +27,8 @@ EXPECTED = {
 }
 EXPECTED_STDERR = {"print-color": "\x1b[0;44merror\x1b[0m"}
 FAULT_EXPECTATIONS = {
+    "sound-channels": ("assertion failed", "audio sample input/channel range invalid"),
+    "sound-magic": ("assertion failed", "audio magic read outside input"),
     "atomic-bit-index": ("assertion failed", "atomic bit index out of range"),
     "deep-copy-fixed": ("assertion failed", "Deep_Copy does not support fixed arrays"),
     "deep-copy-any": ("assertion failed", "Deep_Copy does not support this reflected value kind"),

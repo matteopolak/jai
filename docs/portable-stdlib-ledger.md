@@ -114,7 +114,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [soa](specs/stdlib/modules/soa.md) | Generated canonical component arrays, indexed gather/scatter and value/pointer loops implemented; overlay/constant omission, empty extent and writeback on continue/break/return tested. General overlapping-union selection requires review |
 | [socket](specs/stdlib/modules/socket.md) | Partial Unix wrappers plus generated native declarations. IPv4 loopback, fd sets and IPv6 formatting pass interpreter/native; Windows wrappers and remaining native/helper gaps recorded separately |
 | [sort](specs/stdlib/modules/sort.md) | Implemented both callback forms and built-in comparators; numeric sorting checks pass interpreter/native |
-| [sound-player](specs/stdlib/modules/sound-player.md) | Owned portable scope; not implemented |
+| [sound-player](specs/stdlib/modules/sound-player.md) | Partial: nineteen canonical common records/enums, sample arithmetic, bounded magic reads and live topology/accumulator/retired-decoder storage. Real arithmetic/layout/mutable-identity tests; playback, queues, device backends, spatial mixing and compressed decoders unfinished |
 | [srgb](specs/stdlib/modules/srgb.md) | Reserved for window/render worker by current ownership; not modified here |
 | [stb-image-resize](specs/stdlib/modules/stb-image-resize.md) | Reserved for bindings worker; not implemented or modified here |
 | [stb-image-write](specs/stdlib/modules/stb-image-write.md) | Reserved for bindings worker; not implemented or modified here |

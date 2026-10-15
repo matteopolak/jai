@@ -5,6 +5,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [Features](features.md): what works, performance and what is missing
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 - [Portable MPEG](portable-mpeg.md): MPEG-1 streams/video/CRC-checked audio, independent fixtures and remaining gaps
+- [Portable sound](portable-sound-player.md): canonical audio records, real sample arithmetic and shared mutable topology
 - [Executable containers](portable-executable-formats.md): bounded ar parsing, symbol indexes, ownership and native format inputs
 - [Portable SIMD](portable-simd.md): allocation-free scalar lane kernels and unresolved load/interleaving contracts
 - [Portable Meow](portable-meow.md): canonical register macros, real calico hashing and native C vector provenance
