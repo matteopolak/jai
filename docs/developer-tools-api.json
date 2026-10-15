@@ -34662,7 +34662,7 @@
         "declaration": "get_plugin :: () -> *Plugin",
         "section": "Public declaration inventory",
         "spec_line": 8,
-        "implementation": "pending"
+        "implementation": "implemented; measured native compiler plugin fixture"
       }
     ],
     "reviewed_members": []

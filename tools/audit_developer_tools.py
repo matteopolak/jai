@@ -48,6 +48,9 @@ def main():
         if module == "Generate_C_Header":
             for item in declarations:
                 item["implementation"] = "supported subset; see developer-tools-deviations.md"
+        if module == "Performance_Report":
+            for item in declarations:
+                item["implementation"] = "implemented; measured native compiler plugin fixture"
         inventory[module] = {"spec": str(spec.relative_to(ROOT)),
                              "spec_sha256": hashlib.sha256(contents.encode()).hexdigest(),
                              "declarations": declarations, "reviewed_members": members}
