@@ -8,16 +8,57 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Native rpmalloc storage views are not canonical public heaps.** Complete
+  SDK source-derived records and all 66 field probes now pass both Mac CPUs;
+  six desktop Jai source checks are separate evidence. Public Heap/Span remain
+  independently generated reviewed layouts. Heap sizes match but cache/deferred
+  offsets differ; public Span is 96 bytes versus native 88. No cross-layout
+  pointer cast or fake snapshot is used. Atomic members in private storage
+  views are layout-only scalar representations, not atomic operations. A
+  header-only SDK export inventory caused duplicate main-thread setter symbols
+  in the probe; scanning complete source definitions resolves the cause and
+  also enables the real public setter. A new Span-size equality test was an
+  incorrect oracle and was corrected using actual C evidence, preserving all
+  native field assertions. Both original failures remain indexed. Proper
+  remaining fix: canonical field/identity/lifetime marshalling with reviewed
+  live-metadata semantics. See [ABI evidence](../native/rpmalloc-heap-abi.md).
+
+- **Public rpmalloc callback bridge and policies needing review.**
+  `internal/bindings/rpmalloc-callbacks/bridge.c` owns copied names and mapping
+  metadata; public config/ordinary callbacks never alias SDK storage. Full
+  signed offset bits round-trip in an owned registry, avoiding native 32-bit
+  truncation. Each C thunk establishes an active Jai context. The first
+  run without that context genuinely crashed (exit 139); this is repaired and
+  preserved in `.work/rpmalloc-callbacks-before-context.json`. Public tests now
+  execute four concurrent native threads, retry/decline, config/name stack
+  overwrite, wide/signed offsets, matching release and real init failure on both
+  Mac CPUs. A subsequent caller-context regression failed with exit 134; a
+  reusable TLS bridge now preserves caller fields/writes and nested calls,
+  restoring the pointer on return. Native-only callbacks get a fresh default;
+  no initializer context survives its frame. Actual thread identity is checked
+  across four threads. Configurable size settings are checked against the actual SDK;
+  nonconfigurable overrides are ignored as reviewed. Enabled callbacks are
+  actual calls, not no-ops. Risks/remaining policies: error locations identify
+  the real thunk, pending reference provenance review. Mapping metadata adds one libc
+  allocation and spin-lock/linear lookup per native map/unmap. SDK remains
+  process-global; overlapping imported owners return EINVAL rather than replacing
+  active callbacks. Concurrent imported-profile isolation is incomplete. Context
+  enter/restore adds two C calls per native operation. Proper
+  fix: reviewed location policy, profile isolation, indexed registry
+  optimization after correctness, and canonical heap representation. Callback
+  initialization is partial in the ledger, not full rpmalloc completion.
+
 - **Default public rpmalloc profile, incomplete option matrix.**
   `stdlib/rpmalloc/wrappers.jai` now implements real default rewrite lifecycle,
   allocation, thread status and fieldwise statistics conversion. A private
   profile predicate prevents other cache/statistics/assertion options from
   silently executing this native build. Missing implementations remain source
   diagnostics; there is no unsupported assertion or success-returning stub.
-  Fourteen ledger entries are explicitly partial, with their implemented
+  The initial fourteen ledger entries were explicitly partial, with their implemented
   condition, rather than complete across imports. Actual public-only programs
   run on both Mac CPUs; six desktop source checks and scoped strict lint pass.
-  No callbacks/config/heap behavior is credited. The native SDK remains
+  That allocation-only checkpoint credited no callback/config/heap behavior;
+  the subsequent callback evidence is separately recorded above. The native SDK remains
   process-global, so concurrent distinct import instances are not established;
   lifecycle state is serialized, not an atomic cross-thread initialization API.
   Risks: unsupported nondefault configurations and missing callback ownership,

@@ -172729,10 +172729,10 @@
     },
     "rpmalloc": {
       "spec": "docs/specs/stdlib/modules/rpmalloc.md",
-      "spec_sha256": "b48e3ee72411d9af591c65b3f81b7a2b5b0ffdcbcd8a72e04e54038c985e8bff",
+      "spec_sha256": "b0a4ddb89a4e164b32880037e2c9db0d45d671983d7efa4eb7817faebcc91424",
       "counts": {
-        "unresolved": 66,
-        "partially_implemented": 14,
+        "unresolved": 64,
+        "partially_implemented": 16,
         "declared": 31
       },
       "member_counts": {},
@@ -172751,6 +172751,7 @@
           "signature": "initialize :: () -> s32",
           "condition": "",
           "spec_line": 9,
+          "effective_condition": "!USE_RAW",
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "!USE_RAW && Native_Profile_Matches",
@@ -172761,6 +172762,7 @@
           "signature": "initialize :: () -> _int",
           "condition": "",
           "spec_line": 10,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -172779,14 +172781,18 @@
           "signature": "initialize_config :: (config: *rpmalloc_config_t) -> s32",
           "condition": "",
           "spec_line": 12,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "effective_condition": "!USE_RAW",
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "initialize_config",
           "signature": "initialize_config :: (config: *rpmalloc_config_t) -> _int",
           "condition": "",
           "spec_line": 13,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -172815,6 +172821,7 @@
           "signature": "thread_finalize :: (release_caches: _int)",
           "condition": "",
           "spec_line": 16,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -172851,8 +172858,10 @@
           "signature": "set_main_thread :: ()",
           "condition": "",
           "spec_line": 20,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "config",
@@ -172867,6 +172876,7 @@
           "signature": "rpmalloc :: inline (size: s64) -> *void",
           "condition": "",
           "spec_line": 22,
+          "effective_condition": "!USE_RAW",
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "!USE_RAW && Native_Profile_Matches",
@@ -172887,6 +172897,7 @@
           "signature": "rprealloc :: inline (ptr: *void, size: s64) -> *void",
           "condition": "",
           "spec_line": 24,
+          "effective_condition": "!USE_RAW",
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "!USE_RAW && Native_Profile_Matches",
@@ -172897,6 +172908,7 @@
           "signature": "rpaligned_realloc :: (ptr: *void, alignment: s64, size: s64, oldsize: s64, flags: Realloc_Flags) -> *void",
           "condition": "",
           "spec_line": 25,
+          "effective_condition": "!USE_RAW",
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "!USE_RAW && Native_Profile_Matches",
@@ -172907,6 +172919,7 @@
           "signature": "rpaligned_alloc :: (alignment: s64, size: s64) -> *void",
           "condition": "",
           "spec_line": 26,
+          "effective_condition": "!USE_RAW",
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "!USE_RAW && Native_Profile_Matches",
@@ -172917,6 +172930,7 @@
           "signature": "usable_size :: inline (ptr: *void) -> s64",
           "condition": "",
           "spec_line": 27,
+          "effective_condition": "!USE_RAW",
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "!USE_RAW && Native_Profile_Matches",
@@ -172927,6 +172941,7 @@
           "signature": "usable_size :: inline (ptr: *void) -> size_t",
           "condition": "",
           "spec_line": 28,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -172955,6 +172970,7 @@
           "signature": "dump_statistics :: (builder: *$T)",
           "condition": "ENABLE_STATISTICS",
           "spec_line": 31,
+          "effective_condition": "!USE_RAW && (ENABLE_STATISTICS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -172963,7 +172979,7 @@
           "signature": "dump_statistics :: (builder: *void) #expand",
           "condition": "else branch",
           "spec_line": 32,
-          "effective_condition": "!ENABLE_STATISTICS",
+          "effective_condition": "!USE_RAW && (!ENABLE_STATISTICS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -172972,6 +172988,7 @@
           "signature": "dump_statistics :: (file: *void)",
           "condition": "",
           "spec_line": 33,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -172980,6 +172997,7 @@
           "signature": "heap_acquire :: inline () -> *Heap",
           "condition": "",
           "spec_line": 34,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -172988,6 +173006,7 @@
           "signature": "heap_acquire :: inline () -> *rpmalloc_heap_t",
           "condition": "",
           "spec_line": 35,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -172996,6 +173015,7 @@
           "signature": "heap_release :: inline (heap: *Heap)",
           "condition": "",
           "spec_line": 36,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173004,6 +173024,7 @@
           "signature": "heap_release :: inline (heap: *rpmalloc_heap_t)",
           "condition": "",
           "spec_line": 37,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173012,6 +173033,7 @@
           "signature": "heap_is_this_yours :: (heap: *Heap, memory: *void) -> bool",
           "condition": "",
           "spec_line": 38,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173020,6 +173042,7 @@
           "signature": "is_in_span :: inline (memory: *void, span: *Span) -> bool",
           "condition": "",
           "spec_line": 39,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173028,6 +173051,7 @@
           "signature": "heap_alloc :: inline (heap: *Heap, size: s64) -> *void",
           "condition": "",
           "spec_line": 40,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173036,6 +173060,7 @@
           "signature": "heap_alloc :: inline (heap: *rpmalloc_heap_t, size: size_t) -> *void",
           "condition": "",
           "spec_line": 41,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173044,6 +173069,7 @@
           "signature": "heap_aligned_alloc :: inline (heap: *Heap, alignment: s64, size: s64) -> *void",
           "condition": "",
           "spec_line": 42,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173052,6 +173078,7 @@
           "signature": "heap_aligned_alloc :: inline (heap: *rpmalloc_heap_t, alignment: size_t, size: size_t) -> *void",
           "condition": "",
           "spec_line": 43,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173060,6 +173087,7 @@
           "signature": "heap_realloc :: inline (heap: *Heap, ptr: *void, size: s64, flags: Realloc_Flags) -> *void",
           "condition": "",
           "spec_line": 44,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173068,6 +173096,7 @@
           "signature": "heap_realloc :: inline (heap: *rpmalloc_heap_t, ptr: *void, size: size_t, flags: Realloc_Flags) -> *void",
           "condition": "",
           "spec_line": 45,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173076,6 +173105,7 @@
           "signature": "heap_aligned_realloc :: inline (heap: *Heap, ptr: *void, alignment: s64, size: s64, flags: Realloc_Flags) -> *void",
           "condition": "",
           "spec_line": 46,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173084,6 +173114,7 @@
           "signature": "heap_aligned_realloc :: inline (heap: *rpmalloc_heap_t, ptr: *void, alignment: size_t, size: size_t, flags: Realloc_Flags) -> *void",
           "condition": "",
           "spec_line": 47,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173092,6 +173123,7 @@
           "signature": "heap_free :: inline (heap: *Heap, ptr: *void)",
           "condition": "",
           "spec_line": 48,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173100,6 +173132,7 @@
           "signature": "heap_free :: inline (heap: *rpmalloc_heap_t, ptr: *void)",
           "condition": "",
           "spec_line": 49,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173108,6 +173141,7 @@
           "signature": "heap_free_all :: inline (heap: *Heap)",
           "condition": "",
           "spec_line": 50,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173116,6 +173150,7 @@
           "signature": "heap_free_all :: inline (heap: *rpmalloc_heap_t)",
           "condition": "",
           "spec_line": 51,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173124,6 +173159,7 @@
           "signature": "heap_thread_set_current :: inline (heap: *Heap)",
           "condition": "",
           "spec_line": 52,
+          "effective_condition": "!USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173132,6 +173168,7 @@
           "signature": "heap_thread_set_current :: inline (heap: *rpmalloc_heap_t)",
           "condition": "",
           "spec_line": 53,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173168,6 +173205,7 @@
           "signature": "rpmalloc_initialize :: () -> _int",
           "condition": "",
           "spec_line": 58,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173176,6 +173214,7 @@
           "signature": "rpmalloc_is_initialized :: inline () -> bool",
           "condition": "",
           "spec_line": 59,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173184,6 +173223,7 @@
           "signature": "rpmalloc_initialize_config :: (config: *rpmalloc_config_t) -> _int",
           "condition": "",
           "spec_line": 60,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173192,6 +173232,7 @@
           "signature": "rpmalloc_finalize :: ()",
           "condition": "",
           "spec_line": 61,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173200,6 +173241,7 @@
           "signature": "rpmalloc_thread_initialize :: inline ()",
           "condition": "",
           "spec_line": 62,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173208,6 +173250,7 @@
           "signature": "rpmalloc_thread_finalize :: (release_caches: _int)",
           "condition": "",
           "spec_line": 63,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173216,6 +173259,7 @@
           "signature": "rpmalloc_is_thread_initialized :: () -> bool",
           "condition": "",
           "spec_line": 64,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173224,6 +173268,7 @@
           "signature": "rpmalloc_config :: () -> *rpmalloc_config_t",
           "condition": "",
           "spec_line": 65,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173232,6 +173277,7 @@
           "signature": "rpmalloc :: inline (size: size_t) -> *void",
           "condition": "",
           "spec_line": 66,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173240,6 +173286,7 @@
           "signature": "rpcalloc :: inline (num: size_t, size: size_t) -> *void",
           "condition": "",
           "spec_line": 67,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173248,6 +173295,7 @@
           "signature": "rprealloc :: inline (ptr: *void, size: size_t) -> *void",
           "condition": "",
           "spec_line": 68,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173256,6 +173304,7 @@
           "signature": "rpaligned_realloc :: (ptr: *void, alignment: size_t, size: size_t, oldsize: size_t, flags: Realloc_Flags) -> *void",
           "condition": "",
           "spec_line": 69,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173264,6 +173313,7 @@
           "signature": "rpaligned_alloc :: (alignment: size_t, size: size_t) -> *void",
           "condition": "",
           "spec_line": 70,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173272,6 +173322,7 @@
           "signature": "rpaligned_calloc :: inline (alignment: size_t, num: size_t, size: size_t) -> *void",
           "condition": "",
           "spec_line": 71,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173280,6 +173331,7 @@
           "signature": "rpmemalign :: inline (alignment: size_t, size: size_t) -> *void",
           "condition": "",
           "spec_line": 72,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173288,6 +173340,7 @@
           "signature": "rpposix_memalign :: inline (memptr: **void, alignment: size_t, size: size_t) -> _int",
           "condition": "",
           "spec_line": 73,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173296,6 +173349,7 @@
           "signature": "rpmalloc_usable_size :: inline (ptr: *void) -> size_t",
           "condition": "",
           "spec_line": 74,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173304,6 +173358,7 @@
           "signature": "rpmalloc_thread_collect :: inline ()",
           "condition": "",
           "spec_line": 75,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173312,6 +173367,7 @@
           "signature": "rpmalloc_thread_statistics :: (stats: *rpmalloc_thread_statistics_t)",
           "condition": "",
           "spec_line": 76,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173320,6 +173376,7 @@
           "signature": "rpmalloc_global_statistics :: (stats: *rpmalloc_global_statistics_t)",
           "condition": "",
           "spec_line": 77,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173328,6 +173385,7 @@
           "signature": "rpmalloc_dump_statistics :: (file: *void)",
           "condition": "",
           "spec_line": 78,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173336,6 +173394,7 @@
           "signature": "rpmalloc_heap_acquire :: inline () -> *rpmalloc_heap_t",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 79,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173344,6 +173403,7 @@
           "signature": "rpmalloc_heap_release :: inline (heap: *rpmalloc_heap_t)",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 80,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173352,6 +173412,7 @@
           "signature": "rpmalloc_heap_alloc :: inline (heap: *rpmalloc_heap_t, size: size_t) -> *void",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 81,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173360,6 +173421,7 @@
           "signature": "rpmalloc_heap_aligned_alloc :: inline (heap: *rpmalloc_heap_t, alignment: size_t, size: size_t) -> *void",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 82,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173368,6 +173430,7 @@
           "signature": "rpmalloc_heap_calloc :: inline (heap: *rpmalloc_heap_t, num: size_t, size: size_t) -> *void",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 83,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173376,6 +173439,7 @@
           "signature": "rpmalloc_heap_aligned_calloc :: inline (heap: *rpmalloc_heap_t, alignment: size_t, num: size_t, size: size_t) -> *void",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 84,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173384,6 +173448,7 @@
           "signature": "rpmalloc_heap_realloc :: inline (heap: *rpmalloc_heap_t, ptr: *void, size: size_t, flags: Realloc_Flags) -> *void",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 85,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173392,6 +173457,7 @@
           "signature": "rpmalloc_heap_aligned_realloc :: inline (heap: *rpmalloc_heap_t, ptr: *void, alignment: size_t, size: size_t, flags: Realloc_Flags) -> *void",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 86,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173400,6 +173466,7 @@
           "signature": "rpmalloc_heap_free :: inline (heap: *rpmalloc_heap_t, ptr: *void)",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 87,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173408,6 +173475,7 @@
           "signature": "rpmalloc_heap_free_all :: inline (heap: *rpmalloc_heap_t)",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 88,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173416,6 +173484,7 @@
           "signature": "rpmalloc_heap_thread_set_current :: inline (heap: *rpmalloc_heap_t)",
           "condition": "RPMALLOC_FIRST_CLASS_HEAPS",
           "spec_line": 89,
+          "effective_condition": "USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS)",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173431,6 +173500,7 @@
           "signature": "rpmalloc_linker_reference :: ()",
           "condition": "",
           "spec_line": 91,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173461,6 +173531,7 @@
           "signature": "rpmalloc_thread_finalize :: inline (release_caches: bool)",
           "condition": "",
           "spec_line": 95,
+          "effective_condition": "USE_RAW",
           "status": "unresolved",
           "reason": "Requires independently authored wrapper body"
         },
@@ -173653,7 +173724,7 @@
         {
           "module": "internal/bindings/rpmalloc-sdk",
           "artifact": "stdlib/internal/bindings/rpmalloc-sdk/module.jai",
-          "artifact_sha256": "8cb18a5bae01d8a7e6c51786adb7769a331299caaa128f68788fb2a847d7ceb3",
+          "artifact_sha256": "4ff8f05feb4165aed70b4ace26c9419a4ed24a67d3a5f0346e027ee751805afa",
           "status": "private_native_backend",
           "public_support": "Unresolved; this backend does not establish Jai callback/config/heap compatibility",
           "provenance": {
@@ -173897,138 +173968,177 @@
             "functions": [
               {
                 "name": "rpmalloc_config",
+                "origin": "public_header",
                 "signature": "rpmalloc_config :: () -> *rpmalloc_config_t #foreign sdk;"
               },
               {
                 "name": "rpmalloc_finalize",
+                "origin": "public_header",
                 "signature": "rpmalloc_finalize :: () #foreign sdk;"
               },
               {
                 "name": "rpmalloc_initialize",
+                "origin": "public_header",
                 "signature": "rpmalloc_initialize :: () -> s32 #foreign sdk;"
               },
               {
                 "name": "rpmalloc_initialize_config",
+                "origin": "public_header",
                 "signature": "rpmalloc_initialize_config :: (config: *rpmalloc_config_t) -> s32 #foreign sdk;"
               },
               {
                 "name": "rpmalloc_is_thread_initialized",
+                "origin": "public_header",
                 "signature": "rpmalloc_is_thread_initialized :: () -> s32 #foreign sdk;"
               },
               {
+                "name": "rpmalloc_set_main_thread",
+                "origin": "official_c_source_definition",
+                "signature": "rpmalloc_set_main_thread :: () #foreign sdk;"
+              },
+              {
                 "name": "rpmalloc_thread_collect",
+                "origin": "public_header",
                 "signature": "rpmalloc_thread_collect :: () #foreign sdk;"
               },
               {
                 "name": "rpmalloc_thread_finalize",
+                "origin": "public_header",
                 "signature": "rpmalloc_thread_finalize :: (release_caches: s32) #foreign sdk;"
               },
               {
                 "name": "rpmalloc_thread_initialize",
+                "origin": "public_header",
                 "signature": "rpmalloc_thread_initialize :: () #foreign sdk;"
               },
               {
                 "name": "rpmalloc_dump_statistics",
+                "origin": "public_header",
                 "signature": "rpmalloc_dump_statistics :: (file: *void) #foreign sdk;"
               },
               {
                 "name": "rpmalloc_global_statistics",
+                "origin": "public_header",
                 "signature": "rpmalloc_global_statistics :: (stats: *rpmalloc_global_statistics_t) #foreign sdk;"
               },
               {
                 "name": "rpmalloc_thread_statistics",
+                "origin": "public_header",
                 "signature": "rpmalloc_thread_statistics :: (stats: *rpmalloc_thread_statistics_t) #foreign sdk;"
               },
               {
                 "name": "rpaligned_alloc",
+                "origin": "public_header",
                 "signature": "rpaligned_alloc :: (alignment: u64, size: u64) -> *void #foreign sdk;"
               },
               {
                 "name": "rpaligned_calloc",
+                "origin": "public_header",
                 "signature": "rpaligned_calloc :: (alignment: u64, num: u64, size: u64) -> *void #foreign sdk;"
               },
               {
                 "name": "rpaligned_realloc",
+                "origin": "public_header",
                 "signature": "rpaligned_realloc :: (ptr: *void, alignment: u64, size: u64, oldsize: u64, flags: u32) -> *void #foreign sdk;"
               },
               {
                 "name": "rpcalloc",
+                "origin": "public_header",
                 "signature": "rpcalloc :: (num: u64, size: u64) -> *void #foreign sdk;"
               },
               {
                 "name": "rpfree",
+                "origin": "public_header",
                 "signature": "rpfree :: (ptr: *void) #foreign sdk;"
               },
               {
                 "name": "rpmalloc",
+                "origin": "public_header",
                 "signature": "rpmalloc :: (size: u64) -> *void #foreign sdk;"
               },
               {
                 "name": "rpmalloc_usable_size",
+                "origin": "public_header",
                 "signature": "rpmalloc_usable_size :: (ptr: *void) -> u64 #foreign sdk;"
               },
               {
                 "name": "rpmemalign",
+                "origin": "public_header",
                 "signature": "rpmemalign :: (alignment: u64, size: u64) -> *void #foreign sdk;"
               },
               {
                 "name": "rpposix_memalign",
+                "origin": "public_header",
                 "signature": "rpposix_memalign :: (memptr: **void, alignment: u64, size: u64) -> s32 #foreign sdk;"
               },
               {
                 "name": "rprealloc",
+                "origin": "public_header",
                 "signature": "rprealloc :: (ptr: *void, size: u64) -> *void #foreign sdk;"
               },
               {
                 "name": "rpmalloc_get_heap_for_ptr",
+                "origin": "public_header",
                 "signature": "rpmalloc_get_heap_for_ptr :: (ptr: *void) -> *rpmalloc_heap_t #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_acquire",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_acquire :: () -> *rpmalloc_heap_t #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_aligned_alloc",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_aligned_alloc :: (heap: *rpmalloc_heap_t, alignment: u64, size: u64) -> *void #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_aligned_calloc",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_aligned_calloc :: (heap: *rpmalloc_heap_t, alignment: u64, num: u64, size: u64) -> *void #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_aligned_realloc",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_aligned_realloc :: (heap: *rpmalloc_heap_t, ptr: *void, alignment: u64, size: u64, flags: u32) -> *void #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_alloc",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_alloc :: (heap: *rpmalloc_heap_t, size: u64) -> *void #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_calloc",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_calloc :: (heap: *rpmalloc_heap_t, num: u64, size: u64) -> *void #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_free",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_free :: (heap: *rpmalloc_heap_t, ptr: *void) #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_free_all",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_free_all :: (heap: *rpmalloc_heap_t) #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_realloc",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_realloc :: (heap: *rpmalloc_heap_t, ptr: *void, size: u64, flags: u32) -> *void #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_release",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_release :: (heap: *rpmalloc_heap_t) #foreign sdk;"
               },
               {
                 "name": "rpmalloc_heap_thread_set_current",
+                "origin": "public_header",
                 "signature": "rpmalloc_heap_thread_set_current :: (heap: *rpmalloc_heap_t) #foreign sdk;"
               },
               {
                 "name": "rpmalloc_linker_reference",
+                "origin": "public_header",
                 "signature": "rpmalloc_linker_reference :: () #foreign sdk;"
               }
             ],
@@ -174039,6 +174149,649 @@
               "ENABLE_VALIDATE_ARGS": 1,
               "RPMALLOC_CONFIGURABLE": 1,
               "RPMALLOC_FIRST_CLASS_HEAPS": 1
+            },
+            "native_storage": {
+              "native_build_options": {
+                "ENABLE_ASSERTS": 1,
+                "ENABLE_OVERRIDE": 0,
+                "ENABLE_STATISTICS": 1,
+                "ENABLE_VALIDATE_ARGS": 1,
+                "RPMALLOC_CONFIGURABLE": 1,
+                "RPMALLOC_FIRST_CLASS_HEAPS": 1
+              },
+              "native_field_count": 66,
+              "probe_sdk_exports": "All pinned SDK exports prefixed; probe instance never executed",
+              "profiles": {
+                "0": {
+                  "heap_size_class_t": [
+                    {
+                      "owner": "heap_size_class_t",
+                      "path": "free_list"
+                    },
+                    {
+                      "owner": "heap_size_class_t",
+                      "path": "partial_span"
+                    },
+                    {
+                      "owner": "heap_size_class_t",
+                      "path": "cache"
+                    }
+                  ],
+                  "heap_t": [
+                    {
+                      "owner": "heap_t",
+                      "path": "owner_thread"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "size_class"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_cache"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_free_deferred"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "full_span_count"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_reserve"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_reserve_master"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "spans_reserved"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "child_count"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "next_heap"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "next_orphan"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "id"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "finalize"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "master_heap"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_large_cache"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_use"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "size_class_use"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "thread_to_global"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "global_to_thread"
+                    }
+                  ],
+                  "size_class_use_t": [
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "alloc_current"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "alloc_peak"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "alloc_total"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "free_total"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_current"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_peak"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_to_cache"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_from_cache"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_from_reserved"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_map_calls"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "unused"
+                    }
+                  ],
+                  "span_cache_t": [
+                    {
+                      "owner": "span_cache_t",
+                      "path": "count"
+                    },
+                    {
+                      "owner": "span_cache_t",
+                      "path": "span"
+                    }
+                  ],
+                  "span_large_cache_t": [
+                    {
+                      "owner": "span_large_cache_t",
+                      "path": "count"
+                    },
+                    {
+                      "owner": "span_large_cache_t",
+                      "path": "span"
+                    }
+                  ],
+                  "span_t": [
+                    {
+                      "owner": "span_t",
+                      "path": "free_list"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "block_count"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "size_class"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "free_list_limit"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "used_count"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "free_list_deferred"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "list_size"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "block_size"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "flags"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "span_count"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "total_spans"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "offset_from_master"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "remaining_spans"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "align_offset"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "heap"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "next"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "prev"
+                    }
+                  ],
+                  "span_use_t": [
+                    {
+                      "owner": "span_use_t",
+                      "path": "current"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "high"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_deferred"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_to_global"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_from_global"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_to_cache"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_from_cache"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_to_reserved"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_from_reserved"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_map_calls"
+                    }
+                  ]
+                },
+                "1": {
+                  "heap_size_class_t": [
+                    {
+                      "owner": "heap_size_class_t",
+                      "path": "free_list"
+                    },
+                    {
+                      "owner": "heap_size_class_t",
+                      "path": "partial_span"
+                    },
+                    {
+                      "owner": "heap_size_class_t",
+                      "path": "cache"
+                    }
+                  ],
+                  "heap_t": [
+                    {
+                      "owner": "heap_t",
+                      "path": "owner_thread"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "size_class"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_cache"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_free_deferred"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "full_span_count"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_reserve"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_reserve_master"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "spans_reserved"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "child_count"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "next_heap"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "next_orphan"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "id"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "finalize"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "master_heap"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_large_cache"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "full_span"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "large_huge_span"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "span_use"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "size_class_use"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "thread_to_global"
+                    },
+                    {
+                      "owner": "heap_t",
+                      "path": "global_to_thread"
+                    }
+                  ],
+                  "size_class_use_t": [
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "alloc_current"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "alloc_peak"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "alloc_total"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "free_total"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_current"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_peak"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_to_cache"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_from_cache"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_from_reserved"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "spans_map_calls"
+                    },
+                    {
+                      "owner": "size_class_use_t",
+                      "path": "unused"
+                    }
+                  ],
+                  "span_cache_t": [
+                    {
+                      "owner": "span_cache_t",
+                      "path": "count"
+                    },
+                    {
+                      "owner": "span_cache_t",
+                      "path": "span"
+                    }
+                  ],
+                  "span_large_cache_t": [
+                    {
+                      "owner": "span_large_cache_t",
+                      "path": "count"
+                    },
+                    {
+                      "owner": "span_large_cache_t",
+                      "path": "span"
+                    }
+                  ],
+                  "span_t": [
+                    {
+                      "owner": "span_t",
+                      "path": "free_list"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "block_count"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "size_class"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "free_list_limit"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "used_count"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "free_list_deferred"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "list_size"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "block_size"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "flags"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "span_count"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "total_spans"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "offset_from_master"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "remaining_spans"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "align_offset"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "heap"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "next"
+                    },
+                    {
+                      "owner": "span_t",
+                      "path": "prev"
+                    }
+                  ],
+                  "span_use_t": [
+                    {
+                      "owner": "span_use_t",
+                      "path": "current"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "high"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_deferred"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_to_global"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_from_global"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_to_cache"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_from_cache"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_to_reserved"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_from_reserved"
+                    },
+                    {
+                      "owner": "span_use_t",
+                      "path": "spans_map_calls"
+                    }
+                  ]
+                }
+              },
+              "records": {
+                "heap_size_class_t": "Size_Class_Storage",
+                "heap_t": "Heap_Storage",
+                "size_class_use_t": "Size_Counters_Storage",
+                "span_cache_t": "Span_Cache_Storage",
+                "span_large_cache_t": "Large_Cache_Storage",
+                "span_t": "Span_Storage",
+                "span_use_t": "Span_Counters_Storage"
+              },
+              "scope": "Native SDK storage ABI only; not public heap implementation or atomic operations",
+              "source": "rpmalloc/rpmalloc.c",
+              "source_export_profiles": {
+                "0": [
+                  "rpaligned_alloc",
+                  "rpaligned_calloc",
+                  "rpaligned_realloc",
+                  "rpcalloc",
+                  "rpfree",
+                  "rpmalloc",
+                  "rpmalloc_config",
+                  "rpmalloc_dump_statistics",
+                  "rpmalloc_finalize",
+                  "rpmalloc_global_statistics",
+                  "rpmalloc_initialize",
+                  "rpmalloc_initialize_config",
+                  "rpmalloc_is_thread_initialized",
+                  "rpmalloc_linker_reference",
+                  "rpmalloc_set_main_thread",
+                  "rpmalloc_thread_collect",
+                  "rpmalloc_thread_finalize",
+                  "rpmalloc_thread_initialize",
+                  "rpmalloc_thread_statistics",
+                  "rpmalloc_usable_size",
+                  "rpmemalign",
+                  "rpposix_memalign",
+                  "rprealloc"
+                ],
+                "1": [
+                  "rpaligned_alloc",
+                  "rpaligned_calloc",
+                  "rpaligned_realloc",
+                  "rpcalloc",
+                  "rpfree",
+                  "rpmalloc",
+                  "rpmalloc_config",
+                  "rpmalloc_dump_statistics",
+                  "rpmalloc_finalize",
+                  "rpmalloc_get_heap_for_ptr",
+                  "rpmalloc_global_statistics",
+                  "rpmalloc_heap_acquire",
+                  "rpmalloc_heap_aligned_alloc",
+                  "rpmalloc_heap_aligned_calloc",
+                  "rpmalloc_heap_aligned_realloc",
+                  "rpmalloc_heap_alloc",
+                  "rpmalloc_heap_calloc",
+                  "rpmalloc_heap_free",
+                  "rpmalloc_heap_free_all",
+                  "rpmalloc_heap_realloc",
+                  "rpmalloc_heap_release",
+                  "rpmalloc_heap_thread_set_current",
+                  "rpmalloc_initialize",
+                  "rpmalloc_initialize_config",
+                  "rpmalloc_is_thread_initialized",
+                  "rpmalloc_linker_reference",
+                  "rpmalloc_set_main_thread",
+                  "rpmalloc_thread_collect",
+                  "rpmalloc_thread_finalize",
+                  "rpmalloc_thread_initialize",
+                  "rpmalloc_thread_statistics",
+                  "rpmalloc_usable_size",
+                  "rpmemalign",
+                  "rpposix_memalign",
+                  "rprealloc"
+                ]
+              },
+              "source_sha256": "f9005d0e75ab052063ed8f574661557df56c161dba75277e700f1aee445a222a",
+              "verification": "Host C source parsing here; native/source evidence indexed separately"
             },
             "repository": "mjansson/rpmalloc",
             "revision": "e4393ff85585d91400bcbad2e7266c011075b673",
@@ -174051,6 +174804,24 @@
             "signature": "posix_memalign :: (output: **void, alignment: u64, size: u64) -> s32",
             "scope": "Private SDK precondition validation and commit-on-success output; not public API completion"
           }
+        },
+        {
+          "module": "internal/bindings/rpmalloc-callbacks",
+          "status": "partial_public_profile_adapter",
+          "artifacts": {
+            "stdlib/internal/bindings/rpmalloc-callbacks/bridge.c": "2c1b316d0b6997b925ca4d9979a067c01530a31793cfbcfcb4298726a1a184b5",
+            "stdlib/internal/bindings/rpmalloc-callbacks/module.jai": "436b6d8b003c66f3f7bc8dae1eac4ffa7c0a68ef7b4ccf73bc54164a5bc6dbb8"
+          },
+          "scope": "Owned callback/name lifetime, 64-bit public offset registry, actual init failure; default native profile only",
+          "limitations": "Raw/heaps/nondefault profiles and exact native-error Jai location provenance unresolved",
+          "caller_context_artifacts": {
+            "stdlib/internal/bindings/callback-context/bridge.c": "472a5a8dbc8871f7ccca1d5f0b9a445c5712c5d624ae75936d0d7cf71de62331",
+            "stdlib/internal/bindings/callback-context/module.jai": "f7fa635fa781b43732b63a49cf7ca4882b3978511ea1ed6dadb7fd270895cb1a"
+          },
+          "tests": [
+            "tests/native-bindings/rpmalloc-public-callbacks.jai",
+            "tests/native-bindings/rpmalloc-public-configurable.jai"
+          ]
         }
       ]
     },

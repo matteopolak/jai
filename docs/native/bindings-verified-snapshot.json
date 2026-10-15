@@ -2,12 +2,12 @@
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
     "declared": 28397,
-    "unresolved": 102,
+    "unresolved": 100,
     "implemented_manual": 52,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1,
-    "partially_implemented": 14
+    "partially_implemented": 16
   },
   "reports": [
     {
@@ -579,7 +579,7 @@
     },
     {
       "report": ".work/rpmalloc-public-allocation-verification.json",
-      "sha256": "4b043b8bba81e53e48f690c8bc85e1989eaead9a540e45b2d15d66a8963128ca",
+      "sha256": "40f3f884d81c391d5c062e4c6ab024b727df26787bdf7eeabc3ed414912d26fc",
       "scope": "Public default rewrite lifecycle/allocation/statistics; callback/config/heaps and nondefault profiles incomplete",
       "checks": 14,
       "failures": 0
@@ -603,6 +603,148 @@
       },
       "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
       "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-11.json",
+      "sha256": "08d7ad92428bcc53acd7f16601a66e6dccf9f1bc622271e40a8c9d9987ceccba",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 30,
+          "failed": 6
+        },
+        "native": {
+          "passed": 8
+        },
+        "privacy": {
+          "passed": 66
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-public-callbacks-verification.json",
+      "sha256": "98686f22f364f5fb833c0057e3b217053ec5cfee83b31f8ddc3801c6e471e6c4",
+      "scope": "Public default and configurable rewrite callbacks/lifetime/failure/concurrency; remaining profiles and raw/heaps incomplete",
+      "checks": 31,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-12.json",
+      "sha256": "4291a572e7c652f5b84cd10561a3e6a812bcded815ac94b33fabc8839a68f23a",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 30,
+          "failed": 6
+        },
+        "native": {
+          "passed": 8
+        },
+        "privacy": {
+          "passed": 96
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/checkpoint-12-owned-format.json",
+      "sha256": "43df88d6d377bf101d54f78cd104ead9ad99d531b5f53f522dde982f593cc353",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 4,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-13.json",
+      "sha256": "9849273abc9cc38452a5c6f6ed5893599b71aa77d728aa3b9e747478e096b66f",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 36,
+          "failed": 6
+        },
+        "native": {
+          "passed": 10
+        },
+        "privacy": {
+          "passed": 96
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/checkpoint-13-owned-format.json",
+      "sha256": "dbaec53bec59d5d6aad19f1b5fec8f1476a182863e07f4caffc7958d466fc5c9",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 4,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-configurations-checkpoint-13.json",
+      "sha256": "299770d260393bf8ca2a8375ce4a02727ce1ba91b5092c77e93ee7aa1a3d71a5",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "checks": 24,
+      "failures": 18
+    },
+    {
+      "report": ".work/rpmalloc-native-storage-verification.json",
+      "sha256": "d61d7eb77876b53d14e3a650356083e14736ff7fced4814d704afb5f23c7e5d3",
+      "scope": "Private native SDK storage ABI and reviewed public storage separation; public heap API remains unfinished",
+      "checks": 14,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-native-storage-before-export-scan.json",
+      "sha256": "c46c32a4eaa752757b2e13ef87e9ba2204c64cc2790ceddf761f6b5341610104",
+      "scope": "Private native SDK storage ABI and reviewed public storage separation; public heap API remains unfinished",
+      "checks": 14,
+      "failures": 4
+    },
+    {
+      "report": ".work/rpmalloc-native-storage-before-span-oracle-correction.json",
+      "sha256": "f3e4b305c29831c416b3ce76f09faae6e625ea6085e6baa3d51e642dba03d245",
+      "scope": "Private native SDK storage ABI and reviewed public storage separation; public heap API remains unfinished",
+      "checks": 14,
+      "failures": 2
+    },
+    {
+      "report": ".work/rpmalloc-production-callbacks-verification.json",
+      "sha256": "550657bcefacc2299f49ba7cc5eabf3f3f7138e0b5ad7d44d9cbd9af3fcd66ab",
+      "scope": "Actual production native dependency builder and host public callback program",
+      "checks": 3,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-callbacks-build.json",
+      "sha256": "c1378406c75309c6189ac1b40bcacb442783c3c96cb3aa053c09efb5247300fd",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 20,
+      "failures": 0
+    },
+    {
+      "report": ".work/checkpoint-11-owned-format.json",
+      "sha256": "43df88d6d377bf101d54f78cd104ead9ad99d531b5f53f522dde982f593cc353",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 4,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-callbacks-before-context.json",
+      "sha256": "c332a8705e412cfac79cf309c5e4a3206b29b8ffaa32b33097fd050894919a53",
+      "scope": "Observed first native callback execution before establishing a Jai context in C thunks",
+      "observed_failure": 139
+    },
+    {
+      "report": ".work/rpmalloc-callbacks-before-context-inheritance.json",
+      "sha256": "d5f6f7da97b308fae5e489ce7674132f7c18220045e5697ddb1844b8847b87a3",
+      "scope": "Observed regression with fresh-only callback contexts before synchronous context borrowing",
+      "observed_failure": 134
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",
