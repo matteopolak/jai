@@ -7,7 +7,8 @@
       "spec_sha256": "43e884139a18c1b62822e971bbe16138cf6a0fe2fce40dd6ac45b7bd817fcf0c",
       "counts": {
         "declared": 932,
-        "implemented_manual": 8
+        "implemented_manual": 7,
+        "partially_implemented": 1
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -6051,8 +6052,9 @@
           "signature": "android_logger :: (message: string, data: *void, info: Log_Info)",
           "condition": "",
           "spec_line": 867,
-          "status": "implemented_manual",
-          "artifact": "stdlib/Android/wrappers.jai"
+          "status": "partially_implemented",
+          "artifact": "stdlib/Android/wrappers.jai",
+          "reason": "Real reviewed priorities/tag/native logging; forced Runtime flush substitutes for literal buffer discard pending a canonical Runtime-owned hook"
         },
         {
           "name": "Android_Poll_Source",

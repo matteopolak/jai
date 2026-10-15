@@ -2,11 +2,11 @@
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
     "declared": 28396,
-    "implemented_manual": 68,
+    "implemented_manual": 67,
+    "partially_implemented": 88,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1,
-    "partially_implemented": 87,
     "unresolved": 14
   },
   "reports": [

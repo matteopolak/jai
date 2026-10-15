@@ -24,6 +24,9 @@ correctness. Previously recorded failures remain required work.
   implementation or invented public export was used. Source/test/provenance
   details and the preserved sanitizer cross-build rejection are in
   [helper evidence](../native/x11-android-helpers.md).
+  Location: `stdlib/Android/wrappers.jai:android_logger`. Its ledger entry remains
+  partially implemented until that discard boundary is resolved; real logging
+  alone is not counted as completed buffer semantics.
 
 - **X11 helper native boundary.** All three remaining helpers are implemented,
   source-checked on both Linux CPUs and strictly linted. Real X server resource,

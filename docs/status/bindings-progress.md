@@ -15,6 +15,12 @@ literal discard integration detail is explicitly documented. Only telemetry14
 remains unresolved root declarations; existing Objective_C7/rpmalloc80 partial
 entries remain. See [implementation/evidence](../native/x11-android-helpers.md).
 
+Implementation checkpoint `2d84553`. Android logger is conservatively partial
+for its forced-flush versus required discard substitution; the generated ledger
+now records that distinction (88 total partial entries). Its other reviewed
+logging behavior has real source implementation. This is a new Runtime
+integration gap, not an unresolved old X11/Android behavioral question.
+
 Historical checkpoint before the latest review:
 
 Post-`0488c78` focused checkpoint: no new public helper is counted complete.

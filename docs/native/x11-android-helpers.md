@@ -7,7 +7,9 @@ these modules; the fourteen unresolved enabled telemetry declarations still
 require the unavailable matching commercial SDK ABI. This is source/API
 implementation progress, not a claim of Android device or Linux X server
 execution. Objective_C's seven and rpmalloc's eighty existing partial entries
-remain unchanged.
+remain unchanged. Android logger retains one explicit partial entry for the
+buffer-discard integration substitution described below; its real native route
+does not establish that missing discard behavior.
 
 X11 initialization opens the default connection once, populates WM, selection,
 XDND, `JXSelectionWindowProperty` and BMP atoms, attempts input-method/context
