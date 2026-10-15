@@ -73,7 +73,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [math](specs/stdlib/modules/math.md) | Reserved for numerics worker; not implemented or modified here |
 | [md5](specs/stdlib/modules/md5.md) | Implemented 32-character digest; empty, abc and message-digest vectors pass interpreter/native |
 | [memory](specs/stdlib/modules/memory.md) | Generic and optional candidate/unwrap exports implemented with portable backend; overlap, widths and mutable capability state checked interpreter/native |
-| [meow-hash](specs/stdlib/modules/meow-hash.md) | Not implemented: canonical __reg macro operand binding fails in source compiler; original pending reproducer retained, no surrogate type or fake hash exports |
+| [meow-hash](specs/stdlib/modules/meow-hash.md) | Reviewed exports implemented over canonical SIMD registers: calico one-shot/stream/block/finalize/lane/dump APIs and live mutable arrays. 317 independent C vectors include both 128-byte outputs and edited globals; interpreter/native O0/O2 pass. Ancillary scratch/store/dump/state-byte contracts and performance remain explicit review limits |
 | [meshoptimizer](specs/stdlib/modules/meshoptimizer.md) | Reserved for bindings worker; not implemented or modified here |
 | [metal](specs/stdlib/modules/metal.md) | Reserved for bindings worker; not implemented or modified here |
 | [metaprogram-plugins](specs/stdlib/modules/metaprogram-plugins.md) | Owned portable scope; not implemented |
@@ -107,7 +107,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Embedding initialization, owned scratch lifetime, synchronized output, explicit-Code once and fault hooks implemented; POSIX crash backtrace startup ON/OFF verified through source-built Compiler workspace; remaining platform adaptations unfinished |
 | [sdl](specs/stdlib/modules/sdl.md) | Reserved for bindings worker; not implemented or modified here |
 | [shared-memory-channel](specs/stdlib/modules/shared-memory-channel.md) | Real Unix named-mapping SPSC reserve/commit/poll/done and ownership implemented; wrap/full/corruption and 2,048 packets in all four interpreter/native process pairings. Wire details require review; Windows absent, Linux native unverified |
-| [simd](specs/stdlib/modules/simd.md) | Owned portable scope; not implemented |
+| [simd](specs/stdlib/modules/simd.md) | Canonical aggregates, set/store, arithmetic/comparisons, min/max, sum/masks implemented as scalar fallback; interpreter/native tested. Load result, offsets/looping/interleaving and mask/overflow policies need review |
 | [simp](specs/stdlib/modules/simp.md) | Reserved for window/render worker by current ownership; not modified here |
 | [simple-package](specs/stdlib/modules/simple-package.md) | Not implemented; oracle lacks package/TOC magic values and per-entry wire encoding. Questions recorded; no substitute archive format fabricated |
 | [sloppy-math](specs/stdlib/modules/sloppy-math.md) | Reserved for numerics worker; not implemented or modified here |

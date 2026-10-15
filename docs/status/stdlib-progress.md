@@ -108,7 +108,7 @@ Platform-io now owns Windows File completion; no duplicated implementation begun
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Latest committed checkpoint: `cc45c4f`, compiler-refresh foundation integration. Earlier
+Latest committed checkpoint: `846781b`, protected MPEG audio checksums. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -261,7 +261,7 @@ gaps remain. Scalar register rejection is now a proper category diagnostic, not
 evidence against supported SIMD registers; Meow remains unfinished pending a valid
 probe and implementation. Continue protected MPEG audio and remaining modules.
 
-Current verified increment: protected Layer II frames compute/validate actual
+Previously verified increment: protected Layer II frames compute/validate actual
 header/allocation/scfsi CRC, preserving canonical Audio ABI with private captured
 metadata. Two protected joint-stereo frames plus rewind pass; flipping the wire
 checksum produces a checked mismatch before synthesis. Tracking verifies metadata
@@ -271,6 +271,19 @@ Full regression passes 82 interpreter/native cases, 19 faults in both modes,
 six compile-time rejections and all prior worker integration/target checks.
 All 254 owned Jai files pass source-built jaifmt --check and jailint -D warnings.
 Continue valid SIMD register verification, Meow/SIMD and remaining owned modules.
+
+Previously verified increment: all reviewed Meow exports execute real calico hashing,
+register mixing/lane extraction, incremental state and diagnostics. Live mutable
+array identity/edits are checked. 317 source-built native C cases verify one-shot,
+fragmented streaming, both 128-byte outputs, tails/blocks/page offsets and custom
+tables/seeds; interpreter/native O0/O2 pass. The original scalar register probe
+is preserved as a category rejection; valid operands pass. Ancillary scratch/dump/
+store/state-byte contracts and portable performance remain honest limitations.
+Full worker regression passes 86 interpreter/native cases, 20 faults in both modes,
+eight compile-time rejections and prior SMTP/IPC/startup/parent/target checks.
+All 265 owned Jai files pass format/lint. Existing own Meow x64 assertions pass in
+both modes with an explicit NEW-foundation target overlay; no peer writes or
+production integration claim. Continue SIMD and remaining owned modules.
 
 Known workarounds and incomplete behavior are recorded in
 [deviations](stdlib-deviations.md), [gaps](../portable-stdlib-gaps.md) and the
@@ -408,3 +421,5 @@ Known workarounds and incomplete behavior are recorded in
 module ledger. Next: finish regression/checkpoint, then continue remaining owned
 portable modules using reviewed specifications. Full corpus/release integration
 remains the coordinator's responsibility.
+
+Current verified increment: canonical SIMD value aggregates and supported scalar kernels pass interpreter/native, including all comparison forms, 64-lane masks, wrap, unaligned stores and reflected names. No allocation or ISA dependency; scalar min/max delegates to Basic. Load's missing result header and offsets/looping/interleaving contracts remain unresolved. Full suite passes 87 positive cases in both modes, 20 expected faults in both modes, eight compile rejections and prior SMTP/IPC/startup/parent/target checks. Source-built formatter/linter pass all 269 owned Jai files. Review records distinguish implementation mask/FP/overflow policies from reference facts. Continue executable-format containers and remaining modules.

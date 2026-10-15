@@ -36,13 +36,11 @@ convention, equal-weight order and automatic invalidation after same-count weigh
 changes need review. The current supported squarified layout and unchanged growth
 area regression are described in [Treemap design](portable-treemap.md).
 
-The updated compiler supports canonical SIMD __reg expanded operands. The old
-`pending/register-macro.jai` scalar-u64 call now receives the appropriate operand
-category diagnostic; it does not establish a remaining SIMD-binding blocker.
-Valid assembly-vector macro verification and Meow implementation remain unfinished.
-No Code surrogate or invented public register representation was added. Only the
-official public upstream C implementation was consulted for algorithm feasibility;
-no original/upstream Jai implementation was accessed or ported.
+Meow now executes through canonical SIMD __reg operands. The old scalar-u64 probe
+is preserved as an expected category rejection; valid vectors and the real Meow
+API pass interpreter/native with independent C algorithm outputs. No Code/struct
+surrogate was added. Ancillary scratch/Store128/dump/state-byte contracts and
+portable-lowering performance remain review limits; see [Meow details](portable-meow.md).
 
 Shared_Memory_Channel implements real Unix SPSC transport; framing/alignment,
 absolute offsets, logical-capacity/name/OS-magic and paused/reconnect policies

@@ -221,3 +221,13 @@ audio_destroy. Validate the real header/control CRC before reconstruction; test
 protected joint stereo, corruption, rewind and tracked cleanup. Reject missing
 parsed-header identity instead of silently bypassing CRC; record manual/copy
 lifetime and linear registry costs as unresolved contracts/performance limits.
+
+Meow increment: use canonical register operands and exact mutable oracle arrays;
+adapt the permitted licensed calico native C algorithm with separate data/register/
+finalization/stream responsibilities. Verify whole/fragmented/block flows and both
+128-byte outputs against own-source-built C data, including edits/offsets/tails;
+check native O0/O2 and interpreter. Preserve scalar rejection and real dump output.
+Record raw scratch/store/dump/state-byte/window contracts and untuned backend cost.
+Keep NEW-foundation legacy verification in a dedicated target overlay.
+
+SIMD increment: execute allocation-free reviewed scalar operations first; retain exact canonical aggregate ABI, public flags and qualified imports. Record missing load result and gather/looping/interleaving contracts rather than invent signatures. Next implement bounded executable container parsers from reviewed records and official native format documentation, with malformed-input and native/interpreter verification.

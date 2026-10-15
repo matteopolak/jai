@@ -23,6 +23,7 @@ EXPECTED = {
     "basic-output": "out 7++",
     "runtime": "runtime -9223372036854775808 ff\n",
     "foundations": "-42 true text 55\n",
+    "meow-dump": "state\n0: 1 2\n1: 3 4\n2: 5 6\n3: 7 8\n4: 9 10\n5: 11 12\n6: 13 14\n7: 15 16\nok\n",
     "command-help": lambda out: all(text in out for text in ["configuration comment", "last option", "--alpha", "--zeta", "--help"]) and out.index("--alpha") < out.index("--zeta") and out.endswith("ok\n"),
 }
 EXPECTED_STDERR = {"print-color": "\x1b[0;44merror\x1b[0m", "basic-output": "err true"}
@@ -41,6 +42,7 @@ FAULT_EXPECTATIONS = {
     "mpeg-program-pts": ("assertion failed", "invalid MPEG timestamp marker"),
     "mpeg-program-truncated": ("assertion failed", "truncated MPEG PES packet"),
     "mpeg-no-delay-b": ("assertion failed", "MPEG B picture violates no-delay assumption"),
+    "meow-null": ("assertion failed", "MeowHash invalid source/length"),
     "overwriting-double-free": ("assertion failed", "invalid overwriting-allocator pointer"),
     "xar-capacity": ("assertion failed", "Xar configured capacity exceeded"),
     "crash-handler": ("crash signal 11", "native stack:"),
@@ -102,6 +104,7 @@ def main():
         shutil.copytree(curl_root, root / "Curl", dirs_exist_ok=True)
         shutil.copytree(curl_root.parent / "internal/bindings", root / "internal/bindings", dirs_exist_ok=True)
     subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_mpeg_fixtures.py")], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_meow_fixtures.py")], cwd=ROOT, check=True)
     env = dict(os.environ, JAIC_STDLIB=str(root))
     output = ROOT / "target/portable-tests"
     output.mkdir(parents=True, exist_ok=True)
@@ -186,6 +189,7 @@ def main():
         ("buildcpp-target", "BuildCpp object target validation failed"),
         ("mpeg-scalar-store", "cannot assign to constant"),
         ("adpcm-field-visibility", "no exported member `nChannels`"),
+        ("meow-lane", "Meow lane index out of range"),
     ]:
         negative = ROOT / f"tests/portable-stdlib/negative/{name}.jai"
         result = subprocess.run([str(compiler), "-check", str(negative)], cwd=ROOT,
