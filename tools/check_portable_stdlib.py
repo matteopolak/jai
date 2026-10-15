@@ -40,7 +40,6 @@ EXPECTED = {
 EXPECTED_STDERR = {"print-color": "\x1b[0;44merror\x1b[0m"}
 FAULT_EXPECTATIONS = {
     "android-digest-length": ("assertion failed", "SHA input exceeds the 64-bit bit-length domain"),
-    "android-oid-count": ("assertion failed", "ASN.1 identifier count is outside its fixed storage"),
     "android-abi-name": ("assertion failed", "Android NDK ABI is unavailable for this CPU"),
     "socket-cmsg-negative": ("assertion failed", "ancillary size cannot be aligned"),
     "socket-cmsg-overflow": ("assertion failed", "ancillary length exceeds u32"),

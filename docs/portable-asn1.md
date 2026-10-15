@@ -54,6 +54,14 @@ cases, preserving safety coverage. Generic signed binary reads remain supported
 and tested. Historical primitive logs retain original evidence; those prior pass
 totals are not current reference-equivalence proof.
 
+Additional broad-suite test correction: faults/android-oid-count.jai previously
+expected an assertion for count13. Whole-record equality never indexes by count,
+so that guard is obsolete. Removed the old expected-fault entry and migrated its
+safety intent into android-oid.jai: -1/13/s64 extrema compare identically only when
+all count/arc bytes match, with every stored slot tested. No production change or
+assertion disabling; the original broad failure remains in
+target/android-sdk-asn1-active-full.log.
+
 Remaining implementation: three asn1_print overloads (behavior now reviewed),
 X.509 extraction and crypto/signing helpers. Diagnostic UTC/calendar/banner finer
 formatting and hex-array helper representation still need precise review; value

@@ -1,5 +1,22 @@
 # Portable stdlib progress
 
+Test-only OID correction: removed obsolete android-oid-count expected assertion
+after refreshed whole-record equality. Positive android-oid now verifies all12
+slots and count bytes for -1/13/s64 extrema without count-based indexing. Public
+spec establishes the oracle; no production guard restored or assertion disabled.
+Focused strict lint/format pass; broad rerun follows. Original expected-fault
+failure preserved target/android-sdk-asn1-active-full.log; portable-asn1.md details.
+
+macOS addrinfo review consumed: generated canonical shape/facade candidate retained
+in pending/socket-macos-addrinfo.patch. Native SDK C layout+numeric resolver passes
+ARM64/x64. Jai full fixture and strict lint fail known general forward-enum
+ADDRCONFIG dependency; independent reduction pending/socket-ai-forward-enum.jai
+fails LATER. Candidate activation also fails existing cmsg-layout; preserved
+target/android-sdk-asn1-socket-full.log. Active source restored; no enum reordering,
+assertion removal or missing-API credit. Isolated generation/gate keeps failures
+visible and active public API unchanged pending compiler fix. Details:
+portable-socket-resolver.md. Active full regression rerun pending.
+
 SDK/startup milestone: real exact directory precedence/warnings and platform-tools
 executable discovery, durable allocator-owned cache, explicit per-call start-server
 and failure retention. Main/cache:10 interpreter/native runs; verbosity:3; actual

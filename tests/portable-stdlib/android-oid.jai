@@ -40,5 +40,22 @@ main :: () {
         }
     }
 
+    // Equality treats the count as record bytes, never as an indexing bound.
+    for count: s64.[-1, 13, 0x7fffffffffffffff, -0x8000000000000000] {
+        left.parts_count = count;
+        right = left;
+        assert(A.asn1_oid_equals(left, right));
+
+        for index: 0..11 {
+            right = left;
+            right.parts[index] ^= 1;
+            assert(!A.asn1_oid_equals(left, right));
+        }
+
+        right = left;
+        right.parts_count ^= 1;
+        assert(!A.asn1_oid_equals(left, right));
+    }
+
     print("ok\n");
 }
