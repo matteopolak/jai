@@ -378,3 +378,5 @@ Agreed designs that are not built yet.
 - [Partial-edit probe boundary verification](tools/cleanroom-integration.md#partial-edit-probe-boundary-correction): original edit coverage and two reproduced directive cases.
 
 - [Production-source lifecycle integration](tools/cleanroom-integration.md#refresh20-merged-production-verification): Pool movement, real Thread imports and enabled/disabled assertion execution without library overlays.
+
+- [Refresh21 compiler integration requests](compiler/integration-refresh21-requests.md): original enum dependency reduction, repaired bootstrap primitive and classified full-suite gaps.

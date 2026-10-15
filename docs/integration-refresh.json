@@ -21,7 +21,12 @@
   },
   "sdl3": {
     "ref": "coordinator/sdl3",
-    "commit": "0b2dc3cd1de80681041f00eeedcca195080f47ef"
+    "commit": "0b2dc3cd1de80681041f00eeedcca195080f47ef",
+    "additional_repairs": {
+      "source": "b4d6859ea24c81ef6909458d4b9a0b2d355cac87",
+      "integrated_via": "2fa2bc2b03c4bfb792ee49fc786611c6330a405c",
+      "note": "Reviewed coordinator cherry-pick; original source OID is not claimed an ancestor"
+    }
   },
   "foundations": {
     "ref": "coordinator/foundations",
@@ -29,7 +34,12 @@
   },
   "window-render": {
     "ref": "coordinator/window-render",
-    "commit": "387efe210431df3bba69e7cb8dbd326c3aef2964"
+    "commit": "387efe210431df3bba69e7cb8dbd326c3aef2964",
+    "additional_repairs": {
+      "source": "3ced6c43e225fbb9a615ca5a587ac23b25a8ea7e",
+      "integrated_via": "2fa2bc2b03c4bfb792ee49fc786611c6330a405c",
+      "note": "Reviewed coordinator cherry-pick; original source OID is not claimed an ancestor"
+    }
   },
   "platform-io": {
     "ref": "coordinator/platform-io",
@@ -45,6 +55,6 @@
   },
   "ci-candidate": {
     "ref": "coordinator/ci-candidate",
-    "commit": "172558ab65c8159c3be2514cf1e4b1fa171d93c2"
+    "commit": "2fa2bc2b03c4bfb792ee49fc786611c6330a405c"
   }
 }
