@@ -461,26 +461,22 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Debug_Info
 
-29 function names have pending declarations; 0 native function names still lack invocation fixtures.
+25 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
-| `alloc_page` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `copy_and_truncate_blocks` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `decode_inline_site_line_info` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `describe_builtin` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `describe_id_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `describe_type` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `dump_codeview_types` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `ensure_room` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
-| `free_page` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
+| `ensure_room` | 1 | 1 | Question14: active-word/capacity, growth, rover and fill policy; already-sized bit operations execute against native PDB/SDK FPM oracles |
 | `get_filename` | 1 | 1 | Debug_Info question8: file/directory indexing and path text |
 | `get_filename_for_file_id` | 2 | 1 | Debug_Info question8 for DWARF overload; CodeView implementation pending |
 | `get_id_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_type` | 2 | 1 | CodeView overloads pending; canonical DWARF Compilation_Unit offset lookup is implemented/tested |
-| `init` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_fpm_page_number` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
-| `is_free_page` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
+| `init` | 1 | 1 | Question14: active-word/capacity, growth, rover and fill policy; already-sized bit operations execute against native PDB/SDK FPM oracles |
 | `is_procedure` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_valid_user_stream_number` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `overlay_inlinesite` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -492,8 +488,16 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `parse_msf` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `parse_pdb` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `parse_tpi_stream` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
-| `set_all` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+| `set_all` | 1 | 1 | Question14: active-word/capacity, growth, rover and fill policy; already-sized bit operations execute against native PDB/SDK FPM oracles |
 | `verify_integrity` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
+
+
+| Implemented map helper with remaining paths | Remaining work |
+| --- | --- |
+| `is_free_page` | Initialized in-range words execute; capacity/active-word policy awaits question14. |
+| `alloc_page` | In-range allocation bits execute; automatic growth and rover policy await question14. |
+| `free_page` | In-range free bits execute; automatic growth and rover policy await question14. |
+| `is_fpm_page_number` | MSF7 4096-byte big-map positions execute; other layouts remain unsupported. |
 
 ## Print_Vars
 

@@ -25055,7 +25055,7 @@
         "declaration": "Free_Page_Map :: struct",
         "section": "Public declaration inventory",
         "spec_line": 132,
-        "implementation": "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
+        "implementation": "canonical record and already-sized bit operations with original native PDB SDK oracles; init/growth/rover policies pending question14"
       },
       {
         "name": "init",
@@ -25083,28 +25083,28 @@
         "declaration": "is_free_page :: (using fpm: Free_Page_Map, page_number: UPN) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 136,
-        "implementation": "pending"
+        "implementation": "already-sized canonical free-page maps; native x64/arm64 PDB SDK FPM byte oracles, all bit queries, boundary/idempotent mutations and reserved MSF7 4096-page positions; init/growth/rover policies pending question14"
       },
       {
         "name": "alloc_page",
         "declaration": "alloc_page :: (using fpm: *Free_Page_Map, page_number: UPN)",
         "section": "Public declaration inventory",
         "spec_line": 137,
-        "implementation": "pending"
+        "implementation": "already-sized canonical free-page maps; native x64/arm64 PDB SDK FPM byte oracles, all bit queries, boundary/idempotent mutations and reserved MSF7 4096-page positions; init/growth/rover policies pending question14"
       },
       {
         "name": "free_page",
         "declaration": "free_page :: (using fpm: *Free_Page_Map, page_number: UPN)",
         "section": "Public declaration inventory",
         "spec_line": 138,
-        "implementation": "pending"
+        "implementation": "already-sized canonical free-page maps; native x64/arm64 PDB SDK FPM byte oracles, all bit queries, boundary/idempotent mutations and reserved MSF7 4096-page positions; init/growth/rover policies pending question14"
       },
       {
         "name": "is_fpm_page_number",
         "declaration": "is_fpm_page_number :: (using fpm: Free_Page_Map, pn: UPN) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 139,
-        "implementation": "pending"
+        "implementation": "already-sized canonical free-page maps; native x64/arm64 PDB SDK FPM byte oracles, all bit queries, boundary/idempotent mutations and reserved MSF7 4096-page positions; init/growth/rover policies pending question14"
       },
       {
         "name": "Int_Set",

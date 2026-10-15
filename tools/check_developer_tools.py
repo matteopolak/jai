@@ -223,6 +223,7 @@ def main():
     cases.append("iprof-manual-clock")
     cases.append("iprof-client-setup")
     cases.append("codex-metrics")
+    cases.append("msf-page-bits")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -372,7 +373,8 @@ def main():
     for case, diagnostic in [("iprof-unbalanced", "Iprof: zone_end without an active zone"),
                               ("iprof-depth", "Iprof: maximum profiling depth exceeded"),
                               ("codex-conditional-metrics", "Codex: conditional metric weights require reviewed refinement"),
-                              ("codex-basic-metrics", "Codex: Basic allocation metric recognition requires reviewed name set")]:
+                              ("codex-basic-metrics", "Codex: Basic allocation metric recognition requires reviewed name set"),
+                              ("msf-page-bounds", "Debug_Info: page outside initialized free-page map")]:
         fixture = ROOT / f"tests/developer-tools/rejections/{case}.jai"
         for mode in ["interp", "0", "2"]:
             executable = ROOT / f"target/developer-tools-{case}-o{mode}"

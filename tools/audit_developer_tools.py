@@ -54,6 +54,8 @@ def remaining_matrix(inventory):
                     reason = "Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2"
                 if module == "Debug_Info" and name == "get_type":
                     reason = "CodeView overloads pending; canonical DWARF Compilation_Unit offset lookup is implemented/tested"
+                if module == "Debug_Info" and name in {"init", "ensure_room", "set_all"}:
+                    reason = "Question14: active-word/capacity, growth, rover and fill policy; already-sized bit operations execute against native PDB/SDK FPM oracles"
                 unfinished = sum(entry["implementation"] == "pending" for entry in entries)
                 output.append(f"| `{name}` | {len(entries)} | {unfinished} | {reason} |")
             output.append("")
@@ -64,6 +66,12 @@ def remaining_matrix(inventory):
             output += ["", "| Implemented generator with remaining paths | Remaining work |", "| --- | --- |",
                        "| `generate_bindings` | Global POD aggregate/reference C++ declarations execute; namespace/method/overload/custom C++ mapping/printf adapters and broader parsing remain unfinished. |",
                        "| `generate_bridge` | Global POD aggregate/reference adapters execute; namespace/method/overload/custom declaration mapping/printf adapters remain unfinished. |", ""]
+        if module == "Debug_Info":
+            output += ["", "| Implemented map helper with remaining paths | Remaining work |", "| --- | --- |",
+                       "| `is_free_page` | Initialized in-range words execute; capacity/active-word policy awaits question14. |",
+                       "| `alloc_page` | In-range allocation bits execute; automatic growth and rover policy await question14. |",
+                       "| `free_page` | In-range free bits execute; automatic growth and rover policy await question14. |",
+                       "| `is_fpm_page_number` | MSF7 4096-byte big-map positions execute; other layouts remain unsupported. |", ""]
         if source_only:
             output += ["| Native function | Evidence / next check |", "| --- | --- |"]
             output += [f"| `{name}` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |" for name in sorted(source_only)]
@@ -201,6 +209,10 @@ def main():
                     item["implementation"] = "DWARF model offset lookup; six original C DWARF4 SDK-decoded type oracles, unsorted tables/missing offsets/borrowed storage/duplicate diagnostics in interpreter/native O0/O2; not a byte parser"
                 if item["name"] in {"Msf", "Free_Page_Map"}:
                     item["implementation"] = "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
+                if item["name"] in {"is_free_page", "alloc_page", "free_page", "is_fpm_page_number"}:
+                    item["implementation"] = "already-sized canonical free-page maps; native x64/arm64 PDB SDK FPM byte oracles, all bit queries, boundary/idempotent mutations and reserved MSF7 4096-page positions; init/growth/rover policies pending question14"
+                if item["name"] == "Free_Page_Map":
+                    item["implementation"] = "canonical record and already-sized bit operations with original native PDB SDK oracles; init/growth/rover policies pending question14"
                 if item["name"] in {"is_msf", "is_pdb", "get_stream_data", "get_stream_size", "is_valid_stream_number", "stream_exists", "is_valid_page_number"}:
                     item["implementation"] = "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
                 if item["name"] in {"Line_Info", "Line_Info_Sequence", "Line_Mapping", "File_Info", "Dwarf_File_Id",
