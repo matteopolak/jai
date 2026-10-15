@@ -55,7 +55,8 @@ pub struct IdeFacts {
     pub(super) for_expansions: HashMap<Span, Option<Vec<ProcId>>>,
     /// The compile-time output channel, to tell what each `#run` printed.
     pub output: Option<Rc<std::cell::RefCell<crate::interp::SandboxHost>>>,
-    /// Entity the identifier being checked resolved to (set by `check_ident`).
+    /// Entity the named expression being checked resolved to (set by identifier
+    /// lookup or explicit module-member lookup, after resolving its operand).
     pub(super) last_entity: Option<EntityId>,
     /// Field the identifier being checked reached through a `using` (set by `check_ident`).
     pub(super) last_using_member: Option<Sym>,
@@ -372,9 +373,17 @@ impl Compiler {
             return;
         }
         let (span, what) = match &expr.kind {
-            ast::ExprKind::Ident(_) => {
+            ast::ExprKind::Ident(_) | ast::ExprKind::Member(_, _) => {
+                let (span, qualified_member) = match &expr.kind {
+                    ast::ExprKind::Member(_, name) => (name.span, Some(name.name)),
+                    _ => (expr.span, None),
+                };
                 let entity = self.ide.as_mut().and_then(|i| i.last_entity.take());
-                let member = self.ide.as_mut().and_then(|i| i.last_using_member.take());
+                let member = self
+                    .ide
+                    .as_mut()
+                    .and_then(|i| i.last_using_member.take())
+                    .or(qualified_member);
                 let what = match op {
                     Operand::Type(t) => {
                         if let Some(e) = entity
@@ -384,7 +393,7 @@ impl Compiler {
                             )
                             && let Some(ide) = self.ide.as_mut()
                         {
-                            ide.type_names.insert(expr.span, e);
+                            ide.type_names.insert(span, e);
                         }
                         IdeWhat::Type(*t)
                     }
@@ -396,15 +405,8 @@ impl Compiler {
                         (None, None) => return,
                     },
                 };
-                (expr.span, what)
+                (span, what)
             }
-            // `Module.name`: what the module exports, so definition and references follow it.
-            ast::ExprKind::Member(_, name) => match op {
-                Operand::Procs(p) => (name.span, IdeWhat::Procs(p.clone())),
-                Operand::Type(t) => (name.span, IdeWhat::Type(*t)),
-                Operand::Module(m) => (name.span, IdeWhat::Module(*m)),
-                _ => (name.span, IdeWhat::Member(name.name)),
-            },
             ast::ExprKind::InferredMember(name) => (name.span, IdeWhat::Member(name.name)),
             _ => return,
         };

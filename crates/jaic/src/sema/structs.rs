@@ -1499,7 +1499,18 @@ impl Compiler {
                             self.modules[m.0 as usize].name
                         ),
                     ),
-                    Found::Entities(ids) => self.entities_operand(f, scope, &ids, span),
+                    Found::Entities(ids) => {
+                        let result = self.entities_operand(f, scope, &ids, span);
+                        // Preserve the actual lookup identity for IDE references, just
+                        // as check_ident does. Set it after operand resolution because
+                        // an initializer may itself resolve other named expressions.
+                        if result.is_ok()
+                            && let Some(ide) = self.ide.as_mut()
+                        {
+                            ide.last_entity = ids.first().copied();
+                        }
+                        result
+                    }
                 };
             }
             Operand::Const {
