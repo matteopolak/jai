@@ -21,18 +21,19 @@ def run(command, *, output=None, error=""):
 
 def main():
     check_developer_bindings.main()
-    cases = ["c-header", "c-header-roundtrip", "c-header-reject"]
+    cases = ["c-header", "c-header-roundtrip", "c-header-reject", "print-vars"]
     run([JAIC, "tests/developer-tools/c-header.jai", "-interp"], output="ok\n")
     run(["clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-I", "target",
          "tests/developer-tools/point.c", "-o", "target/libdeveloper_tools_point.dylib"])
     for case in cases:
         source = ROOT / f"tests/developer-tools/{case}.jai"
         error = "C header: procedure must have the C calling convention" if case == "c-header-reject" else ""
-        run([JAIC, source, "-interp"], output="ok\n", error=error)
+        expected = "x = 7 (s32)\nok\n" if case == "print-vars" else "ok\n"
+        run([JAIC, source, "-interp"], output=expected, error=error)
         for optimization in [0, 2]:
             exe = ROOT / f"target/developer-tools-{case}-o{optimization}"
             run([JAIC, source, f"-O{optimization}", "-exe", exe])
-            run([exe], output="ok\n", error=error)
+            run([exe], output=expected, error=error)
     for optimization in [0, 2]:
         exe = ROOT / f"target/developer-tools-performance-o{optimization}"
         report = run([JAIC, "tests/developer-tools/performance-target.jai", f"-O{optimization}",
@@ -51,6 +52,7 @@ def main():
         raise RuntimeError("Missing performance message did not produce its diagnostic")
     paths = [ROOT / "stdlib/Generate_C_Header/module.jai",
              ROOT / "stdlib/Performance_Report/module.jai",
+             ROOT / "stdlib/Print_Vars/module.jai",
              *sorted((ROOT / "stdlib/internal/developer-tools").glob("*.jai")),
              *sorted((ROOT / "tests/developer-tools").glob("*.jai"))]
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *paths])

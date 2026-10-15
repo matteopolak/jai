@@ -51,6 +51,9 @@ def main():
         if module == "Performance_Report":
             for item in declarations:
                 item["implementation"] = "implemented; measured native compiler plugin fixture"
+        if module == "Print_Vars":
+            for item in declarations:
+                item["implementation"] = "implemented; original caller-code, formatting and logging fixture"
         inventory[module] = {"spec": str(spec.relative_to(ROOT)),
                              "spec_sha256": hashlib.sha256(contents.encode()).hexdigest(),
                              "declarations": declarations, "reviewed_members": members}
