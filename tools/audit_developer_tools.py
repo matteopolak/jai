@@ -147,7 +147,7 @@ def main():
                                      "_default_get_func_args_for_printing", "looks_like_valid_identifier",
                                      "is_hex_digit", "is_valid_int_literal_suffix", "is_valid_float_literal_suffix",
                                      "convert_float_literal", "convert_literal_value", "generate_replacements_array"}:
-                    item["implementation"] = "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
+                    item["implementation"] = "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
                 if item["name"] == "generate_bridge":
                     item["implementation"] = "global C++17 adapter subset; POD result leading out pointer, reference argument/result pointers and original native consumer effects; scopes/overloads/custom callbacks/printf adapters pending"
                 if item["name"] in {"visit_declarations", "find_parent_enum", "create_type_of_enum", "change_type_to_enum",

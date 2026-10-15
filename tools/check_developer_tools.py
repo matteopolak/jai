@@ -67,18 +67,28 @@ def prepare_cpp_visitors(prefix):
     return visitor_oracle
 
 
-def check_bridge_consumers(prefix, emitter):
+def check_bridge_consumers(prefix, emitter, workflow=False):
+    stem = "cpp-workflow" if workflow else "bridge"
+    library = "cpp_workflow" if workflow else "bridge"
+    if workflow:
+        for suffix in ["generated", "linux", "windows"]:
+            generated = ROOT / f"target/developer-tools-cpp-workflow-{suffix}.jai"
+            run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", generated])
+            run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", generated])
+            run([ROOT / "target/debug/jailint", "-D", "warnings", generated])
+        for os_name in ["linux", "windows"]:
+            run([JAIC, "tests/developer-tools/bindings-cpp-workflow-target.jai", "-check", "-os", os_name, "-cpu", "x64", "-I", ROOT / "target"])
     extension = "dylib" if platform.system() == "Darwin" else "so"
     flags = ["-dynamiclib"] if platform.system() == "Darwin" else ["-shared", "-fPIC"]
     for cpp_optimization in [0, 2]:
         run([prefix / "bin/clang++", "-std=c++17", f"-O{cpp_optimization}", "-Wall", "-Wextra", "-Werror",
-             *flags, ROOT / "target/developer-tools-bridge.cpp", ROOT / "tests/developer-tools/bindings-bridge-native.cpp",
-             "-o", ROOT / f"target/libdeveloper_tools_bridge.{extension}"])
-        source = ROOT / "tests/developer-tools/bindings-bridge-roundtrip.jai"
-        run([JAIC, source, "-interp"], output="ok\n")
+             *flags, ROOT / f"target/developer-tools-{stem}.cpp", ROOT / f"tests/developer-tools/bindings-{stem}-native.cpp",
+             "-o", ROOT / f"target/libdeveloper_tools_{library}.{extension}"])
+        source = ROOT / f"tests/developer-tools/bindings-{stem}-roundtrip.jai"
+        run([JAIC, source, "-interp", "-I", ROOT / "target"], output="ok\n")
         for optimization in [0, 2]:
-            exe = ROOT / f"target/developer-tools-bridge-{emitter}-cpp{cpp_optimization}-jai{optimization}"
-            run([JAIC, source, f"-O{optimization}", "-exe", exe])
+            exe = ROOT / f"target/developer-tools-{stem}-{emitter}-cpp{cpp_optimization}-jai{optimization}"
+            run([JAIC, source, f"-O{optimization}", "-exe", exe, "-I", ROOT / "target"])
             run([exe], output="ok\n")
 
 
@@ -182,6 +192,7 @@ def main():
     cases.append("bindings-equivalence")
     cases.extend(["iprof-history-values", "iprof-stack-depth"])
     cases.append("dwarf-type-lookup")
+    cases.extend(["bindings-cpp-workflow", "bindings-cpp-workflow-roundtrip"])
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -201,6 +212,8 @@ def main():
             check_framework_consumer(prefix, "interp")
         if case == "bindings-bridge":
             check_bridge_consumers(prefix, "interp")
+        if case == "bindings-cpp-workflow":
+            check_bridge_consumers(prefix, "interp", workflow=True)
         if case == "bindings-cpp-fragments":
             for cpp_optimization in [0, 2]:
                 cpp_exe = ROOT / f"target/developer-tools-cpp-fragments-interp-cxx{cpp_optimization}"
@@ -215,6 +228,8 @@ def main():
                 check_framework_consumer(prefix, f"o{optimization}")
             if case == "bindings-bridge":
                 check_bridge_consumers(prefix, f"o{optimization}")
+            if case == "bindings-cpp-workflow":
+                check_bridge_consumers(prefix, f"o{optimization}", workflow=True)
             if case == "bindings-cpp-fragments":
                 for cpp_optimization in [0, 2]:
                     cpp_exe = ROOT / f"target/developer-tools-cpp-fragments-o{optimization}-cxx{cpp_optimization}"
