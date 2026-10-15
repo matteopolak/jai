@@ -10,3 +10,10 @@
 - Shell here-documents fail because temporary files are denied by OS sandbox.
   Durable edits use patch/Python writes; no alternate access attempted. Initial
   empty files were detected and replaced before any completion claim.
+
+- Numerical policy is independent and provisional: squared loudness, 480-frame
+  linear gain ramps, +X forward/+Y left, PCM /32768, clamped page-end samples and
+  half-open repeat frames. Exact formulas need reviewed refinement.
+- Coordinator follow-up confirms the snapshot predates a NEW peer checkpoint.
+  Its sources are authorized but have not been read or staged; this implementation
+  remains independently authored. No missing-baseline source recovery attempted.

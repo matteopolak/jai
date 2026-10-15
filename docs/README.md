@@ -275,3 +275,5 @@ Agreed designs that are not built yet.
 - [Async IO, HTTP and JSON](plans/async-io.md): fibers over io_uring/epoll/kqueue/IOCP, typed JSON, and an HTTP server and client
 
 - [Native integration CI](tools/native-integration-ci.md): temporary branch checks and real Windows File execution
+
+- [Sound_Player implementation and verification](features/sound-player.md)
