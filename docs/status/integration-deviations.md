@@ -1413,3 +1413,64 @@ kernel mmap/syscalls/record layout and assertions remain. Actual Linux kernel
 runtime remains required; host caller-memory handshakes are only userspace
 publication evidence. Native ARM64 xxhash source-guard repair is integrated with
 exact pinned-source validation; full Windows execution remains a CI gate.
+
+### Integration worker: refreshed allocator/tooling/native audit
+
+Bindings7eafe15f implements the reviewed generic mode table and real immutable
+counter captures. STARTUP intentionally ignores initialize's return per the
+reviewed contract; this is not a claimed success. Six native domains now include
+both raw-base layouts; increased native caches and prior graph-copy/serialization
+costs remain. Snapshot calloc failure is transactional and marks builder.failed;
+formatting outside the SDK lease preserves allocator reentry and prior prefixes.
+Separate heap/span association metadata OOM remains fail-fast. Private PRETTY_PRINT
+true is independent packaging, not a public default/parameter. Host default-profile
+production verification passes169 checks on the merged library. The initial raw
+profile runs186/187: only a unit test incorrectly requiring the baseline false
+selector fails under explicitly selected true configuration. It now validates
+the requested profile from explicit verifier input, still requires false for the
+unconfigured baseline and still rejects public parameter invention. No program,
+diagnostic or assertion is omitted. C sanitizer recovery is disabled so reported
+UB cannot produce a passing exit. Native Windows/Linux and other options remain
+unverified; production native packaging still needs integration beyond this host
+SDK builder and source pins.
+
+Developer8554e42b audit adds genuine measured manual profiler zones, literal client
+setup, finite Codex metrics and initialized MSF bit maps. Manual profiler state
+is process-lived/default-allocator owned, stores stable borrowed Zone pointers,
+has MAX_DEPTH100/MAX_HASH_SIZE65536 bounds and includes first-hit/native-clock
+overhead in measurements. Automatic instrumentation/history/report/graph paths
+remain absent; no tracker/history defaults are counted as measurements. Codex
+IF/CASE/resolved Basic forms diagnose unsupported weights; unique-node traversal
+is quadratic in worst case. MSF helpers require initialized in-range caller maps,
+support 4096-byte big-map reserved positions only and leave growth/rover policy
+unchanged. Real Windows profiler/debug cross-builds are not native execution.
+The full prior61-fixture suite predates these additions and must rerun.
+
+Native build repaircad699d4 is consumed through1d9885f3. Its one verified v0.7.0
+preprocessor guard selects existing portable multiplication on Windows ARM64;
+all four original source hashes and the exact guard anchor remain required.
+Five policy tests and full official static/shared Mac vectors pass; actual
+Windows vector execution remains required. This is a documented pinned C build
+patch with unbenchmarked performance, not a fake __emulu or changed hash ABI.
+
+Mac network database records now follow the synchronized exact reviewed shapes.
+Normal generation preserves field/enum order and canonical facades; original
+full host C ABI test passes after the four missing Mac variants are emitted
+(rpcent was already present). No other-platform surrogate or ABI assertion change.
+
+Root3b50fee6 full workspace is819 passed/10 failed/one inherited ignored. Full
+owned partial edits pass1178 files/31214 edits/3423923 assertions. Broad400-case
+catalogue finishes315 interpreter positives/80 failures and310 nativeO0 positives/
+78 failures, five expected negatives each and seven native compile-only cases.
+That includes six newly discovered data-suite programs requiring their prepared
+inputs or Windows host; their specialized production suite already passes, but
+generic catalogue routing still needs correction rather than calling those
+misconfigured invocations compatibility defects or disabling the tests. Genuine
+remaining failures (including Json cleanup) stay visible. First O0/O2 catalogue
+attempts failed ENOSPC; only own reproducible incremental/superseded compiled
+caches were removed, retaining all sources/evidence. O0 retry completed; O2 must
+rerun. These counts are for the older Root, not the newer candidate.
+
+The explicit raw-enabled production sweep now passes187/187 after the profile
+expectation correction; the normal packaged false selector is restored byte for
+byte. This does not add further option coverage or native platform claims.

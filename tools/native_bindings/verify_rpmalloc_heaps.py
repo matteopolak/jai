@@ -61,7 +61,8 @@ def verify(cleanup):
     prepared = prepare(ROOT/'.work/vendor/rpmalloc', work/'rpmalloc-source')
     (ROOT/'.work/tmp').mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, TMPDIR=str(ROOT/'.work/tmp'), JAIC_STDLIB=str(stdlib),
-               JAIC_NATIVE_LIBS=str(libraries))
+               JAIC_NATIVE_LIBS=str(libraries),
+               JAIC_TEST_RPMALLOC_FIRST_CLASS_HEAPS='true' if args.rpmalloc_first_class_heaps else 'false')
     programs = [ROOT/'tests/native-bindings'/name for name in
                 ('rpmalloc-public-heaps.jai', 'rpmalloc-public-heap-lifecycle.jai',
                  'rpmalloc-public-configurable.jai', 'rpmalloc-public-allocator-proc.jai',
@@ -94,7 +95,7 @@ def verify(cleanup):
         for name in ('rpmalloc_heap_safety', 'rpmalloc_sdk_page_granularity', 'rpmalloc_snapshot_safety'):
             exe = work/(name+'-'+str(raw)+'-'+str(public_heaps)+'-'+str(stats))
             commands.append(['cc', '-std=c11', '-Wall', '-Wextra', '-Werror', '-O1', '-g',
-                             '-fsanitize=address,undefined', '-isystem', prepared,
+                             '-fsanitize=address,undefined', '-fno-sanitize-recover=all', '-isystem', prepared,
                              *['-D'+k+'='+str(v) for k, v in options.items()],
                              ROOT/'tests/native-bindings'/(name+'.c'), '-o', exe])
             commands.append([exe])
@@ -155,6 +156,9 @@ def verify(cleanup):
             commands.append(dict(argv=[exe], expect_failure=diagnostic, scope='expected_public_assertion'))
     report = dict(scope='Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers',
                   stdlib=str(stdlib), production_library=args.stdlib is not None,
+                  first_class_heaps=args.rpmalloc_first_class_heaps,
+                  private_configuration_sha256=hashlib.sha256(
+                      (stdlib/'internal/bindings/rpmalloc-build/module.jai').read_bytes()).hexdigest(),
                   compiler_sha256=hashlib.sha256(compiler.read_bytes()).hexdigest(),
                   native_artifacts={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                     for p in libraries.glob('lib*rpmalloc*') if p.is_file()},

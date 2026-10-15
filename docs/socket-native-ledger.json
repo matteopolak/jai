@@ -303,7 +303,7 @@
     "name": "hostent",
     "condition": "OS == .MACOS",
     "spec_line": 3010,
-    "status": "unresolved shape"
+    "status": "native declaration; runtime/ABI verification separate"
   },
   {
     "name": "icmp_error_info",
@@ -933,7 +933,7 @@
     "name": "netent",
     "condition": "OS == .MACOS",
     "spec_line": 3011,
-    "status": "unresolved shape"
+    "status": "native declaration; runtime/ABI verification separate"
   },
   {
     "name": "PMTUD_STATE",
@@ -975,7 +975,7 @@
     "name": "protoent",
     "condition": "OS == .MACOS",
     "spec_line": 3013,
-    "status": "unresolved shape"
+    "status": "native declaration; runtime/ABI verification separate"
   },
   {
     "name": "QOS_OBJECT_HDR",
@@ -1107,7 +1107,7 @@
     "name": "servent",
     "condition": "OS == .MACOS",
     "spec_line": 3012,
-    "status": "unresolved shape"
+    "status": "native declaration; runtime/ABI verification separate"
   },
   {
     "name": "sf_hdtr",

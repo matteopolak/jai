@@ -9,7 +9,7 @@
   },
   "bindings": {
     "ref": "coordinator/bindings",
-    "commit": "9106bfb6eb85e4b6939a21ee89ae124832097226"
+    "commit": "7eafe15f0175f151d7b848c5bb01ab388edcd181"
   },
   "numerics": {
     "ref": "producer/numerics",
@@ -46,7 +46,7 @@
   },
   "stdlib-tools": {
     "ref": "coordinator/stdlib-tools",
-    "commit": "3b3ff6e50854d79a430920ad41c82264b7496067"
+    "commit": "8554e42bba86a40ac619acec0ed9dad1228f3544"
   },
   "ci-candidate": {
     "ref": "coordinator/ci-candidate",
@@ -57,5 +57,17 @@
     "source_commit": "b1c6b1a57c3d1c12f2d27586f8fe67f0e374df6e",
     "integrated_via": "efcb29fe",
     "note": "Five scoped approved producer commits cherry-picked with -x, without importing producer base integration history"
+  },
+  "extensions-dependencies": {
+    "ref": "codex/extensions-integration",
+    "commit": "6b0f22291bdfd4b601e69538f2d61a76e2b82bf3",
+    "integrated_via": "38e4c0c",
+    "additional_integration_fix": "e8cf1a29"
+  },
+  "native-build-repair": {
+    "ref": "codex/native-build-repair",
+    "source_commit": "cad699d4",
+    "integrated_via": "1d9885f3",
+    "note": "Scoped approved source commit cherry-picked; original source OID not claimed ancestor"
   }
 }
