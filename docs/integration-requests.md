@@ -357,3 +357,43 @@ ABI tests rather than adding unreviewed platformexports. PublicExtensions still
 call old Basic.free(ptr,allocator); APIs maynotbeexpanded forlegacy conveniences,
 so a supported compatibility architecture needs coordinatorreview while existing
 Extensions bodies remain intact. No assertions or coverage disabled.
+
+## Refresh18 foundations/portable: Pool lifetime registry breaks returned reports
+
+Owners foundations + portable (active). Production command:
+JAIC_STDLIB=$PWD/stdlib target/debug/jaic -interp
+tests/portable-stdlib/basic-leak-reports.jai
+fails at second make_leak_report(for_visualizer=true): twice logs Pool allocator
+cannot change after first use, then null procedure call at pool.jai:allocate_block.
+First report is returned by value and deinitialized through its moved Pool.
+Pool's new Use_Record registry keys only the original Pool address; release at
+the returned address cannot retire that original lifetime. Reusing the callee's
+stack slot for a fresh zero Pool then rejects set_allocators and calls null.
+This is an integration defect, not an invalid leak-report oracle. Preserve every
+leak/count/cleanup assertion. Proper solution must support value-return ownership
+in public Leak_Report without stale address-only lifecycle state, canonical
+layout changes or private module/name compiler special cases. Add an independent
+Pool value-return/reuse/release regression, plus keep this public foundations
+fixture. Original log: artifacts/integration-clean/production-suites-refresh18.log.
+Foundation run stops at this case after earlier positives; later cases unverified.
+
+## Refresh18 portable reviewed refinements
+
+Registry positive zero-extended HKEY values and caller-return ConvertToApollo
+are settled by latest authoritative module specs. eab3383 still omits the ten
+HKEY values and ConvertToApollo. Implement exact public forms and safe private
+SDK handle translation where needed, with a typed containing Apollo_Time
+procedure regression. Do not add a procedure result annotation or silently
+sign-extend public constants. Native Windows evidence remains mandatory.
+
+## Refresh18 production audio provenance/scope integration corrections
+
+Integration corrected add_vbap_gain_for_direction visibility to the reviewed
+public scope (sound-player.md explicitly lists it), alongside prior publicskip
+helper. The earlier helper relocation was an integration mistake. Full production
+27-case audio suite now passes host interpreter/nativeO0/O2, six-target source,
+strict format/lint/private rejections and required actual2/6/8logicalstreams.
+Additional integration-authored perceptual-volume.jai is recorded explicitly in
+the manifest; producer26-case declaration alone had correctly rejected mismatch.
+Disabled-global-assert Thread dependency remains open; copied audio facades in
+test-stage are not production proof and must stay labeled/cleaned up.

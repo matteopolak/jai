@@ -1020,3 +1020,94 @@ scoped loaded-fragment/runtime/SDL/contract lint nowPASS with warnings denied.
 Whole-tree58failedlintgates remain historical/currentuntilrerun, not declared
 resolved. Default Audio publicskip helper visibility andSDLUser_Event duplicate
 are included in the integration correction checkpoint, not producer blame.
+
+## Refresh18 producer and independent integration audit
+
+Consumed source snapshots: portable eab3383, bindings fc6c681, audio498046b,
+developer-tools af8b5f4, SDL3 0b2dc3c, coordinator CI e223538. Compiler native
+repairs6904b4a/049e997 and cast observations were integrated through approved CI
+cherry-picks, retaining our private assertion transport29ec8f9. Every producer
+progress/deviation/handoff report was read; implementation inspection additionally
+found the following integration defects or limits. Later ready checkpoints are
+queued, not credited here. Extensions outside SDL3 remain byte-identical.
+
+- internal/audio/panning.jai: integration had also privatized reviewed public
+  add_vbap_gain_for_direction while moving its body. Restored the existing
+  signature/body to public scope; no new API. Source/signature fixtures now
+  execute. Audio manifest now explicitly includes our perceptual power-law
+  regression, rather than bypassing strict discovery. Actual27cases PASS
+  interpreter/nativeO0/O2, six-target bodies, owned format/lint and three privacy
+  checks. Real silent SDK2/6/8streams opened in all required modes; no physical
+  channel placement/latency or Linux/Windows runtime claim.
+- audio lifecycle/native adapters: essential waits/seeks/joins are unconditional,
+  failed close ownership retained/retried and unavailable state no longer
+  reports initialized. Injected failures surround genuine SDK resources, distinct
+  from OS-generated failure/hotplug proof. Owned-audio assertion-disabled copy
+  staging does not establish a globally configured production library; real
+  Thread assertion dependency remains open with active owners.
+- rpmalloc callback-context/rpmalloc-callbacks: per-call TLS context frames,
+  copied native names and synchronized signed-offset mapping metadata are real
+  adapters; no public record cast into C. Process-global SDK, spin-lock/linear
+  registry/malloc per mapping and two C frame calls per operation are deliberate
+  lifetime/performance costs. Error-location policy/profile isolation remain
+  limited. Full canonical public heap/span operations remain missing; native
+  field-layout probes are not API completion. Production scoped SDK build PASS;
+  verifier36source/96privacy/tennative phases PASS plus six missing-public-name
+  failures retained. Nondefault/raw configurations remain required gaps.
+- developer-tools clang/model/MSF/debug: actual39fixtures/C/C++ consumers PASS
+  on host, real MSF stream tools and Windows cross-built Debug ABI separate.
+  Hardcoded producer LLVM prefix replaced with existing general configured LLVM
+  discovery; new shared C fixtures use platform shared-library flags. Windows
+  Debug cross helper remains macOS-hosted MinGWx64 only; Linux/Windows fullhost
+  orchestration not certified. Scalar aliases/locations/null-C++ diagnostics do
+  not establish full1630-declaration support. MSF wire subset supports only
+  validated sizes/streams; staged byte-copy wire tests are private-unit evidence.
+- SDL3 generated files: narrow LF attributes and UTF8byte writes remove actual
+  CRLFhash failure, not a platform hash exemption. 31generator/nativehelper
+  unitsPASS locally; prior real sixprofile/SDK producer evidence distinct.
+  Native Windows compile/runtime and all95GPU operations remain CI gates.
+- portable Pool registry: active source keys first-use by Pool address; returning
+  Leak_Report by value leaves a stale record and later allocator-null fault.
+  Original foundations assertions retained; exact active-owner request supplied.
+  No caller-address patch/layout change/value-return prohibition accepted.
+  Calendar native normalization/text and Socket CMSG/TCP/Windows scope bodies
+  integrated, but selected Unix test classification is not Windows runtime proof.
+  Registry constants/ConvertToApollo remain missing despite settled review.
+  Android ABI naming is tooling only; compiler Android target unavailable.
+  Full source/native/strictlint coverage for253 missing public rows is absent.
+- jaic-llvm/partition.rs: address escape prevented counting single-caller bodies
+  in inline-growth estimates, exposed by unchanged optimized_split regression
+  after runtime procedure metadata gained address references. Conservatively
+  account for sole direct callers regardless of additional address references;
+  noinline cuts now bound that expansion. Existing two optimizer result/IR
+  regressionsPASS. Possible extra conservative noinline cuts are a performance
+  tradeoff; benchmark after correctness, do not infer native speedup.
+- Objective_C forwarding: general scanner now follows explicit native #foreign
+  aliases and checks every discovered literal, replacing obsolete old-layout
+  count thresholds. This exposed genuine NSThread native selector typo.
+  Generator uses official Foundation header spelling, retaining public API;
+  three alias/arity/runtime tests PASS with805 distinct native method pairs.
+  No baseline exception added. Dynamic selectors/local receiver class inference
+  remain explicit test limitations, not full Objective_C completion.
+- corrected compiler test oracles: LSP accepts both direct Math namespace import
+  and reviewed Codex.Math reexport, applies both edits and checks no errors.
+  Null Any boxing now tests compiler address/type representation directly rather
+  than obsolete printer abort behavior; explicit null read still diagnoses.
+  CLI color tests remove inherited NO_COLOR before forcing color; actual NO_COLOR
+  precedence test retained. New private allocation path and actual cycle/assertion
+  diagnostics replace old path/wording expectations. Full diagnostics25PASS,
+  LSP namespace PASS, IDElayout4PASS and browser assertion transport PASS.
+  No compiler error relaxed or production fake default introduced.
+
+Actual broad evidence retained: workspace755aggregatePASS/27FAIL/one inherited
+ignored, sevenfailedtargets. Production quality1107formatted/checkPASS,
+strictlint56/190failed, source_stable=true. Catalogue394cases: interpreter306/
+83pass-fail, native300/82 plus7compile-only, WASMinterp237/130, WASInative230/130
+plus7compile-only; eachmode five precise negatives separate. WASM native-only22
+unavailable each, not passes. Catalogue dependencies were incomplete; specialized
+SDK/font runners are required and many compiler/stdlib gaps remain real. Window
+first158/18failed because real test probes not built; after source-building own
+window-native, production188invocationsPASS with real hostGL/clipboard/fonts.
+No failed initial run hidden. New fullpartial-edit sweep1086ownfiles running,
+excluding all public corpus/vendor directories. Opaque applicationcorpus/Focus/
+crosshardware remain coordinator gates; no publication/push/dispatch occurred.

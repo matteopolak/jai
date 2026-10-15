@@ -20,8 +20,8 @@
   {
     "spec": "docs/specs/stdlib/modules/android-toolchain.md",
     "module": "Android/Toolchain",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Android/Toolchain/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/android.md",
@@ -56,8 +56,8 @@
   {
     "spec": "docs/specs/stdlib/modules/bindings-generator.md",
     "module": "Bindings_Generator",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Bindings_Generator/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/bit-array.md",
@@ -86,8 +86,8 @@
   {
     "spec": "docs/specs/stdlib/modules/check.md",
     "module": "Check",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Check/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/clipboard.md",
@@ -104,8 +104,8 @@
   {
     "spec": "docs/specs/stdlib/modules/codex.md",
     "module": "Codex",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Codex/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/color-interpolation.md",
@@ -158,14 +158,14 @@
   {
     "spec": "docs/specs/stdlib/modules/debug-info.md",
     "module": "debug_info",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/debug_info/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/debug.md",
     "module": "Debug",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Debug/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/deep-copy.md",
@@ -230,8 +230,8 @@
   {
     "spec": "docs/specs/stdlib/modules/flat-pool.md",
     "module": "Flat_Pool",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Flat_Pool/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/float16.md",
@@ -332,8 +332,8 @@
   {
     "spec": "docs/specs/stdlib/modules/iprof.md",
     "module": "Iprof",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Iprof/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/jai-lexer.md",
@@ -368,8 +368,8 @@
   {
     "spec": "docs/specs/stdlib/modules/machine-x64.md",
     "module": "Machine_X64",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Machine_X64/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/macos-bundler.md",
@@ -483,7 +483,7 @@
     "spec": "docs/specs/stdlib/modules/pl-mpeg-public-tables.md",
     "module": "pl_mpeg (constant table supplement)",
     "facade": null,
-    "status": "supporting constant-table page; no independent module"
+    "status": "no facade found"
   },
   {
     "spec": "docs/specs/stdlib/modules/pl-mpeg.md",
@@ -518,8 +518,8 @@
   {
     "spec": "docs/specs/stdlib/modules/print-vars.md",
     "module": "Print_Vars",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Print_Vars/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/process.md",
@@ -578,8 +578,8 @@
   {
     "spec": "docs/specs/stdlib/modules/rewrite.md",
     "module": "Rewrite",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Rewrite/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/rpmalloc.md",
@@ -770,8 +770,8 @@
   {
     "spec": "docs/specs/stdlib/modules/windows-registry.md",
     "module": "Windows_Registry",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Windows_Registry/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/windows-resources.md",
@@ -782,8 +782,8 @@
   {
     "spec": "docs/specs/stdlib/modules/windows-utf8.md",
     "module": "Windows_Utf8",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Windows_Utf8/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/windows.md",
