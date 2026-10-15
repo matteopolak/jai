@@ -241,3 +241,21 @@ errors are retained, corrected without lowering coverage. No target substitution
 native-call emulation, blanket lint exclusion or ABI-layout relaxation.
 
 Pool test platform classification: pool-unmapping depends on currently Unix-only Unmapping_Allocator. Added that fixture to the existing explicit Unix target-check list after the real Windows availability diagnostic (target/pool-policy-full2.log). Host interpreter/native assertions and Linux checking remain required; no Windows pass or completed Windows unmapping backend is claimed.
+
+Calendar policy adoption: removed this producer's stricter POSIX round-trip
+validation and Windows local DST round-trip rejection; refreshed specs delegate
+to native normalization/rules. Changed POSIX -1 result to zero, output error to
+ERROR log plus zero record, Windows input failures to assertion handling. These
+are production compatibility fixes, with old policy-test corrections separately
+recorded in portable-time.md. Continuing Windows assertion handlers get explicit
+invalid sentinel, not a valid fabricated timestamp. Native Windows pending.
+
+Calendar text uses a128-byte private bounded scratch buffer and real temporary
+copy. All public fields fit this bound; decimal padding/English month names are
+private calendar responsibilities, not duplicate public formatter APIs. An
+initial minimum-length test oracle was wrong for May; replaced with exact twelve
+reviewed English outputs, failure logs preserved. ConvertToApollo is NOT exported:
+the exact reviewed no-result header cannot currently yield a value in the compiler.
+Minimal original language reproducer is pending/expand-return-inference.jai;
+do not classify its failed check as completed functionality or silently add an
+unreviewed return annotation. Remaining native/target-lint gates are unchanged.

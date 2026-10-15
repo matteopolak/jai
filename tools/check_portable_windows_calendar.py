@@ -16,7 +16,8 @@ def main():
     if args.native and os.name != "nt":
         parser.error("native calendar verification requires an actual Windows host")
     library = ROOT / "target/portable-integration-stdlib"
-    for name in ["Basic/module.jai", "internal/basic/module.jai", "internal/basic/windows-calendar.jai"]:
+    for name in ["Basic/module.jai", "internal/basic/module.jai", "internal/basic/windows-calendar.jai",
+                 "internal/basic/calendar-text.jai", "internal/basic/clock-calendar.jai"]:
         shutil.copyfile(ROOT / "stdlib" / name, library / name)
     compiler = ROOT / ("target/compiler/debug/jaic.exe" if os.name == "nt" else "target/compiler/debug/jaic")
     source = ROOT / "tests/portable-stdlib/windows-calendar/main.jai"

@@ -129,3 +129,17 @@ Native TCP fields add36 public macOS accessors verified with256 complete native 
 Windows scope-ID increment: four exact accessors implement 28/4-bit overlay semantics. Public #run assertions pass Windows x64/ARM64; production word kernels pass host interpreter/native O2 and strict lint. Full103 positives/23 faults/14 negatives and integration/target checks pass (target/socket-scope-full-regression.log);339 owned files pass formatting/check. Native Windows remains pending; whole strict lint remains failed, including target configuration for the Windows-only fixture. Widening-shift compiler reproducer: tests/portable-stdlib/pending/widened-bitwise.jai expected8000; shifted high byte lost. SDK FIONBIO expected0x8004667e, original actual0x8004007e; assertion retained.
 
 Pool/Linux increment: full104 positives/23 faults/14 negatives plus integration checks pass (target/pool-policy-full3.log). Pool unmapping executes host interpreter/native O2 and active strict lint; its Unix dependency excludes Windows target checking explicitly, without skipping host assertions. Initial Windows unsupported-module failure remains target/pool-policy-full2.log. Linux public field #run tests execute x64/ARM64; native Linux runner rejects this macOS host, with SDK C probe prepared but unexecuted.343 owned files pass format/check; full strict lint still fails.
+
+Calendar increment: two exact public text APIs now use real temporary storage;
+POSIX normalization/-1 collision/output error and Windows input/DST policies
+follow refreshed review. Full106 positives/23 checked faults in both modes/14
+compile negatives plus prior integration and target checks pass
+(target/calendar-complete-suite.log). NEW foundation stable regeneration and five
+time roots pass interpreter/native O0/O2 (target/calendar-foundation-final.log).
+Both Windows CPU body checks pass (target/calendar-windows-final.log); native
+Windows remains unverified. Active calendar implementation/test strict lint
+passes (target/calendar-active-strict.log);347 owned Jai files format/check.
+Whole strict lint remains failed at target/calendar-whole-strict.log.
+ConvertToApollo alone remains the named time API gap: exact no-result #expand
+header conflicts with value contract/current compiler. Original general
+reproducer and precise reviewer/compiler question recorded; no fake export.

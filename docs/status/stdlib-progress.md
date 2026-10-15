@@ -253,3 +253,17 @@ Native TCP accessor increment after41a015a:36 reviewed macOS getters/setters now
 Windows scope-ID increment: four exact accessors implement 28/4-bit overlay semantics. Public #run assertions pass Windows x64/ARM64; production word kernels pass host interpreter/native O2 and strict lint. Full103 positives/23 faults/14 negatives and integration/target checks pass (target/socket-scope-full-regression.log);339 owned files pass formatting/check. Native Windows remains pending; whole strict lint remains failed, including target configuration for the Windows-only fixture. Widening-shift compiler reproducer: tests/portable-stdlib/pending/widened-bitwise.jai expected8000; shifted high byte lost. SDK FIONBIO expected0x8004667e, original actual0x8004007e; assertion retained.
 
 Pool/Linux increment:104-case full regression passes after classifying the Windows unmapping fixture failure as an unavailable platform backend. Only this genuinely Unix-only test joins the existing platform scope list; every host assertion and Linux check remains. Original target failure retained at target/pool-policy-full2.log. Native Windows allocator support is not claimed. Whole strict lint fails at target/pool-socket-whole-lint.log; focused Pool passes target/pool-policy-final-strict.log.
+
+Calendar increment: two exact public text APIs now use real temporary storage;
+POSIX normalization/-1 collision/output error and Windows input/DST policies
+follow refreshed review. Full106 positives/23 checked faults in both modes/14
+compile negatives plus prior integration and target checks pass
+(target/calendar-complete-suite.log). NEW foundation stable regeneration and five
+time roots pass interpreter/native O0/O2 (target/calendar-foundation-final.log).
+Both Windows CPU body checks pass (target/calendar-windows-final.log); native
+Windows remains unverified. Active calendar implementation/test strict lint
+passes (target/calendar-active-strict.log);347 owned Jai files format/check.
+Whole strict lint remains failed at target/calendar-whole-strict.log.
+ConvertToApollo alone remains the named time API gap: exact no-result #expand
+header conflicts with value contract/current compiler. Original general
+reproducer and precise reviewer/compiler question recorded; no fake export.
