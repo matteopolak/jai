@@ -18,7 +18,13 @@ The measured manual core uses existing canonical POSIX/Windows dependencies dire
 
 ## Debug native runtime
 
+The Debug build honors DEVELOPER_TOOLS_LLVM_PREFIX for its official Clang compiler. The new Unix lifecycle symbols are in the same helper library; no separate manifest dependency is needed. Execute tools/check_developer_debug_lifecycle.py after the build to check actual signal action restoration and native crash callbacks. Windows lifecycle implementation remains absent and must not be certified from these POSIX results.
+
 Build the owned `debug-native` sources with `tools/build_developer_debug.py` for the destination host. Install the resulting library beside its sources, matching the existing facade's private foreign-library reference. The Windows backend additionally links public SDK DbgHelp/kernel APIs; its cross-build evidence does not certify Windows execution. Coordinator integration must also provide common DbgHelp serialization if other components use that process-global API concurrently.
+
+## Check mangled-signature helper
+
+Run tools/build_developer_check.py with DEVELOPER_TOOLS_LLVM_PREFIX pointing to the destination official LLVM SDK. It source-builds stdlib/internal/developer-tools/check-native/signatures.cpp against that SDK's public demangler headers and llvm-config-selected native library. Install the helper beside its sources as developer_tools_check.dll on Windows (libdeveloper_tools_check.dylib/.so for staged host validation); preserve its private stdlib-relative foreign-library reference. Rebuild for the destination SDK rather than packaging producer absolute install paths. Add this action to the coordinator-owned shared native manifest before Windows compiler-plugin execution. The Mac test checks production LLVM links resolve within the configured SDK and records actual effects separately from Windows source checks. Its staging removes only the facade's outer Windows guard and optionally enables debug accounting; it is not a new Mac public export. The actual Compiler-header workflow additionally requires the general ELSEWHERE metadata fix documented in the minimal producer request.
 
 ## Coordinator-owned acceptance steps
 

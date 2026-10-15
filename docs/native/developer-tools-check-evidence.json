@@ -1,0 +1,27 @@
+{
+  "host": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "configured_llvm_prefix": "/opt/homebrew/opt/llvm",
+  "native_helper_sha256": "aaca2660d86a1910618caae7ddf79878a3899c87c05a28b5be9564d4b5a3d6ab",
+  "llvm_library": "/opt/homebrew/opt/llvm/lib/libLLVM.23.1.dylib",
+  "parsing_pool_effects": [
+    {
+      "mode": "interp",
+      "peak_bytes": 328,
+      "cumulative_bytes": 656
+    },
+    {
+      "mode": "0",
+      "peak_bytes": 328,
+      "cumulative_bytes": 656
+    },
+    {
+      "mode": "2",
+      "peak_bytes": 328,
+      "cumulative_bytes": 656
+    }
+  ],
+  "continuable_diagnostics": 12,
+  "module_availability": "Windows only; NEW code staged on Mac",
+  "windows_native_execution": false,
+  "actual_compiler_header_integration": "pending producer ELSEWHERE metadata fix"
+}
