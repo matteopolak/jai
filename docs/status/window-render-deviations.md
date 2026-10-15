@@ -1,5 +1,18 @@
 # Window/render deviations and implementation gaps
 
+Resolved source-download resilience gap: candidate 2fa2bc2 failed on a transient
+WinError10054 before compilation. tools/window_render_mesa_windows.py now retries
+only recognized transport failures/selected HTTP statuses, at most four attempts,
+with fresh temporary files and unchanged exact hash/TLS verification. Backoff adds
+at most 14s; the 120s timeout bounds each blocking network operation, not the complete
+large archive transfer. This deliberately avoids imposing an arbitrary total
+download deadline on slow CI. Persistent failures and all integrity/TLS/permanent
+errors remain explicit failures. Valid durable downloads are rehashed/reused;
+corrupt durable evidence is rejected and retained for diagnosis. No alternative
+sources, fake driver, fallback hash or skipped runtime gate. Nine transport tests
+use original bytes and scripted urllib boundaries, not network/native evidence.
+Normal Windows build/load/draw/readback/lifecycle execution is still pending.
+
 Resolved cache-preflight overconstraint: a6371ec's optional missing VS2026 INCLUDE
 entry is now recorded as missing, distinct from selected mandatory SDK/tool input.
 Real search directories retain full content fingerprints and order; later creation

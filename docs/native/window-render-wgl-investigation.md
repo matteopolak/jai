@@ -1,5 +1,47 @@
 # WGL failure investigation and native CI handoff
 
+## 2fa2bc2: transient pinned-source download failure
+
+Authorized filtered candidate 2fa2bc2 feedback reports source_tree urllib
+URLError/WinError10054 before ARM64 Mesa compilation. Classification:
+infrastructure transport failure. The subsequent missing driver directory is a
+consequence, not independent evidence of a rendering defect. No raw CI logs or
+vendor Jai bodies were read.
+
+The source downloader now permits four total attempts, with 2/4/8-second bounded
+backoff and an explicit 120-second timeout for each blocking network operation.
+This is a socket-operation timeout, not a total archive-transfer deadline. Only
+connection reset/abort/refusal, network/host unavailability, timeouts, temporary
+DNS failure, premature HTTP disconnect/incomplete response, and HTTP
+408/425/429/500/502/503/504 qualify. Unknown errors, permanent DNS/HTTP failures,
+TLS certificate/protocol failures, local filesystem errors and hash mismatches
+remain fatal. Retried HTTP error responses are closed. Exhaustion rethrows the
+last original failure; retries emit the archive name, exception class and delay.
+Persistent service failures still fail CI rather than producing a driver claim.
+
+Each attempt creates a unique empty sibling temporary file; failure removes it
+before backoff. No append/resume or partial-file reuse is allowed. The complete
+closed file must match the unchanged exact pinned SHA-256 before atomic promotion
+to the durable archive name and before filtered extraction. An existing archive
+is rehashed and reused without network access only when valid; a corrupt durable
+archive remains an explicit integrity error, preserved for diagnosis rather than
+silently replaced. Default urllib HTTPS/TLS verification remains enabled.
+Verified LLVM receipt/cache policy, Windows WGL platform/target/install hash
+checks, PE/export/dependency checks and actual loaded-driver identity are unchanged.
+
+Original deterministic tests in tests/window-render/test_mesa_download.py script
+only urllib transport boundaries, never a real server or driver. Nine tests cover
+partial-transfer reset then success with unique empty files, WinError10054,
+timeouts/DNS/disconnect/truncation and retryable HTTP statuses, bounded exhaustion,
+permanent/TLS errors, fatal local promotion timeout, corrupt bytes, valid/corrupt
+durable archives, and real filtered extraction following a verified retry. The
+existing ten source/cache, eight installer and one prepared-child-Python tests
+remain required (28 total). These are helper tests, not native SDK/GL execution.
+Next normal coordinator CI must still build/install/load the real ARM64 driver
+and pass fresh GL probe/readback and all public event/render/lifecycle gates.
+No Mesa rebuild, network fetch, native Windows proof or publication was attempted
+for this local checkpoint.
+
 ## a6371ec: optional VS2026 search entry is not a required SDK input
 
 Authorized filtered CIa6371ec fails in cache configuration before LLVM build on

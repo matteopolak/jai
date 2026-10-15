@@ -1,5 +1,18 @@
 # Window/render progress
 
+Latest narrow checkpoint for candidate 2fa2bc2: source download connection reset
+before compilation is classified as infrastructure failure; downstream driver
+absence is consequential. Added four-attempt transient-only retries, 120-second
+network-operation timeouts, 2/4/8s backoff and unique cleaned temporary files.
+Exact pinned SHA-256 is checked before durable promotion/extraction and on reuse;
+TLS/hash/permanent/local filesystem failures remain fatal. WGL build/install,
+native identity/dependency checks and verified LLVM cache remain unchanged.
+All 28 helper tests pass: nine new deterministic transport tests, ten source/cache,
+eight installer and one real prepared-child-Python test. Python compilation,
+plan-only execution and scoped whitespace checks pass. No Jai/Rust edits, live
+server, Mesa rebuild or native driver simulation. Normal native CI/WGL gates
+remain pending; publication remains held.
+
 Latesta6371ec infrastructure fix: absent VS2026 VC/Auxiliary/VS/include search
 entry was incorrectly treated as a required SDK directory. Cache configuration
 now records configured/resolved paths and missing/present state in order, hashes

@@ -114,7 +114,8 @@ The LLVM backend, C ABI and linking.
   official-source ARM64 Mesa build/deployment, deterministic prepared child Python,
   verified LLVM-only cache, pinned Windows WGL target/install validation and SDK
   dependency evidence, optional VS search-path fingerprinting and required ARM64
-  SDK inputs, with explicit runtime verification limits.
+  SDK inputs, transient-only pinned-download retries and explicit runtime
+  verification limits.
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping and Unix System coverage
