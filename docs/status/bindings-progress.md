@@ -1,5 +1,22 @@
 # Bindings worker progress
 
+Global-cache option batch after `7eafe15`: ENABLE_GLOBAL_CACHE=false now
+selects a genuinely separately compiled SDK/callback/ownership domain for each
+raw/rewrite/statistics shape. All twelve domains build for both Mac CPUs.
+Focused verification passes238 checks:60 desktop source checks,20 positive
+Mac executions,36 native C sanitizer executions, strict lint, formatting,
+regeneration and67 Python tests, with expected assertion/type failures retained.
+Real allocation/resize/free/heap ownership and callback failure rollback pass;
+SDK counters show no retained global cache, and default-domain ownership/data
+survive independent cache-disabled lifecycle changes. No new SDK source patch.
+
+The ledger remains0 unresolved/80 partial rpmalloc declarations, plus36
+other-module unresolved APIs. Thread-cache/adaptive/assertion/page-advice and
+numeric options remain incomplete. Heap/span metadata OOM remains fail-fast;
+diagnostic snapshot OOM is transactional. Native Windows/Linux and coordinator
+package verification remain unverified. Twelve domains increase native package
+size; full-view copy and serialization costs remain explicit.
+
 Allocator/dump milestone after `9106bfb`: all reviewed generic modes and both
 rewrite builder forms are implemented. Raw-base generic handles have exact
 canonical records even with named heaps disabled, bringing the real native

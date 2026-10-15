@@ -1203,6 +1203,15 @@
       "sha256": "d5f6f7da97b308fae5e489ce7674132f7c18220045e5697ddb1844b8847b87a3",
       "scope": "Observed regression with fresh-only callback contexts before synchronous context borrowing",
       "observed_failure": 134
+    },
+    {
+      "report": ".work/rpmalloc-global-cache-first.json",
+      "sha256": "0ddfe5fce0beedabbfdc5be7c9844bb85af01745cdeb10eb00a7923cc28e5e3e",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 238,
+      "failures": 0,
+      "expected_failures": 10
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

@@ -14,6 +14,7 @@ import platform
 import subprocess
 
 from config import RPMALLOC_SDK_BUILD_OPTIONS
+from rpmalloc_profiles import PROFILES
 from prepare_rpmalloc import prepare
 from verify import stage, place_private_unit, ROOT
 from configure_rpmalloc import configure
@@ -48,7 +49,7 @@ def main():
                JAIC_NATIVE_LIBS=str(libraries))
     programs = [ROOT/'tests/native-bindings'/name for name in
                 ('rpmalloc-public-heaps.jai', 'rpmalloc-public-heap-lifecycle.jai',
-                 'rpmalloc-public-configurable.jai', 'rpmalloc-public-allocator-proc.jai',
+                 'rpmalloc-public-configurable.jai', 'rpmalloc-public-global-cache.jai', 'rpmalloc-public-allocator-proc.jai',
                  'rpmalloc-public-builder-dump.jai', 'rpmalloc-public-dump-failure.jai')]+[unit,
                      place_private_unit('rpmalloc-native-error-callback',
                                         ROOT/'tests/native-bindings/rpmalloc-native-error-callback.jai', stdlib, {})]
@@ -71,17 +72,16 @@ def main():
             exe = work/(program.stem+'-'+str(index))
             commands.append([compiler, program, *(['-target', target] if target else []), '-exe', exe])
             commands.append([exe])
-    layouts = ((0, 1), (1, 0), (1, 1))
-    for raw, public_heaps, stats in [(r, h, s) for r, h in layouts for s in (1, 0)]:
-        options = dict(RPMALLOC_SDK_BUILD_OPTIONS, ENABLE_STATISTICS=stats, BINDING_RPMALLOC_RAW=raw,
-                       BINDING_RPMALLOC_PUBLIC_HEAPS=public_heaps)
+    for profile in PROFILES:
+        options = profile['options']
         for name in ('rpmalloc_heap_safety', 'rpmalloc_sdk_page_granularity', 'rpmalloc_snapshot_safety'):
-            exe = work/(name+'-'+str(raw)+'-'+str(public_heaps)+'-'+str(stats))
+            exe = work/(name+'-'+profile['sdk'])
             commands.append(['cc', '-std=c11', '-Wall', '-Wextra', '-Werror', '-O1', '-g',
                              '-fsanitize=address,undefined', '-isystem', prepared,
                              *['-D'+k+'='+str(v) for k, v in options.items()],
                              ROOT/'tests/native-bindings'/(name+'.c'), '-o', exe])
             commands.append([exe])
+    layouts = ((0, 1), (1, 0), (1, 1))
     resource = subprocess.run(['clang', '-print-resource-dir'], check=True, capture_output=True,
                               text=True).stdout.strip()
     for target in ('x86_64-apple-darwin', 'aarch64-apple-darwin', 'x86_64-linux-gnu',

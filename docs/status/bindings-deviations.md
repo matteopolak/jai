@@ -8,6 +8,17 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Global-cache option domains.** After `7eafe15`, six additional real SDK
+  and callback domains implement ENABLE_GLOBAL_CACHE=false. Public layouts and
+  typed heap/span ownership are preserved; official C cache semantics execute
+  directly. `.work/rpmalloc-global-cache-first.json` has238 passing checks,
+  including native SDK cache counters and ASan/UBSan across all twelve profiles.
+  Cost: doubled domain inventory/build artifacts, plus existing metadata/copy
+  and serialization costs. No new C source patch, fake cache statistics or
+  default-library forwarding. Proper long-term packaging should build selected
+  required domains while retaining exact option identities. Other options and
+  native Windows/Linux remain open; this is not full profile completion.
+
 - **Generic allocator and diagnostic capture scope.** The reviewed mode table
   now has real dispatch for every mode. Raw-base generic heaps retain their
   exact public record shape in two additional SDK domains, even without named

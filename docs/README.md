@@ -18,6 +18,8 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
   build selection and separate canonical raw record marshalling
 - [rpmalloc allocator protocol and diagnostic snapshots](native/rpmalloc-allocator-protocol.md):
   complete reviewed mode dispatch, raw-base records, transactional capture and output gates
+- [rpmalloc native global-cache selection](native/rpmalloc-global-cache-plan.md):
+  real separate cache-disabled SDK domains and required verification.
 - [rpmalloc heap ABI evidence](native/rpmalloc-heap-abi.md): complete pinned
   native storage probes and required separation from canonical public records
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
