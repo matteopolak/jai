@@ -3,6 +3,8 @@
 - Sound_Player: [plan](status/audio-plan.md), [progress](status/audio-progress.md),
   [deviations](status/audio-deviations.md), [questions](specs/questions/sound-player.md)
 
+Current replacement integration: [commands and results](tools/cleanroom-integration.md), [deviations](status/integration-deviations.md), [module inventory](status/integration-module-inventory.json).111/135 reviewed module facades are present; presence does not establish complete functionality. Native CI and opaque public corpus/Focus remain coordinator work; publication is held.
+
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
 - [Features](features.md): what works, performance and what is missing
@@ -15,7 +17,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
   reviewed metadata-only exposure, clearance and implementation resumption.
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 - [Portable MPEG](portable-mpeg.md): MPEG-1 streams/video/CRC-checked audio, independent fixtures and remaining gaps
-- [File watcher work and ABI blocker](portable-file-watcher.md): native lifecycle design and preserved FSEvents binding regression
+- [File watcher execution and ABI blocker](portable-file-watcher.md): real macOS event queues, sanitizer coverage and preserved FSEvents binding regression
 - [macOS bundles and plist helpers](portable-macos-bundler.md): native bundle/icon tools, validated XML and new formatting dependency
 - [Portable sound](portable-sound-player.md): canonical audio records, real sample arithmetic and shared mutable topology
 - [Executable containers](portable-executable-formats.md): bounded ar parsing, symbol indexes, ownership and native format inputs

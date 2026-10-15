@@ -143,7 +143,7 @@ def main():
             for path in files:
                 if path == invalid_scalar:
                     continue  # Binding intentionally fails; separately required above.
-                if path == ROOT / "stdlib/internal/files/native-unix.jai":
+                if path.name in {"native-unix.jai", "native-windows.jai"} and path.parent == ROOT / "stdlib/internal/files":
                     continue  # #load fragment needs its actual File parent and Seek_Type.
                 if path.name == "host-target-predicate.jai" and target_os == "macos":
                     continue  # The fixture asserts cross-compilation; other profiles check it.
@@ -155,10 +155,13 @@ def main():
                     ROOT / "stdlib/internal/files/filesystem.jai",
                     ROOT / "stdlib/internal/basic/filesystem.jai",
                     ROOT / "tests/portable-stdlib/file-visitation.jai",
+                    ROOT / "tests/portable-stdlib/basic-visualization-channel.jai",
+                    ROOT / "tests/portable-stdlib/basic-visualization-timing.jai",
                 }:
                     continue  # POSIX implementations/oracle; Windows backends have their own roots.
                 selected.append(path)
             selected.append(ROOT / "stdlib/File/module.jai")
+            selected.append(ROOT / "stdlib/internal/files/file.jai")
             manifest = lint_output / f"{target_os}-{target_cpu}.txt"
             checked = subprocess.run([str(linter), "-v", "-D", "warnings", "--os", target_os,
                                       "--cpu", target_cpu, "-I", str(ROOT / "tests/portable-stdlib/pending"),

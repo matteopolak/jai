@@ -222,3 +222,15 @@ failed before the fix and passes afterwards. Full playback remains incomplete.
 
 Foundation pending strict lint is corrected by5c5e27b; retain the combined
 target-aware union rather than restoring the producer's host-only staged lint.
+
+## Windows public backend gaps confirmed by integrated target checks
+
+Portable/platform owners: Socket public Windows API is specified (socket.md
+Windows Socket/WINSOCK_VERSION/init/error variants), but canonical module.jai
+asserts OS_IS_UNIX. Minimal original reproducer: S :: #import "Socket"; main :: () {}
+with -os windows -cpu x64 or arm64 rejects before public API binding.
+Shared_Memory_Channel similarly rejects Windows despite reviewed native mapping
+records and reader/writer lifecycle variants. Reproducer: #import "Shared_Memory_Channel";
+main :: () {} under either Windows CPU. Implement real Winsock/mapping backends,
+preserve exact public layouts and require real loopback/IPC native CI. Combined
+target failures remain visible; Unix runtime passes do not cover these gaps.

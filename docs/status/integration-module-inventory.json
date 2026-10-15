@@ -206,8 +206,8 @@
   {
     "spec": "docs/specs/stdlib/modules/executable-formats.md",
     "module": "executable_formats",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/executable_formats/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/file-utilities.md",
@@ -218,8 +218,8 @@
   {
     "spec": "docs/specs/stdlib/modules/file-watcher.md",
     "module": "File_Watcher",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/File_Watcher/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/file.md",
@@ -260,8 +260,8 @@
   {
     "spec": "docs/specs/stdlib/modules/generate-c-header.md",
     "module": "generate_c_header",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/generate_c_header/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/getrect-lefthanded.md",
@@ -374,8 +374,8 @@
   {
     "spec": "docs/specs/stdlib/modules/macos-bundler.md",
     "module": "MacOS_Bundler",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/MacOS_Bundler/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/macos.md",
@@ -410,8 +410,8 @@
   {
     "spec": "docs/specs/stdlib/modules/meow-hash.md",
     "module": "meow_hash",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/meow_hash/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/meshoptimizer.md",
@@ -476,8 +476,8 @@
   {
     "spec": "docs/specs/stdlib/modules/performance-report.md",
     "module": "Performance_Report",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Performance_Report/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/pl-mpeg-public-tables.md",
@@ -488,8 +488,8 @@
   {
     "spec": "docs/specs/stdlib/modules/pl-mpeg.md",
     "module": "pl_mpeg",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/pl_mpeg/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/pool.md",
@@ -614,8 +614,8 @@
   {
     "spec": "docs/specs/stdlib/modules/simd.md",
     "module": "SIMD",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/SIMD/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/simp.md",
@@ -656,8 +656,8 @@
   {
     "spec": "docs/specs/stdlib/modules/sound-player.md",
     "module": "Sound_Player",
-    "facade": null,
-    "status": "no facade found"
+    "facade": "stdlib/Sound_Player/module.jai",
+    "status": "present; implementation/contract coverage unverified"
   },
   {
     "spec": "docs/specs/stdlib/modules/srgb.md",

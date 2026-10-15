@@ -1,5 +1,45 @@
 # Clean-room integration verification
 
+## Current combined refresh twelve
+
+Source checkpoint d485811 contains every approved refresh-twelve snapshot,
+including the new audio/developer-tools refs and authorized native CI candidate
+e8c312d. Subsequent integration repairs below are ordinary independent commits.
+Publication is held; this worker performs no push, CI dispatch or release action.
+Coordinator runs the opaque full public corpus and Focus build/launch; a human
+Focus check is optional under latest steering.
+
+| Executed command/scope | Result and limits |
+| --- | --- |
+| Source-built jaic/jailint/jailsp; unchanged jaifmt O2 against production stdlib | Builds pass; no tool-only library repairs or overlays |
+| cargo test --locked --workspace --no-fail-fast | Full refresh12 completes; failures retained in workspace-refresh12.log; focused canonical runtime/plugin/private-lint tests pass |
+| cargo clippy --locked --workspace --all-targets -- -D warnings | Pass; actual wasm32 jai-wasm clippy also passes |
+| jaifmt --check on835 new/changed Jai files | Pass; relocated SDL regression separately format/lint checked; broad quality first retry has stale moved-path and real target/body failures |
+| check_foundations.py --jaic target/debug/jaic --stdlib stdlib --jaifmt target/jaifmt --jailint target/debug/jailint --cross --wasm | Pass:43 host cases interpreter/nativeO0/O2,35 WASI O0/O2, seven unused-code profiles, strict four-target lint union116 positive files and one required binding rejection; parent log retains exact execution |
+| check_platform_io.py --jaic target/debug/jaic --stdlib stdlib --native --cross-check --windows-build x64 --windows-process --windows-crash | Host cases/arguments and four-target source checks pass; x64 nativeC and18 startup/fault/named-fault cross-builds pass; Windows execution not claimed |
+| format_platform_io.py --check / --lint with actual tools and --stdlib stdlib | Pass:49 positive owned Jai files across four profiles, one invalid runtime fixture rejects both Windows CPUs |
+| check_window_render.py --jaic target/debug/jaic --stdlib stdlib --native-libs target/window-native |167 invocations pass/zero fail, real host GL/codec/clipboard/lifecycle; caller-font increment pending; Windows native lifecycle/driver evidence remains required |
+| audio_verify.py | Four tests pass interpreter/nativeO0/O2, six source targets and strict formatting/lint; controlled kernels only, no playback/device claim |
+| check_developer_tools.py | Real C11 headers/layout/call/rejection and measured compiler-performance plugin pass interpreter/nativeO0/O2, strict formatting/lint, three source targets; documented subset |
+| check_portable_stdlib.py --jaic target/debug/jaic --stdlib stdlib --native --keep-going plus four targets |133/134 ordinary cases pass; real bundle/plist/Meow/FSEvents sanitizers,22 fault cases,10 negative gates,10 SMTP/TLS and4x2048 IPC checks pass. Plist harness correction and optimized compiler float retry underway; Windows Socket/shared-memory backends remain genuine failures |
+| native_bindings/verify.py --module SDL --runtime --compiler target/debug/jaic --stdlib stdlib --native-libs artifacts/integration-clean/native-sdk | Six source targets and actual native factory/BMP/close/WM-info pass; SDK layout aggregate remains red RWops48/72, UserEvent8/32. Relocated RWops also passes interpreter/nativeO2 and strict lint |
+| native_bindings/generate.py --check --formatter target/jaifmt | All bindings generation/idempotence pass |
+| sdl3_gen.py --source artifacts/sdl3/SDL3-3.4.18 --jaifmt target/jaifmt --check | Six profiles pass with1486/1488 ABI assertions retained;20 Python units pass after portable path fix, actual Windows CI rerun pending |
+| Production runtime allocation.jai -os wasm -cpu x64 at O0/O2 + tools/run_foundations_wasm.mjs | Both actual WASI executions print ok; configured65536 size, original/data identity and last-byte access |
+| build_scripting_wasm.py --release --output artifacts/integration-clean/browser-refresh12; node tools/check_jai_format_wasm.mjs artifacts/integration-clean/browser-refresh12 | Actual wasm32 source build and24 formatter goldens plus414-line source pass; broader browser/API suite is not green |
+| tests/numerics/run.py --compiler target/debug/jaic --stdlib stdlib --output artifacts/integration-clean/numerics-refresh12 |129/143 checks pass;14 actual failures retained |
+| stdlib_runtime.py --jaic target/debug/jaic --modes interp,native --strict --jobs4 --timeout120 --verbose |482 current cases execute: interpreter275pass207fail; native269pass205fail8compile-time-only, zero skips. Includes two newly library-owned fixtures; argument/dependency requirements are distinct from invalid legacy public APIs and genuine compatibility failures |
+| lsp_partial_edits.py --stdlib stdlib --max-lines8 --jobs4 --timeout60 --report artifacts/integration-clean/lsp-refresh12.json stdlib |639-file full sweep in progress; do not report final totals until complete |
+
+All logs/reports are under artifacts/integration-clean unless a secondary
+artifact path is stated. The module inventory records111 present facades out
+of135 reviewed modules;24 are absent and the136th spec row is an MPEG constant
+supplement. Zero modules are certified fully complete by integration. Windows
+Socket/shared-memory, remaining developer modules, wide-integer guard contract,
+SIMD revised semantics, native ABI failures and target/runtime gaps are explicit.
+Source declarations and partial-editor resilience are not behavior coverage.
+All historical checkpoints below retain their original outcomes.
+
 ## Sixth refresh checkpoint
 
 Source checkpoint d9aa140 integrates the seven approved sixth-refresh heads and
@@ -178,7 +218,7 @@ Build exited zero (11.22s). Output: `artifacts/integration-clean/build.log`.
 
 ## Required external verification
 
-Coordinator must run full original public corpus with opaque vendored sources and return filtered results/minimal independent reproducers. Local checks must use unchanged permitted application entry sources with vendor-free staging and explicit provenance. No unrestricted corpus/application fetcher is permitted here. Native Windows/macOS x64 and other unavailable targets require actual CI execution; source checks do not establish runtime support. Focus must be built/launched by coordinator after full tests and accepted by user, including issue #1 signed mouse-wheel propagation, before v0.17.1 publication. No release or historical rebuild is authorized here.
+Coordinator must run full original public corpus with opaque vendored sources and return filtered results/minimal independent reproducers. Local checks must use unchanged permitted application entry sources with vendor-free staging and explicit provenance. No unrestricted corpus/application fetcher is permitted here. Native Windows/macOS x64 and other unavailable targets require actual CI execution; source checks do not establish runtime support. Focus must be built/launched by coordinator after full tests with issue #1 signed mouse-wheel propagation verified; latest steering makes the human check optional before publication. No release or historical rebuild is authorized here.
 
 See [integration audit](../status/integration-deviations.md), [plan](../plans/cleanroom-integration.md) and [requests](../integration-requests.md).
 

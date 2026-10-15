@@ -462,3 +462,20 @@ All eleven approved producer checkpoints and authorized native-CI candidatee8c31
 Verified watcher increment: exact macOS File_Watcher facade executes SDK-native callback queues, real create/modify/remove/rename, typed dispatch, trailing-edge coalescing, recursive filtering and overflow rescan in interpreter/native modes. Captured allocator cleanup returns zero under a changed polling context. Native backend executes under ASan/UBSan plus actual owned-allocation tracking, including failure/overflow. All 289 owned Jai files pass format/lint. No Windows/Linux support or binding-ABI repair claim; reviewed-policy/packaging limits documented. SIMD's newly updated reviewed page resolves prior gaps and requires 1/0 comparison lanes/truth-based masks; correcting those and finishing its remaining operations is next. Existing full suite's 90-case result predates that new oracle update and is not a claim against the revised SIMD contract.
 
 Integration eleven verification: full workspace executed after fixing new lint-test configuration; underlying57 failures retained and classified separately, canonical runtime stale-negative expectation corrected with real allocation coverage retained. Foundation behavior suite passes all42 host/33WASI cases and seven target profiles; strict lint still exposes pending side-effect import repair. Renderer real host cases pass, private packet test placement corrected; full rerun next. Newer producer/source-native fixes are integrated in secondary worktree pending combined source freeze.
+
+## Combined refresh twelve reviewable checkpoint
+
+All latest named producer snapshots including audio7d641f8 and developer-tools
+a553de2 are integrated at d485811 plus current scoped integration repairs.
+Actual production tools build; all835 then-new Jai sources format-check.
+Foundation43host/35WASI behavior plus seven profiles and strict116-file union
+passes. Platform49-file strict lint passes. Window167 invocations pass.
+Four controlled audio cases and actual C-header/performance tests pass with
+strict tooling. SDL native pointer/lifetime tests pass; public48/72 and8/32
+layout failures remain. SIMD newly settled contracts and Windows Socket/shared
+memory remain owner gaps. Full workspace/original suites retain real failures;
+639-file LSP sweep and optimized float retry are running.
+Exact commands/results are at tools/cleanroom-integration.md. Coordinator may
+review this committed source for the next normal temporary native CI candidate,
+including WGL retirement/x64 cleanup and SDL3 Windows path repair. It is not a
+green integration or release approval. No push/dispatch/publication performed.
