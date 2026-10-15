@@ -22,9 +22,11 @@ OWNED = [
     "stdlib/internal/developer-tools/generator-reference-helpers.jai",
     "stdlib/internal/developer-tools/generator-canonical-construction.jai",
     "stdlib/internal/developer-tools/generator-model-lookup.jai",
+    "stdlib/internal/developer-tools/generator-record-metadata.jai",
     "stdlib/internal/developer-tools/generator-special-construction.jai",
     "stdlib/internal/developer-tools/generator-aggregate-construction.jai",
     "stdlib/internal/developer-tools/generator-template-construction.jai",
+    "stdlib/internal/developer-tools/generator-native-string.jai",
     "stdlib/internal/developer-tools/binding-native-model.jai",
     "tests/developer-tools/generator-model-helpers.jai",
     "tests/developer-tools/generator-model-native.jai",
@@ -38,13 +40,16 @@ OWNED = [
     "tests/developer-tools/generator-model-aggregates.jai",
     "tests/developer-tools/generator-model-record-edges.jai",
     "tests/developer-tools/generator-model-templates.jai",
+    "tests/developer-tools/generator-model-literals.jai",
+    "tests/developer-tools/generator-model-vtables.jai",
+    "tests/developer-tools/generator-model-virtual-conversion.jai",
 ]
 FIXTURES = [
     "generator-model-helpers", "generator-model-native",
     "generator-model-session", "generator-model-tokens",
     "generator-model-construction",
-    "generator-model-objc", "generator-model-macros", "generator-model-cpp", "generator-model-typedefs", "generator-model-aggregates", "generator-model-record-edges", "generator-model-templates", "bindings-macros",
-    "bindings-tree", "bindings-equivalence",
+    "generator-model-objc", "generator-model-macros", "generator-model-cpp", "generator-model-typedefs", "generator-model-aggregates", "generator-model-record-edges", "generator-model-templates", "generator-model-literals", "generator-model-virtual-conversion",
+    "bindings-tree", "bindings-equivalence", "generator-model-vtables",
 ]
 evidence = []
 
@@ -60,6 +65,7 @@ def run(command, expected=None):
 
 
 def main():
+    evidence.clear()
     try:
         prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
         layout = None
@@ -78,7 +84,7 @@ def main():
         template_layout = None
         for optimization in [0, 2]:
             probe = TARGET / f"generator-model-template-layout-O{optimization}"
-            run([prefix / "bin/clang++", "-std=c++17", "-Wall", "-Wextra", "-Werror",
+            run([prefix / "bin/clang++", "-std=c++17", "-fblocks", "-Wall", "-Wextra", "-Werror",
                  f"-O{optimization}", ROOT / "tests/developer-tools/generator-model-template-layout.cpp", "-o", probe])
             output = run([probe])
             if template_layout is not None and output != template_layout:
@@ -88,17 +94,30 @@ def main():
         template_oracle.write_text(template_layout)
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", template_oracle])
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", template_oracle])
+        vtable_layout = None
+        for optimization in [0, 2]:
+            probe = TARGET / f"generator-model-vtable-layout-O{optimization}"
+            run([prefix / "bin/clang++", "-std=c++17", "-Wall", "-Wextra", "-Werror",
+                 f"-O{optimization}", ROOT / "tests/developer-tools/generator-model-vtable-layout.cpp", "-o", probe])
+            output = run([probe])
+            if vtable_layout is not None and output != vtable_layout:
+                raise RuntimeError("Original SDK vtable oracle differs between O0/O2")
+            vtable_layout = output
+        vtable_oracle = TARGET / "generator-model-vtable-layout-oracle.jai"
+        vtable_oracle.write_text(vtable_layout)
+        run([TARGET / "jaifmt", "--config", "jaifmt.toml", vtable_oracle])
+        run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", vtable_oracle])
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", *OWNED])
-        run([TARGET / "debug/jailint", "-D", "warnings", *OWNED])
+        run([TARGET / "debug/jailint", "-D", "warnings", "-I", TARGET, *OWNED])
         for os_name in ["windows", "linux"]:
             run([JAIC, ROOT / "tests/developer-tools/generator-model-helpers.jai",
-                 "-check", "-os", os_name, "-cpu", "x64"])
+                 "-check", "-os", os_name, "-cpu", "x64", "-I", TARGET])
         for name in FIXTURES:
             source = ROOT / f"tests/developer-tools/{name}.jai"
-            run([JAIC, source, "-interp"], "ok\n")
+            run([JAIC, source, "-interp", "-I", TARGET], "ok\n")
             for optimization in [0, 2]:
                 exe = TARGET / f"generator-model-{name}-O{optimization}"
-                run([JAIC, source, f"-O{optimization}", "-exe", exe])
+                run([JAIC, source, f"-O{optimization}", "-exe", exe, "-I", TARGET])
                 run([exe], "ok\n")
         print(f"generator model: format, strict lint, 2 cross-target source checks, {len(FIXTURES)} interpreter and {2 * len(FIXTURES)} native executions passed")
     finally:

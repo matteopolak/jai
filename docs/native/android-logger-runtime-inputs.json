@@ -1,0 +1,13 @@
+{
+  "producer": "portable Runtime owner",
+  "supplied_commit": "b2e90f76fcc39ea8ced96c2f93ca1bf442a67686",
+  "reported_discard_origin": "ca8570d",
+  "artifact_root": "artifacts/android-discard-dependency/stdlib",
+  "pinned_files": {
+    "internal/runtime/android-output/module.jai": "1daade036270cd4ac591d1b7ae2b7e48f9bb4794c663b8507ee2c60c89dbf286"
+  },
+  "required_transitive_files": [
+    "internal/runtime/output-lock/module.jai"
+  ],
+  "scope": "Explicitly supplied clean private runtime dependency. No history or peer checkout access; no binding-owned queue or lock substitute."
+}

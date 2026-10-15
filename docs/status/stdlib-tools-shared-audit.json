@@ -1,0 +1,606 @@
+{
+  "role": "stdlib-tools",
+  "timestamp_utc": "2026-10-15T21:34:36.002161+00:00",
+  "shared_head": "ebe1d61525600ae01e7453061797ff72ad06ff72",
+  "checkpoint": "98b1581ccdc910fc6c5eecff10a9abd3133bc247",
+  "ownership": "Bindings_Generator emission/parser/printing/native tooling and Print_Vars; model/type/context excluded",
+  "adoption": [
+    {
+      "path": "stdlib/internal/developer-tools/binding-value-emission.jai",
+      "checkpoint_exists": true,
+      "shared_exists": true,
+      "comparison": "different",
+      "shared_sha256": "21c16583a35e76f1b4d816c14e25f2d951c8f1c4a08d587ab9ae7f25fa849194"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/cpp-fragments.jai",
+      "checkpoint_exists": true,
+      "shared_exists": true,
+      "comparison": "different",
+      "shared_sha256": "0a3f91e0d1600b84ebd1031dba4cfb7766c5099c2a87176d96d153b9cd6e5877"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/clang-bindings/main.c",
+      "checkpoint_exists": true,
+      "shared_exists": true,
+      "comparison": "different",
+      "shared_sha256": "550caa019ab133fd036221839af311e28830fc98c0ff5bf1e33365ee76d9e5a9"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/binding-native-model.jai",
+      "checkpoint_exists": true,
+      "shared_exists": true,
+      "comparison": "different",
+      "shared_sha256": "340d614bc4b353af0ab78dbf0686f6e5205e09f2a10cf0c187761382a51838b4"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/bindings-driver.jai",
+      "checkpoint_exists": true,
+      "shared_exists": true,
+      "comparison": "identical",
+      "shared_sha256": "d01ae8d5cfe077005106caa16032b18b764d3b8c7419a6e5fa28fa80435399bd"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/print-vars.jai",
+      "checkpoint_exists": true,
+      "shared_exists": true,
+      "comparison": "identical",
+      "shared_sha256": "1820a8f5f9b8993f44da3a4f05d769f0b681de22558b34b6d19211652affc930"
+    },
+    {
+      "path": "tests/developer-tools/bindings-aggregate.jai",
+      "checkpoint_exists": true,
+      "shared_exists": false,
+      "comparison": "absent_shared",
+      "shared_sha256": null
+    },
+    {
+      "path": "tests/developer-tools/bindings-aggregate-roundtrip.jai",
+      "checkpoint_exists": true,
+      "shared_exists": false,
+      "comparison": "absent_shared",
+      "shared_sha256": null
+    },
+    {
+      "path": "tests/developer-tools/bindings-aggregate.h",
+      "checkpoint_exists": true,
+      "shared_exists": false,
+      "comparison": "absent_shared",
+      "shared_sha256": null
+    },
+    {
+      "path": "tests/developer-tools/bindings-aggregate-native.cpp",
+      "checkpoint_exists": true,
+      "shared_exists": false,
+      "comparison": "absent_shared",
+      "shared_sha256": null
+    },
+    {
+      "path": "tests/developer-tools/print-vars-expressions.jai",
+      "checkpoint_exists": true,
+      "shared_exists": false,
+      "comparison": "absent_shared",
+      "shared_sha256": null
+    },
+    {
+      "path": "tools/build_developer_bindings.py",
+      "checkpoint_exists": true,
+      "shared_exists": true,
+      "comparison": "different",
+      "shared_sha256": "2cbf1738ef0aada2451c22aa097d1542679b681bf52525e565cfaad926b4b8ab"
+    }
+  ],
+  "public_api_inventory": [
+    {
+      "name": "append_as_signed_integer_hex",
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/value-emission.jai",
+          "line": 29
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_as_unsigned_integer_hex",
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/value-emission.jai",
+          "line": 24
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_bitfield_helpers",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_cpp_type",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 1
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_cpp_type_modifiers",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 7
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_cpp_wrapper",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_elsewhere",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_integer",
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/value-emission.jai",
+          "line": 1
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_maybe_left_shift",
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/value-emission.jai",
+          "line": 33
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_maybe_right_shift",
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/value-emission.jai",
+          "line": 39
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_parent_field_path",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_parent_path",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "append_template_instantiation_params",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "as_str",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "avoid_name_clash",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "check_macro_value",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "convert_children_to_expression",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "exceeds_signed_int_value",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 46
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "expect_tokens",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "fill_template_arguments",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "fill_template_arguments_for_expression",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "finish_bitfield",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "get_scoped_token_string",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "get_type_name",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-queries.jai",
+          "line": 20
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "handle_toplevel_cursors",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "log",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "log_error",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "maybe_add_to_bitfield",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "maybe_append_cast",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "maybe_convert_expression_zero_to_null",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-expression-normalization.jai",
+          "line": 1
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "maybe_convert_fixed_array_type",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "maybe_convert_pointer_type_to_fixed_array_type",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "maybe_unwrap_bitfield_declaration",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "omit_cpp_functions_visitor",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
+          "line": 1
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "omit_unnecessary_typedefs_and_macros",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "parse_call_expression",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_declaration_to_builder",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_enum",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_enum_body",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_expression_to_builder",
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/value-emission.jai",
+          "line": 57
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_function",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_function_type_to_builder",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 36
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_literal_to_builder",
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/value-emission.jai",
+          "line": 45
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_namespace",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_struct",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_struct_vtable",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_type_to_builder",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 20
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "print_typedef",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "raw_string_from_macro_tokens",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "raw_tokens_string_from_cursor",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
+          "line": 1
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "run_generator",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "should_be_omitted",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "should_unwrap_typedef",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "size_from_number_flags",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-queries.jai",
+          "line": 1
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "string_from_macro_value",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "strip_type",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 61
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "stripped_name",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "to_string",
+      "declarations": [],
+      "status": "not_found_in_owned_emission_sources",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "try_find_struct_in_type",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-queries.jai",
+          "line": 49
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "type_has_name",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-queries.jai",
+          "line": 13
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    },
+    {
+      "name": "type_to_string",
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
+          "line": 26
+        }
+      ],
+      "status": "body_audit_required",
+      "shared_verification": "not_run"
+    }
+  ],
+  "inventory_limit": "Declaration locations are discovery only, not body completeness or contract correctness. Other canonical model/helper files intentionally excluded.",
+  "required_failure_triage": [
+    {
+      "fixture": "bindings-aggregate.jai",
+      "assertion_line_in_checkpoint": 83,
+      "status": "historical_failure_unverified_shared",
+      "assertion": "cpp.failed && errors == 1 && builder_string_length(*cpp) == preserve.count",
+      "policy": "Diagnose separate failed/logger/storage observations without weakening assertion after adoption.",
+      "diagnosis": "Checkpoint aggregate fixture reads unchanged via builder_to_string with default do_reset=true, then later expects the consumed preserve bytes. Reviewed Basic declares do_reset:=true; independent cycle reduction verifies default consumption plus do_reset=false retention, failure flag and exactly one diagnostic in interpreter. Aggregate itself awaits integration and rerun."
+    }
+  ],
+  "fresh_evidence": {
+    "compiler": "Shared Rust source-built jaic interpreter and LLVM-native builds succeeded in worker target",
+    "formatter": "Shared jaifmt/main.jai source-built; new regression formatted and --check passed",
+    "interpreter": {
+      "print-vars.jai": "passed",
+      "bindings-transaction-storage.jai": "passed"
+    },
+    "strict_lint": {
+      "print-vars.jai": "passed",
+      "bindings-transaction-storage.jai": "passed before concurrent integration"
+    },
+    "native_O0": "compile interrupted by concurrent integration conflict marker in owned binding-value-emission.jai; not a stable-source regression result",
+    "native_O2": "not_run"
+  },
+  "dependencies": [
+    "Integrator adoption of full owned checkpoint chain",
+    "Canonical generator-model adoption",
+    "Worker-specific build/output configuration; legacy staging/overlays prohibited"
+  ],
+  "workarounds": [],
+  "unfinished": [
+    "Aggregate draft implementation is partial and historically failing",
+    "Complete per-API body/default/overload/visibility audit after adoption",
+    "Adapt owned test runners to isolated shared-tree outputs",
+    "Integrator currently reconciling binding-value-emission.jai conflict; do not race editor."
+  ],
+  "tradeoffs": [
+    "Read-only adoption audit precedes production edits to avoid overwriting ongoing integration."
+  ]
+}

@@ -98,6 +98,14 @@ main :: () {
 
         S.append_owned(*tracked_session, *block.members, child);
         assert(block.members.count == 1 && block.members[0] == child);
+        moving: [..] *B.Declaration;
+        headers_before := tracked_session.arrays.count;
+
+        for i: 0..79 S.append_movable_owned(*tracked_session, *moving, child);
+
+        assert(moving.count == 80 && tracked_session.arrays.count == headers_before);
+        array_free(moving);
+        moving = .{};
         return_from_inner(*second);
         assert(S.current(B.TARGET_OS) == *tracked_session);
     }

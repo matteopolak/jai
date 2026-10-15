@@ -620,6 +620,7 @@ the earlier120-second timeout is retained. Full aggregate replay remains require
 
 - [Shared stdlib worktree](tools/shared-stdlib-worktree.md): source ownership, shared commits and independent build/test outputs
 - [Shared portable verification](tools/shared-portable-verification.md): combined ASN.1, Socket, JKS and APK source checks and native baseline limits
+- [Generator model shared audit](status/generator-model-shared-audit.json), [tools shared audit](status/stdlib-tools-shared-audit.json), and [bindings shared audit](status/bindings-shared-audit.json): pre-adoption producer inventories; these are not combined passing results
 
 
 ASN1/Socket shared-tree verification now uses current production dependencies and

@@ -1,0 +1,123 @@
+{
+  "role": "bindings",
+  "timestamp": "2026-10-15T21:32:57.432253+00:00",
+  "shared_head": "71c54d8e584789d5513b4786b5b4f8279b2da019",
+  "named_checkpoint": "0d57d88597c934d822ed3c208fccc1fad672673c",
+  "adoption": [
+    {
+      "path": "stdlib/Android/wrappers.jai",
+      "state": "different",
+      "checkpoint_sha256": "33c5d3f1f2dbae4dc29e036f2d95e93d5f43762ea86ae7f7197dd00094454b51",
+      "shared_sha256": "d966771c1e49281056e11b22ea5ec4ffb529c5f0e7bba42beadc52c49062fd62"
+    },
+    {
+      "path": "stdlib/internal/bindings/android-log/module.jai",
+      "state": "absent",
+      "checkpoint_sha256": "65ed3fcd779451b950974af1abeea1a3857816d1824e6e8b81a64cee0d41a0cf",
+      "shared_sha256": null
+    },
+    {
+      "path": "tests/native-bindings/android-logger-output.jai",
+      "state": "absent",
+      "checkpoint_sha256": "ee1606338a441e555166d3e1f530711918c94be3c59adbf6a7305ff25c5a59ea",
+      "shared_sha256": null
+    },
+    {
+      "path": "tools/native_bindings/verify_android_logger.py",
+      "state": "absent",
+      "checkpoint_sha256": "7ff6a51ec66e4b215c6be98ad58908ad9559fb87d858fa08b9d540774c461cdb",
+      "shared_sha256": null
+    },
+    {
+      "path": "tools/native_bindings/generate.py",
+      "state": "different",
+      "checkpoint_sha256": "0669d87f3ba9b90c4076f52639d5b6ada9843f546ba5efceaa15c4074dc31834",
+      "shared_sha256": "1ee698f7bd190dce92cef692c2cf89852ae357d081f80a0c7fbc911e8a9cf83a"
+    },
+    {
+      "path": "tools/native_bindings/verify.py",
+      "state": "different",
+      "checkpoint_sha256": "116225f491a089170cbf0d2ff5b7def2c5c93030440511c7c937b030635ee427",
+      "shared_sha256": "4ba55e76cc455e46e67419ef1eb8b88b3250d6b3b3386cf3cf6f821f51f81967"
+    },
+    {
+      "path": "docs/native/android-logger-runtime-inputs.json",
+      "state": "absent",
+      "checkpoint_sha256": "33dfb06555f030d2484fd72cdd4dff18622cec9f1bf35a9da768f7dcd10a006c",
+      "shared_sha256": null
+    },
+    {
+      "path": "docs/native/android-logger-discard.md",
+      "state": "absent",
+      "checkpoint_sha256": "a189011ff90c8530536cc833a0ddc1a7c72c697525552573dffde58e89f4d1be",
+      "shared_sha256": null
+    },
+    {
+      "path": "docs/native/bindings-coverage.json",
+      "state": "different",
+      "checkpoint_sha256": "120f86aaa3e7411aa544948be0c0d9c8b3aea131020e2fdf660924b5535f526f",
+      "shared_sha256": "196ccc0ac5934c5d1f80981a402fc79796afe51944facd9528f2b4c98eb906c9"
+    }
+  ],
+  "source_edits_started": false,
+  "required_gates": [
+    "Current shared Runtime/logger host controls after checkpoint adoption",
+    "Android target source/type/lint and device validation remain required",
+    "Native Windows/Linux SDK ABI/runtime gates remain required",
+    "Enabled telemetry matching proprietary SDK ABI unavailable"
+  ],
+  "worker_scratch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-bindings-66813",
+  "tools": {
+    "jaic": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/debug/jaic",
+      "sha256": "f013120a15fe12bd53f22d64f81dc1890c2814ad0e458afb6162642cd597859f",
+      "source": "cargo --locked from actual shared source"
+    },
+    "jailint": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/debug/jailint",
+      "sha256": "99d8e4a581590d61fe9c1eeb7516c27aec972748d9b91717577be7fe2f5dd093",
+      "source": "cargo --locked from actual shared source"
+    }
+  },
+  "runtime_source_hashes": {
+    "stdlib/prelude/platform.jai": "b4e4e31dc2d5eece8163147ad960e52b4a7e5773bc45d1db1b1af3447aa48964",
+    "stdlib/prelude/reflection.jai": "17164ecba87eaf89ad5f901222cc4b10e5232953574d2347eb42973cb50fefc0",
+    "stdlib/prelude/intrinsics.jai": "3b3d0a1a0f951defc8fa9624c86f4c249970fb5c73ebd93da52a83e6412210bd",
+    "stdlib/prelude/storage.jai": "c97e97b79527b0cd1cebeef49d7c9f48497dee45d083a83c183137cb55667c2d",
+    "stdlib/prelude/diagnostics.jai": "26406e77ff630e418eca2acb364b991c9fd179abb186923afa11cabd0fdc2d15",
+    "stdlib/prelude/module.jai": "0b2deaef0c79e2bf52eac08cc43b456a4a1c60d2a427a568536fd8cfb0e15c15",
+    "stdlib/prelude/context.jai": "fd18eaa34ef760b66312eebbcc22dd566e6505911b18dca2d23721a11c948d28",
+    "stdlib/prelude/allocation.jai": "91d72abe582d8c5ea783ee6b2fda4a947e2d06345fb80dd7f277cf18ca520331",
+    "stdlib/Runtime_Support/module.jai": "859132ec13d4caa65744c63d64571c518a84b47972b4962a33a59c76d481f13a",
+    "stdlib/Runtime_Support/tests/windows-crash-bootstrap.jai": "48a2de27a2c6400dc0410c038f9d73a5812efa5a0cce5297a06a492b4406adb8",
+    "stdlib/internal/runtime/windows-arguments.jai": "175b630cb5de36cc0d275586db1a2f45b5ac376cdb60e637f7080677193eb3bf",
+    "stdlib/internal/runtime/crash-handler.jai": "253bd65eab6b5335a84e48b8a1c72709f796927d719a78514aaabef2497086c0",
+    "stdlib/internal/runtime/windows-crash-handler.jai": "9d88d97962cc891d8f82845465c5e4b3700fe9f3610b8c29fc0172463ba2f460",
+    "stdlib/internal/runtime/windows-crash-types.jai": "042682bb0315025fa1ddbf1c9f7293eff7bd92b87d236d22013cd0b875a45c98",
+    "stdlib/internal/runtime/heap.jai": "642a0c45ecde037624a5ca525d82ce53baa122a6f529d33c10eb334fb719b4e3",
+    "stdlib/internal/runtime/module.jai": "fd4aedbe852a71d26e38c7d8c901b2f82083a9cd666625bf9d5857fad9d02861",
+    "stdlib/internal/runtime/checks.jai": "6d95c04d9728422d377183723c158a977441f9ecc01d20b7c688141d201dba66",
+    "stdlib/internal/runtime/windows-io.jai": "de4e2791bb214607e5ae067048c420e689357ddfd8a14c23a829acae7fda5949",
+    "stdlib/internal/runtime/faults.jai": "b0bc3cf628564658a9a673e24576bcaa11241ece8cc155cda9e626a56056cb18",
+    "stdlib/internal/runtime/crash-types.jai": "d6845ca1801a615aef3665e50cf3a41b855f205a72c780c69325064503d3b3f1",
+    "stdlib/internal/runtime/windows-arm64-crash/module.jai": "2d151222c897370b1a37745e7d3105c1cdd6037d3353282054d697d7a0d7905e",
+    "stdlib/internal/runtime/output-lock/module.jai": "54eb1ec6aba0eeee03b36c804d1065a8ee3041346f310a42742b76f7439265e3",
+    "stdlib/internal/runtime/android-output/module.jai": "1daade036270cd4ac591d1b7ae2b7e48f9bb4794c663b8507ee2c60c89dbf286",
+    "stdlib/internal/runtime/windows-crash-cleanup/module.jai": "9d162979af6bbacf6f781ea85cb680711fce89be8f7cf3a7b7b22be9fd30af29"
+  },
+  "runtime_current_route_confirmed": {
+    "write": "stdlib/internal/runtime/module.jai: Android_Output.append_unsynchronized",
+    "flush": "stdlib/internal/runtime/module.jai: Android_Output.flush",
+    "canonical_import": "internal/runtime/android-output",
+    "lock_dependency_present": true
+  },
+  "filtered_corpus_triage": [
+    {
+      "case": "shader-transpiler-build",
+      "diagnostic": "unknown identifier NSOpenGLContext",
+      "category": "public-surface/oracle audit required",
+      "evidence": "Reviewed GL page mentions type only in nsgl return signatures; shared alias is file-private; no extra root export inferred",
+      "status": "request dirty public-visibility audit; no corpus body accessed"
+    }
+  ]
+}

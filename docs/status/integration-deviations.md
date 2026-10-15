@@ -2,6 +2,15 @@
 
 ## Shared portable transition, 2026-10-15
 
+- Producer preservation checkpoints `ba964cb5` (model), `98b1581c` (tools) and
+  `0d57d885` (bindings) contain partial work. Adoption is not verification:
+  aggregate emission's unchanged negative-cycle assertion, unrepresented native
+  virtual conversions, macro validation, Android target support and native fixture
+  corruption remain open. Public expression emitters remain in the canonical
+  facade; the incoming aggregate branch is reconciled there, without duplicate
+  exports from private files. Typed context.generator uses the single canonical
+  default Generator; cross-configured nominal type identity remains unestablished.
+
 - `tools/check_asn1_socket_closure.py`, `tools/check_portable_jks_crypto.py` and
   `tools/check_portable_apk_signing.py` retain producer source/facade staging.
   Their old passes are historical diagnostic evidence, not current production
