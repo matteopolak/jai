@@ -169,6 +169,9 @@ def main():
             print(module, os_name+'-'+cpu, result['status'])
     for module, filename, configs in [
         ('macOS', 'fsevents-context.jai', [('macos','x64'),('macos','arm64')]),
+        ('SDL', 'sdl-layout.jai', TARGET_CONFIGS),
+        ('SDL', 'sdl-rwops.jai', TARGET_CONFIGS),
+        ('SDL', 'sdl-wm.jai', TARGET_CONFIGS),
         ('Objective_C', 'appkit.jai', [('macos','x64'),('macos','arm64')]),
         ('GL', 'gl-output-buffers.jai', TARGET_CONFIGS),
         ('GL', 'glx-context.jai', [('linux','x64'),('linux','arm64')]),

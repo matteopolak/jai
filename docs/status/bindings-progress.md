@@ -1,5 +1,15 @@
 # Bindings worker progress
 
+SDL policy batch: exact public 48/8-byte prefix contracts are now independently
+asserted, alongside complete private native RWops/User_Event sizes and all
+top-level field offsets. No public layout or callback ABI changed. Native event
+push/poll now checks window ID, code, two distinct data pointers and surrounding
+canaries. Pointer identity, file/BMP/close/freesrc/WM canary tests remain active;
+current scoped host verification has zero failures. Historical full-size
+comparison failures remain in prior evidence and are classified as invalid
+oracles, distinct from real safety bugs. Linux/Windows native execution remains
+required. Evidence: `.work/sdl-policy-native-current.json`.
+
 Latest FSEvents batch: exact public context layout retained; all fields marshal
 into private SDK order at `FSEventStreamCreate`. Real host lifetime/canary/null
 context and filesystem callback delivery pass. Producer FileWatcher is untouched.

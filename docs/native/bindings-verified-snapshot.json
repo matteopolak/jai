@@ -313,6 +313,35 @@
         0,
         0
       ]
+    },
+    {
+      "report": ".work/sdl-policy-native-current.json",
+      "sha256": "a9c838a086d96835ba19643bab01f90583a74cc7231842de6cbaa6b9aa95d8ed",
+      "scope": "Corrected reviewed public-prefix/full-private SDL oracle, six desktop source checks and real host pointer/event/lifetime/WM safety execution",
+      "compiler_sha256": "75fd6e23452c090761d90352a00e786439d0971895c6c1708c7ba4bfdf2219ff",
+      "results": {
+        "targets": {
+          "passed": 30
+        },
+        "privacy": {
+          "passed": 24
+        },
+        "native": {
+          "passed": 8
+        }
+      },
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/sdl-policy-production-tools.json",
+      "sha256": "7d8ddbf4c2ebbc6e8f48b38ce1a0c6bfe44e17a4f1d310d8ec530f531d6808fa",
+      "scope": "Production formatting, strict lint, regeneration and 45 generator tests for exact SDL prefix/native storage batch",
+      "command_exits": [
+        0,
+        0,
+        0,
+        0
+      ]
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

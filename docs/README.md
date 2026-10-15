@@ -112,7 +112,8 @@ Implementation work uses the API specification as its compatibility contract. Im
 - [Windows render integration fixed-array literal blocker](native/compiler-fixed-array-literal.md)
 - [iOS helper availability and private native host verification](native/apple-toolchain.md)
 - [Android EGL native header input and verification boundary](native/egl-sdk-inputs.json)
-- [SDL native RWops pointer forwarding and contract limits](native/sdl-rwops.md)
+- [SDL native pointers, exact public prefixes and complete private SDK records](native/sdl-rwops.md):
+  ownership, adapter extension/probe instructions and corrected layout oracle
 - [Explicit Android POSIX C header delegates](native/android-posix-delegates.md)
 - [ImGui nested member scopes and real native C++ calls](native/imgui-nested-methods.md)
 - [Safe Linux ARM64 stat syscall and record marshalling](native/linux-arm64-stat.md)

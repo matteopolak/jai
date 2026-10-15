@@ -105,7 +105,8 @@ correctness. Previously recorded failures remain required work.
   lifetime on success/failure and both freesrc modes. Historical custom-table
   passes are retained as historical evidence only. Proper long-term resolution
   of standalone public record mismatch requires a reviewed API change; no
-  public fields/signatures are changed here and mismatch tests remain active.
+  public fields/signatures are changed here. Exact public-prefix and complete
+  private native layout tests remain active under the corrected reviewed oracle.
 - **X11 helper policy and native evidence.** The independently authored simple
   window helper creates an unmapped borderless Xlib window at (0,0), using the
   parent's screen pixels; parent 0 selects the default root. It sets both the
@@ -257,13 +258,16 @@ correctness. Previously recorded failures remain required work.
   does not create public facade exports. Runtime build/run succeeded; Windows
   and Linux runtime coverage remains required. Stack storage adds a bounded
   72-byte native record per call; no heap allocation or global registry is
-  introduced. RWops/UserEvent discrepancy tests remain unchanged and failing.
+  introduced. Historical RWops/UserEvent full-size failures remain in prior
+  evidence; current tests distinguish public prefixes from complete native ABI.
 
 - **SDL public prefixes (`stdlib/SDL/declarations.jai`).** Reviewed RWops is
   48 bytes and UserEvent 8; pinned SDL 2.0.1 native records are 72 and 32 on
-  the tested 64-bit host. Public fields remain exact. The active
-  `tests/native-bindings/sdl-layout.jai` intentionally reports the actual
-  mismatch and fails; it has not been disabled or changed to accept it.
+  the tested 64-bit host. Public fields remain exact. Per refreshed
+  `docs/sdl-layout-verification-policy.md`, `sdl-layout.jai` now asserts exact
+  public sizes/offsets separately from complete private native sizes/all offsets.
+  The prior full-size equality oracle was invalid; its failing evidence is
+  preserved, not counted as a repaired native-value interchangeability contract.
   Refreshed review explicitly supports SDK-owned pointers and does not support
   constructed/copied Jai callback tables. The factory preserves SDK pointer and
   symbol identity; the BMP scalar adapter preserves stream identity. No public record is allocated/passed
@@ -271,7 +275,10 @@ correctness. Previously recorded failures remain required work.
   payload bytes retain genuine native round-trip coverage. Risk: dereferencing
   public callback fields as Jai procedures is incompatible with native C.
   Proper long-term fix for standalone shape mismatch requires a reviewed API
-  change; existing mismatch failures remain required and visible.
+  change. Full-value interchangeability remains unsupported. Private C storage
+  includes native-only fields; real event window ID/code/two-pointer round trips
+  now also retain surrounding canary coverage. Current host checks pass; six
+  desktop source checks remain distinct from pending Linux/Windows runtime.
 - **Other provisional SDK layouts.** D3D anonymous overlays, ray-instance
   packed fields, ImFontGlyph and some Darwin packed records have public shapes
   that are incomplete or conflict with native layouts. Bitfield helpers
