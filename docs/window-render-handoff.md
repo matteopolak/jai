@@ -1,5 +1,25 @@
 # Window/render worker handoff
 
+Narrow follow-up for candidate 2fa2bc2 (from 3ced6c4): bounded retries for transient
+pinned-source download failure before Mesa compilation. Four total attempts,
+120s per blocking network operation, 2/4/8s backoff; each transfer uses a fresh
+temporary sibling, removed on failure. Closed files must match the unchanged
+pinned SHA-256 before durable promotion/extraction. Valid existing archives are
+rehashed/reused; corrupt caches and TLS/permanent/local filesystem errors fail.
+No source pin, WGL target/install/export/dependency/loaded-file check or verified
+LLVM receipt policy is relaxed. No live download or Mesa rebuild was needed.
+
+New original regression command: `python3 tests/window-render/test_mesa_download.py`
+(nine tests, scripted transport, no server). Re-run source/cache/install and the
+prepared-child-Python tests: all 28 helper tests pass locally. Python compilation,
+plan-only execution and scoped whitespace checks also pass. No Jai/Rust code
+changed, so no new Jai/Rust formatter/linter claim is made. Normal coordinator CI must
+still establish real ARM64 driver build/install/load and fresh GL/readback/public
+events/render/lifecycle results. Downstream missing-driver failure on 2fa2bc2 is a
+consequence of the failed fetch, not native renderer evidence. Release remains held.
+See [download failure details](native/window-render-wgl-investigation.md).
+
+
 Narrow normal-CI fix fora6371ec: distinguish optional configured search paths from
 mandatory native SDK/tool inputs. Missing VS2026 auxiliary INCLUDE/LIB entries are
 recorded deterministically; real directories still hash completely and later
