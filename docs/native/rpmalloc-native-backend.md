@@ -2,8 +2,20 @@
 
 `internal/bindings/rpmalloc-sdk` is a complete private binding to the pinned
 official C SDK. It is not either public Jai allocator implementation. The
-public module still has 64 unresolved and 16 partially implemented declarations; configuration
+public module still has 34 unresolved and 46 partially implemented declarations; configuration
 failures remain active. No public callback/config/heap record is cast to C.
+
+The private STATISTICS module parameter selects separately compiled enabled
+and disabled SDK libraries. Disabled exports use the generated
+`binding_rpmalloc_nostats_` prefix for every header/source function. The matching
+callback library prefixes its own lifecycle functions and calls that same SDK
+domain. Checked alignment imports the same parameterized SDK. The production
+dependency builder reads the verified complete export metadata and compiles
+the unmodified pinned source with ENABLE_STATISTICS=0 for the alternate domain.
+It does not rewrite vendor function bodies. Mixed-profile native programs verify
+allocation, failure rollback and lifetime isolation. Default-profile native
+Heap/Span layout probes do not establish disabled-profile heap layout; no public
+heap operation uses either native record as its public representation.
 
 `vendor_rpmalloc.py` verifies the complete native header/source/license pins in
 `dependencies.json`, parses the real header through Clang with first-class heaps

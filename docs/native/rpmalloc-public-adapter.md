@@ -1,5 +1,66 @@
 # Public rpmalloc adapter progress
 
+## Current supported raw/rewrite profiles
+
+The latest user steering authorizes a private raw default-zero policy because
+FIRST_CLASS_HEAPS is genuinely absent from the reviewed parameter declarations.
+This follows the official C default as an independent implementation choice,
+not a reference guarantee. No public parameter was added. Raw heap functions
+remain conditional and unfinished. Unlabeled raw heap procedure views now also
+retain that condition; they are not unconditional raw exports.
+
+Real raw lifecycle/allocation/statistics wrappers now share a private boundary
+with the rewrite facade. Raw calloc, aligned calloc, checked POSIX alignment,
+memalign, collection, native statistics-file output and linker reference are
+forwarded. The collect/linker-reference SDK bodies are empty upstream; this
+forwarding implies no additional behavior. Canonical public aliases preserve
+the procedure identity and overload set rather than adding duplicate wrappers.
+
+Both ENABLE_STATISTICS values now have genuine compiled SDK implementations.
+The disabled profile has separate library and C symbol names, including its
+callback adapter and checked alignment helper. Native mixed-profile programs
+verify independent allocation ownership, resize preservation and teardown.
+Same-profile imports still share one process SDK domain and reject overlapping
+initialization. Other native build options remain unsupported implementation
+profiles and are not silently ignored.
+
+`config()` now returns mutable module-owned storage with stable pointer identity.
+Initialization copies the record and shallow-copies its string pointers exactly
+as reviewed. The private C bridge separately owns terminated naming copies.
+This does not promise safe concurrent mutation or replacing ownership callbacks
+while mappings remain live; further mutation behavior is recorded for review.
+
+Refreshed reviewed contracts supersede the earlier callback tests below:
+if either map/unmap partner is missing, BOTH built-ins are selected. Custom map
+failure returns null without calling the OS retry callback. Custom offsets
+must be in 0..65535; rejected mappings are released through their matching
+callback before failure. The registry preserves paired values without choosing
+units. Earlier wide/signed-offset, custom-retry and partner-rejection assertions
+were incorrect oracles and were replaced with bounded-offset, rejection-cleanup
+and built-in fallback tests. Their previous execution remains historical evidence.
+
+Six NEW public programs source-check across six desktop targets and execute
+on both Mac CPUs: rewrite allocation, rewrite callbacks, configurable init,
+raw allocation, raw callbacks and mixed statistics profiles. They test config
+storage identity/shallow payloads, genuine failures, statistics canaries,
+matching frees, nested contexts and four real threads. The callback program
+also hands caller allocations to workers and frees worker allocations after
+their thread finalization. Independent SDK/storage ABI assertions remain active.
+New public tests still require independent review.
+
+Current ledger: 34 unresolved and 46 partially implemented rpmalloc entries,
+plus 31 declarations. Six inventory views newly resolve through their exact
+canonical aliases; profile limitations still prevent completion credit. All
+18 configuration failures remain active at unfinished public APIs even though
+all 18 declaration configurations now compile. Every public heap/span operation,
+generic allocator procedure, rewrite dump builder and other options remain
+required work. See the [heap adapter design](rpmalloc-heap-adapter-design.md).
+
+## Historical checkpoints before the refreshed contract
+
+The following describes earlier work and evidence; statements superseded above
+are not the current API or implementation policy.
+
 The default rewrite facade now has real lifecycle, allocation and statistics
 procedures. The independently authored test imports only `rpmalloc` and `Basic`:
 it initializes through the public API, grows ordinary/aligned allocations,

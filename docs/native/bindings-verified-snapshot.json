@@ -2,12 +2,12 @@
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
     "declared": 28397,
-    "unresolved": 100,
+    "unresolved": 70,
     "implemented_manual": 52,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1,
-    "partially_implemented": 16
+    "partially_implemented": 46
   },
   "reports": [
     {
@@ -578,6 +578,114 @@
       ]
     },
     {
+      "report": ".work/rpmalloc-public-checkpoint-18.json",
+      "sha256": "699fbcddff725d538a6ad9197c29872eb95fba6466929f0cc7893077e9f489c3",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 54,
+          "failed": 6
+        },
+        "native": {
+          "passed": 16
+        },
+        "privacy": {
+          "passed": 126
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-14.json",
+      "sha256": "aabc211f5a6199b8ad73baaf00ba9e17d16add6a4dc3a0e1812d532000cabb42",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 48,
+          "failed": 6
+        },
+        "native": {
+          "passed": 10
+        },
+        "privacy": {
+          "passed": 96
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-16.json",
+      "sha256": "9a857ed1c50aac7b3c34a401a4712af65482382cf98827412eeb1a0065817f51",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 54,
+          "failed": 6
+        },
+        "native": {
+          "passed": 10
+        },
+        "privacy": {
+          "passed": 126
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-public-checkpoint-17.json",
+      "sha256": "2451cf6b543d9a0883a69887b03b4bbf8290a7ac5ea5d12dd47f999303bced62",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 54,
+          "failed": 6
+        },
+        "native": {
+          "passed": 10
+        },
+        "privacy": {
+          "passed": 126
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "88fdc175d1cf9690794cfbe1e2ea75eaf477e6539ddbd16d5fb88e3ffebe7e9b",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-configurations-checkpoint-16.json",
+      "sha256": "da938ce021787cdd7ac01409d58465b41871eaf9bcd4060950e694aabeefc7c2",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "checks": 36,
+      "failures": 18
+    },
+    {
+      "report": ".work/rpmalloc-boundary-verification.json",
+      "sha256": "d5759269a64282f3e95d285547c49ce746720e0f13289504443b6f9f7e9351e5",
+      "scope": "Six public supported-profile programs; source matrix separately from actual two-CPU Mac execution",
+      "checks": 65,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-nostats-build.json",
+      "sha256": "0a82b7e382c5b63a35dfcd29e045b873e5398c494519e524df059b3ca97318a8",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 10,
+      "failures": 0
+    },
+    {
+      "report": ".work/checkpoint-17-owned-format.json",
+      "sha256": "6e787051ff0ab084db4fb85d3c7afdda5c38af067e986033e045e62e423bef44",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 4,
+      "failures": 0
+    },
+    {
       "report": ".work/rpmalloc-public-allocation-verification.json",
       "sha256": "40f3f884d81c391d5c062e4c6ab024b727df26787bdf7eeabc3ed414912d26fc",
       "scope": "Public default rewrite lifecycle/allocation/statistics; callback/config/heaps and nondefault profiles incomplete",
@@ -626,7 +734,7 @@
     },
     {
       "report": ".work/rpmalloc-public-callbacks-verification.json",
-      "sha256": "98686f22f364f5fb833c0057e3b217053ec5cfee83b31f8ddc3801c6e471e6c4",
+      "sha256": "d56b8a94a2690f909e9342a8d7fa16ca033597f752a1b884417c0abf077114da",
       "scope": "Public default and configurable rewrite callbacks/lifetime/failure/concurrency; remaining profiles and raw/heaps incomplete",
       "checks": 31,
       "failures": 0
@@ -680,7 +788,7 @@
     },
     {
       "report": ".work/checkpoint-13-owned-format.json",
-      "sha256": "dbaec53bec59d5d6aad19f1b5fec8f1476a182863e07f4caffc7958d466fc5c9",
+      "sha256": "6e787051ff0ab084db4fb85d3c7afdda5c38af067e986033e045e62e423bef44",
       "scope": "Actual native build or full owned production formatting",
       "checks": 4,
       "failures": 0
@@ -694,7 +802,7 @@
     },
     {
       "report": ".work/rpmalloc-native-storage-verification.json",
-      "sha256": "d61d7eb77876b53d14e3a650356083e14736ff7fced4814d704afb5f23c7e5d3",
+      "sha256": "546a8aa1fb2408885b913d453e856b4b4aab8a78e28661f7726d9dd8dbbca7aa",
       "scope": "Private native SDK storage ABI and reviewed public storage separation; public heap API remains unfinished",
       "checks": 14,
       "failures": 0
@@ -715,7 +823,7 @@
     },
     {
       "report": ".work/rpmalloc-production-callbacks-verification.json",
-      "sha256": "550657bcefacc2299f49ba7cc5eabf3f3f7138e0b5ad7d44d9cbd9af3fcd66ab",
+      "sha256": "ed904ec21c6789c13a9ac8e882ae045a87d327092d9f7ef2c05983074f6a7cdc",
       "scope": "Actual production native dependency builder and host public callback program",
       "checks": 3,
       "failures": 0
