@@ -8,6 +8,21 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Heap handle reservation and remaining graph OOM.** After `4fa38d7`,
+  `rpmalloc-heaps/bridge.c` reserves typed HeapView storage before SDK acquisition.
+  OOM returns null/ENOMEM before native mutation; actual native mapping failure
+  frees the reservation. Cold and established-domain fault injection verifies
+  native bucket/orphan/active-count stability and no live metadata leak. This
+  replaces the abort for this specific preflight failure, not every metadata
+  path. Graph/default-thread association publication can still abort on OOM.
+  Observable independent policy and the exact remaining question are documented
+  in native-bindings-questions.md. A reused heap incurs an extra calloc/free of
+  handle-sized storage: explicit allocation/zeroing cost. Proper long-term fix
+  is typed reservation pools tied to native mapping/retirement, reserving graph
+  capacity before mutation without partial publication or stale associations.
+  No SDK source patch, changed public layout or compiler exception is added.
+  Original native signal6 failure evidence remains recorded.
+
 - **Thread-cache option domains and conditional storage.** After `154ff0d`,
  24 real SDK/callback domains cover both thread/global cache choices, all three
  public layouts and both statistics selections. Public cache fields disappear

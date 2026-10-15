@@ -175564,7 +175564,7 @@
             "stdlib/internal/bindings/rpmalloc-callbacks/module.jai": "c460087276b1e390733e3cf7ee7dd6f8a5117e63dd77550c6cf2da0b231b707c"
           },
           "scope": "Owned callback/name lifetime, bounded wide public offset registry, actual init failure; raw/rewrite and both statistics profiles",
-          "limitations": "Other cache/assertion/page-advice profiles and exact native-error Jai location provenance unresolved",
+          "limitations": "Adaptive-cache/assertion/validation/page-advice/numeric profiles and exact native-error Jai location provenance unresolved",
           "caller_context_artifacts": {
             "stdlib/internal/bindings/callback-context/bridge.c": "472a5a8dbc8871f7ccca1d5f0b9a445c5712c5d624ae75936d0d7cf71de62331",
             "stdlib/internal/bindings/callback-context/module.jai": "f7fa635fa781b43732b63a49cf7ca4882b3978511ea1ed6dadb7fd270895cb1a"
@@ -175578,15 +175578,15 @@
           "module": "internal/bindings/rpmalloc-heaps",
           "status": "partial_public_canonical_heap_adapter",
           "artifacts": {
-            "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "6be01cc0c2441806f524e1f6c1b0b281b0726b94c498ed0f09f19f030ed425d9",
+            "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "b03e99b0bbf7710770afba8bd64ae8bb4dd4550998acb12efbc494dee14b798b",
             "stdlib/internal/bindings/rpmalloc-heaps/heap-snapshot.inc": "924de912ceae68dc7a9e3f850fe9c6cd378c8a0284ffa3c134590e34d2019dac",
             "stdlib/internal/bindings/rpmalloc-heaps/layout-probes.inc": "840ba9929bf90075a9c02627de6d2b654ec44a30efe6b86f7df359dd66d317a1",
             "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "9db8987a9f1060a0614dff70196403a38fccffe6dd1d6917f713bbc8fae315d5",
             "stdlib/internal/bindings/rpmalloc-heaps/public-layout.h": "626ba6cefda0f83aa139209d929e1fa1f5408747c0410f6c0d570227a9737b4a",
             "stdlib/internal/bindings/rpmalloc-heaps/sdk-page-granularity.patch": "4ee8af6bc941251310da5ccea8810c158eeb8152b6960923a9d5a9e5a05394ff"
           },
-          "scope": "Separate canonical reviewed raw/rewrite records, actual atomic members, private typed native ownership, real SDK counters, span graph and unmap-driven retirement; both statistics profiles",
-          "limitations": "Raw heaps require explicit private build selection; only live/quiescent observations; other native options remain incomplete; metadata OOM is fail-fast",
+          "scope": "Separate canonical reviewed raw/rewrite records, actual atomic members, private typed native ownership, real SDK counters, span graph and unmap-driven retirement; both statistics and all thread/global-cache selections",
+          "limitations": "Raw heaps require explicit private build selection; only live/quiescent observations; other native options remain incomplete; acquired heap handle reservation OOM returns null before SDK mutation, but graph/default-thread association OOM remains fail-fast",
           "tests": [
             "tests/native-bindings/rpmalloc-public-heaps.jai",
             "tests/native-bindings/rpmalloc-public-heap-lifecycle.jai",

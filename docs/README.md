@@ -20,6 +20,8 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
   complete reviewed mode dispatch, raw-base records, transactional capture and output gates
 - [rpmalloc native cache selections](native/rpmalloc-global-cache-plan.md):
   real SDK domains, conditional public layouts and cache-option verification.
+- [Transactional rpmalloc heap handle reservation](native/rpmalloc-heap-reservation.md):
+  preflight OOM/null handling, actual SDK failure rollback and remaining graph allocation limits
 - [rpmalloc heap ABI evidence](native/rpmalloc-heap-abi.md): complete pinned
   native storage probes and required separation from canonical public records
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs

@@ -1,5 +1,25 @@
 # Bindings worker progress
 
+Heap handle OOM batch after `4fa38d7`: typed canonical HeapView storage is now
+reserved before SDK ownership mutation. Reservation OOM returns null/ENOMEM;
+actual SDK mapping failure frees the reservation. The original fault injection
+aborted (signal6); the same real test now verifies unchanged native heap buckets,
+orphan lists, active counts and allocation balance, then successful allocation
+and cleanup. Extra allocation/zeroing/free cost on reuse is explicit. Graph and
+default-thread metadata OOM still remain fail-fast; full metadata transactions
+are not claimed. No new SDK source patch or public shape/type/signature change.
+
+Both rebuilt native scopes passed all native/source/ABI/sanitizer/lint/format
+checks, but each correctly failed the stale coverage-ledger hash check. Those
+original reports remain intact; regeneration and actual failed-check retries
+pass, together with68 Python tests. The final357-check run passes completely and records all shared/private
+test-source hashes, including22 positive Mac executions and72 C sanitizer
+executions across24 profiles. Fresh static/shared worker builds succeed. All owned scope is still incomplete:0 unresolved/80 partial
+rpmalloc declarations and36 other-module unresolved declarations, with the
+original18 configuration failures resolved. Native Windows/Linux remain
+unverified. Precise option/OOM questions are in
+`docs/specs/stdlib/native-bindings-questions.md`.
+
 Thread-cache option batch after `154ff0d`: all four thread/global-cache
 selections now use24 real SDK/callback domains, preserving every conditional
 public Heap field. Native independent public mirror offsets/sizes pass with

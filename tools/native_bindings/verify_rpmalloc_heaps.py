@@ -152,11 +152,13 @@ def main():
                                     for p in libraries.glob('lib*rpmalloc*') if p.is_file()},
                   prepared_sdk=json.loads((prepared/'provenance.json').read_text()),
                   sources={str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
-                           for p in [*programs[:-1],
+                           for p in [*programs,
                                      *sorted((ROOT/'stdlib/rpmalloc').glob('*.jai')),
                                      *sorted((ROOT/'stdlib/internal/bindings/rpmalloc-heaps').iterdir()),
                                      ROOT/'tests/native-bindings/rpmalloc_heap_safety.c',
                                      ROOT/'tests/native-bindings/rpmalloc_sdk_page_granularity.c',
+                                     ROOT/'tests/native-bindings/rpmalloc_snapshot_safety.c',
+                                     ROOT/'tests/native-bindings/rpmalloc-cache-exercise.jai',
                                      Path(__file__).resolve(), ROOT/'tools/native_bindings/prepare_rpmalloc.py']
                            if p.is_file()},
                   checks=[])

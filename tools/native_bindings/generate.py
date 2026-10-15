@@ -574,7 +574,7 @@ def main():
                         'artifacts':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()
                                      for p in sorted(callback_backend.iterdir()) if p.is_file()},
                         'scope':'Owned callback/name lifetime, bounded wide public offset registry, actual init failure; raw/rewrite and both statistics profiles',
-                        'limitations':'Other cache/assertion/page-advice profiles and exact native-error Jai location provenance unresolved',
+                        'limitations':'Adaptive-cache/assertion/validation/page-advice/numeric profiles and exact native-error Jai location provenance unresolved',
                         'caller_context_artifacts':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()
                                                     for p in sorted((ROOT/'stdlib/internal/bindings/callback-context').iterdir()) if p.is_file()},
                         'tests':['tests/native-bindings/rpmalloc-public-callbacks.jai',
@@ -586,8 +586,8 @@ def main():
                         'status':'partial_public_canonical_heap_adapter',
                         'artifacts':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()
                                      for p in sorted(heap_backend.iterdir()) if p.is_file()},
-                        'scope':'Separate canonical reviewed raw/rewrite records, actual atomic members, private typed native ownership, real SDK counters, span graph and unmap-driven retirement; both statistics profiles',
-                        'limitations':'Raw heaps require explicit private build selection; only live/quiescent observations; other native options remain incomplete; metadata OOM is fail-fast',
+                        'scope':'Separate canonical reviewed raw/rewrite records, actual atomic members, private typed native ownership, real SDK counters, span graph and unmap-driven retirement; both statistics and all thread/global-cache selections',
+                        'limitations':'Raw heaps require explicit private build selection; only live/quiescent observations; other native options remain incomplete; acquired heap handle reservation OOM returns null before SDK mutation, but graph/default-thread association OOM remains fail-fast',
                         'tests':['tests/native-bindings/rpmalloc-public-heaps.jai',
                                  'tests/native-bindings/rpmalloc-public-heap-lifecycle.jai',
                                  'tests/native-bindings/rpmalloc-heap-marshalling.jai',

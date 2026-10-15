@@ -1282,6 +1282,60 @@
           "passed": 198
         }
       }
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-before.json",
+      "sha256": "359fef502f268e5868a89dc3248a54fb8e17ce934910811865fef2e16dabfa67",
+      "scope": "Genuine metadata OOM before heap acquisition; original failing evidence",
+      "compiler_sha256": null,
+      "checks": 2,
+      "failures": 1,
+      "expected_failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-after.json",
+      "sha256": "4a2947fdaee594518b82be6334115953189bf2d7f959fc8685417e88c8f7d26b",
+      "scope": "Typed heap reservation OOM and real native map failure preserve ownership and release metadata",
+      "compiler_sha256": null,
+      "checks": 2,
+      "failures": 0,
+      "expected_failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-matrix.json",
+      "sha256": "ae642539d9960871410ebd4509720eb6e7fdb2bb44f730664f568fde4ab122e6",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 357,
+      "failures": 1,
+      "expected_failures": 10
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-production.json",
+      "sha256": "541f8bbc263c786629cf1ffa9ad8a0b6e2afa7ee773344ec5160af7c6c6ee2ca",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 349,
+      "failures": 1,
+      "expected_failures": 8
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-regeneration.json",
+      "sha256": "fdd8bd6cd9f79e2c6f9ac78ec09f05aa587b776c103dfab16551974dbf023a2b",
+      "scope": "Actual failed generated-hash checks rerun after regeneration; original native evidence preserved",
+      "compiler_sha256": null,
+      "checks": 3,
+      "failures": 0,
+      "expected_failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-final.json",
+      "sha256": "b7a38c0e9a7fd365b63d229b7bddad8ca2f84401f7e7759a92eb0040c61bcb90",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 357,
+      "failures": 0,
+      "expected_failures": 10
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",
