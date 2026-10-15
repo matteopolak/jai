@@ -125,6 +125,7 @@ The LLVM backend, C ABI and linking.
 - [Socket native declaration ledger](socket-native-ledger.json)
 - [Focused portable regression runner](../tools/check_portable_stdlib.py)
 - [Portable test provenance and current verification gaps](portable-verification.md)
+- [Focused real x64 CPU-query verification](../tools/check_portable_machine.py)
 - [Portable implementation plan](plans/portable-stdlib.md)
 - [Unresolved portable contracts](specs/stdlib/questions.md)
 

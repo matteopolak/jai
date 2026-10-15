@@ -130,3 +130,21 @@ literal/facade errors were fixed, not reclassified as tool failures. Meow runner
 now executes NEW public-contract/vector fixtures rather than the obsolete inherited
 test. Full99 host positives/23 faults pass; that does not establish full portable
 API completeness or native Windows correctness.
+
+Machine_X64 CPUID blocker is now resolved by the NEW compiler producer. Portable
+CPU/feature/options records and three mask operations plus get_cpu_info execute
+real CPUID, with independently built C/native O0/O2 comparisons. Missing
+instruction macros/get_machine_options_x86 remain explicit per-API gaps; no
+synthetic random/timestamp/fence exports are supplied. Raw feature bits and invalid
+index assertion are independent policies awaiting fine oracle review. Actual
+execution here uses macOS x64 translation, not physical ARM64 CPU information;
+Windows/Linux runtime remains unverified. x64 source-built jailint runs pure
+CPUID/mask compile-time assertions and strict lint; its initial full file-reading
+fixture aborted in SandboxHost. Native C comparisons retain all assertions and
+run separately, not counted as linter file-I/O support. Initial Windows body check
+failed at existing File's Unix guard; the native-oracle fixture now imports File
+only on its supported Unix hosts and explicitly fails runtime elsewhere. Common
+CPU/mask bodies still check Windows, without claiming Windows native coverage.
+Generator emits explicit independently grouped values, normalizes/checks source
+and regenerates identically. Whole strict lint remains failed; architecture-specific
+machine checks use an actual source-built x64 linter, never a fabricated target.

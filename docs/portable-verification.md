@@ -48,6 +48,9 @@ suppression was added. These are distinct unresolved categories:
   element type reflection; actual loopback execution passes. Standalone native
   declarations also report an enum forward member `ADDRCONFIG` unresolved.
   These need general compiler/linter investigation, not facade special cases.
+  Original field-array-element-type and enum-forward-member probes now reproduce
+  both errors in ordinary -check and interpreter setup too; these semantic gaps
+  are not confined to eager checking.
 - Autorun/BuildCpp compile-time tool fixtures: linter compilation aborts, while
   the configured execution runner succeeds; exact linter phase/configuration
   support needs investigation.
@@ -70,3 +73,11 @@ were renamed narrowly; no operational errors were discarded to satisfy lint.
 `check_portable_meow_integration.py` now uses only NEW `meow.jai` and
 `meow-vectors.jai`; its obsolete inherited-test invocation was retired. The
 integration owner handles the repository-wide legacy test migration.
+
+Machine_X64 is checked separately with a source-built x64 jailint host because
+the reviewed module is x64-only. Its compile-time fixture actually executes
+CPUID/masks in that interpreter; native C comparisons execute O0/O2 under the
+focused machine runner. The lint driver attempts the ordinary, configured-time
+and x64 groups even when one fails, and still fails the total gate. There is no
+architecture fallback or suppression. On this ARM64 macOS host build the x64
+linter with --locked -p jailint --target x86_64-apple-darwin into target/compiler.

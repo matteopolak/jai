@@ -19,8 +19,8 @@ lint are fixed with new assertions. No Windows runtime or full integration claim
 Next: resolve general linter fixture/semantic gaps and continue owned portable
 backlog; Flat_Pool init/default/global overwrite are resolved and implemented.
 
-Latest committed checkpoint before this batch: `f0057ed`, reviewed first-call
-elapsed-time origin. Earlier
+Latest committed checkpoint before the machine batch: `7ad0152`, configured-time
+types/native queries and verification inventory. Earlier
 checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
@@ -241,3 +241,5 @@ Elapsed checkpoint verified: exact seconds_since_init lazily captures the FIRST 
 
 
 Parameterized time integration in progress: NEW foundation integer guards already exist and remain that producer's work. Focused composition exposed/fixed default-vs-configured Apollo_Time nominal return mismatch using primitive private word pairs. It also exposed real native clock queries disappearing inside ENABLE_ASSERT=false discarded assertions; queries now always execute, with independent operational diagnostics and explicit invalid results for continuing handlers. Configured real wall-clock/delayed-elapsed tests pass NEW composition interpreter/native O0/O2 and Windows body checks. Full own suite99 cases/23 faults passes both modes. Rebuilt strict jailint correctly rejects inputs outside configured library root; runner now maps byte-identical owned files into staged root. Shared Hash facade/scalar file is excluded by ownership, current portable MD5/Meow retained over peer snapshot. Final mapped lint pending; old failure logs retained.
+
+Machine CPU-query increment verified: canonical records and200 reviewed feature values, all352 mask positions, real vendor/eleven-register CPUID and unknown-vendor fallback execute. Native O0/O2 matches official-header C oracle; original vendor probe now passes both optimizations and is promoted unchanged. Actual x64 compile-time interpreter assertions and strict lint pass using a newly source-built x64 jailint. macOS/Linux/Windows x64 body checks pass; ARM64 interpreter explicitly diagnoses. All313 owned files format/check; full strict lint still fails (all three configured groups attempted), with genuine general field-array/enum-forward compiler reproducers retained. Runtime settled root0/65536/131072 and child0/131072 allocation rerun also passes actual interpreter/native checks. Details and exact remaining instruction/options exports: portable-machine-gaps.md. Next: remaining portable scope and general compiler/linter integration; no full completion claim.
