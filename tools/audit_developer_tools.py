@@ -43,7 +43,7 @@ def remaining_matrix(inventory):
         source_only = {name: entries for name, entries in functions.items() if any("invocation remains unverified" in entry["implementation"] for entry in entries)}
         output += [f"## {module}", "", f"{len(pending)} function names have pending declarations; {len(source_only)} native function names still lack invocation fixtures.", ""]
         if pending:
-            output += ["| Function | Reviewed overload variants | Next work / precise question |", "| --- | ---: | --- |"]
+            output += ["| Function | Reviewed overload variants | Pending variants | Next work / precise question |", "| --- | ---: | ---: | --- |"]
             for name, entries in sorted(pending.items()):
                 reason = questions.get((module, name), "Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior.")
                 if module == "Debug_Info" and ("msf" in name or "stream" in name or name in {"parse_pdb", "get_stream_size", "stream_exists", "is_valid_page_number", "is_valid_stream_number", "is_valid_user_stream_number", "verify_integrity", "ensure_room", "is_free_page", "alloc_page", "free_page", "is_fpm_page_number"}):
@@ -52,11 +52,19 @@ def remaining_matrix(inventory):
                     reason = "Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details"
                 if module == "Iprof":
                     reason = "Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2"
-                output.append(f"| `{name}` | {len(entries)} | {reason} |")
+                if module == "Debug_Info" and name == "get_type":
+                    reason = "CodeView overloads pending; canonical DWARF Compilation_Unit offset lookup is implemented/tested"
+                unfinished = sum(entry["implementation"] == "pending" for entry in entries)
+                output.append(f"| `{name}` | {len(entries)} | {unfinished} | {reason} |")
             output.append("")
         if source_only:
             output += ["| Native function | Evidence / next check |", "| --- | --- |"]
             output += [f"| `{name}` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |" for name in sorted(source_only)]
+            output.append("")
+        if information.get("pending_public_member_dependencies"):
+            output += ["| Pending public member | Reviewed expression | Missing reviewed dependency |", "| --- | --- | --- |"]
+            for member in information["pending_public_member_dependencies"]:
+                output.append(f"| `{member['enum']}.{member['member']}` | `{member['expression']}` | `{member['missing_reviewed_dependency']}`; Debug_Info question11 |")
             output.append("")
     (ROOT / "docs/status/developer-tools-remaining.md").write_text("\n".join(output).rstrip() + "\n")
 
@@ -144,7 +152,7 @@ def main():
                                      "_default_get_func_args_for_printing", "looks_like_valid_identifier",
                                      "is_hex_digit", "is_valid_int_literal_suffix", "is_valid_float_literal_suffix",
                                      "convert_float_literal", "convert_literal_value", "generate_replacements_array"}:
-                    item["implementation"] = "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
+                    item["implementation"] = "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
                 if item["name"] == "generate_bridge":
                     item["implementation"] = "global C++17 adapter subset; POD result leading out pointer, reference argument/result pointers and original native consumer effects; scopes/overloads/custom callbacks/printf adapters pending"
                 if item["name"] in {"visit_declarations", "find_parent_enum", "create_type_of_enum", "change_type_to_enum",
@@ -172,6 +180,16 @@ def main():
                 item["implementation"] = "supported subset; actual compiler-message rewrite and edit safety fixture"
         if module == "Debug_Info":
             for item in declarations:
+                if item["name"] in {"Codeview_Debug_Info", "Codeview_Type", "Codeview_Symbol", "Codeview_File_Checksum", "Codeview_File_Checksum_Id", "Codeview_String_Table_Id", "Codeview_Column_Type", "Codeview_Lines_File_Block", "Codeview_Line_Info_Sequence", "Codeview_Inlinee_Line_Info", "Type_Id", "Item_Id"}:
+                    item["implementation"] = "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
+                if item["name"] in {"Codeview_Leaf_Type", "Codeview_Symbol_Type"}:
+                    item["implementation"] = "reviewed u16 enum/data subset; four dependent member aliases lack reviewed RECTYPE_MAX/TYPE_LAST/ID_LAST values (question11); no guessed values or added dependency exports"
+                if item["name"] == "get_string_from_table" or (item["name"] == "get_filename_for_file_id" and "Codeview_Debug_Info" in item["declaration"]):
+                    item["implementation"] = "bounded CodeView C13 string/checksum-ID lookup; original Windows x64/arm64 C O0/O2 SDK filename/file-ID/source MD5 oracles, borrowed pointer identity and malformed/duplicate failures; ownership precision question12"
+                if item["name"] in {"Debug_Info", "Compilation_Unit", "Debug_Type", "Subprogram", "Declaration", "Lexical_Block", "Dwarf_Language", "Dwarf_Tag", "Dwarf_Base_Type"}:
+                    item["implementation"] = "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
+                if item["name"] == "get_type" and "cu: Compilation_Unit" in item["declaration"]:
+                    item["implementation"] = "DWARF model offset lookup; six original C DWARF4 SDK-decoded type oracles, unsorted tables/missing offsets/borrowed storage/duplicate diagnostics in interpreter/native O0/O2; not a byte parser"
                 if item["name"] in {"Msf", "Free_Page_Map"}:
                     item["implementation"] = "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
                 if item["name"] in {"is_msf", "is_pdb", "get_stream_data", "get_stream_size", "is_valid_stream_number", "stream_exists", "is_valid_page_number"}:
@@ -220,6 +238,10 @@ def main():
         inventory[module] = {"spec": str(spec.relative_to(ROOT)),
                              "spec_sha256": hashlib.sha256(contents.encode()).hexdigest(),
                              "declarations": declarations, "reviewed_members": members}
+        if module == "Debug_Info":
+            pending_path = ROOT / "docs/native/developer-tools-codeview-model-pending.json"
+            if pending_path.exists():
+                inventory[module]["pending_public_member_dependencies"] = json.loads(pending_path.read_text())["pending_aliases"]
     destination = ROOT / "docs/developer-tools-api.json"
     destination.write_text(json.dumps(inventory, indent=2) + "\n")
     remaining_matrix(inventory)

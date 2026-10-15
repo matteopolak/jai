@@ -1,0 +1,341 @@
+{
+  "scope": "original C x86/x64/arm64 O0/O2 DWARF4 metadata decoded by official SDK; host public model lookup, not a Jai byte parser or target execution",
+  "fixtures": [
+    {
+      "architecture": "x86",
+      "optimization": 0,
+      "types": [
+        {
+          "offset": 38,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 112,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 117,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 128,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 8,
+          "encoding": null
+        },
+        {
+          "offset": 161,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 168,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 4,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 175,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "debug_info_sha256": "51786162177dcd397c107499fe84eb03c3c2a5769060b116721f69a2a437541b"
+    },
+    {
+      "architecture": "x86",
+      "optimization": 2,
+      "types": [
+        {
+          "offset": 38,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 115,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 120,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 131,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 8,
+          "encoding": null
+        },
+        {
+          "offset": 164,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 171,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 4,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 178,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "debug_info_sha256": "dad3237c869ac70d5bc5304db4faf0da56676d2ab37eb994eec16c86fb77f7cc"
+    },
+    {
+      "architecture": "x64",
+      "optimization": 0,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 124,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 129,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 140,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 173,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 180,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 187,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "debug_info_sha256": "c456972e2b299f74d3908a396ec01da8b814e1d14ece9644579f2e0c85bc142d"
+    },
+    {
+      "architecture": "x64",
+      "optimization": 2,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 122,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 127,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 138,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 171,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 178,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 185,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "debug_info_sha256": "7deff6ce9a4f15666c82833d759f314c336a7a14ad4b9cd84281e5cf65e57368"
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 0,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 124,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 129,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 140,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 173,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 180,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 187,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "debug_info_sha256": "2a004fcde023bde37b7eadc3e37dc66476ac12f4aaf22d6192772964027960a4"
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 2,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 122,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 127,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 138,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 171,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 178,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 185,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "debug_info_sha256": "4506ca568d510f3f018f7b5e4c569bf3577523053570ba4c5f85ba5a78092e06"
+    }
+  ]
+}

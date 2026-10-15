@@ -1,0 +1,89 @@
+{
+  "scope": "original C Windows x64/arm64 O0/O2 C13 sections and SDK filename/file-ID/checksum oracles; host queries, no target execution or Jai symbol-parser claim",
+  "fixtures": [
+    {
+      "architecture": "x64",
+      "optimization": 0,
+      "files": [
+        {
+          "id": 0,
+          "filename_id": 1,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.h",
+          "digest_offset": 6,
+          "digest_size": 16
+        },
+        {
+          "id": 24,
+          "filename_id": 118,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.c",
+          "digest_offset": 30,
+          "digest_size": 16
+        }
+      ],
+      "debug_s_sha256": "c0d9dd8e8d231c18bdd9658dcba4a8b498523dd3ed7856214c69e696d0743400"
+    },
+    {
+      "architecture": "x64",
+      "optimization": 2,
+      "files": [
+        {
+          "id": 0,
+          "filename_id": 1,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.h",
+          "digest_offset": 6,
+          "digest_size": 16
+        },
+        {
+          "id": 24,
+          "filename_id": 118,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.c",
+          "digest_offset": 30,
+          "digest_size": 16
+        }
+      ],
+      "debug_s_sha256": "8d56e1e6f12f0f53de14006fc5b1f18f2a63e93406d75b5ae33b404e494abfdf"
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 0,
+      "files": [
+        {
+          "id": 0,
+          "filename_id": 1,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.h",
+          "digest_offset": 6,
+          "digest_size": 16
+        },
+        {
+          "id": 24,
+          "filename_id": 118,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.c",
+          "digest_offset": 30,
+          "digest_size": 16
+        }
+      ],
+      "debug_s_sha256": "86f043eaf72e41f06d2720393e7b9a826c260c297f7405818cc3f09ea02259ac"
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 2,
+      "files": [
+        {
+          "id": 0,
+          "filename_id": 1,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.h",
+          "digest_offset": 6,
+          "digest_size": 16
+        },
+        {
+          "id": 24,
+          "filename_id": 118,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.c",
+          "digest_offset": 30,
+          "digest_size": 16
+        }
+      ],
+      "debug_s_sha256": "098bac684b7f893aa4b04660994b9f13a118729e44fd9fc88a0d0d207ff5abc9"
+    }
+  ]
+}
