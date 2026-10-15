@@ -146,6 +146,7 @@ Implementation work uses the API specification as its compatibility contract. Im
 The WebAssembly compiler bundle and its releases. The hosted playground UI lives in the portfolio site (https://matteopolak.com/playground/jai).
 
 - [Browser compiler (WebAssembly bundle)](browser/playground.md)
+- [Independent browser scheduler/filesystem verification](browser/sandbox-runtime-verification.md): private runtime provider coverage with strict public module target guards
 - [Browser compiler releases](browser/compiler-releases.md)
 - [Language tour (playground default workspace)](browser/tour.md)
 

@@ -1,5 +1,17 @@
 # Compiler integration handoff
 
+Browser Thread test repair is a test-only split at the real runtime boundary:
+private SandboxHost hooks drive three cooperative workers, contended mutexes,
+actual joins and in-memory stdio; public Thread still rejects WASM in playground
+and CLI. No core/runtime/stdlib guard/LSP feature edit. Four focused playground
+tests, actual wasm32 execution (repeated workers/files, isolation, invalid join,
+deadlock and public guard), CLI guard, strict fixture lint/format and host/wasm32
+clippy pass. Local full browser suite remains 25/32 with seven unchanged failures
+against the older staged library; current CI's 29-other-pass baseline was not
+fetched or claimed reproduced. Adopt the cohesive split and rerun current approved
+integration; retain native/module contract assertions. Other migration/IDE ownership
+is untouched. Details/classifications: browser/sandbox-runtime-verification.md.
+
 Latest stable checkpoints: babb2fd raw pointers and 2676b02 relative jailint imports.
 Rebuild the own tools using the canonical commands below to adopt both. All owned
 batch source/test/docs paths are committed; no publication or peer writes.

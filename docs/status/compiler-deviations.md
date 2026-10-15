@@ -1,5 +1,20 @@
 # Compiler deviations and implementation gaps
 
+Browser verification split has no new public WASM API, module exception, guard
+relaxation or fake worker. Locations: jai-wasm/play.rs tests, two crate-owned Jai
+fixtures, CLI guard test and actual-wasm32 Node runner. Consumers explicitly use
+the existing private SandboxHost C-shaped hook protocol; address-keyed u64 mutex
+tokens/logical thread handles are sandbox state, not native pthread ABI promises.
+All status/results are checked and barrier/contention/join evidence requires real
+suspension/resumption. No production provider or scheduler behavior changes.
+Initial puts hook assumption failed and was replaced by the already implemented
+write hook with exact length checks; logs retained, no stub added. Local staged
+library is older than reported CI; 25/32 full-browser result and seven untouched
+failures remain, while focused and actual-wasm32 checks pass. Deliberate rejection
+Jai input is format-checked, not positive-linted; its failure is asserted in CLI.
+No full stdlib/native-platform/sandbox ABI completeness claim. Exact classifications,
+evidence and proper integration/other-test follow-up: browser/sandbox-runtime-verification.md.
+
 Relative include lookup: no caller absolute-path workaround or warning relaxation.
 Location: jailint/driver.rs canonical fallback and configured import-root anchoring.
 Source/generated relative paths retain RootedFs behavior; invocation configuration
