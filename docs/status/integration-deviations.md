@@ -1,5 +1,58 @@
 # Independent integration deviations audit
 
+## Combined scope refresh through7b6e8de9 and privacy follow-up
+
+Stable workspace at7b6e8de9:848 passed/four failed/one inherited ignore in100
+Cargo binaries. Two failures were old interception-count oracles: canonical
+resolved library declarations now participate. `cleanroom_modules.rs` now checks
+exactly the application plus referenced library declaration, retaining an invalid
+cold declaration that must stay lazy. `cli.rs` checks every skipped category,
+per-message all/header/struct consistency and exactly one actual application main
+and S, independently of additional canonical runtime/library records. Both tests
+pass; no compiler/library filter exception or reduced check is introduced.
+
+Debug's named filtered reexport leaked unreviewed `Debug.Shared`. The new privacy
+regression first rejected that export; anonymous filtered reexport removes it
+while preserving canonical types and both mutable storage addresses across
+USE_GRAPHICS configurations. The actual allocator-retention test moves into
+`stdlib/Debug/tests/ignore-ownership.jai`, where its private import is legitimate.
+All its assertions remain. Neither CLI private-entry nor application-import rules
+were weakened. Both fixtures execute interpreter/native ARM64 O0 and strict lint.
+
+The Debug merge67712edf inadvertently tracked the allowed control inbox. Cleanup
+1cc5c277 removed it from the product tree without history rewriting. Coordinator
+must exclude docs/worker-inbox.md during final history insertion. Subsequent
+merges assert that this path, AGENTS and ownership guidance are absent from the
+staged product change. The producer's raw local gate log was moved into ignored
+artifacts; no gate success is inferred from that historical log.
+
+Bindings958af0a2 retains real Android logging's forced Runtime flush in place of
+literal discard; it remains partial pending the Runtime-owned discard operation.
+Objective-C encoding supports only its documented native-compatible reflected
+categories. Member-stub loading tries the reviewed framework spelling, then the
+installed `.framework` spelling; byte-copy/snapshot and global-cache reservation
+costs remain producer-documented. Default stats/no-stats allocator SDK/callback
+libraries rebuilt from actual combined source;77 Python tests, two real public
+heap fixtures in both modes and three actual host C sanitizer safety programs
+pass. Other cache profiles/CPUs/native OS execution were not rerun.
+
+Android45/52 names have integrated host paths, seven signing-dependent source
+drafts remain unloaded. `tools/verify_android_project.py` creates structural NDK
+path sentinels and controlled failing command scripts; these are discovery/argv/
+failure-propagation fixtures, not real compiler/libclang/ADB/signing/device proof.
+Real SDK/NDK/Java/Gradle builds, installation and device execution remain required.
+Object formats report467/508 scope rows implemented; declared record/constant
+coverage is separate from parsing behavior. Unsupported formats and relocations
+fail explicitly; no fabricated parse/output success is accepted.
+
+The tooling-owned typed canonical generator/options snapshot document is a
+proposal, not current implementation. Current configured facades still use
+nominal module-instance types and opaque borrowed options pointers. Cross-instance
+activation/type/default identity needs owner review and proper canonical typed
+normalization; merely sharing Context storage does not prove that contract. The
+model-owned generator-session is the only actual slot/ledger; no parallel shim
+from the names/modifier/platform producers remains. See the integration request.
+
 ## Canonical generator merge db2962e7
 
 Compiler e9affab7 supplies the single general module-context ordering fix. The

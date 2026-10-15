@@ -38,7 +38,7 @@ def main():
         result = run(command, "ok\n")
         if len(result.stderr.splitlines()) != 3 or "original ignored assertion" not in result.stderr:
             raise RuntimeError("Required public assertion diagnostics were not emitted")
-    ownership = ROOT / "tests/developer-tools/debug-ignore-ownership.jai"
+    ownership = ROOT / "stdlib/Debug/tests/ignore-ownership.jai"
     for mode in ["interp", "0", "2"]:
         command = [compiler, ownership, "-interp"]
         if mode != "interp":

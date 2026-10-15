@@ -1,5 +1,21 @@
 # Integration requests
 
+## Current shared generator type/protocol review
+
+All model/names/platform/emission/modifier helpers consume the single
+generator-session owner; duplicate typed options values and both extra Context
+modules were removed. However configured TARGET_OS facades still load nominal
+Generator/CType/Declaration/options types per instance and cast borrowed opaque
+pointers to those instance types. Sharing fields alone does not establish
+cross-instance canonical type/default/ABI identity. Tooling's new
+developer-tools-context-protocol.md proposes one unparameterized model and typed
+normalized options view; it is explicitly marked a proposal, not production.
+Model/lifecycle owners must reconcile this architecture and reviewed
+TARGET_OS-dependent defaults, implement one typed protocol and migrate consumers
+without exposing new API names or leaving parallel snapshots. Preserve all
+original public helper and nested-context regressions. No default successful
+view may stand in for required supplied state.
+
 ## Corpus takeover metadata at17ab409a
 
 The restricted app-only stage excluded268/1044 records before source access,

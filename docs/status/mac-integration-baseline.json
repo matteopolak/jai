@@ -772,7 +772,8 @@
     "artifacts/mac-baseline/workspace.log": "8547f97a2fa070c769f09b725479b982e8158a5305bdfcd15f0572fb1c8b384a",
     "artifacts/mac-baseline/catalogue.log": "04be03b4d387483d4111924664bfb000610b784c4959e3639e03d8c053a49d48",
     "artifacts/mac-baseline/workspace-ad575d16.log": "f29e0cc8e3f6fe65459f25b19d6b94c3a3ac55cfe80770cd5c6e4b7bd0ea29b4",
-    "artifacts/mac-baseline/catalogue-ad575d16.log": "8ba6e7dfee98474fc53f4b062b60ca3401127ea6bdcde7bb9030b4b1d62bd85d"
+    "artifacts/mac-baseline/catalogue-ad575d16.log": "8ba6e7dfee98474fc53f4b062b60ca3401127ea6bdcde7bb9030b4b1d62bd85d",
+    "artifacts/mac-baseline/workspace-7b6e8de9.log": "c4128c694cc8c3486e38e5a53efa835b7f8f17a251940876ff329ca02e2a239c"
   },
   "timeouts": [],
   "source_changes_during_measurement": false,
@@ -1098,5 +1099,45 @@
       "exit_code": 0,
       "command": "target/jaifmt --check <all production stdlib Jai sources>"
     }
+  },
+  "second_replay": {
+    "snapshot": "7b6e8de9be4498c644af74e80f5cb03ccfbceefc",
+    "command": "cargo test --locked --workspace --all-targets --no-fail-fast",
+    "exit_code": 101,
+    "test_binaries": 100,
+    "passed": 848,
+    "failed": 4,
+    "ignored": 1,
+    "failures": [
+      {
+        "name": "typechecked_events_use_selected_bootstrap_library_root",
+        "classification": "stale_interception_fixture_oracle; focused repair passes"
+      },
+      {
+        "name": "intercept_flags_and_continuable_reports_are_preserved",
+        "classification": "stale_interception_fixture_oracle; focused repair passes"
+      },
+      {
+        "name": "wasm_target::wasm_tour_runs_as_a_wasi_command",
+        "classification": "WASI tour imports native-only Thread"
+      },
+      {
+        "name": "every_stdlib_module_checks_for_every_target",
+        "classification": "target ledger differences include genuine missing backends"
+      }
+    ]
+  },
+  "post_batch_focused": {
+    "canonical_generator_commands": 85,
+    "passed": 84,
+    "failed": [
+      "objc-runtime-interp: link_always library initialization discrepancy"
+    ],
+    "native_boundary_commands": 15,
+    "native_boundary_passed": 15,
+    "bindings_python_passed": 77,
+    "debug_private_facade_and_ownership": "two interpreter/two native ARM64 O0/two strict lint passes",
+    "workspace_rustfmt": "pass",
+    "workspace_clippy": "pass before latest compiler114/source batches; replay required"
   }
 }
