@@ -125,12 +125,19 @@ def system_headers(work):
     return d
 
 
+def stable_contract_type(ctype, src):
+    """Canonical audit spelling, retaining anonymous record kind and source location.
+
+    Clang 23 omits the repeated record keyword in unnamed-type diagnostic names.
+    This is metadata only; translation and layout probes use the actual AST/types.
+    """
+    if ctype is None:return None
+    for prefix in (str(src.resolve()/'include')+'/',str(src/'include')+'/'):
+        ctype=ctype.replace(prefix,'')
+    return re.sub(r'\b(struct|union) \(unnamed at ',r'\1 (unnamed \1 at ',ctype)
+
 def generate(src, plat, work, clang):
-    def stable_type(ctype):
-        if ctype is None:return None
-        for prefix in (str(src.resolve()/'include')+'/',str(src/'include')+'/'):
-            ctype=ctype.replace(prefix,'')
-        return ctype
+    def stable_type(ctype):return stable_contract_type(ctype,src)
     BUILTINS.update({'wchar_t':'u16' if plat.startswith('windows') else 's32',
                      'long':'s32' if plat.startswith('windows') else 's64',
                      'unsigned long':'u32' if plat.startswith('windows') else 'u64'})
