@@ -931,14 +931,167 @@
       },
       "failures": [
         {
-          "name": "compiler/lang-asm [interp]\n    lang-asm.jai:601:9: error: pause requires an x86-64 target\n                pause;\n                ^^^^^\nFAIL compiler/lang-asm [native]\n    build failed (exit 1):\n    lang-asm.jai:601:9: error: pause requires an x86-64 target\n                pause;\n                ^^^^^\nFAIL compiler/rules-prelude-and-runtime-support [interp]\n    rules-prelude-and-runtime-support.jai:23:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance\n        Own_Runtime :: #import \"Runtime_Support\"(DEFINE_SYSTEM_ENTRY_POINT = false, DEFINE_INITIALIZATION = false, ENABLE_BACKTRACE_ON_CRASH = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL compiler/rules-prelude-and-runtime-support [native]\n    build failed (exit 1):\n    rules-prelude-and-runtime-support.jai:23:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance\n        Own_Runtime :: #import \"Runtime_Support\"(DEFINE_SYSTEM_ENTRY_POINT = false, DEFINE_INITIALIZATION = false, ENABLE_BACKTRACE_ON_CRASH = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL compiler/rules-simd-asm [interp]\n    rules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target\n                    cpuid a, b:, c, d:;\n                    ^^^^^^^^^^^^^^^^^^\nFAIL compiler/rules-simd-asm [native]\n    build failed (exit 1):\n    rules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target\n                    cpuid a, b:, c, d:;\n                    ^^^^^^^^^^^^^^^^^^\nFAIL compiler/runtime-support-output [interp]\n    runtime-support-output.jai:1:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance\n        Runtime :: #import \"Runtime_Support\"(DEFINE_SYSTEM_ENTRY_POINT = false, DEFINE_INITIALIZATION = false, ENABLE_BACKTRACE_ON_CRASH = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL compiler/runtime-support-output [native]\n    build failed (exit 1):\n    runtime-support-output.jai:1:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance\n        Runtime :: #import \"Runtime_Support\"(DEFINE_SYSTEM_ENTRY_POINT = false, DEFINE_INITIALIZATION = false, ENABLE_BACKTRACE_ON_CRASH = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL compiler/runtime-support-source [interp]\n    runtime-support-source.jai:2:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance\n        Runtime :: #import \"Runtime_Support\"(DEFINE_SYSTEM_ENTRY_POINT = false, DEFINE_INITIALIZATION = false, ENABLE_BACKTRACE_ON_CRASH = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL compiler/runtime-support-source [native]\n    build failed (exit 1):\n    runtime-support-source.jai:2:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance\n        Runtime :: #import \"Runtime_Support\"(DEFINE_SYSTEM_ENTRY_POINT = false, DEFINE_INITIALIZATION = false, ENABLE_BACKTRACE_ON_CRASH = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL graphics/getrect-simp-gl-frame [interp]\n    getrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`\n            GR.set_asset_root(ASSET_DIR);\n               ^^^^^^^^^^^^^^\nFAIL graphics/getrect-simp-gl-frame [native]\n    build failed (exit 1):\n    getrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`\n            GR.set_asset_root(ASSET_DIR);\n               ^^^^^^^^^^^^^^\nFAIL graphics/getrect-widgets-driven [interp]\n    getrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`\n            font: GR.Font;\n                     ^^^^\nFAIL graphics/getrect-widgets-driven [native]\n    build failed (exit 1):\n    getrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`\n            font: GR.Font;\n                     ^^^^\nFAIL graphics/input-multi-window-focus [interp]\n    input-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n        Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL graphics/input-multi-window-focus [native]\n    build failed (exit 1):\n    input-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n        Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL graphics/input-published-events [interp]\n    input-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n        Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL graphics/input-published-events [native]\n    build failed (exit 1):\n    input-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n        Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL graphics/input-temporary-allocator [interp]\n    input-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n        Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL graphics/input-temporary-allocator [native]\n    build failed (exit 1):\n    input-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n        Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL graphics/simp-gl-render-readback [interp]\n    simp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`\n            set_window_dimensions(window, width, height);\n            ^^^^^^^^^^^^^^^^^^^^^\n    help: a similar name exists: `get_render_dimensions`\nFAIL graphics/simp-gl-render-readback [native]\n    build failed (exit 1):\n    simp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`\n            set_window_dimensions(window, width, height);\n            ^^^^^^^^^^^^^^^^^^^^^\n    help: a similar name exists: `get_render_dimensions`\nFAIL Extensions/Json/tests/numbers [interp]\n    timed out after 180s\nFAIL Window_Creation/tests/macos-events [interp]\n    macos-events.jai:92:5: error: runtime error: assertion failed: `resizes.count > 0` is false\n            assert(resizes[resizes.count - 1].width == 360 && resizes[resizes.count - 1].height == 240);\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFAIL Window_Creation/tests/macos-events",
+          "name": "compiler/lang-asm",
+          "mode": "interp",
+          "classification": "architecture_specific_assembly_fixture",
+          "diagnostic": "lang-asm.jai:601:9: error: pause requires an x86-64 target"
+        },
+        {
+          "name": "compiler/lang-asm",
+          "mode": "native",
+          "classification": "architecture_specific_assembly_fixture",
+          "diagnostic": "lang-asm.jai:601:9: error: pause requires an x86-64 target"
+        },
+        {
+          "name": "compiler/rules-prelude-and-runtime-support",
+          "mode": "interp",
+          "classification": "legacy_runtime_instance_configuration",
+          "diagnostic": "rules-prelude-and-runtime-support.jai:23:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+        },
+        {
+          "name": "compiler/rules-prelude-and-runtime-support",
+          "mode": "native",
+          "classification": "legacy_runtime_instance_configuration",
+          "diagnostic": "rules-prelude-and-runtime-support.jai:23:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+        },
+        {
+          "name": "compiler/rules-simd-asm",
+          "mode": "interp",
+          "classification": "architecture_specific_assembly_fixture",
+          "diagnostic": "rules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target"
+        },
+        {
+          "name": "compiler/rules-simd-asm",
+          "mode": "native",
+          "classification": "architecture_specific_assembly_fixture",
+          "diagnostic": "rules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target"
+        },
+        {
+          "name": "compiler/runtime-support-output",
+          "mode": "interp",
+          "classification": "legacy_runtime_instance_configuration",
+          "diagnostic": "runtime-support-output.jai:1:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+        },
+        {
+          "name": "compiler/runtime-support-output",
+          "mode": "native",
+          "classification": "legacy_runtime_instance_configuration",
+          "diagnostic": "runtime-support-output.jai:1:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+        },
+        {
+          "name": "compiler/runtime-support-source",
+          "mode": "interp",
+          "classification": "legacy_runtime_instance_configuration",
+          "diagnostic": "runtime-support-source.jai:2:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+        },
+        {
+          "name": "compiler/runtime-support-source",
+          "mode": "native",
+          "classification": "legacy_runtime_instance_configuration",
+          "diagnostic": "runtime-support-source.jai:2:1: error: argument `DEFINE_SYSTEM_ENTRY_POINT` conflicts with the configured runtime instance"
+        },
+        {
+          "name": "graphics/getrect-simp-gl-frame",
+          "mode": "interp",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "getrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`"
+        },
+        {
+          "name": "graphics/getrect-simp-gl-frame",
+          "mode": "native",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "getrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`"
+        },
+        {
+          "name": "graphics/getrect-widgets-driven",
+          "mode": "interp",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "getrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`"
+        },
+        {
+          "name": "graphics/getrect-widgets-driven",
+          "mode": "native",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "getrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`"
+        },
+        {
+          "name": "graphics/input-multi-window-focus",
+          "mode": "interp",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "input-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+        },
+        {
+          "name": "graphics/input-multi-window-focus",
+          "mode": "native",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "input-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+        },
+        {
+          "name": "graphics/input-published-events",
+          "mode": "interp",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "input-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+        },
+        {
+          "name": "graphics/input-published-events",
+          "mode": "native",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "input-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+        },
+        {
+          "name": "graphics/input-temporary-allocator",
+          "mode": "interp",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "input-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+        },
+        {
+          "name": "graphics/input-temporary-allocator",
+          "mode": "native",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "input-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module"
+        },
+        {
+          "name": "graphics/simp-gl-render-readback",
+          "mode": "interp",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "simp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`"
+        },
+        {
+          "name": "graphics/simp-gl-render-readback",
+          "mode": "native",
+          "classification": "legacy_fixture_API_requires_reviewed_contract_migration",
+          "diagnostic": "simp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`"
+        },
+        {
+          "name": "Extensions/Json/tests/numbers",
+          "mode": "interp",
+          "classification": "interpreter_performance_timeout",
+          "diagnostic": "timed out after 180s"
+        },
+        {
+          "name": "Window_Creation/tests/macos-events",
+          "mode": "interp",
+          "classification": "native_notification_frame_publication",
+          "diagnostic": "macos-events.jai:92:5: error: runtime error: assertion failed: `resizes.count > 0` is false"
+        },
+        {
+          "name": "Window_Creation/tests/macos-events",
           "mode": "native",
           "classification": "native_notification_frame_publication",
           "diagnostic": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/stdlib/Window_Creation/tests/macos-events.jai:91: assertion failed:"
         }
       ],
       "unavailable": 12,
-      "timeouts": []
+      "timeouts": [
+        {
+          "name": "Extensions/Json/tests/numbers",
+          "mode": "interp",
+          "timeout_seconds": 180,
+          "runtime_lower_bound_seconds": 180,
+          "exact_elapsed_seconds": null,
+          "note": "Original runner discarded measured elapsed; not fabricated and not counted as passing"
+        }
+      ]
     },
     "format": {
       "files": 845,
