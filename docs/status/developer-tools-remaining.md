@@ -491,13 +491,12 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Iprof
 
-42 function names have pending declarations; 0 native function names still lack invocation fixtures.
+41 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
 | `Automatic_Zone` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `Automatic_Zone_Guarded` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `Prepend_To_Main` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `Prof_init_highlevel` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `add_hook` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `add_source` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |

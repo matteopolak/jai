@@ -33509,14 +33509,14 @@
         "declaration": "TO_INSERT :: #string DONE",
         "section": "Public declaration inventory",
         "spec_line": 34,
-        "implementation": "pending"
+        "implementation": "reviewed-purpose real context client setup and runtime-init prepend macro; all manual/graphics/history configurations preserved and actual O0/O2 client programs verified; full instrumentation plugin pending"
       },
       {
         "name": "prepend_main",
         "declaration": "prepend_main :: #code context._Iprof.Prepend_To_Main()",
         "section": "Public declaration inventory",
         "spec_line": 35,
-        "implementation": "pending"
+        "implementation": "reviewed-purpose real context client setup and runtime-init prepend macro; all manual/graphics/history configurations preserved and actual O0/O2 client programs verified; full instrumentation plugin pending"
       },
       {
         "name": "add_hook",
@@ -33978,7 +33978,7 @@
         "declaration": "Prepend_To_Main :: () #expand",
         "section": "Public declaration inventory",
         "spec_line": 101,
-        "implementation": "pending"
+        "implementation": "reviewed-purpose real context client setup and runtime-init prepend macro; all manual/graphics/history configurations preserved and actual O0/O2 client programs verified; full instrumentation plugin pending"
       },
       {
         "name": "caches",

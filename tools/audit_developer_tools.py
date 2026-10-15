@@ -228,6 +228,8 @@ def main():
                     item["implementation"] = "reviewed canonical tracker/stack records and pointer-identity ancestor count; measured manual core uses the stack records; history tracker updates remain pending"
                 if item["name"] in {"init_runtime", "Stack_Push", "zone_begin", "zone_end", "MAX_DEPTH", "MAX_HASH_SIZE", "INIT_HASH_SIZE", "MAX_PROFILING_ZONES_FOR_MANUAL_MODE", "zones", "caches", "dummy", "dummy2", "stack", "zone_hash", "zone_hash_count", "zone_hash_mask", "timestamps_to_seconds", "integer_timestamps_per_second"}:
                     item["implementation"] = "measured manual-zone core; canonical POSIX/QPC clocks, real elapsed/self/hierarchical/call/recursion counters and stable cached/grown node identities, native/interpreter O0/O2 plus explicit rejection fixtures; Windows SDK links/source checks only; history/instrumentation/report creation pending"
+                if item["name"] in {"TO_INSERT", "prepend_main", "Prepend_To_Main"}:
+                    item["implementation"] = "reviewed-purpose real context client setup and runtime-init prepend macro; all manual/graphics/history configurations preserved and actual O0/O2 client programs verified; full instrumentation plugin pending"
         if module == "Codex":
             for item in declarations:
                 if item["name"] in {"Math", "get_file_and_module", "is_global_ident"}:

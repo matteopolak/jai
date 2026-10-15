@@ -104,6 +104,16 @@ def check_measured_profiler_csv():
         raise RuntimeError("Measured profiler CSV does not preserve actual elapsed milliseconds")
 
 
+def check_profiler_client_children():
+    for configuration in range(8):
+        for optimization in [0, 2]:
+            run([ROOT / f"target/developer-tools-iprof-client-c{configuration}-o{optimization}"], output="ok\n")
+        source = ROOT / f"target/developer-tools-iprof-client-input-c{configuration}.jai"
+        run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", source])
+        run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", source])
+        run([ROOT / "target/debug/jailint", "-D", "warnings", source])
+
+
 def main():
     check_developer_bindings.main()
     configured_cases = check_developer_sdk_configuration.main()
@@ -209,6 +219,7 @@ def main():
     cases.extend(["bindings-cpp-workflow", "bindings-cpp-workflow-roundtrip"])
     cases.append("codeview-strings")
     cases.append("iprof-manual-clock")
+    cases.append("iprof-client-setup")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -232,6 +243,8 @@ def main():
             check_bridge_consumers(prefix, "interp", workflow=True)
         if case == "iprof-manual-clock":
             check_measured_profiler_csv()
+        if case == "iprof-client-setup":
+            check_profiler_client_children()
         if case == "bindings-cpp-fragments":
             for cpp_optimization in [0, 2]:
                 cpp_exe = ROOT / f"target/developer-tools-cpp-fragments-interp-cxx{cpp_optimization}"
@@ -250,6 +263,8 @@ def main():
                 check_bridge_consumers(prefix, f"o{optimization}", workflow=True)
             if case == "iprof-manual-clock":
                 check_measured_profiler_csv()
+            if case == "iprof-client-setup":
+                check_profiler_client_children()
             if case == "bindings-cpp-fragments":
                 for cpp_optimization in [0, 2]:
                     cpp_exe = ROOT / f"target/developer-tools-cpp-fragments-o{optimization}-cxx{cpp_optimization}"
@@ -316,7 +331,8 @@ def main():
              ROOT / "target/developer-tools-dwarf-type-oracle.jai",
              ROOT / "target/developer-tools-codeview-string-oracle.jai"]
     format_paths = [*paths, *sorted((ROOT / "tests/developer-tools/rejections").glob("*.jai")),
-                    *sorted((ROOT / "tests/developer-tools/compiler-requests").glob("*.jai"))]
+                    *sorted((ROOT / "tests/developer-tools/compiler-requests").glob("*.jai")),
+                    ROOT / "tests/developer-tools/iprof-client-input.jai.inc"]
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *format_paths])
     shutil.copyfile(ROOT / "tests/developer-tools/rewrite-input.jai", rewritten)
     run([ROOT / "target/debug/jailint", "-D", "warnings", "-I", ROOT / "target", *paths])
