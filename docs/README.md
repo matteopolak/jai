@@ -4,6 +4,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 
 - [Features](features.md): what works, performance and what is missing
 - [Generator model helpers](generator-model.md): canonical model operations, ownership, verification and integration dependencies
+- [Generator configured-SDK path check](status/generator-sdk-path.md): native test repair for symlinked T7 build storage
 - [Window/render progress](status/window-render-progress.md): scoped native window,
   native input, Windows pointer tracking and keyboard layouts, Keymap, window lifecycle, original native-font
   feature regressions, real font-atlas/text rendering and texture color-space transitions,
