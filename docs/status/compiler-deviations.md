@@ -1,5 +1,14 @@
 # Compiler deviations and implementation gaps
 
+## Reviewed decimal fixture correction
+
+No numeric implementation or implicit-conversion rule changed. The reviewed
+compiler metadata contract replaces obsolete total-digit/type and 18-significant
+formatting oracles with fractional-digit/default-context checks and actual
+rounded-value assertions. Two negative cases retain initialization/arithmetic
+narrowing errors. Evidence is actual Mac interpreter/native O0/O2; WASI is source
+checking only. External protocol/native prerequisites remain unresolved here.
+
 ## Late record links and final Mac scope
 
 records.rs journals mutated identities; record_build.rs indexes pending null

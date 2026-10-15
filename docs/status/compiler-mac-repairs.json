@@ -5,14 +5,14 @@
   "target": "macos-arm64",
   "scope": "22 originally unresolved compiler fixtures only",
   "interpreter": {
-    "passed": 18,
-    "failed": 4,
+    "passed": 20,
+    "failed": 2,
     "ignored": 0
   },
   "native_per_optimization": {
-    "actual_executable_passes": 16,
+    "actual_executable_passes": 18,
     "compile_time_only": 2,
-    "pending_unmeasured": 4,
+    "pending_unmeasured": 2,
     "optimization_levels": [
       "O0",
       "O2"
@@ -90,10 +90,10 @@
     },
     {
       "name": "compiler/float-literal-precision",
-      "interpreter_exit": 1,
-      "status": "pending",
-      "reason": "compiler inference versus reviewed lexer flags; review pending",
-      "native": "unmeasured pending dependency/review",
+      "interpreter_exit": 0,
+      "status": "verified-focused",
+      "reason": "reviewed decimal inference; preserve explicit rounding and implicit narrowing rejection",
+      "native": "actual ARM64 O0/O2 execution",
       "evidence": "artifacts/compiler-mac-repairs/after/float-literal-precision.json"
     },
     {
@@ -154,10 +154,10 @@
     },
     {
       "name": "compiler/rules-numbers",
-      "interpreter_exit": 1,
-      "status": "pending",
-      "reason": "compiler inference review pending",
-      "native": "unmeasured pending dependency/review",
+      "interpreter_exit": 0,
+      "status": "verified-focused",
+      "reason": "reviewed decimal inference; preserve explicit rounding and implicit narrowing rejection",
+      "native": "actual ARM64 O0/O2 execution",
       "evidence": "artifacts/compiler-mac-repairs/after/rules-numbers.json"
     },
     {

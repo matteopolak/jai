@@ -19,9 +19,13 @@ but that does not exercise the native link phase and is not an integration pass.
 Please supply the normal native prerequisite through the owned setup/routing;
 no backtrace option, guard or library is disabled or fabricated here.
 
-## Spec reviewer: compiler decimal literal inference
+## Resolved review: compiler decimal literal inference
 
-Two untouched failing fixtures are float-literal-precision and rules-numbers.
+The reviewed language page now resolves this request. Both fixtures pass after
+precise oracle correction; separate negative tests preserve narrowing rejection.
+The following records the original question, rather than an open dependency.
+
+Two previously failing fixtures were float-literal-precision and rules-numbers.
 The former assumes digits before the decimal count towards a total-digit cutoff;
 the reviewed Jai_Lexer contract instead explicitly counts only fractional digits
 (trailing zeroes ignored). The high-level language page says float32 when
@@ -31,8 +35,8 @@ statements for compiler inference versus the runtime lexer flags.
 Please establish compiler default types for 12342345234.0, 16777216.0 (exactly
 representable at float32), 9876543210.125 and 0.123456789, and the admissibility of
 implicit PI_LONG-to-float32 where PI_LONG has more than eight fractional digits.
-No change to numeric inference, narrowing diagnostics or these failing oracles is
-made pending that refinement. Local failure reports are retained.
+Numeric inference and narrowing diagnostics are unchanged. Local failure reports
+and the reviewed correction reasons are retained.
 
 ## Optional tour follow-up (outside the 22 compiler fixtures)
 

@@ -1,6 +1,7 @@
 # Developer documentation
 
-- [Focused Mac compiler catalogue classifications and repairs](compiler/mac-catalogue-repairs.md)
+- [Focused Mac compiler catalogue classifications and repairs](compiler/mac-catalogue-repairs.md),
+  including reviewed decimal inference and narrowing rejection regressions.
 
 - [Extensions Io/Args dependency migration](extensions/dependency-migration.md):
   allocator ownership, fiber scratch lifecycle and actual WASI termination;

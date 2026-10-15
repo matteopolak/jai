@@ -1,5 +1,12 @@
 # Compiler progress
 
+2026-10-15 decimal review follow-up: float-literal-precision and rules-numbers
+pass interpreter and actual ARM64 O0/O2 with corrected reviewed metadata oracles.
+Implicit required-float64 narrowing remains rejected in initialization/arithmetic
+regressions. WASI source checks pass; no WASM runtime claim. Current focused
+ledger is20/22 interpreter,18 native executable +2 compile-time-only at O0/O2;
+the remaining public protocol/prerequisite dependencies belong to other owners.
+
 Verified stable Mac source checkpoints: b377ed7c, 427fbfdc, 6d5e2172, 9e527a22.
 Exact 22-case focused replay and per-case native/compile-only status are recorded
 in status/compiler-mac-repairs.json. Remaining four owner/review requests are in

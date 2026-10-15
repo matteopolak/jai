@@ -17,7 +17,7 @@ Default_Metaprogram changes, profiles or benchmarks are included.
 | compiler-resolved-nodes | Exact whitespace obsolete; structural/typed/modify checks remain. Public compound printing currently returns false: supported printing extension needed. |
 | compiler-typechecked-notes | Genuine candidate: previously published header body pointer does not update. Preserve notes, identity and body assertions. |
 | custom-link-library-lists | Reviewed completion takes only Workspace; extra status argument obsolete. Corrected API exposes separate missing portable_crash native prerequisite. |
-| float-literal-precision | Old total-digit heuristic conflicts with reviewed Jai_Lexer fractional-digit flags. Compiler inference boundary needs review; retain numeric failures pending clarification. |
+| float-literal-precision | Reviewed compiler metadata counts fractional digits, excluding trailing zeroes. Correct default types; explicit rounding replaces invalid implicit narrowing, with separate rejection tests. Replace obsolete 18-significant-digit formatting assumptions with actual rounded-value checks. |
 | macro-code-variable-arg | Exact whitespace obsolete; verify declaration/literal identity plus successful public printing. |
 | modern-metaprogramming | Mixed formatting and supported AST print gaps; inspect each assertion, retain scope/type/backtick semantics. |
 | poly-struct-type-names | Exact verbose instance spelling unestablished; require declared-name presence and retain parameter/identity metadata. |
@@ -25,7 +25,7 @@ Default_Metaprogram changes, profiles or benchmarks are included.
 | rules-code-values-and-insertion | Genuine get-code reconstruction parser failure for parenthesized assignment statements. |
 | rules-compiler-module | Relative path normalization promise not established by reviewed inventory; test actual configured module lookup and metadata round trip. |
 | rules-enums | Review exact Basic out-of-range marker; preserve numeric values/flags/reflection. |
-| rules-numbers | Float inference needs same review as float-literal-precision; preserve integer/overflow/conversion checks. |
+| rules-numbers | Correct `9876543210.125` default to float32 under the reviewed fractional-digit rule; all integer/overflow/conversion checks retained. |
 | rules-scoping | Module-private name is incorrectly expected exported; retain internal cross-file reads and require absence through namespace. |
 | rules-structs | Exact verbose generic type spelling unestablished; retain canonical reflected name, identity/layout/default checks. |
 | struct-using-member-path | Genuine candidate: aliases through a pointer member fail scope/type checking. |
@@ -148,10 +148,28 @@ Additional oracle migrations retain the useful public behavior:
 - void-values-print formats two real void values plus a null pointer. It does not
   manufacture a second void value by dereferencing a null pointer.
 
-Four retained red cases require outside input: compiler-reflection-pure (missing
-reviewed public portable export), custom-link-library-lists (native prerequisite),
-float-literal-precision and rules-numbers (literal inference review). Full details
+Two retained red cases require outside input: compiler-reflection-pure (missing
+reviewed public portable export), custom-link-library-lists (native prerequisite).
+The decimal review follow-up below resolves the other two. Full details
 are in ../status/compiler-mac-owner-requests.md and the questions document. No
 numeric assertion or missing public comparison is removed, and no prerequisite
 is disabled. Program_Print's explicit Run/assert limitation is still a limitation,
 not implemented functionality or a reference round-trip guarantee.
+
+## Reviewed decimal inference follow-up
+
+The updated language specification confirms fractional-digit metadata, not exact
+float32 representability or total digit count. No compiler behavior was changed.
+The two fixtures now require float32 for the reviewed large integer-side
+literals, float64 for eight uncontextualized fractional digits and nine required
+digits, and allow float32 context for the eight-digit default. Explicit PI_LONG
+rounding is tested; direct initialization and arithmetic implicit narrowing each
+remain required compiler errors in original negative fixtures.
+
+Old large-number printing strings assumed an unreviewed 18-significant-digit
+policy. Those checks now validate actual rounded values instead; the existing
+PI/infinity formatting checks remain. Both fixtures pass normal interpreter and
+actual ARM64 O0/O2 execution. WASI verification here is source checking only.
+The scope ledger now records 20/22 interpreter passes, 18 native executable passes
+and two compile-time-only cases per optimization level. The two external owner
+dependencies are retained, not disabled.
