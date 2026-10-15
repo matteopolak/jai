@@ -4,6 +4,48 @@ Review scope: owned Basic builder/formatter, String utilities, scalar Hash,
 File_Utilities, focused tests and unchanged repository jaifmt integration.
 This is a deviations inventory, not a claim of completed production integration.
 
+Current follow-up supersedes the historical helper-policy entries below:
+new reviewed behavior now defines sequence quoting, hex bytes/newlines, copying
+consumption, empty enums, field misses, scalar guards/ownership, temporary stack
+strings and exact low-level output. Implementations/tests were corrected to
+those contracts; the earlier choices are retained only as checkpoint history.
+
+- **Leak scanner policy/performance** — real Compiler global data segments seed
+  conservative reachability; every byte offset is checked for pointer-sized
+  values (including interior/unaligned pointers), so false positives are possible.
+  Ownership selects stable ordinal owners and rejects cycles. Linear lookup and
+  insertion sorting trade speed for a coherent diagnostic implementation; no
+  arbitrary address ranges or fixture-specific roots are used. The allocation
+  lock protects the report snapshot; callers must coordinate concurrent payload
+  mutation, since ordinary writes do not take that lock. Reviewed heuristics are
+  implementation policy. More efficient interval indices and typed roots are
+  future performance improvements, not fabricated current guarantees.
+- **Owned report allocator indirection** — a stable child Pool object lives in
+  the report's exposed pool and owns the mutable Hash_Table backing. This avoids
+  storing a dangling pointer to the returned-by-value report.pool in its table
+  allocator. deinit releases child blocks before the owning pool. Tests grow
+  the returned table by 100 keys and verify complete cleanup/snapshot survival.
+  Review requests explicit confirmation of hierarchical versus direct pool
+  ownership; no stack self-pointer or unsupported table allocator is used.
+- **Module-qualified leak filters** — the provided frame metadata has no module
+  identity field/mapping. Nonempty module_name currently logs and terminates
+  explicitly, even with assertions off; it is not accepted and ignored. Ordinary
+  procedure matching/trimming/grouping and all scan/baseline flags have real
+  behavior. Proper fix requires reviewed module mapping or producer metadata,
+  as requested in the questions document. Preamble and CAPS name ABI also remain
+  genuine exact-contract questions, not inert placeholder exports.
+- **WASI unused-code producer dependency** — adding real runtime reflection
+  exposes Compiler's unrelated File dependency during -no_dce. NEW File refresh
+  resolves Windows; WASI still lacks POSIX.FILE. Runtime WASI leak reports pass
+  O0/O2 with only real WASI imports. See dependencies/reproducer; no target or
+  no_dce assertion was suppressed. Native File/Compiler sources are only copied
+  into own durable staging, never modified in another checkout.
+- **Visualization transition** — the old textual snapshot is superseded by the
+  newly supplied channel contract and is not counted as completed visualization.
+  Real protocol/channel lifecycle/backpressure tests are being implemented.
+  NEW producer transport currently supports macOS/Linux; Windows/WASI native
+  transports remain pending and must report connection limitations explicitly.
+
 - **New helper policy confirmation** — stream-helpers.jai concatenates top-level
   rendered sequence arguments, prints each u8 through the given format (no
   implicit newline), and consumes a matching prefix only on success. Reflection

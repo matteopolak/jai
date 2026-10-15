@@ -1,5 +1,25 @@
 # Foundations progress
 
+Current continuation after cc089d7: newest Basic behavioral sync is implemented
+for sequence quoting, hexadecimal byte/newline output, copying consumption,
+empty enum ranges/zero field miss, empty logging suppression, scalar predicate
+and variadic/clamp guards, allocator ownership, shrinking slice reallocations,
+temporary stack strings and exact low-level stack output. Real leak reports now
+track baseline/exemptions, scan compiler global segments, combine interior
+pointers/cycles, trim/group traces, preserve owned snapshots and release them.
+Visualizer mode skips both scans and includes pre-baseline allocations.
+
+37 host interpreter/native O0/O2 and 31 production WASI O0/O2 cases pass after
+safe File producer refresh, with real unchanged jaifmt CLI/check and strict lint.
+Unknown allocation misuse exits exactly status 1 natively and in production
+WASI even with ENABLE_ASSERT false. Windows unused-code dependency was resolved
+through read-only NEW platform-io File sources; WASI -no_dce still fails the
+producer's POSIX.FILE dependency. Original minimal repro and requests are in
+foundations-dependencies.md. No check was weakened; six native target reruns
+pass Linux x64/arm64, macOS x64/arm64 and Windows x64/arm64. Actual channel
+backend and tests are now being implemented;
+old textual visualization is not counted as the reviewed transport.
+
 Continuing all owned Basic scope: sequence/byte output, prefix consumer,
 using-member field lookup, reflected enum ranges/highest, slice array_resize,
 and all five stack-trace declarations now have real independent implementations.

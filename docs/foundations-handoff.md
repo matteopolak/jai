@@ -4,6 +4,17 @@ This work owns Basic builder/formatting, String utilities, Hash scalars and
 File_Utilities. Inherited spec, argument/runtime and Command_Line edits are
 retained in the worktree and excluded from foundations commits.
 
+The next synchronized behavioral batch is implemented: exact helper output/
+copying/empty cases, scalar #modify guards and ownership helpers, temporary
+stack strings/low-level output, and real leak types/records/reports/scanning/
+grouping/logging/destruction. 37 host and 31 WASI cases pass in all requested
+execution modes, with actual jaifmt CLI/check and strict lint. Six native
+unused-code targets pass after read-only NEW File integration; WASI -no_dce
+retains the precise File/POSIX.FILE dependency failure. Misuse exits status 1
+even with assertions disabled (native and WASI). Visualization wire backend
+is in progress; the earlier textual transport is not counted as reviewed
+visualization. CAPS name ABI/Preamble/module identity requests remain precise.
+
 The continuing completion batch adds real sequence/byte/prefix helpers,
 using-member lookup, enum ranges/highest, slice resizing, and all five stack
 trace helpers. Original tests pass in all three host modes and both WASI modes;
