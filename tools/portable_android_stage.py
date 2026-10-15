@@ -7,6 +7,7 @@ baseline cannot silently retain an outdated codec or miss a newly loaded file.
 from pathlib import Path
 import shutil
 import check_portable_time_foundation as foundation
+from portable_file_stage import compose_into as compose_file
 
 ROOT = Path(__file__).resolve().parents[1]
 LIBRARY = foundation.LIBRARY
@@ -28,4 +29,5 @@ def compose():
         else:
             shutil.copyfile(source, destination)
     foundation.compose()
+    compose_file(LIBRARY)
     return LIBRARY

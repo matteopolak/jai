@@ -1,5 +1,56 @@
 # Portable default build workflow
 
+Shared loader integration: custom requests and the correctly parameterized Check
+request now pass to public Metaprogram_Plugins.init_plugins. The previous private
+CLI-only static-import generator is removed; no separate factory/registration
+context remains. Input option arrays stay borrowed through setup/lifecycle and
+real factory pointers append directly to the mutable public plugins array.
+Generic initializer status aggregates as reviewed; failure still logs/stops target
+work through Default's exit0 path. Per-plugin early short-circuiting was not an
+established Default contract and is not restored as a private convenience.
+
+The linter's program context performs real empty initialization before checking
+all original Default bodies. This satisfies the generic module's declared
+deferred-definition import obligation; it does not fake a plugin, skip an assertion
+or filter any failed body. Generated lint contexts are normalized and --check
+verified. Real Default executions independently exercise nonempty factories and
+native target outputs. Evidence target/default-shared-plugins-final.log.
+
+Parent phase correction: build() now uses the reviewed set_build_options_dc with
+do_output=false, preserving its parent's static output type/name/path and existing
+dynamic write/extension settings. Parent debugger changes also use that dynamic
+API. No late frozen Build_Options mutation remains. Both normal compiler invocation
+and interpreter build-driver mode produce real native child artifacts through
+Compiler workspace APIs; an existing target is deleted before the interpreter
+case to prove it is recreated. Target O0/O2 is explicitly selected with reviewed
+-very_debug/-od options; paths/callbacks retain native O0/O2 tests. No new compiler
+semantic exception or CLI child-process bypass. Full workflow, parent-state
+assertions and strict lint pass in target/default-dynamic-options-final.log.
+
+Current2026-10-15 Check integration is RESOLVED: the NEW tools producer supplies
+the reviewed persistent get_plugin factory and CHECK_BINDINGS module parameter.
+Default imports the exact true/false instance lazily in its private factory, and
+the runner stages the complete real Check engine/porting/binding dependency set.
+Ordinary builds, both binding flags, default help/version, custom plugin ordering,
+no_check/replay/option/error cases and full owned strict lint now pass. Earlier
+missing-factory descriptions below are historical evidence, not active blockers.
+
+Test correction, separate from production: argument-dependent fixture procedures
+are invoked by ordinary `-add '#run,stallable run_build();'` compiler input. This
+executes the same real D.build workspace workflow and all replay assertions;
+neither target construction nor callbacks are bypassed. Lint checks callable
+fixture bodies without executing an invalid zero-input build. Explicit empty-input
+and no_check-only invocations still must exit1. No test/diagnostic suppression or
+compiler source-name exception. Full command:
+`python3 -B tools/check_portable_default_metaprogram.py`;
+evidence target/default-metaprogram-check-integrated.log.
+
+Remaining compiler execution limits: .X64 backend/debugger are explicitly
+unsupported by current compiler; selected-workspace command-line readback has
+the corrected generic reproducer. These are separate from the now-working normal
+default CLI workflow and its passed source/lint gate. Native other OS/combined
+baseline are coordinator gates, not claimed here.
+
 The reviewed Default_Metaprogram contract is the API oracle. The implementation
 separates command-line classification, compiler option projection and intercepted
 workspace execution. Plugin imports are generated as ordinary Jai declarations

@@ -6,6 +6,175 @@ audit and internal-disabled execution coverage remain open. Protected real-threa
 handle SDK failure/retry is mandatory in the new Windows runner fixture, with
 actual native/interpreter execution pending. Void group-init/clock failures
 report then terminate rather than fabricate a usable result. See platform report.
+Deep_Copy timer fix: no optional-assertion side-effect workaround remains in its
+clock queries. Real clock failure invokes the configured failure handler and
+aborts if it returns, preserving explicit failure rather than fabricated elapsed
+time. Mac enabled/disabled regressions and owned strict lint pass; native Windows
+and injected SDK failures unverified. Existing graph assertions are only effective
+in the enabled run; the new disabled timer check is unconditional. No test oracle
+correction or suppressed diagnostic. See portable-deep-copy-timing.md.
+
+Removed duplicate Default CLI-only plugin generator; canonical public loader now
+handles custom plus Check requests. Default follows reviewed generic aggregate
+initializer semantics; original independent early-stop behavior had no separate
+reviewed guarantee. Failure remains logged exit0 before target work. Full lint
+requires real empty-init PROGRAM context because importing the generic helper
+creates a deferred definition obligation. This is actual supported initialization,
+not a fake facade or excluded body; real nonempty builds run separately. Context
+source normalized/--check. Details portable-default-metaprogram.md.
+
+Metaprogram initializer dependency RESOLVED with general compiler89560db9. Active
+real workflow and full context-aware strict lint pass. Lint context executes valid
+empty initialization required by the reviewed module import contract; no failing
+body excluded/replaced. Computed factory/aggregate/status/identity/privacy/module
+diagnostic cases genuinely execute. Older pending/failed-dependency notes below are
+historical. Narrow starting-index prefix edge and invalid-index safety policy remain
+documented; no runtime/native-callback suspension promise or false corpus claim.
+
+JKS generation source uses actual Java keytool in supplied bin directory; host
+Java unavailable, so only negative/status/strict-lint evidence, NO positive SDK
+success claim. SDK positive fixture pending. Independent365-day/quoted-DN/default-
+EC-only and existing-file refusal policies documented. Existing-file check is
+non-atomic; caller requires exclusive destination. SDK failure may leave its own
+partial output at the supplied path. Proper long-term fix: exclusive scratch /
+atomic publication / verified cross-platform cleanup. This limitation is explicit
+and generator remains partial, not counted complete from passing failure tests.
+
+Native helper audit: absolute producer install name was a genuine packaging bug,
+now removed through @rpath Mac identity/basename Linux SONAME. Mac moved-package
+runtime/link evidence passes; Linux execution/deployment-minimum/architecture
+packaging pending. Direct helper-specific override is unsupported/TODO; existing
+JAIC_NATIVE_LIBS behavior preserved without a new feature. No claim of complete
+release packaging from a composed test distribution. Details native-package doc.
+
+Current VALID plugin initializer candidate uses reviewed #placeholder plus deferred
+body/indirect call. It remains staged pending general compiler checkpoint and actual
+positive tests; never counted complete. This is distinct from the REJECTED direct
+unknown-callee draft. Current failure matches independent confirmed general probe;
+no error weakening, message interception, pump, yield or CLI-name restriction.
+
+REMOVED Default late-parent-option workaround: reviewed during-compile API controls
+do_output/debugger, preserving static output type/name/path and dynamic settings.
+Normal/interpreter build-driver modes both create actual native child workspaces;
+no interpreter-only restriction remains. Target optimization explicitly selected
+with reviewed options; new parent-state assertions and all existing native/runtime
+assertions pass alongside full owned strict lint. Previous parent-output dependency
+below is superseded. No compiler change, name exception or external CLI bypass.
+
+Direct signing keys use installed native crypto CLI on POSIX hosts, not a linked
+LibreSSL ABI backend. Production dependency: compatible openssl req/pkcs8/x509 on
+PATH; absence/failure yields explicit false/diagnostic, never fabricated key data.
+Independent policies: SHA256 self-signing/365-day validity, private unique0700
+directory, DER X509/PKCS8 outputs,0600 key permissions, component-only key names.
+Native Mac SDK validation passes; Windows backend returns diagnosed unsupported,
+Linux/Android native pending. Proper long-term fix: native licensed C crypto ABI
+plus platform exclusive file/directory backend, preserving public model/signature.
+No user keys/configs/credential stores read. Subject escaping, ownership and full
+failure cleanup tested; details portable-direct-signing-key.md. Test oracle fixes
+(misspelled member/local redeclaration/unestablished duplicate-failure policy)
+are separate from the real minimal crypto config fix.
+
+Default parent-output phase follow-up: current real Default workflow sets its
+parent output_type to NO_OUTPUT inside build. Removing that setup in a staged
+probe causes the own compiler to write a parent with no main after child build
+(target/default-without-root-options.log). Filtered oracle rejects late parent
+option mutation in the separate timing probe. Valid parent-output/evaluation
+phase needs compiler/reviewer reconciliation; no exact-reference phase claim.
+Existing child artifacts/workspace tests remain genuine. General proper fix must
+handle build-script parent output through supported phases, not module-name hacks.
+
+WITHDRAWN plugin architecture: initial draft assumed a running procedure could
+add the definition of its own unresolved callee. Filtered17:45 reference oracle
+disproves that assumption; timing probe also changes root options too late. These
+are invalid architecture/test expectations, not required compiler semantics.
+Draft never entered active stdlib; no patch to compiler proposed after correction.
+Candidate/probes marked rejected/invalid, retained evidence. Real dynamic public
+helper remains missing while dirty reviewer supplies valid boundary; parser tests
+pass. Earlier compiler-gap wording below is superseded. Details dependency doc.
+
+Metaprogram_Plugins only record/parser are active. Real initializer candidate and
+positive dynamic-name test remain outside completed support because general
+compile-time add-source/forward-call suspension is missing. Full candidate lint
+and positive execution fail, not skipped/converted to pass. Source generation
+does not restrict requests to top-level CLI. Public parser's out-of-range index
+policy returns false safely; unreviewed prefix edge documented in dependency doc.
+Initial fixture redeclaration/.[] dynamic-array-literal errors were corrected
+without changing assertions or public contract. No legacy oracle adjustment.
+
+Default_Allocator optimized-target implementation uses owned C blocks/per-heap
+intrusive lists and one CAS lock, rather than span caches. This preserves real
+heap/resize/ownership/bulk-release behavior and exact standard public layouts;
+linear ownership/free lookup and global contention are performance risks. Public
+size-class/cache fields stay zero because this backend has no caches; real heap
+cache counts are zero, and standard global dummy stats are reviewed behavior.
+Proper long-term optimization: indexed ownership/per-heap locking/real caches,
+retaining all lifecycle and concurrency regressions. Pointer alignment16 is
+validated on actual Mac x64; other native SDK targets pending. Validated numeric
+limit uses64KiB margin because reviewed page names a span but omits its byte size;
+exact boundary review requested, no source-equivalence claim. Existing fallback
+source remains unchanged. Details portable-default-allocator.md.
+
+Active Mac Socket record batch: real SDK/interpreter/native behavior validated,
+but full generated-binding strict lint remains FAILED because the compiler cannot
+evaluate type_of(fd_set.fds_bits[0]) where fd_set denotes a type. Location and
+minimal original reduction pending/field-array-element-type.jai; evidence
+target/socket-resolver-active.log. New database fixture strict lint passes, which
+is explicitly a narrower check and never a replacement for the failed full gate.
+No public type query rewritten, no compiler path/name special case, no lint rule
+disabled. Proper fix is compiler field-element type query semantics; rerun full
+binding lint after that producer checkpoint. Other-OS native ABI remains pending.
+
+Recovery tool configuration: the launch-assigned T7 target is an authorized own
+source build location, accepted through explicit CARGO_TARGET_DIR alongside own
+checkout target/. No alternate external-build discovery or reference fallback.
+This fixes a test-tool guard failure, not a production stdlib defect. Fresh mail,
+channel and crash checks pass; combined original corpus remains coordinator-owned.
+
+Mail scramble: current reviewed alphabet lists characters but no explicit numeric
+index table/ciphertext vector. Independent implementation uses ascending listed
+order; reversibility/cyclic/temporary/error tests pass on actual interpreter/native
+O0/O2, without claiming reference-vector proof. Exact interoperability risk and
+proper fix (reviewed mapping/vector, then retain exhaustive behavior tests) are
+recorded in portable-mail-questions.md. Unsupported input returns empty safely
+after its optional assertion; invalid-input behavior with assertions disabled is
+an independent safety policy, not an established reference guarantee. No errors
+are converted to successful sends and no transport test assertions changed.
+
+Shared signing model scope: exact data declarations only, explicitly requested
+to unblock project worker; no signing/key-generation function counted from model
+tests. Genuine union/promoted-field/default/name behavior and full source/lint/
+native gates pass. Fixtures use literal test-only strings, never real credentials.
+Read-only NEW File/Windows-text staging completes dependency closure; it is not
+claimed production integration or an API shim. Details portable-signing-model-handoff.md.
+
+Default Check dependency resolved using real NEW producer factory/parameter and
+private engine closure. Full owned strict lint now passes. Fixture correction:
+normal CLI added #run invokes callable test bodies, keeping every behavior and
+assertion while lint does static body checks. No source-name branch, skipped
+assertion, fake checker or target-building bypass. Compiler unsupported backend/
+debugger and corrected selected-workspace option readback remain genuine gaps;
+old missing-factory/lint-block notes below are historical.
+
+Runtime Android discard: queue uses independent4096-byte capacity/line/forced
+flush policy and ordinary raw descriptor sink. Exact finer Android flush/sink
+policy is absent from reviewed public page, so no logcat tag mapping or exact
+Android conformance invented. Private discard never flushes. Real host byte-I/O
+tests and strict lint pass; Android public branch/device and binding adoption
+remain pending. Private unit fixture is byte-identical under a target-only library
+test module, preserving external private-import rejection; it is not a production
+facade/API shim or SDK simulation. pending/android-logger-discard.patch is for
+coordinator/owner application, not an edited peer. Details/evidence in
+portable-runtime-output-discard.md.
+
+Compiler command-line oracle refined: old get_toplevel scope expectation is
+unspecified, so that probe alone was insufficient evidence. New selected-workspace
+get_build_options().compile_time_command_line probe fails under the explicit
+read/write contract; remaining compiler request uses this genuine evidence.
+
+Default plugin-array ownership correction removes a dangling public descriptor
+after shutdown by using Basic.array_reset. Actual repeated workspace/plugin builds
+verify cleanup, retaining callbacks and error behavior. No caller patch, lifecycle
+registry, public layout change or skipped assertion; full lint dependency unchanged.
 
 Platform-io hardware-fault fixtures now depend on an original SDK C DLL because
 Jai near-null stores are correctly guarded at O0. Separate O0 guard coverage is

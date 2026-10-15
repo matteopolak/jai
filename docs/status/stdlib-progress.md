@@ -1,6 +1,251 @@
 # Portable stdlib progress
 
 ## Current combined candidate ac9b8723
+Deep_Copy timer operations fixed: real SDK calls no longer occur inside optional
+assertions. New unconditional 20ms callback regression failed exit5 with the
+staged DEFAULT Basic assertions disabled, passed enabled; now both pass
+interpreter/native Mac O0/O2 with existing graph/scalar/debug execution and whole
+owned strict lint. Format/--check pass. Windows same-source correction remains
+native-unverified. No test correction. See portable-deep-copy-timing.md.
+
+Socket actual whole-binding strict lint now PASSES compiler89560db9 together with
+real C SDK and Jai resolver interpreter/native ARM64/x64 O0/O2/source checks:
+target/socket-whole-lint-refresh.log. Earlier type-query gap is historical.
+New four-way inbox split accepted; ASN1/Socket, JKS crypto/readers and APK signing
+are now excluded from new portable edits. An uncommitted APK model fixture is
+preserved only as pending/apk-signing-model-behavior-candidate.jai; no production
+APK signing record edits were made. Exact refreshed inventory/handoff follows.
+
+Post-integration snapshot:4076 owned reviewed rows,3574 complete-source,
+455 conservatively partial,47 missing (87.68%source rows; not conformance totals).
+Metaprogram_Plugins now complete-source/verified; JKS source moved missing->partial
+with NO positive SDK credit. Default uses shared actual loader d4fe5b1 and real
+helper facade97eddd4; generalcompiler89560db9 required. Exact scopes/exclusions and
+remaining signatures updated, full Focus/corpus still coordinator-owned.
+
+Default now delegates custom/Check factory setup to actual public M_Plugins helper,
+removing private CLI-only generator/duplicate context. Live objects/options/order/
+replay and real child outputs retained. Full strict lint supplies valid empty-init
+program context for the generic module's reviewed deferred obligation, checks every
+original owned body, normalizes generated contexts. No stub/filter/assert removal.
+Generic aggregate init status used; old early-stop-private behavior unestablished.
+
+Metaprogram_Plugins FULL reviewed parser/initializer workflow now ACTIVE with
+source-built general compiler89560db9. Computed imports/parameters, real factory
+objects/options/workspace, aggregate status/no-init options, stable factory identity,
+empty/name consistency and ordinary module/privacy errors pass interpreter/O0/O2
+drivers. Parser native O0/O2 and full context-aware owned strict lint pass. Valid
+declared-placeholder/indirect mechanism; no pump/yield/undeclared continuation.
+Default actual builds/Check/plugins/lint also pass on new compiler. Exact source/
+commands/limits in portable-metaprogram-plugins.md; full Focus/corpus coordinator gate.
+
+JKS generator real SDK workflow source now implemented: reviewed RSA/DSA table,
+defaultECcurve/defaultalias/password, actual keytool command/status/output checks
+and canonical owned record. Negative SDK/size cases pass interpreter/native O0/O2
+and strict lint. Host Java absent; POSITIVE GENERATION UNVERIFIED, source classified
+partial/no success credit. Actual-SDK positive fixture ready, no fake keytool or
+success file. Existing-target/preflight/partial-output/DN/validity policies and
+future atomic publication/native-positive gates documented in portable-jks-generation.md.
+
+Current owned snapshot:4076 reviewed rows,3571 complete-source,456 conservative
+partial,49 missing; source-only counts, no conformance inflation. Whole names/
+conditions in implementation-remaining.json; missing-module subset33 is smaller.
+Only missing Mac Socket row is CMSG_SIZE; six others Android. Focused remaining
+contract queue in portable-remaining-contract-requests.md covers CMSG/minimal flow/
+instrumentation/MPEG macro/table-walk and crypto details without obsolete broad
+questions. Valid deferred plugin source pending general committed capability.
+
+Native lookup audit found/fixed real absolute Mac crash-helper LC_ID_DYLIB in the
+producer tree. Now @rpath identity (Linux basename SONAME source configured).
+Moved-distribution test compiles and runs actual native OFF/ON crash behavior;
+otool verifies selected relocated package rpath, with no original producer helper
+dependency. Existing overrides untouched; direct per-helper override absent/TODO.
+Libclang copy/default belongs excluded tools owner, no edits. Final production
+packaging still coordinator gate. Evidence native-package-red/final.log;
+portable-native-package-lookup.md has exact installed-tree/dependency handoff.
+
+Reviewed deferred-body initializer staged in pending/metaprogram-plugins-deferred-init.jai:
+declared #placeholder, scoped source fulfillment, typed indirect invocation and
+ordinary generated imports. No message pump/yield/undeclared callee. Current
+compiler fails placeholder never defined, also seen on new compiler owner's
+reference-confirmed independent deferred-body probe. --deferred-candidate records
+actual failing positive; no completed-init credit. Compiler owner local fix now
+passes its probe, but checkpoint/integration still pending. Rejected direct-call
+draft stays separate and is not required semantics.
+
+Four reviewed Android formatter aliases now preserve canonical FormatInt and
+nonbaked named parameters/defaults via exact #bake_arguments. All256 values/four
+widths, type metadata, unsigned64, padding/minimum/grouping pass interpreter/native
+O0/O2 and strict lint. No replacement formatter or extra convenience export.
+Direct key negative tests now inspect only false status, not unspecified failed
+record fields; real SDK-error cleanup/DSA assertions retained and rerun pass.
+
+Default parent-output phase FIXED using reviewed set_build_options_dc do_output,
+preserving parent static output type/name/path and existing dynamic settings.
+Parent debugger configuration also uses DC. Both normal/interpreter drivers build
+actual native child artifacts, with deletion/recreation proof. Target O0/O2 uses
+reviewed -very_debug/-od; native path/callback suites retained. Full default/Check/
+options/plugins/replay/errors/parent-state assertions and strict lint pass
+target/default-dynamic-options-final.log. No compiler change or CLI subprocess
+bypass. Earlier parent-phase dependency note is superseded by this proper API fix.
+
+Direct signing-key workflow now creates real EC/P256 or fixed RSA2048 DER keys
+and self-signed certificates. Real SDK cross-parsing, public-key match/signature,
+subjects/private permissions/repeated distinct outputs and real SDK failure cleanup
+pass interpreter/native O0/O2 plus full scoped strict lint. Canonical key model and
+exact signature retained; key_size ignored by reviewed policy. Installed native
+crypto CLI required; independent365-day/DER/private-directory policies documented
+in portable-direct-signing-key.md. Windows backend explicitly unsupported, no JKS
+credit (host Java runtime absent), no existing credentials accessed.
+
+CRITICAL17:45 test-oracle correction: filtered coordinator confirms official Jai
+also rejects dynamic-build-source-continuation; source-call timing probe mutates
+root options too late and is invalid. Proposed dynamic forward-call suspension
+semantics WITHDRAWN, not a compiler requirement. Draft loader marked REJECTED and
+kept outside production; actual dynamic loader still missing pending reviewed
+valid evaluation boundary. Public positive fixture now avoids root mutation and
+has main entry. Parser remains real/verified. No raw reference sources/logs read.
+
+Foundations handoff: current Basic S128 +/- and U128 - are reviewed but missing.
+Independent pending/basic-wide-arithmetic.jai fails S128 Add against NEW foundation
+composition. General custom base/isa operator control executes exactly once with
+correct value in interpreter/native O0/O2 and strict lint, separating missing
+library overloads from unsupported compiler claims. Initial unreviewed base-result
+type assertion was corrected separately; valid value/call assertions preserved.
+No duplicate Apollo operator exports or foundation peer edits. Details
+portable-wide-arithmetic-handoff.md.
+
+Metaprogram_Plugins refreshed17:24 contract consumed: canonical record and real
+public parser now pass interpreter/native O0/O2 and strict lint. Dynamic loading
+IS required. Positive independently authored dynamic.jai + Dynamic_Probe factory
+and real initializer candidate are durable; --dynamic-candidate correctly FAILS
+unknown initialize_imported_plugins before running the source-adding prefix.
+General minimal dynamic-build-source-continuation.jai also fails unknown callee.
+Exact compiler suspension/resumption handoff in metaprogram-plugins-dependency-request.md.
+No active fake init export, CLI-only restriction or passing-stub credit. Prefix
+handling when starting_index>0/plugins occur is a precise remaining review edge.
+
+Default_Allocator optimized-target public heap workflow now implemented with exact
+reviewed standard records. Real ownership/resize/free-all/create/destroy/init/finalize
+behavior passes Mac x64 interpreter/native O0/O2, 4threads x512cycles, disabled
+module assertions,9 invalid-input runs, strict lint and owned formatting. No
+cache/stats fiction: immediate release means real zero cached bytes; reviewed
+standard global stats are dummy. Per-heap intrusive ownership uses one CAS lock,
+with linear ownership lookup: documented performance tradeoff, no stack-address
+registry. Exact upper rejection span byte size remains a numeric review question
+(independent64KiB margin documented); native other OS pending. Evidence
+target/default-allocator-final.log; details portable-default-allocator.md.
+
+Mac Socket five real records activated from refreshed reviewed shapes: addrinfo,
+hostent/netent/protoent/servent. Active database closure now matches official C SDK
+all field offsets/canonical names/types and real host/protocol/service operations
+in interpreter/native ARM64/x64 O0/O2; fixture strict lint and all owned formatting
+pass. Resolver native/interpreter and stable regeneration also pass. WHOLE binding
+strict lint still fails general type_of(Struct.array_field[0]) compiler semantics;
+original declaration/assertions preserved, no substitute or suppression. Evidence
+socket-databases-red/final.log and socket-resolver-active.log. This is real active
+ABI support with a retained tool/compiler gate, not full Socket conformance.
+
+Recovery tooling now accepts only own checkout target builds or the explicit
+launch-assigned CARGO_TARGET_DIR (T7); no searches of other build trees. Shared
+selector used by root/mail/channel/crash runners. Fresh mail loopback10 scenarios,
+channel4 interpreter/native pairings x2048 packets and native crash backtrace
+OFF/ON tests pass (target/mail-after-scramble.log, channels-recovery.log,
+crash-recovery.log). No full combined corpus claim. Prior root117 cases/27 runtime
+faults/16 compile-rejections ran before the Runtime lock change; retained evidence
+is not presented as a post-change full rerun.
+
+Filtered corpus update names Metaprogram_Plugins as Focus's first missing module.
+Reviewed public page still lacks parse ownership/grouping/index details and the
+loader evaluation boundary for arbitrary runtime-created names. Exact questions
+and general added-source timing probe are in metaprogram-plugins-dependency-request.md.
+Probe shows added #run runs after active caller returns; not claimed a compiler
+bug without reviewed reentrancy guarantee. No CLI-only dispatch restriction,
+pointer serialization or placeholder loader added. Module remains missing.
+
+Default Check integration committed d22aa67; fresh recovery run
+target/default-metaprogram-recovery.log passes ordinary builds/binding flags,
+plugins/options/replay/failures and full owned strict lint. Canonical shared
+signing models committed6f20c37 for generator-names. No fake signing functions.
+
+Mail scramble now implements real temporary XOR obfuscation with all reviewed
+alphabet characters and cyclic secret handling. Missing export verified first;
+all64 key/full-alphabet bijection/round-trip cases, empty input,9 invalid-input
+executions and strict lint pass interpreter/native O0/O2. All10 SMTP loopback
+cases rerun unchanged. Numeric index ordering lacks explicit reviewed vector;
+independent listed-order choice/question documented in portable-mail-questions.md.
+No legacy expectation corrected or genuine assertion removed. No TLS/device/
+combined-baseline success inferred from these focused host checks.
+
+Canonical signing models requested16:34 are ready: three exact reviewed public
+types, canonical names, enum defaults/order, promoted JKS fields and real union
+storage. Interpreter/native O0/O2, Linux/Windows source checks, strict lint and
+format/--check pass (target/android-signing-model-final.log). No fake signing
+functions or real credential reads; model handoff portable-signing-model-handoff.md.
+Shared staged File closure now includes NEW platform-io Windows text dependency;
+initial source-check guard/missing-import failures fixed through real dependency
+composition, not weakened guards. Generator-names exact transferred API names
+snapshotted in portable-scope-transfers.json; no further edits to that batch.
+
+Default_Metaprogram normal workflow now passes real Check-enabled builds after
+adopting reviewed CHECK_BINDINGS module parameter/persistent factory and exact
+NEW tools dependency closure. Both binding flags/default help/version, no_check,
+custom plugins/replay/options/failure tests and FULL owned strict lint pass.
+Test harness correction preserves every build/assertion: callable fixtures invoked
+by normal added #run input; standalone linter no longer executes an invalid
+zero-argument build. Empty/no_check-only input still exits1. No CLI bypass or
+module-specific compiler change. Evidence target/default-metaprogram-check-integrated.log.
+X64/debugger/current-workspace command-line compiler dependencies remain separately
+recorded; no native other-OS or combined-baseline claim.
+
+Inventory update after explicit16:14 transfer: executable_formats excluded in full
+(507 declaration/condition rows in this inventory), with zero completion credit.
+Current own denominator4129 rows:3559 complete-source,442 conservatively partial,
+128 missing;86.2% source rows. Complete names/conditions, remaining exact signatures,
+head/timestamp, committed/draft counts and effort/dependency estimates are in
+implementation-remaining.json. Runtime discard now committed ca8570d; binding
+patch is validated zero-context unified diff (git apply --unidiff-zero) against
+own staged unchanged NEW producer copy. No peer edits. Latest SDK/default review
+just arrived and will replace corresponding stale contract questions.
+
+Runtime15:24 request implemented: private canonical Android pending-byte queue
+and discard_pending_output hook, shared real CAS lock and reviewed Android-only
+flush facade. Actual host stdout/stderr tests prove pending bytes are discarded
+without emission while normal line/forced/capacity flush and desktop output work.
+Interpreter/native O0/O2, full scoped strict lint and format/--check pass. Exact
+NEW binding patch pending/android-logger-discard.patch prepared, no peer write;
+binding adoption/Android compiler/device remain pending. No public discard export
+invented. Fine Android sink/force policy unestablished and honestly documented in
+portable-runtime-output-discard.md; no native Android success claimed.
+
+Test oracle correction: original target-command-line probe used get_toplevel
+getter whose scope is not reviewed. The corrected selected-workspace
+pending/workspace-target-options-command-line.jai instead reads
+get_build_options().compile_time_command_line and fails its genuine assertion,
+confirming selected-workspace readback defect under the actual guaranteed
+contract. Original failure evidence remains; no compiler patch made here.
+
+Fresh assigned-scope inventory published at docs/status/implementation-remaining.json:
+4636 reviewed declaration/overload/condition/nested-procedure rows across62 owned
+module pages; source classification3559 complete,448 partial,629 missing (76.77%
+complete source rows, NOT conformance/runtime percentage). Includes exact names,
+committed/draft split, head/timestamp, verification gates and disjoint transfer
+estimates. Most absent rows are501 executable_formats headers/constants/parsers
+plus88 Android/toolchain rows; earlier95 only covered four largely-unimplemented
+module groups and was never an exhaustive denominator. Partial counts are
+conservative module/source audit states, not448 fabricated missing bodies. Native
+foreign ABI declarations count as implementation, with runtime verification
+separate; missing bodies/shape/dependencies never count complete. Reserved roles,
+Basic except owned time, and Windows peer backends excluded. Runtime private
+discard is a passing host-tested DRAFT in this inventory; source handoff follows.
+
+Default build ownership replay fixed: shutdown used by-value array_free, leaving
+the public plugin descriptor pointing at freed allocation. New public build-twice
+fixture reproduced stale count/data; cleanup now uses Basic.array_reset. Two real
+target/plugin lifecycles run in one module, descriptor cleared after each. Focused
+workflow/replay passes, format/--check passes; strict lint still explicitly fails
+only missing Check.get_plugin. Evidence target/default-build-twice-red.log and
+default-metaprogram-workflow.log. No caller/address tracking workaround.
 
 The combined production library now includes shared Basic print context and reviewed integer/Vector2 arithmetic, all508 executable-format declaration rows, and dependent generator template/signature handling. Basic focused39/39 and original CodeView/template interpreter/native O0 checks pass in this worktree. Declaration coverage is not functionality completion: missing modules and platform/runtime gaps below remain. The prior complete workspace53ecb3d3 was852 passed/2failed/1ignored; catalogue081ecbff had13interpreter/12native failed executions including the180s interpreted Json timeout. Current complete measurement is tracked separately in [mac-current-baseline.json](mac-current-baseline.json); no green aggregate is inferred.
 

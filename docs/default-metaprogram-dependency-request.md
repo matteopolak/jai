@@ -1,5 +1,20 @@
 # Default_Metaprogram producer dependency request
 
+Contract RESOLVED by16:14 reviewed Check/Default_Metaprogram update: module-
+qualified get_plugin returns its persistent record, CHECK_BINDINGS is the module
+parameter, and message callback runs do_error_checking while unused callbacks are
+cleared. Default producer now imports Check(CHECK_BINDINGS=...) explicitly. Current
+NEW stdlib-tools source now supplies that factory/parameter. Its complete dependency
+closure is adopted read-only; ordinary default builds and full owned strict lint
+pass in target/default-metaprogram-recovery.log. The earlier factory blocker below
+is retained only as historical evidence.
+
+Command-line test correction: original get_toplevel query does not establish its
+workspace scope. Use pending/workspace-target-options-command-line.jai, which reads
+get_build_options().compile_time_command_line after explicit selected-workspace
+set; it also fails, under the reviewed get/set selected-workspace guarantee.
+Older request text/evidence below is retained historically.
+
 Portable worker, 2026-10-15. Inputs: reviewed Default_Metaprogram/Check pages
 and the NEW independent stdlib-tools Check producer, read-only.
 
