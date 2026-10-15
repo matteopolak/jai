@@ -4,12 +4,14 @@ Role: developer-tools. Scope is the ten modules in implementation-ownership.md. 
 
 ## Supported implementation and evidence
 
-- **Generator platform worker checkpoint:** seven assigned names/eight overloads
-  execute real installed-libclang discovery, original object/archive symbol queries,
-  native loading/lookup and foreign-name/pointer predicates. Interpreter/native Mac
+- **Generator platform worker checkpoint:** all ten assigned names/eleven overloads
+  execute reviewed libclang basename/mtime/size copying, original object/archive
+  symbol queries, native loading/lookup, exact-key persistent cache, active canonical
+  Generator first-match lookup, libc include roots and foreign-name/pointer predicates. Interpreter/native Mac
   O0/O2, six desktop source checks, formatting and warnings-denied lint pass. The
-  native shim compiles against official MinGW x64 headers. Canonical generator/cache
-  dependencies and libc path meanings leave three names pending in the matrix.
+  native shim compiles against official MinGW x64 headers. The canonical model is
+  integrated from 4675c90a and the general compiler/lint fix from e9affab7. No assigned
+  name remains contract-blocked; owned miss and borrowed mutable cache hits execute.
   [Policies, evidence and exact limits](../generator-platform.md). Full combined Mac
   tests stop at an independent bindings-macros.jai:43 diagnostic mismatch, reproduced
   with this facade unloaded; no combined-green or Windows-execution claim is made.

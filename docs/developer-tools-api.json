@@ -78,14 +78,14 @@
         "declaration": "ensure_local_libclang_exists :: ()",
         "section": "Public declaration inventory",
         "spec_line": 17,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "ensure_local_libclang_exists",
         "declaration": "ensure_local_libclang_exists :: (source_path: string)",
         "section": "Public declaration inventory",
         "spec_line": 18,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "RESERVED_NAMES",
@@ -281,7 +281,7 @@
         "declaration": "get_libc_paths :: (os := OS, cpu := CPU) -> libc_path: string, libc_platform_path: string, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 46,
-        "implementation": "pending"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "change_type_to_enum",
@@ -1541,7 +1541,7 @@
         "declaration": "function_is_missing_foreign_library :: (func: *Function) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 226,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "print_function",
@@ -1569,7 +1569,7 @@
         "declaration": "fix_macos_foreign_name :: (name: *string)",
         "section": "Public declaration inventory",
         "spec_line": 230,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "append_elsewhere",
@@ -8590,7 +8590,7 @@
         "declaration": "find_lib_for_foreign_name :: (name: string) -> *Library_Info",
         "section": "Windows-specific declarations",
         "spec_line": 1277,
-        "implementation": "pending"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "find_or_create_extra_info",
@@ -8632,7 +8632,7 @@
         "declaration": "library_symbol_cache: [..] Library_Symbols",
         "section": "Windows-specific declarations",
         "spec_line": 1283,
-        "implementation": "pending"
+        "implementation": "single canonical Library_Symbols cache state; reviewed exact keys, success-only insertion, owned miss and borrowed mutable hit behavior; original interpreter/Mac O0/O2 ownership and temporary-allocation lifetime effects"
       },
       {
         "name": "make_valid_identifer",
@@ -8646,35 +8646,35 @@
         "declaration": "os_get_symbol_names_from_file :: (full_path: string) -> success: bool, [] string",
         "section": "Windows-specific declarations",
         "spec_line": 1285,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "os_get_symbol_names_from_file_content",
         "declaration": "os_get_symbol_names_from_file_content :: (file_content: string, full_path: string) -> success: bool, [] string",
         "section": "Windows-specific declarations",
         "spec_line": 1286,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "os_get_symbol_names_from_file_fixed_and_cached",
         "declaration": "os_get_symbol_names_from_file_fixed_and_cached :: (full_path: string) -> success: bool, [] string",
         "section": "Windows-specific declarations",
         "spec_line": 1287,
-        "implementation": "pending"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "os_load_library",
         "declaration": "os_load_library :: (paths: [] string, identifier: string, library_path: string, treat_as_system_library: bool, static_library_suffix := \"\", shared_library_suffix := \"\") -> *Library_Info",
         "section": "Windows-specific declarations",
         "spec_line": 1288,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "os_symbol_exists_in_library",
         "declaration": "os_symbol_exists_in_library :: (lib: *Library_Info, name: string) -> bool",
         "section": "Windows-specific declarations",
         "spec_line": 1289,
-        "implementation": "independent documented platform policy; original Mach-O/ELF/COFF/archive and live library effects, installed SDK discovery, interpreter/native Mac O0/O2; six desktop source checks; see generator-platform.md for ownership and contract limits"
+        "implementation": "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
       },
       {
         "name": "print_namespace",

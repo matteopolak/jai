@@ -1,7 +1,7 @@
 # Developer documentation
 
 - [Generator platform helpers](generator-platform.md): owned native-library/object
-  APIs, official LLVM delegation, canonical model integration and precise outstanding contract dependencies.
+  APIs, reviewed cache/context/path contracts, official LLVM delegation and canonical model integration.
 - [String-macro diagnostic reduction](generator-platform-macro-cause.md): original
   SDK/FFI evidence and the exact callback-model cause of the combined test failure.
 - [Module-root context ordering](compiler/module-root-context-ordering.md): the

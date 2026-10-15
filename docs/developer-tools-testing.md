@@ -1,10 +1,12 @@
 # Developer tooling contract tests
 
-Run `python3 tools/check_generator_platform.py` for the seven assigned platform
-helper names (both libclang-discovery overloads), original Mach-O/ELF/COFF/archive
+Run `python3 tools/check_generator_platform.py` for all ten assigned platform
+helper names (both libclang-copy overloads), original Mach-O/ELF/COFF/archive
 symbols, live native-library effects, malformed inputs, independent owned arrays,
 temporary-file cleanup and diagnostic-path preservation. Interpreter/Mac O0/O2,
-six desktop source checks, actual formatting and integrated strict lint pass.
+six desktop source checks, actual formatting and integrated strict lint pass with
+the compiler-owned e9affab7 ordering fix. Reviewed cache/context/include-root and
+copy/update behavior is covered, including temporary caller allocation survival.
 See [platform policy and gaps](generator-platform.md); the combined suite still
 stops at the independently reproduced bindings-macros diagnostic mismatch.
 
