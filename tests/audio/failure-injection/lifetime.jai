@@ -4,6 +4,7 @@
 
 test_lib :: #library "jai_audio_output";
 fail_close :: () #foreign test_lib "audio_test_fail_next_close";
+fail_play :: () #foreign test_lib "audio_test_fail_next_play";
 released: int;
 errors: int;
 
@@ -12,8 +13,11 @@ probe :: (thread: *Thread) -> s64 {
     return 0;
 }
 
-check :: (condition: bool) {
-    if !condition exit(1);
+check :: (condition: bool, message := "failure-preservation check failed") {
+    if !condition {
+        print("%\n", message, to_standard_error = true);
+        exit(1);
+    }
 }
 
 log_message :: (message: string, data: *void, info: Log_Info) {
@@ -62,6 +66,18 @@ main :: () {
     sound_player_shutdown();
     check(released == 1 && !decode_queue_initted);
     check(sound_player_init(config));
+    sound_player_shutdown();
+
+    config.update_from_a_thread = false;
+    check(sound_player_init(config));
+    fail_play();
+    fail_close();
+    backend_play();
+    check(errors == 2 && get_audio_sampling_rate() == 0);
+    properties := backend_init(config);
+
+    check(!properties.initted, "known-lost retained output must not report initialized");
+    backend_shutdown();
     sound_player_shutdown();
     print("ok\n");
 }

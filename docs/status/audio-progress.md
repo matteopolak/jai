@@ -275,3 +275,19 @@ Linux and Windows ARM64 full SDK/runtime remain coordinator dependencies. The
 source-only Windows ABI fixture and assertion/fault-injection variants retain
 their distinct evidence labels. No whole-audio completion is claimed.
 
+Continued after 4bba9c1: added odd-aligned WAV identity/interpolation coverage and
+explicit byte sampling. Baseline alignment smoke passed; hardening removes a
+pointer-alignment assumption. The first draft failed valid clipping/mixing tests
+because its shift occurred at byte width. Separate widened operands fixed that
+genuine implementation regression; no oracle was weakened or compiler defect
+invented. Extended real-device fault injection reproduced backend_init incorrectly
+reporting initialized for a known-lost retained handle after start/close errors;
+the status now reports unavailable while ownership is retained. Fault-injection
+interpreter/native O0/O2 and six source checks pass; full verification is active.
+Fresh final-source verification passed: all 26 common fixtures in interpreter/
+native O0/O2 and six source targets, strict owned formatting/lint, private export
+rejections, actual logical 6/8 SDK streams, disabled-audio-assert modes, extended
+injected-failure modes and relocated ARM64 packages. Full 52-binary packages were
+rebuilt for both Mac CPUs and Windows x64; 56 exact-host ARM64 and 56 translated
+x64 Mac executions passed again. Windows remains link-only, not native runtime.
+

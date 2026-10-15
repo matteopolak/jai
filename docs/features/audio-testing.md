@@ -111,3 +111,10 @@ then exercises logical 6/8 output separately. Current packages contain 52 binari
 and four extra multichannel executions. Windows-only ABI declaration checks stay
 in the source verifier; injected-failure and disabled-audio-assert configurations
 remain separately labeled runners rather than being claimed by this package.
+
+The loading case verifies an odd-aligned borrowed WAV buffer retains storage
+identity and produces correct interpolation/final-frame hold through public
+sampling. The cleanup runner also injects start plus close failure and requires
+backend_init to reject the known-lost retained state. These additions preserve
+existing clipping assertions; an initial narrow-shift implementation regression
+was classified and corrected rather than relaxing the oracle.
