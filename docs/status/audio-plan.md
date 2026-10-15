@@ -17,3 +17,13 @@ pages, stream ownership and native queues have separate responsibilities.
 
 Explicit autonomous-work instructions govern execution without subagents or
 approval pauses. No peer edits, shared packaging changes or reference access.
+
+Current checkpoints implement and test public declaration identity, PCM mixing,
+gain/listener/VBAP helpers, actual compressed queues, owned lifecycle and real
+host native output. These are locally integrated sources with native evidence,
+not completion of the whole scope. Pending: reviewed exact spatial/orientation
+and interpolation contracts, Android target/backend, focus/background lifecycle,
+Linux/Windows native execution and release packaging. History and independent
+entity-phase synchronization are now resolved and implemented. The per-export
+inventory records missing direct behavioral references rather than treating
+signature probes as conformance.

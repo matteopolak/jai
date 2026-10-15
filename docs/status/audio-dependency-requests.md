@@ -15,4 +15,8 @@ No peer sources or shared manifest files were changed.
   reviewed fields/types. A general nested-overlay improvement needs owner review.
 - Reviewed-spec coordinator: resolve remaining helper contracts and Android
   conditional public signatures in sound-player questions; no absent-user prompt
-  is needed. advance_history_cursor has no implementable behavior specification.
+  is needed. The refreshed history and phase synchronization contracts are resolved.
+- Compiler owner: add Android to the target OS model and CLI. An actual `-os
+  android` check currently exits 2 (unknown OS); Linux is not counted as Android.
+  Native Android/Windows ARM64 SDKs and native Linux/Windows execution remain
+  coordinator validation dependencies; no peer toolchain changes are made here.

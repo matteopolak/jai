@@ -19,9 +19,11 @@
   compiler rejects nested #overlay(unknown.vtable). IUnknown's first/only field is
   vtable, so storage offsets and exported fields/types are retained. Windows
   x64/ARM64 static size checks pass; native Windows ABI execution is unavailable.
-- Native output currently requests stereo. Controlled VBAP math is implemented;
-  physical 5.1/7.1 negotiation, Android backend and focus/background behavior
-  remain unfinished. Windows waveOut and Linux ALSA C paths are source-only here.
+- Native output negotiates logical 2/6/8-channel streams. Host AudioQueue accepts
+  all three, with explicit channel layouts; controlled-buffer tests exercise all
+  channels. Physical speaker routing is unverified. Windows WinMM C cross-builds
+  warnings-denied for x64, but is not executed; Linux ALSA remains source-only.
+  Android and focus/background recovery remain unfinished.
 - Own native output adapter is source-relative, built beside its own source.
   Release relocation/packaging remains a coordinator dependency. No shared
   tools/native-libs.json edits, publications or release actions were performed.
@@ -37,14 +39,28 @@
   instead of waiting on the mixer. Native byte counts are whole queued buffers,
   which overestimate remaining bytes within the currently playing buffer.
 - Module init/shutdown and raw queue-global mutation require caller serialization;
-  supported player setters/stops synchronize internally. Direct active-field
-  mutation must be caller-managed as reviewed; sound_mutex is not exposed.
+  supported player setters/stops synchronize internally. Configure fields before
+  start: unsynchronized active-field writes can race mixing, as reviewed. There
+  is no exported general synchronization handle.
+- A pending bracketed entity lock was based on an incorrect synchronization
+  assumption. Refreshed review explicitly rejects it. Removed phase-spanning
+  ownership, balancing assertions and deferred stop callbacks. The previous test
+  expecting a paused mixer was invalid and replaced, explicitly, by independent
+  phase/worker progress, standalone phase and callback reentrancy checks. Each
+  pre/post call now locks only its own work; callbacks remain outside locks.
 - Existing tests/stdlib/sound-player-offline-api.jai uses unreviewed OFFLINE and
   render_offline. Preserved, classified as an unreviewed extension test and not
-  silently included among reviewed passes. Existing device test also uses legacy
-  convenience expectations; owned device tests provide precise current evidence.
-- advance_history_cursor remains missing: reviewed inventory supplies only its
-  signature, with no history state/behavior contract. No fabricated no-op added.
+  silently included among reviewed passes. The existing device test was initially
+  conservatively classified as legacy; actual execution establishes it as a valid
+  reviewed-contract regression. It passes interpreter and native O0/O2 unchanged.
+- Refreshed review resolves advance_history_cursor. Private history records
+  per-channel extrema over 1024-frame intervals in a 64-slot ring; advancement
+  resets the next interval and partial progress, including direct calls before
+  init. These independently chosen capacities are private. Recording adds two
+  extrema comparisons per scalar sample; no throughput benchmark is claimed.
+  Public tests can verify callable/signature behavior but cannot inspect private
+  extrema because the contract exports no accessor. Direct calls require caller
+  serialization with mixing, as reviewed.
 - Shell here-documents fail due to denied temporary-file creation; edits use
   apply_patch/Python. Initial empty files were detected/replaced before claims.
 - No agent_message capability exists; commentary/status docs carry updates.

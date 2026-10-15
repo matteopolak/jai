@@ -9,6 +9,11 @@ Implemented behavior includes PCM interpolation/accumulation, signed 16-bit outp
 repeat wrapping, silence outside source bounds, menu pause/resume, listener
 transforms, stereo and editable VBAP gain helpers, perceptual gain, rate slew,
 stream/entity lifecycle, callbacks outside the mixer lock and decoder retirement.
+Each entity phase synchronizes only its own work. No lock spans caller code.
+Configure public stream fields before start; direct active-field edits can race
+mixing. Exported synchronized setters/stops remain usable between phase calls.
+Private output-history intervals record extrema; advance_history_cursor resets
+its next interval and partial progress, requiring caller serialization with mixing.
 Loading borrows the supplied complete byte string; PCM samples point into it.
 load_audio_file retains File's allocation. Callers own asset storage and must keep
 it alive until every referring stream is released. release_asset runs per stream.
@@ -23,10 +28,11 @@ no-op in that path, which this implementation does not reproduce.
 Native macOS output uses an owned C adapter against AudioQueue/CoreAudio. Native
 callbacks only publish buffer availability; no Jai callback crosses into an OS
 audio thread. The adapter also contains Windows waveOut and Linux ALSA paths;
-these remain source-only on this host. No fake device handles or offline-success
-mode are provided. Current device negotiation requests stereo; physical 5.1/7.1
-negotiation and Android remain unfinished. VBAP helpers are controlled-buffer
-behavior, not multichannel hardware evidence.
+Windows C cross-compiles for x64 against the official SDK, without execution;
+Linux remains source-only. Device negotiation supports logical stereo, 5.1 and
+7.1, each accepted by the host AudioQueue API and tested with controlled buffers.
+Physical speaker routing, Android and focus/background recovery remain unfinished.
+Source-relative native packaging remains a coordinator dependency.
 
 Build the local dependencies with `python3 tools/audio_build_native.py`. It builds
 only inside this worktree and does not run the shared-root native builder. Build

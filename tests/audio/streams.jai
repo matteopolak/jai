@@ -3,6 +3,11 @@
 
 released: int;
 last_streamed: s64;
+priority_calls: int;
+
+set_priority :: () {
+    priority_calls += 1;
+}
 
 release :: (stream: *Sound_Stream, data: *Sound_Data) {
     assert(stream.sound_data == data);
@@ -17,6 +22,7 @@ main :: () {
     config.keep_sounds_alive_by_default = false;
     config.update_from_a_thread = false;
     config.release_asset = release;
+    config.set_async_thread_priority = set_priority;
     if !sound_player_init(config) {
         print("native-device-unavailable\nok\n");
         return;
@@ -73,8 +79,8 @@ main :: () {
 
     set_repeating(stream, true);
     start_playing(stream);
-    sleep_milliseconds(20);
+    sleep_milliseconds(100);
     sound_player_shutdown();
-    assert(released == 19 && last_streamed > 0);
+    assert(released == 19 && last_streamed > 0 && priority_calls == 1);
     print("ok\n");
 }

@@ -1,5 +1,4 @@
 #import "Basic";
-#import "File";
 #import "Sound_Player";
 
 released: int;
@@ -19,10 +18,8 @@ main :: () {
 
     print("native-device-opened\n");
     set_master_volume(0);
-    bytes, ok := read_entire_file("fixtures/tone.ogg");
-
-    assert(ok);
-    data := load_audio_data("generated stereo", bytes);
+    data := load_audio_file("fixtures/tone.ogg");
+    bytes := data.buffer;
 
     assert(data.loaded && data.type == .OGG_COMPRESSED && data.buffer.data == bytes.data);
     stream := make_stream(*data);
@@ -30,11 +27,12 @@ main :: () {
     assert(stream && stream.decoder && stream.decoder.page_size_in_samples == 8000);
     assert(data.nchannels == 2 && data.nsamples_times_nchannels == 8832);
     start_playing(stream);
-    output: [256] s16;
+    output: [128 * 8] s16;
+    properties := backend_init(config);
 
     for i: 0..999 {
         update();
-        fill_sample_buffer(.{ size_of(output), cast(*u8) output.data });
+        fill_sample_buffer(.{ 128 * properties.num_channels * 2, cast(*u8) output.data });
         if stream.play_cursor > 0 break;
         sleep_milliseconds(1);
     }

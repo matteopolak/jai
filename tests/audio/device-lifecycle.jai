@@ -10,22 +10,28 @@ main :: () {
     properties := backend_init(config);
     if properties.initted {
         print("native-device-opened\n");
-        assert(properties.num_channels == 2 && properties.output_sampling_rate > 0);
+        assert((properties.num_channels == 2 || properties.num_channels == 6 || properties.num_channels == 8) && properties.output_sampling_rate > 0);
         bytes, minimum := backend_count_buffered_bytes();
 
         assert(bytes == 0 && minimum > 0);
-        regions, success := backend_lock_fill_regions(1024);
+        requested := cast(s64) properties.num_channels * 2 * 256;
+        regions, success := backend_lock_fill_regions(requested);
 
-        assert(success && regions.buffer0.count == 1024 && regions.buffer1.count == 0);
+        assert(success && regions.buffer0.count == requested && regions.buffer1.count == 0);
         memset(regions.buffer0.data, 0, regions.buffer0.count);
         backend_release_fill_regions(regions);
         bytes, minimum = backend_count_buffered_bytes();
         assert(bytes >= 0);
         backend_play();
         sleep_milliseconds(20);
+        backend_shutdown();
+        config.seconds_to_fill_ahead = 0.6;
+        properties = backend_init(config);
+        assert(properties.initted, "positive finite fill-ahead must be bounded by native capacity, not arbitrarily rejected");
     } else {
         print("native-device-unavailable\n");
-        regions, success := backend_lock_fill_regions(1024);
+        requested := cast(s64) properties.num_channels * 2 * 256;
+        regions, success := backend_lock_fill_regions(requested);
         assert(!success && regions.buffer0.count == 0);
     }
 

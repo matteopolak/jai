@@ -42,6 +42,11 @@ main :: () {
     channel, success = source_dir_to_target_dir(.MONO);
     assert(!success);
 
+    vbap_speaker_directions = .[
+        .{ ROOT_2_OVER_2, ROOT_2_OVER_2 }, .{ ROOT_2_OVER_2, -ROOT_2_OVER_2 },
+        .{ 1, 0 }, .{ 0, 0 }, .{ -ROOT_2_OVER_2, ROOT_2_OVER_2 },
+        .{ -ROOT_2_OVER_2, -ROOT_2_OVER_2 }, .{ -0.9659258, 0.2588190 }, .{ -0.9659258, -0.2588190 }
+    ];
     arcs = arcs_6ch;
     scale = .{};
     add_vbap_gain_for_direction(*scale, vbap_speaker_directions[cast(int) Audio_Channel.FRONT_LEFT], 1);

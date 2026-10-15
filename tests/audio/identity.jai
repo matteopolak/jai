@@ -10,6 +10,9 @@ main :: () {
     assert(*arcs_6ch == *Again.arcs_6ch);
     assert(*the_accumulator == *Again.the_accumulator);
     assert(*decode_queue_initted == *Again.decode_queue_initted);
+    for direction: vbap_speaker_directions assert(direction.x == 0 && direction.y == 0);
+    for direction: vbap_source_directions assert(direction.x == 0 && direction.y == 0);
+
     config: Sound_Player_Config;
 
     assert(config.update_from_a_thread && config.keep_sounds_alive_by_default);

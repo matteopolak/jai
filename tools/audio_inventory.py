@@ -25,11 +25,14 @@ def main():
         name = name_match.group(1)
         declarations = [p for p in files if re.search(r"(?m)^\s*(?:#if[^\n]*?\s+)?"
                         + re.escape(name) + r"\s*(?:::|:=|:)", p.read_text())]
-        refs = [p.stem for p in tests if re.search(r"\b" + re.escape(name) + r"\b", p.read_text())]
+        refs = [p.stem for p in tests if p.stem != "signatures" and re.search(r"\b" + re.escape(name) + r"\b", p.read_text())]
+        signature_probe = re.search(r"\b" + re.escape(name) + r"\b", (ROOT / "tests/audio/signatures.jai").read_text())
         if not declarations:
             missing.add(name)
         source = ", ".join(p.name for p in declarations) or "**missing contract/implementation**"
         evidence = ", ".join(refs) if refs else "no direct genuine-test reference"
+        if signature_probe:
+            evidence += "; signature/link probe (not behavioral evidence)"
         if condition and "WINDOWS" in condition:
             evidence += "; Windows branch checked only (no Windows native execution)"
         rows.append((name, condition or "common", source, evidence))

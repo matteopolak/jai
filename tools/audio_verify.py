@@ -17,8 +17,8 @@ OWNED += sorted(p for p in (ROOT / "stdlib/internal/audio").glob("*.jai")
 OWNED += CASES
 
 
-def run(command, expected=None, cwd=ROOT):
-    result = subprocess.run(list(map(str, command)), cwd=cwd, env=ENV,
+def run(command, expected=None, cwd=ROOT, env=ENV):
+    result = subprocess.run(list(map(str, command)), cwd=cwd, env=env,
                             capture_output=True, text=True, timeout=60)
     matches = expected(result.stdout) if callable(expected) else expected is None or result.stdout == expected
     if result.returncode or result.stderr or not matches:
@@ -39,7 +39,7 @@ def main():
     run([ROOT / "target/compiler/debug/jailint", "-D", "warnings", *common_paths])
     for cpu in ("x64", "arm64"):
         run([ROOT / "target/compiler/debug/jailint", "-D", "warnings", "--os", "windows", "--cpu", cpu,
-             ROOT / "stdlib/Sound_Player/module.jai", *windows_paths])
+             ROOT / "stdlib/Sound_Player/module.jai", ROOT / "tests/audio/signatures.jai", *windows_paths])
     print("source-built jaifmt --check and warnings-denied jailint passed", flush=True)
     for case in CASES:
         if case.stem == "windows-abi":
@@ -47,7 +47,11 @@ def main():
                 run([COMPILER, case, "-check", "-os", "windows", "-cpu", cpu], "")
             print("windows-abi.jai: Windows x64/ARM64 static ABI checks; native execution unavailable", flush=True)
             continue
-        expected = (lambda out: out in {"native-device-opened\nok\n", "native-device-unavailable\nok\n"}) if case.stem in {"device-lifecycle", "streams", "compressed-stream"} else "ok\n"
+        expected = "ok\n"
+        if case.stem in {"device-lifecycle", "streams", "compressed-stream", "entity-phase"}:
+            expected = lambda out: out in {"native-device-opened\nok\n", "native-device-unavailable\nok\n"}
+        if case.stem == "controlled-output":
+            expected = lambda out: out in {"native-2-channel-output-opened\nok\n", "native-6-channel-output-opened\nok\n", "native-8-channel-output-opened\nok\n", "native-device-unavailable\nok\n"}
         run([COMPILER, case, "-interp"], expected)
         for level in ("O0", "O2"):
             executable = output / f"{case.stem}-{level}"
@@ -58,7 +62,19 @@ def main():
         for target_os in ("linux", "windows", "macos"):
             for cpu in ("x64", "arm64"):
                 run([COMPILER, case, "-check", "-os", target_os, "-cpu", cpu], "")
-        print(f"{case.name}: interpreter, native O0/O2 and six target checks passed", flush=True)
+        label = "signature/link probes" if case.stem == "signatures" else "behavior test"
+        print(f"{case.name}: {label}, interpreter/native O0/O2 and six target checks passed", flush=True)
+    controlled = ROOT / "tests/audio/controlled-output.jai"
+    for channels in (6, 8):
+        env = dict(ENV, JAI_AUDIO_CHANNELS=str(channels))
+        expected = f"native-{channels}-channel-output-opened\nok\n"
+        extra = ["-add", f"EXPECTED_CHANNELS :: {channels};"]
+        run([COMPILER, controlled, "-interp", *extra], expected, env=env)
+        for level in ("O0", "O2"):
+            executable = output / f"controlled-{channels}-{level}"
+            run([COMPILER, controlled, "-" + level, *extra, "-exe", executable], "")
+            run([executable], expected, cwd=controlled.parent, env=env)
+        print(f"{channels}-channel native API/controlled-buffer path passed interpreter and O0/O2; physical multichannel unverified", flush=True)
     for case in NEGATIVE:
         result = subprocess.run([COMPILER, case, "-check"], cwd=ROOT, env=ENV,
                                 capture_output=True, text=True, timeout=60)
