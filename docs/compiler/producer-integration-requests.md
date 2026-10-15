@@ -76,3 +76,12 @@ wasm32 compiler host and Linux/X64 child checks pass too. See
 [host-target evidence](host-target-constants.md). The portable private runtime
 protocol adoption remains pending independently; existing runtime-configuration.md
 consumer edits and allocation regressions are unchanged and pass.
+
+## Windows x64 unwind dependency and true-leaf fixture distinction
+
+General backend fix now retains ABI unwind tables under O2 nounwind inference;
+x64 MSVC/MinGW and ARM64 object/PE metadata tests pass. Exact NEW producer
+named-fault copies cross-link; O2 middle now has metadata, while O2 fault_leaf
+is a legitimate frameless leaf and its unconditional lookup assertion needs
+producer review. No producer tests were changed. Native Windows backtrace
+execution remains required. See [unwind evidence](windows-unwind.md).
