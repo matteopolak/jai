@@ -150,3 +150,26 @@ or alternate target constant was introduced. See native/lint-target-context.md.
 Source ledger: 28,399 declared, 1,262 forwarded, 544 generated bodies, 47 manual,
 119 unresolved, one duplicate. Broad source/native matrix is running against a
 stable staged snapshot; scoped results above are not full integration evidence.
+
+Stable full checkpoint-5 completed: 262 source passed/24 failed, 51 native
+build/run passed/one retained SDL layout failure/one unsupported public iOS
+host case, 96 privacy passed/two blocked by D3D, 1,200 symbols passed. All
+required failures remain active. Evidence: `.work/stable-checkpoint-5-full.json`.
+
+Subsequent work: X11 modal message box now has native UI/event handling for
+all seven styles, keyboard/button/WM-close/destruction paths and other-window
+event preservation. Both Linux CPUs source-check the real-server automated
+test; Linux native execution is still required. Private helpers remain hidden.
+Pinned complete official X.Org protocol header assertions pass both C targets.
+Formatting/regeneration/43 Python tests pass; strict lint still reports the
+real host target guard instead of claiming Linux bodies visited.
+
+`DXC_Reflect` now has a real checked COM forwarding body and an actual native
+DXC compile/reflection test. Its Jai source is blocked before body validation
+by the general D3D12 forward-overlay issue; no source/native DXC pass is claimed.
+Complete pinned Microsoft SDK headers/source confirm native buffer handling;
+SDK buffer/COM scalar layout assertions pass both macOS C++ CPU compilations.
+These host adapter probes are not Windows ABI/runtime execution. Ledger now
+records 49 manual authored bodies and 117 unresolved; unverified authored code
+is explicitly not completed functionality. Next: remaining DXC compile helper
+and supported reviewed convenience work; compiler/target/native gaps stay open.

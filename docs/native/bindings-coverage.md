@@ -15,16 +15,18 @@ Objective_C helpers. The explicit SDL WM-info adapter is recorded as a manual
 implementation with its original native symbol and full matched signature;
 its safety evidence does not resolve RWops/UserEvent layout mismatches.
 
-Current root ledger counts are 28,397 declared, 1,262 forwarded, 547 generated
-implementations, 45 manual implementations, 120 unresolved and one exact
+Current root ledger counts are 28,399 declared, 1,262 forwarded, 544 generated
+implementations, 49 manual implementations, 117 unresolved and one exact
 duplicate. These counts measure source dispositions, not completed binding
 scope. Remaining declared ABI discrepancies and unverified native platforms
 remain required work; newly resolved AppKit return semantics do not establish
 complete AppKit lifecycle support.
 The new POSIX availability association emits 59 formerly unresolved entries.
 Both macOS CPUs execute source-built C/Jai ABI and runtime probes successfully;
-x64 uses OS translation on this ARM64 host. WGL, four X11 helpers and safe SDL
-RWops forwarding have real bodies; WGL/X11 runtime still needs those platforms.
+x64 uses OS translation on this ARM64 host. WGL, generic GL dispatch and five
+X11 helpers have real bodies; WGL/X11 runtime still needs those platforms.
+SDL now preserves actual native RWops pointer/symbol identity per refreshed
+review; unsupported custom Jai callback adapters were removed.
 Android EGL's new body is explicitly unverified while the compiler rejects its
 target. iOS host behavior is tested privately with exact public target absence;
 no desktop convenience export is added. All unresolved/configuration/ABI gaps
@@ -33,6 +35,13 @@ Eight additional Android POSIX records now have explicit pinned native header
 delegates; both target C layout assertions pass. All POSIX source declarations
 are emitted, without claiming Android Jai/runtime validation. ImGui's qualified
 nested member checks and a real Jai-to-C++ constructor/split ABI test now pass.
+The stable checkpoint-5 full report records 262 source checks passed/24 failed,
+51 native build/run checks passed/one retained SDL layout failure, 96 privacy
+checks passed/two blocked by D3D, and 1,200 symbols passed. Full configuration
+failures are now 40 after implementing GL dispatch. Refreshed broad strict lint
+records 16 incomplete scopes; earlier all-pass lint reports do not prove current
+complete semantic coverage. Subsequent X11 modal code has Linux source checks
+and real-server automation supplied, but no native Linux execution claim.
 Actual failures, scope and hashes are in the [verified evidence index](bindings-verified-snapshot.json)
 and [deviations report](../status/bindings-deviations.md).
 
@@ -44,7 +53,7 @@ implementations, where built, come from pinned official vendor repositories.
 
 ## Validation so far
 
-- Forty-one Python parser/generator regressions pass, including configuration
+- Forty-three Python parser/generator regressions pass, including configuration
   labels between aggregate names and kinds, multi-type fences, GL parent/field
   relationships across metadata sections, and implicit native enum dependencies.
 - lz4, xxHash, meshoptimizer, freetype, stb_image, stb_image_resize,

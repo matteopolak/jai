@@ -2,8 +2,8 @@
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
     "declared": 28399,
-    "unresolved": 119,
-    "implemented_manual": 47,
+    "unresolved": 117,
+    "implemented_manual": 49,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1
@@ -185,6 +185,36 @@
       "report": ".work/stable-checkpoint-5-configurations.json",
       "sha256": "a854d0339d643840c4e6d3ca7cde4231915516953306e91ee0dba3b1cfc5288d",
       "scope": "Current scoped native/source and configuration evidence; refreshed broad lint has 16 incomplete scopes, explicitly not an all-pass claim."
+    },
+    {
+      "report": ".work/stable-checkpoint-5-full.json",
+      "sha256": "414734675aa50ff83712e277ca68a64ed4a2b67ad8b7835357e315856af33595",
+      "scope": "Worker evidence only. X11 modal source verified, Linux native absent; DXC Jai blocked by D3D forward-overlay, host SDK header layout verified only."
+    },
+    {
+      "report": ".work/x11-modal-source-final.json",
+      "sha256": "1d9881f963ec86c8b226f33134c125ffc172e20271a3dfd951c2beae0239f936",
+      "scope": "Worker evidence only. X11 modal source verified, Linux native absent; DXC Jai blocked by D3D forward-overlay, host SDK header layout verified only."
+    },
+    {
+      "report": ".work/x11-native-protocol-macro.json",
+      "sha256": "28b73258a5d3c06a08aaa3292546bec162d297ac9e39b6a0f3d8ba47c1e6cfae",
+      "scope": "Worker evidence only. X11 modal source verified, Linux native absent; DXC Jai blocked by D3D forward-overlay, host SDK header layout verified only."
+    },
+    {
+      "report": ".work/x11-modal-production-tools.json",
+      "sha256": "de39cfea56ac2f4341e637600e2a364ce17754a0170ff04c1f5aace9aa78224d",
+      "scope": "Worker evidence only. X11 modal source verified, Linux native absent; DXC Jai blocked by D3D forward-overlay, host SDK header layout verified only."
+    },
+    {
+      "report": ".work/dxc-reflection-current.json",
+      "sha256": "5759dd1c3c0aef88958fffba7be19c8965996eecd955939e0c4fd326c2ee5a6b",
+      "scope": "Worker evidence only. X11 modal source verified, Linux native absent; DXC Jai blocked by D3D forward-overlay, host SDK header layout verified only."
+    },
+    {
+      "report": ".work/dxc-sdk-layout-both-host-cpus.json",
+      "sha256": "dd9d2dec18bfc0b681451a7d87cf094443a7a39b19f75193838ceda7219efdb7",
+      "scope": "Worker evidence only. X11 modal source verified, Linux native absent; DXC Jai blocked by D3D forward-overlay, host SDK header layout verified only."
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

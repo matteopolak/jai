@@ -37360,7 +37360,8 @@
         "declared": 92,
         "implemented": 2,
         "forwarded": 155,
-        "unresolved": 3
+        "unresolved": 2,
+        "implemented_manual": 1
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -39052,8 +39053,8 @@
           "signature": "DXC_Reflect :: (dxil: []u8) -> *ID3D12ShaderReflection, bool",
           "condition": "",
           "spec_line": 253,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/dxc_compiler/wrappers.jai"
         },
         {
           "name": "CLSID_DxcCompiler",
@@ -212944,8 +212945,8 @@
       "spec_sha256": "4a08c1afb5c9b826afabe65ecca056abd03112b1c4f697afdf4f43a0b33c62bc",
       "counts": {
         "declared": 1248,
-        "unresolved": 5,
-        "implemented_manual": 9,
+        "unresolved": 4,
+        "implemented_manual": 10,
         "implemented": 7
       },
       "member_counts": {},
@@ -213328,8 +213329,8 @@
           "signature": "x_message_box :: (parent: Window, msg: string, caption: string, style: X_Message_Box_Style) -> X_Message_Box_Response",
           "condition": "",
           "spec_line": 60,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "x_draw_textpanel",
