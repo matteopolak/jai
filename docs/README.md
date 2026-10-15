@@ -187,6 +187,8 @@ The LLVM backend, C ABI and linking.
 
 ## Standard library
 
+- [Data/resource tests and dependencies](portable-data-testing.md);
+  [Windows resources and native gate](portable-windows-resources.md).
 - [Subtitles implementation and per-API evidence](portable-subtitles.md).
 - Data/resource [plan](portable-data-plan.md), [public API evidence](portable-data-api.md),
   [progress](status/portable-data-progress.md), [deviations](status/portable-data-deviations.md),

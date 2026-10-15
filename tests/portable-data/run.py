@@ -19,6 +19,7 @@ sources = [
     "stdlib/Ico_File", "stdlib/Simple_Package", "stdlib/Subtitles",
     "stdlib/internal/resource-wire", "stdlib/internal/simple-package",
     "stdlib/internal/subtitles", "tests/portable-data",
+    "stdlib/Windows_Resources", "stdlib/tests/portable-data-resource.jai",
 ]
 
 def run(*args):
@@ -40,7 +41,25 @@ for name in ("ico-wire", "package-contract", "subtitles-contract"):
     wasm = output / f"{name}.wasm"
     run(compiler, "-os", "wasm", "-O2", source, "-exe", wasm)
     run("node", "--no-warnings", "tools/wasi_run.mjs", wasm, output)
+resource_test = "stdlib/tests/portable-data-resource.jai"
+run(compiler, "-interp", resource_test, "--", output)
+for mode in ("O0", "O2"):
+    binary = output / f"resource-directory-{mode}"
+    run(compiler, f"-{mode}", resource_test, "-exe", binary)
+    run(binary, output)
+wasm = output / "resource-directory.wasm"
+run(compiler, "-os", "wasm", "-O2", resource_test, "-exe", wasm)
+run("node", "--no-warnings", "tools/wasi_run.mjs", wasm, output)
+run(sys.executable, "tests/portable-data/sdk_resources.py", output)
 run(sys.executable, "tests/portable-data/wire_consumer.py", output)
+windows_sources = ["stdlib/Windows_Resources", "stdlib/internal/windows-resources",
+                   "stdlib/tests/portable-data-resource-windows.jai"]
+run(formatter, "--check", *windows_sources)
+run(linter, "-D", "warnings", "-os", "windows", "--manifest",
+    output / "lint-windows-native.json", *windows_sources)
+for cpu in ("x64", "arm64"):
+    run(compiler, "-check", "-no_dce", "-os", "windows", "-cpu", cpu,
+        "stdlib/tests/portable-data-resource-windows.jai")
 for os_name in ("macos", "linux", "windows", "wasm"):
     run(linter, "-D", "warnings", "-os", os_name,
         "--manifest", output / f"lint-{os_name}.json", *sources)

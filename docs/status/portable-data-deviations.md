@@ -25,3 +25,8 @@ discovery still need reviewed contracts. No declaration stubs count as functiona
 
 No shared dependency manifest, peer source, Extensions or old foundations staging
 is modified. Native dependencies live under this worktree's target/.
+
+Windows_Resources currently exposes only its exact three records. Native SDK
+transaction internals are real but not yet wired to public functions, whose
+default/policy contracts are unresolved. LLVM group/image interoperability and
+portable private tests pass; native transaction execution remains pending.

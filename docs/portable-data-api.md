@@ -14,7 +14,7 @@ This ledger records partial completion, not full integration.
 | create_ico_file | Provisional single-frame encoder; LLVM RC accepts RGB/RGBA; sips decodes 16x16 |
 | create_ico_file_from_bitmap_filename | Real File/stb backend; interpreter/native O0/O2 Unicode BMP and errors; frame policy unresolved |
 | Subtitles all exports | Implemented supported contracts; [per-API evidence](portable-subtitles.md); interpreter/native O0/O2 and compiled WASI; narrow questions remain |
-| Windows_Resources all exports | Pending; defaults/policies unresolved; native Windows required |
+| Windows_Resources | Three exact records; real private wire/transaction backend; [per-API pending list and evidence](portable-windows-resources.md); public policies/native effects unresolved |
 | Icon all exports | Pending; plugin host protocol unresolved |
 
 ICO fixed-frame layout/resizing remains incomplete. SDK file consumption does not

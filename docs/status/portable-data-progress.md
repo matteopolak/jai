@@ -25,3 +25,10 @@ WASI passes filesystem tests. Package compiled WASI also passes. Broader package
 checks cover every truncation, UTF-8 names, empty-package rejection, huge counts/
 lengths, negative extents and TOC-only overlap. Python independently reads emitted
 package and CSV. Real stb filename loading passes interpreter/native O0/O2.
+
+Windows resource backend now has validated portable ICO group conversion and real
+private Win32 transactions. Portable directory tests pass interpreter/native O0/O2
+and compiled WASI. LLVM RC emits byte-identical group/image payloads and lld-link
+links a real resource-only x64 DLL. Windows transactions are x64/ARM64 checked
+with strict lint, with original native SDK readback tests prepared but NOT run.
+Public Windows policies and all Icon host functions remain pending spec review.
