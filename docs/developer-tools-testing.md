@@ -57,6 +57,8 @@ All fixture paths below are relative to `tests/developer-tools`.
 
 ## Changes and remaining coverage
 
+`tools/check_developer_sdk_configuration.py` is included in the focused runner. It builds the production helper against an owned nondefault SDK layout, checks helper/native facade links and runtime search paths, records actual configured include-probe invocation, and executes original generated C bindings in interpreter/native O0/O2. It restores the primary SDK configuration afterward. These two fixtures bring the supported count to50; host SDK23 execution does not certify SDK21 or Linux runtime.
+
 Production regressions and test-oracle corrections are recorded separately in [deviations](status/developer-tools-deviations.md). In particular, a callback declaration-count mistake and a fix-it byte-offset mistake were corrected using the independently authored source, without changing production behavior or removing valid assertions. The reviewed CXIndexOptions refinement corrected the spec, then drove the exact implementation and replacement native tests.
 
 The per-API [inventory](developer-tools-api.json) distinguishes pending exports, source-only native declarations and grouped actual execution evidence. Full C++/macro/bridge generation, profiler instrumentation, debugging/crash/minidump/assertion paths, debug-type parsers, Codex metadata/metrics and remaining Check routines are incomplete. [Progress](status/developer-tools-progress.md), [questions](specs/stdlib/developer-tools-questions.md) and deviations track those gaps. This worker does not migrate or delete integration-owned inherited tests; it never uses obsolete private expectations as gates for these modules.

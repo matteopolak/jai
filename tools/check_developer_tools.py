@@ -15,6 +15,7 @@ import check_developer_native_abi
 import check_developer_dwarf_lines
 import check_developer_dwarf_frames
 import check_developer_eh_frames
+import check_developer_sdk_configuration
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
@@ -66,6 +67,7 @@ def prepare_cpp_visitors(prefix):
 
 def main():
     check_developer_bindings.main()
+    configured_cases = check_developer_sdk_configuration.main()
     build_developer_debug.main()
     check_developer_debug_windows.main()
     check_developer_msf.main()
@@ -282,7 +284,7 @@ def main():
         if os_name != "wasm":
             run([JAIC, "tests/developer-tools/bindings-literals.jai", "-check", "-os", os_name, "-cpu", cpu])
             run([JAIC, "tests/developer-tools/bindings-clang-options.jai", "-check", "-os", os_name, "-cpu", cpu])
-    print(f"Developer tooling supported suite: {len(cases)} interpreter/native O0/O2 fixtures, native C/C++ round trips, diagnostics, scoped format/lint and target ABI checks passed")
+    print(f"Developer tooling supported suite: {len(cases) + configured_cases} interpreter/native O0/O2 fixtures, native C/C++ round trips, diagnostics, scoped format/lint and target ABI checks passed")
 
 
 if __name__ == "__main__":
