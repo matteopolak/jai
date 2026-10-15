@@ -1,5 +1,9 @@
 # Developer documentation
 
+- [Dynamic import factory registration](compiler/plugin-registration.md):
+  tested typed registrar and staged initialization, the pending synchronous
+  service probe, and the clean portable-owner/compiler handoff.
+
 - [Required native library initialization](compiler/native-required-libraries.md):
   real constructor effects in interpreted/linked programs, precise load failures
   and compile-time/SandboxHost capability boundaries.
