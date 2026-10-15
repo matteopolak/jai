@@ -206,3 +206,19 @@ SDL proxy request above is resolved in source by bindings40e37e9; production nat
 Portable owner: reconcile internal/simd/lanes.jai and its generator/tests with latest reviewed simd.md. Comparisons use scalar bool-to-element values (integer1/0), get_mask tests truthiness, load returns SIMD_Array(N,F), gather/scatter use byte offsets and ordered repeated writes, looping indices are i*STEP, and horizontal_add fills all interleaved pair sums. Preserve documented reviewed reference defects; do not treat now-settled contracts as unspecified.
 
 Compiler owner: create_thread ignores stack/security arguments and unknown flags. Implement actual supported native handling or explicit diagnostics; default-input tests cannot establish nondefault support. Preserve suspended/resume/count and real ABI/thread identities.
+
+## Audio integration handoff
+
+Merged controlled kernels from7d641f8 with portable canonical records/topology
+and accumulator retained; duplicated types removed, Cached_Ogg_Decoder added to
+the canonical generator, sample guards/magic retained, helper privacy enforced.
+Latest sound-player.md now answers many earlier questions: power law and raw
+master-volume setter corrected, gain step bounded by actual backend sampling
+rate. The private backend_properties must be populated by genuine initialization;
+no fake44100 default is provided. Finish real lifecycle/queues/devices and
+category mix levels, review no_overflow/page interpolation and quaternion
+normalization against remaining exact contracts. New perceptual-volume regression
+failed before the fix and passes afterwards. Full playback remains incomplete.
+
+Foundation pending strict lint is corrected by5c5e27b; retain the combined
+target-aware union rather than restoring the producer's host-only staged lint.
