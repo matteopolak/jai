@@ -11,6 +11,7 @@ import platform
 import csv
 import check_developer_bindings
 import check_developer_cpp_custom
+import check_developer_type_emission
 import check_developer_check
 import build_developer_debug
 import check_developer_debug_lifecycle
@@ -35,7 +36,8 @@ def run(command, *, output=None, error=""):
     result = subprocess.run([str(x) for x in command], cwd=ROOT, env=ENV,
                             text=True, capture_output=True, timeout=60)
     if result.returncode or (output is not None and result.stdout != output) or result.stderr != error:
-        raise RuntimeError(f"{command}: exit {result.returncode}\n{result.stdout}\n{result.stderr}")
+        diagnostic = (result.stderr or result.stdout).splitlines()[:2]
+        raise RuntimeError(f"{command}: exit {result.returncode}; diagnostic={diagnostic}")
     return result.stdout
 
 
@@ -123,6 +125,7 @@ def check_profiler_client_children():
 def main():
     check_developer_bindings.main()
     check_developer_cpp_custom.main()
+    check_developer_type_emission.main()
     check_developer_check.main()
     configured_cases = check_developer_sdk_configuration.main()
     build_developer_debug.main()

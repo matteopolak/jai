@@ -71,6 +71,14 @@ def remaining_matrix(inventory):
             output += ["", "| Implemented generator with remaining paths | Remaining work |", "| --- | --- |",
                        "| `generate_bindings` | Global POD aggregate/reference C++ declarations and custom overload/argument mappings execute; namespace/method/template/printf adapters, arbitrary ABI-changing callbacks and broader parsing remain unfinished. |",
                        "| `generate_bridge` | Global POD aggregate/reference adapters and custom overload/argument mappings execute; namespace/method/template/printf adapters and arbitrary ABI-changing callbacks remain unfinished. |", ""]
+            output += ["| Implemented public helper | Remaining paths / questions |", "| --- | --- |",
+                       "| `append_cpp_type` | Standard abstract declarators execute; special methods/templates/vendor types, unresolved bound expressions and question14 context flags remain open. Width-only native long/char identity remains question8. |",
+                       "| `append_cpp_type_modifiers` | Reference/cv suffixes execute; wider context-flag semantics await question14. |",
+                       "| `print_type_to_builder` | Standard represented types and output paths execute; default expressions, existing-declaration synthesis and wider flags remain open. |",
+                       "| `type_to_string` | Standard printer and caller-owned result execute; exact lifetime policy awaits question14. |",
+                       "| `print_function_type_to_builder` | C-call signatures execute; special methods/variadics/default expressions remain unfinished. NO_ARGUMENT_DEFAULTS is supported. |",
+                       "| `exceeds_signed_int_value` | 8/16/32/64-bit thresholds execute; larger represented integer widths remain unsupported. |",
+                       "| `strip_type` | Selected alias/enum/pointer traversal retains original component identity and diagnoses cycles; wider implicit-generator behavior is not inferred. |", ""]
         if module == "Check":
             output += ["", "| Implemented function with remaining paths | Remaining work |", "| --- | --- |",
                        "| `verify_elsewhere_binding` | SDK AST-backed scalar/pointer/reference/function/array/nominal subset executes from staged NEW code on Mac. Variadic/member-pointer/unsupported builtin/template forms and renamed nominal matching remain open. Actual Compiler header ELSEWHERE flags are missing: minimal producer request is preserved. Windows native execution remains pending. |",
@@ -186,6 +194,8 @@ def main():
                     item["implementation"] = "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
                 if item["name"] == "generate_bridge":
                     item["implementation"] = "global C++17 adapter subset; original native POD/reference effects and customized overload/argument/record/field mappings verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
+                if item["name"] in {"append_cpp_type", "append_cpp_type_modifiers", "print_type_to_builder", "type_to_string", "print_function_type_to_builder", "exceeds_signed_int_value", "strip_type"}:
+                    item["implementation"] = "public type-emission/stripping/integer-width subset; actual generated Jai/C++ callback/array/reference/qualified-name types and storage mutation execute interpreter/native Mac O0/O2 with configured C++ O0/O2, diagnostics and strict lint; default arguments, special methods/templates/bitfields/inheritance and remaining print flags pending"
                 if item["name"] == "generate_bindings":
                     item["implementation"] = "C and global POD C++ generation subset; original aggregate/reference effects, custom overload/argument/record/field mappings and destination-preserving diagnostics verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
                 if item["name"] in {"visit_declarations", "find_parent_enum", "create_type_of_enum", "change_type_to_enum",

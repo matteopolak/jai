@@ -6,7 +6,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Bindings_Generator
 
-155 function names have pending declarations; 217 native function names still lack invocation fixtures.
+148 function names have pending declarations; 217 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
@@ -17,8 +17,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `append_as_unsigned_integer_hex` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_bitfield_helpers` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_calling_convention_directives` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `append_cpp_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `append_cpp_type_modifiers` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_cpp_wrapper` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_elsewhere` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_indentation` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -67,7 +65,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `debug_print_cursor` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `deinit_generator` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `ensure_local_libclang_exists` | 2 | 2 | Bindings_Generator question11: installation/copy policy |
-| `exceeds_signed_int_value` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `expect_tokens` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `fill_comment` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `fill_location_and_comment_if_needed` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -141,13 +138,11 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `print_enum_body` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_expression_to_builder` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_function` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `print_function_type_to_builder` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_literal_to_builder` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_namespace` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_objc_selector_identifier` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_struct` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_struct_vtable` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `print_type_to_builder` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_typedef` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `raw_string_from_macro_tokens` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `raw_tokens_string_from_cursor` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -159,18 +154,26 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `should_unwrap_typedef` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `size_from_number_flags` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `string_from_macro_value` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `strip_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `stripped_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `to_string` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `try_find_struct_in_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `type_has_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `type_to_string` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 
 
 | Implemented generator with remaining paths | Remaining work |
 | --- | --- |
 | `generate_bindings` | Global POD aggregate/reference C++ declarations and custom overload/argument mappings execute; namespace/method/template/printf adapters, arbitrary ABI-changing callbacks and broader parsing remain unfinished. |
 | `generate_bridge` | Global POD aggregate/reference adapters and custom overload/argument mappings execute; namespace/method/template/printf adapters and arbitrary ABI-changing callbacks remain unfinished. |
+
+| Implemented public helper | Remaining paths / questions |
+| --- | --- |
+| `append_cpp_type` | Standard abstract declarators execute; special methods/templates/vendor types, unresolved bound expressions and question14 context flags remain open. Width-only native long/char identity remains question8. |
+| `append_cpp_type_modifiers` | Reference/cv suffixes execute; wider context-flag semantics await question14. |
+| `print_type_to_builder` | Standard represented types and output paths execute; default expressions, existing-declaration synthesis and wider flags remain open. |
+| `type_to_string` | Standard printer and caller-owned result execute; exact lifetime policy awaits question14. |
+| `print_function_type_to_builder` | C-call signatures execute; special methods/variadics/default expressions remain unfinished. NO_ARGUMENT_DEFAULTS is supported. |
+| `exceeds_signed_int_value` | 8/16/32/64-bit thresholds execute; larger represented integer widths remain unsupported. |
+| `strip_type` | Selected alias/enum/pointer traversal retains original component identity and diagnoses cycles; wider implicit-generator behavior is not inferred. |
 
 | Native function | Evidence / next check |
 | --- | --- |
