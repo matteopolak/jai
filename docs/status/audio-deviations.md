@@ -84,3 +84,26 @@
   buffer, in accumulator chunks of up to 48000 frames. Page allocation and scalar
   multichannel loops can extend that critical section; no real-time deadline or
   worst-case setter latency is established by the functional tests.
+
+- Platform work supersedes the earlier source-relative packaging limitation:
+  native executables statically embed audio and decoder archives, and actual host
+  moved-package O0/O2 tests pass without shared audio/decoder files or loader
+  overrides. Shared manifest integration is still coordinator-owned, with a
+  minimal local-unit fragment and all six SDK recipes documented.
+- Device names/topologies now refresh on every enumeration call. Interned names
+  and changed returned snapshots remain valid for process lifetime, trading
+  memory proportional to unique observed changes for borrowed-slice safety.
+- Focus/background recovery uses public macOS/Windows process/window state and
+  real SDK pause/resume. No GUI window means no window-focus gating. ALSA has no
+  portable focus interface; Linux focus is unsupported, while PCM recovery is
+  implemented. Android remains compiler-dependent. Native polling is every
+  250 ms; CoreGraphics window dictionaries can be expensive and no latency/CPU
+  benchmark is claimed. An activation-policy-only probe paused CLI playback;
+  the real progress regression caught it, and owned-window detection corrected it.
+- Runtime recovery discards already queued audio, preserves logical format and
+  retries every 250 ms. No audio cursor rewind or automatic channel-format
+  conversion is attempted. An incompatible endpoint can remain unavailable;
+  errors/restoration are logged outside the player lock. SDK disposal failure
+  remains fatal to avoid freeing state still reachable by callbacks. Physical
+  hotplug/GUI focus/sleep-wake are source-only recovery evidence; the real harness
+  exercises SDK pause/resume and controlled reopen with zero PCM.

@@ -82,3 +82,27 @@ not private-extrema conformance. The final strengthened lifecycle fixture was
 reverified separately after the full matrix; no implementation change followed.
 Remaining provisional implementation paths are now enumerated explicitly in
 [deviations](audio-deviations.md), with exact review requests in questions.
+
+Platform checkpoint after 534dc99: native adapter uses bare native-library search
+and static linkage. Owned builder writes checked per-target metadata and static/
+interpreter-shared artifacts; object headers must match OS/CPU. Host macOS ARM64
+real silent SDK pause/resume, fresh discovery and controlled reopen pass. macOS
+x64 and Windows x64 owned C/ObjC/decoder/harness builds link, without execution.
+Six OS/CPU Jai source-check groups pass separately. Relocated host O0/O2 entity
+phase and compressed-stream tests run with real device markers after removing
+shared audio/decoder files and clearing loader overrides; imports/rpaths contain
+no source dependency. Full audio suite, actual formatter and warnings-denied
+lint pass after the platform changes. A subsequent backend shutdown correction
+also clears retry state when no native handle remains and receives targeted
+lifecycle verification before commit.
+
+Focus policy uses public process/window SDKs on macOS/Windows, preserving CLI
+playback. Initial activation-policy-only probing incorrectly paused CLI hosts;
+the genuine entity-phase progress regression exposed it and passes after owned
+window detection was added. Native errors trigger logged bounded retry/reopen;
+macOS default-device/stopped-queue and Linux PCM suspend/disconnect states are
+polled. Device enumeration refreshes without invalidating old snapshots.
+Physical GUI focus/hotplug/sleep events remain untested; Linux/Windows runtime,
+Windows ARM64 SDK build and Android compiler/backend remain dependencies. See
+[the self-contained integration plan](../features/audio-native-integration.md).
+The refreshed spatial/cursor review is now available and is the next scope.

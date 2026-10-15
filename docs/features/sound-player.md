@@ -33,8 +33,11 @@ audio thread. The adapter also contains Windows waveOut and Linux ALSA paths;
 Windows C cross-compiles for x64 against the official SDK, without execution;
 Linux remains source-only. Device negotiation supports logical stereo, 5.1 and
 7.1, each accepted by the host AudioQueue API and tested with controlled buffers.
-Physical speaker routing, Android and focus/background recovery remain unfinished.
-Source-relative native packaging remains a coordinator dependency.
+Physical speaker routing and Android remain unverified or dependency-blocked.
+Desktop focus/recovery and fresh device discovery are implemented through public
+SDKs. Native executables use relocatable static linkage; shared manifest adoption
+remains coordinator-owned. See [native integration](audio-native-integration.md)
+for six target recipes, actual evidence and physical-event limitations.
 
 Build the local dependencies with `python3 tools/audio_build_native.py`. It builds
 only inside this worktree and does not run the shared-root native builder. Build

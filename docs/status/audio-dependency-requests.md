@@ -10,6 +10,10 @@ No peer sources or shared manifest files were changed.
   Linux needs ALSA; Windows source uses WinMM. Source-relative local dylib loading
   is tested, but relocated/release installations are not verified. Coordinate
   tools/native-libs.json and shared build changes outside this worker's checkout.
+  Superseded source-relative limitation: bare native-library search and static
+  archives are now implemented and host relocation tests pass. The concrete
+  source-less local manifest fragment, conditional focus.m unit, six target SDK
+  recipes and validation plan are in ../features/audio-native-integration.md.
 - Compiler owner: nested COM overlay names are rejected at the field parser.
   Audio uses the identical zero-offset IUnknown prefix overlay and retains all
   reviewed fields/types. A general nested-overlay improvement needs owner review.
