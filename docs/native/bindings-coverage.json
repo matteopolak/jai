@@ -172729,10 +172729,10 @@
     },
     "rpmalloc": {
       "spec": "docs/specs/stdlib/modules/rpmalloc.md",
-      "spec_sha256": "b48e3ee72411d9af591c65b3f81b7a2b5b0ffdcbcd8a72e04e54038c985e8bff",
+      "spec_sha256": "b0a4ddb89a4e164b32880037e2c9db0d45d671983d7efa4eb7817faebcc91424",
       "counts": {
-        "unresolved": 66,
-        "partially_implemented": 14,
+        "unresolved": 65,
+        "partially_implemented": 15,
         "declared": 31
       },
       "member_counts": {},
@@ -172779,8 +172779,10 @@
           "signature": "initialize_config :: (config: *rpmalloc_config_t) -> s32",
           "condition": "",
           "spec_line": 12,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/wrappers.jai",
+          "implemented_condition": "!USE_RAW && Native_Profile_Matches",
+          "reason": "Native default cache/statistics/assertion profile only; remaining profiles and raw mode require implementations"
         },
         {
           "name": "initialize_config",
@@ -174051,6 +174053,24 @@
             "signature": "posix_memalign :: (output: **void, alignment: u64, size: u64) -> s32",
             "scope": "Private SDK precondition validation and commit-on-success output; not public API completion"
           }
+        },
+        {
+          "module": "internal/bindings/rpmalloc-callbacks",
+          "status": "partial_public_profile_adapter",
+          "artifacts": {
+            "stdlib/internal/bindings/rpmalloc-callbacks/bridge.c": "2c1b316d0b6997b925ca4d9979a067c01530a31793cfbcfcb4298726a1a184b5",
+            "stdlib/internal/bindings/rpmalloc-callbacks/module.jai": "436b6d8b003c66f3f7bc8dae1eac4ffa7c0a68ef7b4ccf73bc54164a5bc6dbb8"
+          },
+          "scope": "Owned callback/name lifetime, 64-bit public offset registry, actual init failure; default native profile only",
+          "limitations": "Raw/heaps/nondefault profiles and exact native-error Jai location provenance unresolved",
+          "caller_context_artifacts": {
+            "stdlib/internal/bindings/callback-context/bridge.c": "472a5a8dbc8871f7ccca1d5f0b9a445c5712c5d624ae75936d0d7cf71de62331",
+            "stdlib/internal/bindings/callback-context/module.jai": "f7fa635fa781b43732b63a49cf7ca4882b3978511ea1ed6dadb7fd270895cb1a"
+          },
+          "tests": [
+            "tests/native-bindings/rpmalloc-public-callbacks.jai",
+            "tests/native-bindings/rpmalloc-public-configurable.jai"
+          ]
         }
       ]
     },

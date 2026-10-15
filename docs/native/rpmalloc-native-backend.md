@@ -89,11 +89,13 @@ build dependencies, then run `verify.py --module rpmalloc --runtime --compiler
 <own compiler>`. That command must still fail until the public implementation is
 finished; private SDK successes are not a substitute for it.
 
-Remaining proper implementation: public callback/context and string lifetimes,
-statistics marshalling, both allocator variants and exact contextual heap/span
+The default rewrite now has actual public lifecycle/allocation/statistics and
+callback/configuration adapters; see [public adapter scope](rpmalloc-public-adapter.md).
+Remaining proper implementation: full callback/context policy and option coverage,
+both allocator variants and exact contextual heap/span
 behavior, all module options, allocator-procedure integration, canonical alias
 reflection/storage identity and all public overloads. The private first-class
-heap default and unlabeled declaration variant associations still need reviewed
-clarification. Complete contextual heap shapes are now specified and are actual
+heap default still needs reviewed clarification; raw aliases are now correctly
+mode-guarded. Complete contextual heap shapes are specified and generated and remain actual
 implementation work, not missing header contracts. Do not turn this backend's
 opaque heap into a public nominal alias or ignore options to make imports pass.

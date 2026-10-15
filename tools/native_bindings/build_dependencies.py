@@ -66,12 +66,15 @@ def main():
         'xxhash070': [vendor/'xxhash/xxhash.c'],
         'meshoptimizer': sorted((vendor/'meshoptimizer/src').glob('*.cpp')),
         'binding_ffi': [ROOT/'stdlib/internal/bindings/varargs/bridge.c'],
+        'binding_callback_context': [ROOT/'stdlib/internal/bindings/callback-context/bridge.c'],
         'graphics_macro_probe': [ROOT/'tests/native-bindings/generated/d3d12_macro_probe.c'],
         'sdl_abi_probe': [ROOT/'tests/native-bindings/sdl_abi_probe.c'],
         'sdl_runtime_abi_probe': [ROOT/'tests/native-bindings/sdl_runtime_abi_probe.c'],
         'posix_abi_probe': [ROOT/'tests/native-bindings/posix_abi_probe.c'],
         'binding_rpmalloc_sdk': [vendor/'rpmalloc/rpmalloc/rpmalloc.c'],
+        'binding_rpmalloc_callbacks': [ROOT/'stdlib/internal/bindings/rpmalloc-callbacks/bridge.c'],
         'rpmalloc_sdk_probe': [ROOT/'tests/native-bindings/generated/rpmalloc_sdk_probe.c'],
+        'rpmalloc_callback_probe': [ROOT/'tests/native-bindings/rpmalloc_callback_probe.c'],
         'imgui_abi_probe': [ROOT/'tests/native-bindings/imgui_abi_probe.cpp'],
         'imgui': [vendor/manifest['imgui']['archive']['root']/name for name in
                   ('imgui.cpp','imgui_draw.cpp','imgui_tables.cpp','imgui_widgets.cpp','imgui_demo.cpp')],
@@ -96,7 +99,7 @@ def main():
                 includes = ['-isystem',vendor/manifest['sdl2-runtime-oracle']['archive']['root']/'include/SDL2']
             if name == 'imgui_abi_probe':
                 includes = ['-isystem',vendor/manifest['imgui']['archive']['root']]
-            if name in ('binding_rpmalloc_sdk', 'rpmalloc_sdk_probe'):
+            if name in ('binding_rpmalloc_sdk', 'binding_rpmalloc_callbacks', 'rpmalloc_sdk_probe', 'rpmalloc_callback_probe'):
                 includes = ['-isystem', vendor/'rpmalloc/rpmalloc']
                 includes += ['-D'+name+'='+str(value) for name,value in RPMALLOC_SDK_BUILD_OPTIONS.items()]
             run(['c++' if path.suffix == '.cpp' else 'cc', '-O2', '-fPIC', '-I', vendor/'stb', *includes, '-c', path, '-o', obj])
@@ -106,6 +109,10 @@ def main():
         extra = ['-lffi'] if name == 'binding_ffi' else []
         if name == 'fsevents_context_probe':
             extra = ['-framework', 'CoreServices']
+        if name in ('binding_rpmalloc_callbacks','rpmalloc_callback_probe'):
+            # Shared adapters must use the same SDK instance as allocations.
+            # Statically embedding a second allocator would split ownership.
+            extra = ['-L', args.output, '-lbinding_rpmalloc_sdk']
         run(['c++' if name in ('meshoptimizer','imgui') else 'cc', '-dynamiclib' if suffix == '.dylib' else '-shared', *compiled,
              '-lm', *extra, '-o', args.output / ('lib' + name + suffix)])
         print('Built ' + name)

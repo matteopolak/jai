@@ -9,7 +9,8 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [Private rpmalloc SDK backend](native/rpmalloc-native-backend.md): complete
   native forwarding, checked alignment boundary and remaining public work
 - [Public rpmalloc adapter progress](native/rpmalloc-public-adapter.md): actual
-  default lifecycle/allocation/statistics tests and remaining profile/heap work
+  lifecycle/allocation/statistics and callback/configuration/lifetime tests,
+  generated contextual layouts and remaining profile/heap work
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
 
 ## Language

@@ -1,6 +1,35 @@
 # Bindings worker progress
 
-2026-10-15 public implementation after `dd4dfcb`: default rewrite now has 14
+Callback/configuration follow-up after `a476d25`: public initialize_config now
+marshals to a private SDK-correct config, owns copied native naming bytes and
+retains full signed offset bits in a synchronized private mapping registry.
+No public C-incompatible record is cast. A genuine first callback crash was
+diagnosed and fixed by establishing a Jai context in every C thunk. A further
+field-preservation regression led to a reusable TLS native-call frame: callbacks
+inherit the actual active caller context, nested frames restore it, and native-only
+entries get a fresh default. Four-thread identity and caller writes are tested.
+NEW callback tests cover retry/decline, failed init, stack/name overwrite,
+config canaries, wide/signed offsets, real error callback and four concurrent
+native threads. A separate CONFIGURABLE test verifies native size settings.
+Both programs execute on both Mac CPUs; all six desktop source checks, scoped
+strict lint, formatting and regeneration pass. Production dependency builder
+and actual host archive also execute callbacks. Complete rewrite AND raw
+contextual records now generate from reviewed prose, preserving distinct cache
+order and conditions; 56 generator/staging tests pass. Raw default remains
+blocked by the omitted first-class-heap flag; generated raw records are not
+raw runtime evidence. Ledger: 65 unresolved + 15 partial rpmalloc entries;
+other 36 unresolved declarations remain. Exact error-location policy,
+profile isolation, raw/heaps/nondefault options remain open. Full integration,
+Linux/Windows native and release verification are not claimed.
+Latest scoped checkpoint-12: 30 source passed/six missing-public-name failures,
+96 privacy passed and eight native build/run checks passed (including private
+SDK). Caller-context helper compiles for all six C desktop targets. Actual
+production formatter rebuilt on current NEW foundations; all owned roots,
+internals/tests and both regeneration checks pass. Supported scoped strict lint
+and C warnings/formatting pass. The earlier exit-139 and exit-134 regressions
+remain indexed separately; neither assertion was removed.
+
+Previous 2026-10-15 public implementation after `dd4dfcb`: default rewrite now has 14
 real lifecycle/allocation/statistics entries, classified **partial** because
 nondefault profiles and raw mode remain unfinished. The new public-only test
 uses public initialization and teardown, preserved ordinary/aligned realloc

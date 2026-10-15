@@ -15,6 +15,7 @@ from wrappers import simple_body, forwarding_body
 from objc import materialize_methods
 from bitfields import body as bitfield_body
 from spec import Declaration, Shape
+from rpmalloc_context import render_context
 from conditions import possible
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -533,6 +534,19 @@ def main():
                     'artifact_sha256':hashlib.sha256(checked.read_bytes()).hexdigest(),
                     'signature':'posix_memalign :: (output: **void, alignment: u64, size: u64) -> s32',
                     'scope':'Private SDK precondition validation and commit-on-success output; not public API completion'}
+                callback_backend = ROOT/'stdlib/internal/bindings/rpmalloc-callbacks'
+                if callback_backend.exists():
+                    all_ledger[module]['supplemental_backends'].append({
+                        'module':'internal/bindings/rpmalloc-callbacks',
+                        'status':'partial_public_profile_adapter',
+                        'artifacts':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()
+                                     for p in sorted(callback_backend.iterdir()) if p.is_file()},
+                        'scope':'Owned callback/name lifetime, 64-bit public offset registry, actual init failure; default native profile only',
+                        'limitations':'Raw/heaps/nondefault profiles and exact native-error Jai location provenance unresolved',
+                        'caller_context_artifacts':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()
+                                                    for p in sorted((ROOT/'stdlib/internal/bindings/callback-context').iterdir()) if p.is_file()},
+                        'tests':['tests/native-bindings/rpmalloc-public-callbacks.jai',
+                                 'tests/native-bindings/rpmalloc-public-configurable.jai']})
         if module == 'Objective_C':
             appkit = ROOT/'stdlib/Objective_C/AppKit/module.jai'
             if appkit.exists():
@@ -590,6 +604,13 @@ def main():
         if module in TARGETS:
             entry_code += '#assert ' + TARGETS[module] + ', "' + module + ' requires its documented native platform";\n'
         contextual = ROOT / 'stdlib' / module / 'context.jai'
+        if module == 'rpmalloc':
+            contextual_code = format_source(render_context(page.read_text()), args.formatter)
+            if args.check:
+                if not contextual.exists() or contextual.read_text() != contextual_code:
+                    stale.append(str(contextual.relative_to(ROOT)))
+            else:
+                contextual.write_text(contextual_code)
         if contextual.exists():
             entry_code += '#load "context.jai";\n'
         entry_code += '#load "declarations.jai";\n'

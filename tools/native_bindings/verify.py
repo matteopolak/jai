@@ -190,6 +190,8 @@ def main():
         ('macOS', 'fsevents-context.jai', [('macos','x64'),('macos','arm64')]),
         ('rpmalloc', 'rpmalloc-native-sdk.jai', TARGET_CONFIGS),
         ('rpmalloc', 'rpmalloc-public-allocation.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-callbacks.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-configurable.jai', TARGET_CONFIGS),
         ('d3d11', 'forward-overlay.jai', TARGET_CONFIGS),
         ('d3d12', 'd3d-interface-identity.jai', [('windows','x64'),('windows','arm64')]),
         ('SDL', 'sdl-layout.jai', TARGET_CONFIGS),
@@ -240,7 +242,13 @@ def main():
                             ('d3d11', 'ID3DBlob'), ('d3d11', 'ID3D11ModuleInstance'),
                             ('d3d12', 'ID3DBlob'), ('rpmalloc','Heap'),
                             ('rpmalloc','Span'), ('rpmalloc','Native'),
-                            ('rpmalloc','initialized'), ('rpmalloc','Native_Profile_Matches')]:
+                            ('rpmalloc','initialized'), ('rpmalloc','Native_Profile_Matches'),
+                            ('rpmalloc','Callbacks'), ('rpmalloc','active_config'),
+                            ('rpmalloc','callback_map'), ('rpmalloc','callback_unmap'),
+                            ('rpmalloc','callback_failure'), ('rpmalloc','callback_error'),
+                            ('rpmalloc','NativeContext'), ('rpmalloc','invoke_map'),
+                            ('rpmalloc','invoke_unmap'), ('rpmalloc','invoke_failure'),
+                            ('rpmalloc','invoke_error')]:
         if args.module and module.split('/')[0] not in args.module and module not in args.module:
             continue
         for os_name, cpu in TARGET_CONFIGS:
@@ -286,6 +294,8 @@ def main():
         runtime_tests.append('dxc-options')
         runtime_tests.append('rpmalloc-native-sdk')
         runtime_tests.append('rpmalloc-public-allocation')
+        runtime_tests.append('rpmalloc-public-callbacks')
+        runtime_tests.append('rpmalloc-public-configurable')
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
             runtime_tests.append('x11-message-box')
@@ -313,7 +323,7 @@ def main():
                 relevant = ['ImGui']
             if name == 'posix-stat':
                 relevant = ['POSIX']
-            if name in ('rpmalloc-native-sdk','rpmalloc-public-allocation'):
+            if name in ('rpmalloc-native-sdk','rpmalloc-public-allocation','rpmalloc-public-callbacks','rpmalloc-public-configurable'):
                 relevant = ['rpmalloc']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']
@@ -341,6 +351,10 @@ def main():
                 scope = 'private_native_allocator_sdk'
             if name == 'rpmalloc-public-allocation':
                 scope = 'public_default_allocator_lifecycle_allocation_statistics'
+            if name == 'rpmalloc-public-callbacks':
+                scope = 'public_default_allocator_callbacks_lifetime_failure_concurrency'
+            if name == 'rpmalloc-public-configurable':
+                scope = 'public_configurable_allocator_initialization'
             result.update(name=name, phase='build',scope=scope,status='passed' if result['exit']==0 else 'failed')
             if compiled_source != source:
                 result['private_unit_placement'] = str(compiled_source)
