@@ -20,6 +20,10 @@ The unsynchronized entry still requires caller synchronization, as its name says
 `pending/android-logger-discard.patch` is an exact patch against the NEW independent
 bindings producer's current wrappers.jai. It replaces only the forced flush/import
 with the private discard/import. It has not been applied to the peer checkout.
+The artifact uses zero-context unified hunks; apply/check it with `git apply
+--unidiff-zero`. Its applicability is checked against an untouched NEW producer
+copy under this worker's target directory. Context-prefix blank lines were removed
+from the earlier artifact to avoid whitespace-only patch-data warnings.
 Coordinator/bindings owner must adopt it and rerun Android checks; until then the
 bindings logger remains partial. This is not claimed as already integrated.
 

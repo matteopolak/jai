@@ -1,5 +1,15 @@
 # Portable stdlib progress
 
+Inventory update after explicit16:14 transfer: executable_formats excluded in full
+(507 declaration/condition rows in this inventory), with zero completion credit.
+Current own denominator4129 rows:3559 complete-source,442 conservatively partial,
+128 missing;86.2% source rows. Complete names/conditions, remaining exact signatures,
+head/timestamp, committed/draft counts and effort/dependency estimates are in
+implementation-remaining.json. Runtime discard now committed ca8570d; binding
+patch is validated zero-context unified diff (git apply --unidiff-zero) against
+own staged unchanged NEW producer copy. No peer edits. Latest SDK/default review
+just arrived and will replace corresponding stale contract questions.
+
 Runtime15:24 request implemented: private canonical Android pending-byte queue
 and discard_pending_output hook, shared real CAS lock and reviewed Android-only
 flush facade. Actual host stdout/stderr tests prove pending bytes are discarded

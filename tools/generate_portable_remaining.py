@@ -16,7 +16,7 @@ from generate_portable_missing_surface import MODULES
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED = {"basic", "string", "hash", "file-utilities", "file", "sound-player", "preload",
-            "ico-file", "icon", "windows-resources", "subtitles", "simple-package"}
+            "ico-file", "icon", "windows-resources", "subtitles", "simple-package", "executable-formats"}
 COMPLETE = set("adpcm atomics base64 bit-array bit-operations bucket-array command-line crc example-plugin introsort machine-x64 macos-bundler md5 memory meow-hash overwriting-allocator pcg pl-mpeg-public-tables pool project-generator protocol-for-memory-visualization radixsort random relative-pointers remap-context simd soa sort text-file-handler treemap unicode wav-file windows-registry windows-utf8 xar zip-file-directory".split())
 TIME_NAMES = set("Apollo_Time Calendar_Time Calendar_Time_Type Time_Zone to_apollo seconds_since_init timespec_to_apollo to_timespec current_time_consensus current_time_monotonic to_calendar calendar_to_apollo filetime_to_apollo to_filetime calendar_to_string calendar_to_iso_string ConvertToApollo to_seconds to_milliseconds to_microseconds to_nanoseconds compare_apollo_times to_float64_seconds".split())
 SPECIAL_PATHS = {"pl-mpeg-public-tables": "PL_MPEG"}
@@ -110,7 +110,7 @@ def main():
                         'authored native TCP', 'authored shared TCP', 'authored native ancillary',
                         'authored native scope', 'native shape supplemented', 'incomplete reviewed literal resolved')):
                     status = 'complete'
-            draft = slug == "runtime-support" and api in {"android_flush_write_string_buffer", "write_string_unsynchronized", "write_string", "write_strings"}
+            draft = False  # Runtime discard/source connection committed as ca8570d.
             row = {"module": name, "name": api, "declaration": declaration, "condition": condition,
                    "status": status, "source_state": "draft" if draft else "committed"}
             if status != "complete" or draft:
@@ -127,14 +127,14 @@ def main():
         "head_at_inventory": head,
         "count_unit": "unique reviewed declaration/overload/condition rows plus reviewed nested procedures",
         "policy": "Conservative source implementation classification, not conformance/test totals. Only explicitly completed module/API batches earn complete. Present declarations in partial modules remain partial until finer per-API audit; they are not all missing bodies. Native/platform/tool verification gaps remain separate. Complete supported-source does not claim every platform execution.",
-        "scope_exclusions": "Ownership ledger reserved modules; Basic except time/calendar; String/Hash/File_Utilities/File; audio/tooling/data transfers; compiler bootstrap/Preload. Windows-specific Runtime/Process/System/Thread branches belong to platform-io. Extensions unchanged.",
+        "scope_exclusions": "Ownership ledger reserved modules; Basic except time/calendar; String/Hash/File_Utilities/File; audio/tooling/data transfers; executable_formats transferred to object-formats2026-10-15 16:14; compiler bootstrap/Preload. Windows-specific Runtime/Process/System/Thread branches belong to platform-io. Extensions unchanged.",
         "counts": counts, "remaining": rows, "modules": modules,
         "counts_by_source_state": counts_by_state,
         "complete_names_by_module": complete_names,
         "total_reviewed_owned_api_rows": sum(counts.values()),
         "complete_source_percentage": round(100 * counts['complete'] / sum(counts.values()), 2),
-        "draft_private_work": [{"name": "internal/runtime/android-output.discard_pending_output",
-                                 "status": "host interpreter/native O0/O2 and strict lint pass; draft awaiting handoff/commit"}],
+        "private_handoffs": [{"name": "internal/runtime/android-output.discard_pending_output",
+                              "source_state": "committed ca8570d", "status": "host interpreter/native O0/O2 and strict lint pass; binding patch/native adoption pending"}],
         "verification_gaps": [
             "Stable combined coordinator Mac baseline last reported822 passed/7 failed; not rerun by this worker.",
             "Default_Metaprogram default Check factory/configuration absent from reviewed producer; -no_check actual workflow passes, full lint fails.",
@@ -153,10 +153,7 @@ def main():
              "estimate": "large: 1-3 worker days plus SDK/crypto validation",
              "boundaries": "new private crypto/android-signing implementation; reuse committed ZIP/APK/ASN1/SHA; no duplicate parsers or models",
              "dependencies": "review SHA512/fixed32 digest result, parser cursor/framing, canonical EVP type provider and key encoding/ownership"},
-            {"batch": "remaining executable_formats object/universal parsers",
-             "estimate": "medium/large: 1-2 worker days, shape review dependent",
-             "boundaries": "private archive/object format implementation; preserve existing tested ar parser; public facade integration coordinated",
-             "dependencies": "complete Arch_File shape and reviewed lifetime/diagnostic contracts"}
+            {"batch": "executable_formats entire scope", "status": "ALREADY TRANSFERRED to object-formats; excluded from this denominator, not completion credit"}
         ]
     }
     target = ROOT / "docs/status/implementation-remaining.json"
