@@ -153,6 +153,7 @@ The LLVM backend, C ABI and linking.
 - [Owned source format/lint runner](../tools/format_portable_stdlib.py): explicit scope and source-built jaifmt/jailint
 - [WAV parser design and validation](portable-wav.md)
 - [SMTP/MIME transport and loopback validation](portable-mail.md)
+- [Mail scramble numeric-alphabet review question](portable-mail-questions.md)
 - [POSIX crash diagnostics and native startup verification](portable-crash-handler.md)
 - [Classic ZIP directory parsing and ownership](portable-zip-directory.md)
 - [Atomics and verified bootstrap aliases](portable-atomics.md)

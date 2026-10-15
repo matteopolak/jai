@@ -1,5 +1,15 @@
 # Portable stdlib worker deviations
 
+Mail scramble: current reviewed alphabet lists characters but no explicit numeric
+index table/ciphertext vector. Independent implementation uses ascending listed
+order; reversibility/cyclic/temporary/error tests pass on actual interpreter/native
+O0/O2, without claiming reference-vector proof. Exact interoperability risk and
+proper fix (reviewed mapping/vector, then retain exhaustive behavior tests) are
+recorded in portable-mail-questions.md. Unsupported input returns empty safely
+after its optional assertion; invalid-input behavior with assertions disabled is
+an independent safety policy, not an established reference guarantee. No errors
+are converted to successful sends and no transport test assertions changed.
+
 Shared signing model scope: exact data declarations only, explicitly requested
 to unblock project worker; no signing/key-generation function counted from model
 tests. Genuine union/promoted-field/default/name behavior and full source/lint/

@@ -1,5 +1,19 @@
 # Portable stdlib progress
 
+Default Check integration committed d22aa67; fresh recovery run
+target/default-metaprogram-recovery.log passes ordinary builds/binding flags,
+plugins/options/replay/failures and full owned strict lint. Canonical shared
+signing models committed6f20c37 for generator-names. No fake signing functions.
+
+Mail scramble now implements real temporary XOR obfuscation with all reviewed
+alphabet characters and cyclic secret handling. Missing export verified first;
+all64 key/full-alphabet bijection/round-trip cases, empty input,9 invalid-input
+executions and strict lint pass interpreter/native O0/O2. All10 SMTP loopback
+cases rerun unchanged. Numeric index ordering lacks explicit reviewed vector;
+independent listed-order choice/question documented in portable-mail-questions.md.
+No legacy expectation corrected or genuine assertion removed. No TLS/device/
+combined-baseline success inferred from these focused host checks.
+
 Canonical signing models requested16:34 are ready: three exact reviewed public
 types, canonical names, enum defaults/order, promoted JKS fields and real union
 storage. Interpreter/native O0/O2, Linux/Windows source checks, strict lint and
