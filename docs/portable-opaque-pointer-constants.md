@@ -1,10 +1,12 @@
-# Opaque pointer constants: compiler handoff
+# Opaque pointer constants: resolved compiler handoff
+
+## Historical blocker (superseded by the resolution below)
 
 The refreshed reviewed Windows_Registry contract resolves all ten HKEY values:
 direct positive integer-to-HKEY casts, zero-extended on64-bit targets. Native SDK
 sign extension is a documented discrepancy, not an unresolved API question.
 
-The independent candidate implementation emits those exact immutable constants
+Historical candidate failure and current resolution: the independent implementation emits those exact immutable constants
 without changing the seven foreign procedure identities, parameter names, ABI or
 status handling. It is NOT counted completed: own compiler checking rejects a
 positive nonzero pointer constant before native execution or target-aware lint.
@@ -50,3 +52,16 @@ substitute or caller address patch is introduced.
 
 The three previously documented provisional Performance_Report files remain
 excluded independently. No peer checkout, Extensions or corpus is modified.
+
+## Resolution adopted
+
+NEW compiler raw-pointer/default-generic handoffs are rebuilt locally with --locked
+and CARGO_TARGET_DIR in this checkout. The exact committed opaque-pointer probe
+now passes checking and interpreter/ARM64+x64 native O0/O2. The exact committed
+default-generic-pointer probe also passes. The six Registry candidate files listed
+above are now verified for a production checkpoint: all33 declarations source-check
+and strictly lint both Windows CPU targets, including exact positive-pointer
+values and immutable write rejection. Native Windows execution remains pending.
+No private-source permission bypass: the lint tool now uses byte-identical staged
+library paths. Original failed evidence remains, not counted as resolved by a
+pre-repair success. Current evidence and limits: portable-windows-registry.md.

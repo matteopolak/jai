@@ -456,3 +456,13 @@ retain Windows use. Original dependency/indexing/lint failures are retained.
 No test assertions were weakened, invalid SDK/device results manufactured or
 errors mapped to success. Registry candidates remain excluded until compiler
 rebuild and original-probe validation.
+
+Registry pointer workaround remains NONE: general compiler fix is rebuilt and
+original probes pass; public immutable positive values now validate on both
+Windows CPU targets. No whitelist, mutable surrogate, function replacement or
+sign extension. Native acceptance is still pending actual Windows. The new
+linter correctly rejected producer paths outside JAIC_STDLIB; byte-identical
+staged paths fix tool setup without changing capabilities or public imports.
+Intentional constant-write negative is compiler-rejection coverage, not a
+lint-positive claim. Earlier uncommitted/blocker notes are historical; six
+candidates now pass source/strict-lint gates and are checkpoint-ready.

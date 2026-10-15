@@ -438,3 +438,13 @@ questions, not assumed reference behavior. README-linked portable-adb.md contain
 exact evidence and remaining higher-level/build/install gaps.
 Registry original reproducer is committed at tests/portable-stdlib/pending/opaque-pointer-constant.jai;
 NEW compiler raw-pointer handoff is now available and will be rebuilt/validated next.
+
+Registry compiler handoff consumed: local --locked source rebuild repairs the
+exact committed opaque-pointer and default-generic-pointer probes. Opaque pointer
+probe executes interpreter/ARM64+x64 native O0/O2; Registry all33 declarations
+source-check/strictly lint Windows x64+ARM64, with immutable write rejection.
+Six retained candidates now become verified checkpoint inputs. Native Windows
+API calls remain unexecuted; public zero-extension is preserved despite SDK
+sign-extension discrepancy. First new lint staging failed private-source access
+and was fixed with byte-identical JAIC_STDLIB paths, no capability relaxation.
+Evidence: registry-handles-verified-final.log and opaque-pointer-constant-execution.log.
