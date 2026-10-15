@@ -1,7 +1,7 @@
 # Developer documentation
 
-[macOS resolver candidate](portable-socket-resolver.md) records native C ABI
-evidence and the genuine forward-enum compiler gate, without a Jai success claim.
+[macOS resolver and network database bindings](portable-socket-resolver.md) record
+active C/Jai ABI and native behavior evidence, with the remaining full-lint compiler gate.
 
 Android host [ADB operations](portable-adb.md) now include app lifecycle status,
 force-stop, installation queries and reviewed SDK discovery/cache/startup, with

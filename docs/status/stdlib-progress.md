@@ -1,5 +1,15 @@
 # Portable stdlib progress
 
+Mac Socket five real records activated from refreshed reviewed shapes: addrinfo,
+hostent/netent/protoent/servent. Active database closure now matches official C SDK
+all field offsets/canonical names/types and real host/protocol/service operations
+in interpreter/native ARM64/x64 O0/O2; fixture strict lint and all owned formatting
+pass. Resolver native/interpreter and stable regeneration also pass. WHOLE binding
+strict lint still fails general type_of(Struct.array_field[0]) compiler semantics;
+original declaration/assertions preserved, no substitute or suppression. Evidence
+socket-databases-red/final.log and socket-resolver-active.log. This is real active
+ABI support with a retained tool/compiler gate, not full Socket conformance.
+
 Recovery tooling now accepts only own checkout target builds or the explicit
 launch-assigned CARGO_TARGET_DIR (T7); no searches of other build trees. Shared
 selector used by root/mail/channel/crash runners. Fresh mail loopback10 scenarios,

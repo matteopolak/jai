@@ -1,5 +1,29 @@
 # Reviewed macOS addrinfo integration candidate
 
+Current activation2026-10-15: five reviewed macOS records are now in the active
+generated binding: addrinfo, hostent, netent, protoent and servent. The earlier
+candidate-only status below is historical. No workaround for the fixed forward
+enum issue is retained. The original candidate patch remains historical evidence;
+do not apply it over the active generated files.
+
+`python3 -B tools/check_portable_socket_databases.py` consumes the ACTIVE owned
+Socket closure, not an isolated replacement record. Missing hostent export was
+first observed in target/socket-databases-red.log. Exact reviewed types/canonical
+names and every field offset for the four database records plus existing rpcent
+match independently compiled official Apple netdb.h C probes. Real numeric host,
+TCP protocol and HTTP service lookups pass interpreter/native ARM64/x64 O0/O2;
+fixture strict lint passes (target/socket-databases-final.log). SDK-returned
+records are borrowed; tests do not free or modify their static storage.
+
+Resolver generation is stable across two runs; the new addrinfo shape executes
+real getaddrinfo/freeaddrinfo in interpreter/native both Mac CPUs O0/O2 and source
+checks. Full generated-binding strict lint was rerun and still FAILS on the
+general type_of(Struct.array_field[0]) compiler gap (target/socket-resolver-active.log,
+pending/field-array-element-type.jai). That preexisting unrelated public type-query
+declaration is preserved, not replaced with a hardcoded type or suppression. No
+claim of full binding lint or other-OS native verification is made. The proper
+long-term fix belongs to general compiler type-query support.
+
 Current correction2026-10-15: corrected source-built compiler1929d5a resolves
 forward enums. Both C SDK probes and the real Jai resolver pass interpreter,
 native ARM64/x64 O0/O2 and source checks. Ancillary-message fixture also passes

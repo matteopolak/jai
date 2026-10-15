@@ -51,6 +51,7 @@ def main():
             raise RuntimeError(f"{command!r}: {result.stdout}{result.stderr}")
     for cpu in ["x64", "arm64"]:
         subprocess.run([compiler, "-check", "-os", "macos", "-cpu", cpu, str(source)], env=env, check=True)
+    print("Actual Jai resolver execution passes interpreter/native ARM64/x64 O0/O2 and source checks; whole-binding lint follows", flush=True)
     subprocess.run([str(BINARIES / "jailint"), "-D", "warnings",
                     str(library / "Socket/native.jai"), str(library / "internal/net/socket-abi.jai"), str(source)], env=env, check=True)
     print("Jai public resolver passes interpreter/native both CPUs O0/O2, source checks and strict lint")

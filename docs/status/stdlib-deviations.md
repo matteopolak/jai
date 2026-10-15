@@ -1,5 +1,15 @@
 # Portable stdlib worker deviations
 
+Active Mac Socket record batch: real SDK/interpreter/native behavior validated,
+but full generated-binding strict lint remains FAILED because the compiler cannot
+evaluate type_of(fd_set.fds_bits[0]) where fd_set denotes a type. Location and
+minimal original reduction pending/field-array-element-type.jai; evidence
+target/socket-resolver-active.log. New database fixture strict lint passes, which
+is explicitly a narrower check and never a replacement for the failed full gate.
+No public type query rewritten, no compiler path/name special case, no lint rule
+disabled. Proper fix is compiler field-element type query semantics; rerun full
+binding lint after that producer checkpoint. Other-OS native ABI remains pending.
+
 Recovery tool configuration: the launch-assigned T7 target is an authorized own
 source build location, accepted through explicit CARGO_TARGET_DIR alongside own
 checkout target/. No alternate external-build discovery or reference fallback.
