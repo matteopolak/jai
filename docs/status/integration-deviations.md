@@ -924,3 +924,17 @@ Windowscompilerlink stops at kernelbase.lib SDKattribute (compilerowner fixing),
 so follow-onruntime steps are not independent behavior failures. ARM64Mesa source
 download timed out beforebuild; no native driver evidence from that attempt.
 No rawvendorCIlogs read and no release/push/dispatch performed.
+
+
+Portable41a015a source audit/integration: actual Winsock startup/error/option/
+keepalive/close calls, correct native millisecond policy, direct foreignFD_ISSET
+identity and descriptor-array semantics. Preserved existing POSIX nullcheck safety
+in moved backend; no lost FD_CLR/word-width assertions. Windows helper drivers
+now accept explicit actualcompiler/productionstdlib and do not copy partial
+producer overlays. Native Windows execution remains required; no runtime success
+from body checks. Signed ioctl output uses realu32encoding thenuncheckedbitcast
+tos32; typed wordlocals avoid producer-reported cast/shift-width observation,
+whose exact language precedence needs oracle review before calling it a compiler
+defect. No special symbol/path lowering. Missing CMSG/bitfield/native shape families
+remain explicit. Native close failure is logged then invalidates caller handle,
+with documented resource risk per wrapperpolicy; not silently counted success.

@@ -6405,7 +6405,7 @@
     "name": "FIONBIO",
     "condition": "OS == .WINDOWS",
     "spec_line": 34,
-    "status": "unresolved incomplete character literal in reviewed declaration"
+    "status": "incomplete reviewed literal resolved by official Winsock2 ABI; authored IOW/FIONBIO wrapper"
   },
   {
     "name": "FLOWSPEC",

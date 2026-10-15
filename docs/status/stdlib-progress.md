@@ -130,6 +130,19 @@ checkpoints cover foundations, Unix process/thread/files/system, codecs,
 allocators, Soa, Xar, command/text parsing and reviewed protocol schemas; consult
 [module ledger](../portable-stdlib-ledger.md) for exact partial/remaining scope.
 
+Latest durable checkpoint:0c09ce4, Machine options projection and Windows shared
+channels. Current Socket batch: actual Windows startup/error/blocking/keepalive/
+close wrappers and shared accept/bind/address operations now type-check both
+CPUs with native MSG/WSADATA/fd_set/FD_ISSET ABI assertions. Direct millisecond
+keepalive behavior follows refreshed oracle. Pure production ioctl/descriptor
+kernels pass65536 input pairs/capacity/removal tests in interpreter/native O2 and
+strict lint. Full102 positives/23 faults/14 negatives plus integration/target
+checks pass. All331 owned Jai files format/check; whole strict lint remains failed.
+Native Windows and active Windows lint remain pending. Cast/shift accommodation,
+qualified native dependency fix and exact missing CMSG/bitfield/shape inventory
+are recorded in portable-windows-socket.md. Continue remaining public native
+helpers and portable modules; Process Windows remains platform-io ownership.
+
 Post-f044252 work: get_machine_options_x86 now implements the reviewed generic
 #modify API as a checked in-place projection of actual Compiler.Build_Options
 byte storage. Interpreter/native O0/O2 verify storage identity, live feature edits
