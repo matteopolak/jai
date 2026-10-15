@@ -94,7 +94,7 @@ def remaining_matrix(inventory):
                        "| `append_cpp_type_modifiers` | Reference/cv suffixes execute; wider context-flag semantics await question14. |",
                        "| `print_type_to_builder` | Standard represented types and output paths execute; default expressions, existing-declaration synthesis and wider flags remain open. |",
                        "| `type_to_string` | Standard printer and caller-owned result execute; exact lifetime policy awaits question14. |",
-                       "| `print_function_type_to_builder` | C-call signatures execute; special methods/variadics/default expressions remain unfinished. NO_ARGUMENT_DEFAULTS is supported. |",
+                       "| `print_function_type_to_builder` | C-call signatures and literal/operator defaults execute, including inferred bool defaults and NO_ARGUMENT_DEFAULTS. Special methods/variadics/raw/template defaults remain unfinished. |",
                        "| `exceeds_signed_int_value` | 8/16/32/64-bit thresholds execute; larger represented integer widths remain unsupported. |",
                        "| `strip_type` | Selected alias/enum/pointer traversal retains original component identity and diagnoses cycles; wider implicit-generator behavior is not inferred. |", ""]
         if module == "Check":
@@ -163,6 +163,7 @@ def main():
                 item["implementation"] = "supported subset; see developer-tools-deviations.md"
         if module == "Bindings_Generator":
             models = set()
+            procedure_names = set()
             abi_evidence = ROOT / "docs/native/developer-tools-native-abi-evidence.json"
             abi_names = set()
             if abi_evidence.exists():
@@ -171,9 +172,11 @@ def main():
             extended_apis = set(re.findall(r"^\s*(clang_[A-Za-z_0-9]*)\s*::",
                                            (ROOT / "stdlib/Bindings_Generator/native-extended-api.jai").read_text(), re.MULTILINE))
             for path in (ROOT / "stdlib/Bindings_Generator").glob("*.jai"):
-                models.update(re.findall(r"^\s*([A-Za-z_][A-Za-z_0-9]*)\s*::", path.read_text().split("#scope_file")[0], re.MULTILINE))
+                public_text = path.read_text().split("#scope_file")[0]
+                models.update(re.findall(r"^\s*([A-Za-z_][A-Za-z_0-9]*)\s*::", public_text, re.MULTILINE))
+                procedure_names.update(re.findall(r"^\s*([A-Za-z_][A-Za-z_0-9]*)\s*::\s*(?:inline\s+)?\(", public_text, re.MULTILINE))
             for item in declarations:
-                if item["name"] in models or item["name"] == "TARGET_OS":
+                if (item["name"] in models and item["name"] not in procedure_names) or item["name"] == "TARGET_OS":
                     item["implementation"] = "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
                     if item["name"] in abi_names:
                         item["implementation"] = "reviewed native record/enum ABI; host official SDK size/alignment/member offsets/enum values verified; target runtime pending"
@@ -223,7 +226,13 @@ def main():
                 if item["name"] == "generate_bridge":
                     item["implementation"] = "global C++17 adapter subset; original native POD/reference effects and customized overload/argument/record/field mappings verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
                 if item["name"] in {"append_cpp_type", "append_cpp_type_modifiers", "print_type_to_builder", "type_to_string", "print_function_type_to_builder", "exceeds_signed_int_value", "strip_type"}:
-                    item["implementation"] = "public type-emission/stripping/integer-width subset; actual generated Jai/C++ callback/array/reference/qualified-name types and storage mutation execute interpreter/native Mac O0/O2 with configured C++ O0/O2, diagnostics and strict lint; default arguments, special methods/templates/bitfields/inheritance and remaining print flags pending"
+                    item["implementation"] = "public type-emission/stripping/integer-width subset; actual generated Jai/C++ callback/array/reference/qualified-name types, numeric/bool foreign defaults and storage mutation execute interpreter/native Mac O0/O2 with configured C++ O0/O2, diagnostics and strict lint; raw/template defaults, special methods/bitfields/inheritance and remaining print flags pending"
+                if item["name"] in {"append_integer", "append_as_unsigned_integer_hex", "append_as_signed_integer_hex", "append_maybe_left_shift", "append_maybe_right_shift", "print_literal_to_builder", "print_expression_to_builder"}:
+                    item["implementation"] = "public integer/literal/expression emission subset; generated typed values, numeric width normalization, float/signed-zero bits, binary strings, enum/identifier/operator/shift effects and diagnosed prefix-preserving failures verified interpreter/native Mac O0/O2; macro/raw/template/aggregate and wider cast/width forms pending"
+                if item["name"] in {"_create_declaration", "count_namespace_refs", "create_empty_struct_type", "create_omit_cpp_functions_visitor", "find_underlying_type", "get_primitive_or_array_primitive_type_size", "get_type_alignment", "is_16byte_integer_type", "is_assignment_operator", "is_char_pointer_type", "is_extern_declaration", "is_function_type", "is_incomplete_array", "is_operator", "is_operator_name", "is_pointer_type", "is_prefix_comment", "is_struct_field", "is_target_type_signed", "is_target_type_unsigned", "is_targeting_apple_os", "is_va_list", "is_valid_identifier_start", "is_zero_int_expression", "functions_are_equivalent", "contains_equivalent_function", "find_name_clash"} and item["name"] in procedure_names:
+                    item["implementation"] = "staged exact NEW canonical-model producer batch4675c90a; original model/native effects, format/strict lint and target source checks pass locally; producer limits and refreshed contracts remain explicit, not combined integration"
+                if item["name"] == "create_enum" and item["name"] in procedure_names and "(name: string)" in item["declaration"]:
+                    item["implementation"] = "staged NEW caller-owned empty named enum constructor; cursor overload remains pending, no underlying width invented"
                 if item["name"] == "generate_bindings":
                     item["implementation"] = "C and global POD C++ generation subset; original aggregate/reference effects, custom overload/argument/record/field mappings and destination-preserving diagnostics verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
                 if item["name"] in {"visit_declarations", "find_parent_enum", "create_type_of_enum", "change_type_to_enum",
@@ -318,6 +327,19 @@ def main():
                 if item["name"] in {"Metrics", "collect_metrics"}:
                     item["implementation"] = "typed-tree metrics subset; real producer body and native public-node call/file/module/assignment/global/loop-depth effects; conditional forms and Basic allocator recognition explicitly rejected pending question2"
         if module == "Check":
+            # These reviewed entries occur in the behavioral paragraph, not its
+            # declaration list. Preserve that provenance instead of omitting them.
+            factory_line = next(index for index, line in enumerate(contents.splitlines(), 1)
+                                if "get_plugin :: () -> *Metaprogram_Plugin" in line)
+            declarations.extend([
+                {"name": "get_plugin", "declaration": "get_plugin :: () -> *Metaprogram_Plugin",
+                 "section": "Behavioral contract and constraints", "spec_line": factory_line,
+                 "implementation": "persistent canonical Compiler plugin factory; real configured callbacks, interpreter/native Mac O0/O2 and Windows source/strict lint"},
+                {"name": "CHECK_BINDINGS", "declaration": "CHECK_BINDINGS := true",
+                 "section": "Behavioral contract and constraints; Default_Metaprogram default-on binding configuration",
+                 "spec_line": factory_line,
+                 "implementation": "configured module parameter; real enabled/disabled foreign-check diagnostic effects"},
+            ])
             for item in declarations:
                 if item["name"] in {"DEBUG_BINDINGS", "C_Porting_Check_Settings", "check_c_porting", "should_skip",
                                      "is_of_fixed_array_type", "do_error_checking"}:
