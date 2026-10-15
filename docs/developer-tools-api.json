@@ -24880,7 +24880,7 @@
         "declaration": "Frame_Description_Entry :: struct",
         "section": "Public declaration inventory",
         "spec_line": 107,
-        "implementation": "pending"
+        "implementation": "DWARF32 debug_frame v4 explicit-width FDE subset; original x86/x64/arm64 O0/O2 ranges/opcode sequences and all truncated prefixes; eh_frame pending question4"
       },
       {
         "name": "Call_Frame_Address_Instruction",
@@ -24929,7 +24929,7 @@
         "declaration": "parse_frame_description_entry :: (cie: Frame_Common_Information_Entry, frame_section_address: u64, data: [] u8, offset_in: s64) -> success: bool, Frame_Description_Entry, offset: s64",
         "section": "Public declaration inventory",
         "spec_line": 114,
-        "implementation": "pending"
+        "implementation": "DWARF32 debug_frame v4 explicit-width FDE subset; original x86/x64/arm64 O0/O2 ranges/opcode sequences and all truncated prefixes; eh_frame pending question4"
       },
       {
         "name": "decode_cfa_instructions",

@@ -456,7 +456,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Debug_Info
 
-37 function names have pending declarations; 0 native function names still lack invocation fixtures.
+36 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Next work / precise question |
 | --- | ---: | --- |
@@ -490,7 +490,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `parse_codeview_types` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `parse_compilation_unit_v4` | 1 | Debug_Info questions5/6: Parse_Context and Declaration.kind shapes |
 | `parse_dwarf_debug_info` | 1 | Debug_Info questions5/6: canonical parser dependencies |
-| `parse_frame_description_entry` | 1 | Debug_Info question4: remaining frame encodings/offset conventions |
 | `parse_msf` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
 | `parse_pdb` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
 | `parse_tpi_stream` | 1 | Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged |
@@ -566,4 +565,3 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 ## Rewrite
 
 0 function names have pending declarations; 0 native function names still lack invocation fixtures.
-

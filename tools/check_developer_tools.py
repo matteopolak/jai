@@ -13,6 +13,7 @@ import check_developer_debug_windows
 import check_developer_msf
 import check_developer_native_abi
 import check_developer_dwarf_lines
+import check_developer_dwarf_frames
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
@@ -69,6 +70,7 @@ def main():
     check_developer_msf.main()
     check_developer_native_abi.main()
     check_developer_dwarf_lines.main()
+    check_developer_dwarf_frames.main()
     prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
     framework = ROOT / "target/developer-tools-frameworks/OriginalNative.framework"
     (framework / "Modules").mkdir(parents=True, exist_ok=True)
@@ -146,6 +148,7 @@ def main():
     cases.append("bindings-clang-source")
     cases.append("bindings-clang-cpp")
     cases.append("dwarf-line-query")
+    cases.append("dwarf-fde")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -235,7 +238,8 @@ def main():
              *sorted((ROOT / "stdlib/internal/developer-tools").glob("*.jai")),
              *sorted((ROOT / "tests/developer-tools").glob("*.jai")),
              ROOT / "target/developer-tools-native-abi.jai", visitor_oracle,
-             ROOT / "target/developer-tools-dwarf-line-oracle.jai"]
+             ROOT / "target/developer-tools-dwarf-line-oracle.jai",
+             ROOT / "target/developer-tools-dwarf-frame-oracle.jai"]
     format_paths = [*paths, *sorted((ROOT / "tests/developer-tools/rejections").glob("*.jai")),
                     *sorted((ROOT / "tests/developer-tools/compiler-requests").glob("*.jai"))]
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *format_paths])
@@ -251,7 +255,7 @@ def main():
     for cpu in ["x64", "arm64"]:
         run([JAIC, "tests/developer-tools/debug-windows-contract.jai", "-check", "-os", "windows", "-cpu", cpu])
         for os_name in ["linux", "windows"]:
-            for case in ["msf-wire", "debug-int-set", "dwarf-cfa", "dwarf-line-query", "bindings-clang-tokens", "bindings-clang-build-system", "bindings-clang-source", "bindings-clang-cpp"]:
+            for case in ["msf-wire", "debug-int-set", "dwarf-cfa", "dwarf-line-query", "dwarf-fde", "bindings-clang-tokens", "bindings-clang-build-system", "bindings-clang-source", "bindings-clang-cpp"]:
                 run([JAIC, f"tests/developer-tools/{case}.jai", "-check", "-os", os_name, "-cpu", cpu])
     for case, reason in [("check-array", "fixed array used as a pointer in assignment"),
                          ("check-small-driver", "small integer addition requires an explicit intermediate integer cast")]:

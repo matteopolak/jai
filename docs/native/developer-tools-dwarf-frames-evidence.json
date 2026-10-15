@@ -1,0 +1,120 @@
+{
+  "scope": "original x86/x64/arm64 Linux-target DWARF32 version4 debug_frame bytes, host decoder; no target executable run",
+  "fixtures": [
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "optimization": 0,
+      "fde_offset": 24,
+      "length": 36,
+      "address_size": 8,
+      "cie_offset": 0,
+      "pc_begin": 0,
+      "pc_range": 47,
+      "instruction_types": [
+        "advance_loc",
+        "def_cfa_offset",
+        "offset",
+        "advance_loc",
+        "def_cfa_register",
+        "advance_loc",
+        "def_cfa",
+        "nop",
+        "nop",
+        "nop",
+        "nop"
+      ],
+      "bytes_sha256": "87304ecfc238d6158d072cf0f207750aa89d054119a01dbbea583661688b7b6d"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "optimization": 2,
+      "fde_offset": 24,
+      "length": 20,
+      "address_size": 8,
+      "cie_offset": 0,
+      "pc_begin": 0,
+      "pc_range": 31,
+      "instruction_types": [],
+      "bytes_sha256": "b6edf7682eb6e1380bf8e38ab76f386b0a23159e7e03222bc98683df497e2ec0"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "optimization": 0,
+      "fde_offset": 24,
+      "length": 28,
+      "address_size": 8,
+      "cie_offset": 0,
+      "pc_begin": 0,
+      "pc_range": 76,
+      "instruction_types": [
+        "advance_loc",
+        "def_cfa_offset",
+        "nop",
+        "nop",
+        "nop",
+        "nop",
+        "nop"
+      ],
+      "bytes_sha256": "dc388fb3ba8974f11dfad89249235032fd2c194fb71fa14f1fa436d7adc1a162"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "optimization": 2,
+      "fde_offset": 24,
+      "length": 28,
+      "address_size": 8,
+      "cie_offset": 0,
+      "pc_begin": 0,
+      "pc_range": 52,
+      "instruction_types": [
+        "advance_loc",
+        "def_cfa_offset",
+        "nop",
+        "nop",
+        "nop",
+        "nop",
+        "nop"
+      ],
+      "bytes_sha256": "febe01d6f56cdc3d506b2bbc7593a2dbd97edd00f7410bce69a44c9bec6a63d0"
+    },
+    {
+      "target": "i386-unknown-linux-gnu",
+      "optimization": 0,
+      "fde_offset": 20,
+      "length": 24,
+      "address_size": 4,
+      "cie_offset": 0,
+      "pc_begin": 0,
+      "pc_range": 50,
+      "instruction_types": [
+        "advance_loc",
+        "def_cfa_offset",
+        "offset",
+        "advance_loc",
+        "def_cfa_register",
+        "advance_loc",
+        "def_cfa"
+      ],
+      "bytes_sha256": "45f78b13a4e0cf0eb0a496a9f9afca5b73bd115aecfa065fdcedfe14becebfcc"
+    },
+    {
+      "target": "i386-unknown-linux-gnu",
+      "optimization": 2,
+      "fde_offset": 20,
+      "length": 20,
+      "address_size": 4,
+      "cie_offset": 0,
+      "pc_begin": 0,
+      "pc_range": 34,
+      "instruction_types": [
+        "advance_loc",
+        "def_cfa_offset",
+        "advance_loc",
+        "def_cfa_offset",
+        "nop",
+        "nop"
+      ],
+      "bytes_sha256": "7339ab7869e8905263e2625a05ca4d04ab8ca26e7869c808013fca3ec189f92f"
+    }
+  ]
+}
