@@ -57,9 +57,12 @@ def main():
     run([JAIC, "tests/developer-tools/bindings-sdk-public.jai", "-interp"], output="ok\n")
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib",
          "tests/developer-tools/bindings-sdk.c", "-o", "target/libdeveloper_tools_sdk.dylib"])
-    cases.extend(["bindings-clang-diagnostics", "bindings-callback-context", "bindings-custom", "bindings-custom-roundtrip", "bindings-clang-options"])
+    cases.extend(["bindings-clang-diagnostics", "bindings-callback-context", "bindings-custom", "bindings-custom-roundtrip", "bindings-clang-options", "bindings-macros", "bindings-macros-roundtrip"])
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-I", prefix / "include",
          "tests/developer-tools/bindings-options.c", "-o", "target/libdeveloper_tools_options.dylib"])
+    run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib",
+         "tests/developer-tools/bindings-macro-values.c", "-o", "target/libdeveloper_tools_macros.dylib"])
+    run([JAIC, "tests/developer-tools/bindings-macros.jai", "-interp"], output="ok\n")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"

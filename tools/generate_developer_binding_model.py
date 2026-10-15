@@ -105,7 +105,7 @@ def main():
                  "clang_isVolatileQualifiedType", "clang_isFunctionTypeVariadic", "clang_Cursor_isBitField",
                  "clang_getFieldDeclBitWidth", "clang_getCursorExtent", "clang_getRangeStart", "clang_getRangeEnd",
                  "clang_Cursor_getRawCommentText", "clang_createIndexWithOptions", "clang_getCursorDefinition",
-                 "clang_Cursor_isNull"]
+                 "clang_Cursor_isNull", "clang_tokenize", "clang_disposeTokens"]
     source = "// Native parser subset; declarations from the reviewed platform-specific inventories.\n"
     for name in api_names:
         def declaration(inventory):

@@ -5,6 +5,6 @@
     "/opt/homebrew/opt/llvm/include/clang-c/CXString.h": "c82e38b8283c1f9d39ac0637d74f2ef4ead933fc344b880688e5ea2a7f321316"
   },
   "clang_version": "Homebrew clang version 23.1.2\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm/23.1.2/bin\nConfiguration file: /opt/homebrew/Cellar/llvm/23.1.2/etc/clang/arm64-apple-darwin27.cfg\n",
-  "source_sha256": "e952fd842df2e2769f22c378e4c7888653bb8ec8890258bb16bf9896ca6538b4",
+  "source_sha256": "14730ce6b9ae4e988a0d141b8a486c574c7449537f6f6f4e05ec2cabdff92b97",
   "tests": "interpreter/native O0/O2 call and mutation, callbacks, enum and record layout; rejection preserves output; Linux/Windows target-dependent long"
 }

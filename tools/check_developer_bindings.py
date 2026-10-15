@@ -44,8 +44,13 @@ def main():
         run([jaic, fixture, f"-O{optimization}", "-exe", exe, "-I", ROOT / "target"])
         run([exe], "ok\n")
     rejected = ROOT / "target/developer-tools-rejected.jai"
+    run([tool, ROOT / "tests/developer-tools/bindings-macro.h", output, "native"])
+    if "NUMERIC_MACRO :: cast(s32) 17;" not in output.read_text():
+        raise RuntimeError("Original numeric macro must now generate an actual typed constant")
     for case, reason in [("bitfield", "bitfield member"), ("malformed", "error:"),
-                         ("macro", "macro generation is not supported")]:
+                         ("macro-function", "function-like macro"),
+                         ("macro-string", "not a supported numeric constant expression"),
+                         ("macro-nonfinite", "nonfinite floating macro")]:
         rejected.write_text("existing output must survive")
         run([tool, ROOT / f"tests/developer-tools/bindings-{case}.h", rejected, "native"],
             returncode=1, diagnostic=reason)
@@ -61,6 +66,20 @@ def main():
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", output, fixture])
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", output, fixture])
     run([ROOT / "target/debug/jailint", "-D", "warnings", "-I", ROOT / "target", output, fixture])
+    macro_header = ROOT / "tests/developer-tools/bindings-macro-values.h"
+    macro_output = ROOT / "target/developer-tools-macros-generated.jai"
+    macro_fixture = ROOT / "tests/developer-tools/bindings-macros-roundtrip.jai"
+    for triple, os_name, width in [("x86_64-unknown-linux-gnu", "linux", 8),
+                                    ("x86_64-pc-windows-msvc", "windows", 4)]:
+        run([tool, macro_header, macro_output, "developer_tools_macros", f"--target={triple}"])
+        if f"ORIGINAL_LONG_BYTES :: cast(u64) {width};" not in macro_output.read_text():
+            raise RuntimeError("Macro sizeof must use the requested target ABI")
+        run([jaic, macro_fixture, "-check", "-os", os_name, "-cpu", "x64", "-I", ROOT / "target"])
+    run([tool, macro_header, macro_output, "developer_tools_macros"])
+    run([tool, macro_header, macro_output, "developer_tools_macros", "-pedantic-errors", "-Wall", "-Wextra", "-Werror"])
+    run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", macro_output])
+    run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", macro_output])
+    run([ROOT / "target/debug/jailint", "-D", "warnings", "-I", ROOT / "target", macro_output])
     inputs = {str(path): hashlib.sha256(path.read_bytes()).hexdigest()
               for path in [prefix / "include/clang-c/Index.h", prefix / "include/clang-c/CXString.h"]}
     metadata = {"scope": "staged libclang backend used by the supported public Bindings_Generator facade; full compatibility remains pending",
