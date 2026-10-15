@@ -11,7 +11,8 @@ import check_portable_time_foundation as foundation
 ROOT = Path(__file__).resolve().parents[1]
 LIBRARY = foundation.LIBRARY
 OWNED_PATHS = ["Android/Toolchain", "internal/android-toolchain", "internal/crypto/sha.jai",
-               "internal/archive/android-zip-wire.jai"]
+               "internal/archive/android-zip-wire.jai", "internal/archive/android-zip-records.jai",
+               "internal/archive/android-zip-writer.jai"]
 
 
 def compose():

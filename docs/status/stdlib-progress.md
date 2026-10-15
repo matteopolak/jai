@@ -1,5 +1,16 @@
 # Portable stdlib progress
 
+ZIP writer completed11 public entries: exact canonical30/46/22 records/defaults,
+writer layout/lifecycle/temp storage/borrowed names, CRC/dummy CRC, file/memory
+stored or real raw-DEFLATE blocks, local4096 padding and central/end emission.
+Six interpreter/native Mac O0/O2 runs pass independent zipfile/zlib decompression,
+block boundaries through131071, alignment, ownership and eight failure paths;
+format/--check and strict lint pass (target/zip-writer-workflow.log). Deflate
+currently uses stored blocks, so no size reduction; explicitly documented tradeoff.
+Initial16-bit offset-overflow defect fixed after native-zlib rejection. Prior
+32/24 layout question resolved by newly reviewed directives, not a compiler hack.
+Inventory109 missing rows. Next: APK whole-file owned views and real entry iterator.
+
 Example_Plugin completed: all ten reviewed entries, canonical My_Plugin layout,
 option grammar/default/init state, compiler message reporting and allocation-owned
 shutdown. Public tests interpreter/native O0/O2 and real Default_Metaprogram

@@ -1,5 +1,19 @@
 # Portable stdlib worker deviations
 
+ZIP writer deflate tradeoff: internal/archive/android-zip-writer.jai emits real
+raw DEFLATE stored blocks rather than LZ/Huffman matches. Independent zlib reads
+empty/single/multiple-block output correctly, but payloads grow by5 bytes/block.
+No claimed compression ratio guarantee exists in the reviewed spec. Proper future
+optimization is a general compressor with equivalent round-trip/boundary coverage.
+Writer directly serializes reviewed target records on supported little-endian
+targets; no big-endian guarantee invented. ZIP64/oversized/unsupported alignment
+diagnose, and failure after a builder allocation may leave partial output (no
+transactional guarantee in reviewed API). Temporary storage/names must survive
+finalization; no reset/reuse promise. Public #align/#no_padding review resolves
+the old field-only probe gap. Strict lint and format/--check executed on owned
+writer/records/facade/tests. Test corrections and initial invalid-block evidence
+are recorded in portable-zip-wire.md; no failed assertion was blessed as success.
+
 Example_Plugin scope review: no missing reviewed entry or test exclusion remains.
 The public some_state stores33 plus messages observed after init; this gives a real
 count while preserving exact layout and allocation ownership. Diagnostic prose is
