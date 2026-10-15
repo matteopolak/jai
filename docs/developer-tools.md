@@ -29,3 +29,7 @@ The [official libclang C API documentation](https://clang.llvm.org/doxygen/group
 ## Rewrite
 
 Initialize a `My_Plugin` through `init`, feed its `gather` hook compiler messages, and call `finish`. Default mode reports edits; explicit `write` enables mutation. No public factory absent from the reviewed contract is added. Deprecated `<<expr` becomes `(expr).*` using the original source expression span. Source snapshots are reread and compared before writes. Overlapping/invalid edits and stale files are refused with diagnostics. Public edit helpers also support independently supplied edits with multiline/CRLF data. Plugin-owned resources are released by its shutdown hook; direct helper callers retain ownership of their input records and strings.
+
+## Debug_Info frame parsing
+
+The initial subset decodes DWARF call-frame instructions and common information entries. It bounds every fixed/LEB128 read, rejects overflow/truncation/unsupported operands, and returns no partial successful result. It supports DWARF32 CIE versions 1/3/4 and little-endian integer operands. Augmentation string/data views borrow input; decoded instruction arrays belong to the active allocator. Operand formats follow the [official DWARF5 specification](https://dwarfstd.org/doc/DWARF5.pdf); public names/records/opcodes follow the reviewed module spec. The fixture parses .eh_frame from an original Clang-built C object and rejects every truncated CIE prefix. Other Debug_Info parsers remain unfinished.

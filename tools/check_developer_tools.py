@@ -22,7 +22,12 @@ def run(command, *, output=None, error=""):
 
 def main():
     check_developer_bindings.main()
-    cases = ["c-header", "c-header-roundtrip", "c-header-reject", "print-vars", "rewrite"]
+    prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
+    run([prefix / "bin/clang", "-target", "x86_64-unknown-linux-gnu", "-g", "-fno-omit-frame-pointer",
+         "-c", "tests/developer-tools/dwarf-native.c", "-o", "target/developer-tools-dwarf.o"])
+    run([prefix / "bin/llvm-objcopy", "--dump-section", ".eh_frame=target/developer-tools-eh-frame.bin",
+         "target/developer-tools-dwarf.o"])
+    cases = ["c-header", "c-header-roundtrip", "c-header-reject", "print-vars", "rewrite", "dwarf-cfa"]
     run([JAIC, "tests/developer-tools/c-header.jai", "-interp"], output="ok\n")
     run(["clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-I", "target",
          "tests/developer-tools/point.c", "-o", "target/libdeveloper_tools_point.dylib"])
@@ -65,6 +70,7 @@ def main():
              ROOT / "stdlib/Performance_Report/module.jai",
              ROOT / "stdlib/Print_Vars/module.jai",
              ROOT / "stdlib/Rewrite/module.jai",
+             ROOT / "stdlib/Debug_Info/module.jai",
              *sorted((ROOT / "stdlib/internal/developer-tools").glob("*.jai")),
              *sorted((ROOT / "tests/developer-tools").glob("*.jai"))]
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *paths])

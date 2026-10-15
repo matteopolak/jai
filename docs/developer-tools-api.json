@@ -24909,7 +24909,7 @@
         "declaration": "Frame_Common_Information_Entry :: struct",
         "section": "Public declaration inventory",
         "spec_line": 106,
-        "implementation": "pending"
+        "implementation": "supported DWARF frame subset; native-produced CIE and malformed-input fixture"
       },
       {
         "name": "Frame_Description_Entry",
@@ -24923,7 +24923,7 @@
         "declaration": "Call_Frame_Address_Instruction :: struct",
         "section": "Public declaration inventory",
         "spec_line": 108,
-        "implementation": "pending"
+        "implementation": "supported DWARF frame subset; native-produced CIE and malformed-input fixture"
       },
       {
         "name": "Dwarf_Language",
@@ -24958,7 +24958,7 @@
         "declaration": "parse_common_information_entry :: (data: [] u8, offset_in: s64) -> success: bool, Frame_Common_Information_Entry, offset: s64",
         "section": "Public declaration inventory",
         "spec_line": 113,
-        "implementation": "pending"
+        "implementation": "supported DWARF frame subset; native-produced CIE and malformed-input fixture"
       },
       {
         "name": "parse_frame_description_entry",
@@ -24972,7 +24972,7 @@
         "declaration": "decode_cfa_instructions :: (data: [] u8) -> [] Call_Frame_Address_Instruction, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 115,
-        "implementation": "pending"
+        "implementation": "supported DWARF frame subset; native-produced CIE and malformed-input fixture"
       },
       {
         "name": "Dwarf_Attribute_Type",
@@ -25007,7 +25007,7 @@
         "declaration": "Call_Frame_Address_Instruction_Type :: enum u8",
         "section": "Public declaration inventory",
         "spec_line": 120,
-        "implementation": "pending"
+        "implementation": "supported DWARF frame subset; native-produced CIE and malformed-input fixture"
       },
       {
         "name": "Dwarf_Registers_x64",
