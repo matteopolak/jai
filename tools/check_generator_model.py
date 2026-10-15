@@ -35,12 +35,13 @@ OWNED = [
     "tests/developer-tools/generator-model-cpp.jai",
     "tests/developer-tools/generator-model-typedefs.jai",
     "tests/developer-tools/generator-model-aggregates.jai",
+    "tests/developer-tools/generator-model-record-edges.jai",
 ]
 FIXTURES = [
     "generator-model-helpers", "generator-model-native",
     "generator-model-session", "generator-model-tokens",
     "generator-model-construction",
-    "generator-model-objc", "generator-model-macros", "generator-model-cpp", "generator-model-typedefs", "generator-model-aggregates", "bindings-macros",
+    "generator-model-objc", "generator-model-macros", "generator-model-cpp", "generator-model-typedefs", "generator-model-aggregates", "generator-model-record-edges", "bindings-macros",
     "bindings-tree", "bindings-equivalence",
 ]
 evidence = []
