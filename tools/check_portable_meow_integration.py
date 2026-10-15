@@ -21,7 +21,7 @@ elif platform.system() == "Linux" and platform.machine().lower() in {"x86_64", "
     native_target = ["-cpu", "x64"]
 else:
     raise RuntimeError("this focused legacy native-x64 check needs macOS x64 execution or Linux x64")
-fixture = ROOT / "tests/stdlib/meow-hash.jai"
+fixture = ROOT / "tests/native-regressions/meow-hash.jai"
 executable = ROOT / "target/portable-tests/meow-existing-x64"
 executable.parent.mkdir(parents=True, exist_ok=True)
 subprocess.run([str(compiler), *native_target, str(fixture), "-exe", str(executable)],

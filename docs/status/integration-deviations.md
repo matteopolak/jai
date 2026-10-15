@@ -740,3 +740,52 @@ four runtime-config and five library-root cases plus two new strict transport
 cases pass. No tests were weakened. Production's real private reporter remains
 present; native guard/diagnostic tests retain their assertions. The full run's
 failure evidence is preserved at secondary artifacts/workspace-native-checks.log.
+
+
+## Reviewed-test migration checkpoint (2026-10-15, integration role)
+
+Explicit user-authorized replacement retires143 inherited stdlib compatibility
+fixtures plus one tracked object artifact, preserves328 source/assets (296
+compiler including37 helper modules,14 native including one MPEG asset,9
+Extensions,9 graphics). Per-file hashes/reasons and consumer changes are recorded
+in stdlib-test-migration.json. No stdlib/Extensions implementation was changed.
+
+Operational Rust/Python/Node/workflow/release-fixture/PGO reads use new paths.
+Legacy skip and numeric coverage baselines are removed by authorization;
+reachability is informational and cannot establish functionality completion.
+Standard CI runs reviewed contracts, compiler/Extensions/ABI/graphics/module
+catalogue and separate NEW producer suites against actual production. Windows
+ARM64 graphics execution follows actual Mesa build; pinned PyYAML6.0.3 added to
+its isolated environment. These workflow edits are prepared, not CI-executed.
+
+Executed evidence:6 catalogue/negative-runner unit tests PASS; precise Hash
+privacy rejection and positive baseline PASS through contract and aggregate
+runners; sweep negative PASS; native C++ hidden-result-pointer original fixture
+PASS O0/O2; C structs-by-value real C test PASS with explicit overlay assertions.
+Source-built unchanged jaifmt rewrite/check PASS59 contract/adapted ABI files.
+Strict positive-contract jailint originally FAIL49files: two legitimate fixture
+lint findings corrected (assert actual first locator, remove redundant alias);
+storage-time missing seconds_since_init requires pending portable checkpoint,
+not a tool repair. Original failure evidence retained.
+
+Audit/risk/long-term work: retired generator wrappers are no longer compatibility
+gates; full reviewed tooling coverage remains incomplete. C++ regression disables
+only Clang's return-type-c-linkage warning because an intentionally C-named
+C++ non-POD return tests ABI; native result/value assertions remain strict.
+Ordered-atomics compiler regression now declares own intrinsic protocol directly,
+retaining LLVM order checks plus exact result; no unreviewed Atomics API added.
+Long-double presentation casts narrow only formatter arguments, retaining every
+wide C ABI/precision comparison; generator-only tail is retired. Struct overlay
+formatting no longer assumes an omitted reflected field, while all scalar/array
+overlay values are asserted.
+
+Remaining verification: full replacement catalogue and producer/native/browser/
+Rust workspace checks still required after pending stable merges. Generic
+module fixtures requiring font/SDK helper arguments need actual preparation;
+their failures remain visible, no fabricated inputs/pass substitution. Some
+producer drivers/builders remain macOS/POSIX-specific; source matrices do not
+establish native Windows/Linux execution. Browser reports explicit unavailable
+foreign/native SDK cases separately, never passed. Root contract coverage is
+bounded, not equivalent to deleted suite or complete reviewed API coverage.
+Coordinator alone runs opaque original public corpus, Focus and ordinary native
+CI. Release/publication remains held. No push/dispatch performed.

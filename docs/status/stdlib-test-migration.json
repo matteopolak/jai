@@ -24,7 +24,8 @@
         "Basic",
         "File"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7bce19ec5a6c20f8b6dd5a9741ea899e77a9604e2843ac7af5796dc14cf3e0cd"
     },
     {
       "original": "tests/stdlib/add-context-constant.jai",
@@ -38,7 +39,8 @@
         "Basic",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2565bc44e3502562f18da9cbe5accee9300e8da3a84fc4404c6148e6e520eb02"
     },
     {
       "original": "tests/stdlib/add-global-data.jai",
@@ -52,7 +54,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c11cecc583a4abdc7c45724a2b73307ad1a434d1166d2060950978c31dac21f7"
     },
     {
       "original": "tests/stdlib/aggregate-parameter-copy.jai",
@@ -65,7 +68,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "e7029b3c152d1885703b8a105d69a5ea39ab91db63d6a0e6c1fa749775a2e270"
     },
     {
       "original": "tests/stdlib/allocation-memory.jai",
@@ -81,7 +85,7 @@
         "Memory",
         "xxHash"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/allocators-debug-and-default.jai",
@@ -96,7 +100,7 @@
         "Default_Allocator",
         "Overwriting_Allocator"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/arithmetic-overflow-check.jai",
@@ -110,7 +114,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "aaa720ba43d08e7cb1b1f971d43057dd4901d573af8afdd34eacffefc6f767be"
     },
     {
       "original": "tests/stdlib/array-bounds-check-opt-out.jai",
@@ -123,7 +128,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "59c8487e5604e3fc3e60e547547657d50a7c9957d159bbebb4176f967293f5d0"
     },
     {
       "original": "tests/stdlib/array-literal-view-lifetime.jai",
@@ -136,7 +142,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "52cce5ad16f58e400fbd00adcbd04797c6345d6a88cfe8c4e46bf0c073150224"
     },
     {
       "original": "tests/stdlib/as-member-through-pointer.jai",
@@ -149,7 +156,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "5a0d2d6dd96cd80f87b22bd3e681c366df52a5d0cbd13df838dd515c6782bf3d"
     },
     {
       "original": "tests/stdlib/as-poly-instance-args.jai",
@@ -162,7 +170,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "3167d68bc47bc4c097c105ae1e134d83f57ba24bb91c1e2fe28462690ece0c4b"
     },
     {
       "original": "tests/stdlib/asm-avx512-masks.jai",
@@ -175,7 +184,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "41eeb988f67ba2ea1a01b94c2bbba1ceb2a7f6fd81553dd0c6e050e4ede2bc60"
     },
     {
       "original": "tests/stdlib/asm-evex-decorations.jai",
@@ -188,7 +198,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b263540601b5b3a6d3151142a55decb8bd26fc1d329ac2f2ef5ce0e2d6040f3c"
     },
     {
       "original": "tests/stdlib/asm-f16c-sha-gfni.jai",
@@ -201,7 +212,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a1ec6a525b64ad507b7e4e02e90f1fc1f0a89b68b643d97c82ea99680d12d597"
     },
     {
       "original": "tests/stdlib/asm-float-variables.jai",
@@ -214,7 +226,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "661cc1334f36eb86459143bdd75d87b7b85c282415a127921b546ee622f3e8c3"
     },
     {
       "original": "tests/stdlib/asm-gpr-destination.jai",
@@ -227,7 +240,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "e86f9eb12e1a0d7e193c70318e70f3791675ab373fdf2df14ab93c4388b4fd92"
     },
     {
       "original": "tests/stdlib/asm-mpsadbw-ifma.jai",
@@ -240,7 +254,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8ababaaa48f26bb21078212d45fb486a10eaae86b1d135225b1c015ffe20f15e"
     },
     {
       "original": "tests/stdlib/asm-scalar-extended.jai",
@@ -253,7 +268,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "0ffebff05b1466138f467a27ba86347c44a8e0dd9fdf0dabc4dcce0389b432f7"
     },
     {
       "original": "tests/stdlib/asm-simd-extended.jai",
@@ -266,7 +282,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "98f0d98037d00a81b5f57c1a3699c6addeebe0296bd2a6434d04c9c0f984e852"
     },
     {
       "original": "tests/stdlib/asm-string-compare.jai",
@@ -279,7 +296,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "0c623b02010e0f8027c99b0604a846542fa79a802c5eeea81f365b22724a3d99"
     },
     {
       "original": "tests/stdlib/asm-vector-instructions.jai",
@@ -292,7 +310,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6c8b494eaa8cbe2586910fef11e0a8339089b1e39c3004f40abc59369c6709f9"
     },
     {
       "original": "tests/stdlib/atomics-contention.jai",
@@ -307,7 +326,7 @@
         "Thread",
         "Atomics"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/atomics-float.jai",
@@ -321,7 +340,7 @@
         "Basic",
         "Atomics"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/atomics-operations.jai",
@@ -335,7 +354,7 @@
         "Basic",
         "Atomics"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/atomics-ordered.jai",
@@ -350,7 +369,7 @@
         "Thread",
         "Atomics"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/auto-bake-omitted-default.jai",
@@ -363,7 +382,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "554a66abeee7ed4c2688cfc3bfc8023d86088eb006809ee08681418494cf5785"
     },
     {
       "original": "tests/stdlib/auto-bake-params.jai",
@@ -376,7 +396,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b2585af4268e5d91bb936557e9edc24d27107a626d82b8bd129c554b538ca22e"
     },
     {
       "original": "tests/stdlib/autocast-arithmetic-argument.jai",
@@ -389,7 +410,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "17d594ff822ac51358f5f7453fed576ae08b8f1d1540ba79d3e54b94535a1046"
     },
     {
       "original": "tests/stdlib/autocast-bitwise-argument.jai",
@@ -402,7 +424,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "cc6aa42ea6a019abb7bd0cb8fa2af9304c5ed209b0e9396ba616c609ab77772b"
     },
     {
       "original": "tests/stdlib/autorun-plugin.jai",
@@ -417,7 +440,7 @@
         "Compiler",
         "Autorun"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/backtick-defer-names.jai",
@@ -430,7 +453,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "adce3834bd38374e2fd963f61b3a3e5adf0a80a1c68a3d1abe673a66b219ce43"
     },
     {
       "original": "tests/stdlib/bake-constants-partial.jai",
@@ -443,7 +467,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6fed6598f7a0c8c4f1dd2bfc247af8ca7c02b9893c4ce4d7415a4be6f8492763"
     },
     {
       "original": "tests/stdlib/baked-array-literal-poly-length.jai",
@@ -456,7 +481,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "bb133764e23cacb4c4c1b8a2bfa6f2a7371d49104f5d3e5035a766186c9b48df"
     },
     {
       "original": "tests/stdlib/baked-default-uses-poly.jai",
@@ -469,7 +495,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "509fed5eac30b56fceb17c73458fb33a5eb8a54c0b9e64d13ff9fc7087871c1f"
     },
     {
       "original": "tests/stdlib/baked-dependent-type-and-member.jai",
@@ -482,7 +509,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "59103176d7f2728dde902b3c19a24d205cb4e65cf9ea7f833ae393be2c4011cb"
     },
     {
       "original": "tests/stdlib/baked-enum-default.jai",
@@ -496,7 +524,8 @@
         "Basic",
         "System"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "0a00e0e51eec45b7723eec9037afc76dd3bec0a0268bfffbc5bd28c36e3f39cb"
     },
     {
       "original": "tests/stdlib/baked-overload-runtime-field.jai",
@@ -509,7 +538,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "aa6652edefe5594b2be614caacc4aa2801e58a6b94346b110427c03315078032"
     },
     {
       "original": "tests/stdlib/baked-struct-restriction.jai",
@@ -522,7 +552,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ec526cb23d86cc87f498c3ea2a7ab6b882d7e00e23a69cf744a807227784a39a"
     },
     {
       "original": "tests/stdlib/bare-poly-struct-derived-argument.jai",
@@ -535,7 +566,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6bfeaa33d0c55bc4d6c631879a981b6efae15fe24fc440c5719e0f21cb75e439"
     },
     {
       "original": "tests/stdlib/base64-codec.jai",
@@ -549,7 +581,7 @@
         "Basic",
         "Base64"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/base64-round-trips.jai",
@@ -563,7 +595,7 @@
         "Basic",
         "Base64"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-allocation-arrays.jai",
@@ -576,7 +608,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-apollo-time.jai",
@@ -589,7 +621,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-calendar.jai",
@@ -602,7 +634,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-collections.jai",
@@ -619,7 +651,7 @@
         "IntroSort",
         "RadixSort"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-context-identity.jai",
@@ -630,7 +662,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "The runtime context is named by the language's #Context type.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b278a5e49f2e30ee8b4603259c5f28b74d7364654f736df8c02b2baac79df337"
     },
     {
       "original": "tests/stdlib/basic-float-conversion.jai",
@@ -643,7 +676,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-float-parse-correct-rounding.jai",
@@ -656,7 +689,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-float-variants-and-parse.jai",
@@ -669,7 +702,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-format-struct-recursive-long-form.jai",
@@ -682,7 +715,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-formatters.jai",
@@ -695,7 +728,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-logging-builder.jai",
@@ -708,7 +741,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-print-edge-forms.jai",
@@ -721,7 +754,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-protocol-aliases.jai",
@@ -734,7 +767,8 @@
       "imports": [
         "Preload"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "e9e8676fa497ff8e28c9c48bf67d89b5a7941993c70b5219caad8363b6e54006"
     },
     {
       "original": "tests/stdlib/basic-string-parsing.jai",
@@ -747,7 +781,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-string-to-float-rounding.jai",
@@ -760,7 +794,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-time-int128.jai",
@@ -773,7 +807,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/basic-working-directory.jai",
@@ -786,7 +820,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-bitfields-msvc.jai",
@@ -804,7 +838,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-bitfields.jai",
@@ -822,7 +856,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-c.jai",
@@ -839,7 +873,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-checks.jai",
@@ -856,7 +890,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-cpp-classes.jai",
@@ -874,7 +908,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-cpp-raw-multi.jai",
@@ -892,7 +926,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-cpp-raw.jai",
@@ -910,7 +944,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-cpp-virtual-bases.jai",
@@ -928,7 +962,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-cpp.jai",
@@ -945,7 +979,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-declaration-api.jai",
@@ -962,7 +996,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-enum-names.jai",
@@ -979,7 +1013,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-long-double.jai",
@@ -997,7 +1031,7 @@
         "Scratch_Directory",
         "Extensions/Long_Double"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-objc-blocks.jai",
@@ -1016,7 +1050,7 @@
         "Scratch_Directory",
         "Objective_C"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-objc-generics.jai",
@@ -1035,7 +1069,7 @@
         "Scratch_Directory",
         "Objective_C"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-objc-ivars.jai",
@@ -1054,7 +1088,7 @@
         "Scratch_Directory",
         "Objective_C"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-objc-stret.jai",
@@ -1072,7 +1106,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-objc.jai",
@@ -1091,7 +1125,7 @@
         "Scratch_Directory",
         "Objective_C"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bindings-generator-parity.jai",
@@ -1108,7 +1142,7 @@
         "Bindings_Generator",
         "Scratch_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bit-array-slots.jai",
@@ -1121,7 +1155,7 @@
       "imports": [
         "Bit_Array"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bit-array-standard.jai",
@@ -1135,7 +1169,7 @@
         "Basic",
         "Bit_Array"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bit-operations.jai",
@@ -1148,7 +1182,7 @@
       "imports": [
         "Bit_Operations"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bits-half-srgb-limits.jai",
@@ -1166,7 +1200,7 @@
         "Bit_Operations",
         "Sloppy_Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bitwise-inferred-member-expected-type.jai",
@@ -1179,7 +1213,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1c82f72d837b665bb2d6e61985adb6de27ec6136535c2879290262e0e9d49044"
     },
     {
       "original": "tests/stdlib/body-waits-for-inserted-declaration.jai",
@@ -1192,7 +1227,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "81c98dcfe59a108bfd0368a9b7e66c347a3640507b3394dec1c602a95659ad14"
     },
     {
       "original": "tests/stdlib/bucket-array-remove-it.jai",
@@ -1206,7 +1242,7 @@
         "Basic",
         "Bucket_Array"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/bucket-array-shape.jai",
@@ -1220,7 +1256,7 @@
         "Basic",
         "Bucket_Array"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/build-options-main-defaults.jai",
@@ -1235,7 +1271,8 @@
         "Compiler",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8680e83f861ad0ee94809f63b0b1ec4b09ad22b6d1b7ab393f99aa87295ddb95"
     },
     {
       "original": "tests/stdlib/buildcpp-api.jai",
@@ -1253,7 +1290,7 @@
         "File_Utilities",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/c-callbacks-interpreted.jai",
@@ -1266,7 +1303,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d18c6cd0e75f263e5d6e517b4fce958414a5956b45709735209f9652abeee25c"
     },
     {
       "original": "tests/stdlib/c-variadic-foreign-calls.jai",
@@ -1279,7 +1317,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7167d7eac66abddcfb750b18fb42e90d3428a0e71a8b95624ee1d30e76cc0207"
     },
     {
       "original": "tests/stdlib/cast-bounds-check.jai",
@@ -1293,7 +1332,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "12108f29342922e2b8c3e9f09de286c4df352830231680838483048a43789630"
     },
     {
       "original": "tests/stdlib/cast-float-of-integer-operator.jai",
@@ -1306,7 +1346,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "fdb4b06c17eefd15be0d7f3f447175294c5772df131bbe24ec9b2641c8c3140a"
     },
     {
       "original": "tests/stdlib/cast-modifier-in-parens.jai",
@@ -1319,7 +1360,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "5bc0734f9c936f391301e85db98d7a880f66c7951773589c46d45dd4cd03c4fe"
     },
     {
       "original": "tests/stdlib/cast-operand-precedence.jai",
@@ -1332,7 +1374,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "5efaa13569ed769a1cceb8b63dc889bb1869a7c7f45cfe86d70be4e9e61bea71"
     },
     {
       "original": "tests/stdlib/cast-operand-typed-bottom-up.jai",
@@ -1345,7 +1388,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2142c53454e2049d98a258fc8313b03def4293034fa7e44e036544bcead697d0"
     },
     {
       "original": "tests/stdlib/cast-to-bool-nonzero.jai",
@@ -1358,7 +1402,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7de1db8a4c56d00cb1bd26667046b8e2ec50d4a09b26e82398619f4002130b69"
     },
     {
       "original": "tests/stdlib/char-poly-argument.jai",
@@ -1372,7 +1417,8 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "f95150784106f74ae8f77867ce11a8f3e74480fac6e693888e2debf67e5c658f"
     },
     {
       "original": "tests/stdlib/clipboard-round-trip.jai",
@@ -1388,7 +1434,8 @@
         "File_Utilities",
         "POSIX"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "75e8efb7286f11f179d810db15f21abae6056c8462f3c9550821ef6198115a5c"
     },
     {
       "original": "tests/stdlib/code-export-varargs-flag.jai",
@@ -1402,7 +1449,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d6899336b02bc662ee0070c4b2088a6fe6dd454db61f03b90c4f82d569c7f253"
     },
     {
       "original": "tests/stdlib/code-visit.jai",
@@ -1417,7 +1465,7 @@
         "Compiler",
         "Code_Visit"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/codegen-unoptimized-shortcuts.jai",
@@ -1430,7 +1478,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1e2e4023caf7afe0edd0da1bcffbe1840e2458d58e77e97e76fd86e514d18860"
     },
     {
       "original": "tests/stdlib/command-line-program-arguments.jai",
@@ -1444,7 +1493,7 @@
         "Basic",
         "Command_Line"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/compile-time-failing-bodies.jai",
@@ -1459,7 +1508,8 @@
         "Compiler",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "98947fdda70891cb4151b97f0a7836eaa66ebc7f2252950ad87ff371a22f0fc9"
     },
     {
       "original": "tests/stdlib/compile-time-globals-reset.jai",
@@ -1470,7 +1520,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "Global state changed by compile-time code does not reach the running program,",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "3a6822c3d6cc43c40c5539f5aeda94c490cc787ecbe7f5cea451a5ebb06a81d1"
     },
     {
       "original": "tests/stdlib/compile-time-pointer-cycles.jai",
@@ -1483,7 +1534,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9141c3c9939b4e85d2180bdf140f804340ec8dd77a5a8cd3e160ea69f2e5fe98"
     },
     {
       "original": "tests/stdlib/compile-time-stack-trace.jai",
@@ -1496,7 +1548,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "68590e8120b002406746323b11b52f27cfed9f6b95ae6f054ffa0f05b340a9a0"
     },
     {
       "original": "tests/stdlib/compiler-api-shapes.jai",
@@ -1510,7 +1563,7 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/compiler-build-file-and-literals.jai",
@@ -1527,7 +1580,8 @@
         "Code_Visit",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "33a952a05d036cdf65becedde365e92f62f97f6a938a1370528669d50f6fbae4"
     },
     {
       "original": "tests/stdlib/compiler-enum-external-type.jai",
@@ -1541,7 +1595,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "4b882427d02a505ea5e1490819ff7e5bb2053812e5777763f15c4c2b831416b3"
     },
     {
       "original": "tests/stdlib/compiler-get-code-rerun.jai",
@@ -1555,7 +1610,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "fc8e98b721270834c9ffcf84f641a3b38209669504b55f33552e2afec158ec08"
     },
     {
       "original": "tests/stdlib/compiler-get-code.jai",
@@ -1569,7 +1625,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9496a1931c94d84bc7c24997e90aad8f8652699b81d19eac6cbcece812402e92"
     },
     {
       "original": "tests/stdlib/compiler-header-own-types.jai",
@@ -1585,7 +1642,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "cab91a8611140c296fa1079731d88c4d157363f27f6080bc66d7500adc27bba7"
     },
     {
       "original": "tests/stdlib/compiler-helper-behavior.jai",
@@ -1598,7 +1656,7 @@
       "imports": [
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/compiler-import-control.jai",
@@ -1618,7 +1676,8 @@
         "Basic",
         "Provided_Mod"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a247624e56429c253ea85639b729de71fa01fcc057ae6b7f1e928baac02285f2"
     },
     {
       "original": "tests/stdlib/compiler-make-procedure-live.jai",
@@ -1633,7 +1692,8 @@
         "Compiler",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "fd37042d18beb9bac5b00bfaf1b883a4ad1e9e2271f55d6013fbb101551d62c9"
     },
     {
       "original": "tests/stdlib/compiler-misc-stubs.jai",
@@ -1648,7 +1708,7 @@
         "Compiler",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/compiler-module-placeholder-insert.jai",
@@ -1664,7 +1724,8 @@
         "Basic",
         "Generated_Kinds"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "83b55ee745938d36b80183c23c4961acf30c67652d54fd86993b7bd6d4e99366"
     },
     {
       "original": "tests/stdlib/compiler-noted-module-procs.jai",
@@ -1679,7 +1740,8 @@
         "Compiler",
         "Noted_Unused"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1640d37746876b15c6c72c32e069b9d94162c900f5e5a582c3b70d4df3a84866"
     },
     {
       "original": "tests/stdlib/compiler-performance-and-dump-messages.jai",
@@ -1695,7 +1757,8 @@
         "String",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a3b3855ab9bb0d24e4806ca406d88db02d0b996c502188742852797208fb1f64"
     },
     {
       "original": "tests/stdlib/compiler-reflection-pure.jai",
@@ -1706,7 +1769,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b2bf49cc19db3e0474c89603214444cf765f7e130336b071b51bae1bba69596b"
     },
     {
       "original": "tests/stdlib/compiler-resolved-nodes.jai",
@@ -1723,7 +1787,8 @@
         "String",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "15518703824f1fc08d380f55cd7aa433b9ebbe947d78c818a87c155b4e5c1636"
     },
     {
       "original": "tests/stdlib/compiler-struct-location.jai",
@@ -1738,7 +1803,8 @@
         "Compiler",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "3021355ac298d92d02418850d7ebb9e0e9b2edcbbc0b13bfb4a696f7a4d24d69"
     },
     {
       "original": "tests/stdlib/compiler-type-table-compile-time.jai",
@@ -1752,7 +1818,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "662f3ae24555108f6291feb269a6166519d7bef348497566552a81f4ebee843a"
     },
     {
       "original": "tests/stdlib/compiler-typechecked-messages.jai",
@@ -1767,7 +1834,8 @@
         "Compiler",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "86fe3d4b74d4f5fcfe4d6eaaecc4fd88da75eabfd083251d934e61586a8d4848"
     },
     {
       "original": "tests/stdlib/compiler-typechecked-names.jai",
@@ -1781,7 +1849,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "e5634f5eef5c00231a42cea2376af730b25bd4ab913332c56c01ce29eb125ee4"
     },
     {
       "original": "tests/stdlib/compiler-typechecked-notes.jai",
@@ -1796,7 +1865,8 @@
         "Compiler",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "731bf4f5baf36d1e2eceb926a5054fd5d263393dc353ec22eb5b421a0e8bf010"
     },
     {
       "original": "tests/stdlib/compiler-typechecked-polymorph-static-if.jai",
@@ -1810,7 +1880,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "919ac5f46b5d26d8b04520d7d52eb531d382fa776997e7e37ce3586d9b4b1a25"
     },
     {
       "original": "tests/stdlib/compiler-typechecked-unused-and-global-flags.jai",
@@ -1825,7 +1896,8 @@
         "Compiler",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "dfd4b06d805f45f43ab8f357b493ff76be6c7b60793ac43a5ea8091b34f035d2"
     },
     {
       "original": "tests/stdlib/compiler-workspace-ids.jai",
@@ -1838,7 +1910,8 @@
       "imports": [
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "bd511d386319ab6805f5a25fdc14a951a0188fdbadfe2409f520ae5d3120c8ee"
     },
     {
       "original": "tests/stdlib/conditional-for-flags.jai",
@@ -1851,7 +1924,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "e62b7b9c801e80321bb28704c7f63105b024e04d5cda91ccf236bc5ab15e4ba5"
     },
     {
       "original": "tests/stdlib/const-integer-pointer.jai",
@@ -1864,7 +1938,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b65f3c174582635d9e78b91dfbfd47dfe692f38687eabf8ea732637d3813a3fd"
     },
     {
       "original": "tests/stdlib/const-string-cast-to-array.jai",
@@ -1877,7 +1952,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1411dce5e972dcd67b19606496b9063e321f5bc4d90288a2237a9b525b1de656"
     },
     {
       "original": "tests/stdlib/containers-sort-patterns.jai",
@@ -1896,7 +1972,7 @@
         "Bucket_Array",
         "Bit_Array"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/core-small-helpers.jai",
@@ -1915,7 +1991,7 @@
         "Print_Vars",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/cpp-method-and-array-decay.jai",
@@ -1928,7 +2004,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9d02475cf7346e5bc2fd8f8f496550b178c150b2fdc1d20db1778edb890e96ac"
     },
     {
       "original": "tests/stdlib/custom-link-library-lists.jai",
@@ -1943,7 +2020,8 @@
         "Compiler",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1974126eac4b082ad161c4736a957e500a601f8eeb00b4a38315dae431f8e008"
     },
     {
       "original": "tests/stdlib/dead-code-elimination.jai",
@@ -1958,7 +2036,8 @@
         "Compiler",
         "Dce_Unreferenced"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "15fa23f990bec4422d116417da447f71c55e451914a799e85cdbc3d9f3cf49cf"
     },
     {
       "original": "tests/stdlib/debug-assert-handlers.jai",
@@ -1971,7 +2050,7 @@
       "imports": [
         "Debug"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/debug-backtrace-and-pointers.jai",
@@ -1985,7 +2064,7 @@
         "Basic",
         "Debug"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/decl-type-proc-parens.jai",
@@ -1998,7 +2077,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "37ae610047b34b6d5d2f8efe296aee2d8d944e8137f8b7083124d254c41a02ab"
     },
     {
       "original": "tests/stdlib/declare-and-assign-places.jai",
@@ -2012,7 +2092,8 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "5691134ef055be074690520e177c64c72fa8eae2edde16518aa235efc8279eaa"
     },
     {
       "original": "tests/stdlib/default-allocator.jai",
@@ -2025,7 +2106,7 @@
       "imports": [
         "Default_Allocator"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/discard-parameters.jai",
@@ -2038,7 +2119,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "75ed937a6e1be3caea069cd90a60f0d3857688fc2717340b0bc0dcb6a999fded"
     },
     {
       "original": "tests/stdlib/empty-array-literal-null-view.jai",
@@ -2051,7 +2133,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "3e1ba03044354baad682df5b10ee0cffeb4fc22caee80725324c1ea7c8a913f6"
     },
     {
       "original": "tests/stdlib/enum-insert-members.jai",
@@ -2064,7 +2147,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6742769779018160c45dada7bf85c7ab6cade8cfab709ba1d99c2346c7bc9581"
     },
     {
       "original": "tests/stdlib/enum-notes.jai",
@@ -2078,7 +2162,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c2cfa29db304b4744442da4bee883218d24b2319d729dfeeb99631ac0d8585f8"
     },
     {
       "original": "tests/stdlib/example-plugin.jai",
@@ -2093,7 +2178,7 @@
         "Compiler",
         "Example_Plugin"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/extensions-long-double.jai",
@@ -2108,7 +2193,8 @@
         "Extensions/Long_Double",
         "Reflection"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b659a90ccbdb331858d2230995dd421c651daa6d0c8c4cb4a46448d06b37c61a"
     },
     {
       "original": "tests/stdlib/file-async.jai",
@@ -2123,7 +2209,7 @@
         "File",
         "File_Async"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/file-from-native-handle.jai",
@@ -2139,7 +2225,7 @@
         "Windows",
         "POSIX"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/file-handles.jai",
@@ -2154,7 +2240,7 @@
         "File",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/file-io-roundtrip.jai",
@@ -2170,7 +2256,7 @@
         "File_Utilities",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/file-read-line.jai",
@@ -2184,7 +2270,7 @@
         "Basic",
         "File"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/file-utilities-paths.jai",
@@ -2199,7 +2285,7 @@
         "File",
         "File_Utilities"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/file-utilities-tree.jai",
@@ -2216,7 +2302,7 @@
         "String",
         "POSIX"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/file-watcher-scan.jai",
@@ -2232,7 +2318,7 @@
         "File_Watcher",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/filepath-forward-slashes.jai",
@@ -2245,7 +2331,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2e4fd3ae097add690ea5a70b79047fb37f9217f71e5cb1b6b7d12686309acf2b"
     },
     {
       "original": "tests/stdlib/float-literal-precision.jai",
@@ -2258,7 +2345,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a45c82d97ee6a6887dfa058be3059ea75d55572267e7f8807a3ff2dc723fe9ef"
     },
     {
       "original": "tests/stdlib/for-by-value-it-address.jai",
@@ -2271,7 +2359,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "3f90f9ab425ea24715a9addddf3721d365be7bc75587391824e722b99540bad5"
     },
     {
       "original": "tests/stdlib/for-expansion-defer-continue.jai",
@@ -2284,7 +2373,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b27fa7db932d142eba05913e3ba589b4423b3526869f5c6e1695fadba135766d"
     },
     {
       "original": "tests/stdlib/for-expansion-forwarded-body.jai",
@@ -2297,7 +2387,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2f9ef7f64d9d35874db0c71bf14ab1a12c8e693d7efcb73ce91e458506c0c524"
     },
     {
       "original": "tests/stdlib/for-expansion-mixed-overloads.jai",
@@ -2310,7 +2401,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ccc9bf0d815cc2d8a87f53493de0985ddf553a40982c0ada35bd78eb4f843637"
     },
     {
       "original": "tests/stdlib/for-expansion-named-twice.jai",
@@ -2323,7 +2415,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "0889cbb990a3b5f22ea88da2c8116f49005b284f501be1352eb23c60c921461b"
     },
     {
       "original": "tests/stdlib/for-expansion-pointer-param-constant.jai",
@@ -2337,7 +2430,8 @@
         "Basic",
         "Unicode"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8038963cc2dad3901255c3eb976b72a5478a51d16002e19fb385688103cbb164"
     },
     {
       "original": "tests/stdlib/for-expansion-renamed-index.jai",
@@ -2350,7 +2444,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ef15e9abeaa80f2009174f6a71fb952bfe63ca0b1c0aedb10fd0139251846327"
     },
     {
       "original": "tests/stdlib/for-loop-bounds.jai",
@@ -2363,7 +2458,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "48f6499a4bb0d3cbb42dad26e572c13c42ec2c9b329e6fbdc1ba4ba47a487cf7"
     },
     {
       "original": "tests/stdlib/for-named-it-index.jai",
@@ -2376,7 +2472,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "4fbf200598b96096b23af765c0ac594fc83b3681e17136031e2009f4073c3031"
     },
     {
       "original": "tests/stdlib/for-reverse-named-iterator.jai",
@@ -2389,7 +2486,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7bbef27f98ffcd488c41545a9f5107b3c229e0d4fbee95b4c2f1680cf8a13310"
     },
     {
       "original": "tests/stdlib/format-detection-helpers.jai",
@@ -2405,7 +2503,7 @@
         "generate_c_header",
         "Project_Generator"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/freetype-bdf-glyph.jai",
@@ -2419,7 +2517,8 @@
         "Basic",
         "freetype"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8467bb4e65c960db1b0e8edc9eb25ef41d314ff54b58d8522e25f7dcd1a572d0"
     },
     {
       "original": "tests/stdlib/getrect-right-handed-api.jai",
@@ -2433,7 +2532,7 @@
         "GetRect",
         "Window_Type"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/getrect-right-handed-geometry.jai",
@@ -2447,7 +2546,7 @@
         "Math",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/getrect-right-handed-surface.jai",
@@ -2460,7 +2559,7 @@
       "imports": [
         "GetRect"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/getrect-simp-gl-frame.jai",
@@ -2480,7 +2579,8 @@
         "File",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c5443e0f87b7af1a1fbe74522ffd4223742256aec4b67e98eb05237570914a3a"
     },
     {
       "original": "tests/stdlib/getrect-text-display-compiles.jai",
@@ -2494,7 +2594,7 @@
         "Basic",
         "GetRect"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/getrect-widgets-driven.jai",
@@ -2513,7 +2613,8 @@
         "Window_Type",
         "Clipboard"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b2f1229eb39e3769362177993ba4c1120ccabeaae6e8c49c2580840b4bddd8e6"
     },
     {
       "original": "tests/stdlib/hash-digest-vectors.jai",
@@ -2531,7 +2632,7 @@
         "xxHash",
         "meow_hash"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/hash-table-collisions.jai",
@@ -2544,7 +2645,7 @@
       "imports": [
         "Hash_Table"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/hash-table-init-size.jai",
@@ -2557,7 +2658,7 @@
       "imports": [
         "Hash_Table"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/hexfloat-literal-type.jai",
@@ -2570,7 +2671,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c948dba7c9349f0642ad5f7a7954f82695f1f361ef0fd89ba800b41f099d8faf"
     },
     {
       "original": "tests/stdlib/howto-struct-param-type-variable.jai",
@@ -2583,7 +2685,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c2e415faba994995b19196828914bfc8a0eddf6b9affcde17f10801d189942bc"
     },
     {
       "original": "tests/stdlib/howto-struct-scope-type-of.jai",
@@ -2596,7 +2699,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "050f28068a1eb0db7941a3083e9a828e7bd4232311278b6ad53213dd3f0dd650"
     },
     {
       "original": "tests/stdlib/howto-type-restriction-overloads.jai",
@@ -2609,7 +2713,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "205a7796b3995b5c70e08d310629f51c4836242060546c408bf9f758c28fe5df"
     },
     {
       "original": "tests/stdlib/howto-type-variant-literals.jai",
@@ -2623,7 +2728,8 @@
         "Basic",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "81e7a029c6335b797b368731f274258ff816303e0ea6f2e1729d3ae5404ebe07"
     },
     {
       "original": "tests/stdlib/howto-using-literal-and-this-in-macro.jai",
@@ -2636,7 +2742,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2efcdd08372eea5eb8776f2a3287512ca2e0b166a23b1521b5b02df856a99046"
     },
     {
       "original": "tests/stdlib/howto-while-binding-and-inferred-members.jai",
@@ -2649,7 +2756,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "09ec6117d2b30d38c43a17ce0f2f5999424f2b7e42c6f1e62bd3476b3273626d"
     },
     {
       "original": "tests/stdlib/http-codec-roundtrip.jai",
@@ -2663,7 +2771,8 @@
         "Basic",
         "Extensions/Http"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "e6a745e2f94ae87493242944b984bde3e347262fb483f99d00366073d0081b2b"
     },
     {
       "original": "tests/stdlib/ico-wav-files.jai",
@@ -2679,7 +2788,7 @@
         "Ico_File",
         "Wav_File"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/icon-plugin-options.jai",
@@ -2695,7 +2804,7 @@
         "File",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/ifx-argument-overloads.jai",
@@ -2708,7 +2817,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "fad701519ab605ee40cb873fb3c39914c474d4e594ae691c451470edb1b37e39"
     },
     {
       "original": "tests/stdlib/ifx-block-value.jai",
@@ -2721,7 +2831,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8f466394fa320dc17cff2ed0106a3d643141583eb618d59f94ca52ff86fee371"
     },
     {
       "original": "tests/stdlib/ifx-numeric-widening.jai",
@@ -2734,7 +2845,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "dddbdc9cdf4adcade96bbe6f5286458fff153bad3b1c6e8abd91bdf332e8d6b5"
     },
     {
       "original": "tests/stdlib/ifx-widens-to-else.jai",
@@ -2747,7 +2859,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1c2b354926a4512594dfe1d0c027b446eba0fa46d61a42b2f167ff16e48e68b3"
     },
     {
       "original": "tests/stdlib/imgui-headless-frames.jai",
@@ -2761,7 +2874,8 @@
         "Basic",
         "ImGui"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "f17c3720d788591a8385cb90fdd438aa42f65f977349241fd459173853c93de1"
     },
     {
       "original": "tests/stdlib/index-assign-through-star-index.jai",
@@ -2774,7 +2888,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b37d4ebd77fedd9e72a29c46ef7660719a5140574f6d1a26b5b3ba090686b238"
     },
     {
       "original": "tests/stdlib/index-operator-fallback.jai",
@@ -2787,7 +2902,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "f1511ecfa2463ea591ebb187358ac679bcd39093d1184afa54b46106f2900bbd"
     },
     {
       "original": "tests/stdlib/inferred-flag-arguments.jai",
@@ -2800,7 +2916,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "10cddface8cddae8f23c7ef8c3b9123dfd398743d1ebd4af4024c20bbc6a55d2"
     },
     {
       "original": "tests/stdlib/input-compat-names.jai",
@@ -2815,7 +2932,7 @@
         "Window_Type",
         "Input"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/input-multi-window-focus.jai",
@@ -2830,7 +2947,8 @@
         "Basic",
         "Window_Type"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "3e69b4da44c1ece4b33d17390ce1522627c77ee3b0b56353fe5c34bdc2b0121e"
     },
     {
       "original": "tests/stdlib/input-published-events.jai",
@@ -2845,7 +2963,8 @@
         "Window_Type",
         "Input"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a41bddb85d9fc3020608794b5f51876a34dee2b4ed9ac75f4be308e142e15a86"
     },
     {
       "original": "tests/stdlib/input-temporary-allocator.jai",
@@ -2860,7 +2979,8 @@
         "Window_Type",
         "Input"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "149c11e5e8ddfa6f32e5968e7960dbf52a6cd28b24da052b43ec0fce53534599"
     },
     {
       "original": "tests/stdlib/insert-expression-code-scope.jai",
@@ -2873,7 +2993,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6b7a7e44587ce818200e31f246d9bd1449ffd7f06d6789e02f1dff9088b76a03"
     },
     {
       "original": "tests/stdlib/insert-replacements.jai",
@@ -2886,7 +3007,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "85fc1e9938ecfdd1e94f669fd6fe84acfd400375cb987024d3acb029760c51c4"
     },
     {
       "original": "tests/stdlib/insert-scope-named-code.jai",
@@ -2899,7 +3021,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "beaebba26d32adf7e7c581e437f5123f06a65a410c0454a1b2e7e063a8703946"
     },
     {
       "original": "tests/stdlib/insert-scope-string-top-level.jai",
@@ -2913,7 +3036,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "07eb9f897374c66a7790ee284b9ce5f0c13c9426ad9c1da41716781c6b03bf7b"
     },
     {
       "original": "tests/stdlib/int-to-float32-rounding.jai",
@@ -2926,7 +3050,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d6029122377dbc5da241ef4fefc24be5e89b6045d1156f4a56e75868792420e7"
     },
     {
       "original": "tests/stdlib/int128-arithmetic.jai",
@@ -2937,7 +3062,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "Concrete arithmetic boundary inputs. Integration runs this authored body;",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7c415734ecc570284e7648a660516777e9cc16f1c9c99588953f89325de41d15"
     },
     {
       "original": "tests/stdlib/integer-constant-fit.jai",
@@ -2950,7 +3076,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ca40eb6a83b45974d2e4de83b643d7fad2b292908e90558bbbc21a1c9f4bd132"
     },
     {
       "original": "tests/stdlib/intrinsic-byte-lookup.jai",
@@ -2963,7 +3090,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2b36f42c1aaca4276feeb4e5fc57d5d12524665d937abe21fb34812303b5a246"
     },
     {
       "original": "tests/stdlib/intro-sort-api.jai",
@@ -2978,7 +3106,7 @@
         "IntroSort",
         "Random"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/io-fibers-channels.jai",
@@ -2992,7 +3120,8 @@
         "Basic",
         "Extensions/Io"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "5cbfcc1d0df7b4da99af4eeac266d7de17b4bef15528170428e2fec2f2978843"
     },
     {
       "original": "tests/stdlib/io-fibers-context.jai",
@@ -3006,7 +3135,8 @@
         "Basic",
         "Extensions/Io"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "5f226ee8794ed8c76e5d306c6457ff4e4d19618210159f8aeb6ab2a4fcc250ae"
     },
     {
       "original": "tests/stdlib/io-fibers-many.jai",
@@ -3020,7 +3150,8 @@
         "Basic",
         "Extensions/Io"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "72cf55ce809f1b7f3f77b110395b53a9539119b94a7230dbae643daeec0cbccd"
     },
     {
       "original": "tests/stdlib/io-fibers-sleep-cancel.jai",
@@ -3034,7 +3165,8 @@
         "Basic",
         "Extensions/Io"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "14f6caf0b83b7f714c6dededa337f7cf5bab7163301c568d8eeb6ee833cb4136"
     },
     {
       "original": "tests/stdlib/io-uring-raw.jai",
@@ -3049,7 +3181,8 @@
         "File",
         "Extensions/Io_Uring"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "94783469ceb367cb07f28d9a07fbf41feb72e048762c934ba3072e82566e2312"
     },
     {
       "original": "tests/stdlib/iprof-call-graph.jai",
@@ -3065,7 +3198,7 @@
         "String",
         "Iprof"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/iprof-instrumented-report.jai",
@@ -3082,7 +3215,7 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/iprof-plugin.jai",
@@ -3097,7 +3230,7 @@
         "Compiler",
         "Iprof"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/iprof-runtime-manual.jai",
@@ -3112,7 +3245,7 @@
         "Math",
         "Iprof"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/jai-format-api.jai",
@@ -3127,7 +3260,8 @@
         "String",
         "Extensions/Jai_Format"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "af8aececa68b8880ab192baaef06f1e07d38669d197bd9c0c84c1f1dd83750c5"
     },
     {
       "original": "tests/stdlib/jai-lexer-tokens.jai",
@@ -3141,7 +3275,7 @@
         "Basic",
         "Jai_Lexer"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/lang-asm.jai",
@@ -3154,7 +3288,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "e64cb05be3757f5e236b1536dc61a1cf537161d25c183abff42feb61df0d220b"
     },
     {
       "original": "tests/stdlib/lang-conversions.jai",
@@ -3167,7 +3302,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ea790a35155f7995ad30e11cac26dd49e7de5b057b5270d7d6e178364e999f1c"
     },
     {
       "original": "tests/stdlib/lang-insert-block.jai",
@@ -3180,7 +3316,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b6c94dd77cf6a5341e0cb4dfdb6c850bf4119f485ad739948e09e2132f3b5c4d"
     },
     {
       "original": "tests/stdlib/lang-lambdas.jai",
@@ -3191,7 +3328,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "Lambda expressions: typed from the expected procedure type, polymorphic when bound",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "64038c26ba0bc487e85b9505f3375d40cecb613a11f38367fd2168b53f108c27"
     },
     {
       "original": "tests/stdlib/lang-poly-misc.jai",
@@ -3202,7 +3340,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "Regression tests for declarations, polymorphism, #modify, #bake_constants and operator overloads.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "f664fdccdb5554dba156222eec8431ef22a0025eca4bc9c8f5929ce20c9f14b6"
     },
     {
       "original": "tests/stdlib/lists.o",
@@ -3213,7 +3352,7 @@
       "reason": "Tracked build object is not source and must not be exported; custom-link regressions must build their object from own source.",
       "intent": "",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/literal-arithmetic-argument.jai",
@@ -3227,7 +3366,8 @@
         "Basic",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d61830a440eb2b4b21dc832ea8985ba15f9f28c84a29a32f226b01b8280bdea7"
     },
     {
       "original": "tests/stdlib/literal-matches-other-operand.jai",
@@ -3240,7 +3380,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "df656081aa328740c6ce0f4107ac93eddeb13e40b655fe624e6daf86bfc463e6"
     },
     {
       "original": "tests/stdlib/literal-prefers-float32.jai",
@@ -3253,7 +3394,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "49b660f787bfc7e0c6392cd3bf98fe6bfc4467ffd2739ee126fec8f35292d792"
     },
     {
       "original": "tests/stdlib/lz4-roundtrip.jai",
@@ -3267,7 +3409,8 @@
         "Basic",
         "lz4"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "aa58cafbd4d112d0cb054d6a69e32eebb37c21a2041a994489f91ab72335deeb"
     },
     {
       "original": "tests/stdlib/machine-x64-intrinsics.jai",
@@ -3281,7 +3424,7 @@
         "Basic",
         "Machine_X64"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/macos-bundler.jai",
@@ -3298,7 +3441,7 @@
         "String",
         "MacOS_Bundler"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/macro-body-constants.jai",
@@ -3311,7 +3454,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d25e1dd021ca2a2b7814205a07e4304ebdba093e73d0fb6ee937e1aee61eb9d9"
     },
     {
       "original": "tests/stdlib/macro-code-variable-arg.jai",
@@ -3326,7 +3470,8 @@
         "Compiler",
         "Program_Print"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "e2fe75bb6e942e0f53fdd64933ee5acda7e62a5f57f66c45acad9e99234f82a8"
     },
     {
       "original": "tests/stdlib/macro-constant-string-count.jai",
@@ -3339,7 +3484,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6764dfaa497b5b2e5e63a822284c3a4399e5d0f1d80dea871115ce3d0e673840"
     },
     {
       "original": "tests/stdlib/math-linear-algebra.jai",
@@ -3353,7 +3499,7 @@
         "Basic",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/math-scalar-functions.jai",
@@ -3367,7 +3513,7 @@
         "Basic",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/math-struct-printer.jai",
@@ -3381,7 +3527,7 @@
         "Basic",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/math-vector-views.jai",
@@ -3395,7 +3541,7 @@
         "Basic",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/member-align-lowers-alignment.jai",
@@ -3408,7 +3554,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6343c79d4c984087a13db158c658a1aef139f6c4377a2c8f40fdc3939cadb9d7"
     },
     {
       "original": "tests/stdlib/memory-debugger-core.jai",
@@ -3419,7 +3566,7 @@
       "reason": "Retired inherited stdlib-specific acceptance by explicit user authorization; reviewed contract and NEW producer suites replace its oracle, without claiming equivalent exhaustive coverage.",
       "intent": "Real memory, a bounded source allocator, and exact failure-state assertions.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/memory-debugger-report-format.jai",
@@ -3433,7 +3580,7 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/memory-debugger-text.jai",
@@ -3446,7 +3593,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/memory-debugger-tracking.jai",
@@ -3459,7 +3606,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/memory-debugger-visualizer-stream.jai",
@@ -3475,7 +3622,7 @@
         "Shared_Memory_Channel",
         "POSIX"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/memory-utilities.jai",
@@ -3493,7 +3640,7 @@
         "Hash_Table",
         "Remap_Context"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/meow-hash.jai",
@@ -3507,7 +3654,8 @@
         "Basic",
         "meow_hash"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6e71c4d8f5922434ffd2eaad1aa94bc2d6e414498c12a64bf911e268a11db48f"
     },
     {
       "original": "tests/stdlib/meshoptimizer-indices.jai",
@@ -3522,7 +3670,8 @@
         "Sort",
         "meshoptimizer"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "364eae12c8e482f450e0cfa06e1bddbdf042aef240848328032628e31e5f54fd"
     },
     {
       "original": "tests/stdlib/metaprogram-plugins-and-check.jai",
@@ -3540,7 +3689,7 @@
         "Check",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/modern-library-conversions.jai",
@@ -3554,7 +3703,8 @@
         "Basic",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2583767e68e74c728ad5568d1c71b5641ac389dfe613c56779107cfb583c9d7f"
     },
     {
       "original": "tests/stdlib/modern-metaprogramming.jai",
@@ -3570,7 +3720,8 @@
         "Program_Print",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "0daebffb36fc6777c8a9f1a2acdde5fe0bdb03c0658ffbce6c337898ef0e89bc"
     },
     {
       "original": "tests/stdlib/modify-polymorph-forms.jai",
@@ -3583,7 +3734,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "23975bed3cf860d686c506af1afbc9402240f4686e2d2d9aaca4c40f81c17f95"
     },
     {
       "original": "tests/stdlib/modify-return-message.jai",
@@ -3596,7 +3748,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "93e7d9cb98ba02ae3c6f454e4c0d4137437fbe44b9ddd7a8049ed643c187706f"
     },
     {
       "original": "tests/stdlib/module-member-resolution.jai",
@@ -3613,7 +3766,8 @@
         "Reexport_Outer",
         "Program_Param"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "700be5c595aae230bd15a5837af07bf7ed3c05174b5a208f653deceb1bcc92eb"
     },
     {
       "original": "tests/stdlib/module-parameter-argument-order.jai",
@@ -3628,7 +3782,8 @@
         "Rules_Params",
         "Rules_Params"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c2d3edb82e9b214cf342bbebb4d9d656b0fbb1331c84c93d38de5c83389dd062"
     },
     {
       "original": "tests/stdlib/module-parameter-instances.jai",
@@ -3643,7 +3798,8 @@
         "Instance_Flag",
         "Instance_Flag"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d06a6752e1f236724e52712859edd4cd9ba6ba415a3fd6ee9f3998bee7477a94"
     },
     {
       "original": "tests/stdlib/module-using-global.jai",
@@ -3657,7 +3813,8 @@
         "Basic",
         "Using_Global"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d7e4bc578bc9374435f321de9cd5940976f0434a2f465d1dc06bc1a8095a6dd6"
     },
     {
       "original": "tests/stdlib/module-using-import-reexport.jai",
@@ -3671,7 +3828,8 @@
         "Basic",
         "Reexport_Outer"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c3a024f1789d20db8a5dd536873c203baa003391195d61cc662cbfb7b25e4577"
     },
     {
       "original": "tests/stdlib/modules/Dce_Unreferenced/loaded.jai",
@@ -3682,7 +3840,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Loaded by Dce_Unreferenced/module.jai.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "caaca5e9b9419f4debf51d0778bb9c098d647b487ef836924ec15906fe9cacaa"
     },
     {
       "original": "tests/stdlib/modules/Dce_Unreferenced/module.jai",
@@ -3693,7 +3852,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Used by tests/stdlib/dead-code-elimination.jai. Nothing calls `stale` or `loud`: with the",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b7728db0472f638d4ccbfc5ea9240dd371401ab9c481cb673891983ce5b760cf"
     },
     {
       "original": "tests/stdlib/modules/Generated_Kinds/kinds.jai",
@@ -3704,7 +3864,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Filled in by the metaprogram, into this module's scope.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6169dca8832bec6527e17619cd33b696e3330522744b33aeba10897e6d201209"
     },
     {
       "original": "tests/stdlib/modules/Generated_Kinds/module.jai",
@@ -3717,7 +3878,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8617bdf01bfb8eaed987f429f41e89e597c2ceec4a1bedea67e04fcd92471906"
     },
     {
       "original": "tests/stdlib/modules/Generated_Kinds/table.jai",
@@ -3728,7 +3890,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Nothing uses this struct, but it is still type-checked, so `Kind` must exist by then.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7020507ee5e968d809156abf1c7d7b979d14ded1f0245d6c82b590c6b4465518"
     },
     {
       "original": "tests/stdlib/modules/Instance_Flag/module.jai",
@@ -3739,7 +3902,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Module for tests/stdlib/module-parameter-instances.jai.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7b435eecd3f074d8a60e22593cb4328a7895bfb30e82d6c8d01815611e35f1bd"
     },
     {
       "original": "tests/stdlib/modules/Noted_Unused/module.jai",
@@ -3750,7 +3914,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Used by tests/stdlib/compiler-noted-module-procs.jai.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "5f16b772d7db09f913a4bbb6180b1a5fce91128a24aeec7be9d4a9b94e7b84b8"
     },
     {
       "original": "tests/stdlib/modules/Poke_Target/module.jai",
@@ -3761,7 +3926,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Uses `Mode` without declaring it: the importer supplies it with #poke_name.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d81e1a38eba98534153cd3a35e6493f8265b6959a35fcf22ebaa6fa84d097225"
     },
     {
       "original": "tests/stdlib/modules/Program_Param/module.jai",
@@ -3772,7 +3938,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "VERBOSE is a program parameter: every importer shares one instance.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "13d2b2056faf04128420adfc318ab5bd9a0b5bd73e17e89b3cfa90d5a8a6b314"
     },
     {
       "original": "tests/stdlib/modules/Provided_Dir/module.jai",
@@ -3783,7 +3950,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "A module a test hands to provide_import by directory.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "fdaa513e9f4757a8013db4038b505eb7f36ad38aed41bc4c879ea6743332659d"
     },
     {
       "original": "tests/stdlib/modules/Provided_File.jai",
@@ -3794,7 +3962,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "A module a test hands to provide_import by file path.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "0e8f634da6a9ab261ed6e9ba0081ab42f9548f47ccd3b1fe93e539a89c9b407b"
     },
     {
       "original": "tests/stdlib/modules/Reexport_Inner/module.jai",
@@ -3805,7 +3974,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2f938bbc382b01cb5f0a479e68266a544afd84558b52986c6921ccffcd37a980"
     },
     {
       "original": "tests/stdlib/modules/Reexport_Outer/module.jai",
@@ -3818,7 +3988,8 @@
       "imports": [
         "Reexport_Inner"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "3d0cd26fa3382a14b96f74a8f4f89dd916562215acb75e9e123068188c9910fe"
     },
     {
       "original": "tests/stdlib/modules/Rules_Both.jai",
@@ -3829,7 +4000,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Both Rules_Both.jai and Rules_Both/module.jai exist: the single file is found first.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "845839562d8cbc5754cd8b44c1e05cb6a9b00c77474c1074e28c936eabf1a641"
     },
     {
       "original": "tests/stdlib/modules/Rules_Both/module.jai",
@@ -3840,7 +4012,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Shadowed by Rules_Both.jai next to this directory.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b9081d426d28718135ec94caf87f71bf033539bb5fda6199891b4b52068b9d00"
     },
     {
       "original": "tests/stdlib/modules/Rules_Params/impl.jai",
@@ -3851,7 +4024,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Loaded by module.jai: module parameters are constants here too.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "fb8562cfe4e2f7dda30a4b2c6dbcf8b82bd1cd4c85be8e9e7d8068cdd4f4b66f"
     },
     {
       "original": "tests/stdlib/modules/Rules_Params/module.jai",
@@ -3864,7 +4038,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "580558bf1e19b0b08b4ac94d7c625c06ce4158219caf4a49087a841b2b8d7f89"
     },
     {
       "original": "tests/stdlib/modules/Rules_Plain/module.jai",
@@ -3875,7 +4050,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Module for tests/stdlib/rules-modules-and-imports.jai.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b68568f31222454cd996afa1f4442d59d080f7fd42f3cc76324055fc9555e306"
     },
     {
       "original": "tests/stdlib/modules/Rules_Plain/sub/deeper.jai",
@@ -3886,7 +4062,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Loaded by part.jai through a path relative to part.jai.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7fe126e341208a1a97c7223f457c025e7d404677ef948ede5be9093bc5579b18"
     },
     {
       "original": "tests/stdlib/modules/Rules_Plain/sub/part.jai",
@@ -3897,7 +4074,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Loaded by ../module.jai; its own #load resolves next to this file.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "4b925545bbabbd33ce715128c61b0ee0aed1c50b9201c46ee3950e2cafbce190"
     },
     {
       "original": "tests/stdlib/modules/Rules_Prelude/module.jai",
@@ -3908,7 +4086,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "A module with no imports of its own: Preload and Runtime_Support names are still visible.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a85588b6b2b809fa795a8dd6b0edd20189fc10d3123829bc3a3951dc3a3102d6"
     },
     {
       "original": "tests/stdlib/modules/Rules_Scoping/context_part.jai",
@@ -3919,7 +4098,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Loaded by a top-level `#if`; adds a Context member that compile-time code in the importer reads.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b94a657226fdbef5b54ecfdff754ebdd4923470742f807255c10c6e894c77d90"
     },
     {
       "original": "tests/stdlib/modules/Rules_Scoping/module.jai",
@@ -3932,7 +4112,8 @@
       "imports": [
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "4067885053889887e18d51c7b129d806aa55f61873453545f1a7d29ffed2dfdb"
     },
     {
       "original": "tests/stdlib/modules/Rules_Scoping/second.jai",
@@ -3943,7 +4124,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Second file of Rules_Scoping: sees the module-scope names of module.jai, has its own",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "871d56b36167bc3c50992f20afa6c20a469dc8fc6b11a4a36f24fe09a297768c"
     },
     {
       "original": "tests/stdlib/modules/Rules_Scoping_File_Leak/module.jai",
@@ -3954,7 +4136,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Deliberately broken helper for tests/corpus/negative/rule-scope-3.jai: this file reads a",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "5a8be9033605109c2ab41631ec356b1635f925939c4b78d4da345bb3e41257ba"
     },
     {
       "original": "tests/stdlib/modules/Rules_Scoping_File_Leak/other.jai",
@@ -3965,7 +4148,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "24670cd0eaccc3b6787408f703370f0bd3782496f0243936207f9e46b3407e42"
     },
     {
       "original": "tests/stdlib/modules/Rules_Single.jai",
@@ -3978,7 +4162,8 @@
       "imports": [
         "Rules_Single"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "0f2d736bfd30895d66eeee5e6bf7dfa7fc520ea9d55f7259b5878025c67a2698"
     },
     {
       "original": "tests/stdlib/modules/Scratch_Directory/module.jai",
@@ -3995,7 +4180,8 @@
         "Windows",
         "POSIX"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "3a5111300228fb853fff822e5ced25f9b49f73b1c7c9ab479cf6539ae39f9488"
     },
     {
       "original": "tests/stdlib/modules/Switch_Context/backend/context.jai",
@@ -4006,7 +4192,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a9b66d69ed059e5a1c55c085f044f298c50700210dde5278f0196690d071ff34"
     },
     {
       "original": "tests/stdlib/modules/Switch_Context/module.jai",
@@ -4017,7 +4204,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Picks its backend file with `#if OS == { case ...; }`. The chosen file adds a Context member,",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "4f9cbb700fa35f8c2f3d777a438a722d8619c76d3fa9db49e3f054bc6225e715"
     },
     {
       "original": "tests/stdlib/modules/Switch_Context/settings.jai",
@@ -4028,7 +4216,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2a4a2faf5736143a782281304c8b7b34c6fc38d5493d7f3f9673c8a8b5522729"
     },
     {
       "original": "tests/stdlib/modules/Typed_Param/module.jai",
@@ -4039,7 +4228,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "bc3f49f0ae1f54f993a05c2d794f5a4bf36c677ae1a3066d5b761fa41b92f8a8"
     },
     {
       "original": "tests/stdlib/modules/Untyped_Param/module.jai",
@@ -4050,7 +4240,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "`FRAMES := 3` has no written type: like `FRAMES :: 3` it converts to any integer type",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2a3d4602c4fc8afd22d939c837003353813ae407dfd25c2940bf2b613c1d8c69"
     },
     {
       "original": "tests/stdlib/modules/Using_Global/module.jai",
@@ -4061,7 +4252,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "Exports the members of a global procedure table with `using`, the way GL does.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ef5f9544cd3799f36581695fa2d1babb9abd70df259b36d2cf796d815674ecbb"
     },
     {
       "original": "tests/stdlib/modules/rules_import_files/helper.jai",
@@ -4072,7 +4264,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "eee2cf0f96ad7b04a49bd8b48eeda48a72bf46714433d2035d2bda68054baa11"
     },
     {
       "original": "tests/stdlib/modules/rules_import_files/loaded.jai",
@@ -4083,7 +4276,8 @@
       "reason": "Retained helper for independent module/scope/generator semantics.",
       "intent": "`#load`ed by tests/stdlib/rules-modules-and-imports.jai: shares that file's namespace, so it",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2bd0b8e858c701148ed119fe98722a6971928f666d4ec7261c5f930c8bfc2428"
     },
     {
       "original": "tests/stdlib/modules/rules_import_files/thing.jai",
@@ -4096,7 +4290,8 @@
       "imports": [
         "helper.jai"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a7ca7c04d482408a90ba162e70dde1be658cf9e527c30626ab159cc836213a02"
     },
     {
       "original": "tests/stdlib/mojoshader-translate.jai",
@@ -4111,7 +4306,8 @@
         "String",
         "MojoShader"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d183ae837a19e313f30e3153aa76391ba71b277ecc049fbb85eff031363b1628"
     },
     {
       "original": "tests/stdlib/multi-return-first-argument.jai",
@@ -4124,7 +4320,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "633cc15d84a68d3358c2222dcfafcc2f12c9f2fb6550573bd23c961a037d2b18"
     },
     {
       "original": "tests/stdlib/must-return-values.jai",
@@ -4137,7 +4334,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "f385441b6801d1184496e75fb811b32d5f7d518e17c99b0ac82bbd3cced1091a"
     },
     {
       "original": "tests/stdlib/named-argument-api.jai",
@@ -4154,7 +4352,7 @@
         "Unicode",
         "xxHash"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/new-array-initialization.jai",
@@ -4167,7 +4365,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2c6b2c83d02c204b2b2053cae57416f82e6b396b83317d09ed01e7d822093484"
     },
     {
       "original": "tests/stdlib/no-break-space.jai",
@@ -4180,7 +4379,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9e77ae9fb42202abadfffc6e464da07b901ba171a2a5134ca3474a1a3ed8c0df"
     },
     {
       "original": "tests/stdlib/no-reset-globals-baked.jai",
@@ -4193,7 +4393,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "26e82adf68caec45320b6d8518e2e4719a439b7a26a4dd7735f91b4ba3215fc4"
     },
     {
       "original": "tests/stdlib/null-poly-argument.jai",
@@ -4206,7 +4407,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b989af6818cef17c15cb18129a4c5bb832700e3a6497ae799481cf68a163e948"
     },
     {
       "original": "tests/stdlib/null-poly-baked-default.jai",
@@ -4219,7 +4421,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "5671477d59cc5aac71cd326d612ed1fdacb5530a0eb2958adf8472773c122cc8"
     },
     {
       "original": "tests/stdlib/objc-window-levels.jai",
@@ -4234,7 +4437,8 @@
         "Objective_C",
         "Objective_C/AppKit"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c394be312a5a599c0569864a674b9a44679ba15f32266ce17ee6c2cedaaaa293"
     },
     {
       "original": "tests/stdlib/offset-of-and-is-value-type.jai",
@@ -4247,7 +4451,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c6ddef7b0ea3370072ad61a741620b0a25ace8f05919ce8a5d0ad7af82a37ad7"
     },
     {
       "original": "tests/stdlib/one-char-string-as-byte.jai",
@@ -4260,7 +4465,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1f53d1cc53c6cf2646806f626e4eca3a336fcc633298ca5932b056c2832e6f89"
     },
     {
       "original": "tests/stdlib/operator-ne-from-eq.jai",
@@ -4273,7 +4479,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "72d803ac4faa2aab0f0ea833c1f20bf699376e493fbf591fcd1de3f4901908a8"
     },
     {
       "original": "tests/stdlib/operator-precedence.jai",
@@ -4286,7 +4493,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "eacf7de0f58eb0cb1863781a4612ad9b87bafb8661ca5158e7d64bbe2d1695b4"
     },
     {
       "original": "tests/stdlib/over-aligned-allocation.jai",
@@ -4299,7 +4507,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ca9199901ad952bfe25d8e92441d7ab16e20f5191ab1589d6b33e3254bd514e6"
     },
     {
       "original": "tests/stdlib/overlay-statement-forms.jai",
@@ -4312,7 +4521,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b391339901cddcca0a7de470eda839b25c3cc021dc8e73dfdce9c05dbcecdac1"
     },
     {
       "original": "tests/stdlib/param-type-from-param.jai",
@@ -4325,7 +4535,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "061fdc4ad1a529c02f33109972bc2ba72eb2622a56b944314f0320d591de16a4"
     },
     {
       "original": "tests/stdlib/performance-report-plugin.jai",
@@ -4340,7 +4551,7 @@
         "Compiler",
         "Performance_Report"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/pl-mpeg-clip.mpg",
@@ -4351,7 +4562,8 @@
       "reason": "Retained genuine C/SDK, native algorithm or OS interoperability regression.",
       "intent": "",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "78d67fb8610f497e5bdd8ae5e6ca69ab63bb2efa7cdc2bbe3acf0cc69bb05d4b"
     },
     {
       "original": "tests/stdlib/pl-mpeg-decode.jai",
@@ -4367,7 +4579,8 @@
         "Math",
         "pl_mpeg"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ecce31691d8e2ca6c30ae531b05b9378cc6ee4dd0332469f5a7be43bbc4a4314"
     },
     {
       "original": "tests/stdlib/placeholder-defined-by-metaprogram.jai",
@@ -4382,7 +4595,8 @@
         "Compiler",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "99e0de44b4398a964b0af662d9ef2f7821217f4dc9a60a1c8542bd78f396e4e8"
     },
     {
       "original": "tests/stdlib/pointer-index-assign.jai",
@@ -4395,7 +4609,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9b9da639b7ea4e157bedd8809130dd8c07dbb8c2d8deefb31bceb28ec267b052"
     },
     {
       "original": "tests/stdlib/pointer-index-by-value.jai",
@@ -4408,7 +4623,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "920d4fa85a74cc644f0ec77bb3db212b68670dc0875fa93fc7562c4734ee517c"
     },
     {
       "original": "tests/stdlib/pointer-offset-ifx.jai",
@@ -4421,7 +4637,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "f9cf243fc26ab52a5692c36dfd3be07b1071f7a1787498b9ca67472a308ef937"
     },
     {
       "original": "tests/stdlib/poke-name-shared-type.jai",
@@ -4435,7 +4652,8 @@
         "Basic",
         "Poke_Target"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "59894bb3a6790fab7f861f6c6200e0d6cc1ec3b277a7389f4a1721bf7ac0e295"
     },
     {
       "original": "tests/stdlib/poly-default-binds-type.jai",
@@ -4446,7 +4664,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "A polymorphic parameter whose argument is left out takes its type from the default value",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a4e5021330d76569b4af0eaa5899480e39c750847c984d46546509e8a7435674"
     },
     {
       "original": "tests/stdlib/poly-default-lambda-instance.jai",
@@ -4459,7 +4678,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "de2a7f00f2899b6cc435eefa3df8664da5b07936cf664d86637724266aaca99d"
     },
     {
       "original": "tests/stdlib/poly-infer-from-ifx.jai",
@@ -4472,7 +4692,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ccf6eb8217d9a845baac5ed007405537ebf562a086f176757113b0cc4e9ef465"
     },
     {
       "original": "tests/stdlib/poly-proc-name-as-proc-argument.jai",
@@ -4485,7 +4706,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9204c5ad49666bd3de8f469f4ab4cce8b49039ab7fa4469cad2a7b5ace8bb650"
     },
     {
       "original": "tests/stdlib/poly-restriction-as-member.jai",
@@ -4498,7 +4720,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d5efb22671864ee2625405221bc2e8ba0ca9e4bd5b95c9fec7785b3a4a2db92b"
     },
     {
       "original": "tests/stdlib/poly-source-struct-identity.jai",
@@ -4511,7 +4734,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "369744dec194d85978fea9216ef8df263dea9ee23e78ca8a06e034c324a4704a"
     },
     {
       "original": "tests/stdlib/poly-struct-type-names.jai",
@@ -4524,7 +4748,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ebbe3aaadf621efe623ed8aa019e8ffb9a19c6da8f10fa0e9088e583e6d9ee39"
     },
     {
       "original": "tests/stdlib/pool-standard-behavior.jai",
@@ -4538,7 +4763,7 @@
         "Basic",
         "Pool"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/pool-unmapping-blocks.jai",
@@ -4552,7 +4777,7 @@
         "Basic",
         "Pool"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/posix-stat-and-mutex.jai",
@@ -4568,7 +4793,8 @@
         "File_Utilities",
         "Thread"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "22c69ed5410741d087a0dd6e20ef9c85f3db80f9a31ec2d2655f257d03572fef"
     },
     {
       "original": "tests/stdlib/print-color.jai",
@@ -4584,7 +4810,7 @@
         "Print_Color",
         "POSIX"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/print-null-pointer-union-forms.jai",
@@ -4598,7 +4824,8 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2599be379789e6b6b1045048003510d61fe17d62ce719cc2ea096ccfe45b3ad9"
     },
     {
       "original": "tests/stdlib/print-vars-output.jai",
@@ -4612,7 +4839,7 @@
         "Basic",
         "Print_Vars"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/proc-alias-overloads.jai",
@@ -4626,7 +4853,8 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8234af0912475cdfbe371503699de0e101b166ed0a59082e0b4bc81c686fd055"
     },
     {
       "original": "tests/stdlib/proc-compared-with-void-pointer.jai",
@@ -4639,7 +4867,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "cbdeaad386d6630c7464671611a459f152d144d44694cfcea431e9e42bc1377e"
     },
     {
       "original": "tests/stdlib/proc-sentinel-constant.jai",
@@ -4653,7 +4882,8 @@
         "Basic",
         "POSIX"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "3f183d5e374092b39f7aece1052cfdabe5b40a8a1237a8d485ed16ab8683f5c4"
     },
     {
       "original": "tests/stdlib/proc-type-defaults-ifx.jai",
@@ -4666,7 +4896,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "e2aaa5f6c468e62fb635f48ca5ada3532abeba02f8f7e2388cfec634f5108968"
     },
     {
       "original": "tests/stdlib/process-named-pipes.jai",
@@ -4682,7 +4913,7 @@
         "Windows",
         "Windows_Utf8"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/process-run.jai",
@@ -4698,7 +4929,7 @@
         "Process",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/process-stdin-socket.jai",
@@ -4713,7 +4944,7 @@
         "Process",
         "POSIX"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/program-module-parameters.jai",
@@ -4728,7 +4959,8 @@
         "Program_Param",
         "Program_Param"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "50b82928d1d4396744ea22daadf17e48558611bf30e72d415c981e5b5d7d0a6d"
     },
     {
       "original": "tests/stdlib/program-print-directives.jai",
@@ -4742,7 +4974,7 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/program-print-expressions.jai",
@@ -4757,7 +4989,7 @@
         "Compiler",
         "Program_Print"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/program-print-polymorph-and-context.jai",
@@ -4771,7 +5003,7 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/push-allocator-proc-data.jai",
@@ -4784,7 +5016,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "74312ee98387268cee655d463b20da860f43b5e19fbe4d273e66c6a5f17f7892"
     },
     {
       "original": "tests/stdlib/push-context-defer-pop.jai",
@@ -4797,7 +5030,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8ce91d5844ccf1778a88e291079a20b105c62d0550b5a439eb344a64f482e394"
     },
     {
       "original": "tests/stdlib/radix-sort-ranks.jai",
@@ -4811,7 +5045,7 @@
         "Basic",
         "RadixSort"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/random-pcg-sequences.jai",
@@ -4826,7 +5060,7 @@
         "Random",
         "PCG"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/reflection-values-and-types.jai",
@@ -4840,7 +5074,7 @@
         "Basic",
         "Reflection"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/resizable-pointer-to-view.jai",
@@ -4853,7 +5087,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "87a9893696763e85399413f1da34ea9e1eba7c157dab4b708fe782945fe46cb4"
     },
     {
       "original": "tests/stdlib/return-type-from-param.jai",
@@ -4864,7 +5099,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "A result type may name parameters: `-> type_of(asset)` is the parameter's type.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "57a3a5d478d26d6f2cd5356ed5bea6cb4ada68b5848e14c318dfc302778f8076"
     },
     {
       "original": "tests/stdlib/reverse-for-remove.jai",
@@ -4877,7 +5113,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2817ddaad04cebb838092196eb73c78d18d1a77ab6c2daa1b7694bf8b146549f"
     },
     {
       "original": "tests/stdlib/rpmalloc-allocator.jai",
@@ -4892,7 +5129,7 @@
         "Thread",
         "rpmalloc"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/rules-arithmetic-overflow-checks.jai",
@@ -4906,7 +5143,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6d6d513cd52188e72231896761603accc0868d96dee021a7aba879726173e09b"
     },
     {
       "original": "tests/stdlib/rules-casts-and-conversions.jai",
@@ -4919,7 +5157,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1e4b9ffaf3dfbc1ce0ccd70d1fafaae037267562675dbb1567128e49ba30cf20"
     },
     {
       "original": "tests/stdlib/rules-code-values-and-insertion.jai",
@@ -4933,7 +5172,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "4020d92a8103301512c77b4032cb8e28a4fb273e5c5a9c95d9075081afd6aeba"
     },
     {
       "original": "tests/stdlib/rules-compile-time-data-and-state.jai",
@@ -4947,7 +5187,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "28b8f3f54cd7210f62dc7dbcd207df2891261c2e77d81bb307a308b61e1f9193"
     },
     {
       "original": "tests/stdlib/rules-compile-time-execution.jai",
@@ -4965,7 +5206,8 @@
         "String",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d86b4c0192d27fc54949f5d8256371c28ecb498479819c44ff624eae5e4c044f"
     },
     {
       "original": "tests/stdlib/rules-compiler-module.jai",
@@ -4980,7 +5222,8 @@
         "Compiler",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "66d47f39e1d4c8765e8975cfd111152a613d997f5ab242ff032592186e498865"
     },
     {
       "original": "tests/stdlib/rules-compiler-records.jai",
@@ -4995,7 +5238,8 @@
         "Compiler",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "5da322cb254e442fb7afe2775b5ad95e6448eb262e57fc7556b386032944a16b"
     },
     {
       "original": "tests/stdlib/rules-context.jai",
@@ -5008,7 +5252,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "58b51676ef0f4f9f71019a4994c9435671091a949ca5c1033ce67a0edd9f37cd"
     },
     {
       "original": "tests/stdlib/rules-control-flow.jai",
@@ -5021,7 +5266,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "769ba4c032735ee4af60ef1879aad78fe1fcaf38c124909d172b30b8005ab27c"
     },
     {
       "original": "tests/stdlib/rules-declarations-and-constants.jai",
@@ -5034,7 +5280,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6012aec20c89944196e18545d4bab5834c01d4c5a0b67afe1e4dfe4c0a30ac16"
     },
     {
       "original": "tests/stdlib/rules-directives-and-notes.jai",
@@ -5048,7 +5295,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "934cac5b5eb4b448cfa0e94e7095f78cb6217f26115414b6e50ca2aff7bed011"
     },
     {
       "original": "tests/stdlib/rules-enums.jai",
@@ -5061,7 +5309,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "f796609e132142274c8f277c53a34aa321ca7edd68c73351b00c8f8174102377"
     },
     {
       "original": "tests/stdlib/rules-external-data.jai",
@@ -5075,7 +5324,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c9890b1e1a0e27af9db88b7314a1011d25837e148d235d8c5fa902f5cdca0f8d"
     },
     {
       "original": "tests/stdlib/rules-intrinsics.jai",
@@ -5088,7 +5338,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "bcb34ca431e6a689736e63cfa000e43564f47229dc486a6659195714496e3a37"
     },
     {
       "original": "tests/stdlib/rules-jaic-extensions.jai",
@@ -5102,7 +5353,8 @@
         "Basic",
         "Extensions/Long_Double"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "f95ea514359a529d86ebdf5770a3418597642e37219a1b0c7560671250d15d3b"
     },
     {
       "original": "tests/stdlib/rules-lambdas.jai",
@@ -5115,7 +5367,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "daaa95bf025ec47bae427334fc4ce59672eb0c667ca2b310b406d65278c3db69"
     },
     {
       "original": "tests/stdlib/rules-macros-and-custom-iteration.jai",
@@ -5128,7 +5381,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "0c798d8f4030e086bd33b90bdfc35b36826ca0025d4d31b921fdbe8246f009eb"
     },
     {
       "original": "tests/stdlib/rules-module-parameters.jai",
@@ -5149,7 +5403,8 @@
         "Rules_Params",
         "Rules_Params"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c7d27dc978be308e61f9d9878edffdc6f42a9eb67aef74234af95365af849c39"
     },
     {
       "original": "tests/stdlib/rules-modules-and-imports.jai",
@@ -5171,7 +5426,8 @@
         "filtered_answer :: 5; filtered_other :: 6;",
         "Name"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "797b92a073ae43a1d542e87c9d74fa5959c56d418f94e591c14ef2d3652a0687"
     },
     {
       "original": "tests/stdlib/rules-must-and-discard.jai",
@@ -5184,7 +5440,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8d7a020c61bad361299061bbaee7ddd8c2bef7da9295cb6ee175ad6d7d2981ee"
     },
     {
       "original": "tests/stdlib/rules-numbers.jai",
@@ -5197,7 +5454,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "ea07e031c7ca7ed75203da2ecbb98b737cacfb2168a96d68be1579f330a72c0a"
     },
     {
       "original": "tests/stdlib/rules-operator-overloading.jai",
@@ -5211,7 +5469,8 @@
         "Basic",
         "Bit_Array"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9e66e3163762a63d5ebc477d5abb206f87817e5e4316d514ea29b9b39dfc7e7e"
     },
     {
       "original": "tests/stdlib/rules-operators.jai",
@@ -5224,7 +5483,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b2ed021976c07d28b5eef87683695ffcf5581d40092377f83c5b840fea5048f1"
     },
     {
       "original": "tests/stdlib/rules-pointers-and-arrays.jai",
@@ -5237,7 +5497,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "242fcf75b83e568a9923c3a0796f5ab74c93e2ea0099fe37ea9c457372fdf708"
     },
     {
       "original": "tests/stdlib/rules-pointers-bounds-option.jai",
@@ -5252,7 +5513,8 @@
         "Compiler",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b9519715bdd8314850e8bdac5b003580768e3d0d354892d7a0bd081d5f1c6dca"
     },
     {
       "original": "tests/stdlib/rules-polymorphism.jai",
@@ -5265,7 +5527,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "959bb90ebe20756b85f3856e5fe0550f6f494bebd1be29a04ed84ec38670fd96"
     },
     {
       "original": "tests/stdlib/rules-prelude-and-runtime-support.jai",
@@ -5280,7 +5543,8 @@
         "Runtime_Support",
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "651763568292615ce8d1e52d18a935e6f723ba6cf169fc53db593d7cf94da699"
     },
     {
       "original": "tests/stdlib/rules-procedures.jai",
@@ -5295,7 +5559,8 @@
         "Compiler",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "08a9f1c2fe92b433fc1d771b50d19076b524b51aebabbec750901aeef5d1105e"
     },
     {
       "original": "tests/stdlib/rules-reflection-and-type-info.jai",
@@ -5309,7 +5574,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1766a27484b04929929af66fed7b03edaffcc8baa7465d969041207c771d1dbe"
     },
     {
       "original": "tests/stdlib/rules-scoping.jai",
@@ -5324,7 +5590,8 @@
         "Rules_Scoping",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7cbbb57e482f71d4151d97b895b9d7d4bcd6093d341249bcd9fb83ce6e8cfb0f"
     },
     {
       "original": "tests/stdlib/rules-simd-asm.jai",
@@ -5337,7 +5604,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "e2aac87fcfcceede143f5d76393d1df7cebe75c97f530f916bb262bf867fdc18"
     },
     {
       "original": "tests/stdlib/rules-strings-and-literals.jai",
@@ -5350,7 +5618,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8065610bee2a85c640307e70b57eccecfba7ef1cbb568b0860bbf8625a12703e"
     },
     {
       "original": "tests/stdlib/rules-structs.jai",
@@ -5363,7 +5632,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "0218d692dd9b910c6fc7374ed3ee0c15112063aeab771008f97f48abb5b473e2"
     },
     {
       "original": "tests/stdlib/rules-type-values-and-info.jai",
@@ -5376,7 +5646,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a3bf15631b43b971ffd9377fca1a9c25bfd1ba187526059afe1e36ae5b58c722"
     },
     {
       "original": "tests/stdlib/rules-unions.jai",
@@ -5389,7 +5660,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6dda75ab961643bb171186759155bdfe4882be68ce8ccb9ed1e48fed80c8bc10"
     },
     {
       "original": "tests/stdlib/rules-using.jai",
@@ -5402,7 +5674,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "03b5d866867639a1c8fb492fd330d235a4972d1ef9fb8d3413dec3bd0f3e66cf"
     },
     {
       "original": "tests/stdlib/rules-workspaces.jai",
@@ -5419,7 +5692,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "8d5a594763d10b70a25aa6aebadbcc068d52dd0c60a9b4a9d75b7e7b3fe2c5e9"
     },
     {
       "original": "tests/stdlib/run-multi-value-variable.jai",
@@ -5432,7 +5706,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "17bdfe29cf9a56a91a6d7da5e3c88919b22279b953487d8195d318076c1e9f78"
     },
     {
       "original": "tests/stdlib/runtime-support-output.jai",
@@ -5445,7 +5720,8 @@
       "imports": [
         "Runtime_Support"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "85aca26c36a1247dc606a3178a1f8bc8078adbc026aea006a9546515440de791"
     },
     {
       "original": "tests/stdlib/runtime-support-source.jai",
@@ -5458,7 +5734,8 @@
       "imports": [
         "Runtime_Support"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d8ae5b8b8da151d90a830f9133af6d586c03ffcdae9de255c9b93cf668284a11"
     },
     {
       "original": "tests/stdlib/sdl2-geometry-timer.jai",
@@ -5472,7 +5749,8 @@
         "Basic",
         "SDL"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "f63fc47dc839df09f3010fb503f0fde3c68c30f93e548406dc46121932c915b1"
     },
     {
       "original": "tests/stdlib/shared-memory-channel.jai",
@@ -5488,7 +5766,7 @@
         "Windows",
         "POSIX"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/shebang-line.jai",
@@ -5501,7 +5779,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d81b101154502a8fa225b9c39106966dfdd0a3adb05d06edb2e3a9272f74a9c1"
     },
     {
       "original": "tests/stdlib/shift-under-float-cast.jai",
@@ -5514,7 +5793,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "0b245b0b4d45a7fb73a8f2053710af0dfff206f8a97bf293d871f1df61fa4660"
     },
     {
       "original": "tests/stdlib/simp-compat-api.jai",
@@ -5529,7 +5809,7 @@
         "File",
         "Simp"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/simp-gl-render-readback.jai",
@@ -5548,7 +5828,8 @@
         "Simp",
         "GL"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "396bcdfb31e557487bee38930b3819ed0eff0e986a1e9bc4d871789670c36af3"
     },
     {
       "original": "tests/stdlib/simp-left-handed-software.jai",
@@ -5564,7 +5845,7 @@
         "String",
         "Simp"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/simp-software-drawing.jai",
@@ -5581,7 +5862,7 @@
         "File",
         "Window_Type"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/simp-window-program.jai",
@@ -5597,7 +5878,8 @@
         "Window_Creation",
         "Simp"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d5cf7b8c39d21636ab39eac2cee0b46cc5a06e420d98f07dd771a366398d71cf"
     },
     {
       "original": "tests/stdlib/small-helpers-behavior.jai",
@@ -5614,7 +5896,7 @@
         "Bit_Array",
         "Toolchains/macOS"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/soa-generated-columns.jai",
@@ -5627,7 +5909,7 @@
       "imports": [
         "Soa"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/soa-generated-overlap.jai",
@@ -5640,7 +5922,7 @@
       "imports": [
         "Soa"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/socket-loopback.jai",
@@ -5655,7 +5937,7 @@
         "Socket",
         "POSIX"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/sort-entry-points.jai",
@@ -5670,7 +5952,7 @@
         "Sort",
         "Random"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/sound-player-device.jai",
@@ -5684,7 +5966,7 @@
         "Basic",
         "Sound_Player"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/sound-player-offline-api.jai",
@@ -5700,7 +5982,7 @@
         "File",
         "Sound_Player"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/stack-trace-line-through-inline.jai",
@@ -5713,7 +5995,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "df58283b97f44079e7fb42a02fcc1cf650fa1763004509e177bb62bf30338ed3"
     },
     {
       "original": "tests/stdlib/stack-trace-nodes.jai",
@@ -5724,7 +6007,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "context.stack_trace lists the active procedures, innermost first. Each node holds the",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7ec7d52e4afec5dc17f07424c5febc28967e9a527ae3e19e4aca92fcf40741bc"
     },
     {
       "original": "tests/stdlib/static-ifx-semicolon-else.jai",
@@ -5735,7 +6019,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "`#ifx cond then a; else b;` accepts the `;` before `else`.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "db0a8e4a042db4d1c82d9a33e2c11a832649e51fa2b7ffbfbd96b61e070dbdf5"
     },
     {
       "original": "tests/stdlib/static-switch-add-context.jai",
@@ -5749,7 +6034,8 @@
         "Basic",
         "Switch_Context"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9341e12b126d86bd696027d36e9affee0f15b8db5a23feb1433426f1b856e7c3"
     },
     {
       "original": "tests/stdlib/stb-image-codecs.jai",
@@ -5766,7 +6052,8 @@
         "stb_image_write",
         "stb_image_resize"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a01c05700b6ebe75ed17013e101b583e00232a795c753fda47d3d14d54b32b19"
     },
     {
       "original": "tests/stdlib/storage-allocator-tracker.jai",
@@ -5777,7 +6064,7 @@
       "reason": "Retired inherited stdlib-specific acceptance by explicit user authorization; reviewed contract and NEW producer suites replace its oracle, without claiming equivalent exhaustive coverage.",
       "intent": "Authored allocation evidence helper; forwards real allocations to the heap.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/storage-flat-pool-contract.jai",
@@ -5791,7 +6078,7 @@
         "Basic",
         "Flat_Pool"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/storage-pool-contract.jai",
@@ -5805,7 +6092,7 @@
         "Basic",
         "Pool"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/storage-treemap-contract.jai",
@@ -5821,7 +6108,7 @@
         "Bucket_Array",
         "Math"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/string-builder-reset-ensured.jai",
@@ -5834,7 +6121,7 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/string-parse-scan-paths.jai",
@@ -5848,7 +6135,7 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/string-scan.jai",
@@ -5862,7 +6149,7 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/string-scan2-and-path-helpers.jai",
@@ -5876,7 +6163,7 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/string-search-split-case.jai",
@@ -5890,7 +6177,7 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/struct-body-member-path-override.jai",
@@ -5903,7 +6190,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1a94383ed312b0ced699576858992d1b6614b6d454c3cf1324615bb86a1163a8"
     },
     {
       "original": "tests/stdlib/struct-level-notes.jai",
@@ -5916,7 +6204,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "04eb7d1261b34394ccf1c1051b171e0802ed5814bbb72e624cf56789e15e4e49"
     },
     {
       "original": "tests/stdlib/struct-literal-null-over-union-default.jai",
@@ -5929,7 +6218,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a6c2dd195167fd07ea23938581d3912958163640540e6e3faf459e79365d1157"
     },
     {
       "original": "tests/stdlib/struct-literal-overrides-default-string.jai",
@@ -5942,7 +6232,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "1a8e7398aab656dc92c06f438f82fe1549d3e5378ad30d96aea1fdd4faea4c3f"
     },
     {
       "original": "tests/stdlib/struct-literal-without-dot.jai",
@@ -5955,7 +6246,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9e3238bb37eda742d444aae71e46900e3a7af8210bc298bf987578ef98145cb8"
     },
     {
       "original": "tests/stdlib/struct-member-overlay-flag.jai",
@@ -5968,7 +6260,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "27e52092a82c2d7cd9b9c40f58ff0d4fcf021172f70a9c89d90e08f8203a11e6"
     },
     {
       "original": "tests/stdlib/struct-modify.jai",
@@ -5981,7 +6274,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "f5563349d21f64fd2bde230ed709841ddb56ceed1d86758709330c950032d21e"
     },
     {
       "original": "tests/stdlib/struct-using-member-path.jai",
@@ -5994,7 +6288,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "46006d1c0222278eb503d248f338246ba10b01a8570d5c35c1a243cafe17c2f6"
     },
     {
       "original": "tests/stdlib/system-info.jai",
@@ -6011,7 +6306,7 @@
         "String",
         "System"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/tagged-union-constant-tags.jai",
@@ -6024,7 +6319,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6114ce67b9cacf2e3d3a3218f4ccdf8fba868265908734d959232939331ae36e"
     },
     {
       "original": "tests/stdlib/tagged-union-layout.jai",
@@ -6037,7 +6333,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "4626db746ad8776183e805d77d179f0a24aa4ca5594892ff2e3957fe03406023"
     },
     {
       "original": "tests/stdlib/tagged-union-module.jai",
@@ -6051,7 +6348,7 @@
         "Basic",
         "Tagged_Union"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/tagged-union-tag-default.jai",
@@ -6064,7 +6361,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "824e717af41084d0ded4b834a72283fe81ec4c32d791c6c41e025e515c1ea0fd"
     },
     {
       "original": "tests/stdlib/text-file-handler-files.jai",
@@ -6081,7 +6379,7 @@
         "Text_File_Handler",
         "Hash_Table"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/text-file-handler.jai",
@@ -6094,7 +6392,7 @@
       "imports": [
         "Text_File_Handler"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/threads-allocators.jai",
@@ -6109,7 +6407,8 @@
         "Thread",
         "Overwriting_Allocator"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "216f22574d42865af5afe98e3b47c8169f490aad9771fc00823acf23d2d61734"
     },
     {
       "original": "tests/stdlib/threads-cooperative.jai",
@@ -6124,7 +6423,8 @@
         "Atomics",
         "Thread"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6e14e1872ca984be185b2d5ced23482a8b0852a7e0fd7d1b5ebcad6fb46ff8ba"
     },
     {
       "original": "tests/stdlib/threads-group-and-condition.jai",
@@ -6138,7 +6438,8 @@
         "Basic",
         "Thread"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "eea9d1f06cc705efe2b42eca9e40da03ad1e28ba93b31c37f05e60f29630d047"
     },
     {
       "original": "tests/stdlib/threads-group-work.jai",
@@ -6153,7 +6454,8 @@
         "Thread",
         "Atomics"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "eebda650bfa46e3ff13bf12a0d3627039ad97773065ea57072226afe852f2f34"
     },
     {
       "original": "tests/stdlib/threads-switch-while-locked.jai",
@@ -6168,7 +6470,8 @@
         "Thread",
         "Atomics"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "b019559faa971db9fbe3ee1bf8f4ad9038e0aa31cf14db4d1a563c84a5947aea"
     },
     {
       "original": "tests/stdlib/threads-synchronization.jai",
@@ -6183,7 +6486,8 @@
         "Thread",
         "Atomics"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a8bc59519c97ebae20c2d664e9936cc42e6c3356d4d4e249b4e64af12aa6dd4e"
     },
     {
       "original": "tests/stdlib/threads-worker-requests.jai",
@@ -6197,7 +6501,8 @@
         "Basic",
         "Thread"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9b2656544b4323602c592a219b43f5aebde56e544c20c133b46333ec0e165be5"
     },
     {
       "original": "tests/stdlib/type-directive-proc-one-param.jai",
@@ -6208,7 +6513,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "`#type (*T)` is a procedure type with one unnamed `*T` parameter, not a parenthesized type.",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "4424940cb93a6dfa87f0083399b0472a9d98c00fd1332e2cb2fdcaefbcc97e2a"
     },
     {
       "original": "tests/stdlib/type-field-constant.jai",
@@ -6221,7 +6527,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "55fb5631d1982df4162750f85162fa9c98fc9580effd823453097a500bf9aa04"
     },
     {
       "original": "tests/stdlib/type-info-flags.jai",
@@ -6235,7 +6542,8 @@
         "Basic",
         "Compiler"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "31c39ae1528307a22e4875fa9a7a68cd1269fd39defbb2f393320739fb6adade"
     },
     {
       "original": "tests/stdlib/type-info-struct-local.jai",
@@ -6248,7 +6556,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "9f855706eabef53c61929fe55695125d74114f2e2a30077847cde421a1684594"
     },
     {
       "original": "tests/stdlib/type-info-struct-procedures.jai",
@@ -6261,7 +6570,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "cbddc015b18d55238f85d7b4adfafbcdf44cddc52a4cd42318bea97ae8e7d4d6"
     },
     {
       "original": "tests/stdlib/type-of-outer-local-expr.jai",
@@ -6275,7 +6585,8 @@
         "Basic",
         "Reflection"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "de0911c2bd22de27f7cc99c2f5c63c070de61db6e760e54c815d5fa34b712b60"
     },
     {
       "original": "tests/stdlib/type-of-polymorphic-proc-compile-time.jai",
@@ -6288,7 +6599,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6ef2018fa634e3bb4bbd2efc47c3a31def07d215096de4f05950b4b2bf67e0a3"
     },
     {
       "original": "tests/stdlib/type-of-polymorphic-template.jai",
@@ -6301,7 +6613,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "efd906b2f20f203a90b12d652b31bdd0be1ec470155e2002182adf1a653bc19f"
     },
     {
       "original": "tests/stdlib/typed-module-parameters.jai",
@@ -6315,7 +6628,8 @@
         "Basic",
         "Typed_Param"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "cf2146bee5252e585376fd18a40e6fc385d871a91901fdb1cdce2ac3c90dc8c0"
     },
     {
       "original": "tests/stdlib/unicode-iteration.jai",
@@ -6329,7 +6643,7 @@
         "Basic",
         "Unicode"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/unicode-utf8-tables.jai",
@@ -6343,7 +6657,7 @@
         "Basic",
         "Unicode"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/unmapping-allocator.jai",
@@ -6357,7 +6671,7 @@
         "Basic",
         "Unmapping_Allocator"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/untyped-module-parameters.jai",
@@ -6371,7 +6685,8 @@
         "Basic",
         "Untyped_Param"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "2e6156b2be1c723d98f1bb184775ab890401f8e6a6d715527cf71f1c43c939d6"
     },
     {
       "original": "tests/stdlib/using-and-overload-allowed.jai",
@@ -6382,7 +6697,8 @@
       "reason": "Retained independent compiler/language/runtime semantics or safety regression.",
       "intent": "A direct member may repeat a promoted name, `using,except` leaves a name out, overloads",
       "imports": [],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "c9b205bf6df0f7f03df2256bda25bbee313f9426c412ce93bc0843869787fceb"
     },
     {
       "original": "tests/stdlib/using-discard-struct-constants.jai",
@@ -6395,7 +6711,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "4242b66594885d6ff7e347e8cdf7a5357db5de1a4fe3aa2f7fb2537b92ddc098"
     },
     {
       "original": "tests/stdlib/using-global-of-own-struct.jai",
@@ -6408,7 +6725,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "7606e82caae7d0ab2d623a2b2e65141528cb45be133e2a349822ff1f6d45b9c6"
     },
     {
       "original": "tests/stdlib/using-member-default-override.jai",
@@ -6421,7 +6739,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a3c35318dc13861beb10a0132234a55c2d1980212127b6b28d8b1e40ef8be042"
     },
     {
       "original": "tests/stdlib/using-module-global-member.jai",
@@ -6435,7 +6754,8 @@
         "Basic",
         "Using_Global"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6d00514b2999973842f78a9bea20eefc596ab2b047f8ef5a5c2090019f9fdeeb"
     },
     {
       "original": "tests/stdlib/using-only-import.jai",
@@ -6450,7 +6770,8 @@
         "Basic",
         "String"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "6128d75b19df398e55ef8d8366d7169f6717d8d7a8f713a07542b2996d58b17f"
     },
     {
       "original": "tests/stdlib/using-pointer-member.jai",
@@ -6463,7 +6784,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "eb174759deef1b6318128c3b3b353c53a57d7b42fc37afd0b87e36835dc2e6f5"
     },
     {
       "original": "tests/stdlib/variadic-baked-instance-key.jai",
@@ -6476,7 +6798,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "29bf00af8e0e755ab930a5d1f2269cfdf74850bb7f07d678e886ed1cb3f34b06"
     },
     {
       "original": "tests/stdlib/variadic-code-param.jai",
@@ -6489,7 +6812,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "d3eb0ceb55c11d54ee6993c27092575e5c28a2918cc84b107745159b2dfa5927"
     },
     {
       "original": "tests/stdlib/variadic-struct-parameter.jai",
@@ -6502,7 +6826,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "db9fbc8d431c8f4417d69dec1a07a148e8f6ea4d88e3d4ff3438f46ba3264efe"
     },
     {
       "original": "tests/stdlib/void-values-print.jai",
@@ -6515,7 +6840,8 @@
       "imports": [
         "Basic"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "a36e028e9f9c77b50712c220ae3e2e556001182466b6b5616e3a8dc63dd9e0bd"
     },
     {
       "original": "tests/stdlib/window-fullscreen-toggle.jai",
@@ -6530,7 +6856,8 @@
         "Window_Creation",
         "Input"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "fc01696d89f2d33ec801fe37ba2dcae8f07e580a60b803b7188a914eb3338cc2"
     },
     {
       "original": "tests/stdlib/window-input-native-events.jai",
@@ -6549,7 +6876,8 @@
         "Windows",
         "X11"
       ],
-      "migration_status": "planned"
+      "migration_status": "moved; operational consumers use replacement catalogue/paths",
+      "migrated_sha256": "23a9e1b312b8010cc9a6ca163f2d72a8d229a684e2b8b4c018cebc24be3629ab"
     },
     {
       "original": "tests/stdlib/windows-utf8.jai",
@@ -6563,7 +6891,7 @@
         "Basic",
         "Windows_Utf8"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     },
     {
       "original": "tests/stdlib/zip-file-directory.jai",
@@ -6578,7 +6906,20 @@
         "File",
         "Zip_File_Directory"
       ],
-      "migration_status": "planned"
+      "migration_status": "retired; replacement coverage separately tracked"
     }
-  ]
+  ],
+  "retired_baselines": [
+    "tests/stdlib-runtime-skips.txt",
+    "tests/stdlib-coverage.txt"
+  ],
+  "consumer_changes": {
+    "native_bindings_generator_test": "Retired 13 legacy generator wrapper gates; reviewed producer tooling suite replaces legacy API oracle. Complete generator feature coverage remains open.",
+    "cpp_non_pod_return_uses_the_native_hidden_result_pointer": "Replaces generator-dependent C++ ABI regression with an original source-built C++ fixture; O0/O2 host passed.",
+    "c_long_double": "Preserves C calls/callbacks, Rosetta hardware versus soft-float and wide precision assertions. Retires only legacy generated-bindings portion. Presentation casts do not narrow any ABI values/comparisons.",
+    "compiler_and_abi_regressions_run_natively": "Moved eight compiler/ABI cases. Retired process-stdin-socket legacy Process API fixture; independent piped stdin and NEW platform Process ownership/capture suites retained.",
+    "ordered_atomics_keep_their_memory_orders": "Uses canonical own compiler intrinsics instead of unreviewed stdlib order overloads; retains LLVM order assertions and adds exact runtime output.",
+    "c_structs_by_value": "Checks placed scalar/array overlay members explicitly and prints scalar fields, avoiding dependence on legacy aggregate-printer member omission."
+  },
+  "verification_limit": "Catalogue/negative-runner units and focused host ABI pass. Full replacement catalogue, producer suites, browser and native CI remain required; no complete behavior coverage or all-platform pass claimed."
 }

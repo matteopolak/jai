@@ -286,7 +286,7 @@ Scripts, CI and project policies.
 - [Public-language contract fixtures](../tests/cleanroom-language/README.md): original self-checking cases from the language guide, run against an explicit local source build
 - [Clean-room implementation workspaces](tools/cleanroom-workspaces.md): prepare independent source snapshots and enforce implementer filesystem isolation
 - [Standard library integration decisions](tools/stdlib-integration-decisions.md): bootstrap layout, internal imports, public facade identity, and compatibility test corrections
-- [Stdlib runtime tests](tools/stdlib-runtime-tests.md): every stdlib test run in the interpreter, natively and on wasm on every platform; skip list; per-module coverage ratchet
+- [Stdlib runtime tests](tools/stdlib-runtime-tests.md): reviewed public contracts, producer suites and preserved compiler/ABI/Extensions regressions; explicit platform limits and migration provenance
 - [Objective-C selector check](tools/objc-selector-check.md): every selector the stdlib sends matches its arguments and exists in the runtime
 - [jaifmt (Jai formatter)](tools/jaifmt.md) (front page: [jaifmt README](../jaifmt/README.md)): the `jaifmt/` program, its `build.jai` metaprogram and `jaifmt.wasm`
 - [jailint (Jai linter)](tools/jailint.md) (front page: [jailint README](../crates/jailint/README.md)): rules, `jailint.toml`, suppression, adding a rule
@@ -320,3 +320,5 @@ Agreed designs that are not built yet.
 - [Sound_Player implementation and verification](features/sound-player.md)
 
 - [Private native check transport and safety regressions](compiler/private-native-checks.md)
+
+- [Stdlib test migration manifest](status/stdlib-test-migration.json): per-file retirement/move decisions and preserved regression provenance.
