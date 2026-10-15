@@ -554,6 +554,23 @@
           }
         ]
       }
+    },
+    {
+      "source": "f68873b9",
+      "report": {
+        "module": "executable_formats",
+        "independent_base": "ad575d16",
+        "reviewed_row_count": 508,
+        "original_reviewed_row_count": 507,
+        "refinement": "Arch_File adds one reviewed row; counts include types and constants",
+        "implemented_row_count": 508,
+        "committed_implemented_row_count": 508,
+        "draft_implemented_row_count": 0,
+        "implementation_source_state": "committed",
+        "remaining_row_count": 0,
+        "audit_kind": "declaration coverage; semantic support and verification in portable-executable-formats.md",
+        "remaining": []
+      }
     }
   ]
 }

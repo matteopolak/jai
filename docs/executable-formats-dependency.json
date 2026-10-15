@@ -1,0 +1,65 @@
+{
+  "module": "Debug_Info",
+  "approved_independent_snapshot": "8b134bdb",
+  "canonical_owner_commit": "822da42b",
+  "owner_verification_commit": "9a961389",
+  "adoption_commit": "1432c9f4",
+  "canonical_export": "Debug_Info.Guid",
+  "canonical_file": "stdlib/Debug_Info/codeview-type-model.jai",
+  "load_closure_file_count": 26,
+  "adopted_changed_file_count": 13,
+  "adopted_files": [
+    {
+      "path": "stdlib/Debug_Info/codeview-symbol-model.jai",
+      "sha256": "cb5d5794e28180c86b1bbd57d5e94f21d9a102512764c40e890cdc63407ceb72"
+    },
+    {
+      "path": "stdlib/Debug_Info/codeview-type-model.jai",
+      "sha256": "bbe1897f3e1c2b8dad07220e422394b9b8598d0b14b80e5fc8c91017a7326f0c"
+    },
+    {
+      "path": "stdlib/Debug_Info/module.jai",
+      "sha256": "5126384184b7ba7085e76ad163839de53f9116e14f931bdb0aa9356e50092b8d"
+    },
+    {
+      "path": "stdlib/Debug_Info/pdb-model.jai",
+      "sha256": "777c875eacd08cc3791cfb38da452e50a2f426df579005f2bd5581fb4d9bf9df"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/codeview-inline.jai",
+      "sha256": "5bef75fd9f25715d5f780a68fcae7eba6d36575873309b0413c08e416df819a2"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/codeview-symbol-parser.jai",
+      "sha256": "755b479d9552d95bf992dbee3c59cd591ef9c8edb8f0d4bacad76454badfdfff"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/codeview-truncate.jai",
+      "sha256": "eca92fc72af21bf014f722d6b3a4a0a2eab4d973fb3c203e479b8f3585409c21"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/codeview-types.jai",
+      "sha256": "1a6f1ac46ab36694d2556e51b2c06acd1ad0681a5ee61b4ff93949534752649a"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/dwarf-public.jai",
+      "sha256": "fc873e300b4c57c97d3ddda67a047d0d6775e392a0d3dfef890b4445767cedb8"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/msf-page-bits.jai",
+      "sha256": "19baa1c889393621eb3371570aa4ec64caf61f403564dd73d53c8eaae94a0f96"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/msf-streams.jai",
+      "sha256": "d7ae478c9c903693ba4673fdbefe31f8eefef95a4e22e741b9beecb0d788afe0"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/msf-wire.jai",
+      "sha256": "7d44aa52b16c459066c793142893bca4307e6d2a735b02775ff2ce3c9c651d5c"
+    },
+    {
+      "path": "stdlib/internal/developer-tools/pdb-parser.jai",
+      "sha256": "68366f9bd11f51bbd22a353bd0206e5f5ad64f23021c115a4c44821bed02afb3"
+    }
+  ]
+}

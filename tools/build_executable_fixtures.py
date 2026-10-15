@@ -1,7 +1,9 @@
 """Original C objects and malformed Mach-O fixtures; SDK tools are format oracles."""
 from pathlib import Path
+import re
 import struct
 import subprocess
+import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "target/executable-fixtures"
@@ -26,6 +28,17 @@ def main():
     subprocess.run(["/opt/homebrew/opt/lld/bin/ld.lld", "-e", "object_answer", "-o", str(OUT / "elf-executable"),
                     str(OUT / "elf.o")], check=True)
     oracle = "/opt/homebrew/opt/llvm/bin/llvm-readobj"
+    codeview = subprocess.run([oracle, "--coff-debug-directory", str(OUT / "answer.exe")],
+                              check=True, text=True, capture_output=True).stdout
+    (OUT / "pe-codeview-oracle.txt").write_text(codeview)
+    signature = re.search(r"PDBSignature: (0x[0-9A-Fa-f]+)", codeview)
+    guid = re.search(r"PDBGUID: \{([^}]+)\}", codeview)
+    age = re.search(r"PDBAge: (\d+)", codeview)
+    pdb_path = re.search(r"PDBFileName: ([^\n]+)", codeview)
+    assert signature and guid and age and pdb_path
+    assert int(signature[1], 16) == 0x53445352
+    (OUT / "codeview-oracle.bin").write_bytes(b"RSDS" + uuid.UUID(guid[1]).bytes_le
+                                             + struct.pack("<I", int(age[1])) + pdb_path[1].encode() + b"\0")
     for name in ["macho", "elf", "coff"]:
         result = subprocess.run([oracle, "--file-headers", "--sections", "--symbols", str(OUT / (name + ".o"))],
                                 check=True, text=True, capture_output=True)
