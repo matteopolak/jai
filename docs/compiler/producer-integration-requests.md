@@ -85,3 +85,12 @@ named-fault copies cross-link; O2 middle now has metadata, while O2 fault_leaf
 is a legitimate frameless leaf and its unconditional lookup assertion needs
 producer review. No producer tests were changed. Native Windows backtrace
 execution remains required. See [unwind evidence](windows-unwind.md).
+
+## Windows managed thread naming ready for native CI
+
+Compiler now retains real kernel thread handles, preserving scheduler behavior
+while native Set/GetThreadDescription stores/queries actual names and HRESULTs.
+The unchanged NEW SDK reproducer is staged and cross-checks/builds with NEW Thread
+and its text helper. Native Windows execution remains pending; exact fixtures,
+protected-close/error/lifetime checks and unmanaged duplicate bounds are in
+[thread handle handoff](windows-thread-handles.md). No peer source was edited.
