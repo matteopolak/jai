@@ -40,6 +40,32 @@ O2 and focused strict lint pass. Constant nested-array and typed-scalar writes
 are required compile rejections. Invalid count is a checked safety fault.
 These data/equality primitives are not signing, ASN.1 decoding or JKS loading.
 
+`sha1(s: string) -> [20]u8` and `sha256(s: string) -> [32]u8` now provide the
+reviewed fixed-array digest APIs. Public aliases retain parameter name `s` and
+canonical array types. Independent scalar implementations live under
+internal/crypto/sha.jai: shared block/padding/bit-length and big-endian word
+handling, independently organized compression functions and immutable standard
+mathematical constants. Only the compression functions disable arithmetic
+overflow checking, because their specified additions are modulo 2^32. No native
+crypto dependency, signing process, device, key or credential is involved.
+
+`python3 -B tools/check_portable_sha.py` builds 270 independent vectors using
+native hashlib, including every byte length0..256, larger block-boundary cases
+through65537 and the million-a case. Both digests match all vectors in the
+interpreter and native ARM64/translated x64 O0/O2. Inputs include embedded NUL
+and deliberately unaligned data. Empty/abc standard vectors remain ordinary
+root regressions. Linux/Windows x64/ARM64 bodies check; native execution on those
+OSes remains pending. Focused strict lint and formatting/check pass.
+Evidence: target/android-sha-vectors-final.log, target/android-sha-strict.log.
+
+Valid input must be readable string storage. An invalid signed length or a byte
+length outside the 64-bit bit-length domain logs an error independently of
+optional assertions; with assertions disabled or an explicitly continuing
+assertion handler the API returns a zero array, which is not a digest
+success claim. That invalid-input continuation is independent defensive behavior,
+not a reviewed reference guarantee or tested supported hashing domain. No
+streaming/accelerated SHA interface or extra digest constants are exported.
+
 The rest of Android/Toolchain remains missing, including ADB operations,
 SDK/NDK discovery, project/APK/manifest generation, signing/verification,
 ASN.1/JKS helpers and public records/constants needed by those operations.

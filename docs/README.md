@@ -224,17 +224,18 @@ The LLVM backend, C ABI and linking.
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
 - [Portable implementation gaps](portable-stdlib-gaps.md): focused pending reproducers and unresolved behavior
 - [Runtime configuration adoption](portable-runtime-configuration.md): actual settled allocations, CAPS and ownership handoff
-- [Time and calendar API inventory](portable-time.md): real POSIX clocks, epoch/calendar conversions and remaining contracts
+- [Time and calendar API inventory](portable-time.md): real clocks, calendar conversion, caller-return duration macro and remaining contracts
 - [Machine_X64 compiler gaps](portable-machine-gaps.md): original interpreter/native CPUID failure and genuine native C comparison
 - [Flat_Pool core and container audit](portable-flat-pool.md): real initialization, lazy page commitment, parameterized overwrite and lifecycle
 - [Pool behavior and checked allocation extents](portable-pool.md)
+- [Unix Thread assertion configuration and lifecycle ownership](portable-thread-lifecycles.md)
 - [Windows calendar verification](../tools/check_portable_windows_calendar.py): source/ABI checks, explicit native-host requirement
 - [Windows shared-memory backend and remaining gates](portable-windows-channel.md)
 - [Windows Socket wrappers, native ABI evidence and remaining public gaps](portable-windows-socket.md)
 - [Native Socket field accessors and independent SDK record oracles](portable-socket-fields.md)
 - [Socket ancillary helpers and actual native SDK vectors](portable-socket-cmsg.md)
 - [Windows Registry native APIs and unresolved pseudo-handle ABI](portable-windows-registry.md)
-- [Android toolchain ABI naming and remaining APIs](portable-android-toolchain.md)
+- [Android toolchain ABI naming, OID identity, digests and remaining APIs](portable-android-toolchain.md)
 - [Exact missing owned public declarations](portable-missing-surface.md)
 - [Windows UTF-8 helpers](portable-windows-utf8.md): real Kernel32 conversion code, ABI checks and outstanding native execution
 - [Owned source format/lint runner](../tools/format_portable_stdlib.py): explicit scope and source-built jaifmt/jailint

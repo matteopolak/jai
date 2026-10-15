@@ -272,19 +272,12 @@ Native TCP fields: no new production workaround. Explicit ABI offsets come only 
 
 Windows scope-ID: unsigned bitfield truncation is explicit in internal/net/scope-word.jai, not a compiler workaround. Public pure-record #run tests execute on the host interpreter, without native Windows C layout validation. Native Windows and target-aware strict lint remain required; no fake native functions or platform substitution.
 
-Pool lifecycle state: internal/allocation/pool.jai adds one C-allocated private
-record per used pool, a256-bucket address table and short CAS lock. Necessary to
-retain first-use state across reset without adding public fields; C allocation
-prevents recursion through a Pool context allocator. Records are freed at release,
-not reset; omitting release leaks this metadata along with ordinary pool resources.
-Bump calls with existing storage skip the table. Risks: first-use malloc failure,
-registry contention with many independent instances, caller reuse without release.
-A reviewed explicit lifecycle-state field would permit simpler lower-overhead
-state, but changing the exact public layout is not authorized. Post-release/new
-lifetime and failed-first-attempt policy remain narrow questions. No selected
-Unmapping_Allocator is destroyed by Pool. Pointer-to-integer bucketing uses a typed
-u64 local: the direct widening-cast shift still triggers the generic compiler
-cast/shift typing defect; target/pool-policy-full.log preserves its diagnostic.
+Pool lifecycle correction: the previous address-keyed registry was an unnecessary
+and incorrect workaround for an overstated first-use policy. The refreshed
+review establishes only the allocator-field guard. The registry, C allocation,
+CAS lock and address bookkeeping are removed. Reset/release retain the allocator
+and options. Genuine returned leak reports now pass without caller changes.
+Original failure evidence is retained in target/lifecycle-leak-red.log.
 
 Linux TCP accessors: little-endian current x64/ARM64 only. Cross-target public
 #run execution is real interpreter behavior; Linux native and SDK C ABI tests
@@ -404,3 +397,70 @@ reviewed numeric0xfeedfeed, while the review's byte-swap rationale is flagged as
 mathematically wrong (actual byte reversal0xedfeedfe). No guessed alternate
 constant, key/device/auth access or fake crypto behavior. Remaining API inventory
 drops only these five implemented declarations, from253 to248 rows.
+
+Unix Thread critical correction: all owned essential SDK operations are evaluated
+outside optional assertions. Failures log independently; failed Mach destruction
+retains the handle, failed join retains worker storage, private teardown flags
+permit join/semaphore cleanup retry. Public layouts remain exact. Thread object
+address stability is already required by its reviewed lifecycle, unlike Pool.
+No relocation tracking was added. Native invalid-task Mach failure retention
+executes; invalid pthread handles are never used for artificial failure tests.
+
+Explicit conservative error policies: group worker-creation failure and group
+clock failure terminate after diagnostics, including when assertions are disabled.
+The void APIs cannot provide a usable partial group or an invented clock. Live
+worker storage remains until OS teardown. This is a deliberate fatal policy for
+unspecified fault paths, not tested transactional recovery; proper long-term
+improvement is recoverable staged group initialization/cleanup with retained
+progress. Work-list partial-destruction retry remains an existing gap. Join failure
+now prevents freeing the whole worker backing array. Native Linux/Android/Windows
+execution, forced join failure and full integrated CI are not counted complete.
+
+Verification staging: only target/ default Basic parameter lists are changed to
+test Thread default instances; caller-only false configuration does not disable
+Thread. Peer implementations and original audio/foundations fixtures are read-only.
+New test checks use enabled assertions and restore fatal handler after captured
+errors. Draft locked-mutex EBUSY oracle was invalid POSIX misuse and returned
+success; removed in favor of genuine Mach failure, with original evidence retained.
+Draft assertion callback type and Darwin cross-target CLI spelling were corrected
+without production API changes or weakening valid checks. See portable-thread-lifecycles.md.
+
+Group fatal path initially referenced Basic.exit, absent from this producer's
+baseline facade despite existing in NEW foundations. Broad regression caught it;
+the private native boundary now binds official libc abort directly. No public
+foundation export is added and no failure result is invented. The original broad
+failure is target/lifecycle-full.log; corrected broad run passes112 cases,
+including the preserved uncommitted digest fixture.
+
+Machine ISA handoff supersedes the earlier missing/fake compiler-instruction
+entries for the eight reviewed APIs. Real timestamp/AUX, RNG carry/value, fences
+and prefetch bodies now use the general compiler assembler; no C production shim,
+wall-clock/random substitution or forced success. Actual CPUID on this translated
+x64 environment lacks RDRAND/RDSEED. Opcodes and actual interpreter capability
+errors pass; native hardware RNG sample/CF execution is pending capable CI.
+Timestamp/AUX exact cross-SDK tests are compiler-owner evidence, not independently
+repeated public-wrapper evidence. Native Windows/Linux remains unexecuted.
+Public prefetch invalid compile-time hints diagnose explicitly. The forty-four-byte
+options projection and all prior canonical feature types remain unchanged.
+
+Digest batch: scalar SHA-1/SHA-256 uses no native acceleration and bounded local
+word schedules; this is a deliberate portable performance choice, not a reduced
+algorithm. Only compression arithmetic uses #no_aoc for required modulo2^32
+additions. Standard mathematical constants are private immutable arrays. Valid
+readable strings hash completely; invalid length always logs independently of
+optional assertions, then asserts. Disabled/explicitly continuing assertions yield
+a zero array after the error; no invalid-input digest success is claimed or
+reviewed. No streaming API, signing, key management or native crypto exports
+are fabricated. Actual native hashlib vectors are independent test oracles only.
+Tests execute unaligned/NUL/padding boundaries and million-a, both native CPUs
+O0/O2 and interpreter. Native Linux/Windows/Android execution remains pending.
+
+ConvertToApollo: previous compiler-gap report was based on an ordinary macro
+value-expression probe, which does not represent the refreshed caller-return
+contract. That mistaken oracle is now explicitly superseded; original source
+and failure evidence retained. Exact no-result macro header is preserved.
+Private signed product corrections use existing full-width multiply and #no_aoc
+only for modular high-word corrections; no fake arithmetic, inferred arrow,
+compiler hack or public helper export. Both producer compositions execute
+interpreter/ARM64+x64 native O0/O2. Further floating rounding/calendar policy and
+native platform gates remain separate; no new workaround introduced.

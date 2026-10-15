@@ -7,7 +7,7 @@ the module facade loads those declarations without extra convenience exports.
 
 | Public API | Implemented behavior |
 | --- | --- |
-| set_allocators | Explicit allocator wins; otherwise selected unmapping allocator with forced reset-free flag, or active context allocator; first-use guard |
+| set_allocators | Explicit allocator wins; otherwise selected unmapping allocator with forced reset-free flag, or active context allocator; allocator-field guard |
 | get | Aligned ordinary blocks, separately tracked oversized storage, null on backing allocation failure |
 | reset | Invalidates allocations; frees oversized blocks, stamps ordinary data when requested, retains/frees ordinary blocks according to the reviewed flag |
 | release | Resets then frees retained blocks |
@@ -26,17 +26,17 @@ metadata later. Native mapping retention/protection remains the allocator's job.
 The reviewed Unmapping_Allocator page specifies read-only retained frees; tests
 preserve that precise behavior rather than claiming stale reads fault.
 
-The public layout has no first-use field. A private address-keyed lifecycle table
-preserves the reconfiguration guard even after reset frees all backing storage.
-release removes its record and ends this tracked lifetime. Each record uses real
-C malloc/free, avoiding recursion when this Pool itself is the context allocator.
-First use can fail explicitly if metadata allocation fails. A256-bucket table and
-short CAS lock protect distinct concurrent Pool instances; Pool operations on
-one instance acquire no new thread-safety guarantee. Ordinary bump allocations
-with existing storage bypass the registry. This is a documented allocation and
-synchronization cost, not a public layout change. Failed get attempts that reach
-the allocator count as use; release permits a new lifetime. Exact post-release
-and failed-first-attempt reconfiguration policy is still a narrow review question.
+The guard is exactly block_allocator.proc != null. Selection rejects a second
+setter even before allocation. Reset and release preserve this descriptor and
+option fields, so both retain the guard. No historical state, allocation metadata,
+address registry or copy prohibition is needed. The former registry was wrong
+and caused genuine returned leak reports to fail when a callee stack slot was
+reused. It is removed entirely, without changing public layout or callers.
+
+pool-value-lifetime.jai checks repeated setters, both reset policies, release,
+subsequent allocations and repeated Pool ownership returns. The unmodified NEW
+foundations basic-leak-reports.jai reproduces the genuine returned report and
+cleanup sequence. Both run against this actual Pool, not a substitute.
 
 pool-unmapping.jai exercises both block families, allocator identity, reset-free
 flag, retained mapping contents, reset-time guard, explicit override without flag

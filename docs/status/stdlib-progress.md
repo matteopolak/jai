@@ -170,18 +170,37 @@ Platform-io now owns Windows File completion; no duplicated implementation begun
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint:eab3383, Android JNI naming/missing-surface inventory. Current host-tooling
-increment adds exact Android JNI ABI naming and a253-row missing public-surface
-inventory. Full109 positives/26 checked faults in both modes/14 compile negatives
-plus existing integration and Linux/Windows target checks pass
-(target/android-abi-name-full.log).363 owned files pass format/check. Focused new
-roots pass strict lint; whole strict lint still fails for documented compiler/
-configuration/intentional-negative categories, with all groups attempted.
-Native Windows/Linux/Android gates remain distinct. Exact partial-module gaps and
-all largely unimplemented portable APIs are linked from the module ledger and
-portable-missing-surface.md; the full task is unfinished. Next: retain reviewed
-native/resource ownership behavior while continuing portable platform/toolchain
-work, and use named questions for precise missing contracts rather than fake APIs.
+Current durable checkpoint: 1579458 (critical Pool/Thread d6db68f, ISA c45ee67). Pool/Unix Thread
+critical corrections are committed: field-only Pool guard, no registry,
+allocator/options preserved by reset/release, genuine returned leak report fixed.
+Every owned essential Thread SDK operation now executes outside optional asserts;
+error logging and native ownership retention are explicit. All ten configurations/
+fixtures pass interpreter, host ARM64 and translated x64 native O0/O2 (50 runs),
+including the unchanged NEW foundations report and audio reproducer. Both default
+assertion settings pass focused strict lint and Linux x64/ARM64 source checks.
+Evidence: target/lifecycle-all-green.log; original failures retained separately.
+The draft invalid locked-mutex oracle and staging corrections are documented
+separately from production fixes. Native Linux/Windows/Android execution, forced
+join failures and group transactional fault recovery are not claimed. Windows
+Thread is untouched. Digest sources preserved through the critical checkpoint are now verified for a
+separate checkpoint; all three provisional Performance_Report files stay excluded.
+Broad regression subsequently passes112 cases (including pending digest fixture),
+27 expected faults and16 compile negatives plus IPC/SMTP/Linux+Windows source
+checks. Original Basic.exit staging dependency error is retained at
+target/lifecycle-full.log; private libc abort now implements the documented
+conservative fatal group policy without requiring a foundation export.
+
+Machine ISA continuation: all eight remaining reviewed public macros now emit
+real instructions through NEW compiler mechanisms; native O0/O2 and source-built
+x64 interpreter pass, both optional RNG capability errors pass, focused strict
+target-aware lint and macOS/Linux/Windows x64 body checks pass. Actual SDK CPUID
+lacks both RNG features, so capable-hardware execution remains a CI gate. Generic
+fence/prefetch original probes now emit real opcodes versus official C intrinsics.
+386 owned files pass formatting/check, including preserved pending digests; whole
+strict lint remains a separate failed gate. No source compiler edits or fake ISA
+results. Full task remains unfinished; missing public surface inventory now names246
+rows after the two real digest APIs. Next: committed compiler ISA handoff and
+remaining portable APIs after the critical checkpoint.
 
 Post-f044252 work: get_machine_options_x86 now implements the reviewed generic
 #modify API as a checked in-place projection of actual Compiler.Build_Options
@@ -806,3 +825,30 @@ Exact largely-unimplemented public inventory now248 rows; no signing/DER/device
 completion credited. Native platform and compiler gaps remain named separately.
 
 Integration worker checkpoint: generic partial-edit directive regression reproduced the two refresh18 failures; statement-boundary probe isolation now passes all three edit harness tests, affected-file retry (38 edits/1,448 assertions), scoped Rustfmt and LSP Clippy with warnings denied. Full owned-source rerun is pending. Seven-target context lint finished 343 runs with 19 denied/incomplete runs and 891 uncovered owned files; gate remains failed. Next: integrate stable compiler ISA/generic-pointee, Pool/Thread and native build checkpoints, preserving latest reviewed specs.
+
+Digest continuation: reviewed Android/Toolchain.sha1/sha256 now return real fixed
+20/32-byte digests from independent scalar Jai compression/padding code. All270
+native hashlib vectors pass interpreter and host ARM64/translated x64 O0/O2,
+including padding boundaries, embedded NUL/unaligned input and million-a.
+Focused strict lint and both Linux/Windows CPU body checks pass. Invalid signed
+length independently logs then asserts in interpreter/native O2 (both exit-6);
+registered as a separate safety fault, not a reference invalid-input guarantee.
+Signing/key/APK/ASN.1 decoding/device operations remain missing, not credited.
+No credentials, auth, device or native crypto implementation bodies accessed.
+Final digest/ISA regression:112 positives,28 expected faults and16 compile
+rejections pass in the broad runner, with real SMTP/IPC/runtime configuration
+and Linux/Windows source checks (target/sha-machine-full-final.log). The critical
+50-execution lifecycle matrix is independently rerun after the compiler rebuild
+and passes again (target/lifecycle-final-compiler.log).387 owned Jai files pass
+format/check; focused new production/test strict lint passes. Full owned lint
+and native platform CI remain separately open.
+
+Resolved time continuation: exact ConvertToApollo no-result #expand now uses
+caller-scoped return into an Apollo_Time procedure. Signed full-width scaling,
+argument single evaluation and caller defer cleanup pass interpreter/ARM64+x64
+native O0/O2 in both own and NEW foundations compositions. Focused strict lint
+passes; existing six time/calendar fixtures pass interpreter/native O0/O2 and
+configured Windows source checks. The stale ordinary macro value-expression
+probe is retained and explicitly classified as superseded for this API, not a
+required compatibility oracle or an established compiler gap. No public result
+annotation, compiler special case, fake value or peer write.
