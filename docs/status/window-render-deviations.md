@@ -1,5 +1,24 @@
 # Window/render deviations and implementation gaps
 
+Resolved helper defect: -Dplatforms=[] in window_render_mesa_windows.py disabled
+the real Windows WGL targets despite an OpenGL-enabled build. Candidatee223538
+compiled/installed other Mesa output, then correctly failed the required pair
+assertion. Pinned native source validates that expectation; the fix enables
+platforms=windows and the canonical ICD output option rather than weakening
+discovery. Historical optional-platform descriptions below must not be read as
+successful WGL coverage. Original failed evidence is retained in this handoff.
+
+New native validation dependency: official MSVC dumpbin metadata is parsed using
+its dependency/export columns for the pinned native DLLs. Unexpected/missing
+metadata/required exports fails explicitly; native SDK execution is still pending.
+Installed driver images require ARM64, while system ABI compatibility/API-set
+resolution is delegated to the actual Windows loader. Only actual mapped,
+hash-matching WGL targets and reachable dependencies can be deployed; metadata
+fixtures count solely as infrastructure tests. New source/SDK introspection,
+dependency and loaded-file checks do not replace fresh native GL draw/readback.
+No native renderer success, legacy test expectation restoration, peer change,
+GL override, renamed substitute DLL or LLVM cache weakening is claimed.
+
 Verified build-cache tradeoff (`tools/window_render_mesa_windows.py`): persistent
 installed LLVM reuse hashes selected public native SDK headers/libs, toolchain
 binaries and every installed LLVM file. This adds disk I/O but avoids repeating

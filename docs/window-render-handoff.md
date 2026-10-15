@@ -1,5 +1,33 @@
 # Window/render worker handoff
 
+Latest native install work: e223538 useda68544c and reached Mesa install but no
+required WGL pair was found. Pinned Mesa source validates those names and proves
+our empty platforms option omitted the WGL target subdirectories. Corrected to
+platforms=windows, explicit canonical ICD name; no discovery assertion is relaxed.
+Added native target/install/filetree evidence and mapped/hash-verified discovery,
+SDK architecture/export/dependency validation and actual deployed-file GL-probe
+identity checking. Full1f66dc1 LLVM receipt/cache logic is preserved; Mesa-only
+configuration changes do not invalidate it. Coordinator-ownedc68d19d workflow is
+not edited. See [exact native rerun/evidence handoff](native/window-render-wgl-investigation.md).
+
+Current tool tests: `python3 tests/window-render/test_mesa_install.py` eight pass;
+`python3 tests/window-render/test_mesa_source.py` seven pass; prepared venv Python
+`tests/window-render/test_mesa_python.py` one pass. No native DLL fixture is executed
+or counted as graphics support. Python syntax/plan checks also pass. This tools-only
+scope changes no Jai/Rust/Extensions or inherited stdlib tests. Native ARM64 WGL
+compile/install/dependency/probe/draw/readback/lifecycle and Windows lint still need
+actual CI. Compiler linking/headless WARP and signed-wheel ARM64 positive feedback
+are retained as separate evidence, not proof of OpenGL support.
+
+Verification also reran full owned jaifmt --check and the existing integrated
+native-host jailint -D warnings scope (eight public roots, Contexts/Lifecycle/
+Cocoa/native-fields and macOS event test); both pass without incomplete diagnostics.
+The five reviewed native Meson files match the source archive with pinned SHA256
+bb6243e7a6f525febfa1e6ab50827ca4d4bfdad73812377b0ca9b6c50998b03e.
+These checks do not establish native Windows SDK/driver execution. Source/SDK tests
+are independently authored infrastructure regressions; no legacy replaced-stdlib
+tests were reintroduced as gates or read to infer compatibility APIs.
+
 Native build infrastructure checkpoint: `a68544c` fixes Mesa child Python selection
 with an explicit generated native machine file, prepared venv and pinned Mako/
 PyYAML. Authorizeda78721d feedback establishes ARM64 LLVM build completion followed
