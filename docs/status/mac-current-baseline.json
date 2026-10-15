@@ -694,5 +694,13 @@
     "full_workspace_replay": "pending",
     "full_catalogue_replay": "pending; prior frozen red counts retained"
   },
-  "release_permitted": false
+  "release_permitted": false,
+  "interception_fixture_followup": {
+    "source": "tests/compiler-regressions/compiler-typechecked-messages.jai",
+    "interp_passed": 1,
+    "native_compile_time_only_passed": 1,
+    "native_executions": 0,
+    "failed": 0,
+    "full_catalogue_replay": false
+  }
 }
