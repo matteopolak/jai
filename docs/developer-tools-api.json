@@ -778,7 +778,7 @@
         "declaration": "get_clang_type_alignment :: (ty: CXType) -> s64",
         "section": "Public declaration inventory",
         "spec_line": 117,
-        "implementation": "pending"
+        "implementation": "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
       },
       {
         "name": "create_function_type",
@@ -1002,7 +1002,7 @@
         "declaration": "create_null_literal :: () -> *Literal",
         "section": "Public declaration inventory",
         "spec_line": 149,
-        "implementation": "pending"
+        "implementation": "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
       },
       {
         "name": "create_literal",
@@ -1107,7 +1107,7 @@
         "declaration": "fill_location :: (location: *Location, cur: CXCursor)",
         "section": "Public declaration inventory",
         "spec_line": 164,
-        "implementation": "pending"
+        "implementation": "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
       },
       {
         "name": "create_empty_struct_type",
@@ -1716,7 +1716,7 @@
         "declaration": "fill_location :: (location: *Location, cur: CXCursor)",
         "section": "Public declaration inventory",
         "spec_line": 251,
-        "implementation": "pending"
+        "implementation": "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
       },
       {
         "name": "log",
@@ -2255,14 +2255,14 @@
         "declaration": "clang_getDiagnosticNumRanges :: (unknown0: CXDiagnostic) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 368,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getDiagnosticRange",
         "declaration": "clang_getDiagnosticRange :: (Diagnostic: CXDiagnostic, Range: u32) -> CXSourceRange #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 369,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getDiagnosticNumFixIts",
@@ -4579,7 +4579,7 @@
         "declaration": "clang_EvalResult_getAsInt :: (E: CXEvalResult) -> s32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 700,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsLongLong",
@@ -5629,14 +5629,14 @@
         "declaration": "clang_getDiagnosticNumRanges :: (unknown0: CXDiagnostic) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 853,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getDiagnosticRange",
         "declaration": "clang_getDiagnosticRange :: (Diagnostic: CXDiagnostic, Range: u32) -> CXSourceRange #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 854,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getDiagnosticNumFixIts",
@@ -7953,7 +7953,7 @@
         "declaration": "clang_EvalResult_getAsInt :: (E: CXEvalResult) -> s32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1185,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsLongLong",

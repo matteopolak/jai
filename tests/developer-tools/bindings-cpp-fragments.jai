@@ -35,9 +35,12 @@ main :: () {
     defer free(integer);
     pointer: B.CType;
     pointer.pointer_to = integer;
-    literal.literal_kind = .NULL;
+    null_literal := B.create_null_literal();
+
+    defer free(null_literal);
+    assert(null_literal.kind == .LITERAL && null_literal.literal_kind == .NULL);
     append(*source, "int* pointer = ");
-    assert(B.append_cpp_literal(*source, *literal, target_type = *pointer));
+    assert(B.append_cpp_literal(*source, null_literal, target_type = *pointer));
     append(*source, "; assert(pointer == nullptr);\n");
     scope: B.Namespace;
     scope.kind = .NAMESPACE;

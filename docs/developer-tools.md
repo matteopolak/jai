@@ -32,6 +32,8 @@ Run `python3 tools/build_developer_bindings.py --llvm-prefix <official-sdk>` to 
 
 The binding-model void/bool predicates follow explicit scalar flags and typedef links, excluding pointers, arrays, functions, records/enums and references. Alias cycles/depth failures produce diagnostics. Location comparison uses file-handle identity plus line/column; cross-translation-unit file equivalence is not claimed. Original fixtures inspect actual parsed bool/void aliases and call the generated native signatures.
 
+`fill_location` fills the reviewed file/line/column record from native cursor spelling locations, clearing a previous value for a null cursor. `get_clang_type_alignment` preserves libclang alignment/error results; the parsed declaration model uses both helpers. `create_null_literal` returns an initialized caller-owned Literal in the active allocator; generated C++ consumers verify its null pointer effect. Diagnostic range getters and signed evaluation now have direct native invocation coverage, including highlighted operand bytes and resource cleanup.
+
 ## Print_Vars
 
 `print_vars_to`, `print_vars` and `log_vars` expand over caller expressions. They retain caller scope, use Program_Print for source names, evaluate each expression once, render values/types and align name/value columns. The helper accepts the exact reviewed fixed Code array; the variadic entry points create that array at compile time. `Print_Vars_Config` controls fields, delimiters, indentation and line separators. Logging forwards the caller location. Widths currently count UTF-8 bytes; see questions and deviations for display-cell and source-whitespace limits.

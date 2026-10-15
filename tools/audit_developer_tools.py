@@ -57,8 +57,6 @@ def main():
                     item["implementation"] = "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
                 if item["name"].startswith("clang_") and item["name"] in models:
                     item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
-                    if item["name"] in {"clang_getDiagnosticNumRanges", "clang_getDiagnosticRange", "clang_EvalResult_getAsInt"}:
-                        item["implementation"] = "reviewed native signature implemented; direct invocation remains source-only"
                 if item["name"] in {"set_ExcludeDeclarationsFromPCH", "get_ExcludeDeclarationsFromPCH",
                                      "set_DisplayDiagnostics", "get_DisplayDiagnostics",
                                      "set_StorePreamblesInMemory", "get_StorePreamblesInMemory"}:
@@ -76,6 +74,8 @@ def main():
                     item["implementation"] = "C++17 fragment subset; generated native consumers O0/O2 from interpreter/native emitter runs, unsupported output preservation"
                 if item["name"] in {"is_void_type", "is_bool_type", "is_same_location"}:
                     item["implementation"] = "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
+                if item["name"] in {"fill_location", "get_clang_type_alignment", "create_null_literal"}:
+                    item["implementation"] = "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
         if module == "Performance_Report":
             for item in declarations:
                 item["implementation"] = "implemented; measured native compiler plugin fixture"
