@@ -77,7 +77,7 @@ generation expects a non-oracle public helper; do not invent that export. See
   constants with NEW POSIX ABI types. Exact floating rounding/invalid-date/DST
   policies remain explicitly independent; see portable-time.md. Calendar text
   formats and seconds_since_init initialization origin/hook remain unresolved.
-- Flat_Pool's default reserve and overwrite option scope/value are absent.
+- Flat_Pool reserve/default/overwrite contracts are resolved in the refreshed oracle and implemented. Remaining Windows/console backends and Android validation are separate platform gaps.
 - Process finite STILL_RUNNING boolean, live deinit/stdin inheritance, and the
   quote grammar beyond supported double quotes remain under review.
 - Command_Line nested/overlay fields, help result/priority/layout and full numeric

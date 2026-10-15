@@ -1,61 +1,58 @@
-# Flat_Pool core and container verification
+# Flat_Pool and container verification
 
-Flat_Pool's canonical record, immutable CAPS_VERSION_STRING and native allocation
-mechanisms are independently implemented under internal/allocation. No private
-helper or replacement initialization API is exported.
+The refreshed reviewed contract resolves the earlier initialization/default gaps.
+Flat_Pool has both exact inferred module parameters:
+DEFAULT_VIRTUAL_MEMORY_RESERVE := 256 * 1024 * 1024 and
+OVERWRITE_ALL_POOLS_ON_RESET := false. Its canonical record/layout and immutable
+CAPS_VERSION_STRING remain unchanged.
 
-| Public API | Implementation status |
+| Public API | Current implementation |
 | --- | --- |
-| Flat_Pool; CAPS_VERSION_STRING | Exact reviewed field order/types/default alignment and string |
-| get | macOS/Linux/Android code: aligned stable-address bump, page-wise mprotect commitment, checked extent/overflow, null on native commit failure without metadata advance |
-| reset | Explicit overwrite argument supported, stamps allocated prefix then rewinds; committed pages retained. Unspecified global overwrite option remains unimplemented |
-| fini | Checked native munmap, clears four pointer fields, retains alignment; empty repeat teardown accepted |
-| flat_pool_allocator_proc | Real allocate/copy-resize, no-op FREE, allocated-prefix ownership query, static name/flags CAPS, initialized-instance STARTUP and actual SHUTDOWN; thread/heap modes diagnose |
-| init | Not exported: oracle omits DEFAULT_VIRTUAL_MEMORY_RESERVE value/type. No guessed default or replacement signature |
-| example | Not exported: requires unavailable init default |
+| init | Exact inferred reserve default; checked positive/page-rounded native reservation, cursor and commit boundary initialized without eagerly committing pages |
+| get | Lazily initializes null base with the selected module default; aligned stable-address bump, page-wise commitment, checked extent/overflow, null on native commit failure without metadata advance |
+| reset | Stamps allocated prefix when local argument OR module flag is true; false cannot disable global true; rewinds while retaining reservation and committed pages |
+| fini | Checked native unmap, clears pointer fields, retains alignment; empty repeat teardown accepted |
+| flat_pool_allocator_proc | Allocate/copy-resize, no-op FREE, allocated-prefix ownership, static CAPS name/flags, lazy STARTUP and real SHUTDOWN; thread/heap modes diagnose |
+| example | Real default initialization, allocation, reset/stamp verification and deferred release |
 
-This is partial mechanism support, **not a complete usable initialization API**.
-Tests supply actual native reservations through the reviewed public fields solely
-to verify supported operations. No reservation fixture is presented as production
-initialization. Windows/console operations remain absent; Windows target checking
-of the fixture verifies only canonical record shape. Android CLI is unsupported.
+Implemented native operations are macOS/Linux/Android branches. Windows/console
+operations remain absent; Windows target checking of the test verifies canonical
+record shape only. Android CLI is unsupported, so no Android target/native claim.
 
-Independent policies requiring review: ownership recognizes the currently
-allocated prefix, including alignment padding; it becomes empty after reset.
-STARTUP requires existing reservation, SHUTDOWN releases it. Reset/fini on an
-empty record are harmless. Alignment/reservation inputs are checked rather than
-allowing invalid pointer arithmetic. Page size is queried on each required commit,
-trading syscall overhead for simple state without changing canonical record ABI.
-The global overwrite declaration/scope/value is unavailable, and only the explicit
-reset argument is currently honored. These gaps must be resolved before counting
-the module complete.
+Normal behavior tests now use public init and lazy get, rather than manually
+populating reservation fields. They verify explicit page rounding, default 256MiB
+reserve, custom module default, zero-byte lazy reservation without commitment,
+reinitialization after fini, all four global/local stamp combinations, retained
+committed pages, changed alignment, stable bytes, resize copying, no-op individual
+FREE, static CAPS and allocator STARTUP/SHUTDOWN. Capacity failure also uses real
+public initialization. The supplementary read-only shared mapping of the original
+test source still forces a real mprotect failure and verifies no metadata advance,
+then releases the reservation. That fixture verifies the failure path only.
 
-Original fixture tests use a real anonymous PROT_NONE reservation and check page
-commit, changed alignment, stable original bytes, resize copying, static CAPS
-names/flags, no-op individual FREE, stamp retention, committed-page reuse and
-teardown. A read-only shared mapping of the original test source forces a real
-mprotect failure without depending on an unmapped address being left unused.
-The test checks unchanged metadata and releases that mapping normally. Native
-O0/O2 and interpreter pass. A separate actual-reservation exhaustion case must
-terminate with its exact checked diagnostic in both modes.
+Remaining independent policies needing review: ownership recognizes the allocated
+prefix including alignment padding; empty reset/fini are harmless; repeated init
+requires prior fini; nonpositive/overflowing reservations diagnose. Page size is
+queried at each commitment, trading overhead for no ABI/state changes.
+These are distinct from the now-resolved reserve/default/overwrite contracts.
 
-Initial source-path fixture used #filepath (directory) instead of #file (full
-filename), causing the mapping assertion at line 61 to fail. Correcting the source
-directive retained all checks. Initial full runner reached the new fault but
-stopped with KeyError because its expected diagnostic was unregistered. The
-expectation is now explicit; no fault/assertion is skipped. Original suite log is
-target/flat-pool-suite.log; rerun is target/flat-pool-suite-final.log.
+Historical evidence: first core-only tests used caller-provided native
+reservations because the earlier page lacked defaults. That checkpoint is
+superseded by public-init behavior tests. An initial #filepath (directory) instead
+of #file caused mapping failure; corrected without weakening checks. Initial
+capacity-fault runner omitted its diagnostic map entry and stopped with KeyError;
+the explicit diagnostic is registered and retained. Old suite log:
+target/flat-pool-suite.log; prior successful core suite:
+target/flat-pool-suite-final.log. Current init suite:
+target/flat-pool-init-suite.log.
 
 ## Hash_Table audit
 
-Existing table_find_multiple/table_remove_multiple already implement real
-temporary copies/all-duplicate removal; the previous ledger understated that code.
-New tests verify 128 duplicate copies independently of storage order, no alias to
-values, stability across rehash, first-match set, removal preserving collision
-neighbors, caller-initialized find_or_add, captured allocator cleanup, non-refilling
-tombstones, collision counters and NEW foundation scalar-default hashing. Both
-native optimizations and interpreter pass; Linux/Windows checks pass. No table
-implementation is changed merely to satisfy old conveniences. Walk_Table remains
-withheld until its caller-local expansion contract is reviewed.
+Existing table_find_multiple/table_remove_multiple implement temporary copies and
+all-duplicate removal; the earlier ledger understated that implementation. New
+tests verify 128 duplicate copies without assuming storage order, no value alias,
+stability across rehash, first-match set, removal preserving collision neighbors,
+caller-initialized find_or_add, captured allocator cleanup, non-refilling
+tombstones, collision counters and NEW foundation scalar-default hashing.
+Walk_Table remains withheld pending its caller-local expansion contract.
 
-Final full focused rerun: 95 positive interpreter/native cases, 23 checked faults in both modes, eight compile rejections and prior SMTP/IPC/parent/startup/Linux+Windows checks. All 290 currently owned Jai files pass jaifmt --check and jailint -D warnings.
+Refreshed initialization verification: full95 positive cases and23 expected faults pass in both interpreter/native modes, eight compile rejections and prior SMTP/IPC/parent/startup/Linux+Windows checks pass. Flat_Pool also executes native O2. All293 currently owned Jai files pass source-built jaifmt --check and jailint -D warnings. Windows checking currently covers canonical record only, not a native Windows allocator backend.

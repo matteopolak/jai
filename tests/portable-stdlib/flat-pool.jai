@@ -1,5 +1,7 @@
 #import "Basic";
 F :: #import "Flat_Pool";
+Tiny :: #import "Flat_Pool"(DEFAULT_VIRTUAL_MEMORY_RESERVE = 8193);
+Stamped :: #import "Flat_Pool"(DEFAULT_VIRTUAL_MEMORY_RESERVE = 8193, OVERWRITE_ALL_POOLS_ON_RESET = true);
 
 #assert !#exists(F.Native);
 
@@ -10,18 +12,17 @@ main :: () {
     assert(type_info(F.Flat_Pool).members[1].offset_in_bytes == 8);
 
     #if OS == .MACOS || OS == .LINUX || OS == .ANDROID {
-        // Explicit native reservation fixture: public init/defaults are not
-        // implemented or counted as covered by these mechanism tests.
         page := P.sysconf(P._SC_PAGESIZE);
 
         assert(page > 0);
         extent := page * 4;
-        mapping := P.mmap(null, cast(u64) extent, P.PROT_NONE, P.MAP_PRIVATE | P.MAP_ANONYMOUS, -1, 0);
+        pool: F.Flat_Pool;
 
-        assert(mapping != P.MAP_FAILED);
-        base := cast(*u8) mapping;
-        pool := F.Flat_Pool.{ current_point = base, memory_base = base,
-                             first_uncommitted_page = base, address_limit = base + extent };
+        F.init(*pool, reserve = extent - 1);
+        base := pool.memory_base;
+
+        assert(base != null && pool.current_point == base && pool.first_uncommitted_page == base);
+        assert(pool.address_limit - base == extent);
         first := cast(*u8) F.get(*pool, 3);
 
         assert(first == base && pool.first_uncommitted_page == base + page);
@@ -77,6 +78,54 @@ main :: () {
         assert(F.get(*failed_pool, 1) == null);
         assert(failed_pool.current_point == failed_base && failed_pool.first_uncommitted_page == failed_base);
         F.fini(*failed_pool);
+        defaults: F.Flat_Pool;
+        default_data := cast(*u8) F.get(*defaults, 1);
+
+        assert(default_data != null && defaults.address_limit - defaults.memory_base == 256 * 1024 * 1024);
+        default_data[0] = 17;
+        F.reset(*defaults, false);
+        assert(default_data[0] == 17);
+        F.fini(*defaults);
+        assert(F.get(*defaults, 0) != null);
+        assert(defaults.current_point == defaults.memory_base && defaults.first_uncommitted_page == defaults.memory_base);
+        F.fini(*defaults);
+        custom: Tiny.Flat_Pool;
+
+        Tiny.init(*custom);
+        custom_data := cast(*u8) Tiny.get(*custom, 1);
+        expected_extent := ((8193 + page - 1) / page) * page;
+
+        assert(custom_data != null && custom.address_limit - custom.memory_base == expected_extent);
+        custom_data[0] = 23;
+        Tiny.reset(*custom, false);
+        assert(custom_data[0] == 23);
+        Tiny.fini(*custom);
+        stamped: Stamped.Flat_Pool;
+        stamp_data := cast(*u8) Stamped.get(*stamped, 16);
+
+        assert(stamp_data != null);
+        memset(stamp_data, 27, 16);
+        Stamped.reset(*stamped, false);
+        for i: 0..15 assert(stamp_data[i] == 0xcc);
+
+        assert(Stamped.get(*stamped, 16) == stamp_data);
+        memset(stamp_data, 31, 16);
+        Stamped.reset(*stamped, true);
+        for i: 0..15 assert(stamp_data[i] == 0xcc);
+
+        Stamped.fini(*stamped);
+        startup_pool: Tiny.Flat_Pool;
+
+        Tiny.flat_pool_allocator_proc(.STARTUP, 0, 0, null, *startup_pool);
+        assert(startup_pool.memory_base != null && startup_pool.address_limit - startup_pool.memory_base == expected_extent);
+        startup_data := cast(*u8) Tiny.flat_pool_allocator_proc(.ALLOCATE, 1, 0, null, *startup_pool);
+
+        assert(startup_data != null);
+        startup_data[0] = 9;
+        Tiny.flat_pool_allocator_proc(.SHUTDOWN, 0, 0, null, *startup_pool);
+        assert(startup_pool.memory_base == null);
+        F.example();
+
     }
 
     print("ok\n");
