@@ -19,10 +19,12 @@ RESERVED = {
     "rpmalloc", "SDL", "stb_image", "stb_image_resize", "stb_image_write",
     "stb_vorbis", "telemetry3", "Vulkan", "Windows", "X11", "xxHash",
     "Window_Creation", "Window_Type", "Input", "Keymap", "Gamepad", "Simp", "Srgb", "Clipboard", "File",
+    "Sound_Player", "Bindings_Generator", "Generate_C_Header", "Check", "Codex",
+    "Debug", "Debug_Info", "Print_Vars", "Iprof", "Performance_Report", "Rewrite",
 }
 RESERVED_FOLDED = {name.casefold() for name in RESERVED}
 RESERVED_INTERNAL = {"bindings", "numerics", "compiler-api", "jai-lexer", "code-visit", "program-print",
-                     "window", "rendering", "input", "gamepad", "clipboard", "file"}
+                     "window", "rendering", "input", "gamepad", "clipboard", "file", "audio", "profiling"}
 
 
 def owned_paths():
@@ -36,7 +38,13 @@ def owned_paths():
         if relative == Path("internal/files/file.jai"):
             continue  # File backend completion is now platform-io ownership.
         paths.append(path)
-    paths.extend((ROOT / "tests/portable-stdlib").rglob("*.jai"))
+    for path in (ROOT / "tests/portable-stdlib").rglob("*.jai"):
+        relative = path.relative_to(ROOT / "tests/portable-stdlib")
+        if relative.parts[0] == "performance-report" or relative.name in {
+            "sound-samples.jai", "sound-channels.jai", "sound-magic.jai"
+        }:
+            continue
+        paths.append(path)
     return sorted(paths)
 
 

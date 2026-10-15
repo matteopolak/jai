@@ -14,15 +14,15 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [autorun](specs/stdlib/modules/autorun.md) | Unix native helper and real workspace COMPLETE lifecycle implemented/tested; argument/error/non-executable logs verified. Compiler spread fix permits direct argv call; workaround removed. CLI orchestration, callback parameter and Windows unfinished |
 | [base64](specs/stdlib/modules/base64.md) | Implemented public tables, standard/URL codecs and self-tests; RFC and permissive edge vectors pass interpreter/native |
 | [basic](specs/stdlib/modules/basic.md) | Partial: arrays, allocation, scalar helpers, canonical builder and integer/bool/string formatting; remaining declarations unimplemented |
-| [bindings-generator](specs/stdlib/modules/bindings-generator.md) | Owned portable scope; not implemented |
+| [bindings-generator](specs/stdlib/modules/bindings-generator.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
 | [bit-array](specs/stdlib/modules/bit-array.md) | Implemented canonical type, bit mutation, padding and logical/selected iteration; interpreter/native cases pass |
 | [bit-operations](specs/stdlib/modules/bit-operations.md) | Implemented width-generic byte swap, scans and population count; interpreter/native cases pass |
 | [bucket-array](specs/stdlib/modules/bucket-array.md) | All reviewed exports implemented; stable pointers, locators, reuse and iteration pass interpreter/native |
 | [buildcpp](specs/stdlib/modules/buildcpp.md) | Unix native-host C/C++ compile/archive/link/object and macOS universal outputs implemented; artifacts executed/loaded, stale archive members removed, failures preserve output and cleanup. Windows/cross toolchains and documented contract edges unfinished |
-| [check](specs/stdlib/modules/check.md) | Owned portable scope; not implemented |
+| [check](specs/stdlib/modules/check.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
 | [clipboard](specs/stdlib/modules/clipboard.md) | Reserved for window/render worker by current ownership; not modified here |
 | [code-visit](specs/stdlib/modules/code-visit.md) | Reserved for compiler worker; not implemented or modified here |
-| [codex](specs/stdlib/modules/codex.md) | Owned portable scope; not implemented |
+| [codex](specs/stdlib/modules/codex.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
 | [color-interpolation](specs/stdlib/modules/color-interpolation.md) | Reserved for numerics worker; not implemented or modified here |
 | [command-line](specs/stdlib/modules/command-line.md) | All reviewed exports implemented for flat scalar/fixed-array options; explicit/default argv, duplicates, notes/help and free arguments tested interpreter/native. Recorded nested/overlay/help edges require review |
 | [compiler](specs/stdlib/modules/compiler.md) | Reserved for compiler worker; not implemented or modified here |
@@ -31,8 +31,8 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [d3d-compiler](specs/stdlib/modules/d3d-compiler.md) | Reserved for bindings worker; not implemented or modified here |
 | [d3d11](specs/stdlib/modules/d3d11.md) | Reserved for bindings worker; not implemented or modified here |
 | [d3d12](specs/stdlib/modules/d3d12.md) | Reserved for bindings worker; not implemented or modified here |
-| [debug-info](specs/stdlib/modules/debug-info.md) | Owned portable scope; not implemented |
-| [debug](specs/stdlib/modules/debug.md) | Owned portable scope; not implemented |
+| [debug-info](specs/stdlib/modules/debug-info.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
+| [debug](specs/stdlib/modules/debug.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
 | [deep-copy](specs/stdlib/modules/deep-copy.md) | Graph/cycle/sharing/string/array/pointer-map/preallocated/callback cases now pass interpreter/native with real alignment metadata; original assertions retained. Statistics/debug globals real. Fixed arrays/Any/unions rejected; ownership/slice/statistic policies require review |
 | [default-allocator](specs/stdlib/modules/default-allocator.md) | Documented C fallback allocator_proc/unsafe_reset implemented and interpreter/native tested, with real resize failure preservation and arm64 Linux/Windows checks. Optimized X64/Switch heap API explicitly rejected and remains unimplemented |
 | [default-metaprogram](specs/stdlib/modules/default-metaprogram.md) | Owned portable scope; not implemented |
@@ -48,7 +48,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [freetype](specs/stdlib/modules/freetype.md) | Reserved for bindings worker; not implemented or modified here |
 | [gamepad-sdl-input-map](specs/stdlib/modules/gamepad-sdl-input-map.md) | Reserved for window/render worker by current ownership; not modified here |
 | [gamepad](specs/stdlib/modules/gamepad.md) | Reserved for window/render worker by current ownership; not modified here |
-| [generate-c-header](specs/stdlib/modules/generate-c-header.md) | Owned portable scope; not implemented |
+| [generate-c-header](specs/stdlib/modules/generate-c-header.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
 | [getrect-lefthanded](specs/stdlib/modules/getrect-lefthanded.md) | Reserved for numerics worker; not implemented or modified here |
 | [getrect](specs/stdlib/modules/getrect.md) | Reserved for numerics worker; not implemented or modified here |
 | [gl](specs/stdlib/modules/gl.md) | Reserved for bindings worker; not implemented or modified here |
@@ -60,7 +60,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [input](specs/stdlib/modules/input.md) | Reserved for window/render worker by current ownership; not modified here |
 | [introsort](specs/stdlib/modules/introsort.md) | Implemented in-place comparison sorts; interpreter/native checks pass |
 | [ios](specs/stdlib/modules/ios.md) | Reserved for bindings worker; not implemented or modified here |
-| [iprof](specs/stdlib/modules/iprof.md) | Owned portable scope; not implemented |
+| [iprof](specs/stdlib/modules/iprof.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
 | [jai-lexer](specs/stdlib/modules/jai-lexer.md) | Reserved for compiler worker; not implemented or modified here |
 | [keymap](specs/stdlib/modules/keymap.md) | Reserved for window/render worker by current ownership; not modified here |
 | [linux-build](specs/stdlib/modules/linux-build.md) | Owned portable scope; not implemented |
@@ -84,14 +84,14 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [objective-c](specs/stdlib/modules/objective-c.md) | Reserved for bindings worker; not implemented or modified here |
 | [overwriting-allocator](specs/stdlib/modules/overwriting-allocator.md) | Reviewed exports implemented using real tracked allocations, poison and mutex; allocation/failed-resize/growth/free and concurrent tests use the new reviewed scalar Hash dependency. Lifecycle forwarding/destruction edges require review |
 | [pcg](specs/stdlib/modules/pcg.md) | Implemented all reviewed exports; five-draw vector and bounds pass interpreter/native |
-| [performance-report](specs/stdlib/modules/performance-report.md) | Owned portable scope; not implemented |
+| [performance-report](specs/stdlib/modules/performance-report.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
 | [pl-mpeg-public-tables](specs/stdlib/modules/pl-mpeg-public-tables.md) | Complete reviewed synthesis and DCT values declared as canonical constants; qualified-array write rejection is a retained compiler gap |
 | [pl-mpeg](specs/stdlib/modules/pl-mpeg.md) | Partial: buffers/tables/pixels, video, Layer II audio with checked CRC, MPEG-1 PS demux and Plm lifecycle/callbacks/linear seeks. Full clip and original B/AC/stereo/protected fixtures pass. Inter-predicted B/richer content pending; format transitions rejected. Seek/stream-bound/macro/copy/no-start-code contracts and compiler constants gaps remain. See portable-mpeg.md |
-| [pool](specs/stdlib/modules/pool.md) | Default bulk allocator implemented; alignment/accounting/reset pass interpreter/native. USE_UNMAPPING_ALLOCATOR=true explicitly rejected pending native unmapping support |
+| [pool](specs/stdlib/modules/pool.md) | Default bulk allocator implemented; alignment/accounting/reset and CAPS null-data name/flags pass interpreter/native. USE_UNMAPPING_ALLOCATOR=true explicitly rejected pending native unmapping support |
 | [posix](specs/stdlib/modules/posix.md) | Reserved for bindings worker; not implemented or modified here |
 | [preload](specs/stdlib/modules/preload.md) | Canonical declarations implemented; bootstrap layout checks pass |
 | [print-color](specs/stdlib/modules/print-color.md) | ANSI enums, set/reset, formatting and scoped expansion implemented; stdout/stderr and reset on caller return tested. Native Windows console mode explicitly rejected; ANSI Windows configuration supported by target checking |
-| [print-vars](specs/stdlib/modules/print-vars.md) | Owned portable scope; not implemented |
+| [print-vars](specs/stdlib/modules/print-vars.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
 | [process](specs/stdlib/modules/process.md) | Unix launch/capture/status/timeout/stream APIs implemented; interpreter/native, large dual streams, EPIPE, child pid and concurrent parent-exit cancellation tested. Windows and noted interactive/finite-query contracts incomplete or under review |
 | [program-print](specs/stdlib/modules/program-print.md) | Reserved for compiler worker; not implemented or modified here |
 | [project-generator](specs/stdlib/modules/project-generator.md) | Owned portable scope; not implemented |
@@ -101,10 +101,10 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [reflection](specs/stdlib/modules/reflection.md) | All reviewed exports implemented; scalar/range/enum/array checks pass interpreter/native; malformed parser edges remain under review |
 | [relative-pointers](specs/stdlib/modules/relative-pointers.md) | Implemented all reviewed exports; null/self/relocated references pass interpreter/native |
 | [remap-context](specs/stdlib/modules/remap-context.md) | Both remap procedures plus exact lexical macro implemented; cached validated plans and nested/early-return restoration pass interpreter/native. Duplicate names/stack-trace adjustment need review |
-| [rewrite](specs/stdlib/modules/rewrite.md) | Owned portable scope; not implemented |
+| [rewrite](specs/stdlib/modules/rewrite.md) | Reserved for stdlib-tools; provisional Performance_Report files remain uncommitted for selective handling, not counted as complete |
 | [rpmalloc](specs/stdlib/modules/rpmalloc.md) | Reserved for bindings worker; not implemented or modified here |
 | [runtime-support-crash-handler](specs/stdlib/modules/runtime-support-crash-handler.md) | POSIX public records and real native signal/TLS backend implemented; explicit/protected faults, distinct worker stacks and cleanup pass interpreter/native. Linux native execution and Windows remain unfinished; deployment/lifetime details documented |
-| [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Embedding initialization, owned scratch lifetime, synchronized output, explicit-Code once and fault hooks implemented; POSIX crash backtrace startup ON/OFF verified through source-built Compiler workspace; remaining platform adaptations unfinished |
+| [runtime-support](specs/stdlib/modules/runtime-support.md) | Partial: context, output, libc allocation, entry wrapper; interpreter smoke passes. Embedding initialization, owned scratch lifetime, synchronized output, explicit-Code once and fault hooks implemented; POSIX crash backtrace startup ON/OFF verified through source-built Compiler workspace; private settled temporary-size protocol adopted with real root/child allocation tests; remaining platform adaptations unfinished |
 | [sdl](specs/stdlib/modules/sdl.md) | Reserved for bindings worker; not implemented or modified here |
 | [shared-memory-channel](specs/stdlib/modules/shared-memory-channel.md) | Real Unix named-mapping SPSC reserve/commit/poll/done and ownership implemented; wrap/full/corruption and 2,048 packets in all four interpreter/native process pairings. Wire details require review; Windows absent, Linux native unverified |
 | [simd](specs/stdlib/modules/simd.md) | All reviewed exports implemented as allocation-free scalar fallback, including corrected oracle 1/0 comparisons/truth masks, unaligned load/gather/scatter, byte offsets, lane-order overwrite, index steps and full interleaved reductions. Interpreter/native tests pass. Documented source defects follow reviewed intended mapping; reversed noncommutative scalar semantics remain unspecified |
@@ -114,7 +114,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [soa](specs/stdlib/modules/soa.md) | Generated canonical component arrays, indexed gather/scatter and value/pointer loops implemented; overlay/constant omission, empty extent and writeback on continue/break/return tested. General overlapping-union selection requires review |
 | [socket](specs/stdlib/modules/socket.md) | Partial Unix wrappers plus generated native declarations. IPv4 loopback, fd sets and IPv6 formatting pass interpreter/native; Windows wrappers and remaining native/helper gaps recorded separately |
 | [sort](specs/stdlib/modules/sort.md) | Implemented both callback forms and built-in comparators; numeric sorting checks pass interpreter/native |
-| [sound-player](specs/stdlib/modules/sound-player.md) | Partial: nineteen canonical common records/enums, sample arithmetic, bounded magic reads and live topology/accumulator/retired-decoder storage. Real arithmetic/layout/mutable-identity tests; playback, queues, device backends, spatial mixing and compressed decoders unfinished |
+| [sound-player](specs/stdlib/modules/sound-player.md) | Now audio ownership; retained prior partial implementation: nineteen canonical common records/enums, sample arithmetic, bounded magic reads and live topology/accumulator/retired-decoder storage. Real arithmetic/layout/mutable-identity tests; playback, queues, device backends, spatial mixing and compressed decoders unfinished |
 | [srgb](specs/stdlib/modules/srgb.md) | Reserved for window/render worker by current ownership; not modified here |
 | [stb-image-resize](specs/stdlib/modules/stb-image-resize.md) | Reserved for bindings worker; not implemented or modified here |
 | [stb-image-write](specs/stdlib/modules/stb-image-write.md) | Reserved for bindings worker; not implemented or modified here |
