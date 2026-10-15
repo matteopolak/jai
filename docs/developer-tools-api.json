@@ -25055,7 +25055,7 @@
         "declaration": "Free_Page_Map :: struct",
         "section": "Public declaration inventory",
         "spec_line": 132,
-        "implementation": "pending"
+        "implementation": "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
       },
       {
         "name": "init",
@@ -25132,14 +25132,14 @@
         "declaration": "Msf :: struct",
         "section": "Public declaration inventory",
         "spec_line": 143,
-        "implementation": "pending"
+        "implementation": "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
       },
       {
         "name": "is_msf",
         "declaration": "is_msf :: (file_content: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 144,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "parse_msf",
@@ -25153,21 +25153,21 @@
         "declaration": "get_stream_data :: (msf: Msf, stream_index: UNSN) -> [] u8, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 146,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "get_stream_size",
         "declaration": "get_stream_size :: (msf: Msf, stream_index: UNSN) -> s64",
         "section": "Public declaration inventory",
         "spec_line": 147,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "is_valid_stream_number",
         "declaration": "is_valid_stream_number :: (msf: Msf, stream_index: UNSN) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 148,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "is_valid_user_stream_number",
@@ -25181,14 +25181,14 @@
         "declaration": "stream_exists :: (msf: Msf, stream_index: UNSN) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 150,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "is_valid_page_number",
         "declaration": "is_valid_page_number :: (msf: Msf, pn: UPN) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 151,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "verify_integrity",
@@ -25202,7 +25202,7 @@
         "declaration": "is_pdb :: is_msf",
         "section": "Public declaration inventory",
         "spec_line": 153,
-        "implementation": "pending"
+        "implementation": "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
       },
       {
         "name": "Pdb",

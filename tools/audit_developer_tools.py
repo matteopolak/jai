@@ -168,6 +168,10 @@ def main():
                 item["implementation"] = "supported subset; actual compiler-message rewrite and edit safety fixture"
         if module == "Debug_Info":
             for item in declarations:
+                if item["name"] in {"Msf", "Free_Page_Map"}:
+                    item["implementation"] = "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
+                if item["name"] in {"is_msf", "is_pdb", "get_stream_data", "get_stream_size", "is_valid_stream_number", "stream_exists", "is_valid_page_number"}:
+                    item["implementation"] = "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
                 if item["name"] in {"Line_Info", "Line_Info_Sequence", "Line_Mapping", "File_Info", "Dwarf_File_Id",
                                      "get_line_mapping_for_address", "get_line_mappings_for_address_range"}:
                     item["implementation"] = "reviewed line records and DWARF interval queries; original x64/arm64 O0/O2 line-table SDK oracles, interpreter/native effects and malformed/overlap diagnostics"

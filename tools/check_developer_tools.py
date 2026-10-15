@@ -149,6 +149,7 @@ def main():
     run([JAIC, "tests/developer-tools/bindings-model-properties.jai", "-interp"], output="ok\n")
     cases.append("bindings-model-properties-roundtrip")
     cases.append("msf-wire")
+    cases.append("msf-public")
     cases.append("debug-int-set")
     cases.append("bindings-clang-tokens")
     cases.append("bindings-clang-build-system")
@@ -266,7 +267,7 @@ def main():
     for cpu in ["x64", "arm64"]:
         run([JAIC, "tests/developer-tools/debug-windows-contract.jai", "-check", "-os", "windows", "-cpu", cpu])
         for os_name in ["linux", "windows"]:
-            for case in ["msf-wire", "debug-int-set", "dwarf-cfa", "dwarf-line-query", "dwarf-fde", "bindings-clang-time", "bindings-clang-tokens", "bindings-clang-build-system", "bindings-clang-source", "bindings-clang-cpp"]:
+            for case in ["msf-wire", "msf-public", "debug-int-set", "dwarf-cfa", "dwarf-line-query", "dwarf-fde", "bindings-clang-time", "bindings-clang-tokens", "bindings-clang-build-system", "bindings-clang-source", "bindings-clang-cpp"]:
                 run([JAIC, f"tests/developer-tools/{case}.jai", "-check", "-os", os_name, "-cpu", cpu])
     for case, reason in [("check-array", "fixed array used as a pointer in assignment"),
                          ("check-small-driver", "small integer addition requires an explicit intermediate integer cast")]:
@@ -278,6 +279,10 @@ def main():
                                   cwd=ROOT, env=ENV, text=True, capture_output=True, timeout=60)
     if private_time.returncode != 1 or "no exported member `time_t`" not in private_time.stderr:
         raise RuntimeError("Bindings_Generator must not export its private native time_t alias")
+    private_page = subprocess.run([str(JAIC), "tests/developer-tools/rejections/msf-private-page.jai", "-check"],
+                                  cwd=ROOT, env=ENV, text=True, capture_output=True, timeout=60)
+    if private_page.returncode != 1 or "no exported member `UPN`" not in private_page.stderr:
+        raise RuntimeError("Debug_Info must not add an export for the contextual page-number alias")
     for os_name, cpu in [("linux", "x64"), ("windows", "x64"), ("wasm", "x64")]:
         run([JAIC, "tests/developer-tools/c-header.jai", "-check", "-os", os_name, "-cpu", cpu])
         run([JAIC, "tests/developer-tools/debug-target.jai", "-check", "-os", os_name, "-cpu", cpu])

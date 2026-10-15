@@ -455,7 +455,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Debug_Info
 
-36 function names have pending declarations; 0 native function names still lack invocation fixtures.
+30 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Next work / precise question |
 | --- | ---: | --- |
@@ -471,17 +471,12 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `get_filename` | 1 | Debug_Info question8: file/directory indexing and path text |
 | `get_filename_for_file_id` | 2 | Debug_Info question8 for DWARF overload; CodeView implementation pending |
 | `get_id_type` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `get_stream_data` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
-| `get_stream_size` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `get_string_from_table` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_type` | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `init` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_fpm_page_number` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `is_free_page` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
-| `is_msf` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `is_procedure` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_valid_page_number` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
-| `is_valid_stream_number` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `is_valid_user_stream_number` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `overlay_inlinesite` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `overlay_inlinesites` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -493,7 +488,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `parse_pdb` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `parse_tpi_stream` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `set_all` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `stream_exists` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `verify_integrity` | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 
 ## Print_Vars
