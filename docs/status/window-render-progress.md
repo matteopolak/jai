@@ -1,5 +1,19 @@
 # Window/render progress
 
+2026-10-15 fresh Mac repair scope on candidate 90fea8ab: corrected genuine
+NSString class-selector misuse through the canonical binding and preserved native
+notifications delivered between pumps through an ordered retained queue. Migrated
+unreviewed helper/array/context/timing/invalid-bitmap/cursor-arrow expectations;
+kept real image samples/alpha/flip, public Event.window identities, fullscreen
+completion and GL readback across close/reopen. Six scoped regressions pass in
+interpreter/native O0/native O2 (18 actual runs), with full materialized clipboard
+item restoration via native guard. Source-built formatter check and strict scoped
+lint pass. Final rerun evidence is under the assigned T7 mac-graphics directory.
+The named baseline JSON is absent; no fabricated baseline. NSCursor public type
+audit and arrow/contextless-swap semantics are documented questions, not invented
+exports. See docs/native/mac-graphics-catalogue-repairs.md for commands and exact
+test corrections, native evidence and limits. No remote/release/peer operations.
+
 Latest narrow checkpoint for candidate 2fa2bc2: source download connection reset
 before compilation is classified as infrastructure failure; downstream driver
 absence is consequential. Added four-attempt transient-only retries, 120-second
