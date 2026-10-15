@@ -5,15 +5,15 @@
     "Iprof",
     "Codex"
   ],
-  "timestamp_utc": "2026-10-15T19:40:49.744105+00:00",
-  "head": "073adb3431b08e1163a6e4aef59736e2aa45d8aa",
-  "state": "committed production implementation; required producer editing failures retained",
+  "timestamp_utc": "2026-10-15T20:09:13.824710+00:00",
+  "head": "e6d9d76417abec38acc7df191ad5216c00f9f666",
+  "state": "committed production implementation; all owned required Mac checks pass",
   "denominator": "unique names from reviewed public declaration inventories; overload/conditional variants also counted separately; record members are audited as part of their aggregate, not additional API names",
   "totals": {
     "reviewed_declaration_variants": 144,
     "unique_public_names": 139,
-    "complete": 138,
-    "partial": 1,
+    "complete": 139,
+    "partial": 0,
     "missing": 0
   },
   "modules": {
@@ -21,8 +21,8 @@
       "reviewed_declaration_variants": 116,
       "unique_public_names": 113,
       "counts": {
-        "complete": 112,
-        "partial": 1,
+        "complete": 113,
+        "partial": 0,
         "missing": 0
       },
       "complete_names": [
@@ -97,6 +97,7 @@
         "last_update_time",
         "log_help",
         "log_text_report",
+        "message",
         "move_cursor",
         "move_frame",
         "next_zone_under_cursor",
@@ -139,9 +140,7 @@
         "zone_under_cursor",
         "zones"
       ],
-      "partial_names": [
-        "message"
-      ],
+      "partial_names": [],
       "missing_names": [],
       "callable_names": [
         "Automatic_Zone",
@@ -264,18 +263,6 @@
   "remaining": [
     {
       "names": [
-        "Iprof.message"
-      ],
-      "kind": "producer editing dependency",
-      "rules": [
-        "Approved69e971b1 resolves retained anonymous member ownership and contextual inferred-enum reconstruction; original member, enum, Basic.alloc and INDEX modification reductions all pass with unchanged assertions.",
-        "Actual modules-enabled O0/O2 CLI builds and interpreted module workflow now fail on growable local-array reconstruction. Compiler type_inst exports ArraySize::Resizable inst_flags0x10 (TYPE_DIRECTIVE_DISTINCT) rather than reviewed RESIZABLE0x2, so values:[..]u32 prints as values:#type,distinct []u32 and real array_add is rejected. Original minimal profiler-array-local-input.jai passes interpreter/nativeO0/O2; profiler-array-local-modify.jai fails its required completion assertion."
-      ],
-      "library_effort_estimate": "replay actual modules-enabled workflows after general compiler growable-array flag mapping correction; no independently actionable missing owned library contract identified",
-      "affected_workflows": "automatic imported-module instrumentation, including Basic decimal formatting using growable local arrays; ownership/enum/index issues resolved"
-    },
-    {
-      "names": [
         "shared tools/check_developer_tools.py Codex rejection expectations"
       ],
       "kind": "integration test classification",
@@ -284,28 +271,30 @@
     }
   ],
   "verification": {
-    "native": "All22 cases pass interpreter/native Mac O0/O2. Actual Codex CLI and modules-disabled Iprof CLI O0/O2 pass; required modules-enabled Iprof builds still fail on growable-array flag metadata. Actual edited indexed main runs via interpreter public lifecycle. Hook, exact expression-boundary and all16 configuration children pass. New unedited local-array baseline passes interpreter/nativeO0/O2.",
+    "native": "All22 runtime cases pass interpreter/native Mac O0/O2. All four real Iprof CLI module-toggle builds/runs pass, including actual positive alloc/free/assert_helper/child_call measurements, real child timing, inclusive main timing and reviewed exclusions. Codex CLI native exports, hooks, expression boundaries and all16 configurations pass. Actual edited modules workflow also runs in compiler interpreter.",
     "format": "Unchanged repository formatter source-built; owned implementation and supported fixture format/idempotence checks passed.",
-    "strict_lint": "Full scoped module-root and all22 supported program fixtures pass -D warnings with approved69e971b1 dependencies. New unedited array-local baseline also passes. Failing compiler-request reductions retain errors; no strict-lint success claimed for those reductions.",
+    "strict_lint": "Full owned module-root and all22 supported fixtures pass -D warnings with approved9b3d4932 dependencies; no allow rules or exclusions. All original retained compiler reductions now pass unchanged completion assertions.",
     "other_targets": "Windows/Linux source-only checks; native execution pending later",
-    "report": "target/profiler-codex-checks.json:196 commands;6 expected rejection exits;2 required modules-enabled O0/O2 build failures; complete=false. target/profiler-codex-dependency-replay.json:12 commands;5 former reductions pass, interpreted modules and array-local modification fail, original local-array baseline passes interpreter/nativeO0/O2.",
+    "report": "target/profiler-codex-checks.json:198 commands;6 required option/scalar rejection exits;0 required failures; complete=true. target/profiler-codex-dependency-replay.json:9 passing commands; complete=true; retained reductions, interpreted modules, native LLVM build/run and generated-code checks all pass. Pre-fix failure reports preserved separately.",
     "context_dependent_fixture": "iprof-hook-input.jai is compiled and executed with real production add_hook-generated bindings through iprof-hooks.jai; no standalone fragment-lint success is claimed.",
-    "compiler_source": "Exact approved independent69e971b1 Rust and compiler-owned Compiler/Program_Print/Code_Visit private/public sources, built unchanged in owned local target/profiler-compiler-source-69e971b1 using assigned T7 target. Own stdlib copied intact before approved compiler dependencies overlaid; runner --stdlib enforces byte-identical owned production implementations. No canonical compiler, peer or other-owner module edits.",
+    "compiler_source": "Exact approved independent9b3d4932 Rust and compiler-owned Compiler/Program_Print/Code_Visit public/private sources built unchanged in owned local target/profiler-compiler-source-9b3d4932 using assigned T7 target. Owned production sources copied intact and refreshed from canonical worktree after owned fixes; --stdlib byte-identity checks pass. No peer/compiler/other-owner module edits.",
     "resolved_dependencies": [
       "e9affab7 context-import ordering included and full strict lint replay passed",
       "114dda87 ordinary called library body interception original reduction passed",
       "b0430110/59a69c03 general ARRAY_SUBSCRIPT reconstruction: original index reduction plus actual indexed native O0/O2 and interpreted edited body pass",
-      "69e971b1 retained member/callback ownership and contextual inferred-enum reconstruction: original member/enum/Basic.alloc modification reductions pass unchanged"
+      "69e971b1 retained member/callback ownership and contextual inferred-enum reconstruction: original member/enum/Basic.alloc modification reductions pass unchanged",
+      "9b3d4932 growable-array/type flag mapping and VARARGS preservation: all retained reductions and actual modules-enabled O0/O2 instrumentation pass after owned whole-zone-entry guard and collection-lifecycle fixes"
     ]
   },
   "limitations": [
     "Public plugin base does not expose private predicate/hook-name configuration; no public setter or derived cast invented.",
     "Codex malformed-input checks are intentionally stronger than the undefined source paths; generic string get returns a valid count and short-string allocate is honored.",
-    "One active Iprof plugin per configured module; serial sessions supported. Concurrent instance behavior is unspecified and documented for review."
+    "One active Iprof plugin per configured module; serial sessions supported. Concurrent instance behavior is unspecified and documented for review.",
+    "Generated automatic collection begins after configured entry-point zone setup and stops before final reporting; pre-entry/post-report callbacks remain instrumented but outside the collection window. Direct public manual/guarded zone semantics unchanged. Precise review question recorded; no startup row guarantee inferred."
   ],
   "disjoint_handoff_batch": {
-    "owner": "compiler/integrator",
-    "work": "general Code_Type_Instantiation RESIZABLE flag mapping: compiler exporter currently emits0x10 while reviewed RESIZABLE is0x2; original growable-array modification reduction in compiler handoff; no library changes needed to metadata or filters"
+    "owner": "integrator/tooling owner",
+    "work": "integrate owned e6d9d764 with approved9b3d4932 compiler/API dependencies; replace shared obsolete Codex rejection classifications. No remaining identified owned API implementation batch."
   },
   "delegated_scope_excluded": true,
   "head_kind": "implementation checkpoint audited; subsequent inventory-only commits do not change implementation",
