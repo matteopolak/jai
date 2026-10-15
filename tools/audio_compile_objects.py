@@ -25,7 +25,9 @@ def main():
     objects = []
     for source in [native / "output.c", ROOT / "tests/audio/native-output.c",
                    ROOT / "tests/audio/native-routing.c",
-                   ROOT / "tests/audio/failure-injection/sdk-close.c"] + ([native / "focus.m"] if entry["os"] == "macos" else []):
+                   ROOT / "tests/audio/failure-injection/sdk-close.c"] + (
+                   [ROOT / "tests/audio/native-windows-abi.c"] if entry["os"] == "windows" else []
+                   ) + ([native / "focus.m"] if entry["os"] == "macos" else []):
         destination = output / (source.stem + ".o")
         destination.unlink(missing_ok=True)
         command([*cc, *flags, "-Wall", "-Wextra", "-Werror", "-I", native,

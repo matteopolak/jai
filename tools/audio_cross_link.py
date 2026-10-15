@@ -75,7 +75,8 @@ def main():
         environment = "gnu" if "libjai_audio_output.a" in metadata["artifacts"] else "msvc"
         target = architecture + "-pc-windows-" + environment
     records = []
-    for case in CASES:
+    cases = CASES + (("windows-abi",) if entry["os"] == "windows" else ())
+    for case in cases:
         for level in ("O0", "O2"):
             executable = output / (case + "-" + level + (".exe" if entry["os"] == "windows" else ""))
             executable.unlink(missing_ok=True)

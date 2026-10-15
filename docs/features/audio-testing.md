@@ -108,8 +108,9 @@ Self-contained cross packages now include every common manifest fixture at O0/O2
 not a handpicked subset. Their standalone runner uses always-required expected
 stdout and separate unavailable-device markers, checks executable hashes/target,
 then exercises logical 6/8 output separately. Current packages contain 52 binaries
-and four extra multichannel executions. Windows-only ABI declaration checks stay
-in the source verifier; injected-failure and disabled-audio-assert configurations
+and four extra multichannel executions. Windows additionally packages its ABI
+fixture at O0/O2 (54 binaries total), retaining the two source checks too;
+injected-failure and disabled-audio-assert configurations
 remain separately labeled runners rather than being claimed by this package.
 
 The loading case verifies an odd-aligned borrowed WAV buffer retains storage
@@ -118,3 +119,11 @@ sampling. The cleanup runner also injects start plus close failure and requires
 backend_init to reject the known-lost retained state. These additions preserve
 existing clipping assertions; an initial narrow-shift implementation regression
 was classified and corrected rather than relaxing the oracle.
+
+The C `native-windows-abi.c` case compiles against real Windows SDK headers for
+both release CPUs. It checks WAVEFORMATEX/extensible and DSBUFFERDESC sizes/offsets
+and COM method slots used by the reviewed facade. The reviewed IDirectSound8
+vtable is an eleven-slot prefix; this test deliberately compares its method
+offsets rather than claiming it models every SDK method. The buffer vtable's
+twenty-four slots are checked in full. No DirectSound interface is instantiated,
+and no Windows runtime is claimed by successful header or native package links.
