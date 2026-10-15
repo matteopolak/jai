@@ -8,6 +8,65 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Native SDK heap-pool page-granularity fix.** The new public configurable
+  heap regression and independent pristine-C reproducer both hit the SDK's
+  active mmap-size assertion with 4 KiB spans/16 KiB pages. The defect is native
+  heap-pool byte rounding, independently reproduced without our facade. Owned
+  `rpmalloc-heaps/sdk-page-granularity.patch` rounds that mapping to configured
+  pages and updates its real span count; existing SDK reserve/unmap machinery
+  owns the excess spans. `prepare_rpmalloc.py` verifies pinned source hashes,
+  copies to a separate build directory, applies the patch and records all
+  provenance hashes. No vendor edit, public shape change, assertion removal or
+  configuration substitution is used. Both statistics profiles pass the C
+  reproducer under ASan/UBSan. Remaining risk: native reserve/unmap accounting
+  across other OS page granularities. Proper fix: audited upstream C correction,
+  repin, revalidate and remove the build patch. The original failed run remains
+  `.work/rpmalloc-sdk-page-granularity-before-fix.json`.
+
+- **Canonical heap adapter publication and unresolved metadata policies.**
+  `internal/bindings/rpmalloc-heaps` now allocates complete reviewed public
+  records separately from typed SDK handles and copies actual defined state,
+  including all native counters through atomic accessors. No public pointer
+  reaches an SDK heap call. SDK unmap notifications retire actual storage
+  associations; active operation leases delay reclamation across callbacks.
+  Bare pointers retain normal C lifetime constraints, not fabricated generation
+  safety after invalid use/storage reuse. The current consistency mechanism
+  serializes calls per native profile and republishes the full graph with linear
+  association lookup. User callbacks release/reacquire the lease, and frees
+  during paused mutations use real SDK deferred-free/statistics primitives.
+  Correctness tests include a callback waiting for four actual freeing threads.
+  Costs: graph traversal/copy and metadata allocations per discovered object;
+  independent heaps are serialized outside callbacks. Proper optimization needs
+  explicit native dirty/lifetime notifications and per-object publication.
+  Direct public control-field writeback is unsupported by the refreshed reviewed
+  contract. Inactive cache/reserve/orphan links and undefined allocation-only
+  fields use documented null/zero normalization; no public guarantee is made.
+  The latest review exposed two genuine staging defects: list heads previously
+  published null prev, and heap predicates included cache/reserve-only ranges.
+  Public regressions now require tail-valued prev and active-list ownership;
+  the adapter implements both. An actual pre-fix assertion failure is retained
+  in the checkpoint evidence. These were production fixes, not oracle changes.
+  These are independent safe view policies, not original guarantees or fake
+  statistics. All 2,027 counter values compare with actual SDK atomic probes.
+  Metadata libc OOM currently reports/aborts; graceful transactional metadata
+  exhaustion remains a real gap. Unsupported concurrent/reentrant mutation of
+  one SDK heap is diagnosed rather than corrupting its state; arbitrary SDK
+  map-callback reentrancy during pool initialization is not promised. Huge
+  requests exceeding the SDK u32 page-count representation fail before mapping.
+  Native Windows/Linux execution and other option profiles remain outstanding.
+  Precise filtered questions and the [implemented design](../native/rpmalloc-heap-adapter-design.md)
+  identify proper follow-up rather than hiding these limits.
+
+- **Private profile identity test correction and general compiler question.**
+  The initial native-handle ABI test compared an explicitly selected SDK profile
+  with an implicit default import. The current compiler assigns distinct nominal
+  types to those imports. The test now selects the actual explicit profile and
+  retains its identity assertion. An original generic `Example` module reproducer
+  is supplied under `tests/native-bindings/compiler-repros/module-default-identity`;
+  reviewed language semantics/coordinator must classify it. No compiler changes,
+  module exceptions, public type aliases or weakened identity assertions were
+  introduced. It is not counted as a passing language regression.
+
 - **Scoped native fixture registration repair.** New rpmalloc public fixtures
   were registered in the source/native lists but initially omitted from the
   scoped runtime module-owner filter. Dedicated two-CPU execution still ran

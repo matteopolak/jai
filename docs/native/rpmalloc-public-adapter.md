@@ -1,5 +1,40 @@
 # Public rpmalloc adapter progress
 
+The canonical heap and native configurable mapping milestones are committed
+as `7fedc8e` and `bc597af`. All eleven rewrite heap procedures have real typed
+SDK forwarding and separate complete public records. The public configurable
+heap program exposed a pristine SDK page-rounding defect; a hash-checked
+build-only C fix preserves the requested public profile and active native
+assertions. See the [heap design and verification commands](rpmalloc-heap-adapter-design.md).
+Eight actual Mac executions and the separate production-host scope pass;
+six public-inventory and eighteen configuration-name failures remain required.
+
+## Canonical heap implementation
+
+All eleven rewrite heap procedures now execute through the canonical C adapter
+for both supported statistics profiles. Public Heap/Span records are complete,
+separate allocations with exact reviewed layouts; private typed SDK handles
+carry native ownership. Real native counters and defined live/cache/reserve
+graphs are marshalled, ordinary current-heap allocation stays synchronized,
+and native unmap events retire associations. No equal-size public/native cast
+is used. See the [implemented design and limits](rpmalloc-heap-adapter-design.md).
+
+New public programs verify allocation/free/realloc, old bytes on failure,
+alignment, free-all, current heap, cross-profile ownership, bidirectional thread
+handoff, matching free after release, and a callback waiting for four threads
+that free on its paused heap. Private probes check 66 public layout fields,
+both statistics variants and all 2,027 real native span/size counters. Host
+ASan/UBSan covers repeated map/unmap/reuse and genuine acquisition failure.
+Native SDK/storage ABI assertions remain active and separate from public tests.
+
+The ledger now retains 23 unresolved and 57 partial rpmalloc entries. Remaining
+unresolved entries are the generic allocator procedure, two rewrite dump
+variants and twenty raw first-class heap names/views. All eighteen configuration
+public-name failures remain required, despite passing declaration checks.
+Direct metadata writeback, inactive-field policies, metadata OOM handling,
+other native options and unavailable native desktop executions remain explicit
+limits. The sections below describe previous checkpoints where superseded.
+
 ## Current supported raw/rewrite profiles
 
 The latest user steering authorizes a private raw default-zero policy because

@@ -1,5 +1,66 @@
 # Bindings worker progress
 
+Stable canonical heap implementation: `7fedc8e`; configurable native fix and
+durable verification runner: `bc597af`. Follow-up tests now exercise
+multi-element full/partial list prev/next links, current-heap replacement with
+outstanding allocations, repeated selection of the same current heap, and
+configurable heaps across four span sizes and six allocation sizes. They found
+a genuine official SDK pool-map alignment defect (4 KiB spans/16 KiB pages).
+An independent pristine-C reproducer fails at the SDK mmap assertion; an owned
+hash-checked build patch fixes whole-page pool allocation without changing
+public layouts/options or disabling assertions. Both statistics profiles pass
+that C regression under ASan/UBSan. Post-patch checkpoint-22 passes all 66 heap
+scope checks, including eight actual Mac program executions and 24 desktop
+source checks; independent SDK/native storage suites pass both CPUs. The actual
+production dependency builder succeeds, then checkpoint-23 passes all 58 heap
+scope checks against its host archives. All owned production formatting passes;
+strict scoped lint/regeneration and 65 Python tests pass. The full rpmalloc
+verifier records 72 source passes, six public-inventory failures, 132 privacy
+passes and 22 host build/run passes. All 18 configuration public-name failures
+remain, with declaration checks passing. Counts stay 23 unresolved/57 partial
+rpmalloc and 36 other unresolved declarations. Full native Windows/Linux,
+remaining option profiles, metadata exhaustion and remaining public contracts
+are required work; no full completion or integration claim is made.
+Patch-file context whitespace was subsequently removed with a zero-context
+diff; strict pinned input hashes still guard application. Actual preparation
+produces byte-identical C source (SHA-256
+`35ff487986188f2a605990f3f765c665e352b4e178e9292f3b0a56d01356fff0`).
+
+Canonical heap milestone after `2a18c3c`: all eleven rewrite heap procedures now
+have actual private SDK forwarding and complete canonical public Heap/Span
+storage, with both supported statistics profiles. Public pointers never reach
+SDK heap calls. Real counters/defined graph links are copied through C atomic
+accessors; native unmap events retire associations and active-operation leases
+protect callback lifetimes/reclamation. Current-heap allocation and thread
+finalization use the same boundary. Free during a callback uses SDK deferred-free
+primitives/counters; a real callback joins four freeing threads without deadlock.
+Further workers allocate on the explicit heap and return allocations after
+thread teardown. Mapping failure preserves old allocation bytes; release keeps
+allocations valid for matching family free. Native-header u32 page-count
+overflow is rejected before mapping. Public records/layouts/identity remain exact.
+The latest mailbox review settles allocator-owned field edits/lifetimes and
+active-list semantics. New public regressions exposed and corrected head-prev
+tail marshalling and cache/reserve exclusion from heap ownership queries.
+
+New evidence: three heap programs (two public, one private ABI/counter) pass all
+18 desktop source checks and execute on both Mac CPUs. The private program
+checks all 66 public layout fields in both statistics variants and all 2,027
+native heap counters against independently compiled SDK atomic getters. Both
+statistics C adapter profiles pass host ASan/UBSan churn/retirement/acquisition-
+failure tests; canonical C headers compile for all six targets in both profiles.
+Scoped strict lint, formatting/regeneration and 65 Python regressions pass.
+Existing native SDK/storage ABI suites remain active and pass both CPUs.
+Full inventory/configuration checks still fail at genuine remaining APIs.
+
+Ledger: rpmalloc 23 unresolved + 57 partial + 31 declarations; other modules
+retain 36 unresolved. Twenty raw first-class heap entries remain conditional
+source-profile work; generic allocator and rewrite dump semantics need review.
+No full compatibility/integration completion is claimed. Unsupported direct
+field writeback and unspecified inactive fields now follow explicit reviewed
+contracts. Metadata OOM fail-fast, complete-graph serialization
+cost and native SDK callback reentrancy limits are reported in deviations and
+precise questions. Native Windows/Linux execution remains outstanding.
+
 Stable implementation commit: `5c6aa17` (raw facade, isolated statistics
 profiles and refreshed callback contracts). Follow-up public profile tests now
 also verify same-profile raw import rejection preserves an active rewrite

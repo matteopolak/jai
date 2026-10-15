@@ -29,8 +29,12 @@ PRIVATE_UNITS = {'fsevents-context':'macOS/sdk-fsevents-context-unit.jai',
                  'dxc-wide':'dxc_compiler/sdk-wide-unit.jai',
                  'dxc-compile-unit':'dxc_compiler/sdk-compile-unit.jai',
                  'rpmalloc-native-sdk':'rpmalloc/sdk-native-unit.jai',
-                 'rpmalloc-native-storage':'rpmalloc/sdk-storage-unit.jai'}
+                 'rpmalloc-native-storage':'rpmalloc/sdk-storage-unit.jai',
+                 'rpmalloc-heap-marshalling':'rpmalloc/sdk-heap-marshalling-unit.jai'}
 PRIVATE_UNIT_DEPENDENCIES = {
+    'rpmalloc-heap-marshalling': {
+        'tests/native-bindings/generated/rpmalloc-heap-facade-layout.jai': 'rpmalloc/generated/rpmalloc-heap-facade-layout.jai',
+    },
     'rpmalloc-native-sdk': {
         'tests/native-bindings/generated/rpmalloc-sdk-layout.jai': 'rpmalloc/generated/rpmalloc-sdk-layout.jai',
     },
@@ -250,6 +254,9 @@ def verify(cleanup):
         ('rpmalloc', 'rpmalloc-public-raw.jai', TARGET_CONFIGS),
         ('rpmalloc', 'rpmalloc-public-raw-callbacks.jai', TARGET_CONFIGS),
         ('rpmalloc', 'rpmalloc-public-profiles.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-heaps.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-heap-lifecycle.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-heap-marshalling.jai', TARGET_CONFIGS),
         ('d3d11', 'forward-overlay.jai', TARGET_CONFIGS),
         ('d3d12', 'd3d-interface-identity.jai', [('windows','x64'),('windows','arm64')]),
         ('SDL', 'sdl-layout.jai', TARGET_CONFIGS),
@@ -308,7 +315,8 @@ def verify(cleanup):
                             ('rpmalloc','invoke_unmap'), ('rpmalloc','invoke_failure'),
                             ('rpmalloc','invoke_error'), ('rpmalloc','Checked'),
                             ('rpmalloc','Boundary_Size'), ('rpmalloc','boundary_initialize'),
-                            ('rpmalloc','boundary_config'), ('rpmalloc','boundary_rpmalloc')]:
+                            ('rpmalloc','boundary_config'), ('rpmalloc','boundary_rpmalloc'),
+                            ('rpmalloc','HeapBridge')]:
         if args.module and module.split('/')[0] not in args.module and module not in args.module:
             continue
         for os_name, cpu in TARGET_CONFIGS:
@@ -360,6 +368,9 @@ def verify(cleanup):
         runtime_tests.append('rpmalloc-public-raw')
         runtime_tests.append('rpmalloc-public-raw-callbacks')
         runtime_tests.append('rpmalloc-public-profiles')
+        runtime_tests.append('rpmalloc-public-heaps')
+        runtime_tests.append('rpmalloc-public-heap-lifecycle')
+        runtime_tests.append('rpmalloc-heap-marshalling')
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
             runtime_tests.append('x11-message-box')
@@ -387,7 +398,7 @@ def verify(cleanup):
                 relevant = ['ImGui']
             if name == 'posix-stat':
                 relevant = ['POSIX']
-            if name in ('rpmalloc-native-sdk','rpmalloc-native-storage','rpmalloc-public-allocation','rpmalloc-public-callbacks','rpmalloc-public-configurable','rpmalloc-public-raw','rpmalloc-public-raw-callbacks','rpmalloc-public-profiles'):
+            if name in ('rpmalloc-native-sdk','rpmalloc-native-storage','rpmalloc-public-allocation','rpmalloc-public-callbacks','rpmalloc-public-configurable','rpmalloc-public-raw','rpmalloc-public-raw-callbacks','rpmalloc-public-profiles','rpmalloc-public-heaps','rpmalloc-public-heap-lifecycle'):
                 relevant = ['rpmalloc']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']
@@ -427,6 +438,12 @@ def verify(cleanup):
                 scope = 'public_raw_allocator_callbacks_lifetime_failure'
             if name == 'rpmalloc-public-profiles':
                 scope = 'public_allocator_statistics_profiles_and_domain_isolation'
+            if name == 'rpmalloc-public-heaps':
+                scope = 'public_canonical_heap_span_marshalling_and_ownership'
+            if name == 'rpmalloc-public-heap-lifecycle':
+                scope = 'public_canonical_heap_callbacks_cross_thread_free_and_failure'
+            if name == 'rpmalloc-heap-marshalling':
+                scope = 'private_public_record_mirror_abi_and_independent_native_counters'
             result.update(name=name, phase='build',scope=scope,status='passed' if result['exit']==0 else 'failed')
             if compiled_source != source:
                 result['private_unit_placement'] = str(compiled_source)

@@ -15,6 +15,7 @@ import tarfile
 import tempfile
 import urllib.request
 from config import RPMALLOC_SDK_BUILD_OPTIONS
+from prepare_rpmalloc import prepare as prepare_rpmalloc
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -112,6 +113,8 @@ def main():
     for name in sorted(dependencies):
         prepare_source(name, manifest[name], vendor)
     args.output.mkdir(parents=True, exist_ok=True)
+    rpmalloc_source = (prepare_rpmalloc(vendor/'rpmalloc', args.output/'rpmalloc-source')
+                       if 'rpmalloc' in dependencies else None)
     if platform.system() == 'Darwin':
         apple_object = args.output/'apple_abi_probe.o'
         run(['cc','-Wall','-Wextra','-Werror','-c',ROOT/'tests/native-bindings/apple_abi_probe.m',
@@ -132,8 +135,8 @@ def main():
         'sdl_abi_probe': [ROOT/'tests/native-bindings/sdl_abi_probe.c'],
         'sdl_runtime_abi_probe': [ROOT/'tests/native-bindings/sdl_runtime_abi_probe.c'],
         'posix_abi_probe': [ROOT/'tests/native-bindings/posix_abi_probe.c'],
-        'binding_rpmalloc_sdk': [vendor/'rpmalloc/rpmalloc/rpmalloc.c'],
-        'binding_rpmalloc_sdk_nostats': [vendor/'rpmalloc/rpmalloc/rpmalloc.c'],
+        'binding_rpmalloc_sdk': [ROOT/'stdlib/internal/bindings/rpmalloc-heaps/bridge.c'],
+        'binding_rpmalloc_sdk_nostats': [ROOT/'stdlib/internal/bindings/rpmalloc-heaps/bridge.c'],
         'binding_rpmalloc_callbacks': [ROOT/'stdlib/internal/bindings/rpmalloc-callbacks/bridge.c'],
         'binding_rpmalloc_callbacks_nostats': [ROOT/'stdlib/internal/bindings/rpmalloc-callbacks/bridge.c'],
         'rpmalloc_sdk_probe': [ROOT/'tests/native-bindings/generated/rpmalloc_sdk_probe.c'],
@@ -166,7 +169,7 @@ def main():
             if name == 'imgui_abi_probe':
                 includes = ['-isystem',vendor/manifest['imgui']['archive']['root']]
             if name.startswith('binding_rpmalloc_') or name in ('rpmalloc_sdk_probe', 'rpmalloc_callback_probe', 'rpmalloc_storage_probe'):
-                includes = ['-isystem', vendor/'rpmalloc/rpmalloc']
+                includes = ['-isystem', rpmalloc_source]
                 options = dict(RPMALLOC_SDK_BUILD_OPTIONS)
                 if name.endswith('_nostats'):
                     options['ENABLE_STATISTICS'] = 0
