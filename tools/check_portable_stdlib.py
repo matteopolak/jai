@@ -107,12 +107,24 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     cases = [(p, EXPECTED.get(p.stem, "ok\n"))
              for p in sorted((ROOT / "tests/portable-stdlib").glob("*.jai"))
-             if p.stem not in {"bootstrap", "process-parent"} and (p.stem != "windows-foundations" or sys.platform == "win32")]
+             if p.stem not in {"bootstrap", "process-parent", "float-power-sweep"} and (p.stem != "windows-foundations" or sys.platform == "win32")]
     if sys.platform != "win32":
         print("Windows filesystem runtime fixture requires a Windows host; retained for Windows target checking", flush=True)
     cases += [(ROOT / f"tests/stdlib-contract/{name}/main.jai", "ok\n") for name in CONTRACTS]
     run([str(compiler), "-check", str(ROOT / "tests/portable-stdlib/bootstrap.jai")], env)
     failures = []
+    # This fixture emits 2300 numerical rows, not the ordinary "ok" protocol.
+    # Its independent rational oracle remains mandatory, including interpreter execution.
+    sweep = [sys.executable, str(ROOT / "tools/check_float_power_sweep.py"),
+             "--jaic", str(compiler), "--stdlib", str(root)]
+    sweep += ["--interp", "--wasm"] if args.native else ["--interp-only"]
+    try:
+        subprocess.run(sweep, cwd=ROOT, env=env, check=True)
+    except (subprocess.CalledProcessError, OSError) as error:
+        if not args.keep_going:
+            raise
+        failures.append("float-power-sweep exact-rational audit")
+        print("FAILED specialized float-power audit:", error, flush=True)
     for index, (source, expected) in enumerate(cases):
         try:
             run([str(compiler), "-interp", str(source), "--"], env, expected,

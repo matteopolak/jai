@@ -1,8 +1,28 @@
 # Independent integration deviations audit
 
-## Production strict-lint field type correction
-
 ## Native linking and test-oracle audit
+
+- Production native dependency `xxhash070` was missing from
+  `tools/native-libs.json`, despite the reviewed xxHash facade needing its 0.7.0
+  state ABI. The default source-build manifest now includes the same hash-pinned
+  official C inputs and license as the binding verifier. Host static/shared and
+  Windows x64 MinGW static builds pass; the original allocation-memory interpreter
+  fixture now passes. This does not establish native Windows execution or complete
+  packaging of every other binding dependency.
+- `tools/format_platform_io.py` invokes actual jailint with warnings denied on
+  all positive owned files across four supported profiles and requires manifest
+  coverage. Its one deliberately invalid input,
+  `tests/platform-io/negative/windows-runtime-configuration-conflict.jai`, is
+  separately required to exit 1 with the exact compiler rejection and no ordinary
+  lint findings on both Windows CPUs. Its body cannot compile; no semantic-body
+  coverage is claimed. All 42 positive owned files are covered. This narrow test
+  classification preserves both the strict compiler diagnostic and positive lint
+  gate; no rule or application privacy policy is disabled.
+- The 2300-row `float-power-sweep.jai` is an auxiliary numerical oracle program,
+  not an `ok`-output fixture. The portable runner now routes it to the mandatory
+  exact-rational validator with a 300-second bound, retaining interpreter execution
+  and native/WASI O0/O2 when selected. All five modes actually pass. Its former
+  45-second generic-output failure is retained; no numeric assertion was weakened.
 
 - `tools/native_bindings/config.py` incorrectly mapped the Windows private `gl`
   and `gdi` library tokens to nonexistent DLL/import-library names. The generator
@@ -31,6 +51,8 @@
   artifacts, then removed from the source tree because the active platform owner
   is implementing the interpreter hook fix. It is not production proof; zero-arg
   Windows startup remains a coordinator-reported failure pending that checkpoint.
+
+## Production strict-lint field type correction
 
 The merged producer IDE layout ordering fix was insufficient for
 `tests/platform-io/layout-contract.jai`: actual jailint and a new production-library

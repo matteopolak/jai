@@ -43,6 +43,8 @@ def lint_owned(binary, stdlib):
         selected = []
         for original, path in staged.items():
             relative = original.relative_to(ROOT).as_posix()
+            if relative == "tests/platform-io/negative/windows-runtime-configuration-conflict.jai":
+                continue  # Verified as a mandatory rejected program below, never a positive body pass.
             # OS-specific source roots are checked on their actual supported
             # targets. #load files still receive context from their real module.
             if os_target != "windows" and "windows" in relative:
@@ -71,10 +73,22 @@ def lint_owned(binary, stdlib):
             return result.returncode
         checked.update(Path(path).resolve() for path in manifest.read_text().splitlines() if path)
         print(f"passed strict lint {os_target}/{cpu}", flush=True)
-    missing = [str(original.relative_to(ROOT)) for original, path in staged.items() if path not in checked]
+    negative = ROOT / "tests/platform-io/negative/windows-runtime-configuration-conflict.jai"
+    for cpu in ["x64", "arm64"]:
+        result = subprocess.run([str(binary), "-D", "warnings", "--os", "windows", "--cpu", cpu,
+                                 "--config", str(ROOT / "jailint.toml"), str(negative)],
+                                cwd=ROOT, env=env, text=True, capture_output=True)
+        (output / f"required-runtime-rejection-{cpu}.log").write_text(result.stdout + result.stderr)
+        if (result.returncode != 1 or result.stdout
+                or "conflicts with the configured runtime instance" not in result.stderr
+                or result.stderr.count("did not compile completely") != 1):
+            raise RuntimeError(f"required negative lint/compile result changed: {result}")
+    missing = [str(original.relative_to(ROOT)) for original, path in staged.items()
+               if path not in checked and original != negative]
     if missing:
         raise RuntimeError("owned files never checked: " + ", ".join(missing))
-    print(f"passed strict lint coverage of {len(files)} owned Jai files", flush=True)
+    print(f"passed strict lint coverage of {len(files) - 1} positive owned Jai files; "
+          "one intentionally invalid runtime fixture rejected on both Windows CPUs (no body-coverage claim)", flush=True)
     return 0
 
 
