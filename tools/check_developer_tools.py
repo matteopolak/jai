@@ -18,6 +18,7 @@ import check_developer_dwarf_frames
 import check_developer_eh_frames
 import check_developer_sdk_configuration
 import check_developer_dwarf_types
+import check_developer_codeview_strings
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
@@ -103,6 +104,7 @@ def main():
     check_developer_dwarf_frames.main()
     check_developer_eh_frames.main()
     check_developer_dwarf_types.main()
+    check_developer_codeview_strings.main()
     prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
     framework = ROOT / "target/developer-tools-frameworks/OriginalNative.framework"
     (framework / "Modules").mkdir(parents=True, exist_ok=True)
@@ -193,6 +195,7 @@ def main():
     cases.extend(["iprof-history-values", "iprof-stack-depth"])
     cases.append("dwarf-type-lookup")
     cases.extend(["bindings-cpp-workflow", "bindings-cpp-workflow-roundtrip"])
+    cases.append("codeview-strings")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -293,7 +296,8 @@ def main():
              ROOT / "target/developer-tools-dwarf-line-oracle.jai",
              ROOT / "target/developer-tools-dwarf-frame-oracle.jai",
              ROOT / "target/developer-tools-eh-frame-oracle.jai",
-             ROOT / "target/developer-tools-dwarf-type-oracle.jai"]
+             ROOT / "target/developer-tools-dwarf-type-oracle.jai",
+             ROOT / "target/developer-tools-codeview-string-oracle.jai"]
     format_paths = [*paths, *sorted((ROOT / "tests/developer-tools/rejections").glob("*.jai")),
                     *sorted((ROOT / "tests/developer-tools/compiler-requests").glob("*.jai"))]
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *format_paths])
@@ -309,7 +313,7 @@ def main():
     for cpu in ["x64", "arm64"]:
         run([JAIC, "tests/developer-tools/debug-windows-contract.jai", "-check", "-os", "windows", "-cpu", cpu])
         for os_name in ["linux", "windows"]:
-            for case in ["msf-wire", "msf-public", "debug-int-set", "dwarf-cfa", "dwarf-line-query", "dwarf-type-lookup", "dwarf-fde", "bindings-equivalence", "iprof-history-values", "iprof-stack-depth", "bindings-clang-time", "bindings-clang-tokens", "bindings-clang-build-system", "bindings-clang-source", "bindings-clang-cpp"]:
+            for case in ["msf-wire", "msf-public", "debug-int-set", "dwarf-cfa", "dwarf-line-query", "dwarf-type-lookup", "dwarf-fde", "codeview-strings", "bindings-equivalence", "iprof-history-values", "iprof-stack-depth", "bindings-clang-time", "bindings-clang-tokens", "bindings-clang-build-system", "bindings-clang-source", "bindings-clang-cpp"]:
                 run([JAIC, f"tests/developer-tools/{case}.jai", "-check", "-os", os_name, "-cpu", cpu])
     for case, reason in [("check-array", "fixed array used as a pointer in assignment"),
                          ("check-small-driver", "small integer addition requires an explicit intermediate integer cast")]:

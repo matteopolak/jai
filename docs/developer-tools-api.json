@@ -24194,14 +24194,14 @@
         "declaration": "Codeview_Debug_Info :: struct",
         "section": "Public declaration inventory",
         "spec_line": 9,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "get_string_from_table",
         "declaration": "get_string_from_table :: (info: Codeview_Debug_Info, id: Codeview_String_Table_Id) -> string, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 10,
-        "implementation": "pending"
+        "implementation": "bounded CodeView C13 string/checksum-ID lookup; original Windows x64/arm64 C O0/O2 SDK filename/file-ID/source MD5 oracles, borrowed pointer identity and malformed/duplicate failures; ownership precision question12"
       },
       {
         "name": "parse_codeview_symbols",
@@ -24215,14 +24215,14 @@
         "declaration": "get_filename_for_file_id :: (info: Codeview_Debug_Info, id: Codeview_File_Checksum_Id) -> string, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 12,
-        "implementation": "pending"
+        "implementation": "bounded CodeView C13 string/checksum-ID lookup; original Windows x64/arm64 C O0/O2 SDK filename/file-ID/source MD5 oracles, borrowed pointer identity and malformed/duplicate failures; ownership precision question12"
       },
       {
         "name": "Codeview_Symbol",
         "declaration": "Codeview_Symbol :: struct",
         "section": "Public declaration inventory",
         "spec_line": 13,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "Codeview_Symbol_Compile",
@@ -24418,14 +24418,14 @@
         "declaration": "Type_Id :: #type,distinct u32",
         "section": "Public declaration inventory",
         "spec_line": 41,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "Item_Id",
         "declaration": "Item_Id :: #type,isa Type_Id",
         "section": "Public declaration inventory",
         "spec_line": 42,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "Codeview_Parser_State",
@@ -24453,7 +24453,7 @@
         "declaration": "Codeview_Type :: struct",
         "section": "Public declaration inventory",
         "spec_line": 46,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "Codeview_Builtin",
@@ -24607,21 +24607,21 @@
         "declaration": "Codeview_Line_Info_Sequence :: struct",
         "section": "Public declaration inventory",
         "spec_line": 68,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "Codeview_Lines_File_Block",
         "declaration": "Codeview_Lines_File_Block :: struct",
         "section": "Public declaration inventory",
         "spec_line": 69,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "Codeview_File_Checksum_Id",
         "declaration": "Codeview_File_Checksum_Id :: #type,isa u32",
         "section": "Public declaration inventory",
         "spec_line": 70,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "Codeview_Line_Info",
@@ -24635,21 +24635,21 @@
         "declaration": "Codeview_Column_Type :: u16",
         "section": "Public declaration inventory",
         "spec_line": 72,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "Codeview_String_Table_Id",
         "declaration": "Codeview_String_Table_Id :: #type,isa u32",
         "section": "Public declaration inventory",
         "spec_line": 73,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "Codeview_File_Checksum",
         "declaration": "Codeview_File_Checksum :: struct",
         "section": "Public declaration inventory",
         "spec_line": 74,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "get_line_number",
@@ -24719,7 +24719,7 @@
         "declaration": "Codeview_Inlinee_Line_Info :: struct",
         "section": "Public declaration inventory",
         "spec_line": 84,
-        "implementation": "pending"
+        "implementation": "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
       },
       {
         "name": "decode_inline_site_line_info",
@@ -24768,14 +24768,14 @@
         "declaration": "Codeview_Symbol_Type :: enum u16",
         "section": "Public declaration inventory",
         "spec_line": 91,
-        "implementation": "pending"
+        "implementation": "reviewed u16 enum/data subset; four dependent member aliases lack reviewed RECTYPE_MAX/TYPE_LAST/ID_LAST values (question11); no guessed values or added dependency exports"
       },
       {
         "name": "Codeview_Leaf_Type",
         "declaration": "Codeview_Leaf_Type :: enum u16",
         "section": "Public declaration inventory",
         "spec_line": 92,
-        "implementation": "pending"
+        "implementation": "reviewed u16 enum/data subset; four dependent member aliases lack reviewed RECTYPE_MAX/TYPE_LAST/ID_LAST values (question11); no guessed values or added dependency exports"
       },
       {
         "name": "Codeview_Access",
@@ -33144,6 +33144,32 @@
         "reviewed_text": "- `V80 :: 20040203`",
         "section": "DWARF frame parser behavior",
         "spec_line": 1784
+      }
+    ],
+    "pending_public_member_dependencies": [
+      {
+        "enum": "Codeview_Leaf_Type",
+        "member": "ID_MAX",
+        "expression": "ID_LAST - 1",
+        "missing_reviewed_dependency": "ID_LAST"
+      },
+      {
+        "enum": "Codeview_Leaf_Type",
+        "member": "TYPE_MAX",
+        "expression": "TYPE_LAST - 1",
+        "missing_reviewed_dependency": "TYPE_LAST"
+      },
+      {
+        "enum": "Codeview_Symbol_Type",
+        "member": "RECTYPE_LAST",
+        "expression": "RECTYPE_MAX- 1",
+        "missing_reviewed_dependency": "RECTYPE_MAX"
+      },
+      {
+        "enum": "Codeview_Symbol_Type",
+        "member": "RECTYPE_PAD",
+        "expression": "RECTYPE_MAX+ 0x100",
+        "missing_reviewed_dependency": "RECTYPE_MAX"
       }
     ]
   },

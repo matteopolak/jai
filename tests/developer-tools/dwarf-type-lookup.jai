@@ -23,6 +23,11 @@ capture :: (_text: string, _data: *void, info: Log_Info) {
 
 main :: () {
     unit: D.Compilation_Unit;
+    initial_type: D.Debug_Type;
+    initial_declaration: D.Declaration;
+
+    assert(initial_type.tag == .NULL && initial_type.offset == 0 && initial_type.size == 0);
+    assert(cast(u16) unit.language == 0 && cast(s64) initial_declaration.kind == 0);
 
     assert(D.get_type(unit, 0) == null);
     array_add(*unit.types, D.Debug_Type.{ offset = 17, tag = .BASE_TYPE, name = "original integer", size = 4, base_type = .SIGNED });

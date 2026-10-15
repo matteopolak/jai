@@ -1,0 +1,29 @@
+{
+  "scope": "precise reviewed constant dependencies; no guessed values or additional exports",
+  "pending_aliases": [
+    {
+      "enum": "Codeview_Leaf_Type",
+      "member": "ID_MAX",
+      "expression": "ID_LAST - 1",
+      "missing_reviewed_dependency": "ID_LAST"
+    },
+    {
+      "enum": "Codeview_Leaf_Type",
+      "member": "TYPE_MAX",
+      "expression": "TYPE_LAST - 1",
+      "missing_reviewed_dependency": "TYPE_LAST"
+    },
+    {
+      "enum": "Codeview_Symbol_Type",
+      "member": "RECTYPE_LAST",
+      "expression": "RECTYPE_MAX- 1",
+      "missing_reviewed_dependency": "RECTYPE_MAX"
+    },
+    {
+      "enum": "Codeview_Symbol_Type",
+      "member": "RECTYPE_PAD",
+      "expression": "RECTYPE_MAX+ 0x100",
+      "missing_reviewed_dependency": "RECTYPE_MAX"
+    }
+  ]
+}

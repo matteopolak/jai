@@ -61,6 +61,11 @@ def remaining_matrix(inventory):
             output += ["| Native function | Evidence / next check |", "| --- | --- |"]
             output += [f"| `{name}` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |" for name in sorted(source_only)]
             output.append("")
+        if information.get("pending_public_member_dependencies"):
+            output += ["| Pending public member | Reviewed expression | Missing reviewed dependency |", "| --- | --- | --- |"]
+            for member in information["pending_public_member_dependencies"]:
+                output.append(f"| `{member['enum']}.{member['member']}` | `{member['expression']}` | `{member['missing_reviewed_dependency']}`; Debug_Info question11 |")
+            output.append("")
     (ROOT / "docs/status/developer-tools-remaining.md").write_text("\n".join(output).rstrip() + "\n")
 
 
@@ -175,6 +180,12 @@ def main():
                 item["implementation"] = "supported subset; actual compiler-message rewrite and edit safety fixture"
         if module == "Debug_Info":
             for item in declarations:
+                if item["name"] in {"Codeview_Debug_Info", "Codeview_Type", "Codeview_Symbol", "Codeview_File_Checksum", "Codeview_File_Checksum_Id", "Codeview_String_Table_Id", "Codeview_Column_Type", "Codeview_Lines_File_Block", "Codeview_Line_Info_Sequence", "Codeview_Inlinee_Line_Info", "Type_Id", "Item_Id"}:
+                    item["implementation"] = "reviewed canonical CodeView string/checksum/line context model; actual C13 SDK filename/file-ID/MD5 oracles and borrowed views; symbol/type byte parsing pending"
+                if item["name"] in {"Codeview_Leaf_Type", "Codeview_Symbol_Type"}:
+                    item["implementation"] = "reviewed u16 enum/data subset; four dependent member aliases lack reviewed RECTYPE_MAX/TYPE_LAST/ID_LAST values (question11); no guessed values or added dependency exports"
+                if item["name"] == "get_string_from_table" or (item["name"] == "get_filename_for_file_id" and "Codeview_Debug_Info" in item["declaration"]):
+                    item["implementation"] = "bounded CodeView C13 string/checksum-ID lookup; original Windows x64/arm64 C O0/O2 SDK filename/file-ID/source MD5 oracles, borrowed pointer identity and malformed/duplicate failures; ownership precision question12"
                 if item["name"] in {"Debug_Info", "Compilation_Unit", "Debug_Type", "Subprogram", "Declaration", "Lexical_Block", "Dwarf_Language", "Dwarf_Tag", "Dwarf_Base_Type"}:
                     item["implementation"] = "reviewed canonical DWARF model/constants; canonical Bucket_Array dependencies and declaration kinds verified; byte parser remains pending"
                 if item["name"] == "get_type" and "cu: Compilation_Unit" in item["declaration"]:
@@ -227,6 +238,10 @@ def main():
         inventory[module] = {"spec": str(spec.relative_to(ROOT)),
                              "spec_sha256": hashlib.sha256(contents.encode()).hexdigest(),
                              "declarations": declarations, "reviewed_members": members}
+        if module == "Debug_Info":
+            pending_path = ROOT / "docs/native/developer-tools-codeview-model-pending.json"
+            if pending_path.exists():
+                inventory[module]["pending_public_member_dependencies"] = json.loads(pending_path.read_text())["pending_aliases"]
     destination = ROOT / "docs/developer-tools-api.json"
     destination.write_text(json.dumps(inventory, indent=2) + "\n")
     remaining_matrix(inventory)

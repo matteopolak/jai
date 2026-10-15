@@ -451,7 +451,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Debug_Info
 
-30 function names have pending declarations; 0 native function names still lack invocation fixtures.
+29 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
@@ -465,9 +465,8 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `ensure_room` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `free_page` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `get_filename` | 1 | 1 | Debug_Info question8: file/directory indexing and path text |
-| `get_filename_for_file_id` | 2 | 2 | Debug_Info question8 for DWARF overload; CodeView implementation pending |
+| `get_filename_for_file_id` | 2 | 1 | Debug_Info question8 for DWARF overload; CodeView implementation pending |
 | `get_id_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `get_string_from_table` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_type` | 2 | 1 | CodeView overloads pending; canonical DWARF Compilation_Unit offset lookup is implemented/tested |
 | `init` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_fpm_page_number` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
@@ -485,6 +484,13 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `parse_tpi_stream` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `set_all` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `verify_integrity` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
+
+| Pending public member | Reviewed expression | Missing reviewed dependency |
+| --- | --- | --- |
+| `Codeview_Leaf_Type.ID_MAX` | `ID_LAST - 1` | `ID_LAST`; Debug_Info question11 |
+| `Codeview_Leaf_Type.TYPE_MAX` | `TYPE_LAST - 1` | `TYPE_LAST`; Debug_Info question11 |
+| `Codeview_Symbol_Type.RECTYPE_LAST` | `RECTYPE_MAX- 1` | `RECTYPE_MAX`; Debug_Info question11 |
+| `Codeview_Symbol_Type.RECTYPE_PAD` | `RECTYPE_MAX+ 0x100` | `RECTYPE_MAX`; Debug_Info question11 |
 
 ## Print_Vars
 
