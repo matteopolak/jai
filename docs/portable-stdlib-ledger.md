@@ -67,7 +67,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [linux](specs/stdlib/modules/linux.md) | Reserved for bindings worker; not implemented or modified here |
 | [lz4](specs/stdlib/modules/lz4.md) | Reserved for bindings worker; not implemented or modified here |
 | [machine-x64](specs/stdlib/modules/machine-x64.md) | Owned portable scope; not implemented |
-| [macos-bundler](specs/stdlib/modules/macos-bundler.md) | Owned portable scope; not implemented |
+| [macos-bundler](specs/stdlib/modules/macos-bundler.md) | All reviewed procedures implemented for macOS bundle/icon operations and portable XML scalar helpers. Real copied executable/resources/ten-size ICNS round-trip and native plist validation pass both modes. Float output requires NEW formatting foundation; detailed copy/name/Any policies await review |
 | [macos](specs/stdlib/modules/macos.md) | Reserved for bindings worker; not implemented or modified here |
 | [mail](specs/stdlib/modules/mail.md) | SMTP/MIME transport implemented through new Curl bindings; text/HTML, envelope/header recipients, binary attachments, explicit fixture auth, rejection and required-TLS failure tested against loopback in interpreter/native. Scramble, exact serialization and positive encrypted delivery unresolved/unverified |
 | [math](specs/stdlib/modules/math.md) | Reserved for numerics worker; not implemented or modified here |

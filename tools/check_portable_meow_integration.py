@@ -23,7 +23,7 @@ else:
     raise RuntimeError("this focused legacy native-x64 check needs macOS x64 execution or Linux x64")
 shutil.copytree(baseline, target, dirs_exist_ok=True)
 for path in ["Basic", "String", "File_Utilities", "internal/basic", "internal/string",
-             "internal/files", "internal/basic-interface", "internal/native-path"]:
+             "internal/files", "internal/basic-interface", "internal/basic-context", "internal/native-path"]:
     assert (source / path).is_dir(), path
     shutil.copytree(source / path, target / path, dirs_exist_ok=True)
 env = dict(os.environ, JAIC_STDLIB=str(target))

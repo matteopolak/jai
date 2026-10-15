@@ -7,6 +7,7 @@ Unimplemented module fixtures remain unchanged in tests/stdlib-contract.
 import argparse
 import os
 from pathlib import Path
+import plistlib
 import shutil
 import signal
 import subprocess
@@ -14,11 +15,22 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def valid_bundle_plist(output, require_reals=False):
+    expected = {"a<&\"'": "value<&\"'\r\né", "true": True, "false": False,
+                "negative": -9223372036854775808, "unsigned": 18446744073709551615}
+    if require_reals:
+        expected.update({"real": 0.125, "large-real": 1.25e100})
+    return plistlib.loads(output.encode("utf-8")) == expected
+
+
 CONTRACTS = [
     "basic", "string", "memory", "pcg", "codec", "bit-array", "reflection",
     "unicode", "pool", "adpcm", "bucket-array", "file-utils", "socket", "thread", "process", "command-line",
 ]
 EXPECTED = {
+    "bundle-plist": valid_bundle_plist,
     "print-color": "\x1b[1;31mcolor 42\x1b[0m\x1b[4;32mscope\x1b[0mok\n",
     "runtime": "runtime -9223372036854775808 ff\n",
     "foundations": "-42 true text 55\n",
