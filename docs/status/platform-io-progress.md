@@ -2,6 +2,9 @@
 
 ## Private ARM64 crash backend checkpoint
 
+Implementation checkpoint: `7dad176`; argv checkpoints: `acda8e2`, `b38bb03`.
+No peer checkout, Extensions, coordinator refresh or publication was modified.
+
 Coordinator direction in windows-arm64-backtrace-decision.md resolves the review
 request without changing ON/AUTO or inventing option provenance. Runtime startup
 now selects a private ARM64 SDK exception/unwind backend; direct public x64
@@ -27,6 +30,13 @@ unwritten-workspace warning is required only for metaprogram source checks; its
 initial runner mismatch is preserved in platform-io-arm64-source-warning-red.log.
 Actual Windows execution of the newer argv patch and ARM64 backend remains for
 coordinator CI. cc07c00's real positive Platform subset is distinct evidence.
+Coordinator native invocation on each Windows CPU:
+`python tools/check_platform_io.py --jaic <source-built-jaic> --stdlib
+<integrated-local-stdlib> --native --cross-check --windows-process --windows-crash`.
+The DLL builder selects the native architecture. Apply the minimal argv compiler
+patch to the current independent compiler producer; do not replace that producer
+with the local tool staging snapshot. Renderer GL/GDI library selection and the
+reviewed missing Basic exports remain bindings/window/foundations integration work.
 
 ## cc07c00 actual native feedback and startup follow-up
 
