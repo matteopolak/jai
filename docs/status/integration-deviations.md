@@ -717,3 +717,16 @@ each failed target and missing coverage as final failures while continuing other
 targets and behavior checks. An independently executed behavior/cross run of
 unchanged production code also preserves both positive failures. Neither run is
 called a full strict-lint pass.
+
+## Native check safety and private runtime transport
+
+Avoidable guard suppression is removed: LLVM no longer gates function null
+checks on the presence of an optional public export. A checked file-private
+compiler/runtime hook supplies genuine reason/operand/location diagnostics;
+ordinary exports and private imports remain strict. Runtime-disabled guards
+explicitly trap. Missing/malformed hook failures now propagate; no silently
+ignored lookup/body error is accepted. Full rationale/evidence and concurrent
+output-fragment tradeoff: ../compiler/private-native-checks.md.
+Existing native diagnostic/pointer-invalidation/arithmetic suites and new
+runtime-disabled O0/O2 regression pass; strict scoped Jai lint and workspace
+clippy pass. Broad full suite is still running, no production-wide green claim.

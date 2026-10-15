@@ -535,3 +535,13 @@ and seven source profiles run separately; scalarFNV/division remain genuine
 required failures. New general IDE import-recovery/cache fixes and exact browser
 source test pass focused27+1tests in secondary; full regression review next.
 Publication held; nativeWindows/corpus/Focus coordinator-only.
+
+Integration safety checkpoint: private native reporting hook and unconditional
+configured null guards implemented independently. Six native failure categories,
+assembly division/nonfatal cast continuation, stale-null-after-store checks,
+all arithmetic OFF/NONFATAL/FATAL cases, and runtime-disabled O0/O2 checks pass.
+Hook remains private with an exact negative import diagnostic; strict owned Jai
+lint and workspace clippy pass. Full compiler/LSP suite is running against the
+immutable implementation. New safe coordinator snapshots are now available and
+will be audited/merged after this gate; previous missing foundation APIs are
+reported implemented upstream, not yet counted as integrated.
