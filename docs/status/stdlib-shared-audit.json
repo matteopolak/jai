@@ -1,6 +1,6 @@
 {
   "worker": "portable-stdlib",
-  "updated_utc": "2026-10-15T23:07:37.574252+00:00",
+  "updated_utc": "2026-10-15T23:43:51.505118+00:00",
   "shared_head_at_report": "6295584c42cf004999267d28835dfa8e1b00e95f",
   "checkpoint_adoption": "Production adoption observed; facade differs and transition tool/reproducer reconciliation requested via inbox. No cherry-pick/index changes by this owner.",
   "historical_checkpoint": "feae909e201564e69d7218e324dd9c6bed88df85",
@@ -8055,8 +8055,8 @@
       "name": "Walk_Table",
       "declaration": "Walk_Table :: (code: Code) #expand",
       "condition": "",
-      "source_status": "missing_body_contract_question",
-      "remaining_gap": "Code-only macro has no reviewed ambient binding/yield contract; declaration/body absent.",
+      "source_status": "implemented_compiler_dependency",
+      "remaining_gap": "Reviewed ambient contract now resolved and body implemented. General #expand backtick named-while condition value export fails; independent macro-while-condition-value-binding.jai reproduces. Ordinary value binding and macro loop label control compile. Actual table-walk fixture remains red, not complete.",
       "fixtures": [
         "tests/portable-stdlib/tables.jai",
         "tests/portable-stdlib/table-duplicates.jai",
@@ -8064,7 +8064,8 @@
       ],
       "native_platform_limits": [
         "Mac ARM64 executed; Linux/Windows checks do not establish native behavior."
-      ]
+      ],
+      "verification_note": "No private export/shadow-variable workaround, no assertions dropped. Compiler owner request durable via coordinator."
     },
     {
       "module": "Hash_Table",
@@ -9282,9 +9283,9 @@
       "name": "buffer_no_start_code",
       "declaration": "buffer_no_start_code :: (buffer: *Buffer) -> bool",
       "condition": "",
-      "source_status": "missing_body_contract_question",
-      "remaining_gap": "Missing cursor/refill contract and body.",
-      "verification_note": "Current whole-module strict lint/format complete. Actual MPEG-1 clip default-assertion enabled/disabled interpreter/native Mac ARM64 O0/O2; additional in-memory buffer/pixels/IDCT/motion interpreter and buffer six-target source checks. Per-API exhaustive vectors are not implied."
+      "source_status": "supported_body_complete",
+      "remaining_gap": "",
+      "verification_note": "Fresh reviewed caller/cursor/raw-byte arithmetic contract implemented; actual enabled/disabled-default interpreter/native Mac ARM64 O0/O2 pass. Eighteen macOS/Linux/Windows x64/ARM64 source gates and three strict context lint manifests pass. Converted-frame BT.601 behavior remains separate."
     },
     {
       "module": "pl_mpeg",
@@ -9984,9 +9985,9 @@
       "name": "BLOCK_SET",
       "declaration": "BLOCK_SET :: (dest: *u8, dest_width: s32, source_width: s32, block_size: s32, code: Code) #expand",
       "condition": "",
-      "source_status": "missing_body_contract_question",
-      "remaining_gap": "Missing ambient Code binding contract and body.",
-      "verification_note": "Current whole-module strict lint/format complete. Actual MPEG-1 clip default-assertion enabled/disabled interpreter/native Mac ARM64 O0/O2; additional in-memory buffer/pixels/IDCT/motion interpreter and buffer six-target source checks. Per-API exhaustive vectors are not implied."
+      "source_status": "supported_body_complete",
+      "remaining_gap": "",
+      "verification_note": "Fresh reviewed caller/cursor/raw-byte arithmetic contract implemented; actual enabled/disabled-default interpreter/native Mac ARM64 O0/O2 pass. Eighteen macOS/Linux/Windows x64/ARM64 source gates and three strict context lint manifests pass. Converted-frame BT.601 behavior remains separate."
     },
     {
       "module": "pl_mpeg",
@@ -10020,9 +10021,9 @@
       "name": "PUT_PIXEL",
       "declaration": "PUT_PIXEL :: (RI: s32, GI: s32, BI: s32, y_offset: s32, dest_offset: s32) #expand",
       "condition": "",
-      "source_status": "missing_body_contract_question",
-      "remaining_gap": "Missing ambient pixel binding contract and body.",
-      "verification_note": "Current whole-module strict lint/format complete. Actual MPEG-1 clip default-assertion enabled/disabled interpreter/native Mac ARM64 O0/O2; additional in-memory buffer/pixels/IDCT/motion interpreter and buffer six-target source checks. Per-API exhaustive vectors are not implied."
+      "source_status": "supported_body_complete",
+      "remaining_gap": "",
+      "verification_note": "Fresh reviewed caller/cursor/raw-byte arithmetic contract implemented; actual enabled/disabled-default interpreter/native Mac ARM64 O0/O2 pass. Eighteen macOS/Linux/Windows x64/ARM64 source gates and three strict context lint manifests pass. Converted-frame BT.601 behavior remains separate."
     },
     {
       "module": "pl_mpeg",
@@ -11304,8 +11305,8 @@
   ],
   "audited_counts": {
     "contract_question": 2,
-    "supported_body_complete": 298,
-    "missing_body_contract_question": 4,
+    "supported_body_complete": 301,
+    "implemented_compiler_dependency": 1,
     "implemented_contract_question": 8,
     "implemented_supported_subset": 9,
     "missing_configuration_behavior": 4,
@@ -11382,6 +11383,15 @@
       "red": "font-assertions-9gtl5tl9/before-fix.json, after-initial-size-fix.json; original snapshot restored and hash reverified in snapshot-restoration.json.",
       "native_sdk_error": "Original valid fixed-size BDF requests unavailable24px, yields null/error; same face bytes retry8px succeeds.",
       "format_lint": "Current changed Jai files/test pass jaifmt check and strict context jailint manifest font-final.manifest.json."
+    },
+    "mpeg_new_public_macros": {
+      "path": "stdlib/shared-target/mpeg-public-macros-86vjqu4m/results.json",
+      "runtime_passed": 18,
+      "native_builds_passed": 12,
+      "failed": 0,
+      "scope": "Three MPEG APIs only; Walk_Table compiler-dependent separately red.",
+      "source_and_lint": "mpeg-public-macros-usxlb55d/source-lint.json:18 source targets and3 strict owned context gates pass.",
+      "format": "All four owned source files and corresponding new positive/pending fixtures jaifmt check pass."
     }
   },
   "manifest_gate": "Four current owned-module contexts complete; incomplete and unvisited_files empty. Source/test format checks and strict lint passed without suppression.",
@@ -11390,7 +11400,14 @@
     "tests/portable-stdlib/table-iteration.jai",
     "tests/portable-stdlib/mpeg-buffer-boundaries.jai",
     "tests/portable-stdlib/mpeg-default-assertions.jai",
-    "tests/portable-stdlib/retained-default-assertions.jai"
+    "tests/portable-stdlib/retained-default-assertions.jai",
+    "tests/portable-stdlib/table-walk.jai",
+    "tests/portable-stdlib/mpeg-no-start-code.jai",
+    "tests/portable-stdlib/mpeg-block-set.jai",
+    "tests/portable-stdlib/mpeg-put-pixel.jai",
+    "tests/portable-stdlib/pending/while-condition-value-binding.jai",
+    "tests/portable-stdlib/pending/macro-while-condition-value-binding.jai",
+    "tests/portable-stdlib/pending/macro-while-label-control.jai"
   ],
   "production_fixes_this_batch": [
     {
@@ -11419,10 +11436,21 @@
       "change": "Font pixel-size selection, glyph size restoration and actual GSUB table fill unconditional. Private boolean initialization propagates SDK failure to public pointer loaders; query/fill bounds and failed buffer ownership checked; failed glyphs are not cached and partial prepared output is cleared.",
       "evidence": "Disabled initial metrics red exit5; initial-size-only feature red7 and shared-face glyph red16. Final24 interpreter/native O0/O2 executions plus4build pass, including actual fixed-size BDF wrong-size failure then valid-size retry.",
       "limits": "CPU font API only; no GPU/window/Windows/Linux native claim. Existing module registry/pool lifetime retained per reviewed spec."
+    },
+    {
+      "location": "stdlib/internal/media/mpeg/buffer.jai, motion.jai, pixels.jai",
+      "change": "Implement missing buffer_no_start_code, BLOCK_SET and raw-byte PUT_PIXEL exactly against refreshed reviewed contracts.",
+      "evidence": "Actual callback/refill and unaligned cursor tests; caller si/di strides/Code side effects/truncation; raw16 vector, channel permutation, alpha preservation and saturation extrema. Enabled/disabled-default Mac interpreter/native O0/O2 and source/lint gates green."
+    },
+    {
+      "location": "stdlib/internal/collections/hash-table.jai",
+      "change": "Walk_Table implemented with exported hash/index, loop slot hash, tombstone walk and labelled control semantics.",
+      "evidence": "Source present but actual public fixture blocked by independently reproduced compiler condition-value export hygiene; no completed behavior claim."
     }
   ],
   "test_corrections_this_batch": [
-    "Process lint invocation requested inapplicable Windows source files on Mac. Corrected the requested target/ownership paths; original diagnostic and manifest retained. No source/test assertions changed."
+    "Process lint invocation requested inapplicable Windows source files on Mac. Corrected the requested target/ownership paths; original diagnostic and manifest retained. No source/test assertions changed.",
+    "Walk_Table initial fixture used invalid backtick before labelled continue/break. Corrected to reviewed ordinary labelled jumps, retained every slot/control assertion; genuine missing-export red then compiler hygiene red retained."
   ],
   "deviations": [
     "No production workaround introduced. New tests intentionally avoid unspecified narrow-input returned-bound policy; existing unresolved evidence retained.",
@@ -11440,7 +11468,7 @@
       "module": "Hash_Table",
       "name": "Walk_Table",
       "declaration": "Walk_Table :: (code: Code) #expand",
-      "gap": "Code-only macro has no reviewed ambient binding/yield contract; declaration/body absent."
+      "gap": "Reviewed ambient contract now resolved and body implemented. General #expand backtick named-while condition value export fails; independent macro-while-condition-value-binding.jai reproduces. Ordinary value binding and macro loop label control compile. Actual table-walk fixture remains red, not complete."
     },
     {
       "module": "Reflection",
@@ -11498,12 +11526,6 @@
     },
     {
       "module": "pl_mpeg",
-      "name": "buffer_no_start_code",
-      "declaration": "buffer_no_start_code :: (buffer: *Buffer) -> bool",
-      "gap": "Missing cursor/refill contract and body."
-    },
-    {
-      "module": "pl_mpeg",
       "name": "audio_decode_header",
       "declaration": "audio_decode_header :: (audio: *Audio) -> s32",
       "gap": "MPEG-1 Layer II only; other audio versions/layers explicitly rejected."
@@ -11513,18 +11535,6 @@
       "name": "video_decode_sequence_header",
       "declaration": "video_decode_sequence_header :: (video: *Video) -> bool",
       "gap": "Midstream dimension/rate changes explicitly rejected; no reconfiguration implementation."
-    },
-    {
-      "module": "pl_mpeg",
-      "name": "BLOCK_SET",
-      "declaration": "BLOCK_SET :: (dest: *u8, dest_width: s32, source_width: s32, block_size: s32, code: Code) #expand",
-      "gap": "Missing ambient Code binding contract and body."
-    },
-    {
-      "module": "pl_mpeg",
-      "name": "PUT_PIXEL",
-      "declaration": "PUT_PIXEL :: (RI: s32, GI: s32, BI: s32, y_offset: s32, dest_offset: s32) #expand",
-      "gap": "Missing ambient pixel binding contract and body."
     },
     {
       "module": "Thread",
@@ -11618,9 +11628,9 @@
     }
   ],
   "next_batches": [
-    "Obtain filtered root Hash argument/seed types and independent reduction; current array-view overload hypothesis does not reproduce.",
-    "Repair additional owned source-confirmed optional-assert effects by coherent platform subsystem, with actual SDK/error/lifetime regressions; preserve peer ownership.",
-    "Continue missing portable body/contracts and exact per-API inventory; native platform/SDK dependencies separate from source implementation."
+    "Validate Walk_Table public full fixture after general compiler named-while value hygiene fix.",
+    "Complete Unmapping_Allocator missing Windows backend and real SDK failed-protection tracking retention; no allocator source edits started yet.",
+    "Complete current mixed-platform owned denominator and remaining supported APIs; native/contract boundaries remain exact."
   ],
   "hash_cluster_followup": {
     "request": "Filtered actual argument/seed type requested from root. No original corpus body read; Hash implementation remains foundations-owned.",
