@@ -1,6 +1,6 @@
 # Generator model helpers
 
-Public signatures live in `stdlib/Bindings_Generator/model-helpers.jai`; independently organized private algorithms live in `stdlib/internal/developer-tools/generator-model-helpers.jai`. No additional canonical state is introduced.
+Public signatures live in `stdlib/Bindings_Generator/model-helpers.jai`; independently organized private algorithms live in `stdlib/internal/developer-tools/generator-model-helpers.jai`. The reviewed canonical Generator, Token_Info and Library_Symbols now have their single definitions in generator-state.jai. Generator retains #type_info_none and exact public Hash_Table instantiations; cursor hashing/equality delegates to official libclang. The old Windows-only Library_Symbols declaration was moved here, rather than duplicated.
 
 Implementation batches cover explicit model constructors/predicates and identity/name comparisons, then native/stateful integration where canonical dependencies permit. Original public-model fixtures run under interpreter/native O0/O2, formatting and strict lint.
 

@@ -12,6 +12,7 @@ if not TARGET.is_absolute():
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
 JAIC = TARGET / "debug/jaic"
 OWNED = [
+    "stdlib/Bindings_Generator/generator-state.jai",
     "stdlib/Bindings_Generator/model-helpers.jai",
     "stdlib/internal/developer-tools/generator-model-helpers.jai",
     "tests/developer-tools/generator-model-helpers.jai",

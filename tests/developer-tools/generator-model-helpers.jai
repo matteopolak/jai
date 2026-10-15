@@ -23,6 +23,19 @@ data_visit :: (_decl: *B.Declaration, _parent: *B.Declaration, data: *void) -> B
 }
 
 main :: () {
+    generator: B.Generator;
+    symbols: B.Library_Symbols;
+    token_info: B.Token_Info;
+
+    assert(generator.pointer_size == 0 && generator.translation_unit == null);
+    assert(generator.tab_depth == 0 && generator.template_depth == 0);
+    assert(generator.counts.functions == 0 && generator.declarations_by_cursor.count == 0);
+    assert(generator.extra_infos.count == 0 && generator.tokens_to_free.count == 0);
+    assert(symbols.symbol_names.count == 0 && token_info.num_tokens == 0);
+    #assert type_of(generator.macros_converted_to_enum_values) == H.Table(string, *B.Enum);
+    #assert type_of(generator.extra_infos) == H.Table(*B.Struct, B.Struct_Extra_Info);
+    #assert type_of(generator.filenames) == H.Table(B.CXFile, string);
+    #assert type_of(generator.macro_token_replacements[0]) == B.Generator.Replacement;
     integer := B.get_int_type(4, true);
 
     defer free(integer);
@@ -261,3 +274,6 @@ main :: () {
     assert(errors == 6);
     print("ok\n");
 }
+
+#scope_file
+H :: #import "Hash_Table";

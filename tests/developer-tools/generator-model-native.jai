@@ -40,6 +40,15 @@ main :: () {
 
     defer free(type);
     decl := B._create_declaration("original_value", type, state.cursor);
+    generator: B.Generator;
+
+    H.table_add(*generator.declarations_by_cursor, state.cursor, decl);
+    found, same := H.table_find(*generator.declarations_by_cursor, state.cursor);
+
+    assert(found && same == decl);
+    assert(generator.declarations_by_cursor.hash_function(state.cursor) == B.clang_hashCursor(state.cursor));
+    assert(generator.declarations_by_cursor.compare_function(state.cursor, state.cursor));
+    H.table_reset(*generator.declarations_by_cursor);
 
     // Public strings survive disposal of every libclang source object.
     B.clang_disposeTranslationUnit(unit);
@@ -51,3 +60,6 @@ main :: () {
     assert(decl.comment.text == "/** retained after native disposal */");
     print("ok\n");
 }
+
+#scope_file
+H :: #import "Hash_Table";
