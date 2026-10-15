@@ -1,0 +1,21 @@
+{
+  "coverage": "Windows x64 SDK DLL/executable cross-build/link/export inspection and arm64 object compilation; no Windows execution",
+  "source_sha256": "fc5ca509311ac77e3d5fed2cc4bb246dffda04d2adae22f0cea7fb9587760ade",
+  "fixture_sha256": "b2d7740d8e4e31617d2e6bc8524abaf75aeb25640bc487213738ba19b6a16c5e",
+  "sdk_header_sha256": {
+    "/opt/homebrew/opt/mingw-w64/toolchain-x86_64/x86_64-w64-mingw32/include/windows.h": "e931bc163a9980e71982a522879073f41f934c3d94b423d489ee9f387093899f",
+    "/opt/homebrew/opt/mingw-w64/toolchain-x86_64/x86_64-w64-mingw32/include/dbghelp.h": "1914e4d43423dd2b8856b1d3ff32e531e748f7d2baad1c7849308c2d3b673458"
+  },
+  "gcc_version": "x86_64-w64-mingw32-gcc (GCC) 16.2.0",
+  "exports": [
+    "developer_debug_abort",
+    "developer_debug_backtrace",
+    "developer_debug_breakpoint",
+    "developer_debug_debugger_present",
+    "developer_debug_free_symbols",
+    "developer_debug_output",
+    "developer_debug_readable",
+    "developer_debug_symbols"
+  ],
+  "runtime_status": "pending coordinator Windows native CI"
+}

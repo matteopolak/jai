@@ -7,6 +7,7 @@ import subprocess
 import shutil
 import check_developer_bindings
 import build_developer_debug
+import check_developer_debug_windows
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
@@ -24,6 +25,7 @@ def run(command, *, output=None, error=""):
 def main():
     check_developer_bindings.main()
     build_developer_debug.main()
+    check_developer_debug_windows.main()
     prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
     run([prefix / "bin/clang", "-target", "x86_64-unknown-linux-gnu", "-g", "-fno-omit-frame-pointer",
          "-c", "tests/developer-tools/dwarf-native.c", "-o", "target/developer-tools-dwarf.o"])
@@ -176,6 +178,11 @@ def main():
                    ROOT / "tests/developer-tools/check-porting.jai"]
     run([ROOT / "target/debug/jailint", "-D", "warnings", "--os", "windows", "--cpu", "x64", *check_paths])
     run([JAIC, "tests/developer-tools/check-porting.jai", "-check", "-os", "windows", "-cpu", "x64"])
+    debug_windows = [ROOT / "stdlib/Debug/module.jai", ROOT / "stdlib/internal/developer-tools/debug-native.jai",
+                     ROOT / "tests/developer-tools/debug-windows-contract.jai"]
+    run([ROOT / "target/debug/jailint", "-D", "warnings", "--os", "windows", "--cpu", "x64", *debug_windows])
+    for cpu in ["x64", "arm64"]:
+        run([JAIC, "tests/developer-tools/debug-windows-contract.jai", "-check", "-os", "windows", "-cpu", cpu])
     for case, reason in [("check-array", "fixed array used as a pointer in assignment"),
                          ("check-small-driver", "small integer addition requires an explicit intermediate integer cast")]:
         rejected = subprocess.run([str(JAIC), f"tests/developer-tools/rejections/{case}.jai", "-check", "-os", "windows", "-cpu", "x64"],

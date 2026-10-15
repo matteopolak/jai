@@ -99,7 +99,7 @@ def main():
                          "is_valid_pointer", "output", "abort", "os_abort", "breakpoint"}
             for item in declarations:
                 if item["name"] in supported:
-                    item["implementation"] = "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+                    item["implementation"] = "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
         if module == "Iprof":
             supported = {"Report", "Report_Row", "Report_Mode", "Zone", "Zone_History", "NUM_VALUES", "NUM_TITLE",
                          "NUM_HEADER", "NUM_FRAME_SLOTS", "save_csv_report", "log_text_report"}
