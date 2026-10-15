@@ -33,6 +33,11 @@ set_source_files_properties("${CMAKE_CURRENT_LIST_DIR}/inline-${SDL_JAI_PLATFORM
 # SDL3's own public export annotations put them in the runtime as well as the archive.
 foreach(target SDL3-static SDL3-shared)
   target_sources(${target} PRIVATE "${CMAKE_CURRENT_LIST_DIR}/inline-${SDL_JAI_PLATFORM}.c" "${CMAKE_CURRENT_LIST_DIR}/macros.c")
+  if(MSVC)
+    # An unavailable inline helper must fail compilation, never become an
+    # assumed external int function and surface only as a DLL link failure.
+    target_compile_options(${target} PRIVATE /we4013)
+  endif()
 endforeach()
 if(MSVC)
   # Match the existing native pipeline: /MT plain CRT calls without naming a default CRT.
