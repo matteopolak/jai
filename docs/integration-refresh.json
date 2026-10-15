@@ -94,7 +94,7 @@
     "integrated_via": "7467b49de0175e6d43f2263092b82ccb9182356f"
   },
   "latest_consumed_independent_checkpoints": {
-    "compiler_mac": "114dda877b527d1fbb51dba19d772e0cef80e768",
+    "compiler_mac": "59a69c0384c0695dead22fba2976106efc715e74",
     "extensions_mac_basic": "b821bf6d6f5c10c70e9ae144bea423f224d598c1",
     "generator_model": "ba878c70d9a93b2437c235ff597bb95181cfb853",
     "generator_platform": "81c8217b47110f8eb7d48c23f4a6f1a9c3c4c30b",
@@ -108,7 +108,7 @@
   "latest_candidate": {
     "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures",
     "ref": "integration/thread-fixtures",
-    "snapshot": "ac9b8723813af8b108d92867932b97a084dbc6e4",
+    "snapshot": "396707e75af75eb3bbcaa19b70c3a1c8aa602224",
     "root_tracking": "3b50fee6f4300a94c77eedaab422681694604895",
     "root_tracking_updated": false
   }

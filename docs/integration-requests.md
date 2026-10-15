@@ -716,3 +716,7 @@ compiler-typechecked-messages asserts every declaration belongs to main_import, 
 ## Basic callback bridge allocation loss reproduced
 
 Independent public-API allocator regression against combined ac9b8723 fails with callback output copy allocation failure must survive the ABI bridge. stdlib/internal/basic/format-support.jai assigns builder.failed = scratch.failed after copying scratch buffers; that clears allocation failure raised by destination append. Integrator will preserve both failure flags and add the actual failing allocator test after the frozen catalogue exits, keeping active measurement immutable. This is an integration-owned repair to the canonical bridge, not an extra public API or allocator fallback.
+
+## Ready checkpoint objects absent locally
+
+Latest coordinator inbox requests bindings9bc40a8 platform audit and portable0504879 native crash-helper relocation. Neither object resolves in this sanitized Git. Please refresh only those independent producer refs/OIDs into this repository; no unrestricted fetch or alternate checkout will be attempted. Compiler59a69c03 is integrated at396707e7 with5 Rust catalogue tests,20 native O0 commands and rustfmt/clippy passing. CLI/lint/LSP rebuilt together from that source. The control inbox is preserved outside product commits. The WASI tour has native-only Thread plus native Input/Window_Type GPU dependencies; a partial Thread guard alone cannot establish browser compatibility. Required native and real sandbox scheduler tests must remain when migrating the example.

@@ -681,5 +681,18 @@
     "failed": 0,
     "scope": "15 generator and9 executable fixtures interpreter/native ARM64 O0; original C/C++ preparation and strict two-module lint",
     "foreign_native_runtime_verified": false
-  }
+  },
+  "latest_verified_checkpoint": {
+    "snapshot": "396707e75af75eb3bbcaa19b70c3a1c8aa602224",
+    "producer": "59a69c0384c0695dead22fba2976106efc715e74",
+    "compiler_catalogue_passed": 5,
+    "native_O0_commands_passed": 20,
+    "rustfmt_exit_code": 0,
+    "workspace_clippy_warnings_denied_exit_code": 0,
+    "cli_lint_lsp_build_exit_code": 0,
+    "unchanged_jaifmt_build_and_broad_format_exit_code": 0,
+    "full_workspace_replay": "pending",
+    "full_catalogue_replay": "pending; prior frozen red counts retained"
+  },
+  "release_permitted": false
 }
