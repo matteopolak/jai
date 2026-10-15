@@ -1,4 +1,4 @@
-# POSIX shared-memory channels
+# Native shared-memory channels
 
 The public module loads canonical records and reviewed constants; no private
 registry/helper is exported. The Unix backend creates exclusive named POSIX
@@ -6,7 +6,8 @@ objects, maps them read/write and records mapping extent, descriptor, creator
 allocator and name in a private synchronized ownership registry. Reader release
 unlinks its own name; writer disconnect never unlinks the reader's object.
 Duplicate reader creation and duplicate writer connection fail without destroying
-the existing channel. Windows mapping/handle support is unimplemented and rejected.
+the existing channel. Windows now has a real named mapping backend; native Windows
+execution remains unverified, as detailed below.
 
 Creation publishes initialized header magic last. Queue cursors and statuses
 use the compiler's real sequentially consistent compare-and-swap, including in

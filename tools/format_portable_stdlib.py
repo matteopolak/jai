@@ -7,6 +7,7 @@ Both jaifmt and jailint use repository configuration.
 import argparse
 import os
 from pathlib import Path
+import platform
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,7 +21,7 @@ RESERVED = {
     "stb_vorbis", "telemetry3", "Vulkan", "Windows", "X11", "xxHash",
     "Window_Creation", "Window_Type", "Input", "Keymap", "Gamepad", "Simp", "Srgb", "Clipboard", "File",
     "Sound_Player", "Bindings_Generator", "Generate_C_Header", "Check", "Codex",
-    "Debug", "Debug_Info", "Print_Vars", "Iprof", "Performance_Report", "Rewrite",
+    "Debug", "Debug_Info", "Print_Vars", "Iprof", "Performance_Report", "Rewrite", "Hash",
 }
 RESERVED_FOLDED = {name.casefold() for name in RESERVED}
 RESERVED_INTERNAL = {"bindings", "numerics", "compiler-api", "jai-lexer", "code-visit", "program-print",
@@ -37,6 +38,8 @@ def owned_paths():
             continue
         if relative == Path("internal/files/file.jai"):
             continue  # File backend completion is now platform-io ownership.
+        if relative == Path("internal/hash/module.jai"):
+            continue  # Scalar Hash completion/shared facade are foundations ownership.
         paths.append(path)
     for path in (ROOT / "tests/portable-stdlib").rglob("*.jai"):
         relative = path.relative_to(ROOT / "tests/portable-stdlib")
@@ -60,9 +63,51 @@ def main():
         command.append("--check")
     paths = owned_paths()
     if args.lint:
-        env = dict(os.environ, JAIC_STDLIB=str(ROOT / "target/portable-integration-stdlib"))
-        subprocess.run([str(ROOT / "target/compiler/debug/jailint"), "-D", "warnings",
-                        *[str(path) for path in paths]], cwd=ROOT, env=env, check=True)
+        library = ROOT / "target/portable-integration-stdlib"
+        configured_test = ROOT / "tests/portable-stdlib/time-configured/main.jai"
+        checked_paths = []
+        machine_paths = []
+        for path in paths:
+            if path == configured_test:
+                continue  # Checked below against its required NEW foundation composition.
+            if path.is_relative_to(ROOT / "stdlib"):
+                candidate = library / path.relative_to(ROOT / "stdlib")
+                if not candidate.is_file() or candidate.read_bytes() != path.read_bytes():
+                    raise RuntimeError(f"restage current owned source before strict lint: {path}")
+                if path.is_relative_to(ROOT / "stdlib/Machine_X64") or path.is_relative_to(ROOT / "stdlib/internal/machine"):
+                    machine_paths.append(candidate)
+                else:
+                    checked_paths.append(candidate)
+            else:
+                if path.is_relative_to(ROOT / "tests/portable-stdlib/machine-x64"):
+                    machine_paths.append(path)
+                else:
+                    checked_paths.append(path)
+        env = dict(os.environ, JAIC_STDLIB=str(library))
+        results = [subprocess.run([str(ROOT / "target/compiler/debug/jailint"), "-D", "warnings",
+                                  *[str(path) for path in checked_paths]], cwd=ROOT, env=env)]
+        foundation_library = ROOT / "target/portable-time-foundation/stdlib"
+        for filename in ["apollo.jai", "time-errors.jai", "clock-calendar.jai",
+                         "filetime.jai", "windows-clock.jai", "windows-calendar.jai", "elapsed-time.jai"]:
+            if (foundation_library / "internal/basic" / filename).read_bytes() != (ROOT / "stdlib/internal/basic" / filename).read_bytes():
+                raise RuntimeError("regenerate the NEW foundation time composition before lint")
+        for filename in ["counter.jai", "filetime.jai", "gregorian.jai"]:
+            if (foundation_library / "internal/time" / filename).read_bytes() != (ROOT / "stdlib/internal/time" / filename).read_bytes():
+                raise RuntimeError("regenerate the NEW foundation time kernels before lint")
+        foundation_env = dict(os.environ, JAIC_STDLIB=str(foundation_library))
+        results.append(subprocess.run([str(ROOT / "target/compiler/debug/jailint"), "-D", "warnings",
+                        str(foundation_library / "Basic/module.jai"),
+                        str(foundation_library / "internal/basic/module.jai"), str(configured_test)],
+                       cwd=ROOT, env=foundation_env))
+        machine_linter = ROOT / "target/compiler/debug/jailint"
+        if platform.machine().lower() not in {"x86_64", "amd64"}:
+            if platform.system() != "Darwin":
+                raise RuntimeError("x64-only machine lint requires a source-built x64 linter host")
+            machine_linter = ROOT / "target/compiler/x86_64-apple-darwin/debug/jailint"
+        results.append(subprocess.run([str(machine_linter), "-D", "warnings",
+                                       *[str(path) for path in machine_paths]], cwd=ROOT, env=env))
+        if any(result.returncode for result in results):
+            raise SystemExit("Owned strict lint failed; all configured groups were attempted")
         print(f"Source-built jailint checked {len(paths)} owned Jai files")
         return
     subprocess.run(command + [str(path) for path in paths], cwd=ROOT, check=True)
