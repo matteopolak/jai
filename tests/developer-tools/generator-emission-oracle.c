@@ -23,9 +23,26 @@ static enum CXChildVisitResult inspect(CXCursor cursor, CXCursor parent,
                              NULL);
     const char *comment = clang_getCString(raw);
     printf("comment [%s] %u:%u\n", comment ? comment : "", line, column);
+    printf("definition=%u canonical=%u self_definition=%u\n",
+           clang_isCursorDefinition(cursor),
+           clang_equalCursors(cursor, clang_getCanonicalCursor(cursor)),
+           clang_equalCursors(cursor, clang_getCursorDefinition(cursor)));
     clang_disposeString(raw);
     clang_disposeString(name);
     clang_disposeString(kind);
+    return CXChildVisit_Continue;
+}
+
+struct walk { unsigned count, depth, maximum_depth; };
+static enum CXChildVisitResult descendants(CXCursor cursor, CXCursor parent,
+                                          CXClientData opaque) {
+    (void)parent;
+    struct walk *walk = opaque;
+    ++walk->count;
+    if (walk->depth > walk->maximum_depth) walk->maximum_depth = walk->depth;
+    ++walk->depth;
+    clang_visitChildren(cursor, descendants, walk);
+    --walk->depth;
     return CXChildVisit_Continue;
 }
 
@@ -42,7 +59,10 @@ int main(int argc, char **argv) {
     unsigned count = 0;
     unsigned diagnostics = clang_getNumDiagnostics(unit);
     clang_visitChildren(clang_getTranslationUnitCursor(unit), inspect, &count);
+    struct walk walk = {0};
+    clang_visitChildren(clang_getTranslationUnitCursor(unit), descendants, &walk);
+    printf("debug descendants=%u depth=%u\n", walk.count, walk.maximum_depth);
     clang_disposeTranslationUnit(unit);
     clang_disposeIndex(index);
-    return diagnostics || count != 3;
+    return diagnostics || count != 5;
 }

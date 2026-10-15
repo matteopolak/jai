@@ -1,5 +1,15 @@
 # Developer tooling contract tests
 
+Run `python3 tools/check_generator_emission.py` for all ten reassigned public
+comment/spacing/alignment/cursor names, both alignment/spacing overloads and
+configured target branches. Actual public imports run Mac interpreter/native
+O0/O2 against original SDK C comment-range, definition and recursive-traversal
+oracles. Cases include source-file/line gaps, NO_SPACING, u32 bounds, borrowed and
+owned text, absent comments, conditional refresh, caller logging context and
+nested options across configured instances. Six desktop source checks, formatting
+and warnings-denied module/fixture lint cover the helper and singleton owner.
+See [reviewed emission contracts and edge policies](generator-emission.md).
+
 Run `python3 tools/check_generator_platform.py` for all ten assigned platform
 helper names (both libclang-copy overloads), original Mach-O/ELF/COFF/archive
 symbols, live native-library effects, malformed inputs, independent owned arrays,

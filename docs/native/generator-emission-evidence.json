@@ -4,14 +4,31 @@
     "Mac native O0",
     "Mac native O2"
   ],
-  "contract_status": "independent policies pending reviewed answers",
+  "contract_status": "all ten reassigned names implemented to the reviewed contracts",
   "sdk": "Homebrew clang version 23.1.2",
-  "original_header_sha256": "6bce0138ce39bf26992b0099e68b39e9e3ab16f3f7b3b6fbf273f95fae09ad12",
-  "oracle_stdout": "VarDecl alpha 2:5\ncomment [/// Alpha documentation.] 1:1\nVarDecl beta 3:5\ncomment [///< Beta documentation.] 3:11\nVarDecl anonymous_value 4:24\ncomment [] 0:0\n",
+  "original_header_sha256": "0f68de8c7599802db342d4211534bb40a58e098b2b1d6c807ca3108fc39fe0dc",
+  "oracle_stdout": "VarDecl alpha 2:5\ncomment [/// Alpha documentation.] 1:1\ndefinition=0 canonical=1 self_definition=0\nVarDecl beta 3:5\ncomment [///< Beta documentation.] 3:11\ndefinition=0 canonical=1 self_definition=0\nVarDecl anonymous_value 4:24\ncomment [] 0:0\ndefinition=0 canonical=1 self_definition=0\nVarDecl repeated 5:12\ncomment [] 0:0\ndefinition=0 canonical=1 self_definition=0\nVarDecl repeated 6:5\ncomment [] 0:0\ndefinition=1 canonical=0 self_definition=1\ndebug descendants=17 depth=3\n",
   "source_checked_only": [
     "Linux x64/arm64",
     "Windows x64/arm64",
     "Mac x64"
   ],
-  "strict_lint_and_format": "passed"
+  "strict_lint_and_format": "passed",
+  "negative_diagnostics": {
+    "cases": [
+      "spacing requires active options",
+      "negative indentation depth"
+    ],
+    "modes_per_case": 3
+  },
+  "public_effects": [
+    "space-separated prepending and borrowed standalone input",
+    "location/newline prefix classification, per-line trim, trailing indentation and line-ending normalization",
+    "eligible member/output-name alignment, qualifier widths, selector overload and extern exclusion",
+    "both spacing overloads, always-updated location, source gaps/files, NO_SPACING and u32 boundary",
+    "two configured instances and nested shared-options context restoration",
+    "owned normalized cursor spelling, leading/trailing/absent native comments and preserved metadata",
+    "unset source refresh, forward-declaration preservation and definition refresh",
+    "descendant logging through caller context, root exclusion and depth against original SDK traversal"
+  ]
 }

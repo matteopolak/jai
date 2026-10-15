@@ -1,7 +1,7 @@
 # Developer documentation
 
 - [Reassigned generator emission helpers](generator-emission.md): disjoint helper
-  ownership, implementation policy, dependencies and reviewed contract questions.
+  ownership, all ten reviewed contracts, canonical options protocol and native evidence.
 
 - [Generator platform helpers](generator-platform.md): owned native-library/object
   APIs, reviewed cache/context/path contracts, official LLVM delegation and canonical model integration.

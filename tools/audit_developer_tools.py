@@ -23,13 +23,12 @@ GENERATOR_EMISSION_NAMES = {
     "fill_comment", "fill_location_and_comment_if_needed", "get_name_for_cursor",
     "debug_print_cursor",
 }
-GENERATOR_EMISSION_IMPLEMENTED = GENERATOR_EMISSION_NAMES - {
-    "maybe_add_spacing", "fill_comment", "fill_location_and_comment_if_needed",
-}
+GENERATOR_EMISSION_IMPLEMENTED = GENERATOR_EMISSION_NAMES
 GENERATOR_EMISSION_STATUS = (
-    "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, "
-    "official SDK cursor oracle, six desktop source checks, format/strict lint; "
-    "contract pending: generator-emission.md and specs/questions/generator-emission.md"
+    "reviewed emission/comment/cursor/alignment/spacing contracts implemented; "
+    "actual public imports verified Mac interpreter/native O0/O2, official SDK "
+    "comment/definition/traversal oracles, two configured instances and nested "
+    "singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
 )
 
 
@@ -66,10 +65,6 @@ def remaining_matrix(inventory):
             output += ["| Function | Reviewed overload variants | Pending variants | Next work / precise question |", "| --- | ---: | ---: | --- |"]
             for name, entries in sorted(pending.items()):
                 reason = questions.get((module, name), "Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior.")
-                if module == "Bindings_Generator" and name in GENERATOR_EMISSION_NAMES:
-                    reason = "Reassigned to generator-platform; implemented independent policies remain partial pending reviewed contracts; see ../specs/questions/generator-emission.md"
-                    if name not in GENERATOR_EMISSION_IMPLEMENTED:
-                        reason = "Reassigned to generator-platform; active-options singleton dependency and exact spacing/comment-fill contracts; see ../specs/questions/generator-emission.md"
                 if module == "Debug_Info" and ("msf" in name or "stream" in name or name in {"parse_pdb", "get_stream_size", "stream_exists", "is_valid_page_number", "is_valid_stream_number", "is_valid_user_stream_number", "verify_integrity", "ensure_room", "is_free_page", "alloc_page", "free_page", "is_fpm_page_number"}):
                     reason = "Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds"
                 if module == "Codex":

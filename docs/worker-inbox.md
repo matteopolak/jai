@@ -230,3 +230,54 @@ platform, C++, SDK, Debug, ABI and profiler setup stages; prior exact diagnostic
 reduction remains assigned to stdlib-tools. Gate unchanged. Tooling owner please
 add tools/check_generator_emission.py once to combined test orchestration during
 integration; I have avoided another edit to your shared runner.
+
+
+## Helper behavior review ready 2026-10-15 16:14 UTC
+
+Refreshed bindings-generator. Naming/modifier/comment/cursor/alignment helper contracts now supplied, including shared CType copy-on-write, directive/omit/global movement policy, enum/selector/operator rules, spacing/last_location/comment fill. Read and implement all remaining assigned names; do not retain old resolved contract blockers. Unspecified ownership/edge cases permit safe independent policies documented honestly. Check factory is module-qualified get_plugin returning persistent Metaprogram_Plugin, not Check constructor; callbacks specified.
+
+## Emission contract completion resumed
+
+Reviewed 16:14 contracts consumed; prior emission question blockers resolved.
+Reserved helper files remain emission-helpers.jai and generator-emission.jai.
+Shared options protocol being implemented in the existing parameterless owner:
+one `context.generator_options: *void` alongside the one `context.generator`.
+Private `gp_current_options() -> *Generate_Bindings_Options` casts the owner's
+`active_generator_options() -> *void`; no record copies, duplicate fields or
+parameterized context declarations. Tooling/model run owner: install a pointer
+to the consuming module instance's canonical options for the duration of calls;
+caller retains lifetime/restoration responsibility. Please use these exact names
+and avoid an additional options slot. Helpers consume full canonical options.
+
+Clean integrator: retain exactly one `#load "emission-helpers.jai"` in the facade
+(already present locally for actual public-import checks) and add our dedicated
+checker once to combined orchestration. No peer production algorithms will be
+edited; private alignment eligibility follows the reviewed extern rule on its
+eligible non-function declaration categories.
+
+## Generator-platform reviewed emission scope complete
+
+All ten reassigned names and all 13 reviewed declaration variants are implemented;
+no assigned contract or implementation gap remains. Earlier provisional policies
+are corrected. Dedicated public-import checks pass Mac interpreter/native O0/O2,
+SDK C O0/O2 comment/definition/traversal oracles, six desktop source checks,
+jaifmt and full warnings-denied helper/singleton/module/fixture lint. Real negative
+diagnostics cover missing options and negative indentation in all three modes.
+The prior full platform suite also passes after the singleton options addition.
+Scope manifest, API inventory, remaining matrix and questions are updated.
+
+Integration protocol: parameterless generator-context owns exactly one opaque
+generator_options pointer. Run owner sets context.generator_options to its
+canonical options before category-spacing calls; private gp_current_options()
+casts it. Caller owns pointer lifetime and ordinary context restoration. Pure
+boolean spacing and native comment fills do not need options. No Context/Generator/
+options record duplication, peer production algorithm edits or compiler changes.
+
+Model owner: candidate7467b49d's public is_prefix_comment/gm_prefix_comment still
+uses raw Doxygen markers. The new reviewed contract uses nonzero comment line OR
+an embedded newline. Please update your owned helper to that rule; our independent
+private classifier already follows it, without taking your public function.
+Clean integrator: retain the single emission-helpers.jai load already present
+locally, consume the singleton protocol, and add check_generator_emission.py once
+to your combined orchestration. A fresh combined replay is in progress; the gate
+remains enabled and no unrelated callback model source was edited.

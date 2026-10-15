@@ -568,7 +568,7 @@
         "declaration": "prepend_comment :: (comment: *Comment, text: string)",
         "section": "Public declaration inventory",
         "spec_line": 87,
-        "implementation": "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, official SDK cursor oracle, six desktop source checks, format/strict lint; contract pending: generator-emission.md and specs/questions/generator-emission.md"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "is_same_location",
@@ -701,14 +701,14 @@
         "declaration": "maybe_add_spacing :: (builder: *String_Builder, last_location: *Location, location: Location, decl_flags: Declaration_Flags, mimic_type: Mimic_Spacing_Flags)",
         "section": "Public declaration inventory",
         "spec_line": 106,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "maybe_add_spacing",
         "declaration": "maybe_add_spacing :: (builder: *String_Builder, last_location: *Location, location: Location, decl_flags: Declaration_Flags, mimic := true)",
         "section": "Public declaration inventory",
         "spec_line": 107,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "create_pointer_to",
@@ -834,7 +834,7 @@
         "declaration": "append_indentation :: (builder: *String_Builder)",
         "section": "Public declaration inventory",
         "spec_line": 125,
-        "implementation": "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, official SDK cursor oracle, six desktop source checks, format/strict lint; contract pending: generator-emission.md and specs/questions/generator-emission.md"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "print_type_to_builder",
@@ -1086,7 +1086,7 @@
         "declaration": "fill_comment :: (comment: *Comment, cur: CXCursor, location: Location)",
         "section": "Public declaration inventory",
         "spec_line": 161,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "is_prefix_comment",
@@ -1100,7 +1100,7 @@
         "declaration": "fill_location_and_comment_if_needed :: (location: *Location, comment: *Comment, cur: CXCursor)",
         "section": "Public declaration inventory",
         "spec_line": 163,
-        "implementation": "pending"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "fill_location",
@@ -1121,7 +1121,7 @@
         "declaration": "debug_print_cursor :: (cur: CXCursor)",
         "section": "Public declaration inventory",
         "spec_line": 166,
-        "implementation": "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, official SDK cursor oracle, six desktop source checks, format/strict lint; contract pending: generator-emission.md and specs/questions/generator-emission.md"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "create_struct",
@@ -1303,7 +1303,7 @@
         "declaration": "get_name_for_cursor :: (cur: CXCursor) -> string",
         "section": "Public declaration inventory",
         "spec_line": 192,
-        "implementation": "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, official SDK cursor oracle, six desktop source checks, format/strict lint; contract pending: generator-emission.md and specs/questions/generator-emission.md"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "handle_toplevel_cursors",
@@ -1450,14 +1450,14 @@
         "declaration": "append_prefix_comment :: (builder: *String_Builder, comment: Comment, indent: bool)",
         "section": "Public declaration inventory",
         "spec_line": 213,
-        "implementation": "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, official SDK cursor oracle, six desktop source checks, format/strict lint; contract pending: generator-emission.md and specs/questions/generator-emission.md"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "append_postfix_comment",
         "declaration": "append_postfix_comment :: (builder: *String_Builder, comment: Comment)",
         "section": "Public declaration inventory",
         "spec_line": 214,
-        "implementation": "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, official SDK cursor oracle, six desktop source checks, format/strict lint; contract pending: generator-emission.md and specs/questions/generator-emission.md"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "can_omit_type",
@@ -1688,7 +1688,7 @@
         "declaration": "get_name_for_cursor :: (cur: CXCursor) -> string",
         "section": "Public declaration inventory",
         "spec_line": 247,
-        "implementation": "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, official SDK cursor oracle, six desktop source checks, format/strict lint; contract pending: generator-emission.md and specs/questions/generator-emission.md"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "as_str",
@@ -8611,14 +8611,14 @@
         "declaration": "get_name_alignment :: (declarations: [] *Declaration) -> int",
         "section": "Windows-specific declarations",
         "spec_line": 1280,
-        "implementation": "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, official SDK cursor oracle, six desktop source checks, format/strict lint; contract pending: generator-emission.md and specs/questions/generator-emission.md"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "get_name_alignment",
         "declaration": "get_name_alignment :: (fields: [] $T, get_declaration: (T) -> *Declaration, ignore_flags := false) -> int",
         "section": "Windows-specific declarations",
         "spec_line": 1281,
-        "implementation": "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, official SDK cursor oracle, six desktop source checks, format/strict lint; contract pending: generator-emission.md and specs/questions/generator-emission.md"
+        "implementation": "reviewed emission/comment/cursor/alignment/spacing contracts implemented; actual public imports verified Mac interpreter/native O0/O2, official SDK comment/definition/traversal oracles, two configured instances and nested singleton options, six desktop source checks, format/strict lint; see generator-emission.md"
       },
       {
         "name": "get_primitive_or_array_primitive_type_size",

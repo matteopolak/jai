@@ -6,7 +6,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Bindings_Generator
 
-145 function names have pending declarations; 217 native function names still lack invocation fixtures.
+135 function names have pending declarations; 217 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
@@ -21,14 +21,11 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `append_cpp_type_modifiers` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_cpp_wrapper` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_elsewhere` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `append_indentation` | 1 | 1 | Reassigned to generator-platform; implemented independent policies remain partial pending reviewed contracts; see ../specs/questions/generator-emission.md |
 | `append_integer` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_maybe_left_shift` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_maybe_right_shift` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_parent_field_path` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_parent_path` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `append_postfix_comment` | 1 | 1 | Reassigned to generator-platform; implemented independent policies remain partial pending reviewed contracts; see ../specs/questions/generator-emission.md |
-| `append_prefix_comment` | 1 | 1 | Reassigned to generator-platform; implemented independent policies remain partial pending reviewed contracts; see ../specs/questions/generator-emission.md |
 | `append_template_instantiation_params` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_type_info_directives` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `as_str` | 4 | 4 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -64,12 +61,9 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `create_type_inner` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_typedef` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_variable_declaration` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `debug_print_cursor` | 1 | 1 | Reassigned to generator-platform; implemented independent policies remain partial pending reviewed contracts; see ../specs/questions/generator-emission.md |
 | `deinit_generator` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `exceeds_signed_int_value` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `expect_tokens` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `fill_comment` | 1 | 1 | Reassigned to generator-platform; active-options singleton dependency and exact spacing/comment-fill contracts; see ../specs/questions/generator-emission.md |
-| `fill_location_and_comment_if_needed` | 1 | 1 | Reassigned to generator-platform; active-options singleton dependency and exact spacing/comment-fill contracts; see ../specs/questions/generator-emission.md |
 | `fill_template_arguments` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `fill_template_arguments_for_expression` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `find_and_check_macro_identifier` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -84,8 +78,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `function_has_a_valist_arg` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `functions_are_equivalent` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_enum_value_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `get_name_alignment` | 2 | 2 | Reassigned to generator-platform; implemented independent policies remain partial pending reviewed contracts; see ../specs/questions/generator-emission.md |
-| `get_name_for_cursor` | 2 | 2 | Reassigned to generator-platform; implemented independent policies remain partial pending reviewed contracts; see ../specs/questions/generator-emission.md |
 | `get_primitive_or_array_primitive_type_size` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_scoped_token_string` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_type_alignment` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -115,7 +107,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `macro_literals_are_equal` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `macro_values_are_equal` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `make_valid_identifer` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `maybe_add_spacing` | 2 | 2 | Reassigned to generator-platform; active-options singleton dependency and exact spacing/comment-fill contracts; see ../specs/questions/generator-emission.md |
 | `maybe_add_to_bitfield` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `maybe_append_cast` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `maybe_convert_expression_zero_to_null` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -125,7 +116,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `omit_cpp_functions_visitor` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `omit_unnecessary_typedefs_and_macros` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `parse_call_expression` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `prepend_comment` | 1 | 1 | Reassigned to generator-platform; implemented independent policies remain partial pending reviewed contracts; see ../specs/questions/generator-emission.md |
 | `print_declaration_to_builder` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_enum` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_enum_body` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |

@@ -1,84 +1,90 @@
-# Reassigned generator emission helpers
+# Reviewed generator emission helpers
 
-Ownership is the ten names in `status/reassigned-scope.json`, independently
-organized in `Bindings_Generator/emission-helpers.jai` and
-`internal/developer-tools/generator-emission.jai`. Prior platform helpers and
-their verified completion checkpoint remain intact. The authorized clean
-candidate `7467b49d` supplies model dependencies when needed; the already adopted
-canonical Generator/Comment/Location/Declaration records are sufficient for the
-first batch, so no peer source is replaced.
+All ten names reassigned in `status/reassigned-scope.json` are implemented in
+`Bindings_Generator/emission-helpers.jai` and independently organized private
+`internal/developer-tools/generator-emission.jai`. Both alignment and spacing
+overloads are implemented, with one cursor-name implementation across configured
+targets. The prior platform scope remains complete and its code is preserved.
 
-The design uses the existing unparameterized context slot for indentation and
-owner-provided options access for preservation/spacing. It introduces no records,
-singleton storage, parameterized Context fields, or compiler exceptions.
+The reviewed behavior is in `specs/stdlib/modules/bindings-generator.md`, public
+behavior details. The 16:14 review resolves the earlier emission questions; the
+initial provisional policies are superseded. No assigned API remains blocked.
 
-Work proceeds in three verified batches: pure string/alignment/indentation
-effects; libclang cursor/comment effects with original native SDK oracles;
-options-dependent spacing and fill policy. Tests cover caller-visible output,
-mutation, lifetimes and malformed inputs in interpreter and Mac native O0/O2.
-Formatting and strict lint run on the dedicated files and module facade.
+- Comment prepending uses one space, preserves location, and borrows the input
+  when there was no previous text. Combining two nonempty strings allocates new
+  storage; the caller retains responsibility for its previous input storage.
+- Prefix comments have a recorded line or an embedded LF. Prefix emission trims
+  spaces/tabs/CR from each split line, emits a newline and then optional current
+  indentation. It does not insert initial indentation. Postfix comments are
+  nonempty non-prefix comments, emitted with one preceding space and normalized
+  CRLF/CR line endings.
+- Alignment uses output-name byte counts for declaration/typedef/macro/bitfield
+  members, excludes extern members, and adds qualifier widths unless ignored.
+  Functions and all other categories are ineligible, so function-global-movement
+  options do not affect these eligible categories. It does not fall back to source
+  names or treat OMIT_FROM_OUTPUT as a qualifier. Null members are diagnosed.
+- Both spacing overloads always store the new location. Ordinary entries get
+  one newline; mimicked source gaps/file changes add one more. NO_SPACING removes
+  the ordinary newline. The category overload intersects the active options.
+  Line arithmetic avoids wrapping at the u32 boundary.
+- Native comment filling trims raw text, copies nonempty text, and records the
+  expansion location only when it precedes the declaration. An absent comment
+  preserves both existing fields. Conditional filling refreshes unset metadata
+  or the cursor's definition, preserving existing comments when no new one exists.
+- Cursor names are owned copies; names containing ` at ` normalize to empty.
+  Debug printing logs descendants through the caller's logging context, with
+  nesting indentation and no log for the supplied root. Traversal uses libclang.
 
-## Independent policy pending review
+## Canonical state and integration
 
-The supplied reviewed page currently specifies signatures without the formatting
-and selection details asked in `specs/questions/generator-emission.md`. Until a
-reviewed answer arrives, the first batch uses these explicit independent choices:
+`internal/developer-tools/generator-context/module.jai` is the sole unparameterized
+owner of `context.generator: *void` and `context.generator_options: *void`.
+`gp_current_generator()` and `gp_current_options()` privately recover the
+consuming module instance's canonical types. No duplicate Context fields,
+canonical records, options copies, generator registries or compiler exceptions
+are introduced. The run owner installs pointers to its canonical records; callers
+retain lifetime and nested context/restoration responsibility. A null active
+options pointer is diagnosed by the category-spacing overload. The plain boolean
+overload needs no options. Comment filling follows the reviewed native contract
+and does not invent a preservation-option gate.
 
-- Prepending nonempty text inserts a newline before nonempty existing text;
-  empty text leaves the comment unchanged. The combined text is a fresh owned
-  allocation; existing input storage is borrowed and is never freed implicitly.
-- Raw trailing Doxygen markers `///<`, `//!<`, `/**<`, `/*!<` distinguish postfix
-  comments. Prefix emission preserves bytes, optionally indents each line, and
-  appends a newline only when absent. Postfix emission preserves bytes and inserts
-  one preceding space; it does not terminate the declaration's line.
-- Alignment uses the maximum byte count of `output_name`, falling back to `name`,
-  excludes omitted declarations unless `ignore_flags`, and adds no padding.
-- Indentation repeats TAB_STRING `Generator.tab_depth` times; negative depth and
-  missing active Generator are diagnosed by assertions before output mutation.
-- Cursor names are fresh owned copies of libclang spelling, including empty
-  spelling. Debug printing is an explicit diagnostic operation on one cursor,
-  showing kind, spelling and spelling-location line/column without recursion.
+The integrator/tooling/model owners were notified in `worker-inbox.md` of the
+exact access protocol and the single `#load "emission-helpers.jai"`. The facade is
+loaded locally for actual public-import verification. Shared orchestration stays
+with its owner; integrate `tools/check_generator_emission.py` once.
 
-These policies are not claims of reference equivalence. Names remain partially
-implemented in the inventory until reviewed behavior and actual checks agree.
+## Unspecified edge policies
 
-## Verified checkpoint
+Empty prepend input leaves existing text unchanged. A terminal LF produces a
+final empty split line; every split line is emitted. When both qualifier flags
+are present, using takes precedence over as. Unset locations have a null file;
+definition identity uses `clang_getCursorDefinition`, including a later definition
+following an earlier forward declaration. Non-leading comment replacements leave
+an existing comment location unchanged. Replaced owned strings are not implicitly
+freed because inputs can be borrowed. These safe choices concern edges and
+ownership left unspecified by the review, not claims of additional reference
+behavior.
 
-`python3 tools/check_generator_emission.py` passes actual public behavior in Mac
-interpreter/native O0/O2, official SDK C cursor oracles at O0/O2, six desktop
-source checks, jaifmt and warnings-denied module-root/fixture lint. The fixture
-imports two configured generator instances and exercises each through the one
-shared Context field, including zero indentation. No duplicate field exception
-is used. Native cursor names are copied before disposing their CXString and two
-independent returned names are checked for mutable aliasing.
+## Verification and boundaries
 
-Seven names have working implementations under documented independent policies:
-`prepend_comment`, `append_prefix_comment`, `append_postfix_comment`,
-`get_name_alignment` (both overloads), `append_indentation`,
-`get_name_for_cursor` (one implementation across configured branches), and
-`debug_print_cursor`. Reviewed-contract confirmation is still outstanding for
-these names, so they remain partial rather than complete in the matrix.
+`python3 tools/check_generator_emission.py` checks actual public imports in Mac
+interpreter/native O0/O2, official SDK C oracles at O0/O2, six desktop source
+checks, jaifmt and warnings-denied module-root/fixture lint. The fixtures cover
+output, ownership, alignment eligibility, both spacing overloads, overflow bounds,
+two configured instances, nested shared options, native leading/trailing/absent
+comments, forward declarations versus definitions, anonymous names and descendant
+logging with original SDK traversal counts/depth. The original header, native
+facts and execution boundaries are recorded in `native/generator-emission-evidence.json`.
+Missing active options and negative indentation are checked for real assertion
+diagnostics in interpreter/native O0/O2; no empty success result substitutes for
+those invalid calls.
 
-Three names are not implemented yet: `maybe_add_spacing` (two overloads),
-`fill_comment`, and `fill_location_and_comment_if_needed`. Their exact unanswered
-contracts are questions 4, 6 and 7; their common dependency is the tooling owner's
-single active-options access protocol. No substitute options singleton or public
-no-op body is installed. See `status/generator-emission-progress.json`.
+The SDK oracle distinguishes tentative C declarations from an initialized
+definition; the fixture uses an actual initialized definition to verify metadata
+refresh. No compiler relaxation or special case was needed.
 
-The complete prior platform suite also passes with the new facade loaded.
-Runtime evidence is Mac only; other desktop targets are source checks.
-
-The native fixture also verifies raw-comment CXString and comment-range ABI
-against the original C oracle: the leading comment starts at 1:1, trailing
-comment at 3:11, and the uncommented variable has an empty string/null range.
-These are observed official SDK facts for the original fixture, not a decision
-about the unresolved `fill_comment` policy. Both SDK O0/O2 and Jai
-interpreter/native O0/O2 agree.
-
-The combined `tools/check_developer_tools.py` replay after `e91f33f6` passes the
-private bindings pipeline, prior platform suite, C++ callbacks, configured SDK,
-Debug lifecycle, native ABI and profiler setup stages. It then fails at the
-unchanged `bindings-macros.jai:43` gate, matching the independently reduced lost
-string-macro diagnostic in `generator-platform-macro-cause.md`. The proper owner
-was notified through the mailbox. This checkpoint does not claim a green combined
-suite or alter its gate.
+Runtime evidence is macOS arm64 only; other desktop targets are source checks.
+The last combined replay still fails the unchanged `bindings-macros.jai:43`
+callback diagnostic gate described in `generator-platform-macro-cause.md`, after
+passing the prior platform/SDK setup stages. That proper-owner issue is independent
+of the assigned helper implementation and is not suppressed here.

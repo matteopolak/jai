@@ -15,5 +15,7 @@
   "functions": ["prepend_comment", "append_prefix_comment", "append_postfix_comment", "get_name_alignment", "maybe_add_spacing", "append_indentation", "fill_comment", "fill_location_and_comment_if_needed", "get_name_for_cursor", "debug_print_cursor"],
   "baseline": "7467b49d",
   "prior_completion_commit": "f6909c62",
+  "status": "all assigned reassigned names implemented and verified",
+  "remaining": [],
   "focus": "comment and spacing emission, cursor names and diagnostics; disjoint reassignment"
 }
