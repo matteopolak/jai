@@ -906,3 +906,21 @@ Codex metadata and Check semantics remain subsets. Full1630declaration inventory
 is not full behavior support. Producer tests independently authored but separate
 root review remains pending. All current production/Jai/native/ABI/regeneration/
 lint verification remains required; no staged producer pass counts integrated.
+
+
+Window1f66dc1 integrated as8e920639. Real Meson child-discovery and LLVMcache
+receipt/configuration/corruption/partial-install tests:8PASS in prepared local
+venv with Meson1.8.3/Mako1.3.10/MarkupSafe3.0.3/packaging25.0/PyYAML6.0.3.
+First invocation with bare systemPython failed because Meson was absent;
+dependency setup corrected and original failure retained, no assertion weakened.
+This is host build-tool regression evidence, not ARM64Windows driver execution.
+Cache hashes selected public SDK/compiler/tool binaries and installed LLVM tree,
+rejects symlinks/stale/partial changes, persists completedLLVM before Mesa; no
+driver cache reused. Hashing full SDK/tool trees costs startupI/O deliberately.
+
+Filtered coordinatorCI9d87e76 reports fuzzPASS and SDL3Linux/macOSfourCPUsPASS.
+WindowsSDL3 stops beforeCcompile at hardcodedVSdiscovery (SDLowner fixing).
+Windowscompilerlink stops at kernelbase.lib SDKattribute (compilerowner fixing),
+so follow-onruntime steps are not independent behavior failures. ARM64Mesa source
+download timed out beforebuild; no native driver evidence from that attempt.
+No rawvendorCIlogs read and no release/push/dispatch performed.
