@@ -57,8 +57,9 @@ policy but still a resource-risk question for review. No success boolean hides i
 
 ## Remaining concrete public surface
 
-Unix CMSG_FIRSTHDR/CMSG_ALIGN/CMSG_SIZE/CMSG_LEN/CMSG_DATA are still missing;
-CMSG_SIZE's intended relationship to native SPACE/LEN needs review. The36 macOS
+Unix CMSG_FIRSTHDR/CMSG_ALIGN/CMSG_LEN/CMSG_DATA now execute and match actual
+host native SDK vectors (portable-socket-cmsg.md). Only CMSG_SIZE remains missing;
+its intended relationship to native SPACE/LEN needs review. The36 macOS
 tcphdr/tcp_connection_info accessors are now implemented and verified against
 actual SDK C records; see portable-socket-fields.md. Linux TCP/tcp_info, Android
 TCP and Windows scope-ID helpers now have real source implementations. The exact

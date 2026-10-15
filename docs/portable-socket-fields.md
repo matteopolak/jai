@@ -109,5 +109,5 @@ target/socket-bionic-header-verified.log and target/socket-tcp-unix-final.log.
 Complete reviewed accessor source inventory: macOS36, Windows4, Linux26, Android22
 conditional variants. Android body checking/native, Linux native, Windows native
 and active target-aware lint remain pending. Remaining missing Socket algorithms
-are CMSG_FIRSTHDR/CMSG_ALIGN/CMSG_SIZE/CMSG_LEN/CMSG_DATA, plus named unresolved
+are CMSG_SIZE (four other helpers now implemented in portable-socket-cmsg.md), plus named unresolved
 native shapes and Unix reflected fd_set element-type compiler gap.

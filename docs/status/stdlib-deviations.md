@@ -280,3 +280,13 @@ rejects -os android, so Android body/native validation remains blocked. No targe
 constant overrides or fake backend. Old Linux-only implementation/facade files
 are removed. Public-header SHA/provenance and initial manual include-path staging
 error are documented in portable-socket-fields.md; no assertions skipped.
+
+Ancillary helpers: four real functions match native SDK vectors, CMSG_SIZE omitted
+pending exact relationship to native SPACE/LEN. CMSG_ALIGN uses native macOS4/
+Linux-Android64-bit8 boundary, not a universal guessed pointer-size rule. Negative
+sizes and unrepresentable alignment/u32 result diagnose; this is an independent
+safety policy for unspecified invalid inputs, not claimed reference wrapping.
+Live-record/control-storage preconditions remain with caller. Native Linux/
+Android still pending despite Linux pure #run execution. Initial signed/unsigned
+test mismatch fixed by explicit boundary conversions; no signature/assertion
+change. No copied Jai bodies, fake kernel calls or test/lint suppressions.

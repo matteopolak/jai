@@ -164,3 +164,14 @@ Full107 positives/23 faults/14 negatives and integration/target checks pass
 still fails (target/socket-tcp-unix-whole-lint.log). Superseded Linux-only files
 removed. All reviewed bitfield variants now have real source bodies; remaining
 Socket CMSG algorithms/native shapes/reflection and native platform gates remain.
+
+Ancillary increment: four exact CMSG procedures match4097 actual host native SDK
+vectors in interpreter/native O0/O2 (host ARM64/translated x64). Linux/macOS both
+CPU public #run assertions pass. Root layout/extreme-size/privacy regression plus
+two checked size faults added. Full108 positives/25 checked faults in both modes/
+14 compile negatives plus prior integration/target checks pass
+(target/socket-cmsg-full.log).359 owned files format/check; active CMSG roots and
+positive fixtures strict lint pass. Whole strict lint still fails at
+target/socket-cmsg-whole-lint.log. Only CMSG_SIZE remains the missing ancillary
+helper, with fine invalid-extent semantics still questioned; native Linux/
+Android and target-aware lint remain pending. Exact inventory: portable-socket-cmsg.md.

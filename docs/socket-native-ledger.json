@@ -5859,25 +5859,25 @@
     "name": "CMSG_ALIGN",
     "condition": "OS != .WINDOWS",
     "spec_line": 138,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native ancillary helper; host SDK vectors verified, other native platforms pending"
   },
   {
     "name": "CMSG_DATA",
     "condition": "OS != .WINDOWS",
     "spec_line": 141,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native ancillary helper; host SDK vectors verified, other native platforms pending"
   },
   {
     "name": "CMSG_FIRSTHDR",
     "condition": "OS != .WINDOWS",
     "spec_line": 137,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native ancillary helper; host SDK vectors verified, other native platforms pending"
   },
   {
     "name": "CMSG_LEN",
     "condition": "OS != .WINDOWS",
     "spec_line": 140,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native ancillary helper; host SDK vectors verified, other native platforms pending"
   },
   {
     "name": "CMSG_SIZE",

@@ -205,9 +205,9 @@ cross-year limitation. Native date range1601..30827 is explicit; month/day field
 are adjusted to the reviewed zero-based representation. Milliseconds are retained
 and finer precision is truncated by native SYSTEMTIME output.
 
-Public local wall times are validated as Gregorian dates and checked by a native
-UTC/local round trip to reject skipped DST times. Ambiguous repeated times retain
-the native selection; no reference ambiguity policy is claimed. Tests compare
+Public local wall times validate Gregorian fields; native zone conversion selects
+DST behavior without additional round-trip rejection. Invalid native conversions
+report through assertion handling. Tests compare
 local calendar fields after round trip, not arbitrary timestamp identity inside
 a repeated hour. UTC timestamps compare exactly at millisecond resolution.
 The date validator exchanges only primitive integers, preserving parameterized

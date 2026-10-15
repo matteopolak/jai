@@ -58,6 +58,8 @@ def main():
     authored_scope = set(re.findall(r"^\s*(\w+)\s*::\s*Fields\.", scope_facade.read_text(), re.MULTILINE)) if scope_facade.exists() else set()
     linux_facade = ROOT / "stdlib/Socket/tcp-unix-fields.jai"
     authored_linux = set(re.findall(r"^\s*(\w+)\s*::\s*Fields\.", linux_facade.read_text(), re.MULTILINE)) if linux_facade.exists() else set()
+    cmsg_facade = ROOT / "stdlib/Socket/cmsg.jai"
+    authored_cmsg = set(re.findall(r"^\s*(\w+)\s*::\s*Cmsg\.", cmsg_facade.read_text(), re.MULTILINE)) if cmsg_facade.exists() else set()
     manual = {"Socket", "INVALID_SOCKET", "SOCKET_ERROR", "SOCKET_WOULDBLOCK", "SOCKET_WOULDBLOCK_CONNECT"}
     for declaration in sorted(spec.declarations, key=declaration_group):
         code, name = declaration.code.rstrip(";"), declaration.name
@@ -87,6 +89,8 @@ def main():
                 record["status"] = "authored native TCP accessor; cross-target compile-time vectors verified, native Linux pending"
             elif name in authored_linux and guard == "OS == .ANDROID" and "tcpi_" not in name:
                 record["status"] = "authored shared TCP accessor; bionic header ABI checked on host, Android target unavailable"
+            elif name in authored_cmsg:
+                record["status"] = "authored native ancillary helper; host SDK vectors verified, other native platforms pending"
             else:
                 record["status"] = "authored wrapper or pending helper"
             ledger.append(record)
