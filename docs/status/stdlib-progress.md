@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint:c4d6a4f, native ancillary helpers. Current host-tooling
+Current durable checkpoint:eab3383, Android JNI naming/missing-surface inventory. Current host-tooling
 increment adds exact Android JNI ABI naming and a253-row missing public-surface
 inventory. Full109 positives/26 checked faults in both modes/14 compile negatives
 plus existing integration and Linux/Windows target checks pass
@@ -302,3 +302,19 @@ helper, with fine invalid-extent semantics still questioned; native Linux/
 Android and target-aware lint remain pending. Exact inventory: portable-socket-cmsg.md.
 
 Android host tooling increment: exact x64/ARM64 JNI directory names pass host interpreter/native, Linux/Windows checks and focused strict lint. Unsupported custom CPU diagnostics pass both modes.109 positives/26 faults/14 negatives and integration checks pass;363 owned files format/check, whole strict lint still fails. Missing API inventory regenerates identically with253 declaration/overload/nested rows; no functionality credited to those rows. Parent Android/native bindings and excluded modules are untouched.
+
+Watcher safety increment: source-built private close_v2 reports actual error plus
+released state; retained objects remain retryable, released objects cannot be
+double-closed. Failed registration reuses metadata;4097 real file-as-directory
+failures have bounded retained allocation counts and zero captured allocations
+after teardown. Native C tests execute SDK EBUSY retention/retry and real SDK
+EDEADLK error-channel injection under ASan/UBSan. Public event and six-error
+continuing-handler fixtures pass interpreter and actual host ARM64/translated
+x64 native O0/O2 (target/watcher-close-reuse-matrix.log). Universal library and
+translated executable architecture checked. Focused strict lint passes;365 owned
+Jai files format/check. Whole strict lint still fails; original generic-pointer
+default constraint reproducer preserved, no API changed to hide it. Last broad
+109-positive/26-fault/14-negative suite passed at target/watcher-close-full.log;
+later watcher-only changes reran the dedicated full native matrix. Linux/Windows
+watcher backends and full integrated CI remain unfinished. Detailed test triage/
+private-protocol limits and source deployment prerequisite: portable-file-watcher.md.

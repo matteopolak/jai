@@ -299,3 +299,32 @@ action executed. Parent Android bindings untouched; formatting ownership excepti
 is scoped only to Android/Toolchain, not a lint suppression. All other toolchain
 APIs remain missing, now explicitly listed with other untouched portable modules
 in portable-missing-surface.md (253 rows, no functionality credited).
+
+Watcher native ownership fix: close_v2 distinguishes actual error code from
+released/retained object, prevents ABI mismatch with stale helpers, and retains
+Jai state for retry only when real resources remain. Native operations execute
+outside optional assertions. Stopping instances reject polling/additions; callers
+must retry deinit after a reported retained failure. No background cleanup
+guarantee; never retrying can retain resources until process exit. Registration
+metadata is reserved first and recycled on failure, avoiding untracked native
+objects and unbounded failed-registration arena growth. Existing event behavior
+is retained.
+
+Verification limits: actual SDK EBUSY retention/retry and real SDK EDEADLK seeded
+into the private native error channel are C mechanism tests under ASan/UBSan,
+not fabricated public FSEvents outcomes. Public event/diagnostic programs execute
+host ARM64/translated x64 O0/O2; failed native Jai teardown is not directly forced
+through the public surface. Source review covers its retained/released state
+branches. Native source helper remains a required build/deployment dependency;
+universal slices are real and no binary is committed. Binding Context ABI defect,
+Linux/Windows backends and full integrated CI remain separate gaps.
+
+Staging corrections: nonexistent one-argument Basic pointer conversion was an
+owned source defect, fixed with native string view without API additions.
+Default generic pointer inference is a real compiler gap; original Box reproducer
+preserved, explicit specialization used only in new fixture. Test's assumed
+pre-callback handling flag was an incorrect oracle; removed that unsupported
+assumption while preserving six decisive lifetime/error checks and context
+restoration. Verification checks restore the fatal handler so captured assertions
+cannot yield false passes; draft never counted green. Normal formatter repair
+and failure logs retained. Details: portable-file-watcher.md.
