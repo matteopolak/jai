@@ -1,5 +1,23 @@
 # Portable stdlib progress
 
+Native lookup audit found/fixed real absolute Mac crash-helper LC_ID_DYLIB in the
+producer tree. Now @rpath identity (Linux basename SONAME source configured).
+Moved-distribution test compiles and runs actual native OFF/ON crash behavior;
+otool verifies selected relocated package rpath, with no original producer helper
+dependency. Existing overrides untouched; direct per-helper override absent/TODO.
+Libclang copy/default belongs excluded tools owner, no edits. Final production
+packaging still coordinator gate. Evidence native-package-red/final.log;
+portable-native-package-lookup.md has exact installed-tree/dependency handoff.
+
+Reviewed deferred-body initializer staged in pending/metaprogram-plugins-deferred-init.jai:
+declared #placeholder, scoped source fulfillment, typed indirect invocation and
+ordinary generated imports. No message pump/yield/undeclared callee. Current
+compiler fails placeholder never defined, also seen on new compiler owner's
+reference-confirmed independent deferred-body probe. --deferred-candidate records
+actual failing positive; no completed-init credit. Compiler owner local fix now
+passes its probe, but checkpoint/integration still pending. Rejected direct-call
+draft stays separate and is not required semantics.
+
 Four reviewed Android formatter aliases now preserve canonical FormatInt and
 nonbaked named parameters/defaults via exact #bake_arguments. All256 values/four
 widths, type metadata, unsigned64, padding/minimum/grouping pass interpreter/native

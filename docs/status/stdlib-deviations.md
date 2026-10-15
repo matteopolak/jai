@@ -1,5 +1,18 @@
 # Portable stdlib worker deviations
 
+Native helper audit: absolute producer install name was a genuine packaging bug,
+now removed through @rpath Mac identity/basename Linux SONAME. Mac moved-package
+runtime/link evidence passes; Linux execution/deployment-minimum/architecture
+packaging pending. Direct helper-specific override is unsupported/TODO; existing
+JAIC_NATIVE_LIBS behavior preserved without a new feature. No claim of complete
+release packaging from a composed test distribution. Details native-package doc.
+
+Current VALID plugin initializer candidate uses reviewed #placeholder plus deferred
+body/indirect call. It remains staged pending general compiler checkpoint and actual
+positive tests; never counted complete. This is distinct from the REJECTED direct
+unknown-callee draft. Current failure matches independent confirmed general probe;
+no error weakening, message interception, pump, yield or CLI-name restriction.
+
 REMOVED Default late-parent-option workaround: reviewed during-compile API controls
 do_output/debugger, preserving static output type/name/path and dynamic settings.
 Normal/interpreter build-driver modes both create actual native child workspaces;
