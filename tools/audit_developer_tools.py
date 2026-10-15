@@ -17,6 +17,50 @@ MODULES = {
 }
 
 
+def remaining_matrix(inventory):
+    questions = {
+        ("Bindings_Generator", "generate_bridge"): "Bindings_Generator question9: bridge naming/output/library contract",
+        ("Bindings_Generator", "ensure_local_libclang_exists"): "Bindings_Generator question11: installation/copy policy",
+        ("Bindings_Generator", "clang_getFileTime"): "Bindings_Generator question12: canonical time_t dependency",
+        ("Bindings_Generator", "is_same_type"): "Bindings_Generator question10: model equivalence",
+        ("Bindings_Generator", "is_same_expression"): "Bindings_Generator question10: model equivalence",
+        ("Bindings_Generator", "is_same_literal"): "Bindings_Generator question10: literal equivalence",
+        ("Debug_Info", "parse_frame_description_entry"): "Debug_Info question4: remaining frame encodings/offset conventions",
+        ("Debug_Info", "parse_compilation_unit_v4"): "Debug_Info questions5/6: Parse_Context and Declaration.kind shapes",
+        ("Debug_Info", "parse_dwarf_debug_info"): "Debug_Info questions5/6: canonical parser dependencies",
+        ("Debug_Info", "get_filename"): "Debug_Info question8: file/directory indexing and path text",
+        ("Debug_Info", "get_filename_for_file_id"): "Debug_Info question8 for DWARF overload; CodeView implementation pending",
+    }
+    output = ["# Developer tooling remaining function matrix", "",
+              "Generated from the reviewed per-API inventory by tools/audit_developer_tools.py. Native source/symbol coverage is distinct from invocation. Supported subsets have additional limits in the progress/deviations documents; this table is not a claim that other paths are complete.", "",
+              "[Precise questions](../specs/stdlib/developer-tools-questions.md), [verified effects](developer-tools-progress.md), [limits and dependencies](developer-tools-deviations.md), [native integration plan](../developer-tools-native-integration.md).", ""]
+    for module, information in inventory.items():
+        functions = {}
+        for entry in information["declarations"]:
+            if re.search(r"::\s*(?:inline\s+)?\(", entry["declaration"]):
+                functions.setdefault(entry["name"], []).append(entry)
+        pending = {name: entries for name, entries in functions.items() if any(entry["implementation"] == "pending" for entry in entries)}
+        source_only = {name: entries for name, entries in functions.items() if any("invocation remains unverified" in entry["implementation"] for entry in entries)}
+        output += [f"## {module}", "", f"{len(pending)} function names have pending declarations; {len(source_only)} native function names still lack invocation fixtures.", ""]
+        if pending:
+            output += ["| Function | Reviewed overload variants | Next work / precise question |", "| --- | ---: | --- |"]
+            for name, entries in sorted(pending.items()):
+                reason = questions.get((module, name), "Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior.")
+                if module == "Debug_Info" and ("msf" in name or "stream" in name or name in {"parse_pdb", "get_stream_size", "stream_exists", "is_valid_page_number", "is_valid_stream_number", "is_valid_user_stream_number", "verify_integrity", "ensure_room", "is_free_page", "alloc_page", "free_page", "is_fpm_page_number"}):
+                    reason = "Debug_Info question7: canonical MSF/UPN/UNSN dependencies; private MSF wire reader is staged"
+                if module == "Codex":
+                    reason = "Codex questions1–3: reviewed wire/metrics/plugin semantics are being refined"
+                if module == "Iprof":
+                    reason = "Iprof questions1–3: instrumentation/timer/history/report semantics are being refined"
+                output.append(f"| `{name}` | {len(entries)} | {reason} |")
+            output.append("")
+        if source_only:
+            output += ["| Native function | Evidence / next check |", "| --- | --- |"]
+            output += [f"| `{name}` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |" for name in sorted(source_only)]
+            output.append("")
+    (ROOT / "docs/status/developer-tools-remaining.md").write_text("\n".join(output) + "\n")
+
+
 def main():
     inventory = {}
     for module, slug in MODULES.items():
@@ -118,6 +162,9 @@ def main():
                 item["implementation"] = "supported subset; actual compiler-message rewrite and edit safety fixture"
         if module == "Debug_Info":
             for item in declarations:
+                if item["name"] in {"Line_Info", "Line_Info_Sequence", "Line_Mapping", "File_Info", "Dwarf_File_Id",
+                                     "get_line_mapping_for_address", "get_line_mappings_for_address_range"}:
+                    item["implementation"] = "reviewed line records and DWARF interval queries; original x64/arm64 O0/O2 line-table SDK oracles, interpreter/native effects and malformed/overlap diagnostics"
                 if item["name"] in {"Int_Set", "cardinality", "is_set"}:
                     item["implementation"] = "reviewed bit-set record and operations; interpreter/native O0/O2 boundaries and borrowed-storage mutation verified"
                 if item["name"] in {"Call_Frame_Address_Instruction_Type", "Call_Frame_Address_Instruction",
@@ -155,6 +202,7 @@ def main():
                              "declarations": declarations, "reviewed_members": members}
     destination = ROOT / "docs/developer-tools-api.json"
     destination.write_text(json.dumps(inventory, indent=2) + "\n")
+    remaining_matrix(inventory)
     print(f"Inventoried {sum(len(x['declarations']) for x in inventory.values())} reviewed declaration variants across {len(inventory)} modules")
 
 

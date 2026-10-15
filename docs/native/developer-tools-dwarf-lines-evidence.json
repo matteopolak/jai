@@ -1,0 +1,396 @@
+{
+  "scope": "original Linux-target DWARF4 objects decoded by host SDK; no target executable run",
+  "fixtures": [
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "optimization": 0,
+      "rows": [
+        {
+          "address": 0,
+          "line": 1,
+          "column": 0,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 7,
+          "line": 2,
+          "column": 27,
+          "file_id": 1,
+          "flags": [
+            "is_stmt",
+            "prologue_end"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 10,
+          "line": 2,
+          "column": 36,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 13,
+          "line": 2,
+          "column": 18,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 16,
+          "line": 3,
+          "column": 18,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 22,
+          "line": 4,
+          "column": 16,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 31,
+          "line": 5,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 33,
+          "line": 6,
+          "column": 16,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 42,
+          "line": 8,
+          "column": 12,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 45,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "epilogue_begin"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 47,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "end_sequence"
+          ],
+          "discriminator": 0
+        }
+      ],
+      "line_bytes_sha256": "4ca13df83d093590cf97c6f35b77690903d8762f71c05eaa732652414c3e34c4"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "optimization": 2,
+      "rows": [
+        {
+          "address": 0,
+          "line": 3,
+          "column": 18,
+          "file_id": 1,
+          "flags": [
+            "is_stmt",
+            "prologue_end"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 12,
+          "line": 0,
+          "column": 18,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 15,
+          "line": 2,
+          "column": 36,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 18,
+          "line": 2,
+          "column": 18,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 22,
+          "line": 0,
+          "column": 0,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 26,
+          "line": 8,
+          "column": 12,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 30,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 31,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "end_sequence"
+          ],
+          "discriminator": 0
+        }
+      ],
+      "line_bytes_sha256": "975544f2d372d1ca0a7ab08fbf25a31c79d6d28cd8fd4a5500c3e9be49d9d447"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "optimization": 0,
+      "rows": [
+        {
+          "address": 0,
+          "line": 1,
+          "column": 0,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 8,
+          "line": 2,
+          "column": 27,
+          "file_id": 1,
+          "flags": [
+            "is_stmt",
+            "prologue_end"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 12,
+          "line": 2,
+          "column": 36,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 16,
+          "line": 2,
+          "column": 18,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 20,
+          "line": 3,
+          "column": 9,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 24,
+          "line": 3,
+          "column": 18,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 32,
+          "line": 4,
+          "column": 16,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 44,
+          "line": 5,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 48,
+          "line": 6,
+          "column": 16,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 64,
+          "line": 8,
+          "column": 12,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 68,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "epilogue_begin"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 76,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "end_sequence"
+          ],
+          "discriminator": 0
+        }
+      ],
+      "line_bytes_sha256": "90444080c3a9f320a96bb30340d5204c5bf3486dd7edb49637e7b2f7bad5b981"
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "optimization": 2,
+      "rows": [
+        {
+          "address": 0,
+          "line": 1,
+          "column": 0,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 4,
+          "line": 2,
+          "column": 36,
+          "file_id": 1,
+          "flags": [
+            "is_stmt",
+            "prologue_end"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 16,
+          "line": 2,
+          "column": 18,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 24,
+          "line": 0,
+          "column": 0,
+          "file_id": 1,
+          "flags": [],
+          "discriminator": 0
+        },
+        {
+          "address": 40,
+          "line": 8,
+          "column": 12,
+          "file_id": 1,
+          "flags": [
+            "is_stmt"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 44,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "epilogue_begin"
+          ],
+          "discriminator": 0
+        },
+        {
+          "address": 52,
+          "line": 8,
+          "column": 5,
+          "file_id": 1,
+          "flags": [
+            "end_sequence"
+          ],
+          "discriminator": 0
+        }
+      ],
+      "line_bytes_sha256": "cfd7709dd79062bae2df48012d8f26ec6fc0da2287318a114b076fc3ec0be915"
+    }
+  ],
+  "clang_version": "Homebrew clang version 23.1.2\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm/23.1.2/bin\nConfiguration file: /opt/homebrew/Cellar/llvm/23.1.2/etc/clang/arm64-apple-darwin27.cfg\n"
+}

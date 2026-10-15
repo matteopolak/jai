@@ -1,7 +1,7 @@
 {
   "Bindings_Generator": {
     "spec": "docs/specs/stdlib/modules/bindings-generator.md",
-    "spec_sha256": "656d60289707b44719151e864886a31258d82b1194746e890f9c94e96af7bfd3",
+    "spec_sha256": "21cec6a8976a25aa1aca7305778b1686d6d1f95f5d2e45bbbc9e06385b9480d6",
     "declarations": [
       {
         "name": "TARGET_OS",
@@ -23214,7 +23214,7 @@
   },
   "Codex": {
     "spec": "docs/specs/stdlib/modules/codex.md",
-    "spec_sha256": "2d48651ae74061f452b34646d9db8ead94ea4d9c89268a329e3964fe357bb625",
+    "spec_sha256": "9bf0d3fa409ae3848e01e7cee96a7b184d8607afae13da9b95e86c917db5bdcb",
     "declarations": [
       {
         "name": "collect_metrics",
@@ -24985,35 +24985,35 @@
         "declaration": "Dwarf_File_Id :: #type,isa u32",
         "section": "Public declaration inventory",
         "spec_line": 122,
-        "implementation": "pending"
+        "implementation": "reviewed line records and DWARF interval queries; original x64/arm64 O0/O2 line-table SDK oracles, interpreter/native effects and malformed/overlap diagnostics"
       },
       {
         "name": "Line_Info",
         "declaration": "Line_Info :: struct",
         "section": "Public declaration inventory",
         "spec_line": 123,
-        "implementation": "pending"
+        "implementation": "reviewed line records and DWARF interval queries; original x64/arm64 O0/O2 line-table SDK oracles, interpreter/native effects and malformed/overlap diagnostics"
       },
       {
         "name": "Line_Info_Sequence",
         "declaration": "Line_Info_Sequence :: struct",
         "section": "Public declaration inventory",
         "spec_line": 124,
-        "implementation": "pending"
+        "implementation": "reviewed line records and DWARF interval queries; original x64/arm64 O0/O2 line-table SDK oracles, interpreter/native effects and malformed/overlap diagnostics"
       },
       {
         "name": "File_Info",
         "declaration": "File_Info :: struct",
         "section": "Public declaration inventory",
         "spec_line": 125,
-        "implementation": "pending"
+        "implementation": "reviewed line records and DWARF interval queries; original x64/arm64 O0/O2 line-table SDK oracles, interpreter/native effects and malformed/overlap diagnostics"
       },
       {
         "name": "Line_Mapping",
         "declaration": "Line_Mapping :: struct",
         "section": "Public declaration inventory",
         "spec_line": 126,
-        "implementation": "pending"
+        "implementation": "reviewed line records and DWARF interval queries; original x64/arm64 O0/O2 line-table SDK oracles, interpreter/native effects and malformed/overlap diagnostics"
       },
       {
         "name": "Line_Program_Header",
@@ -25041,14 +25041,14 @@
         "declaration": "get_line_mapping_for_address :: (info: Line_Info, address: u64) -> Line_Mapping, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 130,
-        "implementation": "pending"
+        "implementation": "reviewed line records and DWARF interval queries; original x64/arm64 O0/O2 line-table SDK oracles, interpreter/native effects and malformed/overlap diagnostics"
       },
       {
         "name": "get_line_mappings_for_address_range",
         "declaration": "get_line_mappings_for_address_range :: (info: Line_Info, start: u64, end_exclusive: u64) -> [] Line_Mapping, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 131,
-        "implementation": "pending"
+        "implementation": "reviewed line records and DWARF interval queries; original x64/arm64 O0/O2 line-table SDK oracles, interpreter/native effects and malformed/overlap diagnostics"
       },
       {
         "name": "Free_Page_Map",
@@ -33255,7 +33255,7 @@
   },
   "Iprof": {
     "spec": "docs/specs/stdlib/modules/iprof.md",
-    "spec_sha256": "d24da2f88a7f7ddd04a86dc09d9e5ab676fba580952e6b68d9725034cd63ce9b",
+    "spec_sha256": "609453112875e713325cdffa6bfe20acefcda832af45f5f4409cdc1734e06b58",
     "declarations": [
       {
         "name": "IMPORT_MODE",
