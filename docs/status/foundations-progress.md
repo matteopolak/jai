@@ -1,5 +1,36 @@
 # Foundations progress
 
+Continuation after f9cd1c3: fixed bulk array self-append/interior-view append
+across allocator moves, plus overlapping array_copy. A moving allocator poisons
+old storage; its original regression failed before implementation and now
+passes interpreter/native O0/O2 and production WASI O0/O2. Nonoverlapping
+copies retain memcpy and no new public convenience API was introduced.
+The suite now has 43 host and 35 supported WASI cases. Current unchanged LSP
+auto_import suite passes all 13 tests, resolving the previous alias-signature
+documentation failure. A remaining wide-conversion #modify contract gap is
+explicitly recorded in the audit/questions rather than hidden by name coverage.
+
+General host/target fix is integrated read-only from NEW compiler sources.
+The genuine predicate and Preamble now PASS production WASI O0/O2. All 42
+host cases pass interpreter/native O0/O2; all 34 supported WASI cases pass both
+levels, including exact status-1 misuse. Six native unused-code targets pass;
+WASI unused-code still FAILS the independent File/POSIX.FILE producer dependency.
+Shortest float intervals/minimality all 2300 cases pass in native/WASI O0/O2.
+
+The newer linter now exposes incomplete semantic coverage. Correct library
+context requires exact byte-verified paths under the selected staged stdlib,
+plus the pending fixture import path; the driver now enforces that identity.
+A valid unused allocator test parameter now has a real non-null procedure check.
+Shared context owns its inline guard rather than an unused side-effect import.
+Full strict lint remains blocked by Windows-only roots on a host-only CLI and
+intentional negative/cross-only fixtures; see foundations-lint-request.md.
+No blanket suppression, ignored stderr or false lint success is claimed.
+
+## Historical checkpoints
+
+The evidence below records earlier snapshots; current resolutions above
+supersede their old blocker/status statements.
+
 Next batch after 841b417: actual version-2 visualization backend replaces the
 old text snapshot, with real Shared_Memory_Channel packets, deduplication,
 alloc/free history, 500ms connection retry, 250ms update throttling, explicit

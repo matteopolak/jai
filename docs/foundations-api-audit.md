@@ -52,8 +52,8 @@ are recorded separately. Full Basic completion is still in progress.
   and returns the allocator-owned name view. The owned temporary allocator
   supplies its real static name. Preamble has real native caller-scope flags,
   logger defers, allocator-family exclusions and first-use initialization;
-  cross-compilation is blocked by compiler host/target metadata, with a failing
-  genuine regression retained instead of accepting the broken comparison.
+  NEW compiler host/target metadata now makes the cross-compilation early
+  return pass the genuine predicate and production WASI regression.
 
 Original regressions exercise callback effects, nested context restoration,
 default stdout/stderr routing, temporary message storage, numeric boundaries,
@@ -67,8 +67,9 @@ Missing exports are not replaced with inert bodies.
 
 | Responsibility | Outstanding declarations / contracts |
 | --- | --- |
-| Debugger macro | Preamble's native effects pass; its cross early return fails because supplied BUILD_* constants alias target values. General compiler request/probe is recorded. |
-| Leak reporting | No missing ordinary names besides Preamble. Module-qualified frame matching needs source/module identity mapping; current explicit diagnostics are not full support. |
+| Debugger macro | No missing name or cross gap: NEW compiler host constants resolve the earlier failure, and the genuine WASI predicate/Preamble tests pass. Exact allocator-family matching is still a review question. |
+| Wide integer conversions | to_s128/to_u128 exist, but their reviewed #modify source-kind and conversion policies are unspecified. The current cast-based bodies have no guard; precise questions are recorded rather than calling them exact signatures. |
+| Leak reporting | No missing ordinary names. Module-qualified frame matching needs source/module identity mapping; current explicit diagnostics are not full support. |
 | Visualization | No missing names. Native macOS/Linux channel is real and tested; Windows/WASI shared-memory producers remain unavailable and are diagnosed explicitly. |
 
 ## Preserved portable responsibility
@@ -88,9 +89,17 @@ temporary lifetime, no extra verbosity filtering/newline/null-logger check,
 and suppression of empty messages. Typed enum-array lifetime is also resolved.
 Remaining review questions concern module-qualified frame identity, exact
 allocator-family matching and leaf/root trimming boundaries. Preamble requires
-a real host/target compiler distinction. Conservative scanner
+a real host/target compiler distinction, now provided by the NEW producer.
+Conservative scanner
 and ownership heuristics are implementation policy under the reviewed contract.
 
 Name matching does not prove completeness: overload gaps and conditional
 declarations are separately recorded. Full corpus and auto-import ranking CI
 verification belong to coordinator integration.
+
+The latest array review also found a real ownership bug in bulk append: an
+input view into the destination could be invalidated mid-loop by growth.
+The new path captures/rebases such views after a single reserve and copies
+overlapping storage in the safe direction. Nonoverlapping copies retain memcpy.
+Original moving/poisoning allocator tests cover full self-append, interior view
+append, empty append and overlapping/self copy.

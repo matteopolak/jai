@@ -1,5 +1,12 @@
 # General host/target predicate needed by Preamble
 
+Resolved through the NEW compiler producer's general compiler_host constant
+support: BUILD_* now denote the compiler host and OS/CPU denote the target.
+Read-only source refresh/rebuild passes the independent WASI predicate and
+Preamble production WASI O0/O2, retaining native scoped behavior. No Rust or
+private staging compiler patch was made. The original failure evidence below
+is retained for review; this is no longer an outstanding cross blocker.
+
 The synchronized Basic contract now defines Preamble's scoped effects and
 cross-compilation early return. Its real native implementation and regression
 are present: allocator-family exclusions, reentrancy flag, caller-scoped defers,

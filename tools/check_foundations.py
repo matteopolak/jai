@@ -16,7 +16,7 @@ CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "
          "basic-helpers", "basic-print-bytes", "basic-stack-traces", "basic-stack-output",
          "basic-scalars-ownership", "basic-leak-reports", "basic-leak-graphs",
          "basic-visualization-disabled", "basic-visualization-channel", "basic-visualization-timing",
-         "basic-capabilities", "basic-preamble")
+         "basic-capabilities", "basic-preamble", "basic-array-aliasing")
 
 
 def expected_output(name):
@@ -126,7 +126,16 @@ def main():
         linter = args.jailint.resolve(strict=True)
         if not linter.is_relative_to(ROOT / "target"):
             parser.error("use a jailint source build under this checkout's target")
-        run([linter, "-D", "warnings", *owned_sources()], "")
+        lint_sources = []
+        for source in owned_sources():
+            if source.is_relative_to(ROOT / "stdlib"):
+                selected = args.stdlib.resolve() / source.relative_to(ROOT / "stdlib")
+                if source.read_bytes() != selected.read_bytes():
+                    raise RuntimeError(f"selected library copy differs from owned source: {source}")
+                lint_sources.append(selected)
+            else:
+                lint_sources.append(source)
+        run([linter, "-D", "warnings", "-I", ROOT / "tests/portable-stdlib/pending", *lint_sources], "")
         print("passed source-built jailint -D warnings on owned sources and tests", flush=True)
 
     for name, diagnostic in (("hash-unsupported", "get_hash requires an integer, boolean, enum, pointer, or float"),
