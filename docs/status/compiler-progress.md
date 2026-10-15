@@ -1,5 +1,14 @@
 # Compiler progress
 
+2026-10-15 Context module-root repair: separate source preparation from settling
+and finalization. Configured bootstrap imports resolve before root fallback;
+module context fields register before bootstrap #run/body layout. Producer strict
+lint and interpreter/native ARM64 O0/O2 pass. Core late-context rejection remains
+tested. Scoped regressions:165 library,11 layout,9 reflection,2 CLI,10 library-root,
+11 target-aware and4 overload lint tests;11 jailint library tests also pass.
+Full generator/profiler and native prerequisite integration remains with owners.
+See compiler/module-root-context-ordering.md.
+
 2026-10-15 overload audit: concrete generic instances cached while matching no
 longer become independent unreferenced declaration audit roots. Actual selected
 instances remain queued/checked, including later reuse of a previously rejected

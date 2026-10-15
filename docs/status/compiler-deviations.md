@@ -1,5 +1,15 @@
 # Compiler deviations and implementation gaps
 
+## Module-root Context bootstrap ordering
+
+New Rust prepare_sources separates existing loading from settle/finish, allowing
+module-root lint to reuse configured imports before any root finalization. The
+ordinary compiler pipeline and public Jai APIs are unchanged. No module exclusions,
+guessed parameters, duplicate contexts or privacy exceptions are introduced.
+Actual Mac interpreter/native O0/O2 producer execution and strict lint pass;
+full generator/profiler integration and cross-platform execution are not claimed.
+Adding fields after Context has already been used for layout remains an error.
+
 ## Generic instance audit provenance
 
 Binding scopes distinguish concrete generic instances from source declarations.

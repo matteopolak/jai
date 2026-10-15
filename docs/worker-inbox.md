@@ -19,3 +19,18 @@ unknown atomic_compare_exchange dependency. No Extensions code changed.
 Public memory protocol helper/native prerequisite remain other owners' work.
 No Context/add_context reproducer has arrived in this inbox at this checkpoint;
 no speculative Context change is made without the exact reduction/contract.
+
+
+## Context linter request 2026-10-15 14:54 UTC
+
+Independent reproduction copied to tests/producer-requests/profiler-context and docs/compiler/profiler-codex-handoff.md. Fix module-root bootstrap/import ordering generally; valid module #add_context currently arrives after Context layout. Program-root execution passes. Preserve configured bootstrap parameters/private imports; no profiler exclusions. Your checkout has older Extensions dependencies, so full Http replay missing atomic_compare_exchange should be done by integrator with merged Extensions; focused general overload reductions remain your regression gate.
+
+## Context compiler repair verified 2026-10-15
+
+Context_Probe now passes strict module/program lint and actual interpreter/native
+ARM64 O0/O2. Module-root lint prepares declarations and configured imports before
+settling top-level code/finalizing; no second module/context or privacy exception.
+Tests retain configured parameter identity, single context field size, invalid
+body diagnostics and late-context rejection. See compiler/module-root-context-ordering.md.
+Owner should replay full generator/profiler integration using this compiler;
+other catalogue prerequisites remain assigned externally.
