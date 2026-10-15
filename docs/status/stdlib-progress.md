@@ -1,5 +1,10 @@
 # Portable stdlib progress
 
+Platform-io checkpoints: 2cdbd9b cleanup/diagnostic gates; 7eb81e8 generic Windows
+unwind metadata and bounded iterator. Separate Windows wait-error safety mapping
+and exact SDK-negative logging assertions are added; new native confirmation and
+the interpreter real-thread-handle/compiler handoff remain pending.
+
 Platform-io continuation after 2cdbd9b: implemented generic Windows async unwind
 metadata after an original O2 fixture exposed missing required .pdata entries;
 19 LLVM unit tests/clippy and fresh PE metadata checks pass. Corrected bounded

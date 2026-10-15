@@ -1,5 +1,9 @@
 # Portable stdlib worker deviations
 
+Platform-io's scoped SDK-negative thread wait/logger assertion preserves all
+named-thread output checks; it is not a blanket suppression. New Windows execution
+is pending and the interpreter handle/name interoperability gap remains explicit.
+
 Platform-io's generic Windows unwind-table patch and bounded frame-iterator
 cost/stack limits are recorded in [platform deviations](platform-io-deviations.md).
 Pure iterator/parser tests and cross-built ABI metadata are distinguished from

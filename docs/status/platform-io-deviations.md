@@ -1,5 +1,12 @@
 # Platform I/O deviations and pending verification
 
+Windows thread completion no longer treats WAIT_FAILED as success. The added
+real SDK negative case captures only its expected error, asserts exact message/
+flag/count, and restores the logger/data before named-thread creation. This is
+targeted negative-path verification, not a warning whitelist or output weakening.
+The Windows-specific branch is source/cross checked and still needs native CI;
+the separate interpreter real-handle/name failure remains open.
+
 ## General Windows unwind-table and iteration fixes
 
 - Owned compiler patch: jaic-llvm::apply_codegen_attributes requests async unwind

@@ -1,5 +1,12 @@
 # Platform I/O worker progress
 
+Unwind/iterator checkpoint: `7eb81e8` (following cleanup/diagnostics `2cdbd9b`).
+A separate Windows completion safety fix maps only WAIT_OBJECT_0 to done; failures
+log/return false. Its scoped SDK-negative check restores logging before the
+original named-thread tests, preserving their strict output checks. Host/cross/
+format/49-file lint pass; actual new negative-path execution remains pending.
+This does not claim the interpreter native-handle/name mismatch resolved.
+
 ## General unwind ABI / iterator follow-up after 2cdbd9b
 
 Checkpoint 2cdbd9b contains x64 isolated sessions/private runtime cleanup and

@@ -99,3 +99,23 @@ ABI/toolchain primary references:
 - [LLVM uwtable attribute](https://llvm.org/docs/LangRef.html#function-attributes)
 - [LLVM UWTableKind values](https://llvm.org/docs/doxygen/CodeGen_8h_source.html)
 - [Native RtlLookupFunctionEntry](https://learn.microsoft.com/en-us/windows/win32/api/winnt/nf-winnt-rtllookupfunctionentry)
+
+## Separate thread completion error classification
+
+Source review also found that the Windows thread_is_done predicate treated every
+non-timeout status, including WAIT_FAILED, as completion. It now returns true only
+for WAIT_OBJECT_0, false for WAIT_TIMEOUT, and logs an error/returns false for failed
+or unexpected waits. This matches the existing Unix error-reporting approach and
+does not alter thread records, parameter defaults or normal completion semantics.
+
+The original thread contract adds a real Windows SDK negative wait on a null
+handle, with a logger scoped to that call: it requires false plus exactly one
+specific error. The original logger/data are restored before named workers are
+created, so existing naming warnings still fail strict output comparison. No
+positive-case logging or thread assertion is suppressed. Host/source/cross checks
+pass; this new SDK-negative branch still needs actual Windows execution. No local
+native red/green result is fabricated on the macOS host.
+
+[Microsoft wait result meanings](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject)
+distinguish failure from a signaled thread. This safety correction does not claim
+to resolve the current interpreter output mismatch or its kernel-handle gap.
