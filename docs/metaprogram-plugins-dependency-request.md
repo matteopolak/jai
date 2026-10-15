@@ -1,5 +1,22 @@
 # Metaprogram_Plugins public contract and compiler handoff
 
+CORRECTION17:45: filtered coordinator oracle confirms the continuation probe also
+fails official Jai0.2.030 with undeclared continuation. The timing probe is invalid
+because it mutates build options after the workspace starts. The proposed
+prefix-execute/resolve-callee suspension request is WITHDRAWN; it is not a required
+compiler behavior and must not be implemented to satisfy the draft. Earlier claims
+of a proven compiler gap below are superseded. No raw reference output or source
+was read by this clean worker.
+
+The reviewed dynamic-name public API remains required; dirty reviewer is refining
+its valid evaluation boundary. Real parser support remains verified. Draft
+pending/metaprogram-plugins-init.jai is explicitly REJECTED as an architecture,
+retained for evidence outside active stdlib. The independently authored public
+dynamic.jai fixture now avoids root build-option mutation and supplies a normal
+main entry, so it can be used with the eventual proper initializer (pass an owned
+-exe path when compiling). Do not treat --dynamic-candidate as an acceptance gate
+or its unresolved call as a compiler regression. No CLI-only substitute added.
+
 UPDATED17:24 review resolves the broad questions below. Dynamic names formed
 during compile-time execution ARE required, and the parser/grouping/borrowing/
 terminator/name-list consistency rules are now supplied. No CLI-only restriction

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reviewed parser behavior; dynamic initializer remains a separate compiler gate."""
+"""Reviewed parser behavior; rejected initializer draft is diagnostic-only."""
 import os
 from pathlib import Path
 import shutil
@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dynamic-candidate", action="store_true",
-                        help="run the positive initializer candidate; compiler gaps remain failures")
+                        help="run the rejected dynamic-call draft as a diagnostic, never an acceptance gate")
     args = parser.parse_args()
     library = default.compose()
     shutil.copytree(ROOT / "stdlib/Metaprogram_Plugins", library / "Metaprogram_Plugins", dirs_exist_ok=True)

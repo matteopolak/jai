@@ -5,9 +5,6 @@ M :: #import "Metaprogram_Plugins";
 S :: #import "String";
 
 exercise :: () {
-    options := C.get_build_options();
-    options.output_type = .NO_OUTPUT;
-    C.set_build_options(options);
     workspace := C.compiler_create_workspace("Dynamic plugin regression");
 
     assert(workspace >= 0);
@@ -35,3 +32,5 @@ exercise :: () {
 }
 
 #run,stallable exercise();
+
+main :: () {}

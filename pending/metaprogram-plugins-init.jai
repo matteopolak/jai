@@ -1,5 +1,5 @@
-// Independent real initializer candidate. Requires general compiler #run call
-// suspension; do not count as active support until the positive test executes.
+// REJECTED architecture: reference also rejects the unresolved generated call.
+// Retained failure evidence, not a required compiler semantic or active support.
 init_plugins :: (to_create: [] Plugin_To_Create, results: *[..] *C.Metaprogram_Plugin, w: Workspace) -> (success: bool) {
     if !import_source_requested {
         generated := generate_initializers(to_create);

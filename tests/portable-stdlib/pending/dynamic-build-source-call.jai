@@ -1,4 +1,5 @@
-// General metaprogram requirement: added source during a run can call scoped code.
+// INVALID architecture probe: filtered reference oracle rejects root option
+// mutation after the workspace starts. Timing output is not a compiler contract.
 using #import "Basic";
 C :: #import "Compiler";
 

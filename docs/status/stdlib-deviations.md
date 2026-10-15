@@ -1,5 +1,14 @@
 # Portable stdlib worker deviations
 
+WITHDRAWN plugin architecture: initial draft assumed a running procedure could
+add the definition of its own unresolved callee. Filtered17:45 reference oracle
+disproves that assumption; timing probe also changes root options too late. These
+are invalid architecture/test expectations, not required compiler semantics.
+Draft never entered active stdlib; no patch to compiler proposed after correction.
+Candidate/probes marked rejected/invalid, retained evidence. Real dynamic public
+helper remains missing while dirty reviewer supplies valid boundary; parser tests
+pass. Earlier compiler-gap wording below is superseded. Details dependency doc.
+
 Metaprogram_Plugins only record/parser are active. Real initializer candidate and
 positive dynamic-name test remain outside completed support because general
 compile-time add-source/forward-call suspension is missing. Full candidate lint

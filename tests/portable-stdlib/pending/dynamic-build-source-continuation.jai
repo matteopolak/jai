@@ -1,5 +1,5 @@
-// General positive compiler requirement for dynamic compile-time plugin imports.
-// Execute the known prefix, typecheck newly added source, then resume its call.
+// REJECTED architecture probe: reference also rejects this unresolved call.
+// No required prefix-execution or compiler suspension semantics established.
 using #import "Basic";
 C :: #import "Compiler";
 

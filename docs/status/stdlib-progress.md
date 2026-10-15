@@ -1,5 +1,13 @@
 # Portable stdlib progress
 
+CRITICAL17:45 test-oracle correction: filtered coordinator confirms official Jai
+also rejects dynamic-build-source-continuation; source-call timing probe mutates
+root options too late and is invalid. Proposed dynamic forward-call suspension
+semantics WITHDRAWN, not a compiler requirement. Draft loader marked REJECTED and
+kept outside production; actual dynamic loader still missing pending reviewed
+valid evaluation boundary. Public positive fixture now avoids root mutation and
+has main entry. Parser remains real/verified. No raw reference sources/logs read.
+
 Foundations handoff: current Basic S128 +/- and U128 - are reviewed but missing.
 Independent pending/basic-wide-arithmetic.jai fails S128 Add against NEW foundation
 composition. General custom base/isa operator control executes exactly once with
