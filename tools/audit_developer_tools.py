@@ -51,15 +51,21 @@ def main():
         if module == "Bindings_Generator":
             models = set()
             for path in (ROOT / "stdlib/Bindings_Generator").glob("*.jai"):
-                models.update(re.findall(r"^([A-Za-z_][A-Za-z_0-9]*)\s*::", path.read_text().split("#scope_file")[0], re.MULTILINE))
+                models.update(re.findall(r"^\s*([A-Za-z_][A-Za-z_0-9]*)\s*::", path.read_text().split("#scope_file")[0], re.MULTILINE))
             for item in declarations:
                 if item["name"] in models or item["name"] == "TARGET_OS":
                     item["implementation"] = "reviewed data/defaults/constants implemented; native parser model traversal pending"
+                if item["name"].startswith("clang_") and item["name"] in models:
+                    item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
                 if item["name"] in {"generate_bindings", "normalize_options", "get_default_system_include_paths",
                                      "_default_get_func_args_for_printing", "looks_like_valid_identifier",
                                      "is_hex_digit", "is_valid_int_literal_suffix", "is_valid_float_literal_suffix",
                                      "convert_float_literal", "convert_literal_value", "generate_replacements_array"}:
                     item["implementation"] = "supported staged C parser/literal subset; actual native/interpreter round trips; see limits"
+                if item["name"] in {"visit_declarations", "find_parent_enum", "create_type_of_enum", "change_type_to_enum",
+                                     "change_return_type", "change_return_type_to_enum", "change_argument_type_to_enum",
+                                     "create_pointer_to", "get_int_type"}:
+                    item["implementation"] = "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
         if module == "Performance_Report":
             for item in declarations:
                 item["implementation"] = "implemented; measured native compiler plugin fixture"

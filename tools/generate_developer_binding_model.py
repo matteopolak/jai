@@ -12,16 +12,28 @@ ROOT = Path(__file__).resolve().parents[1]
 SPEC = ROOT / "docs/specs/stdlib/modules/bindings-generator.md"
 
 
-def aggregate(text, name):
+def aggregate(text, name, platform=None):
+    type_text = text
+    inventory = text
+    if platform:
+        type_marker = f"### {platform}-specific type declarations"
+        inventory_marker = f"### {platform}-specific declarations"
+        type_text = text.split(type_marker, 1)[1]
+        inventory = text.split(inventory_marker, 1)[1].split("## Public type members", 1)[0]
+        if platform == "Unix":
+            type_text = type_text.split("### Windows-specific type declarations", 1)[0]
+            inventory = inventory.split("### Windows-specific declarations", 1)[0]
     pattern = rf"^#### `{re.escape(name)}` \([^\n]+\)\n(.*?)(?=^#### |^### |^## |\Z)"
-    match = re.search(pattern, text, re.MULTILINE | re.DOTALL)
+    match = re.search(pattern, type_text, re.MULTILINE | re.DOTALL)
+    if not match and platform:
+        match = re.search(pattern, text, re.MULTILINE | re.DOTALL)
     if not match:
         raise ValueError(f"Missing reviewed aggregate {name}")
     block = match[1]
     literal = re.search(r"```jai\n(.*?)\n```", block, re.DOTALL)
     if literal:
         return literal[1] + "\n"
-    declaration = re.search(rf"^- `{re.escape(name)} :: ([^`]+)`", text, re.MULTILINE)
+    declaration = re.search(rf"^- `{re.escape(name)} :: ([^`]+)`", inventory, re.MULTILINE)
     kind = declaration[1] if declaration else "struct"
     fields = re.findall(r"^- `([^`]+)`", block, re.MULTILINE)
     output = [f"{name} :: {kind} {{"]
@@ -50,6 +62,8 @@ def main():
         "model-flags.jai": ["C_Kind", "Number_Flags", "Declaration_Flags", "Strip_Flags", "Mimic_Spacing_Flags",
                             "Print_Decl_Flags", "Arg_Print_Mode", "Declaration_Visit_Result"],
         "native-model.jai": ["CXToken", "CX_StorageClass", "CXTypeLayoutError"],
+        "native-parser-model.jai": ["CXString", "CXCursorKind", "CXCursor", "CXTypeKind", "CXType",
+                                     "CXErrorCode", "CXTranslationUnitImpl", "CXUnsavedFile", "CXChildVisitResult"],
     }
     directory = ROOT / "stdlib/Bindings_Generator"
     directory.mkdir(exist_ok=True)
@@ -57,10 +71,41 @@ def main():
         source = "// Public data contract from the reviewed specification; private algorithms are independent.\n\n"
         if filename == "native-model.jai":
             source += "CXFile :: *void;\n\n"
-        source += "\n".join(aggregate(text, name) for name in names)
+        for name in names:
+            if filename in {"native-model.jai", "native-parser-model.jai"}:
+                unix, windows = aggregate(text, name, "Unix"), aggregate(text, name, "Windows")
+                if unix == windows:
+                    source += unix + "\n"
+                else:
+                    source += "#if OS == .WINDOWS {\n" + windows + "} else {\n" + unix + "}\n\n"
+            else:
+                source += aggregate(text, name) + "\n"
         if filename == "generation-options.jai":
             source += '\n#scope_file\n#if OS == .WINDOWS W :: #import "Windows";\n'
         (directory / filename).write_text(source)
+    unix_inventory = text.split("### Unix-specific declarations", 1)[1].split("### Windows-specific declarations", 1)[0]
+    windows_inventory = text.split("### Windows-specific declarations", 1)[1].split("## Public type members", 1)[0]
+    api_names = ["CINDEX_VERSION_MAJOR", "CINDEX_VERSION_MINOR", "CXIndex", "CXTranslationUnit", "CXClientData",
+                 "CXCursorVisitor", "clang_createIndex", "clang_disposeIndex", "clang_parseTranslationUnit2",
+                 "clang_disposeTranslationUnit", "clang_getTranslationUnitCursor", "clang_visitChildren",
+                 "clang_getCursorType", "clang_getCursorSpelling", "clang_getCString", "clang_disposeString",
+                 "clang_Type_getSizeOf", "clang_Type_getAlignOf", "clang_getTypeSpelling", "clang_getResultType",
+                 "clang_getArgType", "clang_getNumArgTypes", "clang_Cursor_getNumArguments", "clang_Cursor_getArgument",
+                 "clang_getEnumDeclIntegerType", "clang_getEnumConstantDeclValue", "clang_getEnumConstantDeclUnsignedValue"]
+    source = "// Native parser subset; declarations from the reviewed platform-specific inventories.\n"
+    for name in api_names:
+        def declaration(inventory):
+            result = re.search(rf"^- `({name} :: [^`]+)`", inventory, re.MULTILINE)
+            if not result:
+                raise ValueError(f"Missing reviewed native declaration {name}")
+            return result[1] + ";\n"
+        unix, windows = declaration(unix_inventory), declaration(windows_inventory)
+        if unix == windows:
+            source += unix
+        else:
+            source += "#if OS == .WINDOWS {\n" + windows + "} else {\n" + unix + "}\n"
+    source += '\n#scope_file\nlibclang :: #foreign_library "clang";\n'
+    (directory / "native-parser-api.jai").write_text(source)
     # Exact compatibility arrays are specified in the reviewed refinement.
     names = ["RESERVED_NAMES", "RESERVED_TYPE_NAMES", "TYPEDEFS_TO_UNWRAP", "TYPEDEF_PREFIXES_TO_UNWRAP", "MACROS_TO_IGNORE"]
     constants = []
@@ -91,7 +136,7 @@ def main():
     generated = [
         directory / filename for filename in ["type-model.jai", "declaration-model.jai", "generation-options.jai",
                                                "model-flags.jai", "native-model.jai", "compatibility-names.jai",
-                                               "compatibility-tokens.jai"]]
+                                               "compatibility-tokens.jai", "native-parser-model.jai", "native-parser-api.jai"]]
     subprocess.run([str(ROOT / "target/jaifmt"), "--config", str(ROOT / "jaifmt.toml"),
                     *[str(path) for path in generated]], cwd=ROOT, check=True)
     print("Generated thematic public model files and exact reviewed compatibility arrays")

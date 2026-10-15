@@ -3,6 +3,16 @@ B :: #import "Bindings_Generator";
 B2 :: #import "Bindings_Generator";
 BW :: #import "Bindings_Generator"(TARGET_OS = .WINDOWS);
 
+#run {
+    storage := cast(*Type_Info_Enum) type_info(B.CX_StorageClass);
+
+    #if OS == .WINDOWS {
+        assert(storage.internal_type.signed);
+    } else {
+        assert(!storage.internal_type.signed);
+    }
+}
+
 main :: () {
     assert(B.TOKENS_TO_REPLACE.count == 36);
     assert(B.TOKENS_TO_REPLACE[0][0] == "FLT_MIN" && B.TOKENS_TO_REPLACE[0][1] == "FLOAT32_MIN");

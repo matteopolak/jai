@@ -288,112 +288,112 @@
         "declaration": "change_type_to_enum :: (decl: *Declaration, enum_name: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 47,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_type_to_enum",
         "declaration": "change_type_to_enum :: (decl: *Declaration, _enum: *Enum)",
         "section": "Public declaration inventory",
         "spec_line": 48,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_return_type_to_enum",
         "declaration": "change_return_type_to_enum :: (decl: *Declaration, enum_name: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 49,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_return_type_to_enum",
         "declaration": "change_return_type_to_enum :: (decl: *Declaration, _enum: *Enum)",
         "section": "Public declaration inventory",
         "spec_line": 50,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_return_type_to_enum",
         "declaration": "change_return_type_to_enum :: (name: string, function_type: *Function_Type, enum_name: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 51,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_return_type_to_enum",
         "declaration": "change_return_type_to_enum :: (name: string, function_type: *Function_Type, _enum: *Enum)",
         "section": "Public declaration inventory",
         "spec_line": 52,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_argument_type_to_enum",
         "declaration": "change_argument_type_to_enum :: (decl: *Declaration, argument_name: string, enum_name: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 53,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_argument_type_to_enum",
         "declaration": "change_argument_type_to_enum :: (decl: *Declaration, argument_name: string, _enum: *Enum) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 54,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_argument_type_to_enum",
         "declaration": "change_argument_type_to_enum :: (name: string, function_type: *Function_Type, argument_name: string, enum_name: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 55,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_argument_type_to_enum",
         "declaration": "change_argument_type_to_enum :: (name: string, function_type: *Function_Type, argument_name: string, _enum: *Enum) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 56,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "create_type_of_enum",
         "declaration": "create_type_of_enum :: (_enum: *Enum) -> *CType",
         "section": "Public declaration inventory",
         "spec_line": 57,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_return_type",
         "declaration": "change_return_type :: (decl: *Declaration, new_return_type: *CType)",
         "section": "Public declaration inventory",
         "spec_line": 58,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "change_return_type",
         "declaration": "change_return_type :: (name: string, function_type: *Function_Type, new_return_type: *CType)",
         "section": "Public declaration inventory",
         "spec_line": 59,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "find_parent_enum",
         "declaration": "find_parent_enum :: (decl: *Declaration, enum_name: string) -> *Enum",
         "section": "Public declaration inventory",
         "spec_line": 60,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "visit_declarations",
         "declaration": "visit_declarations :: (visitor: Declaration_Visitor_With_Data, data: *void, decl: *Declaration, parent: *Declaration = null, depth := 0)",
         "section": "Public declaration inventory",
         "spec_line": 61,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "visit_declarations",
         "declaration": "visit_declarations :: (visitor: Declaration_Visitor, decl: *Declaration, parent: *Declaration = null, depth := 0)",
         "section": "Public declaration inventory",
         "spec_line": 62,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "omit_unnecessary_typedefs_and_macros",
@@ -715,14 +715,14 @@
         "declaration": "create_pointer_to :: (pointee: *CType) -> *CType",
         "section": "Public declaration inventory",
         "spec_line": 108,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "get_int_type",
         "declaration": "get_int_type :: (size: int, signed: bool) -> *CType",
         "section": "Public declaration inventory",
         "spec_line": 109,
-        "implementation": "pending"
+        "implementation": "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
       },
       {
         "name": "create_type",
@@ -1758,28 +1758,28 @@
         "declaration": "CINDEX_VERSION_MAJOR :: 0",
         "section": "Unix-specific declarations",
         "spec_line": 297,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CINDEX_VERSION_MINOR",
         "declaration": "CINDEX_VERSION_MINOR :: 64",
         "section": "Unix-specific declarations",
         "spec_line": 298,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXErrorCode",
         "declaration": "CXErrorCode :: enum u32",
         "section": "Unix-specific declarations",
         "spec_line": 299,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXString",
         "declaration": "CXString :: struct",
         "section": "Unix-specific declarations",
         "spec_line": 300,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXStringSet",
@@ -1793,14 +1793,14 @@
         "declaration": "clang_getCString :: (_string: CXString) -> *u8 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 302,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_disposeString",
         "declaration": "clang_disposeString :: (_string: CXString) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 303,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_disposeStringSet",
@@ -2283,7 +2283,7 @@
         "declaration": "CXIndex :: *void",
         "section": "Unix-specific declarations",
         "spec_line": 372,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXTargetInfoImpl",
@@ -2304,28 +2304,28 @@
         "declaration": "CXTranslationUnitImpl :: struct",
         "section": "Unix-specific declarations",
         "spec_line": 375,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXTranslationUnit",
         "declaration": "CXTranslationUnit :: *CXTranslationUnitImpl",
         "section": "Unix-specific declarations",
         "spec_line": 376,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXClientData",
         "declaration": "CXClientData :: *void",
         "section": "Unix-specific declarations",
         "spec_line": 377,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXUnsavedFile",
         "declaration": "CXUnsavedFile :: struct",
         "section": "Unix-specific declarations",
         "spec_line": 378,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXAvailabilityKind",
@@ -2353,14 +2353,14 @@
         "declaration": "clang_createIndex :: (excludeDeclarationsFromPCH: s32, displayDiagnostics: s32) -> CXIndex #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 382,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_disposeIndex",
         "declaration": "clang_disposeIndex :: (index: CXIndex) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 383,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXChoice",
@@ -2577,7 +2577,7 @@
         "declaration": "clang_parseTranslationUnit2 :: (CIdx: CXIndex, source_filename: *u8, command_line_args: **u8, num_command_line_args: s32, unsaved_files: *CXUnsavedFile, num_unsaved_files: u32, options: u32, out_TU: *CXTranslationUnit) -> CXErrorCode #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 414,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_parseTranslationUnit2FullArgv",
@@ -2626,7 +2626,7 @@
         "declaration": "clang_disposeTranslationUnit :: (unknown0: CXTranslationUnit) -> void #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 421,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXReparse_Flags",
@@ -2724,14 +2724,14 @@
         "declaration": "CXCursorKind :: enum u32",
         "section": "Unix-specific declarations",
         "spec_line": 435,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXCursor",
         "declaration": "CXCursor :: struct",
         "section": "Unix-specific declarations",
         "spec_line": 436,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_getNullCursor",
@@ -2745,7 +2745,7 @@
         "declaration": "clang_getTranslationUnitCursor :: (unknown0: CXTranslationUnit) -> CXCursor #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 438,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_equalCursors",
@@ -3046,7 +3046,7 @@
         "declaration": "CXTypeKind :: enum u32",
         "section": "Unix-specific declarations",
         "spec_line": 481,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXCallingConv",
@@ -3060,21 +3060,21 @@
         "declaration": "CXType :: struct",
         "section": "Unix-specific declarations",
         "spec_line": 483,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_getCursorType",
         "declaration": "clang_getCursorType :: (C: CXCursor) -> CXType #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 484,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTypeSpelling",
         "declaration": "clang_getTypeSpelling :: (CT: CXType) -> CXString #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 485,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTypedefDeclUnderlyingType",
@@ -3088,21 +3088,21 @@
         "declaration": "clang_getEnumDeclIntegerType :: (C: CXCursor) -> CXType #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 487,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getEnumConstantDeclValue",
         "declaration": "clang_getEnumConstantDeclValue :: (C: CXCursor) -> s64 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 488,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getEnumConstantDeclUnsignedValue",
         "declaration": "clang_getEnumConstantDeclUnsignedValue :: (C: CXCursor) -> u64 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 489,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Cursor_isBitField",
@@ -3123,14 +3123,14 @@
         "declaration": "clang_Cursor_getNumArguments :: (C: CXCursor) -> s32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 492,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Cursor_getArgument",
         "declaration": "clang_Cursor_getArgument :: (C: CXCursor, i: u32) -> CXCursor #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 493,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXTemplateArgumentKind",
@@ -3305,7 +3305,7 @@
         "declaration": "clang_getResultType :: (T: CXType) -> CXType #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 518,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getExceptionSpecificationType",
@@ -3319,14 +3319,14 @@
         "declaration": "clang_getNumArgTypes :: (T: CXType) -> s32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 520,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getArgType",
         "declaration": "clang_getArgType :: (T: CXType, i: u32) -> CXType #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 521,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Type_getObjCObjectBaseType",
@@ -3459,7 +3459,7 @@
         "declaration": "clang_Type_getAlignOf :: (T: CXType) -> s64 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 540,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Type_getClassType",
@@ -3473,7 +3473,7 @@
         "declaration": "clang_Type_getSizeOf :: (T: CXType) -> s64 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 542,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Type_getOffsetOf",
@@ -3641,21 +3641,21 @@
         "declaration": "CXChildVisitResult :: enum u32",
         "section": "Unix-specific declarations",
         "spec_line": 566,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXCursorVisitor",
         "declaration": "CXCursorVisitor :: #type (cursor: CXCursor, parent: CXCursor, client_data: CXClientData) -> CXChildVisitResult #c_call",
         "section": "Unix-specific declarations",
         "spec_line": 567,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_visitChildren",
         "declaration": "clang_visitChildren :: (parent: CXCursor, visitor: CXCursorVisitor, client_data: CXClientData) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 568,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getCursorUSR",
@@ -3711,7 +3711,7 @@
         "declaration": "clang_getCursorSpelling :: (unknown0: CXCursor) -> CXString #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 576,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Cursor_getSpellingNameRange",
@@ -5132,28 +5132,28 @@
         "declaration": "CINDEX_VERSION_MAJOR :: 0",
         "section": "Windows-specific declarations",
         "spec_line": 782,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CINDEX_VERSION_MINOR",
         "declaration": "CINDEX_VERSION_MINOR :: 64",
         "section": "Windows-specific declarations",
         "spec_line": 783,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXErrorCode",
         "declaration": "CXErrorCode :: enum s32",
         "section": "Windows-specific declarations",
         "spec_line": 784,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXString",
         "declaration": "CXString :: struct",
         "section": "Windows-specific declarations",
         "spec_line": 785,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXStringSet",
@@ -5167,14 +5167,14 @@
         "declaration": "clang_getCString :: (_string: CXString) -> *u8 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 787,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_disposeString",
         "declaration": "clang_disposeString :: (_string: CXString) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 788,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_disposeStringSet",
@@ -5657,7 +5657,7 @@
         "declaration": "CXIndex :: *void",
         "section": "Windows-specific declarations",
         "spec_line": 857,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXTargetInfoImpl",
@@ -5678,28 +5678,28 @@
         "declaration": "CXTranslationUnitImpl :: struct",
         "section": "Windows-specific declarations",
         "spec_line": 860,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXTranslationUnit",
         "declaration": "CXTranslationUnit :: *CXTranslationUnitImpl",
         "section": "Windows-specific declarations",
         "spec_line": 861,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXClientData",
         "declaration": "CXClientData :: *void",
         "section": "Windows-specific declarations",
         "spec_line": 862,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXUnsavedFile",
         "declaration": "CXUnsavedFile :: struct",
         "section": "Windows-specific declarations",
         "spec_line": 863,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXAvailabilityKind",
@@ -5727,14 +5727,14 @@
         "declaration": "clang_createIndex :: (excludeDeclarationsFromPCH: s32, displayDiagnostics: s32) -> CXIndex #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 867,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_disposeIndex",
         "declaration": "clang_disposeIndex :: (index: CXIndex) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 868,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXChoice",
@@ -5951,7 +5951,7 @@
         "declaration": "clang_parseTranslationUnit2 :: (CIdx: CXIndex, source_filename: *u8, command_line_args: **u8, num_command_line_args: s32, unsaved_files: *CXUnsavedFile, num_unsaved_files: u32, options: u32, out_TU: *CXTranslationUnit) -> CXErrorCode #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 899,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_parseTranslationUnit2FullArgv",
@@ -6000,7 +6000,7 @@
         "declaration": "clang_disposeTranslationUnit :: (unknown0: CXTranslationUnit) -> void #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 906,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXReparse_Flags",
@@ -6098,14 +6098,14 @@
         "declaration": "CXCursorKind :: enum s32",
         "section": "Windows-specific declarations",
         "spec_line": 920,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXCursor",
         "declaration": "CXCursor :: struct",
         "section": "Windows-specific declarations",
         "spec_line": 921,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_getNullCursor",
@@ -6119,7 +6119,7 @@
         "declaration": "clang_getTranslationUnitCursor :: (unknown0: CXTranslationUnit) -> CXCursor #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 923,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_equalCursors",
@@ -6420,7 +6420,7 @@
         "declaration": "CXTypeKind :: enum s32",
         "section": "Windows-specific declarations",
         "spec_line": 966,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXCallingConv",
@@ -6434,21 +6434,21 @@
         "declaration": "CXType :: struct",
         "section": "Windows-specific declarations",
         "spec_line": 968,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_getCursorType",
         "declaration": "clang_getCursorType :: (C: CXCursor) -> CXType #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 969,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTypeSpelling",
         "declaration": "clang_getTypeSpelling :: (CT: CXType) -> CXString #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 970,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getTypedefDeclUnderlyingType",
@@ -6462,21 +6462,21 @@
         "declaration": "clang_getEnumDeclIntegerType :: (C: CXCursor) -> CXType #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 972,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getEnumConstantDeclValue",
         "declaration": "clang_getEnumConstantDeclValue :: (C: CXCursor) -> s64 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 973,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getEnumConstantDeclUnsignedValue",
         "declaration": "clang_getEnumConstantDeclUnsignedValue :: (C: CXCursor) -> u64 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 974,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Cursor_isBitField",
@@ -6497,14 +6497,14 @@
         "declaration": "clang_Cursor_getNumArguments :: (C: CXCursor) -> s32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 977,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Cursor_getArgument",
         "declaration": "clang_Cursor_getArgument :: (C: CXCursor, i: u32) -> CXCursor #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 978,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "CXTemplateArgumentKind",
@@ -6679,7 +6679,7 @@
         "declaration": "clang_getResultType :: (T: CXType) -> CXType #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1003,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getExceptionSpecificationType",
@@ -6693,14 +6693,14 @@
         "declaration": "clang_getNumArgTypes :: (T: CXType) -> s32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1005,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getArgType",
         "declaration": "clang_getArgType :: (T: CXType, i: u32) -> CXType #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1006,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Type_getObjCObjectBaseType",
@@ -6833,7 +6833,7 @@
         "declaration": "clang_Type_getAlignOf :: (T: CXType) -> s64 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1025,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Type_getClassType",
@@ -6847,7 +6847,7 @@
         "declaration": "clang_Type_getSizeOf :: (T: CXType) -> s64 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1027,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Type_getOffsetOf",
@@ -7015,21 +7015,21 @@
         "declaration": "CXChildVisitResult :: enum s32",
         "section": "Windows-specific declarations",
         "spec_line": 1051,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "CXCursorVisitor",
         "declaration": "CXCursorVisitor :: #type (cursor: CXCursor, parent: CXCursor, client_data: CXClientData) -> CXChildVisitResult #c_call",
         "section": "Windows-specific declarations",
         "spec_line": 1052,
-        "implementation": "pending"
+        "implementation": "reviewed data/defaults/constants implemented; native parser model traversal pending"
       },
       {
         "name": "clang_visitChildren",
         "declaration": "clang_visitChildren :: (parent: CXCursor, visitor: CXCursorVisitor, client_data: CXClientData) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1053,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getCursorUSR",
@@ -7085,7 +7085,7 @@
         "declaration": "clang_getCursorSpelling :: (unknown0: CXCursor) -> CXString #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1061,
-        "implementation": "pending"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_Cursor_getSpellingNameRange",

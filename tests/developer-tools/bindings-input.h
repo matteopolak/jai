@@ -16,3 +16,6 @@ union Payload {
 typedef int (*Callback)(int value);
 Counter sample_apply(struct Sample *sample, enum Mode mode);
 int callback_apply(Callback callback, int value);
+#ifndef DEVELOPER_TOOLS_BINDINGS_INPUT_H
+#define DEVELOPER_TOOLS_BINDINGS_INPUT_H
+#endif

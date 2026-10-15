@@ -29,7 +29,10 @@ def main():
          "-c", "tests/developer-tools/dwarf-native.c", "-o", "target/developer-tools-dwarf.o"])
     run([prefix / "bin/llvm-objcopy", "--dump-section", ".eh_frame=target/developer-tools-eh-frame.bin",
          "target/developer-tools-dwarf.o"])
-    cases = ["c-header", "c-header-roundtrip", "c-header-reject", "c-header-modes", "c-header-support-roundtrip", "bindings-public", "bindings-public-roundtrip", "bindings-literals", "bindings-sdk-public", "bindings-sdk-roundtrip", "print-vars", "rewrite", "dwarf-cfa", "debug-native", "iprof-report", "codex-inspection", "check-porting"]
+    cases = ["c-header", "c-header-roundtrip", "c-header-reject", "c-header-modes", "c-header-lifetime", "c-header-support-roundtrip", "bindings-public", "bindings-public-roundtrip", "bindings-literals", "bindings-tree", "bindings-sdk-public", "bindings-sdk-roundtrip", "bindings-clang-api", "print-vars", "rewrite", "dwarf-cfa", "debug-native", "iprof-report", "codex-inspection", "check-porting"]
+    run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-I", prefix / "include",
+         "tests/developer-tools/bindings-sdk-layout.c", "-o", "target/developer-tools-sdk-layout"])
+    run([ROOT / "target/developer-tools-sdk-layout"], output="CXString=16 CXCursor=32 CXType=24 CXUnsavedFile=24\nCXIndexOptions=24 PreambleStoragePath=8 InvocationEmissionPath=16\n")
     run([JAIC, "tests/developer-tools/c-header.jai", "-interp"], output="ok\n")
     run(["clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-I", "target",
          "tests/developer-tools/point.c", "-o", "target/libdeveloper_tools_point.dylib"])
