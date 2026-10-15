@@ -953,7 +953,7 @@
         "declaration": "maybe_convert_expression_zero_to_null :: (decl: *Declaration)",
         "section": "Public declaration inventory",
         "spec_line": 142,
-        "implementation": "pending"
+        "implementation": "integer-zero pointer/default normalization; alias identity, source literal preservation, signed/unsigned zero, scalar/float/nonzero/reference exclusions and actual generated foreign default calls verified interpreter/native Mac O0/O2, configured C O0/O2 and strict lint; allocation/invalid-source edge policies documented"
       },
       {
         "name": "convert_children_to_expression",

@@ -17,6 +17,7 @@ import check_developer_check
 import check_developer_check_plugin
 import check_developer_cursor_source
 import check_developer_multi_input
+import check_developer_pointer_defaults
 import build_developer_debug
 import check_developer_debug_lifecycle
 import check_developer_debug_windows
@@ -135,6 +136,7 @@ def main():
     check_developer_check_plugin.main()
     check_developer_cursor_source.main()
     check_developer_multi_input.main()
+    check_developer_pointer_defaults.main()
     configured_cases = check_developer_sdk_configuration.main()
     build_developer_debug.main()
     check_developer_debug_lifecycle.main()
