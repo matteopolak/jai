@@ -1,15 +1,27 @@
 # Compiler progress
 
+Forward enum dependency implementation passed final checkpoint verification.
+Original MASK/LAST reduction now passes host/WASM CLI source checks; interpreter
+returns intended value5. Declaration collection/lazy entities replace sequential
+enum evaluation, preserving selected source/reflection order and implicit normal/
+flags sequencing. Independent core/IDE/reflection/invalid-program regressions and
+actual native ARM64/WASM64 O0/O2 checks pass; actual wasm32 compiler-host runtime
+also passes. Final full available core/backend run: 339 pass, zero fail, one
+inherited corpus sweep ignored across42 binaries (target/enum-dependencies-final-suite.log).
+Scoped format/item spacing, strict positive Jai lint, core/LLVM all-target clippy
+and actual wasm32 source clippy pass. Source and docs are ready for local commit.
+No public API/library/peer-tree changes or integration optimizer/hook/recovery
+feature overlap. Conservative structure/value dependency boundary is explicit in
+compiler/enum-dependencies.md and compiler-deviations.md; exact review question
+recorded. Native Windows/Linux and full Socket/stdlib remain coordinator gates.
+
 Verified browser runtime split checkpoint: 457dc04. Implementation is test-only,
 using the existing real sandbox provider; four focused cases, actual wasm32,
 CLI guard, format/strict lint and clippy pass. Full local browser limitation remains
 25/32 against the older staged library; no current-CI full-pass claim.
-Next mailbox reduction was read/reproduced independently: staged forward enum
-MASK/LAST fails unknown LAST (target/forward-enum-producer-red.log). Owned
-new_enum_type/enum_items currently evaluates declarations sequentially. The next
-compiler scope requires dependency resolution with ordered reflection/implicit
-numbering, selected conditional/injected declarations and genuine cycle/range
-diagnostics. No enum implementation or completion is claimed by this checkpoint.
+At that checkpoint the next mailbox reduction was independently reproduced:
+forward enum MASK/LAST failed unknown LAST (target/forward-enum-producer-red.log).
+The implementation above supersedes that earlier pending status.
 
 Browser Thread failure triaged as unsupported public-module test coupling, not a
 guard defect. Split the combined test into independent private SandboxHost

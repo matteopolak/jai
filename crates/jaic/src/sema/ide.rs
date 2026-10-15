@@ -1812,6 +1812,9 @@ impl Compiler {
             return None;
         }
         let (kind, detail) = match &e.kind {
+            EntityKind::EnumMember {
+                ty, ..
+            } => (IdeKind::Constant, self.types.name(*ty)),
             EntityKind::Local {
                 ty, ..
             } => (IdeKind::Variable, self.types.name(*ty)),

@@ -823,6 +823,9 @@ impl Compiler {
             } => IdeClass::Type,
             EntityKind::Const {
                 ..
+            }
+            | EntityKind::EnumMember {
+                ..
             } => IdeClass::Constant,
             EntityKind::Import(_) => IdeClass::Module,
             EntityKind::Builtin(b) => match b {
