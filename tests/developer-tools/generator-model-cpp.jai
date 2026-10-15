@@ -85,6 +85,7 @@ main :: () {
         assert((with_ref.decl_flags & .NEEDS_ARGUMENT_WRAPPER) != 0);
         assert((item.declarations[7].decl_flags & .PRIVATE) != 0);
         assert(item.virtual_functions.count == 1 && item.virtual_functions[0] == abstract_read);
+        assert((item.flags & .IS_ABSTRACT) != 0);
         factory := cast(*B.Function) item.declarations[8];
         callback := factory.type.type_of_function.return_type.pointer_to.type_of_function;
 

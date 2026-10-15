@@ -10,3 +10,6 @@ extern int original_apply(OriginalAlias *node, const char *name, int (*callback)
 int original_expression = (2 + 3) * -4; ///< trailing model comment.
 int original_array[3];
 int (*original_callback)(int);
+__int128 original_signed_wide;
+unsigned __int128 original_unsigned_wide;
+unsigned __int128 original_wide_value = ((unsigned __int128)1) << 100;

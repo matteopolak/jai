@@ -43,7 +43,7 @@ main :: () {
 
     B.clang_visitChildren(root, visit, *capture);
     defer array_free(capture.children);
-    assert(capture.children.count == 6);
+    assert(capture.children.count == 9);
     generator: B.Generator;
     generator.translation_unit = unit;
     session := S.open(*generator, B.TARGET_OS);
@@ -84,6 +84,26 @@ main :: () {
         after := B.create_struct(capture.children[5]);
 
         assert(after != null && after.declarations.count == 1 && !session.failed);
+        derived_shell := B.create_struct(capture.children[7], resolving_type_only = true);
+
+        assert(derived_shell.parents.count == 0 && derived_shell.declarations.count == 0);
+        types_only := B.create_declaration(capture.children[7], root, true);
+
+        assert(types_only == cast(*B.Declaration) derived_shell);
+        assert(derived_shell.parents.count == 1 && derived_shell.declarations.count == 0);
+        derived := B.create_struct(capture.children[7]);
+        base := B.create_struct(capture.children[6]);
+
+        assert(derived == derived_shell && derived.parents.count == 1 && derived.declarations.count == 1);
+        assert(derived.parents[0].type.type_of_struct == base);
+        assert(derived.parents[0].name == "OriginalBase" && derived.parents[0].parent == cast(*B.Declaration) derived);
+        assert(base.declarations.count == 1 && !session.failed);
+
+        push_context {
+            context.logger = log;
+            assert(B.create_enum(capture.children[8]) == null);
+            assert(errors == 7 && session.failed);
+        }
     }
 
     print("ok\n");
