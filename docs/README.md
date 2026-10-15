@@ -106,7 +106,7 @@ The LLVM backend, C ABI and linking.
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
 - [Portable implementation gaps](portable-stdlib-gaps.md): focused pending reproducers and unresolved behavior
 - [Runtime configuration adoption](portable-runtime-configuration.md): actual settled allocations, CAPS and ownership handoff
-- [Time and calendar API inventory](portable-time.md): real POSIX clocks, epoch/calendar conversions and remaining contracts
+- [Time and calendar API inventory](portable-time.md): real clocks, calendar conversion, caller-return duration macro and remaining contracts
 - [Machine_X64 compiler gaps](portable-machine-gaps.md): original interpreter/native CPUID failure and genuine native C comparison
 - [Flat_Pool core and container audit](portable-flat-pool.md): real initialization, lazy page commitment, parameterized overwrite and lifecycle
 - [Pool behavior and checked allocation extents](portable-pool.md)

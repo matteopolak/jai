@@ -13,7 +13,7 @@ adds no public helper types. Native conversions use the NEW POSIX types directly
 | timespec_to_apollo; to_timespec | NEW macOS/Linux/Android native ABI conversions; reviewed Unix epoch constant, normalized seconds/nanoseconds, negative timestamps use floor seconds; reverse conversion reports out-of-range/invalid failure |
 | current_time_consensus; current_time_monotonic | Native POSIX realtime/monotonic queries execute on host; NEW Windows system-FILETIME/QPC code and fixture bodies type-check both CPUs. Counter arithmetic executes host interpreter/native. Realtime includes epoch, monotonic has arbitrary native origin; errors assert. Actual Windows calls/cache remain unverified |
 | to_calendar; calendar_to_apollo | Reentrant native UTC/local conversions on macOS/Linux/Android execute. NEW Windows SYSTEMTIME/FILETIME and dynamic-zone conversions type-check both CPUs, including configured Basic; native Windows execution remains unverified. Exact zero-based fields/milliseconds; POSIX delegates normalization and -1 sentinel collision to libc. Output failures log and return zero; Windows invalid input reports through assertion handling |
-| ConvertToApollo | Reviewed value contract resolved; exact no-result header conflicts with current compiler expression typing. Original general reproducer pending/expand-return-inference.jai; not exported or counted complete |
+| ConvertToApollo | Exact no-result #expand header; caller-scoped return of full signed128 scaled value, with ordinary caller defer cleanup and single argument evaluation |
 | calendar_to_string; calendar_to_iso_string | Reviewed English/ISO layouts, month clamping, UTC Z/local no suffix, minimum digit widths and real temporary storage implemented; all twelve English months and configured Basic tested |
 | filetime_to_apollo; to_filetime | NEW exact Windows FILETIME wrappers, two-word integer scaling and bounded unsigned100ns conversion. Production arithmetic source executes interpreter/native O0/O2 on host; public canonical Windows ABI/body checks pass both CPUs, actual Windows execution unverified |
 | seconds_since_init | Reviewed lazy FIRST CALL origin implemented; exact first-call capture, shared alias storage and private CAS publication. Actual host interpreter/native and eight-thread race tests pass; Windows body checks retain native-execution gate |
@@ -54,13 +54,28 @@ incorrectly assumed minimum23 characters (May is shorter); exact twelve-month
 expected strings replace that faulty oracle. Failure evidence is retained at
 target/calendar-text-green2.log and target/calendar-foundation-verified.log.
 
-ConvertToApollo remains a precise declaration/language handoff: reviewed
-(m:s64, FACTOR:s64) #expand has no result annotation, while the new reviewed body
-contract returns a value. Current compiler rejects value use of even the original
-general macro in pending/expand-return-inference.jai as void. Review whether the
-public signature needs a result annotation or general macro return inference is
-required. No arrow/signature change, invented caller local, fake success or broken
-production facade is introduced. Evidence: target/calendar-expand-generic.log.
+ConvertToApollo now follows the refreshed caller-return contract exactly:
+(m:s64, FACTOR:s64) #expand has no result annotation; its backtick return exits
+the containing Apollo_Time procedure. An independent signed64-by-signed64
+product uses the existing unsigned full-width multiplication mechanism, with
+sign corrections in the high word. Both sign combinations and extrema fit the
+signed128 result domain; no narrowing s64 intermediate is used. Ordinary unit
+converters are preserved. Private sign correction alone uses #no_aoc for required
+two-word modular operations; no new public helper is exported.
+
+apollo-caller-return.jai exercises the exact typed containing procedure, caller
+defer execution, single evaluation, negative units, zero and both signed extrema.
+It passes interpreter/host ARM64/translated x64 native O0/O2 against this worker
+and the NEW foundations composition. Focused strict lint passes; the existing six
+foundation/time/calendar fixtures pass interpreter/native O0/O2, with Windows
+CPU source checks and formatting-stable composition. Evidence: target/apollo-
+caller-return-green.log, target/apollo-caller-return-foundation.log,
+target/apollo-caller-return-strict.log and target/apollo-time-regression.log.
+
+The prior ordinary no-result macro value-expression probe did not model this
+public API. It remains as original evidence in pending/expand-return-inference.jai
+with a superseded-oracle comment; it is not a required stdlib compatibility
+expectation or an established compiler defect. No arrow/header change is needed.
 
 The first missing-export compile failure is retained at target/time-conversion-red.log.
 No reference compiler or old library supplied input. Foundation facade/load-list

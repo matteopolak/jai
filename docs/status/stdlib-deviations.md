@@ -402,3 +402,13 @@ reviewed. No streaming API, signing, key management or native crypto exports
 are fabricated. Actual native hashlib vectors are independent test oracles only.
 Tests execute unaligned/NUL/padding boundaries and million-a, both native CPUs
 O0/O2 and interpreter. Native Linux/Windows/Android execution remains pending.
+
+ConvertToApollo: previous compiler-gap report was based on an ordinary macro
+value-expression probe, which does not represent the refreshed caller-return
+contract. That mistaken oracle is now explicitly superseded; original source
+and failure evidence retained. Exact no-result macro header is preserved.
+Private signed product corrections use existing full-width multiply and #no_aoc
+only for modular high-word corrections; no fake arithmetic, inferred arrow,
+compiler hack or public helper export. Both producer compositions execute
+interpreter/ARM64+x64 native O0/O2. Further floating rounding/calendar policy and
+native platform gates remain separate; no new workaround introduced.

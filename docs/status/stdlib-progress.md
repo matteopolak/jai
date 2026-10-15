@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint: c45ee67 (critical Pool/Thread checkpoint d6db68f). Pool/Unix Thread
+Current durable checkpoint: 1579458 (critical Pool/Thread d6db68f, ISA c45ee67). Pool/Unix Thread
 critical corrections are committed: field-only Pool guard, no registry,
 allocator/options preserved by reset/release, genuine returned leak report fixed.
 Every owned essential Thread SDK operation now executes outside optional asserts;
@@ -375,3 +375,13 @@ and Linux/Windows source checks (target/sha-machine-full-final.log). The critica
 and passes again (target/lifecycle-final-compiler.log).387 owned Jai files pass
 format/check; focused new production/test strict lint passes. Full owned lint
 and native platform CI remain separately open.
+
+Resolved time continuation: exact ConvertToApollo no-result #expand now uses
+caller-scoped return into an Apollo_Time procedure. Signed full-width scaling,
+argument single evaluation and caller defer cleanup pass interpreter/ARM64+x64
+native O0/O2 in both own and NEW foundations compositions. Focused strict lint
+passes; existing six time/calendar fixtures pass interpreter/native O0/O2 and
+configured Windows source checks. The stale ordinary macro value-expression
+probe is retained and explicitly classified as superseded for this API, not a
+required compatibility oracle or an established compiler gap. No public result
+annotation, compiler special case, fake value or peer write.
