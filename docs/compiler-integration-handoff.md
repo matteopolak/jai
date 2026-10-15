@@ -1,5 +1,26 @@
 # Compiler integration handoff
 
+Host/target checkpoint 9bab736: BUILD_OS/BUILD_CPU identify the executing compiler binary; OS/CPU remain output selection. Native/WASM64 emitted code, wasm32 compiler host and cross-child, and staged independent Preamble interpreter/native/WASI O0/O2 pass. Browser child failures now prevent parent execution. Exact commands, preserved broader-browser failures and runtime adoption boundary: compiler/host-target-constants.md.
+
+Latest completeness batches: 2f36a1e rejects qualified constant writes;
+1a120b4 models suspended Win32/CRT scheduler threads; 1b19b3f resolves public
+alias callable documentation. See compiler/completeness-follow-up.md.
+702fe6f validates Win32 callback ABI; 0eeb90c makes private library lint checking
+complete and preserves public procedure alias identity in library rules.
+
+Private runtime configuration now provides settled target data without public
+parameters. Direct/procedure-value interpreter/native/WASM64 tests pass. A staged
+NEW producer adapter executes actual allocation with a late 65536 root setting
+and independent native 0/131072 child workspaces, plus a child's later root-size
+change before root interpreter/native execution. Exact consumer edits, command
+and evidence are in compiler/runtime-configuration.md. Portable producer adoption
+is still required; older consumers retain an explicit nondefault-size diagnostic.
+Windows x64/ARM64 Rust checks/clippy pass, while actual Windows suspended-thread
+runtime execution remains a platform gate. LSP library/auto-import suites pass
+25/16 with an explicitly selected independent library; assertions are unchanged.
+Jailint's 28 library/CLI/rule cases and unchanged rule expectations pass; incomplete
+checking now returns failure. The staged runtime edits also pass strict lint.
+
 Latest continuation: 5d0bf33 adds ordered mixed/baked variadics, checked dynamic
 frame storage and general binding-time interfaces. fea1090 adds
 canonical SIMD operand binding, private CLI plugin orchestration, strict module
@@ -27,8 +48,8 @@ core/backend tests, native/WASM64 execution, public facade fixtures, LSP units
 and wasm32 compiler-host checking are listed in the progress report. Required
 compile-rejection cases are distinguished from native execution.
 
-Nondefault actual target temporary-storage allocation needs a joint private
-compiler/runtime mechanism. NO_OUTPUT metadata round-tripping works; no unreviewed
+Nondefault target temporary storage now has a private compiler/runtime mechanism;
+production runtime producer adoption remains pending. NO_OUTPUT metadata works; no unreviewed
 Runtime_Support parameter is passed. Autorun still needs producer path joining/
 executable resolution; see compiler/producer-integration-requests.md. Full
 integration, corpus and platform CI remain coordinator responsibilities.

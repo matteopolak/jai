@@ -20,6 +20,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 Jai language behavior as implemented by `jaic`.
 
 - [Casts and conversions](language/casts-and-conversions.md)
+- [Compiler host and output target constants](compiler/host-target-constants.md)
 - [The implicit context](language/context.md)
 - [Control flow: loops, cases and defer](language/control-flow.md)
 - [Dead-code elimination: what is checked when unused](language/dead-code-elimination.md)
@@ -69,6 +70,8 @@ Compile-time execution, the `Compiler` module, reflection and code values.
 - [Measured performance messages](compiler/performance-messages.md): reviewed run records, actual counters and host timing boundary
 - [Compiler progress](status/compiler-progress.md) and [deviations](status/compiler-deviations.md): producer checkpoints, verification evidence, gaps and required long-term fixes
 - [Completeness follow-up](compiler/completeness-follow-up.md): qualified constant writes, runtime configuration, suspended threads and alias documentation
+- [Private runtime configuration](compiler/runtime-configuration.md): settled workspace sizes, real target data and the staged producer allocation contract
+- [Complete library lint context](tools/linter-library-context.md): private roots, real bootstrap bindings, alias identity and failure on incomplete checks
 - [Literal precision](compiler/literal-precision.md): contextual defaults, required precision, aliases, folding, overloads and module arguments
 - [Browser integration status](compiler/browser-integration-status.md): explicit source-library embedding, supported Compiler regression and remaining integration failures
 - [Using-filter propagation](compiler/using-filter-propagation.md): parameter/macro bindings, embedded filters, mapped storage and safe Code reconstruction

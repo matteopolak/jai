@@ -1,5 +1,59 @@
 # Compiler progress
 
+Verified implementation checkpoint: 9bab736. Host/target constants now use compiler-binary host identity independently of output selection. Original 12-combination core test, native/WASM64 O0/O2 execution, staged foundations Preamble interpreter/native/WASI O0/O2, and actual wasm32 compiler host/cross-child checks pass. Child-workspace negative control also repaired browser parent false success. Core/backend and separate CLI runtime/plugin regressions, format and scoped clippy pass. Broader browser suite remains 21/29: eight dependency/legacy failures retained. Private runtime producer adoption remains pending. See compiler/host-target-constants.md for exact evidence and limits.
+
+Linter batch committed as 0eeb90c; all 28 library/CLI/rule cases and clippy pass.
+Runtime transport also catches a later cross-workspace root change: source-built
+execution/emission drivers refresh target data after child compilation. Original
+test failed before this repair; actual interpreter/native root allocation now
+uses 131072 after the child's setter. No new public Jai helper or parameter is
+introduced. Final verification is green: 275 distinct core/backend cases, 41 LSP,
+28 jailint and three focused CLI cases; public contracts 25/25 in each mode.
+Owned and staged runtime edits pass format/strict lint. Native/wasm32/Windows
+x64/ARM64 clippy with warnings denied and scoped Rust checks pass. All runtime
+source/tests/handoff work is included in this checkpoint's commit; producer
+adoption and actual Windows/full-platform execution remain required.
+
+Final tool follow-up: general jailint library-root context, configured lazy
+bootstrap reuse, complete requested-file facts and unconditional incomplete-check
+failure are implemented after original regressions failed. The NEW platform
+producer fixes were reviewed; no peer write occurred. Alias-aware library rules
+use exact public procedure/instance identity and preserve local shadows. Existing
+rule expectations pass unchanged with explicit independent-library selection.
+The candidate's three runtime edits now pass format and strict lint too.
+
+LSP batch committed as 1b19b3f. Private runtime configuration is implemented:
+settled workspace values update readonly target data and new interpreter entry
+context allocation. Original core and actual native/WASM64 O0/O2 regressions pass,
+including procedure-value getters and already-interpreted data refresh. Invalid
+ABI/range and older-runtime diagnostics remain. Staged NEW runtime integration
+executes real late-root 65536 allocations in interpreter/native O0/O2 and separate
+native child allocations for 0/131072. Producer adoption remains pending; exact
+edits and checks are in compiler/runtime-configuration.md. Owned helper/fixtures
+pass rebuilt jaifmt --check and rebuilt verbose jailint -D warnings with no
+incomplete compilation. Stale-tool/check-only failure evidence is retained.
+An extra original Win32 callback ABI regression now rejects u64 results before
+spawning (702fe6f); valid suspended/CRT cases still pass. The runtime batch is
+verified and included in this checkpoint's commit.
+
+Final executed evidence: 275 distinct selected core/backend cases pass (the
+nested guarded-copy subprocess is not double-counted); LSP 25 library plus 16
+auto-import cases pass; all three focused CLI cases pass. The public runner passes
+25/25 cases in each interpreter/native mode, retaining required compile failures
+and actually executing positive native artifacts. Core/backend/CLI/LSP all-target
+clippy, wasm32 browser-host clippy and Windows x64/ARM64 core all-target clippy
+pass with warnings denied. Scoped rustfmt/item spacing, jaifmt --check and rebuilt
+verbose jailint -D warnings pass without incomplete compilation. Extensions is
+unchanged. Logs are target/compiler-completeness-*.log and
+target/compiler-runtime-config-*.log. No new peer writes, forbidden-source access,
+reference execution, subagents or publication occurred in this continuation.
+
+Remaining gates: portable adoption of private runtime config, actual Windows
+thread/allocation execution, full integrated corpus/platform CI. Existing AST,
+debugger/alternate backend and producer Autorun path limits remain explicit in
+the handoff/deviations report. Existing host scratch resizing after late setters
+is a narrow open question; finalized new entry contexts are verified.
+
 Windows batch committed as 1a120b4. LSP alias documentation now resolves original
 loaded overload/private-qualifier cases with public names/defaults intact. All
 25 LSP library tests and 16 auto-import tests pass with the independent overlay;

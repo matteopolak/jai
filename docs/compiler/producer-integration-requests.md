@@ -49,10 +49,13 @@ parameters. The legacy system-module exemption for unknown arguments is removed.
 The old extra TEMPORARY_STORAGE_SIZE argument must not become a public export.
 Default target allocation works. NO_OUTPUT workspaces retain the requested size
 as metadata and the unchanged 65536 option fixture passes in both runner modes.
-Actual nondefault target allocation diagnoses its missing private startup/config
-mechanism; late setters are checked too. Compiler/runtime owners must implement
-that real allocation without changing reviewed public signatures. The remaining
-gap is target allocation, not option round-tripping.
+The private startup/config mechanism is now implemented in the compiler and owned
+internal/compiler-api/runtime-config helper. A checked staging adapter uses it in
+NEW runtime initialization and executes real 65536-byte late-root and 0/131072-byte
+native child allocations. The producer must adopt those exact private consumer
+changes and remove the public size parameter/forwarding. See runtime-configuration.md.
+Until adoption, nondefault requests on an older runtime still diagnose; no option
+round-trip or staging-only pass is called production integration.
 
 ## Register reproducer classification
 
@@ -62,3 +65,14 @@ and execute scalar add. That expectation contradicts the reviewed Meow_Hash
 or scalar alias is introduced. Original SIMD lane extraction/mutation and generic
 forwarding tests execute on interpreter/native/WASM64, preserving canonical type
 identity. Producer source and assertions were not edited.
+
+## Host/target dependency resolved
+
+BUILD_OS/BUILD_CPU now retain compiler-binary host tags under cross selection;
+OS/CPU retain output tags. The unchanged NEW foundations predicate and Preamble
+fixtures are staged only in this compiler checkout and pass cross checking and
+interpreter/native/WASI execution. No producer facade change is needed. Actual
+wasm32 compiler host and Linux/X64 child checks pass too. See
+[host-target evidence](host-target-constants.md). The portable private runtime
+protocol adoption remains pending independently; existing runtime-configuration.md
+consumer edits and allocation regressions are unchanged and pass.
