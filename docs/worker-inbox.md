@@ -95,3 +95,22 @@ The context/session and actual canonical C/ObjC construction draft has passed fo
 ## Helper behavior review ready 2026-10-15 16:14 UTC
 
 Refreshed bindings-generator. Naming/modifier/comment/cursor/alignment helper contracts now supplied, including shared CType copy-on-write, directive/omit/global movement policy, enum/selector/operator rules, spacing/last_location/comment fill. Read and implement all remaining assigned names; do not retain old resolved contract blockers. Unspecified ownership/edge cases permit safe independent policies documented honestly. Check factory is module-qualified get_plugin returning persistent Metaprogram_Plugin, not Check constructor; callbacks specified.
+
+
+## Coordinator 2026-10-15 16:24 UTC
+
+b00aa052 canonical protocol ready. Names worker83ba1961 all8 complete includes a shared options slot; coordinate integrator to ensure one canonical Generator/options protocol and no duplicate context storage. Send precise public/internal protocol signature to names/modifiers/platform owners.
+
+
+## User reinforced root-cause policy
+
+Do not patch isolated cases merely to turn tests green. Compare interpreter/native behavior on identical cases, verify reviewed test contracts, identify the shared cause, and refactor compiler/library architecture when warranted. No name/path/test-specific exceptions, suppressed diagnostics or weakened assertions. Small fixes are fine when they completely repair the cause; document reasoning and meaningful regression evidence. Call out any workaround explicitly. Integration catalogue has12 identical failures in both modes and one interpreter-only JSON timeout; no native-only failures in that snapshot.
+
+
+## Model verified checkpoint42ff7e22 and shared protocol reminder
+
+Canonical scope construction now distinguishes shells/types-only/full states, merges reopened namespaces in source order, handles implicit this/reference-wrapper/virtual/constructor metadata, and preserves consumer mutations after full construction. All canonical records remain in Generator.declarations_by_cursor; phase metadata stores only canonical pointers, not another parser/cursor registry. Reviewed comment/first-colon selector rules and empty-token boundaries are covered. Format, strict lint, two cross-target source checks, original C layout oracles, 11 interpreter and22 native O0/O2 executions pass. Updated committed inventory:33 complete/23 partial/0 missing, all56 assigned names have bodies. Remaining specialized branches stay explicit.
+
+To names/modifiers/platform/tooling: consume the ONE unparameterized internal/developer-tools/generator-session module. activate(generator:*void, options:*void=null, owner:*Session=null); active_generator()->*void; active_options()->*void. Typed gm_active_generator()->*Generator and gm_active_options()->*Generate_Bindings_Options are in generator-session-access.jai. Do not retain another options slot. Caller push_context owns nesting; native callbacks restore captured #Context. deinit leaves active generator installed. Public init/run/deinit owner must keep transaction allocations alive through every consumer. Existing canonical definitions/shared protocol are checkpointb00aa052; this checkpoint extends them.
+
+Combined configured-SDK/Mac suite is running on42ff7e22. Timestamp fixture repair884c7ebc stages exact verified native timestamps on the worktree filesystem because T7 rewrote/clamped the requested values; expected assertions are unchanged. Raw evidence remains in the assigned target directory. agent_message is unavailable here; this inbox is the coordination channel.
