@@ -7,9 +7,9 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES = [
-    "codex-inspection", "codex-metrics", "codex-records",
+    "codex-inspection", "codex-metrics", "codex-records", "codex-wire", "codex-export",
     "iprof-history-values", "iprof-stack-depth", "iprof-manual-clock",
-    "iprof-report", "iprof-traverse", "iprof-client-setup", "iprof-public-state",
+    "iprof-frames", "iprof-automatic", "iprof-report", "iprof-traverse", "iprof-client-setup", "iprof-public-state",
 ]
 
 
@@ -27,6 +27,12 @@ def main():
             raise RuntimeError(f"{command}: exit {result.returncode}\n{result.stdout}\n{result.stderr}")
         return result.stdout
 
+    for optimization in [0, 2]:
+        child = ROOT / f"target/profiler-codex-plugin-child-o{optimization}"
+        run([args.jaic, ROOT / "tests/developer-tools/codex-plugin-input.jai", f"-O{optimization}", "-exe", child,
+             "+Codex", "-export_file", ROOT / "target/profiler-codex-export.codex"])
+        run([child], expected="ok\n")
+
     formatter = ROOT / "target/profiler-codex-jaifmt"
     run([args.jaic, ROOT / "jaifmt/main.jai", "-O2", "-exe", formatter])
     source_paths = [ROOT / "stdlib/Iprof/module.jai", ROOT / "stdlib/Codex/module.jai",
@@ -34,7 +40,7 @@ def main():
     directory = ROOT / "stdlib/internal/developer-tools"
     source_paths += sorted(directory.glob("iprof-*.jai"))
     source_paths += sorted(directory.glob("codex-*.jai"))
-    source_paths += sorted((directory / "profiling").glob("*.jai"))
+    source_paths += sorted((directory / "profiling").rglob("*.jai"))
     tests = [ROOT / "tests/developer-tools" / (name + ".jai") for name in CASES]
     run([formatter, "--config", ROOT / "jaifmt.toml", "--check", *source_paths, *tests])
     for name, source in zip(CASES, tests):

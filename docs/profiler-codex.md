@@ -1,4 +1,8 @@
-# Iprof and Codex implementation handoff
+# Iprof and Codex initial checkpoint
+
+Superseded by [active workflow progress](profiler-codex-workflows.md). This
+records the earlier 4fe1e621 checkpoint; its missing-contract statements and
+function counts are historical checkpoint status, not the current audit.
 
 This worker owns only Iprof/Codex and their corresponding private sources,
 original fixtures and documentation. Neither module is complete. The original
