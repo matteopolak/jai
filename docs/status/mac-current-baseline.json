@@ -227,8 +227,223 @@
           "new failure: Bindings_Generator windows-x64: internal/developer-tools/binding-native-model.jai: unknown identifier `print_literal_to_builder`"
         ],
         "new": []
-      }
-    }
+      },
+      "stale_entry_presence": [
+        {
+          "module": "Curl",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "ImGui",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "MacOS_Bundler",
+          "target": "windows-arm64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "MacOS_Bundler",
+          "target": "windows-x64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "Mail",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "POSIX_old",
+          "target": "wasm",
+          "public_entry_present": false,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "POSIX_old",
+          "target": "windows-arm64",
+          "public_entry_present": false,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "POSIX_old",
+          "target": "windows-x64",
+          "public_entry_present": false,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "Thekla_Atlas",
+          "target": "wasm",
+          "public_entry_present": false,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "Thekla_Baker",
+          "target": "wasm",
+          "public_entry_present": false,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "Windows_Registry",
+          "target": "linux-arm64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "Windows_Registry",
+          "target": "linux-x64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "Windows_Registry",
+          "target": "macos-arm64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "Windows_Registry",
+          "target": "macos-x64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "Windows_Registry",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "Windows_Resources",
+          "target": "linux-arm64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "Windows_Resources",
+          "target": "linux-x64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "Windows_Resources",
+          "target": "macos-arm64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "Windows_Resources",
+          "target": "macos-x64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "Windows_Resources",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "freetype",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "freetype-2.12.1",
+          "target": "wasm",
+          "public_entry_present": false,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "macos",
+          "target": "linux-arm64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "macos",
+          "target": "linux-x64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "macos",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "macos",
+          "target": "windows-arm64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "macos",
+          "target": "windows-x64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": false
+        },
+        {
+          "module": "meshoptimizer",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "nvtt",
+          "target": "linux-arm64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "nvtt",
+          "target": "macos-arm64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "nvtt",
+          "target": "windows-arm64",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "stb_image",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "stb_image_resize",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "stb_image_write",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        },
+        {
+          "module": "stb_vorbis",
+          "target": "wasm",
+          "public_entry_present": true,
+          "exact_discovered_name_present": true
+        }
+      ]
+    },
+    "ignored_names": [
+      "corpus_sweep"
+    ]
   },
   "catalogue": {
     "command": "python3 tools/stdlib_runtime.py --jaic /Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/target/debug/jaic --jobs 2 --timeout 180 --modes interp,native --opt O0 --verbose",
@@ -448,5 +663,23 @@
     "focused_failed": 0,
     "format_exit_code": 0,
     "full_replay": false
+  },
+  "partial_edit_followup": {
+    "snapshot": "7afed320",
+    "command": "python3 tools/lsp_partial_edits.py stdlib --stdlib stdlib --jobs 2 --max-lines 8 --timeout 60 --report artifacts/mac-baseline/partial-edits-7afed320.json",
+    "status": "interrupted-for-new-compiler-checkpoint",
+    "completed_files": 93,
+    "selected_files": 923,
+    "failed_completed_files": 0,
+    "edits": 2451,
+    "remaining_files": "unverified; not passed or ignored",
+    "sampling": "eight sampled nonempty lines per file, not every possible edit"
+  },
+  "postmerge_production_checks": {
+    "snapshot": "7afed320",
+    "passed": 78,
+    "failed": 0,
+    "scope": "15 generator and9 executable fixtures interpreter/native ARM64 O0; original C/C++ preparation and strict two-module lint",
+    "foreign_native_runtime_verified": false
   }
 }
