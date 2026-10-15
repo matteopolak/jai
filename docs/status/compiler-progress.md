@@ -1,5 +1,20 @@
 # Compiler progress
 
+Browser Thread failure triaged as unsupported public-module test coupling, not a
+guard defect. Split the combined test into independent private SandboxHost
+scheduler/file fixtures and strict public Thread rejection. Three real workers
+cross a barrier, contend/yield while holding a mutex, perform thirty updates and
+join actual callback results; files verify bytes/EOF/workspace source and per-play
+isolation. Invalid joins/deadlocks remain errors. Four focused Rust playground
+tests, actual wasm32 repeated execution/negative controls and CLI WASM guard
+source checking pass; owned format/strict lint and host/wasm32 clippy pass.
+Local staged baseline differs from current CI: original failure was File guard
+before Thread; isolated Thread guard independently rejects. Full local browser
+suite is 25/32, seven unchanged dependency/oracle/IDE failures retained and
+classified, with no ignored tests or full-green claim. No runtime/core/guard/
+LSP feature or peer-tree edit, no fetch/remote/publication. Concrete design,
+commands and exact follow-ups: browser/sandbox-runtime-verification.md.
+
 Verified checkpoints: babb2fd (raw pointer constants/typed bindings) and 2676b02
 (invocation-relative jailint imports). Source, regressions and handoffs committed;
 no publication. Platform Registry integration and the documented unsupported
