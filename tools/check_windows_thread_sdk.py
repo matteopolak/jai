@@ -22,6 +22,7 @@ def main() -> None:
         ["--lib"],
         ["--test", "cleanroom_windows_threads"],
         ["--test", "cleanroom_windows_thread_aliases"],
+        ["--test", "cleanroom_windows_thread_description"],
     ]
     for target in targets:
         subprocess.run(
