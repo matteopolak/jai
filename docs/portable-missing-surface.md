@@ -144,24 +144,14 @@ Reviewed contract: [module page](specs/stdlib/modules/linux-build.md).
 
 ### Project_Generator
 
-Mutable project state, compiler message integration and actual Visual Studio output generation remain missing, including nested public operations.
+All reviewed public state/method behavior implemented: owned unique file collection/reset, real compiler workspaces and four deterministic XML/solution artifacts. Collection interpreter/native O0/O2, actual target O0/O2, defaults/persistence/escaping/filters/unchanged mtimes and write failure pass. Full strict lint remains blocked by general SandboxHost compile-time executable-path SDK support; no default or lint workaround. Native Visual Studio execution/resource availability remain pending.
 
 Reviewed contract: [module page](specs/stdlib/modules/project-generator.md).
 
 | Missing public declaration | Condition |
 | --- | --- |
-| `Project_Generator : struct` | All reviewed hosts |
 
-Missing nested public operations:
-
-- `Project_Generator.add_file :: (file: string, take_ownership: bool);`
-- `Project_Generator.add_file :: (path: string, file: string);`
-- `Project_Generator.build :: (file: string);`
-- `Project_Generator.intercept_messages :: (w: Workspace);`
-- `Project_Generator.process_message :: (message: *Message);`
-- `Project_Generator.reset :: ();`
-
-Total: 102 missing reviewed declaration/overload/nested-operation rows
+Total: 95 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

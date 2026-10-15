@@ -141,6 +141,7 @@ The LLVM backend, C ABI and linking.
 - [Android toolchain ABI naming, OID identity, digests and remaining APIs](portable-android-toolchain.md)
 - [Default metaprogram build workflow](portable-default-metaprogram.md): real workspaces and plugin lifecycle, focused Mac evidence and explicit Check/compiler dependency requests
 - [APK file views and iteration](portable-apk.md): real ZIP32 inputs, ownership, local payload offsets and malformed-boundary regressions
+- [Project generator workflow](portable-project-generator.md): real target builds and deterministic Visual Studio artifacts; precise linter-host/resource gaps
 - [Android SDK ADB command subsystem](portable-adb.md): native host CLI protocol tests, canonical records and live configuration
 - [ASN.1 primitive parsing and byte cursors](portable-asn1.md): canonical tags, signed integers, full-width OIDs and unresolved value/printer contracts
 - [Exact missing owned public declarations](portable-missing-surface.md)

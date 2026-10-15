@@ -1,5 +1,19 @@
 # Portable stdlib worker deviations
 
+Project_Generator verification limits: required compile-time real executable path
+default is unavailable in jailint SandboxHost (_NSGetExecutablePath); strict lint
+remains failed, original generic reproducer supplied, no default/tool exception.
+Real CLI builds and XML/artifact/mtime/ownership behavior pass. Native VS/MSBuild
+opening/debugging is not executed on Mac. Conventional reviewed jai.natvis path
+is emitted but resource is absent from this snapshot; no visualization support
+claim. Deterministic SHA256-derived instance/filter IDs and independent standard
+VC++ Makefile scaffold are design choices, not original output reproduction.
+Process-lifetime generated configuration defaults persist as required; reset
+only frees project_files. Output writes are sequential with explicit failure,
+not transactional (no stronger reviewed guarantee). Initial array_free/reset
+and substring-count mistakes caught by genuine assertions and corrected through
+reviewed Basic.array_reset/String.slice semantics; no test weakened.
+
 Socket reexports corrected: native variables now use filtered using, preserving
 canonical storage and visibility. No live mutable :: workaround remains in the
 owned generated facade. Actual SDK C address/mutation comparisons pass; scoped

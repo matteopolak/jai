@@ -1,5 +1,17 @@
 # Portable stdlib progress
 
+Project_Generator all seven public state/method rows implemented with real owned
+collection/reset, compiler workspace/complete handling and four actual scaffold
+files. Interpreter/native collection and real target O0/O2, defaults/persistence,
+paths/filters/XML escaping, unchanged-file mtimes and actual output failure pass.
+Formatting/--check pass. Full strict lint FAILS general SandboxHost SDK executable-
+path call; original pending/system-executable-path-run.jai reproduces it. No
+default/lint workaround; missing natvis resource and actual native VS execution
+are explicit pending dependencies. Evidence target/project-generator-workflow.log,
+project-system-executable-lint-gap.log; docs/portable-project-generator.md.
+Inventory95 missing rows. Newly refreshed mailbox compare_alloc_and_free_traces
+request is next, with current PG snapshot preserved for integration.
+
 Socket native global production fix: six reviewed variable names/ten conditional
 declarations now forward entities with filtered using, preserving C storage under
 immutable :: semantics. General generator correction emits no snapshot aliases.

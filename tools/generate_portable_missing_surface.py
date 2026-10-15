@@ -36,8 +36,10 @@ MODULES = [
      'All reviewed record/options/lifecycle exports implemented. Canonical type/defaults, initialized state, malformed options, phase/typecheck/completion diagnostics and owned shutdown pass interpreter/native O0/O2 and strict lint; the actual default workspace loader builds and runs a target with +Example_Plugin. No source/artifact-producing callback is fabricated.'),
     ('Build and toolchain', 'linux_build', 'linux-build', set(),
      'Windows-host Unreal cross-link orchestration remains missing; actual external toolchain/native integration is also pending.'),
-    ('Build and toolchain', 'Project_Generator', 'project-generator', set(),
-     'Mutable project state, compiler message integration and actual Visual Studio output generation remain missing, including nested public operations.'),
+    ('Build and toolchain', 'Project_Generator', 'project-generator',
+     {'Project_Generator', 'Project_Generator.reset', 'Project_Generator.add_file',
+      'Project_Generator.process_message', 'Project_Generator.build', 'Project_Generator.intercept_messages'},
+     'All reviewed public state/method behavior implemented: owned unique file collection/reset, real compiler workspaces and four deterministic XML/solution artifacts. Collection interpreter/native O0/O2, actual target O0/O2, defaults/persistence/escaping/filters/unchanged mtimes and write failure pass. Full strict lint remains blocked by general SandboxHost compile-time executable-path SDK support; no default or lint workaround. Native Visual Studio execution/resource availability remain pending.'),
 ]
 
 
@@ -71,6 +73,9 @@ def main():
         nested = []
         for shape in spec.shapes:
             for match in re.finditer(r'^\s*(\w+\s*::\s*\([^\n]+)', shape.code, re.MULTILINE):
+                method_name = match[1].split('::', 1)[0].strip()
+                if f'{shape.name}.{method_name}' in implemented:
+                    continue
                 nested.append(f'{shape.name}.{match[1].strip()}')
         if nested:
             lines += ['Missing nested public operations:', '']
