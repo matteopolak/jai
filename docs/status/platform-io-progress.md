@@ -2,6 +2,10 @@
 
 ## cc07c00 actual native feedback and startup follow-up
 
+Argv fix checkpoint: `acda8e2`. Additional supplied-argv coverage includes an
+explicitly empty argv[0]; it must remain caller data rather than trigger metadata
+substitution. All 155 compiler library tests and clippy pass with that assertion.
+
 Filtered docs/ci-feedback-latest.md confirms real Windows x64 and ARM64 Platform
 I/O interpreter/native O0/O2 steps passed at cc07c00. The full jobs failed. This
 supersedes earlier File-only evidence for that step's snapshot, without extending
