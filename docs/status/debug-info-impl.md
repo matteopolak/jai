@@ -4,6 +4,7 @@ Implementation commits on `codex/debug-info-impl`:
 
 - `3ec74dd4`: public DWARF4 compilation-unit and MSF workflows.
 - `822da42b`: CodeView type/PDB/TPI/IPI workflows, helpers, owned payloads and line clipping.
+- `dab19f5b`: final reviewed symbol ABI, C13 symbol/source parser, inline decoder/overlays, SDK graph/annotation oracles and target-derived layout checks.
 
 Newly implemented public names across the checkpoints and final symbol batch (25 names,26 overloads):
 
@@ -20,3 +21,5 @@ Verification: `python3 tools/check_debug_info_public.py` passes on Mac using thi
 [Machine-readable evidence](../native/debug-info-public-evidence.json), [policies and limits](../debug-info-public-parsers.md), and [public completion matrix](developer-tools-remaining.md) distinguish supported paths from full format coverage. Review identified and corrected malformed-form acceptance, recursive reference resolution, unchecked directory strings, IPI namespace selection, allocation failures, interleaved-file clipping and nonzero scope-parent integrity. Procedure-next boundary validation has a separate corruption regression.
 
 These commits are available for coordinator integration. No other checkout was accessed, no integration branch was merged, and no repository-wide/other-worker combined test claim is made. Contract routing uses [worker-inbox](../worker-inbox.md); no agent_message tool is exposed in this session. Existing user/coordinator changes outside owned implementation files remain untouched.
+
+Final integration handoff: apply `dab19f5b` after the prior implementation checkpoints (and `551c5fa`, the earlier handoff documentation checkpoint). The final feature commit includes the supplied reviewed Debug_Info contract required by the generated symbol model. The shared bindings-generator contract, AGENTS.md, implementation-scope.json and restricted corpus change were preserved outside the implementation commit. The final verification process exited0; its local log is `target/debug-info-final-symbol-check.log`. No assigned public function remains pending in the Debug_Info matrix. Run `python3 tools/check_debug_info_public.py` in the combined checkout to reproduce the20-fixture/SDK/ABI result after integration; no merge or combined-other-worker test result is claimed here.

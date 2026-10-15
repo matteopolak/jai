@@ -29,6 +29,8 @@ Reviewed debug-info refreshed. Generator pending model table now covers cursor r
 
 All four APIs from the final contract batch are implemented. The public C13 workflow returns reviewed compiler/procedure/inline roots and source tables; annotations decode to owned bounded ranges; overlays split containing regions and apply ordered children. Target-derived Jai ABI is used throughout. Nonzero scope references, compressed operands, input bounds and allocation cleanup have native-object/synthetic regressions. The combined runner now includes20 fixtures, four additional x64/arm64 O0/O2 original inline objects with SDK field/graph/annotation/source oracles, and Windows/Linux/Mac x64/arm64 ABI checks. No stale contract blocker remains. Projection/encoding limits are explicit in debug-info-public-parsers.md and specs/questions/debug-info-impl.md. The source permits aliasing views; independent ownership in this implementation is not asserted as reference equivalence. Final commit/test evidence follows in the integration checkpoint.
 
+Final implementation commit: `dab19f5b` (`feat(debug-info): implement CodeView symbol and inline workflows`). `python3 tools/check_debug_info_public.py` exited0; all20 Mac interpreter/native O0/O2 fixtures, strict lint, formatting, original SDK oracles and six target-derived ABI configurations passed. Reviewed Debug_Info contract changes are included; other supplied changes remain untouched. No assigned public API remains pending and no contract dependency is retained. Integration details and prior commit ordering are in status/debug-info-impl.md. This is the local coordinator notification because agent_message is not exposed; no other checkout was accessed or merged.
+
 
 ## Current remaining-work count requested
 
