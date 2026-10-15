@@ -13,7 +13,7 @@ or legacy test expectations are inventory inputs.
 
 ### Android/Toolchain
 
-JNI ABI naming is implemented. Device/build/signing/manifest and remaining helpers are missing; no device, SDK, signing or crypto success is fabricated.
+JNI ABI naming, counted OID identity and reviewed JKS constants are implemented. Device/build/signing/manifest and remaining helpers are missing; no device, SDK, signing or crypto success is fabricated.
 
 Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 
@@ -91,8 +91,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `asn1_decode_integer :: (data: string) -> s64` | All reviewed hosts |
 | `asn1_decode_object_identifier :: (data: string) -> ASN1_Object_Identifier` | All reviewed hosts |
 | `ASN1_KNOWN_OIDS :: ASN1_Object_Identifier` | All reviewed hosts |
-| `ASN1_Object_Identifier :: struct` | All reviewed hosts |
-| `asn1_oid_equals :: (a: ASN1_Object_Identifier, b: ASN1_Object_Identifier) -> bool` | All reviewed hosts |
 | `asn1_print :: (data: string, depth := 0, hack_skip_depth := false)` | All reviewed hosts |
 | `asn1_print :: (name: string, data: string)` | All reviewed hosts |
 | `asn1_print :: (name: string, value: ASN1_Value)` | All reviewed hosts |
@@ -130,8 +128,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `is_app_running :: (package_name: string) -> running: bool, success: bool` | All reviewed hosts |
 | `JAVA_ENV_NAME :: "JAVA_HOME"` | All reviewed hosts |
 | `jdk_decrypt_private_key :: (encrypted_data: string, password: string) -> bool, string` | All reviewed hosts |
-| `JKS_MAGIC : u32 : 0xfeedfeed` | All reviewed hosts |
-| `JKS_MAGIC_LITTLE_ENDIAN :: #run -> u32` | All reviewed hosts |
 | `jks_read :: (data: string, password: string) -> bool, certificate: string, encrypted_private_key_info: string` | All reviewed hosts |
 | `Kilobytes :: (x: int) -> int #expand` | All reviewed hosts |
 | `LAUNCH_MODE_SINGLE_TASK : u32` | All reviewed hosts |
@@ -140,7 +136,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `libressl_get_public_key :: (subject_public_key_info: string) -> *evp_pkey_st` | All reviewed hosts |
 | `Megabytes :: (x: int) -> int #expand` | All reviewed hosts |
 | `NDK_Paths :: struct` | All reviewed hosts |
-| `OID_SUN_JKS_ENCRYPTION :: ASN1_Object_Identifier.{parts_count = 11, parts = .[1, 3, 6, 1, 4, 1, 42, 2, 17, 1, 1, 0]}` | All reviewed hosts |
 | `print_binary_manifest :: (using manifest: Android_Manifest_Binary, print_strings := false, print_resource_ids := false)` | All reviewed hosts |
 | `read :: read_silly_alias` | All reviewed hosts |
 | `read_binary_manifest_from_apk :: (apk_filename: string) -> bool, Android_Manifest_Binary` | All reviewed hosts |
@@ -361,7 +356,7 @@ Reviewed contract: [module page](specs/stdlib/modules/simple-package.md).
 | `Table_Of_Contents :: struct` | All reviewed hosts |
 | `write :: (package: *Create_Package, filename: string, sort_contents := true) -> bool` | All reviewed hosts |
 
-Total: 253 missing reviewed declaration/overload/nested-operation rows
+Total: 248 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

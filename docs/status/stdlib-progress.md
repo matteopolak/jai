@@ -329,3 +329,13 @@ format/check; whole strict lint still fails. New original prefetch/fence native
 probes emit0 instructions against C1 each, and their dependency checker fails
 explicitly (target/machine-instruction-dependencies.log). Those APIs remain absent,
 not fabricated completion. Eight instruction APIs/native platforms remain gaps.
+
+Android OID increment: canonical type/counted equality, exact Sun OID and typed
+JKS constants tested across all prefix counts/differences/inactive tails/copy
+independence; global writes reject. Native O2 and focused strict lint pass.
+Full110 positives/27 checked faults/16 compile negatives and prior integration/
+Linux+Windows checks pass (target/android-oid-full.log).376 owned Jai files
+format/check; full strict lint remains a failed gate. Review numeric JKS values
+preserved, incorrect byte-swap rationale questioned without invented correction.
+Exact largely-unimplemented public inventory now248 rows; no signing/DER/device
+completion credited. Native platform and compiler gaps remain named separately.

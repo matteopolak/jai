@@ -342,3 +342,13 @@ Pause baseline lint initially flagged unused import. Both controlled fixtures no
 assert the same reviewed canonical record size, preserving import/control parity
 without blanket exclusions. Runner diagnostics now retain captured output on
 failure. Original logs retained. Target-aware/all-owned lint remains failed.
+
+Android OID identity: canonical inline twelve-arc record, counted-prefix equality,
+exact Sun initializer and immutable typed JKS constants implemented. Invalid
+counts diagnose rather than indexing outside storage; fine invalid-input policy
+is independent. Qualified constant writes reject and local copies are independent.
+No ASN.1/JKS decoding/signing success is claimed. Both JKS constants preserve the
+reviewed numeric0xfeedfeed, while the review's byte-swap rationale is flagged as
+mathematically wrong (actual byte reversal0xedfeedfe). No guessed alternate
+constant, key/device/auth access or fake crypto behavior. Remaining API inventory
+drops only these five implemented declarations, from253 to248 rows.
