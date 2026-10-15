@@ -74,6 +74,8 @@ def main():
                     item["implementation"] = "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
                 if item["name"] in {"append_cpp_literal", "append_cpp_expression"}:
                     item["implementation"] = "C++17 fragment subset; generated native consumers O0/O2 from interpreter/native emitter runs, unsupported output preservation"
+                if item["name"] in {"is_void_type", "is_bool_type", "is_same_location"}:
+                    item["implementation"] = "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
         if module == "Performance_Report":
             for item in declarations:
                 item["implementation"] = "implemented; measured native compiler plugin fixture"

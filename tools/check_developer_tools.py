@@ -85,6 +85,11 @@ def main():
     run([JAIC, "tests/developer-tools/bindings-macro-merge.jai", "-interp"], output="ok\n")
     cases.extend(["bindings-macro-merge", "bindings-macro-merge-roundtrip"])
     cases.append("bindings-cpp-fragments")
+    cases.append("bindings-model-properties")
+    run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib",
+         "tests/developer-tools/bindings-model-properties.c", "-o", "target/libdeveloper_tools_properties.dylib"])
+    run([JAIC, "tests/developer-tools/bindings-model-properties.jai", "-interp"], output="ok\n")
+    cases.append("bindings-model-properties-roundtrip")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"

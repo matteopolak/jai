@@ -30,6 +30,8 @@ Run `python3 tools/build_developer_bindings.py --llvm-prefix <official-sdk>` to 
 
 `append_cpp_literal` and `append_cpp_expression` emit a C++17 subset from public model nodes. Tests compile and execute generated consumers at O0/O2 after interpreter/native emitter runs. They verify integer limits, precise floats, binary strings, native enum names, casts, sizeof and precedence. Unsupported nodes fail without changing existing builder text. This is fragment rendering, not C++ header parsing or bridge generation. Native declarations must exist in the supplied scope; width-only scalar casts do not establish C++ overload identity. Syntax follows the [C++17 draft](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/n4659.pdf).
 
+The binding-model void/bool predicates follow explicit scalar flags and typedef links, excluding pointers, arrays, functions, records/enums and references. Alias cycles/depth failures produce diagnostics. Location comparison uses file-handle identity plus line/column; cross-translation-unit file equivalence is not claimed. Original fixtures inspect actual parsed bool/void aliases and call the generated native signatures.
+
 ## Print_Vars
 
 `print_vars_to`, `print_vars` and `log_vars` expand over caller expressions. They retain caller scope, use Program_Print for source names, evaluate each expression once, render values/types and align name/value columns. The helper accepts the exact reviewed fixed Code array; the variadic entry points create that array at compile time. `Print_Vars_Config` controls fields, delimiters, indentation and line separators. Logging forwards the caller location. Widths currently count UTF-8 bytes; see questions and deviations for display-cell and source-whitespace limits.

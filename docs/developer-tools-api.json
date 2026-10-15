@@ -449,14 +449,14 @@
         "declaration": "is_void_type :: (t: *CType) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 70,
-        "implementation": "pending"
+        "implementation": "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
       },
       {
         "name": "is_bool_type",
         "declaration": "is_bool_type :: (t: *CType) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 71,
-        "implementation": "pending"
+        "implementation": "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
       },
       {
         "name": "Function_Type",
@@ -575,7 +575,7 @@
         "declaration": "is_same_location :: (a: Location, b: Location) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 88,
-        "implementation": "pending"
+        "implementation": "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
       },
       {
         "name": "Declaration",
