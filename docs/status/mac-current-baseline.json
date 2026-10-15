@@ -709,7 +709,7 @@
     "ref": "integration/thread-fixtures",
     "target": "macos-arm64",
     "cargo_target_dir": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target",
-    "status": "workspace-finished-red",
+    "status": "finished-red",
     "workspace": {
       "command": "cargo test --locked --workspace --all-targets --no-fail-fast",
       "passed": 879,
@@ -738,9 +738,271 @@
       ]
     },
     "catalogue": {
-      "status": "running",
+      "status": "finished",
       "command": "python3 tools/stdlib_runtime.py --jaic /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target/debug/jaic --jobs 2 --timeout 180 --modes interp,native --opt O0 --verbose --report artifacts/mac-baseline/catalogue-final-isolated.json",
-      "snapshot": "a7bd9b9c4a93eed5479641d63eabacddf58ea393"
+      "snapshot": "a7bd9b9c4a93eed5479641d63eabacddf58ea393",
+      "counts_by_mode": {
+        "interp": {
+          "passed": 394,
+          "failed": 12,
+          "platform_unavailable": 6,
+          "compile_time_only": 0,
+          "expected_negative_checks": 5
+        },
+        "native": {
+          "passed": 382,
+          "failed": 12,
+          "platform_unavailable": 6,
+          "compile_time_only": 12,
+          "expected_negative_checks": 5
+        }
+      },
+      "passed": 776,
+      "failed": 24,
+      "ignored": 0,
+      "exit_code": 1,
+      "failures": [
+        {
+          "name": "contracts/compiler-using-records-preserve-filters",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.2815749170113122,
+          "timed_out": false,
+          "failure_detail": "main.jai:51:5: error: error during compile-time execution: assertion failed: `!P.print_expression(*builder, static_using)` is false\n        assert(procedure_root.kind == .PROCEDURE_HEADER);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nmain.jai:10:1: note: while running compile-time code started here\n    #run {\n    ^^^^^^\n\n"
+        },
+        {
+          "name": "contracts/compiler-using-records-preserve-filters",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.28810945799341425,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\nmain.jai:51:5: error: error during compile-time execution: assertion failed: `!P.print_expression(*builder, static_using)` is false\n        assert(procedure_root.kind == .PROCEDURE_HEADER);\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nmain.jai:10:1: note: while running compile-time code started here\n    #run {\n    ^^^^^^\n\n"
+        },
+        {
+          "name": "compiler/compiler-module-placeholder-insert",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.4536917090008501,
+          "timed_out": false,
+          "failure_detail": "modules/Generated_Kinds/kinds.jai:7:9: error: compile-time dependency deadlock: body of `anonymous_procedure` awaits an unresolved #placeholder\n    #insert -> string {\n            ^^^^^^^^^^^\nmodules/Generated_Kinds/kinds.jai:2:14: note: `Kind_Names` is a #placeholder that was never defined\n    #placeholder Kind_Names;\n                 ^^^^^^^^^^\nmodules/Generated_Kinds/kinds.jai:2:14: note: definition required for #placeholder `Kind_Names` in its declaring scope\n    #placeholder Kind_Names;\n                 ^^^^^^^^^^\n\ncompiler-module-placeholder-insert.jai:67:5: error: error during compile-time execution: assertion failed: the module was never imported\n        assert(!failed, \"the generated module did not compile\");\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ncompiler-module-placeholder-insert.jai:24:1: note: while running compile-time code started here\n    #run {\n    ^^^^^^\n\n"
+        },
+        {
+          "name": "compiler/compiler-module-placeholder-insert",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.3687378750037169,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\nmodules/Generated_Kinds/kinds.jai:7:9: error: compile-time dependency deadlock: body of `anonymous_procedure` awaits an unresolved #placeholder\n    #insert -> string {\n            ^^^^^^^^^^^\nmodules/Generated_Kinds/kinds.jai:2:14: note: `Kind_Names` is a #placeholder that was never defined\n    #placeholder Kind_Names;\n                 ^^^^^^^^^^\nmodules/Generated_Kinds/kinds.jai:2:14: note: definition required for #placeholder `Kind_Names` in its declaring scope\n    #placeholder Kind_Names;\n                 ^^^^^^^^^^\n\ncompiler-module-placeholder-insert.jai:67:5: error: error during compile-time execution: assertion failed: the module was never imported\n        assert(!failed, \"the generated module did not compile\");\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ncompiler-module-placeholder-insert.jai:24:1: note: while running compile-time code started here\n    #run {\n    ^^^^^^\n\n"
+        },
+        {
+          "name": "compiler/lang-asm",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.194999999992433,
+          "timed_out": false,
+          "failure_detail": "lang-asm.jai:601:9: error: pause requires an x86-64 target\n            pause;\n            ^^^^^\n\n"
+        },
+        {
+          "name": "compiler/lang-asm",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.1948149999952875,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\nlang-asm.jai:601:9: error: pause requires an x86-64 target\n            pause;\n            ^^^^^\n\n"
+        },
+        {
+          "name": "compiler/placeholder-defined-by-metaprogram",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.34023704199353233,
+          "timed_out": false,
+          "failure_detail": "<added string 1>:4:9: error: compile-time dependency deadlock: body of `anonymous_procedure` awaits an unresolved #placeholder\n    #insert -> string {\n            ^^^^^^^^^^^\n<added string 1>:2:14: note: `Kinds` is a #placeholder that was never defined\n    #placeholder Kinds;\n                 ^^^^^\n<added string 1>:2:14: note: definition required for #placeholder `Kinds` in its declaring scope\n    #placeholder Kinds;\n                 ^^^^^\n\nplaceholder-defined-by-metaprogram.jai:44:13: error: error during compile-time execution: assertion failed: `added && !failed` is false\n                break;\n                ^^^^^\nplaceholder-defined-by-metaprogram.jai:22:1: note: while running compile-time code started here\n    #run {\n    ^^^^^^\n\n"
+        },
+        {
+          "name": "compiler/placeholder-defined-by-metaprogram",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.3358636249904521,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\n<added string 1>:4:9: error: compile-time dependency deadlock: body of `anonymous_procedure` awaits an unresolved #placeholder\n    #insert -> string {\n            ^^^^^^^^^^^\n<added string 1>:2:14: note: `Kinds` is a #placeholder that was never defined\n    #placeholder Kinds;\n                 ^^^^^\n<added string 1>:2:14: note: definition required for #placeholder `Kinds` in its declaring scope\n    #placeholder Kinds;\n                 ^^^^^\n\nplaceholder-defined-by-metaprogram.jai:44:13: error: error during compile-time execution: assertion failed: `added && !failed` is false\n                break;\n                ^^^^^\nplaceholder-defined-by-metaprogram.jai:22:1: note: while running compile-time code started here\n    #run {\n    ^^^^^^\n\n"
+        },
+        {
+          "name": "compiler/rules-simd-asm",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.20940333299222402,
+          "timed_out": false,
+          "failure_detail": "rules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target\n                cpuid a, b:, c, d:;\n                ^^^^^^^^^^^^^^^^^^\n\n"
+        },
+        {
+          "name": "compiler/rules-simd-asm",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.19883037501131184,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\nrules-simd-asm.jai:360:13: error: cpuid requires an x86-64 target\n                cpuid a, b:, c, d:;\n                ^^^^^^^^^^^^^^^^^^\n\n"
+        },
+        {
+          "name": "graphics/getrect-simp-gl-frame",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.3568309580005007,
+          "timed_out": false,
+          "failure_detail": "getrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`\n        GR.set_asset_root(ASSET_DIR);\n           ^^^^^^^^^^^^^^\n\n"
+        },
+        {
+          "name": "graphics/getrect-simp-gl-frame",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.3365612909983611,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\ngetrect-simp-gl-frame.jai:126:8: error: module `GetRect` has no exported member `set_asset_root`\n        GR.set_asset_root(ASSET_DIR);\n           ^^^^^^^^^^^^^^\n\n"
+        },
+        {
+          "name": "graphics/getrect-widgets-driven",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.3335052500042366,
+          "timed_out": false,
+          "failure_detail": "getrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`\n        font: GR.Font;\n                 ^^^^\n\n"
+        },
+        {
+          "name": "graphics/getrect-widgets-driven",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.30985775000590365,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\ngetrect-widgets-driven.jai:62:14: error: module `GetRect_LeftHanded` has no exported member `Font`\n        font: GR.Font;\n                 ^^^^\n\n"
+        },
+        {
+          "name": "graphics/input-multi-window-focus",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.1768735840014415,
+          "timed_out": false,
+          "failure_detail": "input-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n    Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+        },
+        {
+          "name": "graphics/input-multi-window-focus",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.172674041998107,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\ninput-multi-window-focus.jai:3:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n    Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+        },
+        {
+          "name": "graphics/input-published-events",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.175186250009574,
+          "timed_out": false,
+          "failure_detail": "input-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n    Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+        },
+        {
+          "name": "graphics/input-published-events",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.16884487499191891,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\ninput-published-events.jai:6:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n    Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+        },
+        {
+          "name": "graphics/input-temporary-allocator",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.1755650830018567,
+          "timed_out": false,
+          "failure_detail": "input-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n    Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+        },
+        {
+          "name": "graphics/input-temporary-allocator",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.1697932499955641,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\ninput-temporary-allocator.jai:8:1: error: argument `ENABLE_NATIVE_INPUT_ADAPTERS` is not a parameter of this module\n    Input :: #import \"Input\"(ENABLE_NATIVE_INPUT_ADAPTERS = false);\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n"
+        },
+        {
+          "name": "graphics/simp-gl-render-readback",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.42176800000015646,
+          "timed_out": false,
+          "failure_detail": "simp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`\n        set_window_dimensions(window, width, height);\n        ^^^^^^^^^^^^^^^^^^^^^\nhelp: a similar name exists: `get_render_dimensions`\n\n"
+        },
+        {
+          "name": "graphics/simp-gl-render-readback",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 0.4124845420010388,
+          "timed_out": false,
+          "failure_detail": "build failed (exit 1):\nsimp-gl-render-readback.jai:67:5: error: unknown identifier `set_window_dimensions`\n        set_window_dimensions(window, width, height);\n        ^^^^^^^^^^^^^^^^^^^^^\nhelp: a similar name exists: `get_render_dimensions`\n\n"
+        },
+        {
+          "name": "Window_Creation/tests/macos-events",
+          "mode": "native",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 1.0571859999909066,
+          "timed_out": false,
+          "failure_detail": "unexpected native text: value=32, count=0, target_window=true\nframe event: type=WINDOW, key=UNKNOWN, value=0, down=0, repeat=false, flags=0\nframe event: type=KEYBOARD, key=SPACEBAR, value=0, down=1, repeat=false, flags=0\nframe event: type=TEXT_INPUT, key=UNKNOWN, value=32, down=0, repeat=false, flags=0\nframe event: type=KEYBOARD, key=(Key_Code out of range: 65), value=0, down=1, repeat=false, flags=1\nframe event: type=TEXT_INPUT, key=UNKNOWN, value=65, down=0, repeat=false, flags=1\nframe event: type=KEYBOARD, key=SPACEBAR, value=0, down=0, repeat=false, flags=0\n/Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/stdlib/Window_Creation/tests/macos-events.jai:61: assertion failed: \nstack trace:\n    runtime_support_assertion_failed at /Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/stdlib/internal/runtime/module.jai:158\n    main at /Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/stdlib/Window_Creation/tests/macos-events.jai:61\n"
+        },
+        {
+          "name": "Extensions/Json/tests/numbers",
+          "mode": "interp",
+          "passed": false,
+          "platform_unavailable": null,
+          "expected_negative": false,
+          "elapsed_seconds": 180.00517375000345,
+          "timed_out": true,
+          "failure_detail": "timed out after 180s\n"
+        }
+      ]
     },
     "production_profiler_commands": {
       "passed": 198,

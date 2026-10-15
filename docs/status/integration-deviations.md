@@ -1902,3 +1902,7 @@ Combined production runner check_profiler_codex.py passes198/198 commands, inclu
 ## T7 AppleDouble DWARF verification
 
 The isolated full workspace found two debug-tool failures: llvm-dwarfdump verified the actual Mach-O payload with no errors, then treated filesystem-created ._prog sidecars as objects while walking the dSYM bundle. debug_info.rs now verifies Contents/Resources/DWARF/<executable> directly. All5 original debug tests, including every DIE/compile-unit assertion and LLDB breakpoint/backtrace/variable checks, pass on T7. No files/assertions are deleted or suppressed. Frozen4397e23c full count remains879pass/4fail/1ignored; this is a focused test-construction repair, not a projected full-green count.
+
+## Filtered parameter serializer repair
+
+The full catalogue exposed a stale static-using expected-failure assertion after supported syntax printing landed. A positive exact spelling/roundtrip assertion replaces that obsolete expectation while preserving every public filter and body check. That revealed a genuine production defect: procedure() printed both parameter_usings filter syntax and the argument IS_USING flag, producing using,except(...) using item and losing EXCEPT during parsing. It now emits one authoritative explicit prefix, retaining bare-using fallback when no explicit record exists. Actual interpreter/native compile-time contract checks and strict production Program_Print lint pass. No assertion is ignored, public schema/export changes or source-text fallback added.

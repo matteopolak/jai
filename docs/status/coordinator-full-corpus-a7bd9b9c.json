@@ -1,0 +1,1472 @@
+{
+  "snapshot": "a7bd9b9c4a93eed5479641d63eabacddf58ea393",
+  "modes": {
+    "compile-only": {
+      "passed": 331,
+      "failed": 69,
+      "not_run_natively": 0,
+      "groups": {
+        "other": 31,
+        "unknown_identifier": 29,
+        "type_or_overload": 8,
+        "timeout": 1
+      },
+      "failures": [
+        {
+          "id": "sgpu-build",
+          "category": "other",
+          "message": "n",
+          "reference_oracle": null
+        },
+        {
+          "id": "focus-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `set_working_directory`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-11-11.5-get-time",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-21-21.3-allocators-check",
+          "category": "other",
+          "message": "in call to `alloc`: no parameter named `allocator`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-24-24.1-overloading-vec",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `operator-`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-24-24.3-poke-name",
+          "category": "type_or_overload",
+          "message": "no overload of `dot_product` matches these arguments",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-25-25.1-context",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `Context`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-26-26.33-measure-performance",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-28-28.5-get-cpu-info-feature-flags",
+          "category": "other",
+          "message": "#assert failed: ",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-28-28.7-asm-and-macros",
+          "category": "other",
+          "message": "in call to `add_regs`: expected a SIMD register operand, not a scalar or memory value",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-29-29.3-c-call",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `Context`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-30-30.11-using-notes",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `bubble_sort`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-30-jai-raylib-build",
+          "category": "other",
+          "message": "t",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-31-31.4-thread-group-response",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.11-colored-triangle",
+          "category": "type_or_overload",
+          "message": "no overload of `make_vector3` matches these arguments",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.12-drawing-circle.jai",
+          "category": "type_or_overload",
+          "message": "in call to `make_vector2`: too many arguments: it takes at most 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.14-moving-shape",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.15-drawing-texture",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `glTexParameteri`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.2b-bouncing-square",
+          "category": "type_or_overload",
+          "message": "no overload of `make_vector4` matches these arguments",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.3-getrect-buttons",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.1-sorting",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `bubble_sort`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.4-struct-pool",
+          "category": "other",
+          "message": "in call to `New`: no parameter named `allocator`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.6-flat-pool",
+          "category": "other",
+          "message": "in call to `New`: no parameter named `allocator`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.7-mailing",
+          "category": "type_or_overload",
+          "message": "type mismatch: expected `s64`, found `string`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-35-raylib-raymath",
+          "category": "type_or_overload",
+          "message": "in call to `make_vector2`: too many arguments: it takes at most 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-52-raylib-raymath",
+          "category": "type_or_overload",
+          "message": "in call to `make_vector2`: too many arguments: it takes at most 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-exercises-22-reverse-string",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `Swap`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-exercises-22-swap-persons",
+          "category": "other",
+          "message": "in call to `swap`: expected a pointer, found Person",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-exercises-22-swap-vectors",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `Swap`",
+          "reference_oracle": null
+        },
+        {
+          "id": "focus-native-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `set_working_directory`",
+          "reference_oracle": null
+        },
+        {
+          "id": "match-jai-first",
+          "category": "other",
+          "message": "error during compile-time execution: compiler_get_code: expected `}` in struct literal, found `=`",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-constant",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-defer",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-first",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-if",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-if-case",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-while",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "ast-utils-build",
+          "category": "other",
+          "message": "i",
+          "reference_oracle": null
+        },
+        {
+          "id": "shader-transpiler-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `NSOpenGLContext`",
+          "reference_oracle": null
+        },
+        {
+          "id": "reflector-tests",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `compiler_get_struct_location`",
+          "reference_oracle": null
+        },
+        {
+          "id": "uniform-tests",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_absolute_path`",
+          "reference_oracle": null
+        },
+        {
+          "id": "stubborn-module",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `push_allocator`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-date-module",
+          "category": "other",
+          "message": "remove is only valid inside a for loop over an array",
+          "reference_oracle": null
+        },
+        {
+          "id": "wait-group-example",
+          "category": "other",
+          "message": "n",
+          "reference_oracle": null
+        },
+        {
+          "id": "cluster-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `CMSG_SIZE`",
+          "reference_oracle": null
+        },
+        {
+          "id": "hyperserve-example-build",
+          "category": "other",
+          "message": "remove is only valid inside a for loop over an array",
+          "reference_oracle": null
+        },
+        {
+          "id": "hyperserve-datastar-build",
+          "category": "other",
+          "message": "remove is only valid inside a for loop over an array",
+          "reference_oracle": null
+        },
+        {
+          "id": "chess-jai-ui-check",
+          "category": "other",
+          "message": "cpuid",
+          "reference_oracle": null
+        },
+        {
+          "id": "chess-jai-engine-check",
+          "category": "other",
+          "message": "cpuid",
+          "reference_oracle": null
+        },
+        {
+          "id": "forbear-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `NSApplication`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ui-builder-demo-check",
+          "category": "other",
+          "message": "type `MTLRenderCommandEncoder` has no member `endEncoding`",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-core-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-renderer-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-game-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-editor-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-tests",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `contains`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-continue-iter",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `New`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-bf-with-callbacks-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-df-with-callbacks-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-from-child-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-with-breaks-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "no-api-module-windows-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `write_entire_file`",
+          "reference_oracle": null
+        },
+        {
+          "id": "toml-jai-custom-handlers",
+          "category": "type_or_overload",
+          "message": "polymorphic procedure `lambda` needs arguments to determine its types",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-tests",
+          "category": "other",
+          "message": "expected expression, found `:`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-01-compiletime",
+          "category": "other",
+          "message": "expected ",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-03-imports",
+          "category": "other",
+          "message": "expected expressi",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-04-memory-allocation",
+          "category": "timeout",
+          "message": "nonzero exit or timeout; coordinator triage required",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-format-build",
+          "category": "other",
+          "message": "writing build/jai-format: linking failed: `cc` stopped with exit status: 1",
+          "reference_oracle": null
+        }
+      ]
+    },
+    "interpreter": {
+      "passed": 318,
+      "failed": 82,
+      "not_run_natively": 0,
+      "groups": {
+        "other": 51,
+        "unknown_identifier": 23,
+        "type_or_overload": 7,
+        "timeout": 1
+      },
+      "failures": [
+        {
+          "id": "sgpu-build",
+          "category": "other",
+          "message": "n",
+          "reference_oracle": null
+        },
+        {
+          "id": "focus-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `set_working_directory`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-05-5.2-constants",
+          "category": "other",
+          "message": "stdout lacks 'The earth mass is 5972189887017193070000000' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-09-9.1-types",
+          "category": "other",
+          "message": "stdout lacks 'The type of main is procedure ()' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-10-10.1-pointers",
+          "category": "other",
+          "message": "stdout lacks 'Value ptr is void' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-11-11.5-get-time",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-12-12.10-struct-parameters-type",
+          "category": "other",
+          "message": "stdout lacks 'type_of(x) is Entity(Payload=(anonymous struct))' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-16-16.2-type-info-proc",
+          "category": "other",
+          "message": "stdout lacks 'x - y - z - xy - yz - component -' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-17-17.1-proc-definitions",
+          "category": "other",
+          "message": "stdout lacks 'Its type is: procedure (s64, s64, s64) -> s64' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-21-21.1-temp-storage",
+          "category": "other",
+          "message": "stdout lacks 'Temporary_Storage uses 344 bytes' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-21-21.3-allocators-check",
+          "category": "other",
+          "message": "in call to `alloc`: no parameter named `allocator`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-22-22.2-polyproc2",
+          "category": "other",
+          "message": "stdout lacks 'type_of(proc) is procedure (s64, s64) -> s64' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-23-23.4-restrict-type",
+          "category": "other",
+          "message": "stdout lacks 'PolyStruct(T=s64)' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-24-24.1-overloading-vec",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-24-24.3-poke-name",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-25-25.1-context",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-26-26.31-tagged-union",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-26-26.33-measure-performance",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-28-28.5-get-cpu-info-feature-flags",
+          "category": "other",
+          "message": "#assert failed: ",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-28-28.7-asm-and-macros",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-29-29.3-c-call",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `Context`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-30-30.11-using-notes",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `bubble_sort`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-30-jai-raylib-build",
+          "category": "other",
+          "message": "t",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-31-31.4-thread-group-response",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.11-colored-triangle",
+          "category": "type_or_overload",
+          "message": "no overload of `make_vector3` matches these arguments",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.12-drawing-circle.jai",
+          "category": "type_or_overload",
+          "message": "in call to `make_vector2`: too many arguments: it takes at most 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.14-moving-shape",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.15-drawing-texture",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `glTexParameteri`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.2b-bouncing-square",
+          "category": "type_or_overload",
+          "message": "no overload of `make_vector4` matches these arguments",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.3-getrect-buttons",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.1-sorting",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.4-struct-pool",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.6-flat-pool",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.7-mailing",
+          "category": "type_or_overload",
+          "message": "type mismatch: expected `s64`, found `string`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-35-raylib-raymath",
+          "category": "type_or_overload",
+          "message": "in call to `make_vector2`: too many arguments: it takes at most 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-52-raylib-raymath",
+          "category": "type_or_overload",
+          "message": "in call to `make_vector2`: too many arguments: it takes at most 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-exercises-22-reverse-string",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-exercises-22-swap-persons",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-exercises-22-swap-vectors",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `Swap`",
+          "reference_oracle": null
+        },
+        {
+          "id": "focus-native-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `set_working_directory`",
+          "reference_oracle": null
+        },
+        {
+          "id": "match-jai-first",
+          "category": "other",
+          "message": "error during compile-time execution: compiler_get_code: expected `}` in struct literal, found `=`",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-constant",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-defer",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-first",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-if",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-if-case",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-while",
+          "category": "other",
+          "message": "expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "ast-utils-build",
+          "category": "other",
+          "message": "i",
+          "reference_oracle": null
+        },
+        {
+          "id": "shader-transpiler-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `NSOpenGLContext`",
+          "reference_oracle": null
+        },
+        {
+          "id": "reflector-tests",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "uniform-tests",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_absolute_path`",
+          "reference_oracle": null
+        },
+        {
+          "id": "stubborn-module",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `push_allocator`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-date-module",
+          "category": "other",
+          "message": "remove is only valid inside a for loop over an array",
+          "reference_oracle": null
+        },
+        {
+          "id": "wait-group-example",
+          "category": "other",
+          "message": "n",
+          "reference_oracle": null
+        },
+        {
+          "id": "cluster-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `CMSG_SIZE`",
+          "reference_oracle": null
+        },
+        {
+          "id": "hyperserve-example-build",
+          "category": "other",
+          "message": "remove is only valid inside a for loop over an array",
+          "reference_oracle": null
+        },
+        {
+          "id": "hyperserve-datastar-build",
+          "category": "other",
+          "message": "remove is only valid inside a for loop over an array",
+          "reference_oracle": null
+        },
+        {
+          "id": "chess-jai-ui-check",
+          "category": "other",
+          "message": "cpuid",
+          "reference_oracle": null
+        },
+        {
+          "id": "chess-jai-engine-check",
+          "category": "other",
+          "message": "cpuid",
+          "reference_oracle": null
+        },
+        {
+          "id": "forbear-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `NSApplication`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ui-builder-demo-check",
+          "category": "other",
+          "message": "type `MTLRenderCommandEncoder` has no member `endEncoding`",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-core-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-renderer-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-game-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-editor-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-tests",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `contains`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-continue-iter",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `New`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-bf-with-callbacks-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-df-with-callbacks-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-from-child-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-with-breaks-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "toml-jai-union-and-overlay",
+          "category": "other",
+          "message": "runtime error: null pointer dereference: read at address 0x1, just past null (a member of a null struct pointer?)",
+          "reference_oracle": null
+        },
+        {
+          "id": "toml-jai-formatting-control",
+          "category": "other",
+          "message": "runtime error: assertion failed: FormatFloat requires an IEEE float32 or float64 value",
+          "reference_oracle": null
+        },
+        {
+          "id": "no-api-module-windows-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `write_entire_file`",
+          "reference_oracle": null
+        },
+        {
+          "id": "toml-jai-first",
+          "category": "other",
+          "message": "runtime error: assertion failed: allocator failed to create a heap",
+          "reference_oracle": null
+        },
+        {
+          "id": "toml-jai-custom-handlers",
+          "category": "type_or_overload",
+          "message": "polymorphic procedure `lambda` needs arguments to determine its types",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-tests",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-01-compiletime",
+          "category": "other",
+          "message": "expected ",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-03-imports",
+          "category": "other",
+          "message": "expected expressi",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-04-memory-allocation",
+          "category": "timeout",
+          "message": "nonzero exit or timeout; coordinator triage required",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-format-build",
+          "category": "other",
+          "message": "writing build/jai-format: linking failed: `cc` stopped with exit status: 1",
+          "reference_oracle": null
+        }
+      ]
+    },
+    "native": {
+      "passed": 295,
+      "failed": 87,
+      "not_run_natively": 18,
+      "groups": {
+        "other": 55,
+        "unknown_identifier": 23,
+        "type_or_overload": 7,
+        "timeout": 2
+      },
+      "failures": [
+        {
+          "id": "sgpu-build",
+          "category": "other",
+          "message": "n",
+          "reference_oracle": null
+        },
+        {
+          "id": "focus-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `set_working_directory`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-05-5.2-constants",
+          "category": "other",
+          "message": "stdout lacks 'The earth mass is 5972189887017193070000000' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-09-9.1-types",
+          "category": "other",
+          "message": "stdout lacks 'The type of main is procedure ()' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-10-10.1-pointers",
+          "category": "other",
+          "message": "stdout lacks 'Value ptr is void' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-11-11.5-get-time",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-12-12.10-struct-parameters-type",
+          "category": "other",
+          "message": "stdout lacks 'type_of(x) is Entity(Payload=(anonymous struct))' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-16-16.2-type-info-proc",
+          "category": "other",
+          "message": "stdout lacks 'x - y - z - xy - yz - component -' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-17-17.1-proc-definitions",
+          "category": "other",
+          "message": "stdout lacks 'Its type is: procedure (s64, s64, s64) -> s64' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-21-21.1-temp-storage",
+          "category": "other",
+          "message": "stdout lacks 'Temporary_Storage uses 344 bytes' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-21-21.3-allocators-check",
+          "category": "other",
+          "message": "native build failed (exit 1): 21.3_allocators_check.jai:26:33: error: in call to `alloc`: no parameter named `allocator`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-22-22.2-polyproc2",
+          "category": "other",
+          "message": "stdout lacks 'type_of(proc) is procedure (s64, s64) -> s64' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-23-23.4-restrict-type",
+          "category": "other",
+          "message": "stdout lacks 'PolyStruct(T=s64)' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-24-24.1-overloading-vec",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-24-24.3-poke-name",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-25-25.1-context",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-26-26.23-get-variable-name",
+          "category": "other",
+          "message": "stdout lacks 'a_constant' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-26-26.31-tagged-union",
+          "category": "other",
+          "message": "exit code -6, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-26-26.33-measure-performance",
+          "category": "unknown_identifier",
+          "message": "native build failed (exit 1): 26.33_measure_performance.jai:9:19: error: unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-28-28.5-get-cpu-info-feature-flags",
+          "category": "other",
+          "message": "native build failed (exit 1): /Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/artifacts/integration-clean/frozen-a7bd9b9c/stdlib/Machine_X64/mo",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-28-28.7-asm-and-macros",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-29-29.3-c-call",
+          "category": "unknown_identifier",
+          "message": "native build failed (exit 1): 29.3_c_call.jai:7:19: error: unknown identifier `Context`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-30-30.11-using-notes",
+          "category": "unknown_identifier",
+          "message": "native build failed (exit 1): 30.11_using_notes.jai:8:5: error: unknown identifier `bubble_sort`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-30-30.13-dynamic-libraries",
+          "category": "other",
+          "message": "native build failed (exit 1): error: writing main7: linking failed: `cc` stopped with exit status: 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-30-30.1-workspaces",
+          "category": "other",
+          "message": "stdout lacks 'The current workspace is 2' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-30-30.5-compiler-intercept",
+          "category": "other",
+          "message": "stdout lacks 'The current workspace is 3' (in order)",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-30-jai-raylib-build",
+          "category": "other",
+          "message": "native build failed (exit 1): /Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/artifacts/integration-clean/frozen-a7bd9b9c/stdlib/internal/compi",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-31-31.4-thread-group-response",
+          "category": "unknown_identifier",
+          "message": "native build failed (exit 1): 31.4_thread_group_response.jai:25:11: error: unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.11-colored-triangle",
+          "category": "type_or_overload",
+          "message": "no overload of `make_vector3` matches these arguments",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.12-drawing-circle.jai",
+          "category": "type_or_overload",
+          "message": "in call to `make_vector2`: too many arguments: it takes at most 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.14-moving-shape",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.15-drawing-texture",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `glTexParameteri`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.2b-bouncing-square",
+          "category": "type_or_overload",
+          "message": "no overload of `make_vector4` matches these arguments",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-33-33.3-getrect-buttons",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `get_time`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.1-sorting",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.4-struct-pool",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.6-flat-pool",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-34-34.7-mailing",
+          "category": "type_or_overload",
+          "message": "native build failed (exit 1): 34.7_mailing.jai:30:23: error: type mismatch: expected `s64`, found `string`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-35-raylib-raymath",
+          "category": "type_or_overload",
+          "message": "native build failed (exit 1): raymath.jai:59:36: error: in call to `make_vector2`: too many arguments: it takes at most 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-52-raylib-raymath",
+          "category": "type_or_overload",
+          "message": "native build failed (exit 1): raymath.jai:59:36: error: in call to `make_vector2`: too many arguments: it takes at most 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-exercises-22-reverse-string",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-exercises-22-swap-persons",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "ttwj-exercises-22-swap-vectors",
+          "category": "unknown_identifier",
+          "message": "native build failed (exit 1): swap_vectors.jai:9:5: error: unknown identifier `Swap`",
+          "reference_oracle": null
+        },
+        {
+          "id": "focus-native-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `set_working_directory`",
+          "reference_oracle": null
+        },
+        {
+          "id": "match-jai-first",
+          "category": "other",
+          "message": "native build failed (exit 1): ../src/match.jai:111:9: error: error during compile-time execution: compiler_get_code: expected `}` in struct literal, found `=`",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-constant",
+          "category": "other",
+          "message": "native build failed (exit 1): ../src/yield.jai:456:13: error: expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-defer",
+          "category": "other",
+          "message": "native build failed (exit 1): ../src/yield.jai:456:13: error: expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-first",
+          "category": "other",
+          "message": "native build failed (exit 1): ../src/yield.jai:456:13: error: expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-if",
+          "category": "other",
+          "message": "native build failed (exit 1): ../src/yield.jai:456:13: error: expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-if-case",
+          "category": "other",
+          "message": "native build failed (exit 1): ../src/yield.jai:456:13: error: expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "yield-jai-while",
+          "category": "other",
+          "message": "native build failed (exit 1): ../src/yield.jai:456:13: error: expression has no value",
+          "reference_oracle": null
+        },
+        {
+          "id": "ast-utils-build",
+          "category": "other",
+          "message": "native build failed (exit 1): /Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/artifacts/integration-clean/frozen-a7bd9b9c/stdlib/internal/compi",
+          "reference_oracle": null
+        },
+        {
+          "id": "shader-transpiler-build",
+          "category": "unknown_identifier",
+          "message": "native build failed (exit 1): src/backend.jai:25:22: error: unknown identifier `NSOpenGLContext`",
+          "reference_oracle": null
+        },
+        {
+          "id": "reflector-tests",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "uniform-tests",
+          "category": "unknown_identifier",
+          "message": "native build failed (exit 1): first.jai:19:20: error: unknown identifier `get_absolute_path`",
+          "reference_oracle": null
+        },
+        {
+          "id": "stubborn-module",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `push_allocator`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-date-module",
+          "category": "other",
+          "message": "remove is only valid inside a for loop over an array",
+          "reference_oracle": null
+        },
+        {
+          "id": "wait-group-example",
+          "category": "other",
+          "message": "native build failed (exit 1): /Users/matthew/projects/jai/artifacts/cleanroom-workers/integration-clean/artifacts/integration-clean/thread-fixtures/artifacts/integration-clean/frozen-a7bd9b9c/stdlib/internal/colle",
+          "reference_oracle": null
+        },
+        {
+          "id": "cluster-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `CMSG_SIZE`",
+          "reference_oracle": null
+        },
+        {
+          "id": "hyperserve-example-build",
+          "category": "other",
+          "message": "remove is only valid inside a for loop over an array",
+          "reference_oracle": null
+        },
+        {
+          "id": "hyperserve-datastar-build",
+          "category": "other",
+          "message": "remove is only valid inside a for loop over an array",
+          "reference_oracle": null
+        },
+        {
+          "id": "chess-jai-ui-check",
+          "category": "other",
+          "message": "cpuid",
+          "reference_oracle": null
+        },
+        {
+          "id": "chess-jai-engine-check",
+          "category": "other",
+          "message": "cpuid",
+          "reference_oracle": null
+        },
+        {
+          "id": "forbear-build",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `NSApplication`",
+          "reference_oracle": null
+        },
+        {
+          "id": "ui-builder-demo-check",
+          "category": "other",
+          "message": "type `MTLRenderCommandEncoder` has no member `endEncoding`",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-core-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-renderer-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-game-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "vk-engine-editor-check",
+          "category": "other",
+          "message": "error during compile-time execution: assertion failed: monotonic clock query failed",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-tests",
+          "category": "unknown_identifier",
+          "message": "native build failed (exit 1): test.jai:41:12: error: unknown identifier `contains`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-continue-iter",
+          "category": "unknown_identifier",
+          "message": "native build failed (exit 1): ../dom.jai:247:13: error: unknown identifier `New`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-bf-with-callbacks-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-df-with-callbacks-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-from-child-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-xml-traverse-with-breaks-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `free`",
+          "reference_oracle": null
+        },
+        {
+          "id": "toml-jai-union-and-overlay",
+          "category": "other",
+          "message": "null pointer d",
+          "reference_oracle": null
+        },
+        {
+          "id": "toml-jai-formatting-control",
+          "category": "timeout",
+          "message": "nonzero exit or timeout; coordinator triage required",
+          "reference_oracle": null
+        },
+        {
+          "id": "no-api-module-windows-check",
+          "category": "unknown_identifier",
+          "message": "unknown identifier `write_entire_file`",
+          "reference_oracle": null
+        },
+        {
+          "id": "toml-jai-first",
+          "category": "timeout",
+          "message": "nonzero exit or timeout; coordinator triage required",
+          "reference_oracle": null
+        },
+        {
+          "id": "toml-jai-custom-handlers",
+          "category": "type_or_overload",
+          "message": "native build failed (exit 1): custom_handlers.jai:365:40: error: polymorphic procedure `lambda` needs arguments to determine its types",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-tests",
+          "category": "other",
+          "message": "exit code 1, expected 0",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-01-compiletime",
+          "category": "other",
+          "message": "native build failed (exit 1): <#insert at /Users/matthew/projects/jai/artifacts/cleanroom-control/corpus-validation-a7bd9b9c/tmp/jaic-sweep-jai-protobuf-01-compiletime-i2038vh1/segcore--jai-protobuf/examples/01-co",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-03-imports",
+          "category": "other",
+          "message": "native build failed (exit 1): <#insert at /Users/matthew/projects/jai/artifacts/cleanroom-control/corpus-validation-a7bd9b9c/tmp/jaic-sweep-jai-protobuf-03-imports-a6lgtwut/segcore--jai-protobuf/examples/03-import",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-protobuf-04-memory-allocation",
+          "category": "other",
+          "message": "native build failed (exit 1): <#insert at /Users/matthew/projects/jai/artifacts/cleanroom-control/corpus-validation-a7bd9b9c/tmp/jaic-sweep-jai-protobuf-04-memory-allocation-k16_dem6/segcore--jai-protobuf/examples",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-format-tests",
+          "category": "other",
+          "message": "native build failed (exit 1): error: writing build/jai-format: linking failed: `cc` stopped with exit status: 1",
+          "reference_oracle": null
+        },
+        {
+          "id": "jai-format-build",
+          "category": "other",
+          "message": "writing build/jai-format: linking failed: `cc` stopped with exit status: 1",
+          "reference_oracle": null
+        }
+      ]
+    }
+  }
+}
