@@ -1,5 +1,21 @@
 # Iprof/Codex workflow progress
 
+Latest replay uses approved compiler59a69c03 including b0430110. INDEX editing
+is resolved: modules-disabled real profiler CLI builds and execution pass at
+native Mac O0/O2. Actual edited main also runs in the compiler interpreter via
+the public child-workspace plugin lifecycle and #run. Two native -modules builds
+still fail on unnamed member-body ownership; inferred enum printing remains a
+separately reduced prerequisite. Iprof.message stays partial. All other owned
+public APIs retain their verified production implementation.
+
+The dependency snapshot contains byte-identical owned sources and approved
+compiler-owned API sources; --stdlib selects it without editing peers or
+canonical other-owner modules. The runner verifies owned byte identity before
+using that snapshot. The latest precise reductions, commands, generated-code
+inspection and integration requirements are in the
+[compiler handoff](profiler-codex-compiler-handoff.md).
+Earlier checkpoint-specific evidence below is historical where superseded.
+
 This supersedes the records-only audit at 4fe1e621. The synchronized module
 contracts are now the oracle; the earlier broad synchronization requests are
 resolved. Every reviewed public callable has a production body; the remaining

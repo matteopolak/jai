@@ -1,5 +1,68 @@
 # Profiler/Codex compiler-owner requests
 
+## Current approved replay: b0430110 +59a69c03
+
+The exact approved59a69c03 source (including b0430110 reconstruction) was built
+unchanged in the owned local snapshot target/profiler-compiler-source-59a69c03.
+Own independent stdlib sources were copied intact, then only the approved
+compiler-owned Compiler, Program_Print, Code_Visit and corresponding private
+sources were overlaid from that exact checkpoint. Canonical worktree modules
+and peers were not modified. Cargo rebuilt jaic/jaic-llvm/jaic-cli/jailint in the
+assigned T7 target. The focused runner's --stdlib option selects this actual
+production dependency snapshot and checks every owned implementation file is
+byte-identical to the worktree; it permits no tool-specific library replacement.
+
+Resolved: original INDEX modification now prints `values[0] = 42`, parses and
+completes. Actual real CLI builds with modules disabled pass at native Mac O0
+and O2, preserving the indexed byte store, allocation/free and imported call.
+The emitted O0 LLVM main contains initialization, profile_zone_begin, the
+original `store i8 42`, real alloc/free/child_call, zone_end and final report.
+Native execution returns ok and records one main call with positive timing.
+Ordinary Basic-body interception and full module-root lint stay resolved.
+
+Remaining required failures (Iprof.message stays partial):
+
+- Exported unnamed inline member bodies cannot be modified: original
+  profiler-member-modify.jai exits134 on body ownership/completion. Both actual
+  native -modules CLI builds still fail on that same error at O0/O2. An
+  original interpreter-workspace workflow profiler-interpreted-modules.jai
+  also fails on that ownership error; its required successful completion
+  assertion is retained.
+- Inferred enum member reconstruction still fails. New wholly original
+  profiler-enum-input.jai contains `return take(.ONE)`; its modifier prints
+  `return take(`, returns false and exits1 from canonical modification.
+  The unchanged Basic.alloc reduction still fails identically at .ALLOCATE.
+  Exporter supplies the documented BINARY_OPERATOR dot with null left and
+  identifier right; request general inferred-member printing in the canonical
+  compiler-owned source printer. No fabricated node or public field is needed.
+
+Interpreter CLI plugins are explicitly unsupported by jaic. The positive
+iprof-intercept-interpreter.jai fixture instead uses the real public plugin
+lifecycle in a child workspace, waits until injected zone setup is materialized,
+and adds `#run main();`. This runs the actual edited body in the compiler's
+interpreter. It returns ok and writes one positively timed main CSV row. It is
+also exercised while building its host natively at O0/O2, with all completion
+and generated-setup assertions preserved. It supplies no substitute profiler.
+
+Exact replay (STDLIB is the absolute owned dependency-snapshot stdlib path):
+
+```sh
+JAIC_STDLIB="$STDLIB" /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic tests/developer-tools/compiler-requests/profiler-enum-modify.jai -check
+JAIC_STDLIB="$STDLIB" /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic tests/developer-tools/compiler-requests/profiler-member-modify.jai -check
+JAIC_STDLIB="$STDLIB" /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic tests/developer-tools/compiler-requests/profiler-index-modify.jai -check
+JAIC_STDLIB="$STDLIB" /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic tests/developer-tools/compiler-requests/profiler-interpreted-modules.jai -interp
+python3 tools/check_profiler_codex.py --jaic /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic --jailint /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jailint --stdlib "$STDLIB"
+```
+
+Authoritative local results: target/profiler-codex-checks.json and
+ target/profiler-codex-dependency-replay.json. The main runner retains the two
+required native CLI failures and exits nonzero. The separate replay records
+all original reductions, the interpreted module failure and emitted-IR native
+build/run. Integrator must integrate the approved compiler-owned API sources
+with Rust together, then repair general member ownership and inferred-member
+printing; no shared manifest, peer or compiler implementation is edited here.
+Earlier checkpoint-specific evidence follows for comparison.
+
 ## Historical reduced module-root context/lint reproduction (resolved e9affab7)
 
 Independent sources (no library dependency beyond bootstrap):

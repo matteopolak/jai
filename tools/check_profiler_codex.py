@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CASES = [
     "codex-inspection", "codex-metrics", "codex-conditional", "codex-records", "codex-wire", "codex-export", "codex-lifecycle",
     "iprof-history-values", "iprof-smoothing", "iprof-stack-depth", "iprof-manual-clock",
-    "iprof-options", "iprof-hooks", "iprof-size-boundary", "iprof-graphics", "iprof-frames", "iprof-automatic", "iprof-report", "iprof-traverse", "iprof-client-setup", "iprof-public-state",
+    "iprof-options", "iprof-intercept-interpreter", "iprof-hooks", "iprof-size-boundary", "iprof-graphics", "iprof-frames", "iprof-automatic", "iprof-report", "iprof-traverse", "iprof-client-setup", "iprof-public-state",
 ]
 
 
@@ -20,8 +20,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--jaic", type=Path, default=ROOT / "target/debug/jaic")
     parser.add_argument("--jailint", type=Path, default=ROOT / "target/debug/jailint")
+    parser.add_argument("--stdlib", type=Path, default=ROOT / "stdlib",
+                        help="Production library snapshot, including approved compiler API dependencies")
     args = parser.parse_args()
-    env = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
+    args.stdlib = args.stdlib.resolve()
+    env = dict(os.environ, JAIC_STDLIB=str(args.stdlib))
     report = ROOT / "target/profiler-codex-checks.json"
     evidence = {"complete": False, "commands": [], "failures": []}
     owned = [ROOT / "stdlib/Iprof/module.jai", ROOT / "stdlib/Codex/module.jai"]
@@ -29,6 +32,14 @@ def main():
     owned += list((ROOT / "stdlib/internal/developer-tools").glob("codex-*.jai"))
     owned += list((ROOT / "stdlib/internal/developer-tools/profiling").rglob("*.jai"))
     evidence["source_sha256"] = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in sorted(owned)}
+    evidence["stdlib"] = str(args.stdlib)
+    # A dependency snapshot may replace compiler-owned API sources only.
+    # Every owned implementation must be byte-identical to this worktree.
+    for path in owned:
+        relative = path.relative_to(ROOT / "stdlib")
+        dependency = args.stdlib / relative
+        if dependency.read_bytes() != path.read_bytes():
+            raise RuntimeError(f"Dependency snapshot differs from owned production source: {relative}")
     report.parent.mkdir(parents=True, exist_ok=True)
 
     def record(command, result, expectation):
@@ -127,7 +138,12 @@ def main():
     plugin_inputs += [ROOT / "tests/developer-tools/codex-conditional-input.jai", ROOT / "tests/developer-tools/iprof-modules-input.jai", ROOT / "tests/developer-tools/profiler-modules/Measured_Child/module.jai"]
     run([formatter, "--config", ROOT / "jaifmt.toml", "--check", *source_paths, *tests, *plugin_inputs])
     for name, source in zip(CASES, tests):
-        run([args.jaic, source, "-interp"], expected="ok\n")
+        interpreted_output = "ok\nok\n" if name == "iprof-intercept-interpreter" else "ok\n"
+        run([args.jaic, source, "-interp"], expected=interpreted_output)
+        if name == "iprof-intercept-interpreter":
+            rows = list(csv.DictReader((ROOT / "target/profiler-codex-interpreted-edited.csv").read_text().splitlines()[1:]))
+            if len(rows) != 1 or rows[0]["name"] != "main" or float(rows[0]["calls"]) != 1 or float(rows[0]["hier (ms)"]) <= 0:
+                raise RuntimeError("Interpreted edited main did not produce one real measured zone")
         for optimization in [0, 2]:
             exe = ROOT / f"target/profiler-codex-{name}-o{optimization}"
             run([args.jaic, source, f"-O{optimization}", "-exe", exe])
