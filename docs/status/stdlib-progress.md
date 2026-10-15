@@ -1,5 +1,13 @@
 # Portable stdlib progress
 
+Current owned snapshot:4076 reviewed rows,3571 complete-source,456 conservative
+partial,49 missing; source-only counts, no conformance inflation. Whole names/
+conditions in implementation-remaining.json; missing-module subset33 is smaller.
+Only missing Mac Socket row is CMSG_SIZE; six others Android. Focused remaining
+contract queue in portable-remaining-contract-requests.md covers CMSG/minimal flow/
+instrumentation/MPEG macro/table-walk and crypto details without obsolete broad
+questions. Valid deferred plugin source pending general committed capability.
+
 Native lookup audit found/fixed real absolute Mac crash-helper LC_ID_DYLIB in the
 producer tree. Now @rpath identity (Linux basename SONAME source configured).
 Moved-distribution test compiles and runs actual native OFF/ON crash behavior;

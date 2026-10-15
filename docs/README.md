@@ -158,6 +158,7 @@ The LLVM backend, C ABI and linking.
 - [Real direct Android signing keys and crypto-tool dependency](portable-direct-signing-key.md)
 - [Canonical Android hexadecimal formatter aliases](portable-android-format-helpers.md)
 - [Relocated native crash-helper package lookup and override audit](portable-native-package-lookup.md)
+- [Remaining exact portable contract requests and owned scope](portable-remaining-contract-requests.md)
 - [Reviewed S128/Apollo arithmetic foundation handoff](portable-wide-arithmetic-handoff.md)
 - [Metaprogram plugin public-contract/compiler handoff](metaprogram-plugins-dependency-request.md)
 - [POSIX crash diagnostics and native startup verification](portable-crash-handler.md)
