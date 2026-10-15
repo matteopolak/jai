@@ -311,4 +311,3 @@ This is a source checkpoint for normal temporary CI, not a completion claim.
 Broad suite outcomes and newly settled foundation discrepancies are pending below
 and in integration-requests.md. Historical evidence is retained in the sections
 that follow.
-

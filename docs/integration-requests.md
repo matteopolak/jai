@@ -171,4 +171,3 @@ implementation and original behavior assertions together, preserving their cover
 These are integration-detected compatibility gaps, not unspecified contracts or
 permission to weaken tests. This worker continues compiler/tool integration while
 the active owner corrects the shared foundation batch.
-
