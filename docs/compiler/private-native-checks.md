@@ -11,7 +11,7 @@ The independently designed __jaic_check_failed alias is file-private in the
 canonical Runtime_Support facade. Only compiler transport setup reads its own
 runtime module's declaration scopes; application lookup/export rules are
 unchanged. It resolves a real internal/runtime/checks.jai implementation with
-an exact checked six-scalar/no-context/void signature. Missing, ambiguous,
+an exact checked six-scalar/no-context/void signature. Ambiguous,
 malformed or failed bodies produce normal compiler diagnostics. Resolution
 failures propagate through check emission instead of silently disabling checks.
 The compiler marks the hook's real use for semantic lint; no naming suppression
@@ -44,3 +44,13 @@ Diagnostics write bounded numeric buffers and source strings in several existing
 low-level output operations. Concurrent failures can interleave fragments; there
 is no new atomic whole-diagnostic guarantee. A future shared nonallocating output
 transaction can reduce that cost/interleaving without changing the private ABI.
+
+The transport is optional for custom/minimal runtimes: absence uses the same
+explicit trap fallback. It adds no mandatory declaration to the reviewed public
+Runtime_Support contract. The first full regression exposed that mistake by
+masking existing configuration and lint-scope diagnostics; original tests are
+retained. All50 module, four runtime-configuration, five library-root tests and
+two new private-hook validation cases pass after correction. Invalid hook types,
+signatures and bodies still fail normally. Minimal virtual runtimes in these
+unit tests only verify transport admission; production behavior comes from the
+actual combined library and native execution tests.

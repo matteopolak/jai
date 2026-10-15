@@ -730,3 +730,13 @@ output-fragment tradeoff: ../compiler/private-native-checks.md.
 Existing native diagnostic/pointer-invalidation/arithmetic suites and new
 runtime-disabled O0/O2 regression pass; strict scoped Jai lint and workspace
 clippy pass. Broad full suite is still running, no production-wide green claim.
+
+Private transport audit correction: the first full safety run completed with
+706 aggregate passes/53 failures/one inherited ignored test, including six new
+failures caused by requiring the extension in minimal custom runtimes. That
+requirement exceeded the reviewed public contract. Absence now uses an explicit
+native trap fallback; malformed/present hooks still diagnose. Original50module,
+four runtime-config and five library-root cases plus two new strict transport
+cases pass. No tests were weakened. Production's real private reporter remains
+present; native guard/diagnostic tests retain their assertions. The full run's
+failure evidence is preserved at secondary artifacts/workspace-native-checks.log.

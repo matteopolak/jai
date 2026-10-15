@@ -545,3 +545,11 @@ lint and workspace clippy pass. Full compiler/LSP suite is running against the
 immutable implementation. New safe coordinator snapshots are now available and
 will be audited/merged after this gate; previous missing foundation APIs are
 reported implemented upstream, not yet counted as integrated.
+
+Private protocol correction retained exact public compatibility: custom/minimal
+Runtime_Support need not implement an extra private hook. Missing extensions use
+explicit guard traps; invalid present hooks remain hard errors. Original59
+module/config/lint-root tests and two new validation cases pass. First broad
+safety run's53failures include the six now-fixed admission errors and genuine/
+legacy issues still awaiting reviewed classification; do not extrapolate a new
+full-suite total. Updated coordinator snapshots are ready for merge next.
