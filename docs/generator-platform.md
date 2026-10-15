@@ -81,3 +81,8 @@ the interpreter and Mac O0/O2. All six desktop branches are source checked. This
 supplies the shared model dependency without introducing a second cache/registry.
 Context activation and the single cache lifetime are still with stdlib-tools/model
 owner; a save/restore nested-session proposal is recorded in worker-inbox.md.
+
+The [durable macro-failure reduction](generator-platform-macro-cause.md) now
+establishes the exact lost-diagnostic branch using original native SDK and direct
+Jai calls. Its failure remains separate from the passing platform tests; the
+combined gate is unchanged and the callback-model owner has the precise report.

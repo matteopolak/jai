@@ -2,6 +2,8 @@
 
 - [Generator platform helpers](generator-platform.md): owned native-library/object
   APIs, official LLVM delegation, canonical model integration and precise outstanding contract dependencies.
+- [String-macro diagnostic reduction](generator-platform-macro-cause.md): original
+  SDK/FFI evidence and the exact callback-model cause of the combined test failure.
 
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 
