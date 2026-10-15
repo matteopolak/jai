@@ -14,6 +14,17 @@ use super::*;
 use crate::records::{Field, FieldRef, Item, Record, Records};
 use crate::types::{ArrayKind, TypeKind};
 
+/// Reviewed Code_Type_Instantiation.inst_flags ABI (independent of AST enum tags).
+mod inst_flags {
+    pub const VARARGS: i64 = 0x1;
+    pub const RESIZABLE: i64 = 0x2;
+    pub const TYPE_OF_PROCEDURE: i64 = 0x4;
+    pub const TYPE_DIRECTIVE: i64 = 0x8;
+    pub const TYPE_DIRECTIVE_DISTINCT: i64 = 0x10;
+    pub const TYPE_DIRECTIVE_ISA: i64 = 0x20;
+    pub const ARRAY_VIEW: i64 = 0x40;
+}
+
 /// Values of `Message.kind`.
 pub mod message_kind {
     pub const FILE: i64 = 1;
@@ -1241,7 +1252,14 @@ impl Exporter<'_> {
             }
         };
         if let Some(rec) = self.r.get_mut(inst) {
-            rec.set("inst_flags", Field::Item(Item::Int(0x1)));
+            let existing = match rec.field("inst_flags") {
+                Some(FieldRef::Int(flags)) => flags,
+                _ => 0,
+            };
+            rec.set(
+                "inst_flags",
+                Field::Item(Item::Int(existing | inst_flags::VARARGS)),
+            );
         }
     }
 
@@ -1426,10 +1444,10 @@ impl Exporter<'_> {
                         rec.ptr("array_dimension", size);
                     }
                     ast::ArraySize::View => {
-                        rec.int("inst_flags", 0x40);
+                        rec.int("inst_flags", inst_flags::ARRAY_VIEW);
                     }
                     ast::ArraySize::Resizable => {
-                        rec.int("inst_flags", 0x10);
+                        rec.int("inst_flags", inst_flags::RESIZABLE);
                     }
                 }
             }
@@ -1443,7 +1461,8 @@ impl Exporter<'_> {
                     body: None,
                 };
                 let value = self.proc(&lit, &[], None, expr.span);
-                rec.ptr("type_valued_expression", value);
+                rec.ptr("type_valued_expression", value)
+                    .int("inst_flags", inst_flags::TYPE_OF_PROCEDURE);
             }
             ast::ExprKind::TypeDirective {
                 modifier,
@@ -1453,9 +1472,9 @@ impl Exporter<'_> {
                 rec.ptr("type_directive_target", value).int(
                     "inst_flags",
                     match modifier {
-                        ast::TypeModifier::Plain => 2,
-                        ast::TypeModifier::Distinct => 4,
-                        ast::TypeModifier::Isa => 8,
+                        ast::TypeModifier::Plain => inst_flags::TYPE_DIRECTIVE,
+                        ast::TypeModifier::Distinct => inst_flags::TYPE_DIRECTIVE_DISTINCT,
+                        ast::TypeModifier::Isa => inst_flags::TYPE_DIRECTIVE_ISA,
                     },
                 );
             }

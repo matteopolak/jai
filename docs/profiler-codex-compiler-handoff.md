@@ -1,23 +1,73 @@
 # Profiler/Codex compiler-owner requests
 
-## Compiler-owner follow-up: retained members and inferred enum values
+## Compiler-owner correction: growable and directive type flags
 
-General repairs are implemented in the compiler worker: completed concrete
-semantic procedures now receive canonical owned body events even when member or
-procedure-value calls bypass syntax lookup; syntax-only literal bodies are not
-misreported as editable TYPECHECKED bodies. Contextual dot expressions with null
-left operands now reconstruct as `.MEMBER`, retaining public identifier edits.
-No name/path/module exemptions, anonymous-body exclusions or library reparsers.
+The independent array-local reduction reproduced the failure before the repair.
+The general exporter now uses reviewed Code_Type_Instantiation flag values:
+growable0x2, view0x40, plain0x8, distinct0x10, isa0x20, procedure-type0x4.
+Variadic marking retains these flags while adding0x1. No printer-side remapping,
+module/name filters or library workaround was added.
 
-Core ownership tests retain unknown, copied and foreign-workspace rejection;
-both real members and anonymous callbacks are reported once and relower unchanged.
-The copied member/stdlib modifier drivers pass using explicitly authored local
-minimal sibling inputs (the producer's original siblings were not copied).
-Actual modified member child executables and reconstructed enum executables pass
-at ARM64 O0/O2; child crash backtraces use the supported OFF setting because the
-externally owned crash archive is absent. Interpreter and optimized WASI enum
-execution pass. Full profiler replay remains foundations/integration work.
-See [architecture, exact bounds and evidence](compiler/retained-body-ownership.md).
+Exact numeric metadata checks and executable growable/fixed/slice/distinct/isa/
+plain round trips pass, including public type edits and variadic arrays. The
+copied modifier preserves its successful-completion assertions and now also
+executes collect after modification. Actual modified child and reconstructed
+program executions pass at ARM64 O0/O2, plus optimized WASI reconstruction.
+The optional native child configuration uses supported crash-backtrace OFF
+independently of the externally owned crash archive; assertions stay enabled.
+Scoped regression suites, format, strict lint and clippy pass. Full real profiler
+replay remains foundations/integration work. See
+[type-instantiation flags](compiler/type-instantiation-flags.md) for exact scope
+and durable evidence. Keep the independent deferred-call export changes when
+integrating overlapping Rust source.
+
+## Current approved replay69e971b1: growable-array flags
+
+Exact approved69e971b1 Rust and compiler-owned API sources were source-built
+unchanged using the established isolated snapshot workflow. The retained member,
+inferred enum, unchanged Basic.alloc and INDEX reductions now pass. Their
+assertions are unchanged; previous ownership/enum dependencies are resolved.
+
+Both required actual -modules builds still fail at O0/O2, now while editing
+Basic's nat_decimal body. Its `chunks: [..] u32` is reconstructed as a distinct
+array view, so the following real array_add call fails overload resolution.
+The actual interpreted-module workflow fails identically; its completion
+assertion is retained. Iprof.message remains partial for this one general
+producer reconstruction issue.
+
+Original minimal reduction:
+
+- profiler-array-local-input.jai: collect declares `values: [..] u32`, appends42,
+  asserts count/content, and frees its allocation. The unchanged program prints
+  ok in interpreter/native Mac O0/O2.
+- profiler-array-local-modify.jai: a canonical child workspace intercepts collect
+  and passes its unchanged public body back to compiler_modify_procedure.
+  Program_Print reports success but emits `values: #type,distinct [] u32`.
+  Recompilation fails on `array_add(*values, cast(u32)42)` with "expected an
+  array, found distinct". The required successful-completion assertion fails
+  (exit134). No library internals or special profiler procedure names are
+  needed to reproduce the general fault.
+
+Root cause observed in the authorized NEW source snapshot:
+`crates/jaic/src/sema/code_export.rs`, type_inst, ArraySize::Resizable, emits
+inst_flags0x10. The reviewed canonical Code_Type_Instantiation.inst_flags defines
+RESIZABLE0x2 and TYPE_DIRECTIVE_DISTINCT0x10. The printer correctly interprets
+these public bits and therefore emits the wrong type for the wrong metadata.
+Request correction of the general exporter flag mapping and regression coverage
+for growable/view/fixed local arrays. This worker has not changed the compiler,
+rewritten type metadata, excluded procedures, or supplied a library reparser.
+
+Exact commands (STDLIB is the absolute owned69e971b1 dependency-snapshot path):
+
+```sh
+JAIC_STDLIB="$STDLIB" /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic tests/developer-tools/compiler-requests/profiler-array-local-input.jai -interp
+JAIC_STDLIB="$STDLIB" /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic tests/developer-tools/compiler-requests/profiler-array-local-modify.jai -check
+python3 tools/check_profiler_codex.py --jaic /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic --jailint /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jailint --stdlib "$STDLIB"
+```
+
+Authoritative local reports remain target/profiler-codex-checks.json and
+ target/profiler-codex-dependency-replay.json. Earlier replay evidence follows;
+its ownership/enum failure claims are superseded by69e971b1 success.
 
 ## Current approved replay: b0430110 +59a69c03
 

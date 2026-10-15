@@ -85,6 +85,7 @@ fn source_reconstruction_executes_original_semantics_and_retains_rejections() {
         "assembly",
         "aliases",
         "enum-members",
+        "array-flags",
     ] {
         let output = Command::new(env!("CARGO_BIN_EXE_jaic"))
             .env("JAIC_STDLIB", root.join("stdlib"))
@@ -132,6 +133,7 @@ fn retained_member_and_real_library_bodies_are_modifiable() {
         "tests/compiler-semantics/code-modify-members.jai",
         "tests/developer-tools/compiler-requests/profiler-member-modify.jai",
         "tests/developer-tools/compiler-requests/profiler-stdlib-modify.jai",
+        "tests/developer-tools/compiler-requests/profiler-array-local-modify.jai",
     ] {
         let output = Command::new(env!("CARGO_BIN_EXE_jaic"))
             .env("JAIC_STDLIB", root.join("stdlib"))

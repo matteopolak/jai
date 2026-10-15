@@ -450,6 +450,8 @@ See [custom iteration controls](compiler/custom-iteration-controls.md) for array
 removal forwarding and independent operator-name diagnostic coverage.
 See [retained body ownership](compiler/retained-body-ownership.md) for canonical
 member/callback editing, contextual enum members and native/WASI evidence.
+See [type-instantiation flags](compiler/type-instantiation-flags.md) for reviewed
+array/directive mappings, variadic composition and mutable type round trips.
 
 The [machine-readable baseline](status/mac-integration-baseline.json) records the
 exact candidate snapshot, commands, environment, counts and failure names.
