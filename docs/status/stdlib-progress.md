@@ -1,5 +1,12 @@
 # Portable stdlib progress
 
+Manifest flags milestone: canonical reviewed s32 enum_flags plus actual16-name
+pipe parser, duplicates ORed, invalid components diagnosed without partial result.
+All16 single/256 pair cases and7 malformed cases pass interpreter/native both
+CPUs O0/O2, Linux/Windows both-CPU source checks and strict lint. Independent
+fine-policy questions are explicit in portable-android-values.md. No native
+Android/manifest generation or test-oracle correction claim. Missing158 ->156.
+
 Java host milestone: exact JAVA_ENV_NAME/find_java_bin_path_from_environment
 implemented, including copied environment value, argv-safe native launcher probe,
 real status/failure cleanup and Windows Unicode environment source backend.

@@ -1,5 +1,12 @@
 # Portable stdlib worker deviations
 
+Manifest flag parser: exact reviewed16 names/masks and official SDK | grammar
+implemented. Empty input gives no flags; unknown/empty components log+assert and
+return zero if assertions continue. Whitespace/invalid recovery fine policy is
+not established by inventory; review requested in portable-android-values.md.
+Risk: public finer policy may differ and require correction, not silent token
+dropping. No newer SDK exports, partial-success fallback or native Android claim.
+
 JAVA_HOME discovery: require successful actual java -version execution before
 returning copied bin/executable paths. Environment lookup only reads explicitly
 authorized JAVA_HOME; no PATH/default SDK/credential scan. Fine success/storage/

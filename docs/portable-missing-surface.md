@@ -31,8 +31,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `android_build_or_update_dynamic_loader :: (project_config: Android_Project_Config, build_options: Build_Options, android_build_options: Android_Build_Options, force_rebuild_loader := false) -> bool` | All reviewed hosts |
 | `android_check_for_adb_and_select_device :: (required_reason := "by metaprogram", preferred_model_name := "") #compile_time` | All reviewed hosts |
 | `android_compile_helper_program :: (app_name: string, package_name: string, output_path := "", activity := DEFAULT_ACTIVITY, debug := false) -> bool #compile_time` | All reviewed hosts |
-| `Android_Config_Changes :: enum_flags s32` | All reviewed hosts |
-| `android_config_changes_from_string :: (s: string) -> Android_Config_Changes` | All reviewed hosts |
 | `android_copy_directories_to_device :: (directories: [] string, app_id: string, dest_relative_path := "", only_update_newer_files := false, force_create_directories := false) -> bool` | All reviewed hosts |
 | `android_copy_directories_to_device_quest :: android_copy_directories_to_device` | All reviewed hosts |
 | `android_copy_file_to_device :: (file_path: string, app_id: string, external_storage_relative_path := "") -> bool` | All reviewed hosts |
@@ -217,7 +215,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 158 missing reviewed declaration/overload/nested-operation rows
+Total: 156 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.
