@@ -175,3 +175,5 @@ positive fixtures strict lint pass. Whole strict lint still fails at
 target/socket-cmsg-whole-lint.log. Only CMSG_SIZE remains the missing ancillary
 helper, with fine invalid-extent semantics still questioned; native Linux/
 Android and target-aware lint remain pending. Exact inventory: portable-socket-cmsg.md.
+
+Android host ABI helper: full109 positives/26 checked faults/14 negatives plus integration/target checks pass (target/android-abi-name-full.log). Focused source-built strict lint passes (target/android-abi-name-strict.log);363 owned files format/check. Full strict lint fails (target/android-abi-name-whole-lint.log). No Android/device/auth execution. Missing-public-surface doc regenerates byte-identically; producer tests still require coordinator independent review/integrated native CI before release.

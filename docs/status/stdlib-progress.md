@@ -3,17 +3,18 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint:db0006c, Windows Registry native bindings. Current reviewed
-batch adds26 Linux TCP/tcp_info accessors and Pool unmapping selection/lifetime
-guard. Linux public #run assertions execute both CPU targets; native Linux remains
-pending. Pool interpreter/native O2 and active strict lint pass. Full104 positives,
-23 checked faults in both modes,14 compile negatives and prior integration/target
-checks pass (target/pool-policy-full3.log).343 owned Jai files pass format/check.
-Whole strict lint remains failed with all configured groups attempted; no blanket
-suppression. Native Windows execution and target-aware Windows/Linux lint remain
-pending. Exact implemented/missing scope: portable-pool.md, portable-socket-fields.md,
-portable-windows-socket.md and the module ledger. Next: adopt reviewed calendar
-normalization/text/expansion contracts, then remaining owned portable APIs.
+Current durable checkpoint:c4d6a4f, native ancillary helpers. Current host-tooling
+increment adds exact Android JNI ABI naming and a253-row missing public-surface
+inventory. Full109 positives/26 checked faults in both modes/14 compile negatives
+plus existing integration and Linux/Windows target checks pass
+(target/android-abi-name-full.log).363 owned files pass format/check. Focused new
+roots pass strict lint; whole strict lint still fails for documented compiler/
+configuration/intentional-negative categories, with all groups attempted.
+Native Windows/Linux/Android gates remain distinct. Exact partial-module gaps and
+all largely unimplemented portable APIs are linked from the module ledger and
+portable-missing-surface.md; the full task is unfinished. Next: retain reviewed
+native/resource ownership behavior while continuing portable platform/toolchain
+work, and use named questions for precise missing contracts rather than fake APIs.
 
 Post-f044252 work: get_machine_options_x86 now implements the reviewed generic
 #modify API as a checked in-place projection of actual Compiler.Build_Options
@@ -299,3 +300,5 @@ positive fixtures strict lint pass. Whole strict lint still fails at
 target/socket-cmsg-whole-lint.log. Only CMSG_SIZE remains the missing ancillary
 helper, with fine invalid-extent semantics still questioned; native Linux/
 Android and target-aware lint remain pending. Exact inventory: portable-socket-cmsg.md.
+
+Android host tooling increment: exact x64/ARM64 JNI directory names pass host interpreter/native, Linux/Windows checks and focused strict lint. Unsupported custom CPU diagnostics pass both modes.109 positives/26 faults/14 negatives and integration checks pass;363 owned files format/check, whole strict lint still fails. Missing API inventory regenerates identically with253 declaration/overload/nested rows; no functionality credited to those rows. Parent Android/native bindings and excluded modules are untouched.

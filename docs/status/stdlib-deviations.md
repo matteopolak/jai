@@ -290,3 +290,12 @@ Live-record/control-storage preconditions remain with caller. Native Linux/
 Android still pending despite Linux pure #run execution. Initial signed/unsigned
 test mismatch fixed by explicit boundary conversions; no signature/assertion
 change. No copied Jai bodies, fake kernel calls or test/lint suppressions.
+
+Android JNI ABI helper: static immutable native directory strings for the only
+reviewed real CPU targets X64/ARM64. Other tags diagnose explicitly; fine
+invalid-tag behavior remains independent. This is host tooling functionality,
+not evidence of an Android backend/device integration. No ADB/auth/credential
+action executed. Parent Android bindings untouched; formatting ownership exception
+is scoped only to Android/Toolchain, not a lint suppression. All other toolchain
+APIs remain missing, now explicitly listed with other untouched portable modules
+in portable-missing-surface.md (253 rows, no functionality credited).
