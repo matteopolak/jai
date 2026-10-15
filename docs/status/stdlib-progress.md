@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint: 338a4a8; time e81f1a5, SHA1579458, ISA c45ee67, critical Pool/Thread d6db68f. Pool/Unix Thread
+Current implementation checkpoint: 049154a (System); time e81f1a5, SHA1579458, ISA c45ee67, critical Pool/Thread d6db68f. Opaque-pointer handoff:338a4a8. Pool/Unix Thread
 critical corrections are committed: field-only Pool guard, no registry,
 allocator/options preserved by reset/release, genuine returned leak report fixed.
 Every owned essential Thread SDK operation now executes outside optional asserts;
