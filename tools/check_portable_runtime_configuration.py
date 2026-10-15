@@ -1,32 +1,32 @@
 #!/usr/bin/env python3
 """Execute the adopted runtime against settled root and child workspace sizes.
 
-Requires the NEW dependency composition made by check_portable_stdlib.py.
-Does not substitute runtime code or modify another producer's checkout.
+Uses the explicitly selected production library without source substitution.
 """
 from pathlib import Path
+import argparse
 import os
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-LIBRARY = ROOT / "target/portable-integration-stdlib"
-COMPILER = ROOT / "target/compiler/debug/jaic"
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--jaic", type=Path, default=ROOT / "target/debug/jaic")
+parser.add_argument("--stdlib", type=Path, default=ROOT / "stdlib")
+args = parser.parse_args()
+LIBRARY = args.stdlib.resolve(strict=True)
+COMPILER = args.jaic.resolve(strict=True)
 OUTPUT = ROOT / "target/portable-runtime-configuration"
 
 
 def run(arguments, expected=None):
     result = subprocess.run(arguments, cwd=ROOT,
                             env=dict(os.environ, JAIC_STDLIB=str(LIBRARY)),
-                            capture_output=True, text=True)
+                            capture_output=True, text=True, timeout=120)
     if result.returncode or result.stderr or (expected is not None and result.stdout != expected):
         raise RuntimeError(f"{arguments!r}\nexit={result.returncode}\n{result.stdout}{result.stderr}")
 
 
 def main():
-    for relative in ["Runtime_Support/module.jai", "internal/runtime/module.jai",
-                     "internal/runtime/startup.jai", "internal/runtime/heap.jai"]:
-        if (LIBRARY / relative).read_bytes() != (ROOT / "stdlib" / relative).read_bytes():
-            raise RuntimeError(f"stage current producer before testing: {relative}")
     OUTPUT.mkdir(parents=True, exist_ok=True)
     source = ROOT / "tests/portable-stdlib/runtime-configuration.jai"
     for size in [0, 65536, 131072]:
