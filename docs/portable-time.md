@@ -16,7 +16,7 @@ adds no public helper types. Native conversions use the NEW POSIX types directly
 | ConvertToApollo | Expansion caller-local requirements remain unspecified; not exported |
 | calendar_to_string; calendar_to_iso_string | Exact text/zone/fraction formats unresolved; not exported |
 | filetime_to_apollo; to_filetime | NEW exact Windows FILETIME wrappers, two-word integer scaling and bounded unsigned100ns conversion. Production arithmetic source executes interpreter/native O0/O2 on host; public canonical Windows ABI/body checks pass both CPUs, actual Windows execution unverified |
-| seconds_since_init | Required initialization origin and interpreter/native startup integration unresolved; not exported. A first-query baseline would give misleading elapsed time and is not substituted |
+| seconds_since_init | Reviewed lazy FIRST CALL origin implemented; exact first-call capture, shared alias storage and private CAS publication. Actual host interpreter/native and eight-thread race tests pass; Windows body checks retain native-execution gate |
 
 The reviewed constants and existing duration conversions establish the working
 femtosecond representation. Detailed floating rounding, invalid-date/leap-second,
@@ -98,3 +98,25 @@ Full suite now passes97 cases and23 checked faults in both modes, eight negative
 compile cases and prior SMTP/IPC/parent/startup/Linux+Windows checks;300 owned Jai
 files pass formatter/check/strict lint. These are host/staged producer results,
 not Windows runtime or full distribution integration.
+
+
+The refreshed Basic review explicitly establishes FIRST CALL as the
+seconds_since_init origin; earlier missing-origin statements are superseded.
+Implementation captures one monotonic sample on the winning first call and
+returns0 at that instant. Later calls subtract the two-word timestamps before
+float conversion. Shared private CAS states publish both origin words safely
+before concurrent readers; this strengthens the reviewed single-thread-first-use
+requirement without moving the origin to startup or adding an initialization API.
+
+Tests sleep before the first call, verify its zero elapsed time, sleep afterward
+and check real positive/monotonic results through another Basic import. Eight
+threads synchronize before first use and each makes512 subsequent calls, checking
+a shared origin and monotonic results. A separate actual-macOS fixture calls the
+API at compile time then verifies target execution initializes a fresh origin;
+it is not an unreviewed #no_reset workaround or target-dependent compile-time ABI
+call. This pairing is explicitly macOS-only, while the ordinary elapsed fixture
+also type-checks Windows x64/ARM64 and Linux. Windows elapsed execution remains
+unverified on this host. The API/source first-call baseline is a confirmed
+contract, not a workaround.
+
+Elapsed final evidence: ordinary, eight-thread and compile-time-reset fixtures all pass interpreter/native O0/O2; full98-case/23-fault both-mode suite and prior rejection/integration/target checks pass. All305 owned files pass source-built formatting/check/strict lint. Windows ARM64 body checking also passes.

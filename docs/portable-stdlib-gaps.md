@@ -76,7 +76,8 @@ generation expects a non-oracle public helper; do not invent that export. See
 - Apollo native/calendar conversions now use reviewed FEMTOSECONDS and Unix epoch
   constants with NEW POSIX ABI types. Exact floating rounding/invalid-date/DST
   policies remain explicitly independent; see portable-time.md. Calendar text
-  formats and seconds_since_init initialization origin/hook remain unresolved.
+  formats remain unresolved. Refreshed seconds_since_init first-call origin is
+  resolved and implemented with actual elapsed/race/reset tests.
 - Flat_Pool reserve/default/overwrite contracts are resolved in the refreshed oracle and implemented. Windows backend code/full fixture bodies now type-check both CPUs; actual Windows execution, console backends and Android validation remain platform gaps.
 - Process finite STILL_RUNNING boolean, live deinit/stdin inheritance, and the
   quote grammar beyond supported double quotes remain under review.
