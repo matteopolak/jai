@@ -177,3 +177,40 @@ helper, with fine invalid-extent semantics still questioned; native Linux/
 Android and target-aware lint remain pending. Exact inventory: portable-socket-cmsg.md.
 
 Android host ABI helper: full109 positives/26 checked faults/14 negatives plus integration/target checks pass (target/android-abi-name-full.log). Focused source-built strict lint passes (target/android-abi-name-strict.log);363 owned files format/check. Full strict lint fails (target/android-abi-name-whole-lint.log). No Android/device/auth execution. Missing-public-surface doc regenerates byte-identically; producer tests still require coordinator independent review/integrated native CI before release.
+
+Watcher safety increment: source-built private close_v2 reports actual error plus
+released state; retained objects remain retryable, released objects cannot be
+double-closed. Failed registration reuses metadata;4097 real file-as-directory
+failures have bounded retained allocation counts and zero captured allocations
+after teardown. Native C tests execute SDK EBUSY retention/retry and real SDK
+EDEADLK error-channel injection under ASan/UBSan. Public event and six-error
+continuing-handler fixtures pass interpreter and actual host ARM64/translated
+x64 native O0/O2 (target/watcher-close-reuse-matrix.log). Universal library and
+translated executable architecture checked. Focused strict lint passes;365 owned
+Jai files format/check. Whole strict lint still fails; original generic-pointer
+default constraint reproducer preserved, no API changed to hide it. Last broad
+109-positive/26-fault/14-negative suite passed at target/watcher-close-full.log;
+later watcher-only changes reran the dedicated full native matrix. Linux/Windows
+watcher backends and full integrated CI remain unfinished. Detailed test triage/
+private-protocol limits and source deployment prerequisite: portable-file-watcher.md.
+
+Machine spin-hint increment: exact pause macro now emits real native instructions
+and passes C-intrinsic/no-call baseline comparison O0/O2 (0 baseline,1/2 public,
+8 C static instruction counts). Actual x64 compile-time interpreter/strict lint
+and three OS x64 body checks pass; interpreter hint models no fixed delay/order.
+Existing CPU/projection suite and full109 positives/26 faults/14 negatives plus
+integration/target checks pass (target/machine-pause-full.log).371 owned Jai files
+format/check; whole strict lint still fails. New original prefetch/fence native
+probes emit0 instructions against C1 each, and their dependency checker fails
+explicitly (target/machine-instruction-dependencies.log). Those APIs remain absent,
+not fabricated completion. Eight instruction APIs/native platforms remain gaps.
+
+Android OID increment: canonical type/counted equality, exact Sun OID and typed
+JKS constants tested across all prefix counts/differences/inactive tails/copy
+independence; global writes reject. Native O2 and focused strict lint pass.
+Full110 positives/27 checked faults/16 compile negatives and prior integration/
+Linux+Windows checks pass (target/android-oid-full.log).376 owned Jai files
+format/check; full strict lint remains a failed gate. Review numeric JKS values
+preserved, incorrect byte-swap rationale questioned without invented correction.
+Exact largely-unimplemented public inventory now248 rows; no signing/DER/device
+completion credited. Native platform and compiler gaps remain named separately.

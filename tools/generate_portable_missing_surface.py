@@ -7,8 +7,9 @@ from portable_api_spec import parse_spec
 ROOT = Path(__file__).resolve().parents[1]
 MODULES = [
     ('Build and toolchain', 'Android/Toolchain', 'android-toolchain',
-     {'get_android_project_jni_architecture_name'},
-     'JNI ABI naming is implemented. Device/build/signing/manifest and remaining helpers are missing; no device, SDK, signing or crypto success is fabricated.'),
+     {'get_android_project_jni_architecture_name', 'ASN1_Object_Identifier', 'asn1_oid_equals',
+      'OID_SUN_JKS_ENCRYPTION', 'JKS_MAGIC', 'JKS_MAGIC_LITTLE_ENDIAN'},
+     'JNI ABI naming, counted OID identity and reviewed JKS constants are implemented. Device/build/signing/manifest and remaining helpers are missing; no device, SDK, signing or crypto success is fabricated.'),
     ('Build and toolchain', 'Default_Metaprogram', 'default-metaprogram', set(),
      'Build orchestration and option/message behavior remain implementation work; exact help text/option grammar require further review.'),
     ('Build and toolchain', 'Example_Plugin', 'example-plugin', set(),

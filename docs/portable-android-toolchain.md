@@ -22,7 +22,25 @@ CPU fault fixture checks a genuine diagnostic. Interpreter/native and Linux/
 Windows body checks execute in the portable runner; focused source-built strict
 lint passes. Missing-module failure remains target/android-abi-name-red.log.
 
-The ENTIRE rest of Android/Toolchain remains missing, including ADB operations,
+Counted OID identity is also implemented: canonical ASN1_Object_Identifier with
+twelve inline u64 arcs and inferred count; asn1_oid_equals compares only active
+prefixes, diagnoses invalid counts and ignores inactive storage. The reviewed Sun
+OID retains exactly eleven active arcs and its twelfth trailing zero. Global OID
+and both JKS magic constants are immutable; ordinary value copies remain mutable.
+JKS_MAGIC uses its reviewed typed-u32 constant and JKS_MAGIC_LITTLE_ENDIAN uses
+the exact #run u32 form. Their numeric values follow the explicit reviewed
+0xfeedfeed values, without inferring a byte swap from the name. The review's
+byte-swap explanation is mathematically inconsistent: reversing bytes would give
+0xedfeedfe. This rationale question is recorded; no alternate public value or
+working JKS decoder is invented.
+
+android-oid.jai covers every count0..12, each active difference, inactive tails,
+canonical metadata/layout, exact typed constants and independent copies. Native
+O2 and focused strict lint pass. Constant nested-array and typed-scalar writes
+are required compile rejections. Invalid count is a checked safety fault.
+These data/equality primitives are not signing, ASN.1 decoding or JKS loading.
+
+The rest of Android/Toolchain remains missing, including ADB operations,
 SDK/NDK discovery, project/APK/manifest generation, signing/verification,
 ASN.1/JKS helpers and public records/constants needed by those operations.
 No declarations, fake device/crypto results, stub callbacks or invented defaults

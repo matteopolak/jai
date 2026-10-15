@@ -54,7 +54,11 @@ are genuine compiler gaps, not solely eager-lint quirks.
   Build_Options, check pointer identity and two-way edits, and preserve bytes44..127.
   There is no allocation, snapshot, new field or separate feature storage. The
   returned pointer lives only while the caller's build-options value remains live.
-- prefetch, rdtsc, rdtscp, rdseed, rdrand, mfence, lfence, sfence, pause: missing.
+- pause: exact #expand body now emits the compiler-supported real native spin hint.
+  Source-built x64 C intrinsic and no-call baseline verify additional native pause
+  opcodes at O0/O2. Interpreter models a cooperative hint (and can do nothing in
+  single-thread execution); no processor delay or memory-order guarantee claimed.
+- prefetch, rdtsc, rdtscp, rdseed, rdrand, mfence, lfence, sfence: missing.
   The current compiler still makes fence mnemonics no-ops, random instructions
   synthetic and RDTSCP processor ID zero. Real architecture semantics or explicit
   diagnostics must be provided before those exports are counted complete.
@@ -106,3 +110,42 @@ not establish truthful host/target CPU discovery.
 The pending Jai reproducer passes source-built formatter/check/strict lint in
 the current301-file owned scope, but its x64 execution **fails**. It is not included
 as a passing functionality test or used to relax any API assertion.
+
+
+## Supported spin hint and precise remaining native lowering failures
+
+tools/check_portable_machine_pause.py builds actual official C _mm_pause and
+public Jai pause binaries, executes them, and counts only instruction lines in
+LLVM disassembly. Same-import no-call baseline has0 pause instructions; public
+macro builds have1 at O0 and2 at O2; C intrinsic build has8 (static unrolled counts,
+not runtime iteration claims). Native execution is translated x64 on this ARM64
+host. All macOS/Linux/Windows x64 bodies check; actual x64 jailint executes the
+compile-time hint fixture and strictly lints source/tests. No hardware timestamp,
+random result or memory fence is synthesized. The interpreter's cooperative hint
+is emulation, not a claim of actual physical CPU delay.
+
+Initial missing-export failure: target/machine-pause-red.log. Baseline's deliberately
+same import triggered unused_import; identical reviewed44-byte options-record
+assertions in both fixtures anchor that import without runtime calls or lint
+suppression. Original diagnostic remains target/machine-pause-lint-diagnostic.log.
+The runner now reports captured failure output directly. Passing evidence:
+target/machine-pause-verified2.log; existing CPU/projection suite:
+target/machine-pause-machine-regression.log.
+
+Two original general compiler reproducers have no Machine module dependency:
+pending/prefetch-native-instruction.jai requests prefetcht0 [pointer];
+pending/native-fence-instructions.jai requests mfence/lfence/sfence.
+tools/check_portable_machine_dependencies.py builds native Jai O0/O2 and official
+SDK C intrinsics, executes the programs, then inspects actual instruction lines.
+At BOTH optimizations, C has1 requested instruction for each mnemonic; Jai has0.
+The tool exits nonzero and explicitly labels these compiler dependencies unresolved
+(target/machine-instruction-dependencies.log). Successful compilation/process exit
+of those programs is NOT counted as working prefetch/fence functionality.
+
+The exact source-built compiler paths confirm real Pause lowering, while fences
+map to Nop and memory hint handling discards the requested native instruction.
+Proper generic assembler/IR/native lowering or explicit unsupported diagnostics
+are required; no module/path/symbol special cases, C helper shim or fake public
+prefetch/fence wrappers are introduced. Random/timestamp instruction semantics
+remain separately unimplemented dependency gaps. Full native Linux/Windows
+execution and independent integrated test review still belong to coordinator.
