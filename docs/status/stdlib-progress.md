@@ -1,5 +1,12 @@
 # Portable stdlib progress
 
+Four reviewed Android formatter aliases now preserve canonical FormatInt and
+nonbaked named parameters/defaults via exact #bake_arguments. All256 values/four
+widths, type metadata, unsigned64, padding/minimum/grouping pass interpreter/native
+O0/O2 and strict lint. No replacement formatter or extra convenience export.
+Direct key negative tests now inspect only false status, not unspecified failed
+record fields; real SDK-error cleanup/DSA assertions retained and rerun pass.
+
 Default parent-output phase FIXED using reviewed set_build_options_dc do_output,
 preserving parent static output type/name/path and existing dynamic settings.
 Parent debugger configuration also uses DC. Both normal/interpreter drivers build

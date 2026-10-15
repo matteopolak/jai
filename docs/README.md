@@ -156,6 +156,7 @@ The LLVM backend, C ABI and linking.
 - [Mail scramble numeric-alphabet review question](portable-mail-questions.md)
 - [Default allocator heaps, ownership and performance tradeoffs](portable-default-allocator.md)
 - [Real direct Android signing keys and crypto-tool dependency](portable-direct-signing-key.md)
+- [Canonical Android hexadecimal formatter aliases](portable-android-format-helpers.md)
 - [Reviewed S128/Apollo arithmetic foundation handoff](portable-wide-arithmetic-handoff.md)
 - [Metaprogram plugin public-contract/compiler handoff](metaprogram-plugins-dependency-request.md)
 - [POSIX crash diagnostics and native startup verification](portable-crash-handler.md)
