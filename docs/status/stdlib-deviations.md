@@ -425,3 +425,13 @@ committed23-export implementation remains the last verified checkpoint; the
 working candidate33-export source is explicitly unverified. No native Windows
 handle acceptance is claimed. Formatting/byte-stable generation alone is not
 functional completion.
+
+System raw counter adds no synthetic fallback: x64 RDTSC and Unix
+CLOCK_MONOTONIC_RAW.tv_nsec follow reviewed CPU-first selection. The Unix member
+wraps each second by contract; not represented as monotonic whole time or physical
+CPU cycles. Clock failure logs independently, then optional assertion; a disabled
+or explicitly continuing handler receives zero after diagnostics, not a counted
+valid sample. Native Linux/Android and peer Windows remain verification/ownership
+gaps. The new test is explicitly Unix-only for Windows target scope; every host
+assertion and Linux source check remains. Existing System test is unchanged.
+No blanket suppression or target constant substitution.

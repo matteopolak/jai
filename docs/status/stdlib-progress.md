@@ -3,7 +3,7 @@
 Role: independent portable/high-level stdlib worker. No subagents, publication,
 reference binaries or prior Jai implementations used. Extensions and corpus preserved.
 
-Current durable checkpoint: e81f1a5 (critical Pool/Thread d6db68f, ISA c45ee67, SHA1579458). Pool/Unix Thread
+Current durable checkpoint: 338a4a8; time e81f1a5, SHA1579458, ISA c45ee67, critical Pool/Thread d6db68f. Pool/Unix Thread
 critical corrections are committed: field-only Pool guard, no registry,
 allocator/options preserved by reset/release, genuine returned leak report fixed.
 Every owned essential Thread SDK operation now executes outside optional asserts;
@@ -399,3 +399,18 @@ Known committed functionality is preserved in checkpoints; candidate Registry
 checking currently fails and is not claimed green.246 largely unimplemented
 public rows remain plus partial/platform/compiler gaps, listed per API in linked
 module documents.
+
+System counter continuation: reviewed inline read_cpu_counter and x64 public
+M64 module alias implemented in owned Unix backend. x64 calls actual RDTSC;
+non-x64 Unix returns native CLOCK_MONOTONIC_RAW.tv_nsec, not generic CPU cycles
+or accumulated time.64 real bracketed samples and existing System regressions
+pass interpreter/ARM64+x64 native O0/O2. Strict target-aware lint passes both
+CPUs on macOS/Linux. SDK calls are outside optional assertions and failures log.
+The new fixture retains host/Linux checks and is explicitly unavailable under
+this Unix-only facade on Windows; peer Windows backend is not edited or claimed.
+Evidence and policy: portable-system-counter.md.
+Final System/time broad regression passes114 positives/28 expected faults/16
+compile rejections plus actual SMTP/IPC/runtime and Linux/Windows source checks
+(target/system-time-final-full.log).390 owned files pass format/check. Registry
+candidate failure remains independently documented, not counted as passing
+module functionality by that broad test total.

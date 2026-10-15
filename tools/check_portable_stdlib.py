@@ -224,7 +224,7 @@ def main():
         subprocess.run([sys.executable, "-B", str(ROOT / "tools/check_portable_crash.py"),
                         "--jaic", str(compiler), "--stdlib", str(root)], cwd=ROOT, env=env, check=True)
     dependent = {"file", "filesystem", "socket-loopback", "process", "process-io", "system", "text-handler", "zip-directory", "buildcpp", "shared-channel", "autorun", "mpeg-buffer"}
-    posix_only = {"executable-archive", "module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "pool-unmapping", "crash-handler-init", "atomic-cas-threads", "mpeg-pixels", "mpeg-idct", "mpeg-sequence", "mpeg-motion", "mpeg-video", "mpeg-audio", "mpeg-program", "mpeg-video-synthetic", "mpeg-audio-stereo", "mixed-varargs-spread", "meow-vectors"}
+    posix_only = {"system-counter", "executable-archive", "module-identity", "thread-lifetime", "thread-groups", "thread-condition", "thread-shutdown", "overwriting-allocator", "unmapping-allocator", "pool-unmapping", "crash-handler-init", "atomic-cas-threads", "mpeg-pixels", "mpeg-idct", "mpeg-sequence", "mpeg-motion", "mpeg-video", "mpeg-audio", "mpeg-program", "mpeg-video-synthetic", "mpeg-audio-stereo", "mixed-varargs-spread", "meow-vectors"}
     for target in args.check_target:
         os_name, cpu = target.split("/", 1)
         for source, _ in cases:
