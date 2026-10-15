@@ -20,7 +20,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | Missing public declaration | Condition |
 | --- | --- |
 | `Algorithm_Id :: enum u32` | All reviewed hosts |
-| `android_generate_jks_keystore :: (java_bin_path: string, keystore_path: string, key_alias := DEFAULT_KEYSTORE_ALIAS, key_password := DEFAULT_KEYSTORE_PASSWORD, algorithm := Android_Signing_Key_Signature_Algorithm.EC, key_size := 0, common_name := "Jai Android", organization_name := "Jai", country_code := "US") -> bool, Android_Signing_Key` | All reviewed hosts |
 | `apk_compute_digest_libressl :: (apk: Android_Apk, algorithm: Digest_Hash_Algorithm) -> [SHA256_DIGEST_LENGTH] u8` | All reviewed hosts |
 | `apk_read_signing_block_v2 :: (s: *string) -> bool, Apk_Signing_Block_V2` | All reviewed hosts |
 | `apk_sign :: (unsigned_apk_filepath: string, keystore_filepath: string, keystore_password := "password") -> bool, string` | All reviewed hosts |
@@ -89,7 +88,7 @@ Reviewed contract: [module page](specs/stdlib/modules/project-generator.md).
 | Missing public declaration | Condition |
 | --- | --- |
 
-Total: 33 missing reviewed declaration/overload/nested-operation rows
+Total: 32 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

@@ -1,14 +1,14 @@
 {
   "worker": "portable-stdlib",
-  "generated_utc": "2026-10-15T19:07:02.593765+00:00",
-  "head_at_inventory": "154db7cd94ae062b882f35ecc8956e5b4e5f5427",
+  "generated_utc": "2026-10-15T19:52:56.410624+00:00",
+  "head_at_inventory": "d4fe5b168f9cb299b37b7caebd0841215a15e5d5",
   "count_unit": "unique reviewed declaration/overload/condition rows plus reviewed nested procedures",
   "policy": "Conservative source implementation classification, not conformance/test totals. Only explicitly completed module/API batches earn complete. Present declarations in partial modules remain partial until finer per-API audit; they are not all missing bodies. Native/platform/tool verification gaps remain separate. Complete supported-source does not claim every platform execution.",
   "scope_exclusions": "Ownership ledger reserved modules; Basic except time/calendar; String/Hash/File_Utilities/File; audio/tooling/data transfers; executable_formats transferred to object-formats2026-10-15 16:14; compiler bootstrap/Preload. Windows-specific Runtime/Process/System/Thread branches belong to platform-io. Extensions unchanged.",
   "counts": {
-    "complete": 3571,
-    "partial": 456,
-    "missing": 49
+    "complete": 3574,
+    "partial": 455,
+    "missing": 47
   },
   "remaining": [
     {
@@ -24,7 +24,7 @@
       "name": "android_generate_jks_keystore",
       "declaration": "android_generate_jks_keystore :: (java_bin_path: string, keystore_path: string, key_alias := DEFAULT_KEYSTORE_ALIAS, key_password := DEFAULT_KEYSTORE_PASSWORD, algorithm := Android_Signing_Key_Signature_Algorithm.EC, key_size := 0, common_name := \"Jai Android\", organization_name := \"Jai\", country_code := \"US\") -> bool, Android_Signing_Key",
       "condition": "",
-      "status": "missing",
+      "status": "partial",
       "source_state": "committed"
     },
     {
@@ -897,30 +897,6 @@
       "declaration": "scramble :: (text: string, secret: string) -> string",
       "condition": "",
       "status": "partial",
-      "source_state": "committed"
-    },
-    {
-      "module": "Metaprogram_Plugins",
-      "name": "Plugin_To_Create",
-      "declaration": "Plugin_To_Create :: struct",
-      "condition": "",
-      "status": "partial",
-      "source_state": "committed"
-    },
-    {
-      "module": "Metaprogram_Plugins",
-      "name": "parse_plugin_arguments",
-      "declaration": "parse_plugin_arguments :: (args: [] string, starting_index := 0) -> (success: bool, plugins: [..] Plugin_To_Create, remaining_args: [] string)",
-      "condition": "",
-      "status": "partial",
-      "source_state": "committed"
-    },
-    {
-      "module": "Metaprogram_Plugins",
-      "name": "init_plugins",
-      "declaration": "init_plugins :: (to_create: [] Plugin_To_Create, results: *[..] *Metaprogram_Plugin, w: Workspace) -> (success: bool)",
-      "condition": "",
-      "status": "missing",
       "source_state": "committed"
     },
     {
@@ -4068,10 +4044,10 @@
       "spec": "docs/specs/stdlib/modules/android-toolchain.md",
       "counts": {
         "complete": 89,
-        "partial": 1,
-        "missing": 27
+        "partial": 2,
+        "missing": 26
       },
-      "status_basis": "JNI/OID/JKS constants/SHA, ASN.1 readers/diagnostics/X509, ADB host operations/discovery/cache, Java discovery/manifest flags, ZIP32 layouts/writer/CRC/EOCD/units, and APK owned file views/entry iteration implemented. Real Mac interpreter/native O0/O2, independent OpenSSL/zlib/ZIP/SDK-protocol tests and scoped strict lint pass; see subsystem docs for exact evidence and limitations. DEFLATE currently stored blocks, no size reduction. Real SDK/device/native other OS, install/build/manifest/signing/JKS APIs remain incomplete. portable-missing-surface.md inventories102 remaining rows; delegated55 rows are not completion credit."
+      "status_basis": "Real JNI/SHA/ASN1/X509/ADB/ZIP/APK workflows, canonical shared signing models and four hex formatter aliases implemented/tested. Direct key generation supports POSIX native crypto CLI with verified DER/self-signature/permissions/cleanup; Windows backend unsupported. APK v2 signing/JKS/native crypto and hex-string functions remain missing. Project/config/manifest/SDK-build names transferred to generator-names and excluded. Full owned per-API counts in status/implementation-remaining.json, source classifications not conformance totals."
     },
     {
       "module": "Atomics",
@@ -4191,7 +4167,7 @@
         "partial": 13,
         "missing": 0
       },
-      "status_basis": "Documented C fallback allocator_proc/unsafe_reset implemented and interpreter/native tested, with real resize failure preservation and arm64 Linux/Windows checks. Optimized X64/Switch heap API explicitly rejected and remains unimplemented"
+      "status_basis": "C fallback retained; optimized-target heap lifecycle/ownership/create/destroy/bulk-free/resize implemented with exact standard records. Mac x64 interpreter/native O0/O2, shared-heap concurrency, disabled assertions and strict lint pass. Independent noncaching C-block backend uses linear ownership lookup/global CAS lock; exact upper span margin and native other OS remain qualified in portable-default-allocator.md."
     },
     {
       "module": "Default_Metaprogram",
@@ -4201,7 +4177,7 @@
         "partial": 1,
         "missing": 0
       },
-      "status_basis": "Real workspace builds/options/plugin imports/lifecycle/help/version/failure behavior tested with -no_check. Default Check factory/config absent from reviewed producer; full strict lint and default-enabled build remain blocked. General target CLI forwarding defect has original reproducer. See portable-default-metaprogram.md; five entries credited, build incomplete."
+      "status_basis": "Real Check-enabled workspace builds/options/plugins/help/version/errors and full owned strict lint pass. Parent output/debugger now use reviewed during-compile API; static parent fields preserved. Normal/interpreter drivers create/run native child artifacts with explicit target O0/O2. Unsupported compiler backend/debugger/selected-workspace argument readback remain separate dependencies; portable-default-metaprogram.md."
     },
     {
       "module": "Example_Plugin",
@@ -4327,11 +4303,11 @@
       "module": "Metaprogram_Plugins",
       "spec": "docs/specs/stdlib/modules/metaprogram-plugins.md",
       "counts": {
-        "complete": 0,
-        "partial": 2,
-        "missing": 1
+        "complete": 3,
+        "partial": 0,
+        "missing": 0
       },
-      "status_basis": "Owned portable scope; not implemented"
+      "status_basis": "Canonical record/parser pass interpreter/native O0/O2 and strict lint. Full dynamic initializer staged with reviewed declared-placeholder/deferred-body/indirect-call mechanism, awaiting general compiler checkpoint and actual positive execution. Direct undeclared-call draft rejected by filtered oracle and not counted support."
     },
     {
       "module": "Minimal_Metaprogram",
@@ -4541,7 +4517,7 @@
         "partial": 33,
         "missing": 7
       },
-      "status_basis": "Unix/Windows native control/lifecycle wrappers plus shared address/accept/bind behavior. Unix loopback and pure ioctl/descriptor kernels execute; Windows loopback/error/ABI bodies check both CPUs, native execution pending. All reviewed bitfield variants now have source implementations; Android target checking and native Linux/Windows/Android remain pending. Four CMSG helpers match actual host SDK vectors; CMSG_SIZE and native shape variants remain explicitly inventoried in portable-windows-socket.md"
+      "status_basis": "Real Unix/Windows wrapper and bitfield sources; active Mac addrinfo/hostent/netent/protoent/servent records match official SDK C layouts and actual resolver/database operations in interpreter/native both Mac CPUs O0/O2. Four CMSG helpers verified; CMSG_SIZE/other variants remain missing. Whole binding lint still fails general field-array type-query semantics. Native other OS pending."
     },
     {
       "module": "Sort",
@@ -4666,9 +4642,9 @@
   ],
   "counts_by_source_state": {
     "committed": {
-      "complete": 3571,
-      "partial": 456,
-      "missing": 49
+      "complete": 3574,
+      "partial": 455,
+      "missing": 47
     },
     "draft": {
       "complete": 0,
@@ -5822,6 +5798,20 @@
       },
       {
         "name": "MeowShiftAdjust",
+        "condition": ""
+      }
+    ],
+    "Metaprogram_Plugins": [
+      {
+        "name": "Plugin_To_Create",
+        "condition": ""
+      },
+      {
+        "name": "parse_plugin_arguments",
+        "condition": ""
+      },
+      {
+        "name": "init_plugins",
         "condition": ""
       }
     ],
@@ -19041,7 +19031,7 @@
     ]
   },
   "total_reviewed_owned_api_rows": 4076,
-  "complete_source_percentage": 87.61,
+  "complete_source_percentage": 87.68,
   "private_handoffs": [
     {
       "name": "internal/runtime/android-output.discard_pending_output",
@@ -19052,7 +19042,7 @@
   "verification_gaps": [
     "Historical stable combined coordinator Mac baseline822 passed/7 failed. Latest filtered original-corpus compile-only run316 passed/84 failed on frozen older snapshot (execution run304/96); neither is a current full integration rerun by this worker.",
     "Default_Metaprogram real Check-enabled builds/configuration, plugins, failures and full owned strict lint pass; unsupported compiler backend/debugger and target argument readback remain separate dependencies.",
-    "Metaprogram_Plugins parser passes; proper typed-placeholder deferred initializer staged, awaiting general compiler checkpoint. Rejected direct undeclared-call draft is not required semantics.",
+    "Metaprogram_Plugins real computed-import/parameterized factory, aggregate/empty/options/identity/privacy/error workflows pass on general compiler89560db9; full owned context-aware lint. Default now shares this canonical loader. Full Focus/corpus coordinator gate.",
     "Direct signing-key POSIX crypto CLI workflow and canonical hex formatter aliases pass interpreter/native O0/O2 and strict lint; Windows key backend/JKS remain pending, host Java absent.",
     "Private crash helper relocated-package native Mac ON/OFF tests pass after install-name fix0504879; production package inclusion/architecture/minimum deployment and Linux native gate pending.",
     "Selected-workspace Build_Options.compile_time_command_line readback fails in child #run. Original top-level getter scope expectation was unspecified; corrected reproducer uses get_build_options().",

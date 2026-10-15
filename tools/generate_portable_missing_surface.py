@@ -24,7 +24,7 @@ MODULES = [
       'Zip_End_Of_Central_Directory_Record', 'ZIP_LOCAL_HEADER_SIZE', 'ZIP_VERSION_DEFAULT',
       'Zip_Writer', 'zip_init_writer', 'zip_add_file', 'zip_add_file_from_memory', 'zip_write_central_directory',
       'Android_Signing_Key', 'Android_Signing_Key_Kind', 'Android_Signing_Key_Signature_Algorithm',
-      'android_generate_signing_key_direct', 'fh', 'fh2', 'fh4', 'fh8',
+      'android_generate_signing_key_direct', 'android_generate_jks_keystore', 'fh', 'fh2', 'fh4', 'fh8',
       'Android_Apk', 'Android_Apk_Entry', 'apk_load', 'apk_deinit', 'for_expansion', 'apk_print_sections',
       'ANDROID_APK_SIGNING_BLOCK_MAGIC',
       'ASN1_Tag_Class', 'ASN1_Tag_Length_Value', 'ASN1_Universal_Type', 'ASN1_Tag', 'ASN1_KNOWN_OIDS',

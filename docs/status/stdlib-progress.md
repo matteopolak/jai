@@ -1,5 +1,12 @@
 # Portable stdlib progress
 
+Post-integration snapshot:4076 owned reviewed rows,3574 complete-source,
+455 conservatively partial,47 missing (87.68%source rows; not conformance totals).
+Metaprogram_Plugins now complete-source/verified; JKS source moved missing->partial
+with NO positive SDK credit. Default uses shared actual loader d4fe5b1 and real
+helper facade97eddd4; generalcompiler89560db9 required. Exact scopes/exclusions and
+remaining signatures updated, full Focus/corpus still coordinator-owned.
+
 Default now delegates custom/Check factory setup to actual public M_Plugins helper,
 removing private CLI-only generator/duplicate context. Live objects/options/order/
 replay and real child outputs retained. Full strict lint supplies valid empty-init

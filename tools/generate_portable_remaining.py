@@ -17,7 +17,7 @@ from generate_portable_missing_surface import MODULES
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED = {"basic", "string", "hash", "file-utilities", "file", "sound-player", "preload",
             "ico-file", "icon", "windows-resources", "subtitles", "simple-package", "executable-formats"}
-COMPLETE = set("adpcm atomics base64 bit-array bit-operations bucket-array command-line crc example-plugin introsort machine-x64 macos-bundler md5 memory meow-hash overwriting-allocator pcg pl-mpeg-public-tables pool project-generator protocol-for-memory-visualization radixsort random relative-pointers remap-context simd soa sort text-file-handler treemap unicode wav-file windows-registry windows-utf8 xar zip-file-directory".split())
+COMPLETE = set("adpcm atomics base64 bit-array bit-operations bucket-array command-line crc example-plugin introsort machine-x64 macos-bundler md5 memory meow-hash metaprogram-plugins overwriting-allocator pcg pl-mpeg-public-tables pool project-generator protocol-for-memory-visualization radixsort random relative-pointers remap-context simd soa sort text-file-handler treemap unicode wav-file windows-registry windows-utf8 xar zip-file-directory".split())
 TIME_NAMES = set("Apollo_Time Calendar_Time Calendar_Time_Type Time_Zone to_apollo seconds_since_init timespec_to_apollo to_timespec current_time_consensus current_time_monotonic to_calendar calendar_to_apollo filetime_to_apollo to_filetime calendar_to_string calendar_to_iso_string ConvertToApollo to_seconds to_milliseconds to_microseconds to_nanoseconds compare_apollo_times to_float64_seconds".split())
 SPECIAL_PATHS = {"pl-mpeg-public-tables": "PL_MPEG"}
 KNOWN = {slug: names for _, _, slug, names, _ in MODULES}
@@ -99,8 +99,8 @@ def main():
                 status = "complete" if api in KNOWN[slug] else "missing"
                 if slug == "default-metaprogram" and api == "build":
                     status = "partial"
-                if slug == "android-toolchain" and api == "android_generate_signing_key_direct":
-                    status = "partial"  # Real POSIX backend; Windows explicitly unsupported.
+                if slug == "android-toolchain" and api in {"android_generate_signing_key_direct", "android_generate_jks_keystore"}:
+                    status = "partial"  # POSIX direct backend / JKS source with positive SDK verification pending.
             elif not present:
                 status = "missing"
             elif slug in COMPLETE or slug == "basic":
@@ -143,7 +143,7 @@ def main():
         "verification_gaps": [
             "Historical stable combined coordinator Mac baseline822 passed/7 failed. Latest filtered original-corpus compile-only run316 passed/84 failed on frozen older snapshot (execution run304/96); neither is a current full integration rerun by this worker.",
             "Default_Metaprogram real Check-enabled builds/configuration, plugins, failures and full owned strict lint pass; unsupported compiler backend/debugger and target argument readback remain separate dependencies.",
-            "Metaprogram_Plugins parser passes; proper typed-placeholder deferred initializer staged, awaiting general compiler checkpoint. Rejected direct undeclared-call draft is not required semantics.",
+            "Metaprogram_Plugins real computed-import/parameterized factory, aggregate/empty/options/identity/privacy/error workflows pass on general compiler89560db9; full owned context-aware lint. Default now shares this canonical loader. Full Focus/corpus coordinator gate.",
             "Direct signing-key POSIX crypto CLI workflow and canonical hex formatter aliases pass interpreter/native O0/O2 and strict lint; Windows key backend/JKS remain pending, host Java absent.",
             "Private crash helper relocated-package native Mac ON/OFF tests pass after install-name fix0504879; production package inclusion/architecture/minimum deployment and Linux native gate pending.",
             "Selected-workspace Build_Options.compile_time_command_line readback fails in child #run. Original top-level getter scope expectation was unspecified; corrected reproducer uses get_build_options().",

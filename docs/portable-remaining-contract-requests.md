@@ -1,9 +1,9 @@
 # Remaining portable contract requests
 
-Current owned inventory:4076 reviewed API rows,3571 complete-source,
-456 conservatively partial,49 missing (not conformance/test totals). Exact names
+Current owned inventory:4076 reviewed API rows,3574 complete-source,
+455 conservatively partial,47 missing (not conformance/test totals). Exact names
 and conditions are in status/implementation-remaining.json. The large missing-
-module subset has33 rows; do not confuse it with the whole owned denominator.
+module subset has32 rows; do not confuse it with the whole owned denominator.
 
 Priority Mac surface requests, with no /Users/matthew/projects/jai-reference/source-history inputs:
 
@@ -29,15 +29,16 @@ Priority Mac surface requests, with no /Users/matthew/projects/jai-reference/sou
   parameter or ambient-binding contract.
 
 Already resolved/current dependencies: M_Plugins dynamic loading uses the reviewed
-declared-placeholder/deferred-body/indirect call, with compiler owner checkpoint
-pending; no undeclared-callee suspension request remains. Its parser prefix edge
+declared-placeholder/deferred-body/indirect call with compiler89560db9; actual
+public initialization and shared Default loader pass. No undeclared-callee
+suspension request remains. Its parser prefix edge
 when starting_index>0/plugins occur remains precisely documented in dependency doc.
 Default parent output uses real during-compile API; no frozen-option workaround.
 Default_Allocator exact upper-limit span byte size remains unprovided (independent
 64KiB validation margin/performance policies documented). Mail's numeric alphabet
 index ordering needs explicit confirmation/vector, not its now-defined transform.
 
-Retained crypto frontier: JKS generation/parser/decryption and APK v2 signing/
+Retained crypto frontier: JKS positive SDK verification/parser/decryption and APK v2 signing/
 verification/digest/native EVP/error routines, plus two to_hex_string overloads.
 Specify exact byte/word ordering/case/lifetime for those hex-string results and
 the canonical EVP provider/ownership, SHA512-vs-fixed32 digest result, framing and
