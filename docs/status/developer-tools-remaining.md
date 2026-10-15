@@ -85,7 +85,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `get_primitive_or_array_primitive_type_size` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_scoped_token_string` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_type_alignment` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `get_type_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `handle_toplevel_cursors` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `init_generator` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_16byte_integer_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -113,11 +112,9 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `make_valid_identifer` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `maybe_add_to_bitfield` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `maybe_append_cast` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `maybe_convert_expression_zero_to_null` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `maybe_convert_fixed_array_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `maybe_convert_pointer_type_to_fixed_array_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `maybe_unwrap_bitfield_declaration` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `omit_cpp_functions_visitor` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `omit_unnecessary_typedefs_and_macros` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `os_get_symbol_names_from_file` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `os_get_symbol_names_from_file_content` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -137,19 +134,15 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `print_struct_vtable` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_typedef` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `raw_string_from_macro_tokens` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `raw_tokens_string_from_cursor` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `replace_operator_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `run_generator` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `shared_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `should_be_moved_to_global_scope` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `should_be_omitted` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `should_unwrap_typedef` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `size_from_number_flags` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `string_from_macro_value` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `stripped_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `to_string` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `try_find_struct_in_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `type_has_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 
 
 | Implemented generator with remaining paths | Remaining work |
@@ -212,7 +205,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `clang_Cursor_isObjCOptional` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
 | `clang_Cursor_isVariadic` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
 | `clang_EnumDecl_isScoped` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
-| `clang_EvalResult_getAsStr` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
 | `clang_IndexAction_create` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
 | `clang_IndexAction_dispose` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
 | `clang_Module_getASTFile` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
@@ -506,3 +498,5 @@ Public DWARF4 compilation-unit/type/scope/line and MSF parsing workflows now exe
 ## Rewrite
 
 0 function names have pending declarations; 0 native function names still lack invocation fixtures.
+
+Checkpoint753b30c7 implements seven additional scoped emission/query helpers. Above producer counts are historical scoped inventory, not combined exhaustive completion; canonical model/platform/modifier inventories also apply. SDK21 and foreign-platform native execution remain unverified.

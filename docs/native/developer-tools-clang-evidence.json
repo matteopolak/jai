@@ -6,6 +6,6 @@
     "/opt/homebrew/opt/llvm/include/clang-c/BuildSystem.h": "d2881516aa13442a5e139eac3f83d7413b5044514b91ba85d7f0e3a3ed881fba"
   },
   "clang_version": "Homebrew clang version 23.1.2\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm/23.1.2/bin\nConfiguration file: /opt/homebrew/Cellar/llvm/23.1.2/etc/clang/arm64-apple-darwin27.cfg\n",
-  "source_sha256": "2d69108af97f29ae327e4f25c3dae70ef6630b7f31ac5e59d050f67917fd7bb9",
+  "source_sha256": "550caa019ab133fd036221839af311e28830fc98c0ff5bf1e33365ee76d9e5a9",
   "tests": "interpreter/native O0/O2 call and mutation, callbacks, enum and record layout; rejection preserves output; Linux/Windows target-dependent long"
 }

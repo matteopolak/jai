@@ -162,14 +162,14 @@
         "declaration": "generate_replacements_array :: () -> string",
         "section": "Public declaration inventory",
         "spec_line": 29,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
       },
       {
         "name": "normalize_options",
         "declaration": "normalize_options :: (original_options: Generate_Bindings_Options) -> Generate_Bindings_Options, bool",
         "section": "Public declaration inventory",
         "spec_line": 30,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
       },
       {
         "name": "generate_bindings",
@@ -197,7 +197,7 @@
         "declaration": "generate_bridge :: (_options: Generate_Bindings_Options, filename: string) -> success: bool",
         "section": "Public declaration inventory",
         "spec_line": 34,
-        "implementation": "global C++17 adapter subset; original native POD/reference effects and customized overload/argument/record/field mappings verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
+        "implementation": "multiple-header global C++17 adapter subset; original native POD/reference effects and customized overload/argument/record/field mappings verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
       },
       {
         "name": "create_omit_cpp_functions_visitor",
@@ -218,7 +218,7 @@
         "declaration": "omit_cpp_functions_visitor :: (decl: *Declaration, parent_decl: *Declaration, user_data: *void) -> Declaration_Visit_Result",
         "section": "Public declaration inventory",
         "spec_line": 37,
-        "implementation": "pending"
+        "implementation": "canonical model-engine callback delegation; public named-call parameters, real method omission/STOP before child callbacks, plain/data ordering and persistent closure storage verified interpreter/native Mac O0/O2 and strict lint; global C++ classification refinement remains in generator-model questions"
       },
       {
         "name": "append_cpp_wrapper",
@@ -274,7 +274,7 @@
         "declaration": "get_default_system_include_paths :: (os := OS, cpu := CPU) -> [] string",
         "section": "Public declaration inventory",
         "spec_line": 45,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
       },
       {
         "name": "get_libc_paths",
@@ -694,7 +694,7 @@
         "declaration": "_default_get_func_args_for_printing :: (func: *Function, type: *Function_Type, mode: Arg_Print_Mode) -> []*Declaration",
         "section": "Public declaration inventory",
         "spec_line": 105,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
       },
       {
         "name": "maybe_add_spacing",
@@ -813,7 +813,7 @@
         "declaration": "looks_like_valid_identifier :: (identifier: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 122,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
       },
       {
         "name": "should_unwrap_typedef",
@@ -946,14 +946,14 @@
         "declaration": "try_find_struct_in_type :: (type: *CType) -> *Struct",
         "section": "Public declaration inventory",
         "spec_line": 141,
-        "implementation": "pending"
+        "implementation": "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
       },
       {
         "name": "maybe_convert_expression_zero_to_null",
         "declaration": "maybe_convert_expression_zero_to_null :: (decl: *Declaration)",
         "section": "Public declaration inventory",
         "spec_line": 142,
-        "implementation": "pending"
+        "implementation": "integer-zero pointer/default normalization; alias identity, source literal preservation, signed/unsigned zero, scalar/float/nonzero/reference exclusions and actual generated foreign default calls verified interpreter/native Mac O0/O2, configured C O0/O2 and strict lint; allocation/invalid-source edge policies documented"
       },
       {
         "name": "convert_children_to_expression",
@@ -1079,7 +1079,7 @@
         "declaration": "type_has_name :: (type: *CType) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 160,
-        "implementation": "pending"
+        "implementation": "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
       },
       {
         "name": "fill_comment",
@@ -1240,35 +1240,35 @@
         "declaration": "convert_float_literal :: (c_value: string) -> value: string, success: bool",
         "section": "Public declaration inventory",
         "spec_line": 183,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
       },
       {
         "name": "convert_literal_value",
         "declaration": "convert_literal_value :: (c_value: string) -> value: string, success: bool, was_string := false",
         "section": "Public declaration inventory",
         "spec_line": 184,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
       },
       {
         "name": "is_hex_digit",
         "declaration": "is_hex_digit :: (c: u32) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 185,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
       },
       {
         "name": "is_valid_int_literal_suffix",
         "declaration": "is_valid_int_literal_suffix :: (suffix: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 186,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
       },
       {
         "name": "is_valid_float_literal_suffix",
         "declaration": "is_valid_float_literal_suffix :: (suffix: string) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 187,
-        "implementation": "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+        "implementation": "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
       },
       {
         "name": "create_objc_interface",
@@ -1338,7 +1338,7 @@
         "declaration": "size_from_number_flags :: (flags: Number_Flags) -> u32",
         "section": "Public declaration inventory",
         "spec_line": 197,
-        "implementation": "pending"
+        "implementation": "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
       },
       {
         "name": "init_generator",
@@ -1408,7 +1408,7 @@
         "declaration": "exceeds_signed_int_value :: (value: u64, target_type: *CType) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 207,
-        "implementation": "public type-emission/stripping/integer-width subset; actual generated Jai/C++ callback/array/reference/qualified-name types, numeric/bool foreign defaults and storage mutation execute interpreter/native Mac O0/O2 with configured C++ O0/O2, diagnostics and strict lint; raw/template defaults, special methods/bitfields/inheritance and remaining print flags pending"
+        "implementation": "signed8/16/32/64/128 representability, null-target64 default and alias/enum chains; all u64 boundary classes verified against original configured C O0/O2 oracle, interpreter/native Mac O0/O2; Windows object/source evidence, formatting and strict lint"
       },
       {
         "name": "print_literal_to_builder",
@@ -1520,7 +1520,7 @@
         "declaration": "get_type_name :: (type: *CType, output_name := true, strip_pointers := false) -> string",
         "section": "Public declaration inventory",
         "spec_line": 223,
-        "implementation": "pending"
+        "implementation": "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
       },
       {
         "name": "get_type_alignment",
@@ -4614,7 +4614,7 @@
         "declaration": "clang_EvalResult_getAsStr :: (E: CXEvalResult) -> *u8 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 705,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native constant evaluation/ownership APIs; real integer/float/string macro probes and copied post-disposal callback payloads execute interpreter/native Mac O0/O2; original C/C++ SDK declaration-initializer oracle and native byte comparisons"
       },
       {
         "name": "clang_EvalResult_dispose",
@@ -7988,7 +7988,7 @@
         "declaration": "clang_EvalResult_getAsStr :: (E: CXEvalResult) -> *u8 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1190,
-        "implementation": "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+        "implementation": "direct native constant evaluation/ownership APIs; real integer/float/string macro probes and copied post-disposal callback payloads execute interpreter/native Mac O0/O2; original C/C++ SDK declaration-initializer oracle and native byte comparisons"
       },
       {
         "name": "clang_EvalResult_dispose",
@@ -8702,7 +8702,7 @@
         "declaration": "raw_tokens_string_from_cursor :: (cur: CXCursor) -> string",
         "section": "Windows-specific declarations",
         "spec_line": 1293,
-        "implementation": "pending"
+        "implementation": "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
       },
       {
         "name": "should_be_moved_to_global_scope",

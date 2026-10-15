@@ -95,7 +95,7 @@ def remaining_matrix(inventory):
                        "| `print_type_to_builder` | Standard represented types and output paths execute; default expressions, existing-declaration synthesis and wider flags remain open. |",
                        "| `type_to_string` | Standard printer and caller-owned result execute; exact lifetime policy awaits question14. |",
                        "| `print_function_type_to_builder` | C-call signatures and literal/operator defaults execute, including inferred bool defaults and NO_ARGUMENT_DEFAULTS. Special methods/variadics/raw/template defaults remain unfinished. |",
-                       "| `exceeds_signed_int_value` | 8/16/32/64-bit thresholds execute; larger represented integer widths remain unsupported. |",
+                       "| `exceeds_signed_int_value` | Signed8/16/32/64/128 thresholds, null-target64-bit default and alias/enum chains execute against an original native SDK oracle. Invalid/noninteger models remain outside the represented integer contract. |",
                        "| `strip_type` | Selected alias/enum/pointer traversal retains original component identity and diagnoses cycles; wider implicit-generator behavior is not inferred. |", ""]
         if module == "Check":
             output += ["", "| Implemented function with remaining paths | Remaining work |", "| --- | --- |",
@@ -194,6 +194,10 @@ def main():
                     item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
                     if item["name"] in extended_apis:
                         item["implementation"] = "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
+                        if item["name"] in {"clang_Cursor_Evaluate", "clang_EvalResult_getKind", "clang_EvalResult_getAsLongLong",
+                                             "clang_EvalResult_isUnsignedInt", "clang_EvalResult_getAsUnsigned",
+                                             "clang_EvalResult_getAsDouble", "clang_EvalResult_getAsStr", "clang_EvalResult_dispose"}:
+                            item["implementation"] = "direct native constant evaluation/ownership APIs; real integer/float/string macro probes and copied post-disposal callback payloads execute interpreter/native Mac O0/O2; original C/C++ SDK declaration-initializer oracle and native byte comparisons"
                         if item["name"] in {"clang_getNullLocation", "clang_equalLocations", "clang_getNullRange",
                                              "clang_Range_isNull", "clang_equalRanges", "clang_getFileUniqueID",
                                              "clang_File_isEqual", "clang_File_tryGetRealPathName", "clang_getLocation",
@@ -222,13 +226,21 @@ def main():
                                      "_default_get_func_args_for_printing", "looks_like_valid_identifier",
                                      "is_hex_digit", "is_valid_int_literal_suffix", "is_valid_float_literal_suffix",
                                      "convert_float_literal", "convert_literal_value", "generate_replacements_array"}:
-                    item["implementation"] = "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+                    item["implementation"] = "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
                 if item["name"] == "generate_bridge":
-                    item["implementation"] = "global C++17 adapter subset; original native POD/reference effects and customized overload/argument/record/field mappings verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
+                    item["implementation"] = "multiple-header global C++17 adapter subset; original native POD/reference effects and customized overload/argument/record/field mappings verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
                 if item["name"] in {"append_cpp_type", "append_cpp_type_modifiers", "print_type_to_builder", "type_to_string", "print_function_type_to_builder", "exceeds_signed_int_value", "strip_type"}:
                     item["implementation"] = "public type-emission/stripping/integer-width subset; actual generated Jai/C++ callback/array/reference/qualified-name types, numeric/bool foreign defaults and storage mutation execute interpreter/native Mac O0/O2 with configured C++ O0/O2, diagnostics and strict lint; raw/template defaults, special methods/bitfields/inheritance and remaining print flags pending"
+                if item["name"] == "exceeds_signed_int_value":
+                    item["implementation"] = "signed8/16/32/64/128 representability, null-target64 default and alias/enum chains; all u64 boundary classes verified against original configured C O0/O2 oracle, interpreter/native Mac O0/O2; Windows object/source evidence, formatting and strict lint"
                 if item["name"] in {"append_integer", "append_as_unsigned_integer_hex", "append_as_signed_integer_hex", "append_maybe_left_shift", "append_maybe_right_shift", "print_literal_to_builder", "print_expression_to_builder"}:
                     item["implementation"] = "public integer/literal/expression emission subset; generated typed values, numeric width normalization, float/signed-zero bits, binary strings, enum/identifier/operator/shift effects and diagnosed prefix-preserving failures verified interpreter/native Mac O0/O2; macro/raw/template/aggregate and wider cast/width forms pending"
+                if item["name"] in {"raw_tokens_string_from_cursor", "size_from_number_flags", "type_has_name", "get_type_name", "try_find_struct_in_type"}:
+                    item["implementation"] = "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
+                if item["name"] == "maybe_convert_expression_zero_to_null":
+                    item["implementation"] = "integer-zero pointer/default normalization; alias identity, source literal preservation, signed/unsigned zero, scalar/float/nonzero/reference exclusions and actual generated foreign default calls verified interpreter/native Mac O0/O2, configured C O0/O2 and strict lint; allocation/invalid-source edge policies documented"
+                if item["name"] == "omit_cpp_functions_visitor":
+                    item["implementation"] = "canonical model-engine callback delegation; public named-call parameters, real method omission/STOP before child callbacks, plain/data ordering and persistent closure storage verified interpreter/native Mac O0/O2 and strict lint; global C++ classification refinement remains in generator-model questions"
                 if item["name"] in {"_create_declaration", "count_namespace_refs", "create_empty_struct_type", "create_omit_cpp_functions_visitor", "find_underlying_type", "get_primitive_or_array_primitive_type_size", "get_type_alignment", "is_16byte_integer_type", "is_assignment_operator", "is_char_pointer_type", "is_extern_declaration", "is_function_type", "is_incomplete_array", "is_operator", "is_operator_name", "is_pointer_type", "is_prefix_comment", "is_struct_field", "is_target_type_signed", "is_target_type_unsigned", "is_targeting_apple_os", "is_va_list", "is_valid_identifier_start", "is_zero_int_expression", "functions_are_equivalent", "contains_equivalent_function", "find_name_clash"} and item["name"] in procedure_names:
                     item["implementation"] = "staged exact NEW canonical-model producer batch4675c90a; original model/native effects, format/strict lint and target source checks pass locally; producer limits and refreshed contracts remain explicit, not combined integration"
                 if item["name"] == "create_enum" and item["name"] in procedure_names and "(name: string)" in item["declaration"]:
