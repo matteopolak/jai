@@ -1146,3 +1146,21 @@ Refresh18 retained regression migration follow-up:
 All private source/header/probe substitutions remain labeled. Source pins,
 C ABI guards, native foreign errors, public visibility and old failure evidence
 are retained. No global lint suppression, test disable or release action.
+
+Native custom-link/crash gate follow-up: retained two actual custom-link cases
+now set the reviewed Message_Phase.linker_exit_code then call the one-argument
+completion API. All original object-count/path/IR/frame-pointer/native execution/
+missing-completion/failure assertions remain; failure runs a real child exit3
+rather than inventing a native linker result. Both tests PASS. Variadic array
+append/spread is retained unchanged; an attempted ordinary slice append was
+correctly rejected because the reviewed overload is variadic, not a slice API.
+No compiler workaround or unreviewed overload was introduced.
+
+Crash-option/minimum-OS fixture now raises actual POSIX SIGSEGV through the SDK,
+rather than assuming a guarded constant null store reaches the OS signal handler.
+It checks native stack presence exactly when enabled, actual frame addresses and
+crash message, plus unchanged Mach-O minimum12.0. Native host gatePASS.
+Original explicit-null guard tests/protected mmap/mprotect regressions remain.
+The old expected 'fatal runtime signal' wording belonged to replaced private
+reporting; current native stack assertions test observable behavior, not a fake
+signal/no_abc bypass. Cross-native Windows/Linux gate remains required.

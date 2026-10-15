@@ -2313,11 +2313,13 @@ const CUSTOM_LINK: &str = r##"#import "Basic";
 
 SOURCE :: #string END
 #import "Basic";
+P :: #import "POSIX";
+libc :: #system_library "libc";
+raise_signal :: (signal: s32) -> s32 #foreign libc "raise";
 start :: () {
     print("started at start\n");
     if get_command_line_arguments().count > 1 {
-        p: *int;
-        p.* = 3;
+        raise_signal(P.SIGSEGV);
     }
 }
 END
@@ -2368,7 +2370,7 @@ END
 #[test]
 fn custom_link_command() {
     let units = Some("1");
-    let linked = "result := run_command(..args); compiler_custom_link_command_is_complete(w, result.exit_code);";
+    let linked = "result := run_command(..args); phase.linker_exit_code = result.exit_code; compiler_custom_link_command_is_complete(w);";
     let (dir, output) = build_custom_link("linked", linked, "", units);
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(output.status.success(), "{stderr}");
@@ -2394,7 +2396,7 @@ fn custom_link_command() {
 
     let (_, output) = build_custom_link(
         "failed",
-        "compiler_custom_link_command_is_complete(w, 3);",
+        "result := run_command(\"sh\", \"-c\", \"exit 3\"); phase.linker_exit_code = result.exit_code; compiler_custom_link_command_is_complete(w);",
         "",
         units,
     );
@@ -2441,7 +2443,7 @@ fn build_custom_link(
 #[cfg(unix)]
 #[test]
 fn custom_link_command_with_several_codegen_units() {
-    let linked = "result := run_command(..args); compiler_custom_link_command_is_complete(w, result.exit_code);";
+    let linked = "result := run_command(..args); phase.linker_exit_code = result.exit_code; compiler_custom_link_command_is_complete(w);";
     let (dir, output) = build_custom_link("split", linked, "", Some("3"));
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(output.status.success(), "{stderr}");
@@ -2505,11 +2507,18 @@ fn backtrace_on_crash_and_minimum_os_version() {
         let crashed = Command::new(&exe).arg("crash").output().unwrap();
         assert!(!crashed.status.success());
         let stderr = String::from_utf8_lossy(&crashed.stderr);
-        assert_eq!(
-            stderr.contains("fatal runtime signal"),
-            on,
-            "{name}: {stderr}"
-        );
+        assert_eq!(stderr.contains("native stack:"), on, "{name}: {stderr}");
+        if on {
+            assert!(stderr.contains("crash signal"), "{name}: {stderr}");
+            assert!(
+                stderr
+                    .lines()
+                    .skip_while(|line| *line != "native stack:")
+                    .skip(1)
+                    .any(|line| line.contains("0x")),
+                "{name}: no native frame addresses: {stderr}"
+            );
+        }
         if cfg!(target_os = "macos") {
             let load = Command::new("otool").arg("-l").arg(&exe).output().unwrap();
             let load = String::from_utf8_lossy(&load.stdout);
