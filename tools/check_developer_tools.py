@@ -76,6 +76,12 @@ def main():
     run([JAIC, "tests/developer-tools/bindings-macros.jai", "-interp"], output="ok\n")
     run([JAIC, "tests/developer-tools/bindings-macro-custom.jai", "-interp"], output="ok\n")
     cases.extend(["bindings-macro-custom", "bindings-macro-custom-roundtrip"])
+    run([JAIC, "tests/developer-tools/bindings-macro-enums.jai", "-interp"], output="ok\n")
+    cases.extend(["bindings-macro-enums", "bindings-macro-enums-roundtrip"])
+    run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib",
+         "tests/developer-tools/bindings-macro-merge.c", "-o", "target/libdeveloper_tools_merge.dylib"])
+    run([JAIC, "tests/developer-tools/bindings-macro-merge.jai", "-interp"], output="ok\n")
+    cases.extend(["bindings-macro-merge", "bindings-macro-merge-roundtrip"])
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"

@@ -7,4 +7,6 @@
 #define ORIGINAL_EXPRESSION (ORIGINAL_INTEGER * 3 + 4)
 #define ORIGINAL_LONG_BYTES sizeof(long)
 long macro_native_sum(void);
+long macro_native_mode(int mode);
+unsigned long long macro_native_unsigned(unsigned long long value);
 #endif
