@@ -194,9 +194,9 @@ def main():
                                      "_default_get_func_args_for_printing", "looks_like_valid_identifier",
                                      "is_hex_digit", "is_valid_int_literal_suffix", "is_valid_float_literal_suffix",
                                      "convert_float_literal", "convert_literal_value", "generate_replacements_array"}:
-                    item["implementation"] = "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
+                    item["implementation"] = "supported multiple-header C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
                 if item["name"] == "generate_bridge":
-                    item["implementation"] = "global C++17 adapter subset; original native POD/reference effects and customized overload/argument/record/field mappings verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
+                    item["implementation"] = "multiple-header global C++17 adapter subset; original native POD/reference effects and customized overload/argument/record/field mappings verified; scopes/methods/templates/printf and arbitrary ABI-changing callbacks pending"
                 if item["name"] in {"append_cpp_type", "append_cpp_type_modifiers", "print_type_to_builder", "type_to_string", "print_function_type_to_builder", "exceeds_signed_int_value", "strip_type"}:
                     item["implementation"] = "public type-emission/stripping/integer-width subset; actual generated Jai/C++ callback/array/reference/qualified-name types, numeric/bool foreign defaults and storage mutation execute interpreter/native Mac O0/O2 with configured C++ O0/O2, diagnostics and strict lint; raw/template defaults, special methods/bitfields/inheritance and remaining print flags pending"
                 if item["name"] in {"append_integer", "append_as_unsigned_integer_hex", "append_as_signed_integer_hex", "append_maybe_left_shift", "append_maybe_right_shift", "print_literal_to_builder", "print_expression_to_builder"}:
