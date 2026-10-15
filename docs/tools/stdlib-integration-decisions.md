@@ -16,6 +16,16 @@ File and module visibility continues to follow the language specification. Publi
 
 Legacy tests may encode behavior from the replaced library that contradicts the public compatibility contract. Preserve the original failing evidence, document the discrepancy, and replace or adapt an expectation only after independent specification review establishes the public behavior. Passing a modified test without this evidence is insufficient. In particular, CRC variant naming, permissive Base64 decoding, and reflection token consumption need their own explicit compatibility cases.
 
+## Distribution native libraries
+
+Release-provided native helpers, including `std_*` and libclang when packaged, must default to the selected installed distribution. Lookup must survive relocation and symlinks and must not depend on the build machine's checkout or SDK installation. Ordinary operating-system libraries retain their platform linkage.
+
+The CLI already accepts `JAIC_NATIVE_LIBS`, a path list replacing its default native-library directory. Preserve existing overrides; this setting alone does not establish coverage for loaders that bypass that directory. Audit each packaged helper and libclang lookup during integration and exercise the unpacked distribution without development paths.
+
+TODO: document any helper-specific or libclang override gaps found by that audit. Add no new override feature in this implementation phase.
+
+Changes involve package manifests, installed-library lookup, and package relocation smoke checks together. Native helper builds and the selected standard-library root determine the installed layout.
+
 ## How to change it
 
 Change the compiler loader, library entry, packaging workflow, and installation discovery together when changing bootstrap layout. Update import-resolution tests when changing internal-directory policy. Route API uncertainties to specification review and pass only public-contract clarifications to implementers.
