@@ -581,3 +581,9 @@ missing-name failures; successful nativephase counts remain separate.
 Developer tools48effectfixtures interpreter/nativeO0/O2 and C/C++consumersPASS;
 1176SDKlayout/enumcomparisons/360symbolresolutions are separate evidence, with
 symbol lookup explicitly not invocation. NativeWindows/alltooling scope incomplete.
+
+## Partial-edit probe boundary correction
+
+The 1,086-file refresh18 sweep retained two failures: truncating a conditional import or `#add_context` legally captured the synthetic trailing declaration. A new generic directive regression reproduced the loss of tail symbols, types, definitions and hints. The harness now inserts an empty statement outside the edited source before its independent tail probe. Original cut points and every assertion remain enabled; no compiler recovery or application input was changed.
+
+Verification: `cargo test --locked -p jai-language-server --test edit_corpus` passes all three tests; the new case failed before the boundary correction. `cargo clippy --locked -p jai-language-server --all-targets -- -D warnings` passes. Retrying both actual failing files with `tools/lsp_partial_edits.py --retry-report ... --stdlib stdlib --max-lines 8 --jobs 2 --timeout 60` passes 38 edits and 1,448 assertions. A full owned-source rerun remains required.

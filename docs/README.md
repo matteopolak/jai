@@ -368,3 +368,5 @@ Agreed designs that are not built yet.
   [minimal dependency requests](status/audio-dependency-requests.md)
 
 - [Integration target/context lint plan](plans/2026-10-15-quality-contexts.md): actual-source coverage, incomplete contexts and remaining gates.
+
+- [Partial-edit probe boundary verification](tools/cleanroom-integration.md#partial-edit-probe-boundary-correction): original edit coverage and two reproduced directive cases.

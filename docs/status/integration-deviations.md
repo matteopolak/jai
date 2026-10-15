@@ -1212,3 +1212,7 @@ Earlier first-use-history interpretation/addressregistry is superseded and
 avoidable; portableowner must remove it at the representation layer, preserving
 by-value returns and publiclayout. Original leakreport fault retained. No fresh
 caller-address registry or extra public marker accepted.
+
+### Integration worker: partial-edit harness probe isolation
+
+Location: `crates/jai-language-server/examples/support/edit_coverage.rs`. Previously the synthetic tail declaration directly followed edited input; valid truncated directives could consume it and invalidate the claim that it was independent. Observable effect: two refresh18 failures, reproduced by the new generic test. Fix: an empty statement separates the probe from the original source, outside all edit ranges; all source cuts and typed/symbol/definition/completion/token/hint checks remain. Risk: probe construction is synthetic and cannot certify every recovery situation; original source scope-change checks remain independent, and the full sweep must rerun. No missing assertions are accepted. This is a corrected test construction, not production compiler support or a corpus pass.

@@ -804,3 +804,5 @@ format/check; full strict lint remains a failed gate. Review numeric JKS values
 preserved, incorrect byte-swap rationale questioned without invented correction.
 Exact largely-unimplemented public inventory now248 rows; no signing/DER/device
 completion credited. Native platform and compiler gaps remain named separately.
+
+Integration worker checkpoint: generic partial-edit directive regression reproduced the two refresh18 failures; statement-boundary probe isolation now passes all three edit harness tests, affected-file retry (38 edits/1,448 assertions), scoped Rustfmt and LSP Clippy with warnings denied. Full owned-source rerun is pending. Seven-target context lint finished 343 runs with 19 denied/incomplete runs and 891 uncovered owned files; gate remains failed. Next: integrate stable compiler ISA/generic-pointee, Pool/Thread and native build checkpoints, preserving latest reviewed specs.
