@@ -285,3 +285,27 @@ tests/portable-stdlib/pending/hash-scalar-fnv.jai and basic-division-exercise.ja
 Foundation runner keeps them red. Portable owns the lazy clock helper;
 foundations owns the others. Integration independently fixed clock_gettime and
 Flat_Pool release side effects inside optional assertions; preserve those fixes.
+
+
+## Portable calendar/Pool contract follow-through (integration, 2026-10-15)
+
+Latest authorized portable snapshot0c09ce4 has actual clocks/CPU/Windows channel
+code, but reviewed basic.md line565 establishes POSIX normalization/DST delegation
+and -1 seconds -> zero Apollo, while internal/basic/clock-calendar.jai rejects
+components/normalized output and uses APOLLO_TIME_INVALID. Minimal public repro:
+ct: Basic.Calendar_Time = .{year=2024,month_starting_at_0=12,
+day_of_month_starting_at_0=0,time_zone=.UTC}; calendar_to_apollo(ct) must delegate
+normalization, not reject month12. Separately valid1969-12-31 23:59:59 UTC reaches
+the documented -1 collision and returns zero. Windows invalid conversions are
+asserted per reviewed prose; current prevalidation silently returns invalid.
+
+Reviewed pool.md line66 now resolves USE_UNMAPPING_ALLOCATOR default selection:
+absent explicit allocator selects public global Unmapping_Allocator and sets
+free_memblocks_on_reset=true; explicit allocator wins unchanged; pool never owns/
+destroys allocator. Existing specialization rejection is unfinished, not an
+acceptable fallback. Reconfiguration after first use must log/retain prior choice.
+
+Producer ownership remains portable; coordinator please relay exact current
+spec updates and request focused original public regressions. Integration retains
+these as production gaps and continues other stable scopes. No legacy oracle or
+unsafe platform mock is requested.
