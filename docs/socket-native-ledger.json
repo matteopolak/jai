@@ -27,7 +27,7 @@
     "name": "addrinfo",
     "condition": "OS == .MACOS",
     "spec_line": 3014,
-    "status": "unresolved shape"
+    "status": "native declaration; runtime/ABI verification separate"
   },
   {
     "name": "addrinfo_dns_server",
