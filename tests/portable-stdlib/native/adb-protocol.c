@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     if (argc > 2 && !strcmp(argv[1], "-s")) first = 3;
     if (first >= argc) return 90;
     const char *command = argv[first];
-    if (!strcmp(command, "echo-args")) {
+    if (!strcmp(command, "echo-args") || (!strcmp(command, "shell") && argc > first + 1 && !strcmp(argv[first + 1], "echo-args"))) {
         for (int i = 1; i < argc; ++i) puts(argv[i]);
         return 0;
     }

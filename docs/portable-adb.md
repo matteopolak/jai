@@ -9,6 +9,33 @@ Earlier protocol passes remain process/safety evidence, not conformance proof fo
 these policies. No SDK/device integration success is claimed. New ASN.1 contract
 corrections are handled in a separate checkpoint before this ADB follow-through.
 
+First correction batch is now verified: version requires exactly three ordered
+prefix lines and returns temporary views into a retained temporary capture copy.
+Devices require the heading/row data, diagnose malformed required fields, retain
+temporary backing and return a temporary array; callers do not individually free
+fields/array. This chooses safe backing lifetime where original capture lifetime
+was ambiguous, as reviewer permits. Duplicate metadata simply updates a view.
+Generic shell arguments containing literal spaces are wrapped in double quotes,
+including prequoted strings; other characters are unchanged as reviewed. Transfer
+compression conflicts assert and fail, not silently prioritize disabled mode.
+PID failure is -1; success uses first PID and warns on ignored later values.
+No-command adb logs and fails; failed launch preserves default exit code0.
+SDK discovery/cache/server-start behavior remains a genuine open correction batch.
+
+Evidence: target/adb-reviewed-policies-final.log passes all five interpreter/native
+ARM64+x64 O0/O2 modes, verbosity, Linux both CPUs and strict lint. Explicit local
+temporary storage exercises lifetimes while regular allocations return to zero.
+Tests now require malformed-device assertion/error, both compression-conflict
+assertions, exact PID warnings/failures, shell argument bytes and empty-command
+diagnostics. Fatal verification handlers are restored after each intended failure.
+
+Separate harness correction: copyfile had dropped executable permission from
+the malformed-output fixture. Earlier malformed version/devices assertions only
+proved launch-failure fallback, not parsing. Refreshed diagnostic-count regression
+exposed this (target/adb-reviewed-policies-first.log). copy2 now preserves mode;
+the actual native malformed-output parser path runs. Earlier malformed coverage
+claims are superseded; positive/exit-status process evidence remains valid.
+
 Reviewed API: docs/specs/stdlib/modules/android-toolchain.md. SDK CLI protocol:
 https://android.googlesource.com/platform/packages/modules/adb/+/refs/heads/main/docs/user/adb.1.md
 

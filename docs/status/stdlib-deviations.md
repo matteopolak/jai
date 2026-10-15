@@ -1,5 +1,15 @@
 # Portable stdlib worker deviations
 
+ADB reviewed policies first correction: temporary capture backing preserves
+device/version views until temp reset; array is temporary. Safe lifetime choice
+is explicit where reviewer says original backing lifetime ambiguous. Generic
+quote/compression/PID/error contracts corrected. SDK discovery/cache/server startup
+still missing and must be integrated before full ADB conformance claims.
+Test staging deviation exposed by new assertions: malformed executable copied
+without execute mode, so older tests accidentally covered launch failure only.
+copy2 fixes mode; stronger diagnostics prove native parser executes. Original
+failure retained in target/adb-reviewed-policies-first.log; no suppressed failures.
+
 Refreshed ASN.1 correction supersedes earlier signed/high-tag/active-only/alias
 assumptions below: single supported identifier, nonnegative1..8-byte INTEGER,
 full-record OID equality, dotted trailing period and known-array implemented.

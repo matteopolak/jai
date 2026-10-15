@@ -15,7 +15,7 @@ def main():
     fixture = output / "sdk protocol fixture"
     subprocess.run(["clang", "-std=c11", "-O2", "-Wall", "-Wextra", "-Werror",
                     str(ROOT / "tests/portable-stdlib/native/adb-protocol.c"), "-o", str(fixture)], check=True)
-    shutil.copyfile(fixture, output / "malformed SDK fixture")
+    shutil.copy2(fixture, output / "malformed SDK fixture")
     library = ROOT / "target/portable-integration-stdlib"
     for relative in ["Android/Toolchain", "internal/android-toolchain"]:
         shutil.copytree(ROOT / "stdlib" / relative, library / relative, dirs_exist_ok=True)

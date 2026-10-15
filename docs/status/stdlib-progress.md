@@ -1,5 +1,14 @@
 # Portable stdlib progress
 
+ADB review correction milestone: temporary version/device views+array, exact
+version lines, malformed-device diagnostics, double-quote-only shell wrapping,
+compression conflicts, first PID+warning/-1 failure, empty commands and launch0
+fixed. Five interpreter/native modes, verbosity/Linux checks/strict lint pass
+(target/adb-reviewed-policies-final.log). Harness copy-mode defect found/fixed:
+earlier malformed-output coverage was launch failure, now actual parser runs.
+Test corrections are separate; docs/portable-adb.md preserves exact evidence.
+SDK discovery/cache/server startup remains open, no new inventory row credited.
+
 Refreshed ASN.1 review consumed: full-record OID equality, trailing-period text,
 immutable one-element known array and supported nonnegative/single-tag domain
 corrected. Actual ASN1_Value + both read overloads and u32LE-prefixed borrowed
