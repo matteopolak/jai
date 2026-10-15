@@ -629,3 +629,5 @@ a fresh source-built compiler, with separate worker outputs and no old overlays.
 executions, 34 supported-platform source/lint gates, and the blocked Android
 compiler gate. [The API inventory](status/asn1-socket-remaining.json) keeps six
 Android rows partial and other native platforms unverified.
+
+- [Retained portable shared audit](status/stdlib-shared-audit.json): per-API current audit distinct from 929 historical bookkeeping rows
