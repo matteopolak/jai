@@ -197,7 +197,7 @@
         "declaration": "generate_bridge :: (_options: Generate_Bindings_Options, filename: string) -> success: bool",
         "section": "Public declaration inventory",
         "spec_line": 34,
-        "implementation": "pending"
+        "implementation": "global C++17 adapter subset; POD result leading out pointer, reference argument/result pointers and original native consumer effects; scopes/overloads/custom callbacks/printf adapters pending"
       },
       {
         "name": "create_omit_cpp_functions_visitor",

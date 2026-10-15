@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 import shutil
+import platform
 import check_developer_bindings
 import build_developer_debug
 import check_developer_debug_windows
@@ -63,6 +64,21 @@ def prepare_cpp_visitors(prefix):
         run([prefix / "bin/clang++", "-target", triple, "-x", "c++", "-std=c++17", "-Wall", "-Wextra", "-Werror",
              "-fsyntax-only", ROOT / "tests/developer-tools/bindings-clang-cpp.h"])
     return visitor_oracle
+
+
+def check_bridge_consumers(prefix, emitter):
+    extension = "dylib" if platform.system() == "Darwin" else "so"
+    flags = ["-dynamiclib"] if platform.system() == "Darwin" else ["-shared", "-fPIC"]
+    for cpp_optimization in [0, 2]:
+        run([prefix / "bin/clang++", "-std=c++17", f"-O{cpp_optimization}", "-Wall", "-Wextra", "-Werror",
+             *flags, ROOT / "target/developer-tools-bridge.cpp", ROOT / "tests/developer-tools/bindings-bridge-native.cpp",
+             "-o", ROOT / f"target/libdeveloper_tools_bridge.{extension}"])
+        source = ROOT / "tests/developer-tools/bindings-bridge-roundtrip.jai"
+        run([JAIC, source, "-interp"], output="ok\n")
+        for optimization in [0, 2]:
+            exe = ROOT / f"target/developer-tools-bridge-{emitter}-cpp{cpp_optimization}-jai{optimization}"
+            run([JAIC, source, f"-O{optimization}", "-exe", exe])
+            run([exe], output="ok\n")
 
 
 def main():
@@ -160,6 +176,7 @@ def main():
     cases.append("dwarf-fde")
     cases.append("bindings-clang-time")
     cases.append("dwarf-eh-frame")
+    cases.extend(["bindings-bridge", "bindings-bridge-roundtrip"])
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -177,6 +194,8 @@ def main():
         run([JAIC, source, "-interp", "-I", ROOT / "target"], output=expected, error=error)
         if case == "bindings-clang-build-system":
             check_framework_consumer(prefix, "interp")
+        if case == "bindings-bridge":
+            check_bridge_consumers(prefix, "interp")
         if case == "bindings-cpp-fragments":
             for cpp_optimization in [0, 2]:
                 cpp_exe = ROOT / f"target/developer-tools-cpp-fragments-interp-cxx{cpp_optimization}"
@@ -189,6 +208,8 @@ def main():
             run([exe], output=expected, error=error)
             if case == "bindings-clang-build-system":
                 check_framework_consumer(prefix, f"o{optimization}")
+            if case == "bindings-bridge":
+                check_bridge_consumers(prefix, f"o{optimization}")
             if case == "bindings-cpp-fragments":
                 for cpp_optimization in [0, 2]:
                     cpp_exe = ROOT / f"target/developer-tools-cpp-fragments-o{optimization}-cxx{cpp_optimization}"

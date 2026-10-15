@@ -58,6 +58,8 @@ All fixture paths below are relative to `tests/developer-tools`.
 
 ## Changes and remaining coverage
 
+`bindings-bridge.jai` generates real C++ adapters from original declarations and verifies deprecated/method omission plus collision failure preserving output. `bindings-bridge-native.cpp` supplies the original functions. `bindings-bridge-roundtrip.jai` independently declares the adapter ABI and checks scalar calls, leading aggregate out pointers, reference identity/read/write and already-C-linked functions. Each interpreter/native O0/O2 generator result is compiled with configured official C++ O0/O2 and exercised through Jai interpreter/native O0/O2. These are bridge-source effects, not generated Jai-wrapper evidence; scopes/customization/overload naming/printf adapters remain incomplete.
+
 `tools/check_developer_sdk_configuration.py` is included in the focused runner. It builds the production helper against an owned nondefault SDK layout, checks helper/native facade links and runtime search paths, records actual configured include-probe invocation, and executes original generated C bindings in interpreter/native O0/O2. It restores the primary SDK configuration afterward. These two fixtures bring the supported count to50; host SDK23 execution does not certify SDK21 or Linux runtime.
 
 Production regressions and test-oracle corrections are recorded separately in [deviations](status/developer-tools-deviations.md). In particular, a callback declaration-count mistake and a fix-it byte-offset mistake were corrected using the independently authored source, without changing production behavior or removing valid assertions. The reviewed CXIndexOptions refinement corrected the spec, then drove the exact implementation and replacement native tests.

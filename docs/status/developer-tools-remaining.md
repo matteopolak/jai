@@ -6,7 +6,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Bindings_Generator
 
-159 function names have pending declarations; 217 native function names still lack invocation fixtures.
+158 function names have pending declarations; 217 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Next work / precise question |
 | --- | ---: | --- |
@@ -87,7 +87,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `function_has_a_valist_arg` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `function_is_missing_foreign_library` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `functions_are_equivalent` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `generate_bridge` | 1 | Reviewed C++ source adapter contract resolved; implementation and compiled round trips pending |
 | `get_enum_value_name` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_libc_paths` | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_name_alignment` | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
