@@ -55,7 +55,7 @@
           "encoding": "UNSIGNED_CHAR"
         }
       ],
-      "debug_info_sha256": "51786162177dcd397c107499fe84eb03c3c2a5769060b116721f69a2a437541b"
+      "debug_info_sha256": "33fd81b453f69f527ef2c13f1f3551283efdd81c587e486fc5514a4960411abd"
     },
     {
       "architecture": "x86",
@@ -111,7 +111,7 @@
           "encoding": "UNSIGNED_CHAR"
         }
       ],
-      "debug_info_sha256": "dad3237c869ac70d5bc5304db4faf0da56676d2ab37eb994eec16c86fb77f7cc"
+      "debug_info_sha256": "4c220600c20f7f9e8009cd63a099d727b4b70361163789a724e1775e4df3037b"
     },
     {
       "architecture": "x64",

@@ -1,7 +1,14 @@
 {
   "coverage": "Windows x64 SDK DLL/executable cross-build/link/export inspection and arm64 object compilation; no Windows execution",
-  "source_sha256": "fc5ca509311ac77e3d5fed2cc4bb246dffda04d2adae22f0cea7fb9587760ade",
-  "fixture_sha256": "b2d7740d8e4e31617d2e6bc8524abaf75aeb25640bc487213738ba19b6a16c5e",
+  "source_sha256": "63a604d6ae97a1cd0da6cb225ab528a886f49a93e082ba640625968adb9b6bb1",
+  "once_header_sha256": "492ee063a2ab48b79b3630f307abd687e3618a35d1d1b5af0a0fcad7b3da7fbf",
+  "crash_state_header_sha256": "26ecc3c53fe7c420aaca81d6a1f99f484c146f731f5878bae9c2cb721460fd31",
+  "final_header_sha256": {
+    "windows-command.h": "bcfa0d7e1846d2fa141871a9ed7844129fc80a5e04c3ef66626308d8ecf62d17",
+    "windows-launch.h": "4f2b60d9aa18357a14539c2b3f5f28dd76cf8b9ca0aa841f56b43ae1fd509729",
+    "windows-dumps.h": "2b366b2e4e7734b294860d788c0577c72896e74f7fd9fd34f281b6301f7e781d"
+  },
+  "fixture_sha256": "f1d930706f2bfdbf3963b4be8556df4e3eb3e2fd06eb328c414c34b062814185",
   "sdk_header_sha256": {
     "/opt/homebrew/opt/mingw-w64/toolchain-x86_64/x86_64-w64-mingw32/include/windows.h": "e931bc163a9980e71982a522879073f41f934c3d94b423d489ee9f387093899f",
     "/opt/homebrew/opt/mingw-w64/toolchain-x86_64/x86_64-w64-mingw32/include/dbghelp.h": "1914e4d43423dd2b8856b1d3ff32e531e748f7d2baad1c7849308c2d3b673458"
@@ -9,12 +16,21 @@
   "gcc_version": "x86_64-w64-mingw32-gcc (GCC) 16.2.0",
   "exports": [
     "developer_debug_abort",
+    "developer_debug_attach",
     "developer_debug_backtrace",
+    "developer_debug_break_once",
     "developer_debug_breakpoint",
     "developer_debug_debugger_present",
+    "developer_debug_dialog",
+    "developer_debug_disable_handlers",
+    "developer_debug_dump",
+    "developer_debug_enable_handlers",
     "developer_debug_free_symbols",
+    "developer_debug_initialize",
+    "developer_debug_latest_dump",
     "developer_debug_output",
     "developer_debug_readable",
+    "developer_debug_set_dump_state",
     "developer_debug_symbols"
   ],
   "runtime_status": "pending coordinator Windows native CI"

@@ -5,7 +5,7 @@
     {
       "architecture": "x64",
       "active_page": 2,
-      "pdb_sha256": "c664ed34d29f76d641e1b9a9955f70b88ed99dd9522b4f333036ad93cb000e2d",
+      "pdb_sha256": "b0a488282c51363b5d1ca1b577b8fee15ee34aa56f1f4dbe2df545e469af775c",
       "fpm_sha256": "ce8f21e2ef4916fd3f4b5e11f6108ee52434ffc0576a9b2e0acfe48249f73be2",
       "free_bits": 32750,
       "bits": 32768
@@ -13,7 +13,7 @@
     {
       "architecture": "arm64",
       "active_page": 2,
-      "pdb_sha256": "413f777dfcaa8590c13a093069067200d95e13692d63043f1e1042019c4820f0",
+      "pdb_sha256": "4065d9339d7b30745a4f9faab69f3e5917ed5140403c4eb99a3bf498584e5470",
       "fpm_sha256": "ce8f21e2ef4916fd3f4b5e11f6108ee52434ffc0576a9b2e0acfe48249f73be2",
       "free_bits": 32750,
       "bits": 32768

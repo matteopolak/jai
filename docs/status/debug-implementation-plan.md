@@ -1,0 +1,13 @@
+# Debug reassignment implementation plan
+
+The reviewed clean candidate `7467b49d` supplies the current Debug behavioral contract. Existing independent Debug files are identical at that candidate. Preserve all committed Debug_Info work. Own only Debug, its private helper, tests and documentation; no Generator or shared Context declarations are needed. Configured façades must consume their owner's singleton context, never add duplicate fields.
+
+1. Record all 31 assigned names, prior completion and current verification gaps in the scope manifest and inventory. Adopt only the reviewed Debug specification from the named clean candidate.
+2. Implement `break_once` with a process-owned, mutex-protected set keyed by filename bytes, line and character. Copy filename bytes, bound native lengths and propagate allocation failures diagnostically. Independent policy: mark the first attempt even if no debugger is attached; return the actual breakpoint result. A fresh location gets a fresh attempt. No reference-equivalence claim.
+3. First add a failing public Jai fixture and an original macOS SDK driver using `ptrace(PT_TRACE_ME)` and `waitpid`. Repeated calls at one explicit location must cause exactly one real trap; a distinct location causes another. Run interpreter/native O0/O2 under the driver, plus untraced behavior. Implement only after observing the missing API failure.
+4. Re-run existing public native/lifecycle fixtures, format Jai, strict lint, strict C compilation. Commit this logical batch with the inventory and documentation. Then implement Windows exception-filter lifecycle and logger support with original SDK compilation/oracles, explicitly keeping Windows runtime verification pending.
+5. Record exact contract/dependency questions for remaining launch, graphics configuration and dump behavior without retaining already resolved assertion/lifecycle questions. Continue independently implementable work.
+
+No launch command, graphics module parameter/default or unsupported-target minidump success will be invented. The user permits independent documented policies where behavior is unspecified; those policies must describe real effects and failures.
+
+Steps1–5 executed. The two verified implementation batches add breakpoint-once, canonical public assertion storage, Windows lifecycle/init/logger support, and a reviewed concurrency/owned-context correction on both native platforms. The question ledger maps all nine remaining functions to exact unresolved dependencies; twenty implemented names retain platform/configuration evidence gaps. No compiler relaxation, Generator/model production edit or Context field was introduced. Integration checkpoint commits and commands are in the worker inbox and runtime handoff.

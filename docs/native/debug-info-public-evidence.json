@@ -1,0 +1,1156 @@
+{
+  "scope": "public DWARF4 parser metadata compared with relocated original SDK objects; CodeView types/procedures/inline graphs/annotations/source tables and PDB metadata compared with official SDK; public MSF streams compared with SDK exports; Mac interpreter/native O0/O2",
+  "dwarf": [
+    {
+      "architecture": "x86",
+      "optimization": 0,
+      "types": [
+        {
+          "offset": 38,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 112,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 117,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 128,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 8,
+          "encoding": null
+        },
+        {
+          "offset": 161,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 168,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 4,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 175,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "55c90c3d73e14a7c9bc48edec3ca7471c4b86e3727fb1f25d133b1a4b4d18c23",
+        "abbrev": "0e8859311b8d0a2ed1447546f04e15d473f751755117965d83eb0a017c7078f3",
+        "line": "8b6238c4d147ad57cc48030e7dc0e11553bef4bc024816d11db642642cc0a6ee",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    },
+    {
+      "architecture": "x86",
+      "optimization": 2,
+      "types": [
+        {
+          "offset": 38,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 115,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 120,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 131,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 8,
+          "encoding": null
+        },
+        {
+          "offset": 164,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 171,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 4,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 178,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "96b2339d8fdc44a489d50830b1f64405735ff7293933ab09dda58400eb351658",
+        "abbrev": "e4f14a482b3316988f97d19a30894a2124033bb369e70c88facd35aaa68dcc06",
+        "line": "f00f417bd2b1f948dffb553c36c4bbe88ee63f8e520b0a80e5d957c7dae29cb6",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    },
+    {
+      "architecture": "x64",
+      "optimization": 0,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 124,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 129,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 140,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 173,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 180,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 187,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "5a9815eab2b4d675f3045f7c543b8e71624c6a3f74530296a02f994a9bdec2ee",
+        "abbrev": "0e8859311b8d0a2ed1447546f04e15d473f751755117965d83eb0a017c7078f3",
+        "line": "80873eb5d925fd4486e0ce83bb4d35fb00e143e712ef5dbd23d91154b8953b73",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    },
+    {
+      "architecture": "x64",
+      "optimization": 2,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 122,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 127,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 138,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 171,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 178,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 185,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "dcd76e5edab749be5346f089229e1010813a002bb759e0e3269be902173d2062",
+        "abbrev": "e4f14a482b3316988f97d19a30894a2124033bb369e70c88facd35aaa68dcc06",
+        "line": "eab81c76ee3857d9f7f13df35e2442e7b4f5170eb875ad2b30f73f25cb56e8a6",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 0,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 124,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 129,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 140,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 173,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 180,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 187,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "1caf40dc40c2fe99fd0c6f170a079daa3e7a4fefaa69ff38400d0cd7f37f4760",
+        "abbrev": "0e8859311b8d0a2ed1447546f04e15d473f751755117965d83eb0a017c7078f3",
+        "line": "4beb710134141a1f822c9c55a575eb736c357454090b619fea76bbdde61043e2",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 2,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 122,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 127,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 138,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 171,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 178,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 185,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "994315cd2fd97739a1995bf0faf0b5d48bd3997a8358d85adbb4b89de18c4ec3",
+        "abbrev": "e4f14a482b3316988f97d19a30894a2124033bb369e70c88facd35aaa68dcc06",
+        "line": "169fec7f90268637ef7d9cca68c3d2996aafca769ef7353592c381012ff2827f",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    }
+  ],
+  "codeview": [
+    {
+      "architecture": "x64",
+      "optimization": 0,
+      "kinds": [
+        "ARGLIST",
+        "PROCEDURE",
+        "FUNC_ID",
+        "STRUCTURE",
+        "MODIFIER",
+        "FIELDLIST",
+        "STRUCTURE",
+        "STRING_ID",
+        "UDT_SRC_LINE",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "BUILDINFO"
+      ],
+      "section_sha256": "89dd24f84d7356249344a44fbd5ac28dea6b5c81773c49c843d0f693167be2a9"
+    },
+    {
+      "architecture": "x64",
+      "optimization": 2,
+      "kinds": [
+        "ARGLIST",
+        "PROCEDURE",
+        "FUNC_ID",
+        "STRUCTURE",
+        "MODIFIER",
+        "FIELDLIST",
+        "STRUCTURE",
+        "STRING_ID",
+        "UDT_SRC_LINE",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "BUILDINFO"
+      ],
+      "section_sha256": "80dd08079453ff686341c77d285dd458762913dc69ba4bbaf6d3bc03095b4e73"
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 0,
+      "kinds": [
+        "ARGLIST",
+        "PROCEDURE",
+        "FUNC_ID",
+        "STRUCTURE",
+        "MODIFIER",
+        "FIELDLIST",
+        "STRUCTURE",
+        "STRING_ID",
+        "UDT_SRC_LINE",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "BUILDINFO"
+      ],
+      "section_sha256": "a1573760ee737443eee145d8fd281630afb1a4e8afe3c8ec97ed01847b2bd4ed"
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 2,
+      "kinds": [
+        "ARGLIST",
+        "PROCEDURE",
+        "FUNC_ID",
+        "STRUCTURE",
+        "MODIFIER",
+        "FIELDLIST",
+        "STRUCTURE",
+        "STRING_ID",
+        "UDT_SRC_LINE",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "BUILDINFO"
+      ],
+      "section_sha256": "adb77562ba0dce0b3bee4db54ee7c151a561a41e7879a4251dc05df20f11b22a"
+    }
+  ],
+  "pdb": [
+    {
+      "architecture": "x64",
+      "signature": 321710894,
+      "guid": "132ceb2e-2b80-d54e-4c4c-44205044422e",
+      "age": 1,
+      "tpi_count": 3,
+      "ipi_count": 7,
+      "sha256": "b0a488282c51363b5d1ca1b577b8fee15ee34aa56f1f4dbe2df545e469af775c"
+    },
+    {
+      "architecture": "arm64",
+      "signature": 1072624733,
+      "guid": "3feef45d-a7d5-b846-4c4c-44205044422e",
+      "age": 1,
+      "tpi_count": 3,
+      "ipi_count": 7,
+      "sha256": "4065d9339d7b30745a4f9faab69f3e5917ed5140403c4eb99a3bf498584e5470"
+    }
+  ],
+  "symbols": [
+    {
+      "architecture": "x64",
+      "optimization": 0,
+      "sha256": "92a01b12696b4cb4fafebde5d19c5f7d485a0d2224e97f508900c65974473c87",
+      "projected_symbols": [
+        {
+          "kind": "COMPILE3",
+          "children": [],
+          "cpu": 208,
+          "language": 0,
+          "compiler": "Homebrew clang version 23.1.2",
+          "frontend": [
+            23,
+            1,
+            2,
+            0
+          ],
+          "backend": [
+            23012,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "GPROC32_ID",
+          "children": [
+            2,
+            5
+          ],
+          "name": "original_inline_entry",
+          "length": 124,
+          "segment": 0,
+          "offset": 0,
+          "type": 4100
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [
+            3,
+            4
+          ],
+          "inlinee": 4098,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 16,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 30,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 34,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 24,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 11,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 7,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 60,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 11,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 7,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 97,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 11,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 9,
+              "first_signed": false
+            }
+          ]
+        }
+      ],
+      "inlinees": [
+        {
+          "inlinee": 4098,
+          "file": 0,
+          "line": 6
+        },
+        {
+          "inlinee": 4099,
+          "file": 0,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "optimization": 2,
+      "sha256": "df3777005695370c387b4090758ece66f66b9a215404a897662bf6110d801408",
+      "projected_symbols": [
+        {
+          "kind": "COMPILE3",
+          "children": [],
+          "cpu": 208,
+          "language": 0,
+          "compiler": "Homebrew clang version 23.1.2",
+          "frontend": [
+            23,
+            1,
+            2,
+            0
+          ],
+          "backend": [
+            23012,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "GPROC32_ID",
+          "children": [
+            2,
+            5
+          ],
+          "name": "original_inline_entry",
+          "length": 33,
+          "segment": 0,
+          "offset": 0,
+          "type": 4100
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [
+            3,
+            4
+          ],
+          "inlinee": 4098,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 1,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 6,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 8,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 1,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 3,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 3,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 7,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 3,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 3,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 23,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 3,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 3,
+              "first_signed": false
+            }
+          ]
+        }
+      ],
+      "inlinees": [
+        {
+          "inlinee": 4098,
+          "file": 0,
+          "line": 6
+        },
+        {
+          "inlinee": 4099,
+          "file": 0,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 0,
+      "sha256": "2816db4ff4318b39769e8e99283c3b6ef1685a02823ffb606b426871f60b3c98",
+      "projected_symbols": [
+        {
+          "kind": "COMPILE3",
+          "children": [],
+          "cpu": 246,
+          "language": 0,
+          "compiler": "Homebrew clang version 23.1.2",
+          "frontend": [
+            23,
+            1,
+            2,
+            0
+          ],
+          "backend": [
+            23012,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "GPROC32_ID",
+          "children": [
+            2,
+            5
+          ],
+          "name": "original_inline_entry",
+          "length": 152,
+          "segment": 0,
+          "offset": 0,
+          "type": 4100
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [
+            3,
+            4
+          ],
+          "inlinee": 4098,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 16,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 36,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 44,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 24,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 12,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 12,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 68,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 12,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 12,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 116,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 12,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 12,
+              "first_signed": false
+            }
+          ]
+        }
+      ],
+      "inlinees": [
+        {
+          "inlinee": 4098,
+          "file": 0,
+          "line": 6
+        },
+        {
+          "inlinee": 4099,
+          "file": 0,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 2,
+      "sha256": "c566a6b3687408fdd19bbcb151cdc37eaecf46f489483a5548b79aeb3e1bd56d",
+      "projected_symbols": [
+        {
+          "kind": "COMPILE3",
+          "children": [],
+          "cpu": 246,
+          "language": 0,
+          "compiler": "Homebrew clang version 23.1.2",
+          "frontend": [
+            23,
+            1,
+            2,
+            0
+          ],
+          "backend": [
+            23012,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "GPROC32_ID",
+          "children": [
+            2,
+            5
+          ],
+          "name": "original_inline_entry",
+          "length": 44,
+          "segment": 0,
+          "offset": 0,
+          "type": 4100
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [
+            3,
+            4
+          ],
+          "inlinee": 4098,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 4,
+              "second": 2,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 4,
+              "second": -1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 4,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 8,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 4,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 4,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 4,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 4,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 8,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 4,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 24,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 4,
+              "first_signed": false
+            }
+          ]
+        }
+      ],
+      "inlinees": [
+        {
+          "inlinee": 4098,
+          "file": 0,
+          "line": 6
+        },
+        {
+          "inlinee": 4099,
+          "file": 0,
+          "line": 1
+        }
+      ]
+    }
+  ],
+  "fixtures": [
+    "dwarf-public.jai",
+    "msf-parser.jai",
+    "codeview-type-parser.jai",
+    "pdb-parser.jai",
+    "codeview-truncate.jai",
+    "codeview-dump.jai",
+    "codeview-inline.jai",
+    "codeview-symbol-parser.jai",
+    "dwarf-cfa.jai",
+    "dwarf-eh-frame.jai",
+    "dwarf-fde.jai",
+    "dwarf-line-query.jai",
+    "dwarf-line-wire.jai",
+    "dwarf-type-lookup.jai",
+    "codeview-strings.jai",
+    "msf-public.jai",
+    "msf-wire.jai",
+    "msf-page-bits.jai",
+    "codeview-lines.jai",
+    "codeview-register.jai"
+  ],
+  "verification": [
+    "formatter",
+    "strict lint",
+    "interpreter",
+    "native O0",
+    "native O2",
+    "target-derived symbol ABI checks: Windows/Linux/Mac x64/arm64"
+  ]
+}
