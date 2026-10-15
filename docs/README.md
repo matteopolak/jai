@@ -224,7 +224,8 @@ The LLVM backend, C ABI and linking.
 - [Unresolved portable contracts](specs/stdlib/questions.md)
 - [SDL3 desktop bindings, generation and native packaging](extensions/sdl3.md)
 - [SDL3 comprehensive header/GPU coverage, organization and verification](extensions/sdl3-coverage.md)
-- [SDL3 current native CI correction and verification](status/sdl3-progress.md)
+- [SDL3 current native CI corrections and verification](status/sdl3-progress.md)
+- [SDL3 MSVC header profiles, canonical ledger hashes and clean CI repairs](extensions/sdl3-ci-repairs.md)
 - [SDL3 implementation deviations and remaining limits](status/sdl3-deviations.md)
 
 Implementation work uses the API specification as its compatibility contract. Implementers do not read the source of a Jai distribution; specification review supplies public declarations and behavior through the documented clean-room workflow.
