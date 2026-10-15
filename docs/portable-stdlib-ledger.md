@@ -41,7 +41,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [example-plugin](specs/stdlib/modules/example-plugin.md) | Owned portable scope; not implemented |
 | [executable-formats](specs/stdlib/modules/executable-formats.md) | Partial: real bounded classic/GNU/COFF/BSD ar parsing, symbol indexes and universal signature detection. Native original C archive and malformed/lifetime tests pass. Missing Arch_File shape blocks universal records; remaining object/debug/text parsers unfinished |
 | [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial paths, Unix metadata, recursive listing/copy and replacement implemented; tree copying, self-copy rejection and metadata pass interpreter/native. Visit aliases missing reviewed signatures |
-| [file-watcher](specs/stdlib/modules/file-watcher.md) | Owned portable scope; not implemented |
+| [file-watcher](specs/stdlib/modules/file-watcher.md) | macOS SDK-native queue/lifecycle plus exact generic facade, coalescing/filtering and captured allocation implemented. Real event/rename/recursive/overflow tests pass interpreter/native; native backend passes ASan/UBSan and tracked allocations. Windows/Linux and detailed timing/lifetime policies unfinished or under review; retained NEW binding ABI defect |
 | [file](specs/stdlib/modules/file.md) | Reserved completion for platform-io worker. Existing partial Unix implementation retained; offset/EOF/write/seek cases remain integration regressions. Windows/Android not completed here |
 | [flat-pool](specs/stdlib/modules/flat-pool.md) | Owned portable scope; not implemented |
 | [float16](specs/stdlib/modules/float16.md) | Reserved for numerics worker; not implemented or modified here |
