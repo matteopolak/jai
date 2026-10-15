@@ -34,6 +34,56 @@ The SDK/toolchain requirements below remain enforced; no SDK ABI or GL capabilit
 override is introduced. Meson's documented [native binary configuration](https://mesonbuild.com/Machine-files.html#binaries)
 applies to find_program independently of the interpreter running Meson itself.
 
+## Verified LLVM reuse
+
+The helper now defaults to a persistent `target/window-mesa-cache` independent
+of each fresh `--out` directory. Only the installed LLVM tree is reused; parser
+generators, Mesa sources/build/install and deployed driver DLLs are produced anew.
+CI may persist/restore that dedicated cache directory from its own source-built
+outputs. It must retain the completed receipt and every recorded file; a directory
+or an older successful-status report alone is not a cache completion certificate.
+Candidatea78721d predates this receipt format, so its LLVM directory is not
+automatically adopted. The first build with the new helper must populate the cache.
+
+The key covers the pinned LLVM source, exact CMake options, prepared Python/version
+and package pins, toolchain versions/flags, selected compiler/linker/lib/rc/mt/
+CMake/Ninja hashes (including installed package binaries/data behind launchers),
+MSVC frontend directory hashes, and content hashes of selected
+SDK INCLUDE/LIB trees. Windows environment names are handled case-insensitively.
+SDK fingerprinting is restricted to explicit VCToolsInstallDir/WindowsSdkDir (and
+NETFXSDKDir when selected), never arbitrary source or authentication directories.
+Initialize the full native ARM64 vcvars environment so these SDK directories and
+INCLUDE/LIB exist. External CMake toolchain-file overrides are rejected by this
+native MSVC configuration; the actual cl.exe path is explicit for both languages.
+
+After installation, actual ARM64 PE identity, LLVM20.1.8, AArch64 host/backend and
+relocated installation directories are checked. Every installed file is hashed
+and an atomic `complete.json` is written before Mesa setup. On reuse, configuration,
+the entire file manifest and native identity/prefix are rechecked. Missing,
+modified, unexpected or symbolic-link artifacts fail verification. No completed
+receipt means no reuse of partial libraries. Writer locks reject concurrent or
+abandoned in-progress writers; an abandoned lock needs coordinator cleanup after
+confirming the original job has stopped. Corrupt completed entries fail explicitly;
+remove only that dedicated cache entry before rebuilding. Cache hashes detect
+stale/corrupt content; they are not authentication against a malicious cache writer.
+
+Use a fresh output for each retry and retain the same trusted cache:
+
+```sh
+python tools/window_render_mesa_windows.py \
+  --out target/window-mesa-arm64-retry \
+  --cache-dir target/window-mesa-cache --jobs 4
+```
+
+Then pass **that retry's** driver directory to the native WGL runner. Nonempty
+output directories are rejected, so prior DLLs/evidence cannot be mistaken for
+new build output. `source-build.json` records the key, hit/miss, complete key
+configuration, actual LLVM identity and each command. Hashing SDK/installed LLVM
+files has a disk-I/O cost; it deliberately trades some retry time for verified
+reuse instead of rebuilding LLVM. Actual Windows cache reuse remains pending;
+local tests exercise content/configuration integrity, not native library execution.
+Seven integrity regressions plus the real Meson child-discovery test pass locally.
+
 ## Latest lifecycle evidence and correction (2026-10-14)
 
 Authorized filtered run38662728329 supersedes the historical creation-only
