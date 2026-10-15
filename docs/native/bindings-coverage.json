@@ -173828,7 +173828,7 @@
               {
                 "path": "stdlib/internal/bindings/rpmalloc-heaps/sdk-page-granularity.patch",
                 "purpose": "Round native heap-pool mappings to whole configured pages",
-                "sha256": "b4a861af550254c1fe8837b0cfd92974cb912093184d710f301cd7d1562f9379"
+                "sha256": "4ee8af6bc941251310da5ccea8810c158eeb8152b6960923a9d5a9e5a05394ff"
               }
             ],
             "configurations": {
@@ -174950,7 +174950,7 @@
             "stdlib/internal/bindings/rpmalloc-heaps/layout-probes.inc": "2c936ff5a3e0ae669825b4e2f6f53ff2971f42469f9557fadff5750b20856cf7",
             "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "b6eb17e3f59eba1ad10859df03b39da1c3de928ce0bf293d33278c62c5c21dc6",
             "stdlib/internal/bindings/rpmalloc-heaps/public-layout.h": "0f343ace3f147df160147f0d4ebf067cb3a4e960ecf9c455a17facbd71d2918e",
-            "stdlib/internal/bindings/rpmalloc-heaps/sdk-page-granularity.patch": "b4a861af550254c1fe8837b0cfd92974cb912093184d710f301cd7d1562f9379"
+            "stdlib/internal/bindings/rpmalloc-heaps/sdk-page-granularity.patch": "4ee8af6bc941251310da5ccea8810c158eeb8152b6960923a9d5a9e5a05394ff"
           },
           "scope": "Canonical reviewed records, private typed native ownership, all real SDK counters, defined span graph and unmap-driven retirement; both statistics profiles",
           "limitations": "Only reviewed live/quiescent field observations; other native options and raw first-class heap profile remain incomplete; metadata OOM is fail-fast",

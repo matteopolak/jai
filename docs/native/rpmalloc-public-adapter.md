@@ -1,5 +1,14 @@
 # Public rpmalloc adapter progress
 
+The canonical heap and native configurable mapping milestones are committed
+as `7fedc8e` and `bc597af`. All eleven rewrite heap procedures have real typed
+SDK forwarding and separate complete public records. The public configurable
+heap program exposed a pristine SDK page-rounding defect; a hash-checked
+build-only C fix preserves the requested public profile and active native
+assertions. See the [heap design and verification commands](rpmalloc-heap-adapter-design.md).
+Eight actual Mac executions and the separate production-host scope pass;
+six public-inventory and eighteen configuration-name failures remain required.
+
 ## Canonical heap implementation
 
 All eleven rewrite heap procedures now execute through the canonical C adapter

@@ -1019,6 +1019,13 @@
       "sha256": "d5f6f7da97b308fae5e489ce7674132f7c18220045e5697ddb1844b8847b87a3",
       "scope": "Observed regression with fresh-only callback contexts before synchronous context borrowing",
       "observed_failure": 134
+    },
+    {
+      "report": ".work/rpmalloc-patch-format-idempotence.json",
+      "sha256": "3d4555a0fc45f76055608a5613bc116fe97510df95de97dbd7f0cd6c2478d024",
+      "scope": "Zero-context patch produces byte-identical prepared pinned C source",
+      "observed_identical": true,
+      "prepared_source_sha256": "35ff487986188f2a605990f3f765c665e352b4e178e9292f3b0a56d01356fff0"
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

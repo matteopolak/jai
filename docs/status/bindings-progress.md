@@ -1,6 +1,7 @@
 # Bindings worker progress
 
-Stable canonical heap implementation: `7fedc8e`. Follow-up tests now exercise
+Stable canonical heap implementation: `7fedc8e`; configurable native fix and
+durable verification runner: `bc597af`. Follow-up tests now exercise
 multi-element full/partial list prev/next links, current-heap replacement with
 outstanding allocations, repeated selection of the same current heap, and
 configurable heaps across four span sizes and six allocation sizes. They found
@@ -20,6 +21,10 @@ remain, with declaration checks passing. Counts stay 23 unresolved/57 partial
 rpmalloc and 36 other unresolved declarations. Full native Windows/Linux,
 remaining option profiles, metadata exhaustion and remaining public contracts
 are required work; no full completion or integration claim is made.
+Patch-file context whitespace was subsequently removed with a zero-context
+diff; strict pinned input hashes still guard application. Actual preparation
+produces byte-identical C source (SHA-256
+`35ff487986188f2a605990f3f765c665e352b4e178e9292f3b0a56d01356fff0`).
 
 Canonical heap milestone after `2a18c3c`: all eleven rewrite heap procedures now
 have actual private SDK forwarding and complete canonical public Heap/Span
