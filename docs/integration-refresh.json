@@ -1,7 +1,14 @@
 {
   "compiler": {
     "ref": "coordinator/compiler",
-    "commit": "6080ff0a080af64b6896427a0cdbfb7940f44a52"
+    "commit": "6080ff0a080af64b6896427a0cdbfb7940f44a52",
+    "corrected_storage_review": {
+      "source_snapshot": "eaf3919929c00a2a49cba5b630d1068dafc1aaea",
+      "consumption": "corrected net test/doc snapshot only; unsupported live-alias history not merged",
+      "production": "anonymous filtered reexport registration already integrated in57cb0b51; immutable baseline retained",
+      "verified": "52 module and six corrected core storage/constant cases; workspace clippy warnings denied",
+      "pending": "new native/WASM LLVM, jailint target and actual wasm32 runners remain required; not counted as executed"
+    }
   },
   "stdlib": {
     "ref": "coordinator/stdlib",

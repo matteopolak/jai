@@ -1476,6 +1476,20 @@ expectation correction; the normal packaged false selector is restored byte for
 byte. This does not add further option coverage or native platform claims.
 # Native Mac measurement limitations, 2026-10-15
 
+Corrected compiler storage checkpoint eaf39199 was reviewed as a net snapshot
+against6080ff0a, including producer handoff/status/deviation reports. Its only
+production delta is anonymous filtered using registration already present here
+from57cb0b51. No live `::` alias implementation or its history was merged. Corrected
+tests/docs are imported, with58 module/core cases passing and workspace Clippy
+warnings denied. The new jailint fixture uses an intentionally minimal source-only
+bootstrap; core reflection tests likewise use the existing VFS reflection bootstrap.
+These are compiler unit controls, not production library validation. New LLVM
+native/WASM O0/O2 and actual wasm32 runners are supplied but not executed in this
+checkpoint, avoiding optional matrix expansion before the combined baseline is
+green. Their verification remains outstanding. Producer staging/overlay claims
+are not counted as integrated production proof. No new production compiler change
+is hidden in this import.
+
 Catalogue routing follow-up: input metadata names only actual fixture prerequisites,
 not expected failures. Scratch paths are isolated under the runner's existing
 owned temporary directory and cleaned by its existing finally block. The caller

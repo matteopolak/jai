@@ -698,6 +698,15 @@ All seven workspace failures remain enabled. Failure classifications are triage,
 not expected-failure exemptions. No original application/vendor source was read.
 # Focused repairs after the frozen measurement
 
+Corrected storage/immutability review eaf39199 contributes only reviewed net tests
+and documentation; existing proper production registration57cb0b51 is retained.
+Unsupported live-alias commits are not merged. Exact selected file provenance is
+in `docs/integration-refresh.json`. The original52 module cases plus six corrected
+core storage/constant regressions pass; workspace Clippy remains warnings-denied
+green. New LLVM native/WASM64, jailint target and actual wasm32 test sources are
+present but their extra matrix execution remains outstanding, not passed. The
+producer's minimal test bootstrap is explicitly not a second production prelude.
+
 Catalogue preparation now supplies isolated real scratch-file/directory arguments
 for Io worker, resource and SDL RWops programs; glyph atlas requires the explicit
 `JAIC_TEST_FONT_PATH` environment variable naming a real file. Missing fonts remain

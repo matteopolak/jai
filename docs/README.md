@@ -452,3 +452,6 @@ Unsupported Natvis emission is explicitly diagnosed; it remains unimplemented.
 Catalogue prepared inputs now execute real file/resource/font cases. Native SDL
 ABI/runtime tests pass with source-built probes; interpreted WM initialization
 still fails and remains reported. OS-specific unavailable cases are not passes.
+
+Corrected compiler storage/immutability regressions pass58 core/module checks.
+The unsupported live-constant-alias implementation and history remain excluded.
