@@ -103,3 +103,9 @@ aggregate-storage mechanism and verify interpreter/native/WASM lifetime and alia
 behavior. Public value/type identity tests remain valid; no blanket test exclusion
 or passing full identity claim is made. Portable runtime adoption, native Windows
 CI, CPUID-adjacent architectural gaps and other documented compiler limits remain.
+
+Reviewed follow-up: core-syntax-and-types.md now explicitly confirms no canonical
+constant-array address/lifetime/mutation promise. Classify the retained equality
+assertion as an invalid compatibility oracle; use explicit mutable backing when
+retaining writable pointers. There is no pending permission to pool writable
+constant storage. Full suite/ownership follow-up: full-suite-triage.md.
