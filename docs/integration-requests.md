@@ -256,3 +256,18 @@ early and silently supply zero values. Compiler owner should fix the general
 dependency lifecycle and retain cyclic-value and self-address regressions, then
 rerun actual production UI strict lint. No public theme/layout or initializer is
 changed to evade this defect.
+
+## Windows managed thread remaining native alias/lifetime gap
+
+Source3084377 correctly exposes a real owned kernel handle for description APIs,
+but thread_main records its Jai result and returns Rust unit. Managed exit/wait
+hooks use scheduler state; unmanaged duplicates query the kernel. Nonzero exit
+codes and completion boundaries therefore require actual alias/native-entry
+regressions and coherent integration; do not invent native results or whitelist
+naming warnings. Existing parked-worker teardown is an unbounded OS-thread
+retention risk for a persistent interpreter/LSP. Proper long-term work is owned
+native entry/exit lifecycle and safe cooperative cancellation/join, including
+opaque blocking foreign-call limits, with explicit unsupported behavior where
+necessary. Closing through external native code must also preserve/validate
+ownership and handle-reuse identity; transferred raw handles cannot shadow an
+unrelated reused kernel object.
