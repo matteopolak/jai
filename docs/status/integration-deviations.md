@@ -841,3 +841,33 @@ complete. OS hardware/focus/hotplug, Linux/Windows execution, spatial numeric
 choices, one-worker throughput, per-device snapshot retention and package
 adoption limits remain as enumerated in producer audio-deviations.md. No fake
 audio/clipboard/font/native success substituted.
+
+
+Bindingsa476d25 audit/merge: FSEvents public context order is marshalled to a
+complete SDK Context (s64version theninfo andCcallbacks); SDK copies synchronously,
+native retain/release manage info. Public signatures/types unchanged. D3D canonical
+dependency imports replace wrong d3d_compiler direction; no compiler symbol/path
+bypass. rpmalloc has separate generated pinned native SDK records and reviewed
+private contextual Heap/Span records; default-profile wrappers call actual native
+alloc/realloc/free and copy full native statistics field-by-field into public
+layouts.14 procedures are partial across configurations, not80 complete APIs.
+Unsupported raw/heaps/callback/config/profiles still diagnose rather than silently
+using the default archive. Native global state across module instances remains a
+lifecycle/isolation gap; only default profile MacCPU execution reported by producer,
+not Windows/Linux. Pending callback crash repair is not in this stable checkpoint.
+
+Incoming native-bindings/sdl-layout fixture duplicates our relocated canonical
+stdlib/SDL/tests/sdl-layout.jai. Keep the canonical fixture: every new public/native
+field offset/size assertion is already covered there, with additional native
+alignment and guarded payload writes. Remove duplicate stale relative .work probe
+path; actualSDK event push/poll payload canaries from producer sdl.jai retained.
+Public48/8byte prefixes and complete private native sizes are distinct reviewed
+contracts. Scalar64bitclose normalization/factory identity remains. Historical
+invalid full-size oracle evidence stays; no undersized Ccall or public ABI change
+substituted. Actual combined native SDK rerun remains required.
+
+Producer status tail still lists older116unresolved/80rpmalloc, while new coverage
+ledger marks partial default wrappers; source inventory is not functionality
+certification. Strict target lint/configuration/native execution gaps remain.
+Private test placement must remain byte-identical inputs and not library repair;
+production-source stability/cleanup and bindings generator idempotence need rerun.

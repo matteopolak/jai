@@ -25,10 +25,10 @@ its bytes, checks a native scalar query and releases each object. Empty/corrupt
 inputs must fail without fabricated objects. Jai buffer size/offset assertions
 remain active. Both Windows source targets and native execution are registered.
 
-Current Jai checks stop at the unchanged general D3D12 forward-overlay
-diagnostic before validating this body. Windows runtime is unavailable here.
-This is authored forwarding plus SDK layout evidence, **not a source-verified
-or native-verified completed DXC wrapper**. `DXC_Compile` now has an independently
-source-checked SDK route; public/native verification remains required. The
-version-string helper remains unresolved. Next: producer forward-overlay semantics,
-actual Windows source/strict lint, then the real executable test.
+The refreshed safe producer fixes forward overlays. Corrected canonical D3D
+dependencies now let the complete public compile/reflection program pass both
+Windows CPU source checks, including invalid-input paths and lifetime code.
+Windows native runtime remains unavailable here, and target-aware strict lint
+remains pending. This is source/type/layout evidence, not native execution.
+The version-string helper remains unresolved. Current and historical failure
+evidence are distinguished in [D3D dependency review](d3d-source-dependencies.md).
