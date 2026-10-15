@@ -2,6 +2,8 @@
 
 Android host [ADB operations](portable-adb.md) now include app lifecycle status,
 force-stop and installation queries, with protocol tests and device gaps recorded.
+[JAVA_HOME discovery](portable-java-discovery.md) validates real launcher status
+and records its interpreter/native protocol coverage and Windows dependency.
 
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 

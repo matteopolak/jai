@@ -1,5 +1,14 @@
 # Portable stdlib progress
 
+Java host milestone: exact JAVA_ENV_NAME/find_java_bin_path_from_environment
+implemented, including copied environment value, argv-safe native launcher probe,
+real status/failure cleanup and Windows Unicode environment source backend.
+Thirty interpreter/native ARM64+x64 O0/O2 configurations plus Linux both-CPU
+checks and strict changed-code lint pass: target/android-java-final.log.
+No real JVM/SDK/device or native Windows verification claim. Test corrections
+(absolute fixture path due CLI cwd, interpreter argument separator) are separate
+from production code; see docs/portable-java-discovery.md. Missing rows160 ->158.
+
 Latest app-lifecycle milestone: stop_app/is_app_running/android_is_app_installed
 implemented via actual Process/ADB commands; missing row inventory163 ->160.
 All five interpreter/native ARM64+x64 O0/O2 modes, verbosity, Linux both-CPU

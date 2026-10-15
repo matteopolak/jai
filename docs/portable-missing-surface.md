@@ -91,7 +91,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `fh2 :: #bake_arguments formatInt(minimum_digits = 2, base = 16)` | All reviewed hosts |
 | `fh4 :: #bake_arguments formatInt(minimum_digits = 4, base = 16)` | All reviewed hosts |
 | `fh8 :: #bake_arguments formatInt(minimum_digits = 8, base = 16)` | All reviewed hosts |
-| `find_java_bin_path_from_environment :: () -> bool, bin_path: string, exe_path: string` | All reviewed hosts |
 | `for_expansion :: (apk: Android_Apk, body: Code, flags: For_Flags) #expand` | All reviewed hosts |
 | `generate_android_project :: (using config: Android_Project_Config, recreate_existing_files := true) -> bool` | All reviewed hosts |
 | `get_android_target_triple :: (cpu: CPU_Tag) -> triple: string, triple_with_sdk: string` | All reviewed hosts |
@@ -99,7 +98,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `get_ndk_libclang_paths :: () -> [] string` | All reviewed hosts |
 | `get_ndk_paths :: () -> NDK_Paths` | All reviewed hosts |
 | `gradle_install_apk :: (project_path: string, release := false) -> bool` | All reviewed hosts |
-| `JAVA_ENV_NAME :: "JAVA_HOME"` | All reviewed hosts |
 | `jdk_decrypt_private_key :: (encrypted_data: string, password: string) -> bool, string` | All reviewed hosts |
 | `jks_read :: (data: string, password: string) -> bool, certificate: string, encrypted_private_key_info: string` | All reviewed hosts |
 | `Kilobytes :: (x: int) -> int #expand` | All reviewed hosts |
@@ -219,7 +217,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 160 missing reviewed declaration/overload/nested-operation rows
+Total: 158 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

@@ -12,6 +12,7 @@ MODULES = [
       'Adb_Version_Info', 'Adb_Device', 'Adb_Compression_Algorithm', '__adb_path', 'adb_device_serial',
       'adb_be_verbose', 'adb', 'adb_version', 'adb_devices', 'is_adb_installed', 'adb_push', 'adb_pull',
       'adb_shell_mkdir', 'adb_shell_pidof', 'adb_uninstall', 'stop_app', 'is_app_running', 'android_is_app_installed',
+      'JAVA_ENV_NAME', 'find_java_bin_path_from_environment',
       'ASN1_Tag_Class', 'ASN1_Tag_Length_Value', 'ASN1_Universal_Type', 'ASN1_Tag', 'ASN1_KNOWN_OIDS',
       'asn1_read_tag', 'asn1_read_length', 'asn1_decode_integer', 'asn1_decode_object_identifier',
       'asn1_to_string', 'read_silly_alias', 'read', 'read_block'},

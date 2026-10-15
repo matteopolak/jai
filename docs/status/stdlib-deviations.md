@@ -1,5 +1,15 @@
 # Portable stdlib worker deviations
 
+JAVA_HOME discovery: require successful actual java -version execution before
+returning copied bin/executable paths. Environment lookup only reads explicitly
+authorized JAVA_HOME; no PATH/default SDK/credential scan. Fine success/storage/
+fallback policies need reviewer confirmation (portable-java-discovery.md).
+Windows Unicode environment source is implemented using official Kernel32 ABI;
+Windows Process integration and real JVM execution are not validated here.
+Thirty source-built launcher protocol cases are host process evidence, not Java
+or Android compatibility certification. Proper follow-up: real SDK/JVM Windows
+CI and reviewed fine policy; no fake JVM/native Android output or hidden bypass.
+
 This is the portable worker's current review record, not full release approval.
 The complete per-module completion inventory is in
 [the module ledger](../portable-stdlib-ledger.md). Unimplemented entries remain
