@@ -1,5 +1,30 @@
 # Foundations progress
 
+Next batch after 841b417: actual version-2 visualization backend replaces the
+old text snapshot, with real Shared_Memory_Channel packets, deduplication,
+alloc/free history, 500ms connection retry, 250ms update throttling, explicit
+frame mode, failed-reservation preservation and reader reconnection. Original
+interpreter/native O0/O2 tests validate wire sizes/counts/IDs and queue pressure.
+get_capabilities now implements the synchronized name-out ABI and preserves
+allocator name storage identity. Preamble native scoping/logger restoration,
+reentrancy/exclusions and real first-use indexed debugger initialization pass.
+One canonical #add_context flag module serves all Basic configurations.
+
+Latest verification: all 42 host cases pass all three modes; 33 WASI cases pass
+both optimization modes. Preamble's additional WASI case FAILS as required by
+the current compiler defect: BUILD_OS/BUILD_CPU alias the target, so cross-target
+early return never happens. Independent host-target-predicate also fails;
+see foundations-preamble-request.md. This is not counted as correct cross
+behavior. Real jaifmt CLI/owned check and strict lint pass. All six native target
+unused-code checks pass; the independent WASI File/POSIX.FILE failure remains.
+No failures/assertions were weakened. Module-qualified leak filters still
+diagnose missing source/module mapping. All ordinary owned declaration names
+are now present; these remaining behavior/dependency gaps are not completion.
+Pending Pool CAPS name-out source reproduces its producer assertion with null
+allocator_data. The native Preamble test also proves allocations performed
+inside its protected scope are not recursively registered. Native O0/O2 retests
+cover that addition and empty-string deduplication/cleanup in the real channel.
+
 Current continuation after cc089d7: newest Basic behavioral sync is implemented
 for sequence quoting, hexadecimal byte/newline output, copying consumption,
 empty enum ranges/zero field miss, empty logging suppression, scalar predicate

@@ -4,6 +4,19 @@ This work owns Basic builder/formatting, String utilities, Hash scalars and
 File_Utilities. Inherited spec, argument/runtime and Command_Line edits are
 retained in the worktree and excluded from foundations commits.
 
+Current continuation includes the real memory-visualization protocol/channel,
+CAPS name-out ABI and native Preamble. The old text snapshot is removed. All
+42 host cases pass interpreter/native O0/O2; 33 supported WASI cases pass both
+levels, then the additional Preamble cross test FAILS on supplied host/target
+constants (request/repro retained). Current real jaifmt CLI/check and strict
+lint pass. No native/cross completion is claimed for the still-failing WASI
+Preamble or unused File dependency. Native channel tests exercise real packets,
+timing, queue pressure/retry, free-before-retry, empty strings and reconnect.
+The final six native unused-code scopes pass. Producer Pool CAPS null-data
+assertion has an original public-API reproducer, kept outside positive runtime
+counts. Both compiler/producer failures remain strict blockers rather than
+weakened assertions or substituted production code.
+
 The next synchronized behavioral batch is implemented: exact helper output/
 copying/empty cases, scalar #modify guards and ownership helpers, temporary
 stack strings/low-level output, and real leak types/records/reports/scanning/

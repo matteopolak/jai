@@ -4,6 +4,44 @@ Review scope: owned Basic builder/formatter, String utilities, scalar Hash,
 File_Utilities, focused tests and unchanged repository jaifmt integration.
 This is a deviations inventory, not a claim of completed production integration.
 
+- **Preamble cross predicate remains broken in the supplied compiler** — native
+  scoped behavior is implemented/tested, but OS/BUILD_OS and CPU/BUILD_CPU are
+  currently identical target constants. The provisional comparison therefore
+  cannot implement the reviewed cross return; the WASI behavior test and an
+  independent compile-time predicate probe both FAIL. No cross success is
+  claimed and no assertion/flag was ignored in testing. General host/target
+  support belongs to the compiler producer; see the exact request/reproducer.
+- **Real visualization backend** — the previous text-only transport is removed.
+  Production macOS/Linux uses the NEW peer shared-memory producer and reviewed
+  version-2 record layouts, with real timing, reconnect/reset, acknowledgements,
+  retained unsent packets and owned event traces. Windows/WASI lack a supported
+  producer channel and log explicit first connection failure; no fake channel
+  success or env import is used. Native-only channel/timing cases are excluded
+  on those targets for this exact missing dependency; disabled hooks and the
+  unsupported diagnostic paths still run in production WASI tests.
+- **Visualization metadata lifetime/cost** — raw default-allocator metadata
+  prevents recursive accounting, and strings/traces are interned until fini.
+  Pending alloc/free events own trace copies until a usage packet commits;
+  queue pressure can grow this diagnostic memory. Disconnect resets that
+  session's pending history and a reconnect publishes current live state after
+  the version handshake. Event acknowledgements subtract only sent events so
+  concurrent later allocations survive. Future trace-sharing/coalescing can
+  reduce cost without weakening retention. Native tests force queue failure,
+  free before retry, reconnect, deduplication and empty-string cleanup.
+- **Indexed debugger service** — allocation/heap hash indexes now back ordinary
+  lookup and the doubly linked list supplies snapshots/bulk heap cleanup. This
+  replaces the former linear ordinary registry lookup. Metadata remains raw
+  default-allocator memory; index capacity persists for the module/process
+  lifetime as diagnostic service state. Preamble eagerly initializes this real
+  service, which is also initialized lazily by tracking. One shared context
+  extension and scoped default logger prevent recursive accounting/lock inversion.
+- **CAPS provider coverage** — the owned getter uses exact name-out ABI and
+  the temporary allocator fills a truthful static `Basic temporary storage`
+  name. NEW peer runtime/pool allocators still need that name-out contract
+  audited; Basic does not fabricate names on their behalf. The getter regression
+  proves zero sizes/null data and borrowed name identity with a CAPS-only fixture;
+  this is not claimed as a complete allocator implementation.
+
 Current follow-up supersedes the historical helper-policy entries below:
 new reviewed behavior now defines sequence quoting, hex bytes/newlines, copying
 consumption, empty enums, field misses, scalar guards/ownership, temporary stack

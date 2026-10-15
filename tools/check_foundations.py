@@ -14,7 +14,9 @@ CASES = ("builder-format", "integer-format", "string-patterns", "hash-floats", "
          "memory-debugger-interface", "memory-debugger-default", "filesystem-invalid-paths",
          "basic-logging", "basic-logging-output", "basic-reflection",
          "basic-helpers", "basic-print-bytes", "basic-stack-traces", "basic-stack-output",
-         "basic-scalars-ownership", "basic-leak-reports", "basic-leak-graphs")
+         "basic-scalars-ownership", "basic-leak-reports", "basic-leak-graphs",
+         "basic-visualization-disabled", "basic-visualization-channel", "basic-visualization-timing",
+         "basic-capabilities", "basic-preamble")
 
 
 def expected_output(name):
@@ -34,7 +36,10 @@ def owned_sources():
     paths.extend(ROOT / f"stdlib/internal/basic/{name}.jai"
                  for name in ("builder", "scalar", "integer128", "parsing", "numeric-conversion", "temporary", "allocation", "arrays", "memory-debugger", "logging", "reflection", "stream-helpers", "stack-traces", "module"))
     paths.append(ROOT / "stdlib/internal/basic-interface/module.jai")
+    paths.append(ROOT / "stdlib/internal/basic-context/module.jai")
+    paths.append(ROOT / "stdlib/internal/basic/preamble.jai")
     paths.extend((ROOT / "stdlib/internal/basic").glob("leak-*.jai"))
+    paths.extend((ROOT / "stdlib/internal/basic").glob("visualization*.jai"))
     paths.append(ROOT / "stdlib/internal/native-path/module.jai")
     paths.append(ROOT / "stdlib/internal/basic/filesystem.jai")
     paths.extend((ROOT / "stdlib/internal/string").glob("*.jai"))
@@ -48,6 +53,8 @@ def owned_sources():
     paths.append(ROOT / "tests/portable-stdlib/negative/leak-unknown-allocation.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/context-overload-probe.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/basic-unused-platform-dependency.jai")
+    paths.append(ROOT / "tests/portable-stdlib/pending/host-target-predicate.jai")
+    paths.append(ROOT / "tests/portable-stdlib/pending/pool-capabilities-name.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/alias-signature-probe.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/alias-signature-facade/module.jai")
     paths.append(ROOT / "tests/portable-stdlib/pending/alias-signature-helper/module.jai")
@@ -174,7 +181,7 @@ def main():
         print(f"passed interpreter/native O0/O2: {name}", flush=True)
     if args.wasm:
         for name in CASES:
-            if name in ("basic-filesystem", "foundation-filesystem", "file-visitation", "basic-sleep", "basic-output", "filesystem-invalid-paths"):
+            if name in ("basic-filesystem", "foundation-filesystem", "file-visitation", "basic-sleep", "basic-output", "filesystem-invalid-paths", "basic-visualization-channel", "basic-visualization-timing"):
                 continue
             source = ROOT / f"tests/portable-stdlib/{name}.jai"
             for level in ("O0", "O2"):
@@ -198,6 +205,8 @@ def main():
                     if name in ("basic-filesystem", "foundation-filesystem", "file-visitation", "basic-sleep", "filesystem-invalid-paths") and os_name in ("windows", "wasm"):
                         continue
                     if name == "basic-output" and os_name == "wasm":
+                        continue
+                    if name in ("basic-visualization-channel", "basic-visualization-timing") and os_name in ("windows", "wasm"):
                         continue
                     target = ["-target", "wasm64-unknown-wasi"] if os_name == "wasm" else ["-os", os_name, "-cpu", cpu]
                     run([compiler, "-check", "-no_dce", *target,
