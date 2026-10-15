@@ -1,5 +1,11 @@
 # Developer documentation
 
+- [Extensions Io/Args dependency migration](extensions/dependency-migration.md):
+  allocator ownership, fiber scratch lifecycle and actual WASI termination;
+  [measured status and remaining dependency handoff](status/extensions-dependencies.md).
+- [Io_Uring canonical atomics](extensions/io-uring.md#canonical-atomics-and-protocol-verification):
+  preserved ring ownership, stronger ordering cost, host protocol tests and Linux evidence limits.
+
 - Sound_Player: [plan](status/audio-plan.md), [progress](status/audio-progress.md),
   [deviations](status/audio-deviations.md), [questions](specs/questions/sound-player.md),
   [playback and independent entity phases](features/sound-player.md)
