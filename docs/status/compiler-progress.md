@@ -1,5 +1,13 @@
 # Compiler progress
 
+2026-10-15 overload audit: concrete generic instances cached while matching no
+longer become independent unreferenced declaration audit roots. Actual selected
+instances remain queued/checked, including later reuse of a previously rejected
+instance. Four original positive/negative audit regressions pass. Staged producer
+and Http reductions pass strict lint; the generic reduction executes interpreter
+and native ARM64 O0/O2. Full Http client context remains independently blocked on
+atomic_compare_exchange. See compiler/rejected-overload-audit.md for scope/evidence.
+
 2026-10-15 decimal review follow-up: float-literal-precision and rules-numbers
 pass interpreter and actual ARM64 O0/O2 with corrected reviewed metadata oracles.
 Implicit required-float64 narrowing remains rejected in initialization/arithmetic

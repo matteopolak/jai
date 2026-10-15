@@ -1,5 +1,15 @@
 # Compiler deviations and implementation gaps
 
+## Generic instance audit provenance
+
+Binding scopes distinguish concrete generic instances from source declarations.
+NotNeeded instances are not audit roots; selected instances still queue/check
+normally, caches remain intact and unreferenced concrete declarations still fail
+on errors. Four original lint regressions and actual generic-producer Mac runtime
+checks pass. This does not promise checking all uninstantiated generic bodies.
+Full Http context is not green: it now reports the separate missing
+atomic_compare_exchange dependency. No Extensions source was modified.
+
 ## Reviewed decimal fixture correction
 
 No numeric implementation or implicit-conversion rule changed. The reviewed

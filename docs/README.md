@@ -2,6 +2,8 @@
 
 - [Focused Mac compiler catalogue classifications and repairs](compiler/mac-catalogue-repairs.md),
   including reviewed decimal inference and narrowing rejection regressions.
+- [Rejected generic overload lint audit roots](compiler/rejected-overload-audit.md):
+  cached instance identity, selected-body diagnostics and independent regressions.
 
 - [Extensions Io/Args dependency migration](extensions/dependency-migration.md):
   allocator ownership, fiber scratch lifecycle and actual WASI termination;
