@@ -550,3 +550,34 @@ facadespresent,11missing. Presence does not certify bodies/API completion; all
 remain unverified as whole modules. Portable alone has253missingpublicrows.
 Original corpus opaque input and Focus remain coordinator-owned; no fetch of
 vendored Jai bodies or access to original/quarantined histories. Release HOLD.
+
+## Target/context lint adoption
+
+Compiler4de36d6 merged as021c00f. Source/target/runtimeOptions clone across real
+contexts and workspaces; strict imports/required bindings/failed bodies retained.
+Existing --add and checked-files support remains; new structured --manifest is
+the coverage oracle. Actual38producer jailint tests plus retained root testsPASS.
+No staged compiler or repaired library is used by the integrated tools.
+
+tools/check_cleanroom_quality.py --contexts tools/cleanroom-lint-contexts.json
+uses49 actual reviewed positive programs and seven source targets. Explicit
+MSVC and WASI triples preserve ABI selection. Four coverage protocol unitsPASS.
+Host pilot command retains1137ownedformat/checkPASS and207clean-complete covered
+files;930uncovered/fourcontextfailures cause a nonzero gate. It is incomplete,
+not certified lint coverage or a replacement green CI result. Context JSON
+records pending negative/fault cases, which remain precise contract-runner
+checks and cannot be called successful body lint. Old uncontextualized mode is
+explicitly labeled diagnostic isolation, not target/context completeness.
+Expand real producer/configuration/private-unit contexts before claiming full
+coverage. No global rule suppression, source patching or artificial defaults.
+
+Source build after latest merged headsPASSallthreeRusttools and unchangedjaifmt;
+workspaceclippy warnings deniedPASS. Real SDLnative verifier againzero failures.
+macOS FSEvents private ABI verifier nowzero failures after normal system-library
+lookup and legitimate temporary input placement/restoration. ScopedrpmallocSDK
+build includes both separately prefixed statistics profiles, actualcallbackSDK
+dependency closure and consistent flags. Public verifier retains six genuine
+missing-name failures; successful nativephase counts remain separate.
+Developer tools48effectfixtures interpreter/nativeO0/O2 and C/C++consumersPASS;
+1176SDKlayout/enumcomparisons/360symbolresolutions are separate evidence, with
+symbol lookup explicitly not invocation. NativeWindows/alltooling scope incomplete.

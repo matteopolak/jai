@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+from cleanroom_lint_contexts import TARGETS, checked_coverage, resolve_contexts
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -20,6 +21,7 @@ def main():
     parser.add_argument("--baseline", required=True, help="permitted independent baseline OID")
     parser.add_argument("--format", action="store_true", help="format before checking")
     parser.add_argument("--report", type=Path, required=True)
+    parser.add_argument("--contexts", type=Path, help="real enclosing programs and source-check targets; no library overlays")
     args = parser.parse_args()
     report = args.report.resolve()
     report.parent.mkdir(parents=True, exist_ok=True)
@@ -54,6 +56,7 @@ def main():
                                  "exit": status, "incomplete": incomplete, "passed": passed})
         report.write_text(json.dumps(result, indent=2) + "\n")
         print(f'{"PASS" if passed else "FAIL"} {label}', flush=True)
+        return status
 
     if args.format:
         run("format", [formatter, "--config", ROOT / "jaifmt.toml", *files])
@@ -66,6 +69,39 @@ def main():
     # Listing every owned file lets jailint associate #load fragments with their
     # real public module. Directory runs below remain useful diagnostic isolation,
     # but cannot alone establish coverage for fragments loaded across directories.
+    if args.contexts:
+        result["context_manifest"] = str(args.contexts.resolve())
+        result["context_manifest_sha256"] = hashlib.sha256(args.contexts.read_bytes()).hexdigest()
+        jobs = resolve_contexts(json.loads(args.contexts.read_text()), ROOT)
+        covered = set()
+        result["lint_contexts"] = []
+        for job in jobs:
+            label = "context-" + job["id"]
+            manifest = logs / (label + ".json")
+            status = run(label, [linter, "-v", "-D", "warnings", "--config", ROOT / "jailint.toml",
+                                 *TARGETS[job["target"]], "--context", job["source"],
+                                 "--manifest", manifest, *job["paths"]])
+            if not manifest.is_file():
+                result["lint_contexts"].append({"id": job["id"], "clean": False,
+                                                "error": "linter did not write its required coverage manifest"})
+                continue
+            coverage = checked_coverage(json.loads(manifest.read_text()), status)
+            result["lint_contexts"].append({"id": job["id"], "target": job["target"],
+                                           "manifest": str(manifest), **coverage})
+            covered.update(coverage["visited_complete"])
+        result["uncovered_owned_files"] = [str(p.relative_to(ROOT)) for p in files
+                                           if str(p.resolve()) not in covered]
+        result["source_sha256"] = fingerprints()
+        result["changed_during_checks"] = [name for name in checked_sources
+                                           if checked_sources[name] != result["source_sha256"][name]]
+        result["source_stable"] = not result["changed_during_checks"]
+        report.write_text(json.dumps(result, indent=2) + "\n")
+        failed = (sum(not c["passed"] for c in result["checks"])
+                  + sum(not c["clean"] for c in result["lint_contexts"])
+                  + len(result["uncovered_owned_files"]) + int(not result["source_stable"]))
+        print(f'{len(files)} owned files; {len(result["uncovered_owned_files"])} without clean complete context; {failed} failures; report: {report}')
+        return int(failed != 0)
+    result["context_mode"] = "legacy diagnostic isolation; target/context completeness not established"
     run("lint-combined", [linter, "-v", "-D", "warnings", "--config", ROOT / "jailint.toml", *files])
     groups = {}
     for file in files:
