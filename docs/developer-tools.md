@@ -15,3 +15,9 @@ The module is a supported subset. See deviations before using complex ABI suppor
 ## Performance_Report
 
 `+Performance_Report` requests compiler timing, bytecode counters, run-directive records and polymorph records. It buffers a textual summary, sorts run records by elapsed time, and writes on plugin finish. Counters and durations come from Compiler messages. A missing message produces a compiler warning; missing per-category flags are explicitly identified in the summary. Shutdown frees owned state. There are no public configuration options in the reviewed contract.
+
+## Staged C binding parser
+
+`tools/check_developer_bindings.py` builds an independently authored private C generator against the installed official libclang C API. It parses original C headers, emits real Jai bindings with layout assertions, compiles the original native implementation, and exercises generated bindings in interpreter/native O0/O2. Malformed headers and unsupported constructs fail with source diagnostics while preserving existing output. The two-target test verifies LP64/LLP64 C `long` differences and checks generated declarations under matching Jai targets.
+
+The [official libclang C API documentation](https://clang.llvm.org/doxygen/group__CINDEX.html) and installed public headers are the only native parser compatibility inputs. The [SDK evidence](native/developer-tools-clang-evidence.json) identifies those headers. This private tool stages real parsing/generation work while the public declaration model is refined; it does not expose replacement public compatibility names. Public Bindings_Generator remains incomplete. See deviations for C11 subset, version, memory, performance and platform limits.

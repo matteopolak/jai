@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import check_developer_bindings
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
@@ -19,6 +20,7 @@ def run(command, *, output=None, error=""):
 
 
 def main():
+    check_developer_bindings.main()
     cases = ["c-header", "c-header-roundtrip", "c-header-reject"]
     run([JAIC, "tests/developer-tools/c-header.jai", "-interp"], output="ok\n")
     run(["clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-I", "target",
@@ -52,7 +54,7 @@ def main():
              *sorted((ROOT / "stdlib/internal/developer-tools").glob("*.jai")),
              *sorted((ROOT / "tests/developer-tools").glob("*.jai"))]
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *paths])
-    run([ROOT / "target/debug/jailint", "-D", "warnings", *paths])
+    run([ROOT / "target/debug/jailint", "-D", "warnings", "-I", ROOT / "target", *paths])
     for os_name, cpu in [("linux", "x64"), ("windows", "x64"), ("wasm", "x64")]:
         run([JAIC, "tests/developer-tools/c-header.jai", "-check", "-os", os_name, "-cpu", cpu])
     print("Header round trips/rejection and real performance plugin reports passed; interpreter/native O0/O2, scoped formatting/lint and three target checks")
