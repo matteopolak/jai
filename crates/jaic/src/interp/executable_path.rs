@@ -216,20 +216,20 @@ mod tests {
 
     #[test]
     fn explicit_program_arguments_are_not_replaced_by_the_executable_path() {
-        let mut interp = Interp::new(Box::new(NativeHost));
-        interp.run_executable = Some(r"C:\probe.exe".into());
-        interp.run_arguments = vec![
-            "provided.jai".into(),
-            "雪😀".into(),
-            "".into(),
-            "quote\" slash\\".into(),
-        ];
-        let expected = windows_command_line(&interp.run_arguments);
-        let address = interp
-            .executable_path_foreign("GetCommandLineW", &[])
-            .unwrap()
-            .unwrap()[0];
-        assert_eq!(wide_text(&interp, address), expected);
+        for args in [
+            vec!["provided.jai", "雪😀", "", "quote\" slash\\"],
+            vec!["", "explicit empty argv zero"],
+        ] {
+            let mut interp = Interp::new(Box::new(NativeHost));
+            interp.run_executable = Some(r"C:\probe.exe".into());
+            interp.run_arguments = args.into_iter().map(String::from).collect();
+            let expected = windows_command_line(&interp.run_arguments);
+            let address = interp
+                .executable_path_foreign("GetCommandLineW", &[])
+                .unwrap()
+                .unwrap()[0];
+            assert_eq!(wide_text(&interp, address), expected);
+        }
     }
 
     fn line(args: &[&str]) -> String {
