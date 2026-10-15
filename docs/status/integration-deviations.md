@@ -1,5 +1,20 @@
 # Independent integration deviations audit
 
+## Production strict-lint field type correction
+
+The merged producer IDE layout ordering fix was insufficient for
+`tests/platform-io/layout-contract.jai`: actual jailint and a new production-library
+Rust regression retained a circular INFO_SIZE dependency. Bare/type-qualified
+`type_of(field)` was requesting the whole containing record layout. General field
+type resolution now evaluates the declaration's annotation or inferred initializer
+without requesting later field offsets, sharing the same type inference routine
+with actual layout. Selected static branches and modified-struct declarations keep
+their original scope. Inherited/generated members retain the existing resolver.
+Genuine recursive sizes still reject. The original source/assertions remain intact;
+155 units, 50 module, three layout and four IDE regressions pass. Temporary general
+cycle tracing was removed before commit. Actual strict lint of the original layout
+fixture now passes. No diagnostic, visibility or rule was suppressed.
+
 Role: replacement integration worker. This report is open; merged snapshots do not imply completed stdlib support. Producer reports were read for compiler, portable stdlib, foundations, bindings, numerics, window/render, LSP and SDL3. Direct code inspection and combined-tree verification are in progress.
 
 ## Sixth approved refresh audit
