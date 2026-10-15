@@ -313,3 +313,19 @@ must still run after this targeted diagnostic, without test exclusions.
 The ARM64 job builds the pinned official Mesa/LLVM sources with the helper's pinned Python build tools, then explicitly deploys only ARM64 driver DLLs to the probe and public rendering tests. Source digest and CPU checks remain mandatory. The job budget is 120 minutes for this source build; successful configuration or compilation is not counted as runtime acceptance. The existing x64 Mesa deployment remains separate.
 
 The ARM64 source build initializes the installed Visual Studio C++ developer shell for an ARM64 target before invoking CMake/Meson, and uses a dedicated Python virtual environment so pinned build dependencies do not alter runner tools. See [Microsoft developer-shell architecture configuration](https://learn.microsoft.com/en-us/dotnet/framework/tools/developer-command-prompt-for-vs). Native output identity checks remain mandatory.
+
+
+## Native LLVM cache in CI
+
+The ARM64 Windows job restores only `target/window-mesa-cache`, using the pinned
+GitHub cache action. The build helper keys installs by source, tool and SDK
+fingerprints, checks every installed file against its completion receipt, and
+checks the native LLVM identity before reuse. Mesa driver outputs are rebuilt.
+
+A completed new LLVM install is saved even if a later Mesa setup or runtime check
+fails. Partial installs have no completion receipt and are not saved. Cache hits
+are not uploaded again. The outer key includes the helper hash and run ID; the
+helper's configuration and integrity checks decide whether restored data is usable.
+Change the cache steps in `windows-native.yml` with the helper's cache protocol;
+keep its tests and the native WGL execution gate. This depends on GitHub Actions
+cache storage and the pinned compiler/source SDK inputs documented above.
