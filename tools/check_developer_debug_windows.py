@@ -10,11 +10,13 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {"developer_debug_" + name for name in ["abort", "backtrace", "breakpoint", "debugger_present",
-                                                 "free_symbols", "output", "readable", "symbols", "break_once"]}
+                                                 "free_symbols", "output", "readable", "symbols", "break_once",
+                                                 "initialize", "enable_handlers", "disable_handlers"]}
 
 
 def run(command):
-    result = subprocess.run([str(x) for x in command], cwd=ROOT, text=True, capture_output=True, timeout=60)
+    result = subprocess.run([str(x) for x in command], cwd=ROOT, text=True, capture_output=True, timeout=60,
+                            env=dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib")))
     if result.returncode or result.stderr:
         raise RuntimeError(f"Windows Debug build/check failed: {result.returncode}\n{result.stderr}")
     return result.stdout
@@ -42,9 +44,25 @@ def main():
     run([llvm / "bin/clang", "--target=aarch64-w64-windows-gnu",
          f"--sysroot={sdk / 'x86_64-w64-mingw32'}", "-std=c11", "-O2", "-Wall", "-Wextra", "-Werror",
          "-c", source, "-o", ROOT / "target/developer-tools-debug-windows-arm64.obj"])
+    build = Path(os.environ.get("CARGO_TARGET_DIR", ROOT / "target"))
+    # Check both public signatures and a future native behavior fixture. These
+    # are deliberately not counted as Windows runtime evidence.
+    for cpu in ["x64", "arm64"]:
+        for name in ["debug-windows-contract", "debug-windows-lifecycle"]:
+            run([build / "debug/jaic", ROOT / f"tests/developer-tools/{name}.jai",
+                 "-check", "-os", "windows", "-cpu", cpu])
+        run([build / "debug/jailint", "--os", "windows", "--cpu", cpu, "-D", "warnings",
+             ROOT / "stdlib/Debug/module.jai", ROOT / "tests/developer-tools/debug-windows-contract.jai",
+             ROOT / "tests/developer-tools/debug-windows-lifecycle.jai"])
+    run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check",
+         ROOT / "stdlib/Debug/module.jai", ROOT / "stdlib/internal/developer-tools/debug-lifecycle.jai",
+         ROOT / "tests/developer-tools/debug-windows-contract.jai",
+         ROOT / "tests/developer-tools/debug-windows-lifecycle.jai"])
     headers = [sdk / "x86_64-w64-mingw32/include" / name for name in ["windows.h", "dbghelp.h"]]
     metadata = {"coverage": "Windows x64 SDK DLL/executable cross-build/link/export inspection and arm64 object compilation; no Windows execution",
                 "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+                "once_header_sha256": hashlib.sha256(source.with_name("once.h").read_bytes()).hexdigest(),
+                "crash_state_header_sha256": hashlib.sha256(source.with_name("crash-state.h").read_bytes()).hexdigest(),
                 "fixture_sha256": hashlib.sha256(fixture.read_bytes()).hexdigest(),
                 "sdk_header_sha256": {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in headers},
                 "gcc_version": run([gcc, "--version"]).splitlines()[0],

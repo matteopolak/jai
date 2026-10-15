@@ -1,11 +1,11 @@
 {
   "module": "Debug",
-  "timestamp": "2026-10-15T15:52:53.815582+00:00",
-  "head": "530aee67528ec1958e12c572e66360e9c861436a",
+  "timestamp": "2026-10-15T16:08:21.897725+00:00",
+  "head": "b6d52ef6714bcf5191708a80fbc7b66e3b71bc63",
   "counts": {
     "complete": 2,
-    "partial": 19,
-    "missing": 10
+    "partial": 20,
+    "missing": 9
   },
   "complete": [
     "is_debugger_present",
@@ -30,7 +30,8 @@
     "output",
     "print_assert",
     "set_report_mode",
-    "trace_assert"
+    "trace_assert",
+    "os_logger"
   ],
   "missing": [
     "attach_to_debugger",
@@ -39,28 +40,31 @@
     "init_crash_handler_thread",
     "interactive_assert",
     "os_attach_to_debugger",
-    "os_logger",
     "os_show_assert_dialog",
     "set_minidump_state",
     "write_minidump"
   ],
   "draft": [
-    "break_once: verified Mac interpreter/native O0/O2 actual SDK traps, filename ownership, format/strict lint; ready for commit"
+    "Windows lifecycle/init/logger: SDK x64 DLL/executable O0/O2 and arm64 object compilation; public target checks, format/strict lint; native Windows execution pending",
+    "Native context snapshot lifecycle fix on both platforms: original Mac SDK concurrency/ownership/fatal callback native O0/O2",
+    "Canonical public ignored_asserts storage: public Mac interpreter/native O0/O2"
   ],
   "committed_prior_scope": "Debug_Info complete at 530aee67; preserved",
   "classification": "All target variants required for complete; partial includes implemented hosts with outstanding platform execution evidence.",
   "verification_gaps": [
-    "Windows native execution unavailable on Mac; x64 SDK DLL/executable/export and arm64 object checks pass",
-    "Linux native execution pending",
-    "Graphics configuration, attachment launch, unsupported-target minidumps and Windows crash-thread contracts await precise answers"
+    "Windows native execution unavailable on Mac; original SDK/native Jai fixtures ready",
+    "Linux native execution pending; shared POSIX source is exercised only on Mac",
+    "Asynchronous foreign-thread/fatal callbacks tested native O0/O2, not interpreter",
+    "Graphics configuration is unresolved; set_report_mode storage cannot yet be exercised through interactive_assert",
+    "Android target rejected by compiler CLI; reviewed false-result detection branch is source-defined only"
   ],
   "batches": [
     {
       "names": [
         "break_once"
       ],
-      "effort": "small",
-      "dependency": "none; draft implementation present"
+      "effort": "completed",
+      "dependency": "committed b6d52ef6; Windows/Linux native execution outstanding"
     },
     {
       "names": [
@@ -71,24 +75,55 @@
         "disable_signal_handler",
         "os_logger"
       ],
-      "effort": "medium",
-      "dependency": "Windows SDK available; native Windows execution external"
+      "effort": "implementation and available checks completed; ready for commit",
+      "dependency": "Windows/Linux native execution external"
+    },
+    {
+      "names": [
+        "interactive_assert",
+        "os_show_assert_dialog"
+      ],
+      "effort": "medium after exact parameter/dependency contract",
+      "dependency": "question1; attachment question2 for interactive Debug response"
     },
     {
       "names": [
         "attach_to_debugger",
-        "break_assert",
-        "get_written_minidump_filename",
-        "init_crash_handler_thread",
-        "interactive_assert",
         "os_attach_to_debugger",
-        "os_logger",
-        "os_show_assert_dialog",
-        "set_minidump_state",
-        "write_minidump"
+        "break_assert"
       ],
-      "effort": "large",
-      "dependency": "Debugger launch and USE_GRAPHICS configuration contract; minidump unsupported-target policy"
+      "effort": "medium after reviewed launcher contract",
+      "dependency": "question2"
+    },
+    {
+      "names": [
+        "get_written_minidump_filename",
+        "set_minidump_state",
+        "write_minidump",
+        "init_crash_handler_thread"
+      ],
+      "effort": "large; requires real target execution",
+      "dependency": "questions3/4; Unix unsupported-target behavior and Windows thread/path/state ownership"
     }
+  ],
+  "committed": {
+    "break_once": "b6d52ef6: actual SDK Mac traced/untraced interpreter/native O0/O2, ownership, format/strict lint"
+  },
+  "remaining_dependencies": {
+    "attach_to_debugger": "Question2: real launch/selection/completion/failure contract",
+    "os_attach_to_debugger": "Question2: Unix and Windows underlying launcher contract",
+    "break_assert": "Resolved print/Boolean contract; real attachment dependency question2",
+    "interactive_assert": "Question1: exact USE_GRAPHICS module parameter shape; Debug response also needs attachment question2",
+    "os_show_assert_dialog": "Question1: exact graphics availability/configuration and canonical dependency",
+    "get_written_minidump_filename": "Question3: successful/failed attempt state, ownership and unavailable targets",
+    "set_minidump_state": "Question3: automatic versus explicit dump effects, state scope and unavailable targets",
+    "write_minidump": "Question3: real path/state/ownership and unavailable Unix target contract; crash-time thread dependency question4",
+    "init_crash_handler_thread": "Question4: observable initialization/lifecycle with CRASH_HANDLER_USE_SEPARATE_THREAD false"
+  },
+  "additional_checks": [
+    "Linux x64/arm64 public lifecycle type checks",
+    "Windows x64/arm64 public ignored_asserts canonical table checks",
+    "WASM debugger-detection type check",
+    "Full20-fixture Debug_Info SDK/public interpreter/native O0/O2 regression runner passed; prior code unchanged"
   ]
 }

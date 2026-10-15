@@ -434,30 +434,19 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Debug
 
-20 function names have pending declarations; 0 native function names still lack invocation fixtures.
+9 function names have missing declarations. The other22 assigned names have implementations;20 retain platform/configuration verification gaps, and2 preserve the coordinator-accepted complete classification. Original Mac SDK public breakpoint/lifecycle/ownership/table tests run interpreter/native O0/O2 where appropriate. Windows lifecycle/init/logger, symbols and memory/output helpers cross-build against the SDK for x64/arm64; native Windows/Linux execution remains pending. See [runtime policies](../debug-public-runtime.md), [assigned inventory](implementation-remaining.json) and [exact dependency questions](../specs/questions/debug-impl.md). No compiler relaxation or duplicate Context field was added.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
-| `attach_to_debugger` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `break_assert` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `break_once` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `disable_signal_handler` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
-| `enable_signal_handler` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
-| `get_written_minidump_filename` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `init` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
-| `init_crash_handler_thread` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `interactive_assert` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `no_assert` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
-| `os_attach_to_debugger` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `os_disable_signal_handler` | 2 | 2 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
-| `os_enable_signal_handler` | 2 | 2 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
-| `os_logger` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `os_show_assert_dialog` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `print_assert` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
-| `set_minidump_state` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `set_report_mode` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
-| `trace_assert` | 1 | 1 | Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions. |
-| `write_minidump` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+| `attach_to_debugger` | 1 | 1 | Real launch policy: debug-impl question2. |
+| `break_assert` | 1 | 1 | Resolved behavior depends on real attachment: question2. |
+| `get_written_minidump_filename` | 1 | 1 | Filename state/ownership and unavailable-target behavior: question3. |
+| `init_crash_handler_thread` | 1 | 1 | Real initialization/lifecycle with separate-thread constant false: question4. |
+| `interactive_assert` | 1 | 1 | Exact USE_GRAPHICS parameter shape and attachment dependency: questions1/2. |
+| `os_attach_to_debugger` | 2 | 2 | Real Unix/Windows launch/selection/failure policy: question2. |
+| `os_show_assert_dialog` | 2 | 2 | Exact graphics declaration availability and canonical dependency: question1. |
+| `set_minidump_state` | 1 | 1 | Automatic/explicit dump effects and unavailable targets: question3. |
+| `write_minidump` | 2 | 2 | Real dump path/state/ownership and crash-thread dependency: questions3/4. |
 
 ## Debug_Info
 
