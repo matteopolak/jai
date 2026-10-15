@@ -73,8 +73,9 @@ Its unit suite runs 164 current compiler tests. The earlier shared-target run of
 146 was the older cached unit artifact and is explicitly excluded from current
 candidate verification; no failure evidence was removed.
 
-Owned implementation and verification are complete; runner/status handoff is
-being committed. Next: coordinator integrates both fix commits and reruns
+Owned implementation and verification are complete. Runner/status handoff is
+committed as `379d3fb`; implementation commits are `cf7dd80` and `5214e9c`.
+Next: coordinator integrates both fix commits and reruns
 `docs/tools/lsp-basic-resolution-verification.md` against
 the final merged production source **without** a staged IDE patch. The user's
 larger project/editor example remains unavailable; intermittent exit failure was
