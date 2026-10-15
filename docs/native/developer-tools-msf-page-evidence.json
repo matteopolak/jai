@@ -1,0 +1,22 @@
+{
+  "format": "https://www.llvm.org/docs/PDB/MsfFile.html",
+  "scope": "original native PDB active FPM SDK byte oracles; host public-map operations, not target execution or public parser initialization",
+  "fixtures": [
+    {
+      "architecture": "x64",
+      "active_page": 2,
+      "pdb_sha256": "c664ed34d29f76d641e1b9a9955f70b88ed99dd9522b4f333036ad93cb000e2d",
+      "fpm_sha256": "ce8f21e2ef4916fd3f4b5e11f6108ee52434ffc0576a9b2e0acfe48249f73be2",
+      "free_bits": 32750,
+      "bits": 32768
+    },
+    {
+      "architecture": "arm64",
+      "active_page": 2,
+      "pdb_sha256": "413f777dfcaa8590c13a093069067200d95e13692d63043f1e1042019c4820f0",
+      "fpm_sha256": "ce8f21e2ef4916fd3f4b5e11f6108ee52434ffc0576a9b2e0acfe48249f73be2",
+      "free_bits": 32750,
+      "bits": 32768
+    }
+  ]
+}

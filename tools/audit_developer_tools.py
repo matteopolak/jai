@@ -54,9 +54,24 @@ def remaining_matrix(inventory):
                     reason = "Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2"
                 if module == "Debug_Info" and name == "get_type":
                     reason = "CodeView overloads pending; canonical DWARF Compilation_Unit offset lookup is implemented/tested"
+                if module == "Debug_Info" and name in {"init", "ensure_room", "set_all"}:
+                    reason = "Question14: active-word/capacity, growth, rover and fill policy; already-sized bit operations execute against native PDB/SDK FPM oracles"
                 unfinished = sum(entry["implementation"] == "pending" for entry in entries)
                 output.append(f"| `{name}` | {len(entries)} | {unfinished} | {reason} |")
             output.append("")
+        if module == "Codex":
+            output += ["", "| Implemented function with remaining paths | Remaining work |", "| --- | --- |",
+                       "| `collect_metrics` | Conditional weights and Basic allocator names await question2, with explicit rejection; calls/identity/assignments/globals/loop depth execute. |", ""]
+        if module == "Bindings_Generator":
+            output += ["", "| Implemented generator with remaining paths | Remaining work |", "| --- | --- |",
+                       "| `generate_bindings` | Global POD aggregate/reference C++ declarations execute; namespace/method/overload/custom C++ mapping/printf adapters and broader parsing remain unfinished. |",
+                       "| `generate_bridge` | Global POD aggregate/reference adapters execute; namespace/method/overload/custom declaration mapping/printf adapters remain unfinished. |", ""]
+        if module == "Debug_Info":
+            output += ["", "| Implemented map helper with remaining paths | Remaining work |", "| --- | --- |",
+                       "| `is_free_page` | Initialized in-range words execute; capacity/active-word policy awaits question14. |",
+                       "| `alloc_page` | In-range allocation bits execute; automatic growth and rover policy await question14. |",
+                       "| `free_page` | In-range free bits execute; automatic growth and rover policy await question14. |",
+                       "| `is_fpm_page_number` | MSF7 4096-byte big-map positions execute; other layouts remain unsupported. |", ""]
         if source_only:
             output += ["| Native function | Evidence / next check |", "| --- | --- |"]
             output += [f"| `{name}` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |" for name in sorted(source_only)]
@@ -155,6 +170,8 @@ def main():
                     item["implementation"] = "supported C parser/literal and global C++ scalar/pointer adapter-binding subset; actual generated/native/interpreter round trips; see limits"
                 if item["name"] == "generate_bridge":
                     item["implementation"] = "global C++17 adapter subset; POD result leading out pointer, reference argument/result pointers and original native consumer effects; scopes/overloads/custom callbacks/printf adapters pending"
+                if item["name"] == "generate_bindings":
+                    item["implementation"] = "C and global POD C++ generation subset; actual generated 8/16/24-byte record aggregate/reference adapter declarations, native original argument/result/storage-identity effects, diagnostics and destination preservation; scopes/methods/overloads/custom C++ callbacks/printf paths pending"
                 if item["name"] in {"visit_declarations", "find_parent_enum", "create_type_of_enum", "change_type_to_enum",
                                      "change_return_type", "change_return_type_to_enum", "change_argument_type_to_enum",
                                      "create_pointer_to", "get_int_type"}:
@@ -192,6 +209,10 @@ def main():
                     item["implementation"] = "DWARF model offset lookup; six original C DWARF4 SDK-decoded type oracles, unsorted tables/missing offsets/borrowed storage/duplicate diagnostics in interpreter/native O0/O2; not a byte parser"
                 if item["name"] in {"Msf", "Free_Page_Map"}:
                     item["implementation"] = "reviewed canonical record/contextual layouts implemented; Free_Page_Map operations and parse_msf remain pending"
+                if item["name"] in {"is_free_page", "alloc_page", "free_page", "is_fpm_page_number"}:
+                    item["implementation"] = "already-sized canonical free-page maps; native x64/arm64 PDB SDK FPM byte oracles, all bit queries, boundary/idempotent mutations and reserved MSF7 4096-page positions; init/growth/rover policies pending question14"
+                if item["name"] == "Free_Page_Map":
+                    item["implementation"] = "canonical record and already-sized bit operations with original native PDB SDK oracles; init/growth/rover policies pending question14"
                 if item["name"] in {"is_msf", "is_pdb", "get_stream_data", "get_stream_size", "is_valid_stream_number", "stream_exists", "is_valid_page_number"}:
                     item["implementation"] = "canonical MSF7 read helper subset; actual original Clang/LLD x64/arm64 PDB streams compared to SDK byte exports in interpreter/native O0/O2, ownership/bounds and contextual visibility checked; parse_msf pending"
                 if item["name"] in {"Line_Info", "Line_Info_Sequence", "Line_Mapping", "File_Info", "Dwarf_File_Id",
@@ -225,11 +246,17 @@ def main():
                 if item["name"] in {"History_Scalar", "NUM_SMOOTHING_SLOTS", "slot", "set_smoothing", "clear", "get_value"}:
                     item["implementation"] = "reviewed scalar-history shape, middle/clamped smoothing selector and borrowed-value access/clear; interpreter/native effects and independent module-instance storage verified; sampling/variance updates pending"
                 if item["name"] in {"Profile_Tracker_Data_Record", "Zone_Profiling_Data", "count_recursion_depth"}:
-                    item["implementation"] = "reviewed canonical tracker/stack records and pointer-identity ancestor count; acyclic/cyclic parent effects and borrowed-storage preservation verified; timer-driven stack/profiling runtime pending"
+                    item["implementation"] = "reviewed canonical tracker/stack records and pointer-identity ancestor count; measured manual core uses the stack records; history tracker updates remain pending"
+                if item["name"] in {"init_runtime", "Stack_Push", "zone_begin", "zone_end", "MAX_DEPTH", "MAX_HASH_SIZE", "INIT_HASH_SIZE", "MAX_PROFILING_ZONES_FOR_MANUAL_MODE", "zones", "caches", "dummy", "dummy2", "stack", "zone_hash", "zone_hash_count", "zone_hash_mask", "timestamps_to_seconds", "integer_timestamps_per_second"}:
+                    item["implementation"] = "measured manual-zone core; canonical POSIX/QPC clocks, real elapsed/self/hierarchical/call/recursion counters and stable cached/grown node identities, native/interpreter O0/O2 plus explicit rejection fixtures; Windows SDK links/source checks only; history/instrumentation/report creation pending"
+                if item["name"] in {"TO_INSERT", "prepend_main", "Prepend_To_Main"}:
+                    item["implementation"] = "reviewed-purpose real context client setup and runtime-init prepend macro; all manual/graphics/history configurations preserved and actual O0/O2 client programs verified; full instrumentation plugin pending"
         if module == "Codex":
             for item in declarations:
                 if item["name"] in {"Math", "get_file_and_module", "is_global_ident"}:
                     item["implementation"] = "inspection subset; real producer code records and canonical Math identity verified"
+                if item["name"] in {"Metrics", "collect_metrics"}:
+                    item["implementation"] = "typed-tree metrics subset; real producer body and native public-node call/file/module/assignment/global/loop-depth effects; conditional forms and Basic allocator recognition explicitly rejected pending question2"
         if module == "Check":
             for item in declarations:
                 if item["name"] in {"DEBUG_BINDINGS", "C_Porting_Check_Settings", "check_c_porting", "should_skip",

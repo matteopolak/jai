@@ -18,6 +18,15 @@
       "verification": "python3 tools/check_developer_tools.py"
     },
     {
+      "module": "Iprof",
+      "source_directory": "stdlib/internal/developer-tools/profiling",
+      "canonical_native_dependencies": ["POSIX clock_gettime/timespec/clockid_t", "Windows QueryPerformanceCounter/QueryPerformanceFrequency/LARGE_INTEGER"],
+      "private_native_helper_required": false,
+      "native_execution_evidence": "macOS arm64 manual-zone interpreter/native O0/O2 timing and measured CSV",
+      "windows_sdk_link_verification": "tools/check_developer_profiler_windows.py",
+      "pending": "Windows/Linux/Android execution, automatic instrumentation, frame/history/report creation and coordinator shared integration"
+    },
+    {
       "module": "Debug",
       "build_script": "tools/build_developer_debug.py",
       "source_directory": "stdlib/internal/developer-tools/debug-native",

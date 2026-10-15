@@ -166,6 +166,12 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `type_has_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `type_to_string` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 
+
+| Implemented generator with remaining paths | Remaining work |
+| --- | --- |
+| `generate_bindings` | Global POD aggregate/reference C++ declarations execute; namespace/method/overload/custom C++ mapping/printf adapters and broader parsing remain unfinished. |
+| `generate_bridge` | Global POD aggregate/reference adapters execute; namespace/method/overload/custom declaration mapping/printf adapters remain unfinished. |
+
 | Native function | Evidence / next check |
 | --- | --- |
 | `clang_CXIndex_getGlobalOptions` | Exact reviewed binding, compilation and installed SDK symbol lookup; add an original native invocation fixture |
@@ -402,11 +408,10 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Codex
 
-15 function names have pending declarations; 0 native function names still lack invocation fixtures.
+14 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
-| `collect_metrics` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 | `communication_proc` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 | `deinit` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 | `dump_file` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
@@ -421,6 +426,11 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `put` | 2 | 2 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 | `put_short_string` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
 | `shutdown` | 1 | 1 | Reviewed v2 wire/metrics/plugin semantics resolved; implementation pending. Question2 retains exact allocator recognition details |
+
+
+| Implemented function with remaining paths | Remaining work |
+| --- | --- |
+| `collect_metrics` | Conditional weights and Basic allocator names await question2, with explicit rejection; calls/identity/assignments/globals/loop depth execute. |
 
 ## Debug
 
@@ -451,26 +461,22 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Debug_Info
 
-29 function names have pending declarations; 0 native function names still lack invocation fixtures.
+25 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
-| `alloc_page` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `copy_and_truncate_blocks` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `decode_inline_site_line_info` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `describe_builtin` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `describe_id_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `describe_type` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `dump_codeview_types` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `ensure_room` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
-| `free_page` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
+| `ensure_room` | 1 | 1 | Question14: active-word/capacity, growth, rover and fill policy; already-sized bit operations execute against native PDB/SDK FPM oracles |
 | `get_filename` | 1 | 1 | Debug_Info question8: file/directory indexing and path text |
 | `get_filename_for_file_id` | 2 | 1 | Debug_Info question8 for DWARF overload; CodeView implementation pending |
 | `get_id_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_type` | 2 | 1 | CodeView overloads pending; canonical DWARF Compilation_Unit offset lookup is implemented/tested |
-| `init` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_fpm_page_number` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
-| `is_free_page` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
+| `init` | 1 | 1 | Question14: active-word/capacity, growth, rover and fill policy; already-sized bit operations execute against native PDB/SDK FPM oracles |
 | `is_procedure` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_valid_user_stream_number` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `overlay_inlinesite` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -482,15 +488,16 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `parse_msf` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `parse_pdb` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 | `parse_tpi_stream` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
-| `set_all` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+| `set_all` | 1 | 1 | Question14: active-word/capacity, growth, rover and fill policy; already-sized bit operations execute against native PDB/SDK FPM oracles |
 | `verify_integrity` | 1 | 1 | Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds |
 
-| Pending public member | Reviewed expression | Missing reviewed dependency |
-| --- | --- | --- |
-| `Codeview_Leaf_Type.ID_MAX` | `ID_LAST - 1` | `ID_LAST`; Debug_Info question11 |
-| `Codeview_Leaf_Type.TYPE_MAX` | `TYPE_LAST - 1` | `TYPE_LAST`; Debug_Info question11 |
-| `Codeview_Symbol_Type.RECTYPE_LAST` | `RECTYPE_MAX- 1` | `RECTYPE_MAX`; Debug_Info question11 |
-| `Codeview_Symbol_Type.RECTYPE_PAD` | `RECTYPE_MAX+ 0x100` | `RECTYPE_MAX`; Debug_Info question11 |
+
+| Implemented map helper with remaining paths | Remaining work |
+| --- | --- |
+| `is_free_page` | Initialized in-range words execute; capacity/active-word policy awaits question14. |
+| `alloc_page` | In-range allocation bits execute; automatic growth and rover policy await question14. |
+| `free_page` | In-range free bits execute; automatic growth and rover policy await question14. |
+| `is_fpm_page_number` | MSF7 4096-byte big-map positions execute; other layouts remain unsupported. |
 
 ## Print_Vars
 
@@ -498,15 +505,13 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Iprof
 
-46 function names have pending declarations; 0 native function names still lack invocation fixtures.
+41 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
 | `Automatic_Zone` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `Automatic_Zone_Guarded` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `Prepend_To_Main` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `Prof_init_highlevel` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `Stack_Push` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `add_hook` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `add_source` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `before_intercept` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
@@ -523,7 +528,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `graph_select_sample` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `hash` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `init` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `init_runtime` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `init_zone_hash` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `insert_node` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `log_help` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
@@ -546,8 +550,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `traverse` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `update` | 2 | 2 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 | `update_history` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `zone_begin` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
-| `zone_end` | 1 | 1 | Reviewed instrumentation/history/report/options refinements available; implementation pending, with remaining calibration/recursion precision in question2 |
 
 ## Performance_Report
 
