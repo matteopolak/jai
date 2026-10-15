@@ -34,6 +34,7 @@ PRIVATE_UNITS = {'ios-sdk-host':'iOS/sdk-host-unit.jai',
                  'rpmalloc-native-error-callback':'rpmalloc/sdk-error-callback-unit.jai',
                  'rpmalloc-raw-base-marshalling':'rpmalloc/sdk-raw-base-marshalling-unit.jai'}
 PRIVATE_UNITS['rpmalloc-no-thread-cache'] = 'rpmalloc/sdk-no-thread-cache-unit.jai'
+PRIVATE_UNITS['shader-bytes'] = 'd3d_compiler/sdk-shader-bytes-unit.jai'
 PRIVATE_UNIT_DEPENDENCIES = {
     'rpmalloc-no-thread-cache': {
         **{'tests/native-bindings/generated/rpmalloc-no-thread-cache-'+label+'-layout.jai': 'rpmalloc/generated/rpmalloc-no-thread-cache-'+label+'-layout.jai' for label in ('rewrite', 'raw-base', 'raw')},
@@ -233,6 +234,9 @@ def main():
         ('dxc_compiler', 'dxc-reflect.jai', [('windows','x64'),('windows','arm64')]),
         ('dxc_compiler', 'dxc-wide.jai', [('windows','x64'),('windows','arm64')]),
         ('dxc_compiler', 'dxc-compile-unit.jai', [('windows','x64'),('windows','arm64')]),
+        ('d3d_compiler', 'd3d-strings.jai', [('windows','x64'),('windows','arm64')]),
+        ('dxc_compiler', 'dxc-version.jai', [('windows','x64'),('windows','arm64')]),
+        ('d3d_compiler', 'shader-bytes.jai', TARGET_CONFIGS),
         ('Android/EGL', 'android-egl-context.jai', [('android','x64'),('android','arm64')]),
         ('iOS', 'ios.jai', [('ios','x64'),('ios','arm64')]),
         ('ImGui', 'imgui-nested.jai', TARGET_CONFIGS),
@@ -268,6 +272,9 @@ def main():
                             ('X11', 'binding_message_button'), ('dxc_compiler', 'ID3D12ShaderReflection'),
                             ('dxc_compiler', 'Win'), ('dxc_compiler', 'D3D'),
                             ('dxc_compiler', 'NativeCompile'), ('macOS', 'NativeEvents'),
+                            ('dxc_compiler', 'VersionBasic'), ('dxc_compiler', 'VersionBytes'),
+                            ('dxc_compiler', 'VersionCOM'), ('dxc_compiler', 'version_check'),
+                            ('d3d_compiler', 'Bytes'), ('d3d_compiler', 'Wide'), ('d3d_compiler', 'Native'),
                             ('d3d11', 'ID3DBlob'), ('d3d11', 'ID3D11ModuleInstance'),
                             ('d3d12', 'ID3DBlob'), ('rpmalloc','Heap'),
                             ('rpmalloc','Span'), ('rpmalloc','Native'),
@@ -323,12 +330,15 @@ def main():
             runtime_tests.append('dxc-reflect')
             runtime_tests.append('dxc-wide')
             runtime_tests.append('dxc-compile-unit')
+            runtime_tests.append('d3d-strings')
+            runtime_tests.append('dxc-version')
         if sys.platform == 'darwin':
             runtime_tests.append('fsevents-context')
         runtime_tests.append('sdl-rwops')
         runtime_tests.append('imgui-nested')
         runtime_tests.append('posix-stat')
         runtime_tests.append('dxc-options')
+        runtime_tests.append('shader-bytes')
         runtime_tests.extend(rpmalloc_fixtures(args.rpmalloc_first_class_heaps))
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
@@ -337,6 +347,10 @@ def main():
             relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'objc-runtime':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
             if name == 'appkit':
                 relevant = ['Objective_C']
+            if name in ('d3d-strings', 'shader-bytes'):
+                relevant = ['d3d_compiler']
+            if name == 'dxc-version':
+                relevant = ['dxc_compiler']
             if name == 'fsevents-context':
                 relevant = ['macOS']
             if name == 'sdl-wm':

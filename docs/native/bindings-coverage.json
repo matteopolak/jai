@@ -36721,7 +36721,7 @@
         "declared": 62,
         "forwarded": 23,
         "implemented": 2,
-        "unresolved": 2
+        "implemented_manual": 2
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -37340,16 +37340,16 @@
           "signature": "D3DCompile :: (shader: string, source_name: string, pDefines: []string, pInclude: *ID3DInclude, entry_point: string, target: string, Flags1: u32, Flags2: u32) -> bytecode:string, errors:string, HRESULT",
           "condition": "",
           "spec_line": 94,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/d3d_compiler/wrappers.jai"
         },
         {
           "name": "D3DCompileFromFile",
           "signature": "D3DCompileFromFile :: (file_name: string, pDefines: []string, pInclude: *ID3DInclude, entry_point: string, target: string, Flags1: u32, Flags2: u32) -> pCode:*ID3DBlob, pErrorMsgs:*ID3DBlob, HRESULT",
           "condition": "",
           "spec_line": 95,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/d3d_compiler/wrappers.jai"
         }
       ]
     },
@@ -37360,8 +37360,7 @@
         "declared": 92,
         "implemented": 2,
         "forwarded": 155,
-        "unresolved": 1,
-        "implemented_manual": 2
+        "implemented_manual": 3
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -39023,8 +39022,8 @@
           "signature": "dxc_get_version_string :: () -> string",
           "condition": "",
           "spec_line": 249,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/dxc_compiler/wrappers.jai"
         },
         {
           "name": "Shader_Type",
