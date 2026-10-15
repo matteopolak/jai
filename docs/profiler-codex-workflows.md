@@ -214,3 +214,20 @@ callable names have real production bodies. No public behavioral contract is
 currently blocking other owned implementation work. Compiler-owner corrections
 are needed before automatic instrumentation can complete its required module
 and general indexed-body workflow replay.
+
+
+## Verified replay checkpoint3e6c0ef5
+
+The approved59a69c03 dependency replay records196 commands. All22 cases pass
+interpreter/native Mac O0/O2; hook and exact expression-boundary children,
+all16 generated configurations, actual Codex O0/O2 exports and native C wire
+consumers pass. Unchanged real jaifmt and full scoped warnings-denied module
+lint pass. Six intended rejection commands still match their required errors.
+Two required -modules CLI builds still fail on body ownership at O0/O2, so
+complete=false and the runner exits1. The separate original enum-only reduction
+retains the canonical printer failure; interpreted -modules reproduction
+retains ownership and successful-completion assertions. INDEX modification is
+now resolved, including actual edited-program execution and native generated
+LLVM inspection. The owned inventory remains138 complete/1partial/0missing:
+Iprof.message requires the two exact compiler corrections, with no other owned
+API gap identified. Native Windows/Linux execution remains pending later.

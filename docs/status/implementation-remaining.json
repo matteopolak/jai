@@ -5,8 +5,8 @@
     "Iprof",
     "Codex"
   ],
-  "timestamp_utc": "2026-10-15T17:25:20.898812+00:00",
-  "head": "c6a1c0836d5f3a2a9c02be7b70520cf0de598499",
+  "timestamp_utc": "2026-10-15T19:14:35.990006+00:00",
+  "head": "3e6c0ef59314f63eac7d404cde9b6b252dea2639",
   "state": "committed production implementation; required producer editing failures retained",
   "denominator": "unique names from reviewed public declaration inventories; overload/conditional variants also counted separately; record members are audited as part of their aggregate, not additional API names",
   "totals": {
@@ -268,12 +268,12 @@
       ],
       "kind": "producer editing dependency",
       "rules": [
-        "Approved producer114dda87 now supplies ordinary called Basic bodies, resolving the former interception gap. Its exported anonymous struct-member body records cannot be passed back to compiler_modify_procedure: workspace body ownership is missing. Original reproduction: compiler-requests/profiler-member-modify.jai.",
-        "Canonical Program_Print cannot print the unchanged Basic.alloc return at its .ALLOCATE enum argument. Original reproduction: compiler-requests/profiler-stdlib-modify.jai.",
-        "Canonical Program_Print reports success but prints indexed assignment as (values [] 0) = 42; the modification parser rejects it. Original reproduction: compiler-requests/profiler-index-modify.jai."
+        "Approved compiler59a69c03 (including b0430110) resolves INDEX reconstruction; original index modification and actual modules-disabled native CLI builds now pass at O0/O2. The edited program also executes through the interpreter child-workspace public plugin lifecycle.",
+        "Anonymous inline struct-member bodies still lack canonical compiler_modify_procedure ownership. Required -modules native O0/O2 builds and interpreted-module workspace reproduction fail. Original reductions: profiler-member-modify.jai and profiler-interpreted-modules.jai.",
+        "Inferred enum dot has valid public BINARY_OPERATOR metadata with null left and identifier right, but canonical printer returns false. Pure independent reduction profiler-enum-modify.jai (return take(.ONE)) and unchanged Basic.alloc reduction still fail. General compiler-owned printer correction required."
       ],
-      "library_effort_estimate": "replay required actual O0/O2 CLI module/Basic checks after canonical compiler corrections; no missing public Jai contract or library body remains identified",
-      "affected_workflows": "automatic instrumentation of legitimate indexed bodies and imported standard-library/member procedures; no ad-hoc exclusions or replacement compiler API supplied"
+      "library_effort_estimate": "replay actual modules-enabled workflows after general member ownership and inferred-member printer corrections; no independently actionable missing owned library contract identified",
+      "affected_workflows": "automatic imported-module instrumentation, including Basic and anonymous members; general indexed-body instrumentation is resolved"
     },
     {
       "names": [
@@ -285,16 +285,17 @@
     }
   ],
   "verification": {
-    "native": "All21 listed cases passed interpreter/native Mac O0/O2; real CLI Iprof/Codex children, hook forwarding children, exact expression-boundary children and all16 generated client configuration children executed. Codex dump additionally passed interpreter/native O0/O2.",
+    "native": "All22 cases pass interpreter/native Mac O0/O2. Actual Codex CLI O0/O2 and modules-disabled Iprof CLI O0/O2 pass; required modules-enabled Iprof builds still fail. Actual edited indexed main executes in compiler interpreter through public lifecycle; native emitted LLVM inspected for original store and real profiling calls. Hooks, exact expression boundaries and all16 generated configurations remain executed.",
     "format": "Unchanged repository formatter source-built; owned implementation and supported fixture format/idempotence checks passed.",
-    "strict_lint": "Full scoped module-root and program fixtures pass -D warnings on authorized unchanged compiler114dda87, including configured context module. No exclusions or allow rules.",
+    "strict_lint": "Full scoped module-root and all supported program fixtures pass -D warnings with approved59a69c03 dependencies. Compiler-request reductions that intentionally demonstrate producer failures retain their errors; no strict-lint success claimed for those failing reductions.",
     "other_targets": "Windows/Linux source-only checks; native execution pending later",
-    "report": "target/profiler-codex-checks.json:189 commands;6 expected rejection exits;4 required real O0/O2 module-toggle build failures, retained as failures; complete=false. All21 runtime cases pass interpreter/native Mac O0/O2; hook, size-boundary, all16 configuration children, real Codex CLI/C consumer, formatter and strict lint pass.",
+    "report": "target/profiler-codex-checks.json:196 commands;6 expected rejection exits;2 required modules-enabled O0/O2 build failures; complete=false. target/profiler-codex-dependency-replay.json records original reductions, interpreted module failure and native emitted-IR build/run.",
     "context_dependent_fixture": "iprof-hook-input.jai is compiled and executed with real production add_hook-generated bindings through iprof-hooks.jai; no standalone fragment-lint success is claimed.",
-    "compiler_source": "Exact approved independent checkpoint114dda87 in owned local target/profiler-compiler-source-114dda87; unchanged Rust content, own stdlib link; actual jaic/jaic-llvm/jaic-cli/jailint rebuilt into assigned T7 target after archive mtime freshness correction. No peer or compiler edits.",
+    "compiler_source": "Exact approved independent59a69c03 Rust and compiler-owned Compiler/Program_Print/Code_Visit private/public sources, including b0430110, in owned local target/profiler-compiler-source-59a69c03; unchanged content source-built into assigned T7 target. Own stdlib copied intact then approved compiler-owned dependencies overlaid; runner --stdlib enforces every owned implementation byte-identical to canonical worktree. No canonical compiler, peer or other-owner module edits.",
     "resolved_dependencies": [
       "e9affab7 context-import ordering included and full strict lint replay passed",
-      "114dda87 ordinary called library body interception original reduction passed"
+      "114dda87 ordinary called library body interception original reduction passed",
+      "b0430110/59a69c03 general ARRAY_SUBSCRIPT reconstruction: original index reduction plus actual indexed native O0/O2 and interpreted edited body pass"
     ]
   },
   "limitations": [
@@ -304,7 +305,7 @@
   ],
   "disjoint_handoff_batch": {
     "owner": "compiler/integrator",
-    "work": "general exported member-body ownership, enum/index expression round-trip support; original independent reductions in compiler handoff; no library scaffolding duplication"
+    "work": "general anonymous member-body ownership and inferred enum-member printing; original minimal reductions plus actual interpreted modules workflow in compiler handoff; no library scaffolding duplication"
   },
   "delegated_scope_excluded": true,
   "head_kind": "implementation checkpoint audited; subsequent inventory-only commits do not change implementation",
