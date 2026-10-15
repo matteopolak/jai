@@ -402,3 +402,5 @@ Agreed designs that are not built yet.
 - [Refresh21 compiler integration requests](compiler/integration-refresh21-requests.md): original enum dependency reduction, repaired bootstrap primitive and classified full-suite gaps.
 
 - [Catalogue output and compile-only verification](tools/stdlib-runtime-tests.md#independent-catalogue-channel-and-compile-only-checks): separate exact diagnostic channels and preserved failure status.
+
+- [Refresh22 combined verification](tools/cleanroom-integration.md#refresh22-combined-checkpoint): workspace counts, production allocator artifacts and remaining gates.

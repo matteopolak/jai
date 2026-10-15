@@ -16,6 +16,34 @@ from cleanroom_lint_contexts import TARGETS, checked_coverage, resolve_contexts,
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def owned_sources(root, baseline):
+    stdlib = [p for p in (root / "stdlib").rglob("*.jai")
+              if p.relative_to(root / "stdlib").parts[0] != "Extensions"
+              or p.relative_to(root / "stdlib").parts[:2] == ("Extensions", "SDL3")]
+    changed = subprocess.check_output([
+        "git", "diff", "--name-only", "-z", "--diff-filter=ACMRT", baseline, "--", "tests"
+    ], cwd=root).decode().split("\0")
+    untracked = subprocess.check_output([
+        "git", "ls-files", "--others", "--exclude-standard", "-z", "--", "tests"
+    ], cwd=root).decode().split("\0")
+    tests = [root / p for p in changed + untracked if p.endswith(".jai") and (root / p).is_file()]
+    return sorted(set(stdlib + tests))
+
+
+def hashes(paths, root):
+    return {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest() if p.is_file() else None
+            for p in paths}
+
+
+def input_snapshot(root, baseline, tools, controls):
+    return {
+        "head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
+        "sources": hashes(owned_sources(root, baseline), root),
+        "tools": hashes(tools, root),
+        "controls": hashes(controls, root),
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--baseline", required=True, help="permitted independent baseline OID")
@@ -27,13 +55,7 @@ def main():
     report.parent.mkdir(parents=True, exist_ok=True)
     logs = report.parent / (report.stem + "-logs")
     logs.mkdir(exist_ok=True)
-    stdlib = [p for p in (ROOT / "stdlib").rglob("*.jai")
-              if p.relative_to(ROOT / "stdlib").parts[0] != "Extensions"
-              or p.relative_to(ROOT / "stdlib").parts[:2] == ("Extensions", "SDL3")]
-    names = subprocess.check_output([
-        "git", "diff", "--name-only", "--diff-filter=A", args.baseline, "HEAD", "--", "tests"
-    ], cwd=ROOT, text=True).splitlines()
-    files = sorted(set(stdlib + [ROOT / p for p in names if p.endswith(".jai")]))
+    files = owned_sources(ROOT, args.baseline)
     env = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
     formatter = ROOT / "target/jaifmt"
     linter = ROOT / "target/debug/jailint"
@@ -60,11 +82,23 @@ def main():
 
     if args.format:
         run("format", [formatter, "--config", ROOT / "jaifmt.toml", *files])
-    def fingerprints():
-        return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() if p.is_file() else None
-                for p in files}
+    controls = [ROOT / "jaifmt.toml", ROOT / "jailint.toml", Path(__file__).resolve(),
+                ROOT / "tools/cleanroom_lint_contexts.py"]
+    if args.contexts:
+        controls.append(args.contexts.resolve())
+    before = input_snapshot(ROOT, args.baseline, (formatter, linter), controls)
+    result["inputs_before"] = before
 
-    checked_sources = fingerprints()
+    def finish_inputs():
+        after = input_snapshot(ROOT, args.baseline, (formatter, linter), controls)
+        result["inputs_after"] = after
+        result["source_sha256"] = after["sources"]
+        result["changed_during_checks"] = sorted(
+            name for name in before["sources"].keys() | after["sources"].keys()
+            if before["sources"].get(name) != after["sources"].get(name))
+        result["source_stable"] = before["sources"] == after["sources"]
+        result["inputs_stable"] = before == after
+
     run("format-check", [formatter, "--check", "--config", ROOT / "jaifmt.toml", *files])
     # Listing every owned file lets jailint associate #load fragments with their
     # real public module. Directory runs below remain useful diagnostic isolation,
@@ -98,15 +132,12 @@ def main():
             target: [str(path.relative_to(ROOT)) for path in paths]
             for target, paths in target_coverage_gaps(
                 files, target_coverage, context_document.get("required_targets", list(TARGETS))).items()}
-        result["source_sha256"] = fingerprints()
-        result["changed_during_checks"] = [name for name in checked_sources
-                                           if checked_sources[name] != result["source_sha256"][name]]
-        result["source_stable"] = not result["changed_during_checks"]
+        finish_inputs()
         report.write_text(json.dumps(result, indent=2) + "\n")
         failed = (sum(not c["passed"] for c in result["checks"])
                   + sum(not c["clean"] for c in result["lint_contexts"])
                   + sum(len(paths) for paths in result["uncovered_by_target"].values())
-                  + int(not result["source_stable"]))
+                  + int(not result["inputs_stable"]))
         print(f'{len(files)} owned files; {len(result["uncovered_owned_files"])} without clean complete context; {failed} failures; report: {report}')
         return int(failed != 0)
     result["context_mode"] = "legacy diagnostic isolation; target/context completeness not established"
@@ -119,12 +150,9 @@ def main():
         groups.setdefault(group, []).append(file)
     for group, paths in sorted(groups.items()):
         run(group.replace("/", "-"), [linter, "-v", "-D", "warnings", "--config", ROOT / "jailint.toml", *paths])
-    result["source_sha256"] = fingerprints()
-    result["changed_during_checks"] = [name for name in checked_sources
-                                       if checked_sources[name] != result["source_sha256"][name]]
-    result["source_stable"] = not result["changed_during_checks"]
+    finish_inputs()
     report.write_text(json.dumps(result, indent=2) + "\n")
-    failed = sum(not r["passed"] for r in result["checks"]) + int(not result["source_stable"])
+    failed = sum(not r["passed"] for r in result["checks"]) + int(not result["inputs_stable"])
     print(f'{len(files)} source files; {failed}/{len(result["checks"])} failed checks; report: {report}')
     return int(failed != 0)
 

@@ -1256,3 +1256,61 @@ Location: Socket reviewed macOS addrinfo. Earlier integration handoff incorrectl
 Location: native/channel-create.c and Basic visualization verification. Canonical fixed-name shm_open exclusive creation fails with SDK errno17; unique own channel succeeds. Existing ownership is unknown and no existing object data was opened/read/reclaimed. Actual canonical test remains failed; no public-name rewrite, memory-only channel or exclusion substitutes. The diagnostic only removes objects it acquired exclusively, and separately checks both close/unlink calls. This is an environment/resource gate requiring coordinator isolation, not an implementation pass.
 
 Location: six portable MPEG fixtures. Migration left relative paths pointing at the retired tests/stdlib asset directory. They now resolve the unchanged6144-byte authored MPEG input in tests/native-regressions; size/payload/PTS/malformed assertions remain. The previously blocked PTS fault now reaches and reports invalid MPEG timestamp marker. Full portable rerun is required; no fixture bytes or decoder checks changed.
+
+### Integration worker refresh22 audit
+
+Allocator builder (`tools/native_bindings/build_rpmalloc.py`): static-only output
+left stale shared libraries and interpreter calls failed on new facade symbols.
+Both native entry points now use one builder for matching static/shared domains;
+shared callbacks link their matching SDK, preserving allocator ownership. macOS
+uses @rpath/@loader_path; Linux uses SONAME/$ORIGIN. Actual host public heap
+interpreter, native link/run and relocated interpreter execution pass, including
+a directory containing spaces. The first relocation omitted the real
+callback-context dependency and failed; the complete dependency set passes
+without loader overrides. Linux execution and Windows packaging/runtime remain
+required platform gates, not inferred successes.
+
+Allocator producer78d73e86/9106bfb6 code/report audit: separate canonical public
+Heap/Span images copy real native counters/atomics/list membership and retire on
+SDK unmap with operation leases. Full graph copies, linear association lookup
+and per-domain serialization are deliberate performance costs. Metadata OOM
+still aborts; transactional handling/finer publication need proper follow-up.
+The pinned public C SDK page-rounding patch is hash-recorded, preserves SDK
+assertions and needs native reserve/unmap tests plus eventual upstream repin.
+Callback leases/deferred frees do not establish arbitrary reentrant mutation or
+generation safety for released/reused pointers. Private FIRST_CLASS_HEAPS=false
+is authorized independent packaging, not a reviewed public default. Other public
+option profiles and generic/dump operations remain gaps. Staging is not proof.
+
+Heap verifier: stale native counter-probe archive caused a genuine link failure
+and then a missing-executable crash. Fresh source-built probes fix the link;
+failed launches now remain failed report rows and checking continues. Missing
+declared temporary directory and stale cleanup-API test caller are corrected.
+Public module lint inventory is captured before temporarily placing standalone
+ABI programs; every program retains its own strict --context check. No body
+coverage is removed. All70 bindings Python tests pass after cleanup correction;
+the complete heap sweep must rerun. Original failed reports are retained.
+
+Module-default identity is resolved by the reviewed written-argument-list rule:
+implicit/explicit equal defaults are distinct instances. The independent test
+now verifies distinct type/storage and repeated-list canonical identity, and
+source checking passes. Effective-default normalization would be incorrect.
+
+Quality runner (`tools/check_cleanroom_quality.py`): added-files-only selection
+missed modified existing fixtures. Modified/renamed/untracked owned tests now
+participate. Before/after snapshots recompute scope and capture HEAD, tools,
+configs, runner and context manifest; any drift fails. Regression tests cover
+edited fixtures, added scope and replaced tool bytes. This repairs verification,
+not library behavior; full target/context lint remains incomplete.
+
+Latest producer audits: compiler457dc048 tests real browser host providers while
+retaining Thread's reviewed target guard. Portablecc63d8d6 implements real
+ASN.1/ADB/Java/app/manifest work; SDK/device execution, captured-output lifetime
+questions and bounded definite-length/tag parsing remain explicit. Developer
+3b3ff6e5 preserves SDK return discrepancies, MSF4096-page subset, bounded alias
+traversal and quadratic line-range validation; Iprof instrumentation and broader
+native execution remain absent. Newly reviewed Debug_Info sentinel aliases need
+regeneration/verification. Window39404f30 repairs bounded pinned download retries
+(28 helper tests pass), not renderer execution. Filtered CI retains ARM64 xxhash
+intrinsic and x64 native test-library failures. Native resources and original
+opaque corpus/Focus acceptance remain coordinator gates.

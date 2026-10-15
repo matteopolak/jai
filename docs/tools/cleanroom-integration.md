@@ -612,6 +612,28 @@ Five focused native regressions now pass via `cargo test --locked -p jaic-cli --
 
 Full refresh20 workspace evidence is792 passes/16 failures/one ignored; five individually repaired failures are not a new full-suite pass. The [concise compiler handoff](../compiler/integration-refresh21-requests.md) classifies remaining work and contains an original forward-enum reduction. The expanded lint diagnostic run was interrupted after legitimate source/tool updates; it is not stable final proof.
 
+## Refresh22 combined checkpoint
+
+`LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm RUSTC_WRAPPER= cargo test --locked
+--workspace --all-targets --no-fail-fast` on the actual production library finishes
+94 summaries:810 passed,10 failed,one inherited ignored. Failed targets: CLI,
+native and target ledger. Browser library tests now pass. Remaining failures are
+Default_Metaprogram, old Build_Options expectations, browser Thread test setup,
+legacy interpreted Thread assumptions, Extensions fiber/two WASI formatter
+dependencies, WASI tour, Socket enum dependency and target classification.
+Original refresh22 failure evidence remains; this is not a green workspace.
+
+`python3 tools/native_bindings/build_rpmalloc.py --output
+artifacts/integration-clean/native-sdk` and scoped `build_dependencies.py` now
+share native construction. Real public heap interpreter/native execution and
+relocation with complete callback-context dependencies pass without loader
+overrides. All70 bindings Python tests pass using owned `.work/tmp`; five focused
+profile/input-scope/failed-launch checks pass. The production selector never
+silently rewrites private profile source. The complete heap sweep must rerun after
+correcting stale probe/temp-directory/cleanup-caller failures. Target-aware lint
+now includes changed existing/untracked fixtures and records stable
+HEAD/source/tool/config/context fingerprints; full quality gates remain open.
+
 ## Refresh21 catalogue and resource diagnostics
 
 The394-case owned catalogue completed with313 interpreter positives/76 failures and308 nativeO0 positives/74 failures, plus5 precise negatives each and7 native compile-only cases. This diagnostic run occurred during edits and included a harness false failure: malformed lexer diagnostics were merged into expected stdout. The corrected runner keeps both streams exact, requires a separate strict source check before compile-only classification, never reclassifies timeouts, and propagates cleanup errors. Nine runner tests pass; original classification failures remain in artifacts. A complete54-contract rerun now passes49 positives plus5 expected negatives in each interpreter/nativeO0 mode. No broad catalogue green claim follows.

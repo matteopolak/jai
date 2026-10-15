@@ -962,3 +962,13 @@ Linux/Windows target checks (adb-registry-asn1-full.log).402 owned files pass
 format/check. Native Windows Registry/device SDK remain unverified, no fake
 platform results. ASN.1 first-combined OID values beyond64 bits are tested, not
 rejected merely because a temporary u64 would overflow.
+
+Integration worker refresh22: stable compiler457dc048, bindings9106bfb6,
+portablecc63d8d6, developer3b3ff6e5 and window39404f30 are merged. Full combined
+workspace run is810 passes/10 failures/one inherited ignored; failures remain
+required gates. Real public allocator heap interpreter/native and relocated SDK
+execution pass after matching static/shared construction;70 bindings Python
+tests pass. Complete production heap sweep and quality reruns remain next.
+Latest reviewed macOS addrinfo generated; compiler6080ff0a enum fix and approved
+portable-data checkpoint are newly available and will integrate next. Extensions
+dependency work remains assigned to its owner. No push/CI dispatch/publication.
