@@ -24,6 +24,9 @@ using members and imports at O0 and O2. Independent compile-time tests verify
 literal bits, structural assembly round trips, edited bodies and procedure-alias
 identity. Negative tests retain implicit narrowing and unsupported module-map
 diagnostics. Assembly serialization tests do not execute optional instructions.
+The reconstructed control-flow fixture also built and executed successfully as
+an optimized WASI module using the repository's Node WASI runner. This verifies
+generated WASM execution, not a WASM-host build of the compiler itself.
 
 ## Boundaries and deviations
 

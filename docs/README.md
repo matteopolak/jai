@@ -446,6 +446,8 @@ Agreed designs that are not built yet.
 See [Code source reconstruction](compiler/code-source-reconstruction.md) for
 general AST serialization, public edit handling, original regressions and
 explicit remaining syntax/ownership boundaries.
+See [custom iteration controls](compiler/custom-iteration-controls.md) for array
+removal forwarding and independent operator-name diagnostic coverage.
 
 The [machine-readable baseline](status/mac-integration-baseline.json) records the
 exact candidate snapshot, commands, environment, counts and failure names.

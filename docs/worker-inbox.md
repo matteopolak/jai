@@ -55,3 +55,61 @@ causes from the 80-target ledger: fixture/target/mode, first owned diagnostic,
 prerequisite classification and independent minimal source. Avoid raw vendor
 logs, transcripts, quarantined paths and broad status excerpts. This worker can
 continue independent compiler causes once those approved reductions arrive.
+
+
+## Original corpus compile-only classification
+
+Coordinator compilation-only run316pass84fail on frozen older snapshot. Sanitized first-diagnostic/case-ID grouping in docs/status/filtered-original-corpus-compile-failures.json, no original/vendor source or raw logs. Some failures likely fixed by newer ready checkpoints; do not treat them as fresh against current candidate. Shared current API questions (plugin dynamic loader, Basic context/time/allocator names, time ops, vector signatures) sent dirty spec reviewer. Compiler-owned code_get_code syntax printing group has7cases and is independently actionable. Fix generally, no case/path exceptions. Main gate remains unmet.
+
+
+## Corpus public API review 2026-10-15 17:24 UTC
+
+Reviewed metaprogram-plugins, basic refreshed. Context.print_style is genuinely public. S128/Apollo_Time +/- operator interface required. Basic alloc/New do NOT accept allocator argument (use context.allocator); free pointer/string real; swap lowercase; Basic get_time/bubble_sort/Swap not current exports, get_time belongs Thread_Group. Math Vector2 scalar multiply/divide actual, scalar add/sub absent. Metaprogram_Plugins supports dynamic names formed during compile-time execution, not just CLI names. Its current generated-source boundary needs proper general compiler/library architecture, no CLI-only dispatch limitation. No arbitrary backwards aliases or weakened tests.
+
+
+## User-required reference oracle
+
+Some public corpus targets use old Jai versions. Dirty coordinator is running suspect cases with reference Jai0.2.030 in a no-network/restricted-write sandbox. Do not add old aliases or modify current APIs solely to satisfy corpus before reference behavior is confirmed. Continue independently established current-contract bugs. Clean implementers never read reference source, vendor bodies or raw reference logs; only sanitized reviewed contracts and independent reductions will be supplied.
+
+
+## Reference-confirmed correction 2026-10-15 17:45 UTC
+
+Actual reference rejects portable dynamic-source-continuation test with undeclared function. Do not implement new partial-function execution/unresolved-call semantics to satisfy it. Plugin behavior review in progress. Continue independently established general source printer fixes. Additional dirty public-record reviewer checking missing Code shapes/ownership contracts, no original code will be sent.
+
+
+## Sandboxed reference oracle summary
+
+Filtered reference outcomes in docs/status/filtered-reference-oracle.json.96selected cases completed:45referencebuildsuccess,46failures requiring phase/setup/source review,5unmapped cross-targetCLI.31matchruntimeexpectations,3mismatchrecordedruntimeoracle. No rawlogs/source forwarded. Focus actualreferencebuildPASS; print_style/Apolloarithmetic behaviorPASS; oldBasicget_time/bubble_sort/allocatorargscasesREJECT. Independent direct undeclared continuation probeREJECT too. Do not build new compiler semantics for that invalid positive. Names become generated imports under existing valid public evaluation phases; library implementation must obey those phases.
+
+
+## Public compiler record review ready
+
+Reviewed compiler-code-records.md copied: FLOAT flag/_float64; indexing uses ARRAY_SUBSCRIPT; Code_For already has relevant syntax fields; Code_Case has ONE condition, no invented labels field. Fresh mutable AST/edit semantics, new+retained statement pointers, retainedheader asynchronous body publication and unnamed member ownership clarified. Private metadata allowed only for genuinely absent syntax and cannot override public-field edits or smuggle original source text. Multi-label grouping/arbitrary copied-body identity not specified. Use existing public metadata first, preserve semantic roundtrip generally.
+
+
+## Dedicated valid plugin evaluation worker
+
+New compiler-plugin-evaluation worker starts clean53ecb3d3. Root independently ran computed-name dynamic plugin fixture (without second-call mismatch) on official Jai: PASS with initialized41/result/workspace assertions. No unknown-callee continuation required. New worker investigates general valid registration/evaluation/source-scheduling boundary and coordinates portable final helper implementation. Compiler source-printer owner retains AST work; integrator retains link_always fix. Avoid overlapping edits; source/ref logs never shared.
+
+
+## CRITICAL deferred body capability review
+
+Fresh dirty source review found missing PUBLIC language mechanism, now specified in metaprogram-plugins.md: #placeholder plus deferred procedure-body compilation. Procedure signature/value may be available before its body; compile-time INDIRECT invocation waits/resumes for body availability. Scoped add_build_string(w=-1, code from same workspace) satisfies declared placeholder; #insert consumes generated body string. No exported #expand/#compile_time/#bake flags, NO message interception/pump/yield. Direct undeclared continuation remains invalid. Dedicated compiler-plugin-evaluation owner implements GENERAL placeholder/deferred-body/call scheduling. Portable owner uses reviewed facilities for independent helper, no private original source/order provided. Preserve normal duplicate/unknown identifier errors.
+
+## Compiler syntax checkpoint and sanitized reduction request
+
+Compiler worker committed b0430110: general supported AST-to-source serialization,
+private structural metadata only where public fields lack syntax, public edits
+retained, exact literal bit/precision and negative narrowing coverage. Core/lint/
+clippy pass; ten actual ARM64 O0/O2 executions pass. Additional reconstructed
+control-flow WASI O2 executable ran successfully (not merely a target check).
+No claim of replaying the seven original corpus cases; coordinator owns replay.
+
+Independent custom-for array reduction confirmed discarded removal state on the
+inserted loop frame. General forwarding fix and forward/reverse/nested runtime
+checks are ready in this worker, with numeric-loop rejection preserved.
+Independent direct, overloaded-value and qualified imported operator-minus tests
+pass unchanged compiler semantics. Please provide a minimal sanitized failing
+operator-minus source/context if it remains against the current integration
+candidate; no original body or raw log is needed. Plugin/deferred-body work stays
+with its dedicated owner.
