@@ -1,5 +1,13 @@
 # Window/render deviations and implementation gaps
 
+CIa78721d establishes ARM64 LLVM source-build completion, followed by infrastructure
+failure when Mesa's child Python discovery selected unprepared global python3.EXE.
+`tools/window_render_mesa_windows.py` now binds Python/python3 using Meson's native
+machine configuration, requires the prepared venv, isolates child imports and pins
+the additional Mesa-required PyYAML6.0.3. A real Meson control/positive regression
+verifies interpreter and dependency identity; no global installation, source patch,
+PATH-only workaround or driver success is claimed. Native rerun remains required.
+
 Latest WGL lifetime correction supersedes the historical unbound-root description
 below. `internal/rendering/window-contexts.jai` now allocates one actual native
 hidden STATIC window/common DC per context, copying the visible surface's exact

@@ -1,5 +1,39 @@
 # WGL failure investigation and native CI handoff
 
+## Prepared Python discovery correction
+
+Authorized candidatea78721d feedback: native ARM64 LLVM source build completed;
+Mesa setup failed at meson.build:933 because its `find_program('python3', 'python')`
+selected hosted global python3.EXE, which lacks Mako. This is infrastructure failure,
+not driver execution evidence. No raw CI log was read.
+
+The helper now writes `native-arm64.ini` with both `[binaries] python3` and `python`
+bound to the invoking venv's exact `sys.executable`, and supplies `--native-file`
+to Meson setup. The venv path is preserved without symlink resolution; resolving
+it on Unix would lose the venv prefix. Native execution requires a venv and
+removes PYTHONHOME/PYTHONPATH inheritance; user-site packages are disabled. LLVM's
+CMake Python3_EXECUTABLE is also explicit. Source-build evidence records the
+actual child interpreter/prefix and Mako/PyYAML versions plus the machine-file text.
+Mesa25.2.5 also requires PyYAML directly after its Mako check, so PyYAML6.0.3 is now
+pinned/preflighted. No package is installed into or borrowed from global Python.
+
+Original regression `tests/window-render/test_mesa_python.py` runs real Meson1.8.3
+from a prepared venv while a real empty venv's python3 wins PATH discovery. The
+unconfigured control fails; the generated machine configuration succeeds and the
+child reports the exact prepared interpreter/prefix and pinned Mako/PyYAML. The
+project/config paths contain spaces and an apostrophe. Local result: one test
+passes on macOS; no MSVC build or Windows graphics execution is implied.
+
+Run that test using the prepared interpreter before the native build:
+
+```sh
+python tests/window-render/test_mesa_python.py
+```
+
+The SDK/toolchain requirements below remain enforced; no SDK ABI or GL capability
+override is introduced. Meson's documented [native binary configuration](https://mesonbuild.com/Machine-files.html#binaries)
+applies to find_program independently of the interpreter running Meson itself.
+
 ## Latest lifecycle evidence and correction (2026-10-14)
 
 Authorized filtered run38662728329 supersedes the historical creation-only
@@ -51,11 +85,11 @@ Use native Windows ARM64 Python3.12+ and VS2022 ARM64 C/C++ tools (VS17.9+,
 Windows SDK20348+ per Mesa's installation documentation). Initialize vcvarsall
 for ARM64, then install build tools with these exact versions in an isolated
 environment: cmake3.31.6, ninja1.13.2, meson1.8.3, Mako1.3.10,
-MarkupSafe3.0.3, packaging25.0. CMake/Ninja/MarkupSafe native ARM64 wheel availability
+MarkupSafe3.0.3, packaging25.0, PyYAML6.0.3. CMake/Ninja/MarkupSafe/PyYAML native ARM64 wheel availability
 was checked against the public package index. For example, in the activated venv:
 
 ```sh
-python -m pip install cmake==3.31.6 ninja==1.13.2 meson==1.8.3 Mako==1.3.10 MarkupSafe==3.0.3 packaging==25.0
+python -m pip install cmake==3.31.6 ninja==1.13.2 meson==1.8.3 Mako==1.3.10 MarkupSafe==3.0.3 packaging==25.0 PyYAML==6.0.3
 ```
 
 Tool wheels may execute as host build tools; generator executables, LLVM tools

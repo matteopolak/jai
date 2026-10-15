@@ -1,5 +1,15 @@
 # Window/render progress
 
+Prepared-Python checkpoint: authorizeda78721d ARM64 LLVM build completed, then
+Mesa setup chose global python3.EXE without Mako and failed. This is infrastructure
+evidence only. Helper now supplies a generated Meson native machine file binding
+both Python names to the exact invoking venv executable, with explicit CMake
+Python and isolated child dependency preflight. Added pinned PyYAML6.0.3 required
+by the next Mesa check. Real Meson regression reproduces wrong-PATH selection then
+passes with prepared interpreter/prefix and pinned Mako/PyYAML (spaces/apostrophe
+paths). No global packages changed. Driver build/runtime, native WGL lifecycle and
+Windows lint gates remain pending. Next batch: verified persistent LLVM reuse.
+
 Durable current implementation checkpoint: `821adb4`. Final full focused runner
 passed186/zero, including the final queued-texture retirement regression source
 checks on both Windows CPUs. Final host lint additionally includes standalone

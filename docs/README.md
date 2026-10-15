@@ -191,7 +191,8 @@ The LLVM backend, C ABI and linking.
   failure evidence, production diagnostics, actual driver probe and explicit real-driver CI deployment.
 - [Native WGL investigation](native/window-render-wgl-investigation.md): filtered CI
   failure evidence, real retirement-surface lifetime, native diagnostics and pinned
-  official-source ARM64 Mesa build/deployment with explicit runtime verification limits.
+  official-source ARM64 Mesa build/deployment, deterministic prepared child Python,
+  and explicit runtime verification limits.
 - [jaic Extensions](extensions/README.md)
 - [Portable implementation module ledger](portable-stdlib-ledger.md)
 - [Portable implementation and verification](portable-stdlib.md): includes process/thread, context remapping, text input and Unix System coverage
