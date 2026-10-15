@@ -23,7 +23,7 @@ def main():
     args = parser.parse_args()
     env = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
     report = ROOT / "target/profiler-codex-checks.json"
-    evidence = {"complete": False, "commands": []}
+    evidence = {"complete": False, "commands": [], "failures": []}
     owned = [ROOT / "stdlib/Iprof/module.jai", ROOT / "stdlib/Codex/module.jai"]
     owned += list((ROOT / "stdlib/internal/developer-tools").glob("iprof-*.jai"))
     owned += list((ROOT / "stdlib/internal/developer-tools").glob("codex-*.jai"))
@@ -72,19 +72,34 @@ def main():
 
     for optimization in [0, 2]:
         for include_modules in [False, True]:
-            child = ROOT / f"target/profiler-codex-modules-o{optimization}-m{int(include_modules)}"
-            output = ROOT / "target/profiler-codex-iprof-modules.csv"
-            command = [args.jaic, ROOT / "tests/developer-tools/iprof-modules-input.jai", f"-O{optimization}",
-                       "-I", ROOT / "tests/developer-tools/profiler-modules", "-exe", child,
-                       "+Iprof", "-min_size", "0", "-csv", output]
-            if include_modules:
-                command.append("-modules")
-            run(command)
-            run([child], expected="ok\n")
-            rows = list(csv.DictReader(output.read_text().splitlines()[1:]))
-            names = {row["name"] for row in rows}
-            if ("child_call" in names) != include_modules:
-                raise RuntimeError("Iprof -modules did not control imported procedure instrumentation")
+            def check_module_case():
+                child = ROOT / f"target/profiler-codex-modules-o{optimization}-m{int(include_modules)}"
+                output = ROOT / "target/profiler-codex-iprof-modules.csv"
+                command = [args.jaic, ROOT / "tests/developer-tools/iprof-modules-input.jai", f"-O{optimization}",
+                           "-I", ROOT / "tests/developer-tools/profiler-modules", "-exe", child,
+                           "+Iprof", "-min_size", "0", "-csv", output]
+                if include_modules:
+                    command.append("-modules")
+                run(command)
+                run([child], expected="ok\n")
+                rows = list(csv.DictReader(output.read_text().splitlines()[1:]))
+                names = {row["name"] for row in rows}
+                if ("child_call" in names) != include_modules:
+                    raise RuntimeError("Iprof -modules did not control imported procedure instrumentation")
+
+                for name in ["alloc", "free"]:
+                    if (name in names) != include_modules:
+                        raise RuntimeError(f"Iprof -modules did not control real Basic.{name} instrumentation")
+                if "temporary_allocator_proc" in names or "IsScalar" in names:
+                    raise RuntimeError("Iprof instrumented a reviewed runtime-sensitive Basic exclusion")
+            try:
+                check_module_case()
+            except (RuntimeError, subprocess.TimeoutExpired) as error:
+                # Preserve required failures and continue independent checks.
+                # A failed build exits its case before any stale child can run.
+                evidence["failures"].append(str(error))
+                report.write_text(json.dumps(evidence, indent=2) + "\n")
+                print(str(error), flush=True)
 
     for plugin, option in [("Iprof", ["-min_size", "3junk"]), ("Iprof", ["-csv"]), ("Codex", ["-export_file"]), ("Codex", ["-unknown"])]:
         result = subprocess.run([str(args.jaic), "tests/developer-tools/codex-plugin-input.jai", "-check", "+" + plugin, *option],
@@ -170,11 +185,12 @@ def main():
                  "-check", "-os", target, "-cpu", "x64"])
         print(f"{target} x64: canonical records and traversal source checks passed", flush=True)
 
-    # Retain this full module check: known Context bootstrap ordering failures
-    # remain errors, never exclusions or a claim of full lint coverage.
+    # Full module-root coverage, including configured context imports.
     run([args.jailint, "-D", "warnings", "-I", ROOT / "tests/developer-tools/profiler-modules", *source_paths, *tests, *plugin_inputs])
-    evidence["complete"] = True
+    evidence["complete"] = not evidence["failures"]
     report.write_text(json.dumps(evidence, indent=2) + "\n")
+    if evidence["failures"]:
+        raise RuntimeError(f"{len(evidence['failures'])} required workflow checks failed; see {report}")
 
 
 if __name__ == "__main__":

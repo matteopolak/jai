@@ -2,7 +2,8 @@
 
 This supersedes the records-only audit at 4fe1e621. The synchronized module
 contracts are now the oracle; the earlier broad synchronization requests are
-resolved. Implementation remains active.
+resolved. Every reviewed public callable has a production body; the remaining
+Iprof automatic-instrumentation gap is a precise compiler editing dependency.
 
 ## Implemented workflows
 
@@ -21,7 +22,7 @@ The refined report contract places Report_Row times in milliseconds.
 Writers now consume those values directly; original owned writer fixtures were
 updated to use milliseconds rather than the superseded seconds assumption.
 Threshold units are interpreted in the same units as their compared row fields.
-A precise threshold-unit confirmation remains requested.
+The latest refinement confirms these millisecond threshold units.
 
 Codex now has all listed public function names and overloads: typed metrics,
 scalar/string helpers, checked v2 reader, dump_file, plugin creation/options,
@@ -56,10 +57,10 @@ truncated prefix of the resulting 10 KiB file. Existing profiler/metrics tests
 and new frame/automatic-zone tests passed interpreter/native O0/O2.
 
 Unchanged repository jaifmt builds from source and checks owned formatting.
-Strict lint passes the new program fixtures. Full scoped module-root lint is
-currently blocked by the general jailint context-import issue below; it is
-NOT reported as full strict-lint success. The runner retains its failing
-module checks without exclusions or warning suppression.
+Strict lint passes the new program fixtures and full scoped module roots with
+the approved general context-ordering fix. These checks have no exclusions or
+warning suppression. The required automatic-module workflow remains visibly
+failing on the newly exposed general editing errors described below.
 
 Use only the assigned Cargo target:
 `/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target`.
@@ -69,26 +70,23 @@ source was changed.
 
 ## General compiler/linter request
 
-Original reproducer:
-tests/developer-tools/compiler-requests/profiler-context/main.jai and
-modules/Context_Probe/module.jai. jaic -interp with the explicit absolute
-modules import directory prints ok. jailint -D warnings on the module root
-fails: #add_context after the Context type was laid out. Its module-root driver
-compiles main :: () {} and bootstrap dependencies before importing the requested
-module. Program-root strict lint of the real Iprof consumers passes.
+The original module-root Context reproduction passes with the authorized
+compiler-owner context-ordering fix e9affab7. The exact approved NEW checkpoint
+114dda87 includes that fix and now also exposes ordinary called library bodies.
+Its original Basic.alloc interception probe passes. Compiler sources are built
+unchanged in an owned local snapshot using the assigned external target.
 
-Request: preserve configured bootstrap/module parameters while allowing
-module-owned #add_context declarations before Context layout in module-root
-lint. No module-specific compiler bypass or alternative fake context is needed.
-
+Current editing failures and original reductions are documented in the
+[compiler handoff](profiler-codex-compiler-handoff.md). No module-specific
+compiler bypass or alternative fake context is supplied.
 
 ## Automatic instrumentation, hooks and renderer checkpoint
 
 Every reviewed public callable name now has a production implementation:
 52 Iprof names and 17 Codex names (overloads and conditional forms coalesced).
 The current owned inventory covers139 public names /144 declaration variants;
-Iprof.message remains partial at the producer integration boundary described
-below, not because its body or -modules parser is missing.
+Iprof.message remains partial at the producer editing boundary described
+below; its implementation and -modules parser are present.
 
 Iprof's real CLI plugin uses canonical compiler callbacks and typed records,
 prepends deferred zone scopes with public AST editing/printing, marks generated
@@ -111,8 +109,10 @@ Basic exclusions now match the reviewed temporary_allocator_proc and IsScalar
 names. Canonical independent producer implementation modules are recognized as
 their facade owners when applying exclusions. Imported user modules are
 instrumented with direct context._Iprof guarded macro calls; their measured
-CSV rows appear only with -modules. Missing standard-library bodies are not
-manually reconstructed or instrumented.
+CSV rows appeared only with -modules on the earlier e9affab7 producer. The
+114dda87 producer exposes called Basic bodies, but editing those and anonymous
+member bodies fails in the canonical compiler API. No body is reconstructed
+or filtered out to hide that failure.
 
 The GUI Config uses canonical Math vectors and all reviewed defaults.
 draw renders actual report rows via client callbacks; draw_graph renders actual
@@ -146,18 +146,30 @@ target/profiler-codex-checks.json. It records source hashes, actual exits and
 outputs; complete remains false while a required check fails. All source,
 reports and Git state are local. Only Cargo output uses the assigned T7 target.
 
-The full scoped runner retains its strict module-root checks. Compiler-owned
-context ordering still blocks those roots in this snapshot; the reconciled
-e9affab7 source must be synchronized before final strict-lint replay. Program
-fixtures use -D warnings without allow rules or source substitutions.
+The full scoped runner retains its strict module-root checks. The private
+runtime guard now uses real macro getter/setter expansions from one canonical
+context module. This gives the import an actual role, passes unused-import
+lint, and ensures the guard itself has no automatically instrumentable runtime
+procedure boundary. Generated client setup still references the same field.
+No marker-only import use or diagnostic suppression is added.
 
-The original Basic.alloc interception reduction exits134 with flags0:
-main is received, but the ordinary called Basic body is not. This prevents full
-standard-library -modules instrumentation. The exact source/command/result is
-in [compiler handoff](profiler-codex-compiler-handoff.md). No source/path-filter
-workaround or artificial Basic body is used. Imported user-module behavior is
-verified separately. Codex exports every body it receives; it cannot invent
-procedures withheld by that producer.
+With114dda87, the original Basic body interception probe passes. Real automatic
+module builds expose two compiler-owned failures: exported anonymous struct
+member bodies lack modifiable ownership, and unchanged Basic.alloc cannot
+round-trip its enum argument through Program_Print. The strengthened main input
+also exposes invalid printed index syntax `(memory [] 0)` even without
+`-modules`. Original independent member, enum-call and indexed-body reductions
+are in tests/developer-tools/compiler-requests and the compiler handoff.
+Required O0/O2 workflow failures stay failures. The runner exits nonzero after
+continuing independent checks; it never executes a stale child after a failed
+build. These remain producer dependencies of Iprof.message; other runtime,
+reporting, graphics and hook workflows are independently tested.
+
+Codex's lifecycle fixture now checks serialized procedure count against the
+exact unique body pointers received from the canonical compiler stream, instead
+of assuming the former three main-only bodies. It delivers each message twice
+to retain the duplicate-identity regression. This accommodates the corrected
+producer while strengthening exact export completeness verification.
 
 Native Windows/Linux remain later execution requirements. Existing target
 checks are source-only evidence. This checkpoint does not expand optional

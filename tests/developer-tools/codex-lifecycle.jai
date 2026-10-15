@@ -43,6 +43,9 @@ capture :: (text: string, data: *void, info: Log_Info) {
     add_build_file(tprint("%codex-plugin-input.jai", #filepath), p.workspace);
     completed := false;
     conditional_expressions: u32;
+    received_bodies: [..] *Code_Procedure_Body;
+
+    defer array_free(received_bodies);
 
     while true {
         event := compiler_wait_for_message();
@@ -52,7 +55,13 @@ capture :: (text: string, data: *void, info: Log_Info) {
 
         if event.kind == .TYPECHECKED {
             C.message(p, event);
-            for tc: (cast(*Message_Typechecked) event).procedure_bodies if tc.expression.header && tc.expression.header.name == "conditional" conditional_expressions = cast(u32) tc.subexpressions.count;
+
+            for tc: (cast(*Message_Typechecked) event).procedure_bodies {
+                seen := false;
+                for body: received_bodies if body == tc.expression seen = true;
+                if !seen array_add(*received_bodies, tc.expression);
+                if tc.expression.header && tc.expression.header.name == "conditional" conditional_expressions = cast(u32) tc.subexpressions.count;
+            }
         }
 
         if event.kind == .COMPLETE {
@@ -92,7 +101,8 @@ capture :: (text: string, data: *void, info: Log_Info) {
 
     assert(ok, "%", error);
     defer C.deinit(*help);
-    assert(help.procedures.count == 3);
+    assert(received_bodies.count >= 3);
+    assert(help.procedures.count == received_bodies.count, "serialized %, received % unique bodies", help.procedures.count, received_bodies.count);
     assert(conditional_expressions > 0);
     for record: help.procedures if R.decode(*record.name) == "conditional" assert(record.num_expressions == conditional_expressions, "serialized %, compiler %", record.num_expressions, conditional_expressions);
 

@@ -215,7 +215,7 @@ The WebAssembly compiler bundle and its releases. The hosted playground UI lives
 
 ## Tools and workflow
 
-- [Profiler/Codex reduced compiler requests](profiler-codex-compiler-handoff.md): module-root context/lint reproduction and canonical entry-point observation.
+- [Profiler/Codex reduced compiler requests](profiler-codex-compiler-handoff.md): approved producer replay, reduced body-ownership/enum/index editing failures, and resolved context ordering.
 - [Iprof/Codex workflow progress](profiler-codex-workflows.md): real frame/history/report collection and Codex v2 plugin/reader/writer, verification and active gaps.
 - [Iprof/Codex owned implementation and per-API audit](profiler-codex.md): canonical records, helper lifetime, real profiling traversal, focused verification and exact remaining gaps.
 

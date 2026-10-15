@@ -1,6 +1,6 @@
 # Profiler/Codex compiler-owner requests
 
-## Reduced module-root context/lint reproduction
+## Historical reduced module-root context/lint reproduction (resolved e9affab7)
 
 Independent sources (no library dependency beyond bootstrap):
 
@@ -48,7 +48,7 @@ as any explicit ENTRY_POINT flag. This uses canonical configuration and real
 procedure metadata; it is not a compiler bypass. An owner clarification of
 which header should carry ENTRY_POINT would help other independent plugins.
 
-## Ordinary standard-library body interception
+## Historical ordinary standard-library body interception (resolved114dda87)
 
 Original reproducer:
 tests/developer-tools/compiler-requests/profiler-stdlib-bodies.jai, with its
@@ -70,7 +70,7 @@ does not enqueue ordinary unbound procedures' bodies. This is a general
 producer limitation, not a missing Iprof option parser. Imported user-module
 instrumentation is verified natively at O0/O2.
 
-## Safe reconciled source intake
+## Historical safe reconciled source intake (resolved)
 
 The inbox reports the compiler owner's e9affab7 fix and an overlapping model
 fix. This worker has not merged or edited either compiler implementation.
@@ -86,3 +86,68 @@ and implemented. Integration must replace those two obsolete rejection
 expectations with the positive codex-conditional, codex-lifecycle and real CLI
 export fixtures. This worker does not silently skip either failure or edit the
 other tooling owner's shared runner.
+
+## Approved producer replay:114dda87 (2026-10-15)
+
+The exact authorized NEW Rust source was archived into the owned local snapshot
+`target/profiler-compiler-source-114dda87`, with own stdlib linked read-only as
+build input, then built into the assigned T7 target. Archive timestamps initially
+allowed Cargo to reuse stale artifacts; refreshing source mtimes forced an actual
+recompilation of jaic, jaic-llvm, jaic-cli and jailint. No compiler source was edited.
+
+The original ordinary Basic body interception probe now passes. Context-root lint
+also passes with the earlier e9affab7 general ordering fix included. These two
+old dependency claims are resolved.
+
+Real Iprof `-modules` replay exposes two further general editing failures:
+
+1. `tests/developer-tools/compiler-requests/profiler-member-modify.jai` creates
+   a child workspace with an original struct containing one inline `touch`
+   procedure, calls it, and modifies the returned member body without changing
+   its statements. The exported member header has empty name and flags16777216.
+   `compiler_modify_procedure` reports "body record does not belong to this
+   workspace procedure"; the expected successful completion assertion then
+   fails (exit134). The identical empty-name inline member records appear for
+   the canonical Basic memory-debugger interface during real Iprof compilation.
+   Request canonical member procedure identity/body ownership and modification
+   support, or accurate reviewed eligibility flags if a body cannot be edited.
+   Do not use module-name exclusions or skip all anonymous bodies to hide this.
+2. `tests/developer-tools/compiler-requests/profiler-stdlib-modify.jai` observes
+   actual called Basic.alloc, prints each unchanged statement with canonical
+   Program_Print, then calls compiler_modify_procedure. Its assert call prints;
+   its RETURN fails after `return allocator_call(context.allocator, ` at the
+   `.ALLOCATE` enum argument. The canonical wrapper rejects the body with
+   "cannot print an edited statement kind" (exit1). Request general enum-member
+   expression round-trip support in exporter/printer, retaining exact source
+   semantics and canonical metadata. No library-side printer/reparser is supplied.
+
+Commands (set JAIC_STDLIB to this worktree's stdlib):
+
+```sh
+/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic tests/developer-tools/compiler-requests/profiler-member-modify.jai -check
+/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic tests/developer-tools/compiler-requests/profiler-stdlib-modify.jai -check
+python3 tools/check_profiler_codex.py --jaic /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jaic --jailint /Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/target/debug/jailint
+```
+
+The full runner remains failing at command15, the real O0 imported-module
+Iprof child build with `-modules -min_size 0`, on the body-ownership error.
+No failure is reclassified as an expected success. The earlier full193-command
+run on e9affab7 passed strict module-root lint and owned runtime/formatter checks,
+but that producer omitted called library bodies and therefore did not exercise
+the newly exposed editing failures. Current report records the actual failure.
+
+3. `tests/developer-tools/compiler-requests/profiler-index-modify.jai` edits an
+   original `indexed(values: *s64)` procedure whose only statement is
+   `values[0] = 42`. Program_Print returns true but emits `(values [] 0) = 42`.
+   The modification parser rejects the `]` with "expected expression"; completion
+   assertion fails (exit134). This also blocks the strengthened real Iprof main
+   with modules disabled, at both O0 and O2. Request correct canonical INDEX
+   printing/exporting; no library-side replacement of indexed statements.
+
+Current production guard accessors are macro expansions: actual context reads
+and writes, with prior value returned/restored. This prevents recursively
+instrumenting the guard itself without any ad-hoc instrumentation filter.
+The current runner collects independent module-case failures while retaining
+nonzero final status. No failed child build is followed by stale executable
+execution. The initial command15 failure described above was the first replay;
+the strengthened fixture now records all four O0/O2 module-toggle failures.
