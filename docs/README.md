@@ -16,6 +16,8 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
   callback-safe publication, the pinned C page-granularity fix and remaining resource policies
 - [Explicit raw heap build profile plan](native/rpmalloc-raw-heap-plan.md): private
   build selection and separate canonical raw record marshalling
+- [rpmalloc allocator protocol and diagnostic snapshots](native/rpmalloc-allocator-protocol.md):
+  complete reviewed mode dispatch, raw-base records, transactional capture and output gates
 - [rpmalloc heap ABI evidence](native/rpmalloc-heap-abi.md): complete pinned
   native storage probes and required separation from canonical public records
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs

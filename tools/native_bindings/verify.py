@@ -31,8 +31,12 @@ PRIVATE_UNITS = {'ios-sdk-host':'iOS/sdk-host-unit.jai',
                  'rpmalloc-native-storage':'rpmalloc/sdk-storage-unit.jai',
                  'rpmalloc-heap-marshalling':'rpmalloc/sdk-heap-marshalling-unit.jai',
                  'rpmalloc-raw-heap-marshalling':'rpmalloc/sdk-raw-heap-marshalling-unit.jai',
-                 'rpmalloc-native-error-callback':'rpmalloc/sdk-error-callback-unit.jai'}
+                 'rpmalloc-native-error-callback':'rpmalloc/sdk-error-callback-unit.jai',
+                 'rpmalloc-raw-base-marshalling':'rpmalloc/sdk-raw-base-marshalling-unit.jai'}
 PRIVATE_UNIT_DEPENDENCIES = {
+    'rpmalloc-raw-base-marshalling': {
+        'tests/native-bindings/generated/rpmalloc-raw-base-heap-facade-layout.jai': 'rpmalloc/generated/rpmalloc-raw-base-heap-facade-layout.jai',
+    },
     'rpmalloc-raw-heap-marshalling': {
         'tests/native-bindings/generated/rpmalloc-raw-heap-facade-layout.jai': 'rpmalloc/generated/rpmalloc-raw-heap-facade-layout.jai',
     },
@@ -269,7 +273,11 @@ def main():
                             ('rpmalloc','Boundary_Size'), ('rpmalloc','boundary_initialize'),
                             ('rpmalloc','boundary_config'), ('rpmalloc','boundary_rpmalloc'),
                             ('rpmalloc','HeapBridge'), ('rpmalloc','Build_Settings'),
-                            ('rpmalloc','Raw_Heap_Profile')]:
+                            ('rpmalloc','Public_Heap_Profile'), ('rpmalloc','allocator_name'),
+                            ('rpmalloc','Allocator_Bridge'), ('rpmalloc','Allocator_Frames'),
+                            ('rpmalloc','Allocator_Basic'), ('rpmalloc','Allocator_Settings'),
+                            ('rpmalloc','Statistics_Basic'), ('rpmalloc','Statistics_Settings'),
+                            ('rpmalloc','Statistics_Frames'), ('rpmalloc','Statistics_Bridge')]:
         if args.module and module.split('/')[0] not in args.module and module not in args.module:
             continue
         for os_name, cpu in TARGET_CONFIGS:
@@ -341,7 +349,7 @@ def main():
                 relevant = ['ImGui']
             if name == 'posix-stat':
                 relevant = ['POSIX']
-            if name in rpmalloc_fixtures(True):
+            if name in rpmalloc_fixtures(True)+rpmalloc_fixtures(False):
                 relevant = ['rpmalloc']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']

@@ -1,5 +1,39 @@
 # Bindings worker progress
 
+Allocator/dump milestone after `9106bfb`: all reviewed generic modes and both
+rewrite builder forms are implemented. Raw-base generic handles have exact
+canonical records even with named heaps disabled, bringing the real native
+SDK/callback domain inventory to six. Existing signed/unsigned signatures,
+aliases and canonical bootstrap Allocator types remain intact. Immutable native
+counter captures permit builder formatting to allocate on this very allocator
+outside native leases; real capture-allocation failures roll back and set failed.
+Raw output uses an explicit private PRETTY_PRINT true policy and tested off
+selection, without a public parameter/default claim.
+
+The 23 original unresolved rpmalloc declarations are now 0 unresolved and 80
+partial +31 declared: other native cache/assertion/page-advice/numeric options
+are still incomplete, so this is not full profile completion. All original18
+configuration failures now pass declaration/public-name checks in both private
+heap selections (36 checks each). Default complete verifier: 108 source passes,
+32 host build/run passes, 198 privacy passes. Enabled-raw complete verifier:
+120 source passes, 36 host build/run passes, 198 privacy passes. All passed.
+Final default heap/protocol scope:191 passed checks, including eighteen positive
+Mac program executions, real C sanitizer/failure/ABI checks and separate expected
+compile/assertion rejections with observed exits retained. Worker native static/
+shared host builder succeeds; its host archives pass169 checks. All owned
+production formatting and scoped strict lint/regeneration/66 Python tests pass.
+
+No contract/compiler issue blocks these supported allocator/dump profiles. CAPS
+exact original spelling remains a narrow review question: the page specifies
+stable name storage, implemented with independent `rpmalloc` identity. Heap/span
+association metadata OOM remains explicitly fail-fast, despite transactional
+diagnostic captures. Serialization/copy/native-domain costs remain documented.
+Native Windows/Linux and final package/CI integration remain unverified here.
+Other36 unresolved APIs still need precise contracts/SDK evidence. The xxHash
+ARM64 repair was reassigned exclusively to native-build-repair; no duplicate
+patch, peer write or shared/original checkout cache access occurred. Next bindings
+work is genuine remaining native option support and transactional heap metadata.
+
 Raw heap milestone after `78d73e8`: all eleven reviewed raw heap procedures,
 nine canonical aliases and the exact conditional raw Heap/Span records now
 have a real independent native domain for each statistics setting. The private

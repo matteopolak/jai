@@ -172731,8 +172731,7 @@
       "spec": "docs/specs/stdlib/modules/rpmalloc.md",
       "spec_sha256": "bf94dcdc843a2910d4b74ef295ea4702469bdbbf1d840e9d5ae6256043d6d3bd",
       "counts": {
-        "unresolved": 3,
-        "partially_implemented": 77,
+        "partially_implemented": 80,
         "declared": 31
       },
       "member_counts": {},
@@ -172743,8 +172742,10 @@
           "signature": "rpmalloc_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void",
           "condition": "",
           "spec_line": 8,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/allocator.jai",
+          "implemented_condition": "Native_Profile_Matches",
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "initialize",
@@ -172755,7 +172756,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "initialize",
@@ -172767,7 +172768,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_initialize",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "finalize",
@@ -172777,7 +172778,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "initialize_config",
@@ -172788,7 +172789,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "initialize_config",
@@ -172800,7 +172801,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_initialize_config",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "is_initialized",
@@ -172810,7 +172811,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "thread_initialize",
@@ -172820,7 +172821,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "thread_finalize",
@@ -172832,7 +172833,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_thread_finalize",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "thread_finalize",
@@ -172842,7 +172843,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "thread_finalize",
@@ -172853,7 +172854,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_thread_finalize",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "is_thread_initialized",
@@ -172863,7 +172864,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "set_main_thread",
@@ -172873,7 +172874,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "config",
@@ -172883,7 +172884,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc",
@@ -172894,7 +172895,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpfree",
@@ -172904,7 +172905,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rprealloc",
@@ -172915,7 +172916,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpaligned_realloc",
@@ -172926,7 +172927,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpaligned_alloc",
@@ -172937,7 +172938,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "usable_size",
@@ -172948,7 +172949,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "usable_size",
@@ -172960,7 +172961,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_usable_size",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "thread_statistics",
@@ -172970,7 +172971,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "global_statistics",
@@ -172980,7 +172981,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "dump_statistics",
@@ -172988,8 +172989,10 @@
           "condition": "ENABLE_STATISTICS",
           "spec_line": 31,
           "effective_condition": "!USE_RAW && (ENABLE_STATISTICS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/statistics.jai",
+          "implemented_condition": "Native_Profile_Matches && (!USE_RAW && (ENABLE_STATISTICS))",
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "dump_statistics",
@@ -172997,8 +173000,10 @@
           "condition": "else branch",
           "spec_line": 32,
           "effective_condition": "!USE_RAW && (!ENABLE_STATISTICS)",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "partially_implemented",
+          "artifact": "stdlib/rpmalloc/statistics.jai",
+          "implemented_condition": "Native_Profile_Matches && (!USE_RAW && (!ENABLE_STATISTICS))",
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "dump_statistics",
@@ -173010,7 +173015,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_dump_statistics",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_acquire",
@@ -173021,7 +173026,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_acquire",
@@ -173033,7 +173038,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_acquire",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_release",
@@ -173044,7 +173049,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_release",
@@ -173056,7 +173061,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_release",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_is_this_yours",
@@ -173067,7 +173072,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "is_in_span",
@@ -173078,7 +173083,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_alloc",
@@ -173089,7 +173094,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_alloc",
@@ -173101,7 +173106,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_alloc",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_aligned_alloc",
@@ -173112,7 +173117,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_aligned_alloc",
@@ -173124,7 +173129,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_aligned_alloc",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_realloc",
@@ -173135,7 +173140,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_realloc",
@@ -173147,7 +173152,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_realloc",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_aligned_realloc",
@@ -173158,7 +173163,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_aligned_realloc",
@@ -173170,7 +173175,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_aligned_realloc",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_free",
@@ -173181,7 +173186,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_free",
@@ -173193,7 +173198,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_free",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_free_all",
@@ -173204,7 +173209,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_free_all",
@@ -173216,7 +173221,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_free_all",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_thread_set_current",
@@ -173227,7 +173232,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (!USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "heap_thread_set_current",
@@ -173239,7 +173244,7 @@
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "canonical_alias_target": "rpmalloc_heap_thread_set_current",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && RPMALLOC_FIRST_CLASS_HEAPS)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "errno",
@@ -173278,7 +173283,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_is_initialized",
@@ -173289,7 +173294,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_initialize_config",
@@ -173300,7 +173305,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_finalize",
@@ -173311,7 +173316,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_thread_initialize",
@@ -173322,7 +173327,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_thread_finalize",
@@ -173333,7 +173338,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_is_thread_initialized",
@@ -173344,7 +173349,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_config",
@@ -173355,7 +173360,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc",
@@ -173366,7 +173371,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpcalloc",
@@ -173377,7 +173382,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rprealloc",
@@ -173388,7 +173393,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpaligned_realloc",
@@ -173399,7 +173404,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpaligned_alloc",
@@ -173410,7 +173415,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpaligned_calloc",
@@ -173421,7 +173426,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmemalign",
@@ -173432,7 +173437,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpposix_memalign",
@@ -173443,7 +173448,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_usable_size",
@@ -173454,7 +173459,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_thread_collect",
@@ -173465,7 +173470,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_thread_statistics",
@@ -173476,7 +173481,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_global_statistics",
@@ -173487,7 +173492,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_dump_statistics",
@@ -173498,7 +173503,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_acquire",
@@ -173509,7 +173514,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_release",
@@ -173520,7 +173525,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_alloc",
@@ -173531,7 +173536,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_aligned_alloc",
@@ -173542,7 +173547,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_calloc",
@@ -173553,7 +173558,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_aligned_calloc",
@@ -173564,7 +173569,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_realloc",
@@ -173575,7 +173580,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_aligned_realloc",
@@ -173586,7 +173591,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_free",
@@ -173597,7 +173602,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_free_all",
@@ -173608,7 +173613,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "rpmalloc_heap_thread_set_current",
@@ -173619,7 +173624,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW && (RPMALLOC_FIRST_CLASS_HEAPS))",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "ENABLE_OVERRIDE",
@@ -173637,7 +173642,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "RPMALLOC_CONFIGURABLE",
@@ -173670,7 +173675,7 @@
           "status": "partially_implemented",
           "artifact": "stdlib/rpmalloc/wrappers.jai",
           "implemented_condition": "Native_Profile_Matches && (USE_RAW)",
-          "reason": "Real shared native boundary for supported raw/rewrite profile; nondefault cache/statistics/assertion profiles remain incomplete"
+          "reason": "Real native boundaries for six raw/rewrite/layout/statistics profiles; other cache/assertion/page-advice and numeric build options remain incomplete"
         },
         {
           "name": "Heap",
@@ -173861,7 +173866,7 @@
         {
           "module": "internal/bindings/rpmalloc-sdk",
           "artifact": "stdlib/internal/bindings/rpmalloc-sdk/module.jai",
-          "artifact_sha256": "79a3b2474ab25e7cdfd5013a0a868790e2afd657b1c4355865375eaa11b13ce6",
+          "artifact_sha256": "203806912c152b57f253911cc0b8749dcbc79fa09d6d8e9d6aba6fac2bfd7111",
           "status": "private_native_backend",
           "public_support": "Unresolved; this backend does not establish Jai callback/config/heap compatibility",
           "provenance": {
@@ -174301,6 +174306,7 @@
                 "condition": "!RAW && STATISTICS",
                 "facade_prefix": "binding_rpmalloc_facade_",
                 "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
                   "BINDING_RPMALLOC_RAW": 0,
                   "ENABLE_ASSERTS": 1,
                   "ENABLE_OVERRIDE": 0,
@@ -174309,6 +174315,7 @@
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
                 },
+                "public_heaps": true,
                 "raw": false,
                 "sdk": "binding_rpmalloc_sdk",
                 "statistics": true,
@@ -174320,6 +174327,7 @@
                 "condition": "!RAW && !STATISTICS",
                 "facade_prefix": "binding_rpmalloc_nostats_facade_",
                 "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
                   "BINDING_RPMALLOC_RAW": 0,
                   "ENABLE_ASSERTS": 1,
                   "ENABLE_OVERRIDE": 0,
@@ -174328,6 +174336,7 @@
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
                 },
+                "public_heaps": true,
                 "raw": false,
                 "sdk": "binding_rpmalloc_sdk_nostats",
                 "statistics": false,
@@ -174336,9 +174345,10 @@
               "binding_rpmalloc_sdk_raw": {
                 "callback_prefix": "binding_rpmalloc_raw_",
                 "callbacks": "binding_rpmalloc_callbacks_raw",
-                "condition": "RAW && STATISTICS",
+                "condition": "RAW && PUBLIC_HEAPS && STATISTICS",
                 "facade_prefix": "binding_rpmalloc_raw_facade_",
                 "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
                   "BINDING_RPMALLOC_RAW": 1,
                   "ENABLE_ASSERTS": 1,
                   "ENABLE_OVERRIDE": 0,
@@ -174347,17 +174357,40 @@
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
                 },
+                "public_heaps": true,
                 "raw": true,
                 "sdk": "binding_rpmalloc_sdk_raw",
                 "statistics": true,
                 "symbol_prefix": "binding_rpmalloc_raw_"
               },
-              "binding_rpmalloc_sdk_raw_nostats": {
-                "callback_prefix": "binding_rpmalloc_raw_nostats_",
-                "callbacks": "binding_rpmalloc_callbacks_raw_nostats",
-                "condition": "RAW && !STATISTICS",
-                "facade_prefix": "binding_rpmalloc_raw_nostats_facade_",
+              "binding_rpmalloc_sdk_raw_base": {
+                "callback_prefix": "binding_rpmalloc_raw_base_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_base",
+                "condition": "RAW && !PUBLIC_HEAPS && STATISTICS",
+                "facade_prefix": "binding_rpmalloc_raw_base_facade_",
                 "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 0,
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 1,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": false,
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_base",
+                "statistics": true,
+                "symbol_prefix": "binding_rpmalloc_raw_base_"
+              },
+              "binding_rpmalloc_sdk_raw_base_nostats": {
+                "callback_prefix": "binding_rpmalloc_raw_base_nostats_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_base_nostats",
+                "condition": "RAW && !PUBLIC_HEAPS && !STATISTICS",
+                "facade_prefix": "binding_rpmalloc_raw_base_nostats_facade_",
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 0,
                   "BINDING_RPMALLOC_RAW": 1,
                   "ENABLE_ASSERTS": 1,
                   "ENABLE_OVERRIDE": 0,
@@ -174366,6 +174399,28 @@
                   "RPMALLOC_CONFIGURABLE": 1,
                   "RPMALLOC_FIRST_CLASS_HEAPS": 1
                 },
+                "public_heaps": false,
+                "raw": true,
+                "sdk": "binding_rpmalloc_sdk_raw_base_nostats",
+                "statistics": false,
+                "symbol_prefix": "binding_rpmalloc_raw_base_nostats_"
+              },
+              "binding_rpmalloc_sdk_raw_nostats": {
+                "callback_prefix": "binding_rpmalloc_raw_nostats_",
+                "callbacks": "binding_rpmalloc_callbacks_raw_nostats",
+                "condition": "RAW && PUBLIC_HEAPS && !STATISTICS",
+                "facade_prefix": "binding_rpmalloc_raw_nostats_facade_",
+                "options": {
+                  "BINDING_RPMALLOC_PUBLIC_HEAPS": 1,
+                  "BINDING_RPMALLOC_RAW": 1,
+                  "ENABLE_ASSERTS": 1,
+                  "ENABLE_OVERRIDE": 0,
+                  "ENABLE_STATISTICS": 0,
+                  "ENABLE_VALIDATE_ARGS": 1,
+                  "RPMALLOC_CONFIGURABLE": 1,
+                  "RPMALLOC_FIRST_CLASS_HEAPS": 1
+                },
+                "public_heaps": true,
                 "raw": true,
                 "sdk": "binding_rpmalloc_sdk_raw_nostats",
                 "statistics": false,
@@ -175022,7 +175077,7 @@
           "verification": "Source/header inventory only here; actual private SDK native evidence is indexed separately",
           "checked_boundary": {
             "artifact": "stdlib/internal/bindings/rpmalloc-checked/module.jai",
-            "artifact_sha256": "bbc4431b87360da78b109af40e774db6ba7ab376c2ad2d8594b00edb602d47c4",
+            "artifact_sha256": "39a95e178483fa596d7b2a27a4e0c06457a1d5859419dfd54b388eff969c3508",
             "signature": "posix_memalign :: (output: **void, alignment: u64, size: u64) -> s32",
             "scope": "Private SDK precondition validation and commit-on-success output; not public API completion"
           }
@@ -175032,7 +175087,7 @@
           "status": "partial_public_profile_adapter",
           "artifacts": {
             "stdlib/internal/bindings/rpmalloc-callbacks/bridge.c": "8b6476dd20ce5249d271f133e49656911e528eeff720be93e4628b16d2aff964",
-            "stdlib/internal/bindings/rpmalloc-callbacks/module.jai": "e3fdad6c4b0c9d570edd0d7bdcb0ef766ff1577ec0d64c6d3ae3a58d6255d2cc"
+            "stdlib/internal/bindings/rpmalloc-callbacks/module.jai": "2ea2d1d7678343409fbed59b469e0e43a8c6b7fbf7ca6e825169afdf63dce02d"
           },
           "scope": "Owned callback/name lifetime, bounded wide public offset registry, actual init failure; raw/rewrite and both statistics profiles",
           "limitations": "Other cache/assertion/page-advice profiles and exact native-error Jai location provenance unresolved",
@@ -175049,10 +175104,11 @@
           "module": "internal/bindings/rpmalloc-heaps",
           "status": "partial_public_canonical_heap_adapter",
           "artifacts": {
-            "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "b2d245e3d5c4b700b17f719f9fdd3495971fae0a086212afdcbd63548fc2dd6b",
-            "stdlib/internal/bindings/rpmalloc-heaps/layout-probes.inc": "f6e3db8ead78681e458a4d3a9d172f2817cfe086b7a0b346d00b6174b2722f47",
-            "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "80b80dff134244ce0ea67d727e9036987340ee51330b84e0fbb65b3d7d25e99f",
-            "stdlib/internal/bindings/rpmalloc-heaps/public-layout.h": "daec500093fd19e35e650bb5f26891b7ad898f1f1ada0b09e94193af09cb4eca",
+            "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "6be01cc0c2441806f524e1f6c1b0b281b0726b94c498ed0f09f19f030ed425d9",
+            "stdlib/internal/bindings/rpmalloc-heaps/heap-snapshot.inc": "924de912ceae68dc7a9e3f850fe9c6cd378c8a0284ffa3c134590e34d2019dac",
+            "stdlib/internal/bindings/rpmalloc-heaps/layout-probes.inc": "840ba9929bf90075a9c02627de6d2b654ec44a30efe6b86f7df359dd66d317a1",
+            "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "ffb66ce99f4bf1e0baeaa537d56abf6ba77b3338a29931e640d57400bf7a481e",
+            "stdlib/internal/bindings/rpmalloc-heaps/public-layout.h": "626ba6cefda0f83aa139209d929e1fa1f5408747c0410f6c0d570227a9737b4a",
             "stdlib/internal/bindings/rpmalloc-heaps/sdk-page-granularity.patch": "4ee8af6bc941251310da5ccea8810c158eeb8152b6960923a9d5a9e5a05394ff"
           },
           "scope": "Separate canonical reviewed raw/rewrite records, actual atomic members, private typed native ownership, real SDK counters, span graph and unmap-driven retirement; both statistics profiles",
