@@ -12,8 +12,8 @@ This ledger records partial completion, not full integration.
 | load_table_of_contents/load_table_of_contents_only | Direct parsing and real tail reads; interpreter/native O0/O2 |
 | Ico_File size helpers | Exact unusual reviewed formulas; interpreter/native vector |
 | create_ico_file | Provisional single-frame encoder; LLVM RC accepts RGB/RGBA; sips decodes 16x16 |
-| create_ico_file_from_bitmap_filename | Real File/stb backend; execution pending; frame policy unresolved |
-| Subtitles all exports | Pending; grammar/render contracts ready |
+| create_ico_file_from_bitmap_filename | Real File/stb backend; interpreter/native O0/O2 Unicode BMP and errors; frame policy unresolved |
+| Subtitles all exports | Implemented supported contracts; [per-API evidence](portable-subtitles.md); interpreter/native O0/O2 and compiled WASI; narrow questions remain |
 | Windows_Resources all exports | Pending; defaults/policies unresolved; native Windows required |
 | Icon all exports | Pending; plugin host protocol unresolved |
 

@@ -18,3 +18,10 @@ layout remains unspecified. Real File/stb loading execution remains pending.
 Subtitles grammar/render contracts are ready for implementation. Resource defaults
 and Icon host protocol still need review; focused remaining questions are ready at
 docs/specs/questions/portable-data.md. See the per-API ledger.
+
+Subtitles now implements all exports with live public CSV storage, real grammar,
+selection, serialization, HTML and CSV. Interpreter/native O0/O2 pass, compiled
+WASI passes filesystem tests. Package compiled WASI also passes. Broader package
+checks cover every truncation, UTF-8 names, empty-package rejection, huge counts/
+lengths, negative extents and TOC-only overlap. Python independently reads emitted
+package and CSV. Real stb filename loading passes interpreter/native O0/O2.
