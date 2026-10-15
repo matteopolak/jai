@@ -1,5 +1,5 @@
 // Independent explicit-conversion/SDK encoding checks; no stdlib imports.
-// Prefix-cast/shift grouping without parentheses is a separate unresolved oracle.
+// Prefix casts include shifts; narrow shift result promotion remains unspecified.
 widen_then_shift :: (value: u8) -> u32 #no_context {
     return (cast(u32) value) << 8;
 }
@@ -12,7 +12,7 @@ encode_control :: (group: u8, command: u8) -> u32 #no_context {
     return 0x80040000 | ((cast(u32) group) << 8) | (cast(u32) command);
 }
 
-// Observation only: do not turn the current parse/width into a reference oracle.
+// Observation only: do not turn the current numeric width into a reference oracle.
 prefix_shift_observation :: (value: u8) -> u32 #no_context {
     return cast(u32) value << 8;
 }

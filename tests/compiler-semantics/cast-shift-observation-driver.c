@@ -1,4 +1,4 @@
-// This prints an observation; it does not assert an unreviewed Jai grouping rule.
+// This prints an observation; it does not assert an unreviewed narrow shift width.
 #include <inttypes.h>
 #include <stdio.h>
 #ifdef _WIN32

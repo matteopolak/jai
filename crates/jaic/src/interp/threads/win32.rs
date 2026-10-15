@@ -166,7 +166,8 @@ fn compare_handles_api() -> Option<CompareHandles> {
 }
 
 #[cfg(windows)]
-#[link(name = "ucrt")]
+// These symbols belong to the same CRT that Rust std selects (crt-static or dynamic).
+// An explicit ucrt import library would mix DLL UCRT with a /MT static Rust/LLVM build.
 unsafe extern "C" {
     fn _beginthreadex(
         security: *mut std::ffi::c_void,

@@ -1,4 +1,4 @@
-# Prefix casts and shift widths: independent reduction
+# Reviewed prefix casts and open narrow shift widths
 
 The queued Windows control encoding issue remains reproduced. No Socket module
 is imported and no peer source was edited. The only producer document read for
@@ -13,23 +13,23 @@ Evidence: target/cast-shift-control-observation.log records the failing proposed
 assertion; target/cast-shift-native-{o0,o2}-observation.log records actual values.
 Neither observation is asserted as a compatibility oracle in the green tests.
 
-The root is currently frontend grouping/type selection, not an LLVM-only
+The observed result comes from frontend grouping/type selection, not an LLVM-only
 optimization defect. parser/expr.rs::parse_cast_value includes shifts and bitwise
 operators inside a prefix cast. sema/expr.rs checks an ordinary typed cast operand
 without propagating the destination type; a shift takes its typed left operand's
 width. Thus cast(u32) group << 8 is currently cast(u32) (group << 8), shifting a
 byte before widening. Parentheses around the cast explicitly widen first.
-Existing parser expectations express this baseline grouping but do not establish
-reference semantics. No precedence or inward type-propagation change was made.
+The refreshed reviewed language page now establishes this grouping and bottom-up
+operand typing. Current parsing agrees with that contract and is not a compiler
+defect. No precedence or inward type-propagation change is appropriate.
 
-The reviewed core language page establishes explicit conversions and constrained
-implicit conversions. It does not settle prefix cast/shift grouping or whether
-the outer cast may change the width of an already typed inner shift. The readiness
-page explicitly leaves complete expression precedence open. Compiler questions
-now requests exactly those two decisions, with this independent reduction. The
-correct SDK constant alone cannot choose a Jai grammar rule: C's integer
-promotions and cast precedence are separate language rules. This remains an open
-compiler compatibility dependency, not a completed fix or a blessed failed test.
+The reviewed core page leaves only numeric narrow-shift promotion unresolved:
+does shifting a typed u8 preserve that width or promote the result? The question
+document is narrowed to that rule. The correct SDK constant alone cannot choose
+a Jai numeric rule; C integer promotions are separate. Explicit word operands in
+the producer's private Socket encoder are appropriate. No compiler semantic fix
+is claimed while the numeric rule remains unspecified. Prior observations and
+failing proposed expectations remain evidence, not compatibility assertions.
 
 ## Executed supported behavior
 
@@ -47,7 +47,7 @@ LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm PATH=/opt/homebrew/opt/llvm/bin:$PATH
 ```
 
 The standalone C observation driver links the backend's own program.o, executes
-the valid checks and prints the ambiguous prefix result without asserting it:
+the valid checks and prints the unresolved numeric result without asserting it:
 
 ```sh
 clang -std=c11 -Wall -Wextra -Werror tests/compiler-semantics/cast-shift-observation-driver.c target/cleanroom-execution/cast-shift-widths-false-false/program.o -o target/cast-shift-observation-o0

@@ -34,6 +34,7 @@ Jai language behavior as implemented by `jaic`.
 - [Full available compiler suite and triage](compiler/full-suite-triage.md)
 - [Native interpreter thread entry and ownership](compiler/windows-thread-entry-lifecycle.md)
 - [Windows SDK runtime resolution and native build gate](compiler/windows-sdk-runtime-resolution.md)
+- [Windows compiler CRT selection and tool build gate](compiler/windows-crt-linkage.md)
 - [Independent cast/shift reduction and open grammar contract](compiler/cast-shift-widths.md)
 - [Checked expression result metadata](compiler/typed-expression-metadata.md)
 - [Real x64 CPUID execution](compiler/cpuid.md)

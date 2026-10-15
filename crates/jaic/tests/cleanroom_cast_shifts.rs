@@ -1,4 +1,4 @@
-//! Independent explicit widening/SDK bit encoding; ambiguous prefix grouping is not an oracle.
+//! Explicit widening/SDK encoding; narrow shift promotion remains unreviewed.
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 
