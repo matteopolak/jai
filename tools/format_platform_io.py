@@ -18,6 +18,8 @@ OWNED = [
     "stdlib/internal/runtime/windows-arguments.jai", "stdlib/Runtime_Support_Crash_Handler/module.jai",
     "stdlib/internal/runtime/windows-crash-types.jai", "stdlib/internal/runtime/windows-crash-handler.jai",
     "stdlib/internal/runtime/windows-arm64-crash",
+    "stdlib/internal/runtime/windows-crash-cleanup",
+    "docs/repros/platform-io-windows-thread-description.jai",
     "tests/platform-io",
 ]
 

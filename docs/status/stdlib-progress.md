@@ -1,5 +1,13 @@
 # Portable stdlib progress
 
+Platform-io e8c312d: private ARM64 native startup/fault OFF/ON/default O0/O2 now
+passes all 12 cases. x64 four enabled faults and interpreter thread output on both
+CPUs remain open, with exact own-output request pending. Added private x64 session
+isolation/runtime cleanup, original SDK walk/lifecycle probes, named-frame quality
+tests and exact result capture. Local host/cross checks and strict 49-file lint
+pass; new native behavior is not claimed verified. See
+[current follow-up](../platform-io-e8c312d-follow-up.md).
+
 Platform-io 0100a1f follow-up: actual signed-wheel/argv tests pass on both Windows
 CPUs; ARM64 Platform passes. x64's interpreter PE assertion wrongly treated tagged
 procedure IDs/heap globals as native image sections. Shared tests now use real SDK

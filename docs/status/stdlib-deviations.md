@@ -1,5 +1,11 @@
 # Portable stdlib worker deviations
 
+Platform-io e8c312d records real ARM64 crash positives separately from open x64
+enabled-fault/thread-output failures. Its private x64 cleanup, additional SDK/named
+trace tests, exact own-result capture and compiler real-thread-handle reproducer
+are documented in [platform deviations](platform-io-deviations.md). No output or
+fault assertions were weakened; new native checks still need execution.
+
 Platform-io 0100a1f fixture correction and its original SDK oracle dependency are
 recorded in [platform deviations](platform-io-deviations.md). Native PE assertions
 remain mandatory; interpreted IDs/heap globals are checked against actual SDK

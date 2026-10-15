@@ -1,5 +1,43 @@
 # Platform I/O deviations and pending verification
 
+## e8c312d native follow-up (supersedes older verification statements)
+
+- Actual private ARM64 native OFF/ON/default startup/fault O0/O2 positives now exist
+  (12 cases, run38662728329). They do not establish the newly added named-symbol
+  tests or later x64 cleanup behavior. x64 four enabled fault cases and both CPUs'
+  interpreter thread output remain genuine open failures; exact own-output request
+  is pending. No raw/vendor logs were read or native positives discarded.
+- x64 had no private normal-runtime shutdown and keyed DbgHelp with the public
+  pseudo-handle. The backend now keeps public identity unchanged and duplicates
+  it for a unique native session; private entry cleanup restores filter/mode and
+  checks SymCleanup/CloseHandle. Failed setup closes partial ownership, and failures
+  remain explicit. External DbgHelp calls must still be serialized with this
+  backend by the application: our lock covers our own calls, not unknown modules.
+  Process-global filter/mode replacement has the same native API race/coordination
+  limit as ARM64. Proper long-term crash isolation is an out-of-process reporter.
+- New native SDK session-isolation/cleanup test and StackWalk first-step probe
+  require execution on x64. Cross-linking proves neither unwind quality nor native
+  cleanup. The added named-fault fixture uses genuine exported non-inlined functions
+  and post-call work to retain both frames. Original windows-fault remains intact.
+  ON checks require both named frames; no symbol names or addresses are fabricated.
+- Diagnostic parser tests use explicit synthetic protocol bytes to check rejection
+  of wrong status/output/truncated traces/missing symbols/failure notices. These
+  are unit tests only, not successful native faults. The runner writes only own
+  fixture results (raw bytes and JSON, no environment/auth/vendor logs) for precise
+  coordinator filtering. Existing strict output comparison remains.
+- Source evidence identifies virtual interpreter thread handles passed into a real
+  SetThreadDescription call. Naming success is not stubbed, logging is not muted,
+  and SET_THREAD_NAMES remains true. A minimal original SDK reproducer is retained
+  in docs/repros with format/lint/source checking. Native/interpreter execution is
+  pending; it is not a positive fixture claiming the compiler gap fixed. Proper
+  fix is general real kernel backing, native thread identity and exactly-once handle
+  closure while retaining scheduler gates/waits. No peer checkout was modified.
+- Thread naming follows SDK APIs with Windows 10 version 1607 minimum (that first
+  release requires KernelBase dynamic linking). Current direct Kernel32 bindings
+  target modern CI Windows; no older-version guarantee is claimed. ARM64 crash
+  RtlVirtualUnwind2 API minimum remains Windows 11/Server 2022, requiring the actual
+  export on native ARM64 Windows; this is not an ARM64 Server SKU claim.
+
 ## 0100a1f CI / corrected execution-mode fixture assumption
 
 - Actual evidence: signed-wheel/argv startup passes on both CPUs; ARM64 Platform
