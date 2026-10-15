@@ -5,11 +5,11 @@
   },
   "stdlib": {
     "ref": "producer/stdlib",
-    "commit": "43f1d1fd4f582c4ff7ecea60257c546ae921d934"
+    "commit": "31e453e4e36f4a51bdeb82dc2205d4fc63bbaaa2"
   },
   "bindings": {
     "ref": "producer/bindings",
-    "commit": "40e37e93bc48238bc39cb6c1fdc0266c774d075c"
+    "commit": "4137f3c62d367ec83d932dc1a375d6940142902e"
   },
   "numerics": {
     "ref": "producer/numerics",
@@ -25,14 +25,22 @@
   },
   "foundations": {
     "ref": "producer/foundations",
-    "commit": "f9cd1c3fefe814b47b433339b08230c0108acc95"
+    "commit": "5c5e27b93c605b00590a68d594d255dd5a35e0a1"
   },
   "window-render": {
     "ref": "producer/window-render",
-    "commit": "bfd1c5c65ed2bef501a4cfd0fbd16ff52793eb38"
+    "commit": "37d38399ed120de477116e52125b89b0706ff0b5"
   },
   "platform-io": {
     "ref": "producer/platform-io",
-    "commit": "e40c41276a33ac9b59aa2d896c75b276b543ff34"
+    "commit": "2cdbd9ba2402edae8703ad05d7be7c16257c060e"
+  },
+  "audio": {
+    "ref": "codex/stdlib-audio",
+    "commit": "7d641f82db5cb7f6558ed9c319c4e261b106a92a"
+  },
+  "stdlib-tools": {
+    "ref": "codex/stdlib-developer-tools",
+    "commit": "a553de2fc3d7ad6b9248681fb838863912fc798b"
   }
 }
