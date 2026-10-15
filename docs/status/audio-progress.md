@@ -172,3 +172,32 @@ only NEW tests with tests/audio/manifest.json provenance and migration.json.
 Independent dirty review is requested, not claimed complete. See audio-testing.md.
 Coordinator native packaging/CI, physical events, Windows ARM64 SDK and Android
 compiler/backend remain pending. No peer/manifest changes or Extensions edits.
+
+Cross-platform checkpoint after 11bc663: tools/audio_cross_link.py now emits
+self-contained packages for five NEW fixtures (phase, compressed decode, borrowed
+regions, controlled routing and signatures) in O0/O2. macOS x64 and Windows x64
+executables link successfully and their Mach-O/PE OS/CPU headers are checked.
+Windows remains unexecuted. macOS x64 executes through installed Rosetta on this
+ARM64 host: all ten fixture binaries plus four logical 6/8 O0/O2 variants pass.
+This is translated runtime evidence, not physical x64 hardware. A standalone
+package runner also exercises the matching ARM64 package without compiler/stdlib
+source or loader overrides. Package hashes, assets, licenses and run.py are staged
+inside this worktree for normal coordinator native CI.
+
+Windows ARM64 adapter, SDK harness and opaque decoder objects compile with Clang's
+real ARM64 target and common public MinGW headers, with OS/CPU checked. No ARM64
+CRT/library link or runtime is claimed. Clang exposed a genuine DLL-export
+attribute mismatch between declarations and definitions; producer exports are
+now consistently declared, with static consumers unmarked and no warnings
+suppressed. Host and Windows x64 native rebuilds pass, and the host silent SDK
+harness and full strict Jai suite pass after this correction. Native init cleanup
+failure is fatal rather than abandoning callback state; Android/other unsupported
+C targets are rejected explicitly instead of entering ALSA. Failure-path physical
+injection is not claimed.
+
+Invocation corrections are separate from production fixes: macOS cross-CPU
+builds require an explicit target triple; MinGW target archives use the documented
+JAIC_CROSS_LIBS rather than host native search variables. These failed attempts
+were corrected without changing compiler source or introducing a linker shim.
+Linux SDK/native execution, Windows native execution/ARM64 CRT, Android target
+and independent test review remain pending; the whole audio scope is not complete.

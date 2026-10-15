@@ -39,9 +39,9 @@ is explicitly labeled and is never treated as playback evidence.
 | Target | Build host/SDK | Actual evidence in this worker |
 | --- | --- | --- |
 | macos-arm64 | Apple ARM64 host, public macOS SDK | Owned C/ObjC and opaque decoder built; real silent SDK harness and relocated O0/O2 Jai tests run |
-| macos-x64 | Apple SDK with `-arch x86_64` | C/ObjC, decoder and SDK harness cross-built; not executed |
-| windows-x64 | Windows SDK + clang/LLVM, or MinGW-w64 | MinGW C/decoder/harness cross-built; not executed |
-| windows-arm64 | Windows ARM64 SDK + clang/LLVM | Build recipe and Jai source checks only; SDK unavailable here |
+| macos-x64 | Apple SDK with `-arch x86_64` | C/ObjC/decoder/harness and Jai O0/O2 cross-linked; translated Rosetta execution on ARM64, not physical x64 |
+| windows-x64 | Windows SDK + clang/LLVM, or MinGW-w64 | C/decoder/harness and Jai O0/O2 cross-linked as PE x64; not executed |
+| windows-arm64 | Windows ARM64 SDK + clang/LLVM | Owned/decoder/harness ARM64 objects compiled with common public MinGW headers; CRT/library link and runtime unavailable |
 | linux-x64 | Linux x64 libc + ALSA development SDK | Build recipe and Jai source checks only; runtime delegated to normal coordinator CI |
 | linux-arm64 | Linux ARM64 libc + ALSA development SDK | Build recipe and Jai source checks only; runtime delegated to normal coordinator CI |
 
@@ -154,3 +154,57 @@ Official SDK inputs: [Apple running-application state](https://developer.apple.c
 [Windows high-level default-device routing](https://learn.microsoft.com/en-us/windows/win32/coreaudio/getting-the-default-device-endpoint-for-stream-routing),
 [WinMM pause/restart](https://learn.microsoft.com/en-us/windows/win32/multimedia/stopping-pausing-and-restarting-playback)
 and [ALSA PCM recovery](https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html).
+
+
+## Cross-linked packages and translated evidence
+
+The durable cross linker builds five NEW fixtures in O0/O2, verifies executable
+OS/CPU headers, records hashes and stages a self-contained runtime package:
+
+```sh
+python3 tools/audio_cross_link.py --platform macos-x64 --artifacts target/audio-native/macos-x64
+python3 tools/audio_cross_link.py --platform windows-x64 --artifacts target/audio-native/windows-x64-mingw
+```
+
+For macOS cross-CPU codegen, the compiler requires an explicit target triple;
+the tool supplies x86_64-apple-macosx11.0. MinGW uses JAIC_CROSS_LIBS for target
+archives, separating them from host JAIC_NATIVE_LIBS. Initial attempts with
+cross -os macos/-cpu or host archive variables failed; these were invocation
+errors, not production defects. No compiler special case or linker workaround
+was introduced.
+
+Each target/audio-cross-link/<platform> folder contains executables, fixture data,
+license and run.py. Copy that NEW package to a matching normal CI host and run:
+
+```sh
+python3 run.py --require-device
+```
+
+Add --require-multichannel only when logical 6/8 formats are expected to be
+available. The standalone runner needs Python and OS dependencies, no compiler or
+stdlib source. It checks hashes/architecture and records runtime-result.json.
+Native and translated execution remain separate; a mismatched CPU/OS is rejected.
+
+On this ARM64 Mac, the installed Rosetta runner can additionally execute the x64
+fixtures and logical 6/8 paths:
+
+```sh
+python3 tools/audio_run_translated.py --require-device --require-multichannel
+```
+
+Its translated-runtime.json explicitly disclaims physical x64 hardware. The
+cross-link result stays link-only; the separate runtime record carries execution.
+No translator is installed by these tools.
+
+A separate object-only check uses Clang's real Windows ARM64 target and common
+public MinGW-w64 headers. Example for the installed public SDK (adjust its path):
+
+```sh
+python3 tools/audio_compile_objects.py --platform windows-arm64 --cc "clang --target=aarch64-w64-windows-gnu -isystem /path/to/mingw-w64/include"
+```
+
+It compiles/validates owned adapter, SDK harness and opaque decoder object headers,
+without claiming ARM64 CRT libraries, a linked DLL/executable or runtime. This
+check exposed inconsistent DLL-export attributes between declarations/definitions;
+the header now consistently marks producer exports and leaves static consumers
+unmarked. Clang warnings remain denied; no suppression was added.

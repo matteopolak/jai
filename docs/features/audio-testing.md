@@ -32,6 +32,13 @@ Jai targets. Per-target SDK commands and dependencies are in
 [native integration](audio-native-integration.md).
 
 Normal headless Linux CI should install its public ALSA development/runtime
+packages. Self-contained O0/O2 cross packages can instead be staged on matching
+CI hosts using audio_cross_link.py and their run.py, without compiler/stdlib
+source at runtime. Rosetta execution is recorded separately by
+audio_run_translated.py; it is not physical x64 evidence. Windows ARM64 object
+checks use audio_compile_objects.py and do not imply a CRT/library link.
+
+Normal headless Linux CI should install its public ALSA development/runtime
 packages and set JAI_AUDIO_ALSA_DEVICE=null. Native tests use the real ALSA null
 PCM. Windows requires a real/virtual endpoint for device evidence. SDK format
 availability can differ by device: omit --require-multichannel when 6/8-channel

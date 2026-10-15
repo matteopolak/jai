@@ -15,9 +15,10 @@ untouched. Native SDK/public C inputs are linked in the integration documentatio
   is never counted as Android. Reviewed AAudio hooks are private, not missing
   facade exports. PS5/Switch bodies are unavailable; nothing is inferred.
 - Host macOS ARM64 has actual silent SDK and Jai interpreter/native O0/O2 evidence.
-  macOS x64 and Windows x64 adapter/decoder/harness cross-build and link; neither
-  runs here. Linux x64/ARM64 and Windows ARM64 are SDK/recipe/source-check evidence
-  only. Linux ALSA recovery/rate-query code has not been compiled or run here.
+  macOS x64 also executes through Rosetta (not physical x64); Windows x64 adapter/
+  decoder/harness and Jai fixtures cross-link without execution. Windows ARM64
+  has SDK-header object compilation without CRT/library link. Linux x64/ARM64
+  remain recipe/source-check only; ALSA code has not compiled or run here.
 - Six desktop build/CI recipes and relocated host tests are self-contained.
   Shared manifest adoption and normal coordinator native CI remain pending.
   No shared manifest or peer source was edited. Static native executables embed
@@ -113,3 +114,25 @@ untouched. Native SDK/public C inputs are linked in the integration documentatio
   suppression. Owned C/ObjC builds use -Werror and Jai uses warnings-denied lint.
   A native rebuild briefly overlapped verification; final verification is repeated
   against completed immutable artifacts, excluding mixed-phase evidence.
+
+## Cross-platform refinement after 11bc663
+
+- macOS x64 now has real translated Rosetta execution on this ARM64 host, clearly
+  separated from physical x64 hardware. Ten O0/O2 fixture binaries and four
+  logical 6/8 variants run successfully. Windows x64 has ten cross-linked PE
+  fixture binaries with checked machine headers; none is executed here.
+- Windows ARM64 now has actual adapter/SDK-harness/opaque-decoder object compilation
+  using a real ARM64 compiler target and common public MinGW headers. ARM64 CRT
+  libraries, a linked package and native execution remain unavailable. This is
+  object evidence, not substitution of an x64 binary or a full ARM64 SDK claim.
+- Clang's warnings-denied object check found inconsistent dllexport declarations.
+  Header and producer definitions now match; consumers remain plain static
+  declarations. No compiler warning suppression or ABI/type change was used.
+- Cross command configuration initially used unsupported macOS -os/-cpu native
+  flags and host archive variables for MinGW. Explicit -target and JAIC_CROSS_LIBS
+  are the source compiler's documented mechanisms; no shared compiler fix was
+  needed. Durable cross/package/translated runners record each evidence kind.
+- Native initialization cleanup failure now emits its real SDK status and aborts
+  instead of losing ownership of possibly retained callback state. Unsupported
+  Android C targets fail explicitly; no ALSA substitute is built. These exceptional
+  cleanup paths are source-checked, not physically fault-injected.
