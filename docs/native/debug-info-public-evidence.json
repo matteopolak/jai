@@ -1,0 +1,378 @@
+{
+  "scope": "public DWARF4 parser metadata compared with relocated original SDK objects; public MSF streams compared with SDK exports; Mac interpreter/native O0/O2",
+  "dwarf": [
+    {
+      "architecture": "x86",
+      "optimization": 0,
+      "types": [
+        {
+          "offset": 38,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 112,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 117,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 128,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 8,
+          "encoding": null
+        },
+        {
+          "offset": 161,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 168,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 4,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 175,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "55c90c3d73e14a7c9bc48edec3ca7471c4b86e3727fb1f25d133b1a4b4d18c23",
+        "abbrev": "0e8859311b8d0a2ed1447546f04e15d473f751755117965d83eb0a017c7078f3",
+        "line": "8b6238c4d147ad57cc48030e7dc0e11553bef4bc024816d11db642642cc0a6ee",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    },
+    {
+      "architecture": "x86",
+      "optimization": 2,
+      "types": [
+        {
+          "offset": 38,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 115,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 120,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 131,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 8,
+          "encoding": null
+        },
+        {
+          "offset": 164,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 171,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 4,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 178,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "96b2339d8fdc44a489d50830b1f64405735ff7293933ab09dda58400eb351658",
+        "abbrev": "e4f14a482b3316988f97d19a30894a2124033bb369e70c88facd35aaa68dcc06",
+        "line": "f00f417bd2b1f948dffb553c36c4bbe88ee63f8e520b0a80e5d957c7dae29cb6",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    },
+    {
+      "architecture": "x64",
+      "optimization": 0,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 124,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 129,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 140,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 173,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 180,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 187,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "5a9815eab2b4d675f3045f7c543b8e71624c6a3f74530296a02f994a9bdec2ee",
+        "abbrev": "0e8859311b8d0a2ed1447546f04e15d473f751755117965d83eb0a017c7078f3",
+        "line": "80873eb5d925fd4486e0ce83bb4d35fb00e143e712ef5dbd23d91154b8953b73",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    },
+    {
+      "architecture": "x64",
+      "optimization": 2,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 122,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 127,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 138,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 171,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 178,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 185,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "dcd76e5edab749be5346f089229e1010813a002bb759e0e3269be902173d2062",
+        "abbrev": "e4f14a482b3316988f97d19a30894a2124033bb369e70c88facd35aaa68dcc06",
+        "line": "eab81c76ee3857d9f7f13df35e2442e7b4f5170eb875ad2b30f73f25cb56e8a6",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 0,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 124,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 129,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 140,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 173,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 180,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 187,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "1caf40dc40c2fe99fd0c6f170a079daa3e7a4fefaa69ff38400d0cd7f37f4760",
+        "abbrev": "0e8859311b8d0a2ed1447546f04e15d473f751755117965d83eb0a017c7078f3",
+        "line": "4beb710134141a1f822c9c55a575eb736c357454090b619fea76bbdde61043e2",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 2,
+      "types": [
+        {
+          "offset": 42,
+          "tag": "BASE_TYPE",
+          "name": "double",
+          "size": 8,
+          "encoding": "FLOAT"
+        },
+        {
+          "offset": 122,
+          "tag": "VOLATILE_TYPE",
+          "name": "",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 127,
+          "tag": "TYPEDEF",
+          "name": "Original_Type_Alias",
+          "size": 0,
+          "encoding": null
+        },
+        {
+          "offset": 138,
+          "tag": "STRUCTURE_TYPE",
+          "name": "Original_Type_Pair",
+          "size": 16,
+          "encoding": null
+        },
+        {
+          "offset": 171,
+          "tag": "BASE_TYPE",
+          "name": "int",
+          "size": 4,
+          "encoding": "SIGNED"
+        },
+        {
+          "offset": 178,
+          "tag": "BASE_TYPE",
+          "name": "unsigned long",
+          "size": 8,
+          "encoding": "UNSIGNED"
+        },
+        {
+          "offset": 185,
+          "tag": "BASE_TYPE",
+          "name": "unsigned char",
+          "size": 1,
+          "encoding": "UNSIGNED_CHAR"
+        }
+      ],
+      "sections": {
+        "info": "994315cd2fd97739a1995bf0faf0b5d48bd3997a8358d85adbb4b89de18c4ec3",
+        "abbrev": "e4f14a482b3316988f97d19a30894a2124033bb369e70c88facd35aaa68dcc06",
+        "line": "169fec7f90268637ef7d9cca68c3d2996aafca769ef7353592c381012ff2827f",
+        "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
+      }
+    }
+  ],
+  "verification": [
+    "formatter",
+    "strict lint",
+    "interpreter",
+    "native O0",
+    "native O2"
+  ]
+}
