@@ -2,6 +2,36 @@
 
 ## Production strict-lint field type correction
 
+## Native linking and test-oracle audit
+
+- `tools/native_bindings/config.py` incorrectly mapped the Windows private `gl`
+  and `gdi` library tokens to nonexistent DLL/import-library names. The generator
+  now selects opengl32/gdi32, retaining public foreign signatures and token names.
+  Generated Windows sources pass regeneration/idempotence; public signed-wheel
+  renderer fixtures now actually cross-link x64 O0/O2. These are PE builds, not
+  Windows execution or ARM64 link/runtime evidence.
+- `stdlib/Adpcm/module.jai` exported five aggregate field names as nonexistent
+  module globals. Reviewed Adpcm lists these only as record members. Removing
+  the invalid aliases retains every real public declaration and record field;
+  both Windows no-DCE profiles pass and a negative public-scope regression is
+  retained. This corrects the facade rather than inventing fake global storage.
+- `tests/portable-stdlib/unmapping-allocator.jai` now uses a precise native C
+  memset/signal oracle in each isolated fork child. Guarded intrinsics and foreign
+  fault containment correctly turn invalid writes into interpreter errors, so
+  they cannot serve as the native-signal oracle. Restoring default SIGBUS/SIGSEGV
+  disposition only in the child preserves all original mandatory signal, lifetime,
+  allocation-failure and concurrent cleanup assertions. Interpreter and native
+  O0/O2 pass; separate compiler tests require guarded intrinsic errors.
+- The native signal setup revealed macOS `POSIX.signal`'s reviewed three-argument
+  declaration does not match the native two-argument C ABI. The fixture declares
+  the official C ABI privately; it does not claim the public facade safe or fixed.
+  Binding ownership/review must resolve a safe public adapter/diagnostic without
+  guessing meanings for unknown parameters. This ABI gap remains visible.
+- A local empty-C-argv runtime proposal was tested and saved under ignored own
+  artifacts, then removed from the source tree because the active platform owner
+  is implementing the interpreter hook fix. It is not production proof; zero-arg
+  Windows startup remains a coordinator-reported failure pending that checkpoint.
+
 The merged producer IDE layout ordering fix was insufficient for
 `tests/platform-io/layout-contract.jai`: actual jailint and a new production-library
 Rust regression retained a circular INFO_SIZE dependency. Bare/type-qualified
