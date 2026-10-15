@@ -45,7 +45,7 @@ main :: () {
 
     B.clang_visitChildren(root, visit, *capture);
     defer array_free(capture.children);
-    assert(capture.children.count == 9);
+    assert(capture.children.count == 12);
     generator: B.Generator;
     generator.translation_unit = unit;
     session := S.open(*generator, B.TARGET_OS);
@@ -140,6 +140,35 @@ main :: () {
         substituted_pointer := B.create_type_inner(B.clang_getCursorType(fields.children[3]), root, false, substitute_children = pointer_refs.children);
 
         assert(substituted_pointer.pointer_to.type_of_declaration == parameter);
+        overloads := B.create_namespace(capture.children[9]);
+
+        assert(overloads.declarations.count == 4);
+        equivalent_a := cast(*B.Function) overloads.declarations[0];
+        equivalent_b := cast(*B.Function) overloads.declarations[1];
+        distinct_a := cast(*B.Function) overloads.declarations[2];
+        distinct_b := cast(*B.Function) overloads.declarations[3];
+
+        assert(B.functions_are_equivalent(equivalent_a, equivalent_b));
+        assert((equivalent_b.decl_flags & .OMIT_FROM_OUTPUT) != 0);
+        assert(!B.functions_are_equivalent(distinct_a, distinct_b));
+        collision, _other := B.find_name_clash(overloads.declarations, cast(*B.Declaration) distinct_b, true);
+
+        assert(!collision);
+        outer := B.create_struct(capture.children[10]);
+
+        assert(outer != null && outer.template_type_params.count == 2 && outer.declarations.count == 1);
+        inner := outer.declarations[0].type.pointer_to;
+
+        assert(inner.type_of_struct == record && inner.template_instantiation_params.count == 2);
+        assert((cast(*B.Type_Reference) inner.template_instantiation_params[0]).type.type_of_declaration == outer.template_type_params[0]);
+        assert((cast(*B.Type_Reference) inner.template_instantiation_params[1]).type.type_of_declaration == outer.template_type_params[1]);
+        recursive := B.create_struct(capture.children[11]);
+
+        assert(recursive != null && recursive.declarations.count == 1);
+        next := recursive.declarations[0].type.pointer_to;
+
+        assert(next.type_of_struct == recursive && next.template_instantiation_params.count == 1);
+        assert((cast(*B.Type_Reference) next.template_instantiation_params[0]).type.type_of_declaration == recursive.template_type_params[0]);
 
         push_context {
             context.logger = log;

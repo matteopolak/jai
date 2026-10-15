@@ -12,3 +12,11 @@ OriginalGeneric<OriginalGeneric<int, double> *, const int> *original_nested_inst
 OriginalGeneric<int, double> original_concrete;
 struct OriginalTwoBases : OriginalGeneric<int, double>, OriginalGeneric<double, int> {};
 OriginalGeneric<int, double> original_template_aggregate = { 1, nullptr, nullptr };
+namespace OriginalTemplateOverloads {
+void equivalent(OriginalGeneric<int, double> *);
+void equivalent(OriginalGeneric<int, double> &);
+void distinct(OriginalGeneric<int, double> *);
+void distinct(OriginalGeneric<double, int> *);
+}
+template<typename V, typename W> struct OriginalOuter { OriginalGeneric<V, W> *inner; };
+template<typename T> struct OriginalRecursive { OriginalRecursive<T> *next; };
