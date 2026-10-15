@@ -50,13 +50,24 @@ def main():
                 item["implementation"] = "supported subset; see developer-tools-deviations.md"
         if module == "Bindings_Generator":
             models = set()
+            abi_evidence = ROOT / "docs/native/developer-tools-native-abi-evidence.json"
+            abi_names = set()
+            if abi_evidence.exists():
+                for comparison in json.loads(abi_evidence.read_text())["native_expressions"]:
+                    abi_names.update(re.findall(r"B\.([A-Za-z_][A-Za-z_0-9]*)", comparison["jai"]))
+            extended_apis = set(re.findall(r"^\s*(clang_[A-Za-z_0-9]*)\s*::",
+                                           (ROOT / "stdlib/Bindings_Generator/native-extended-api.jai").read_text(), re.MULTILINE))
             for path in (ROOT / "stdlib/Bindings_Generator").glob("*.jai"):
                 models.update(re.findall(r"^\s*([A-Za-z_][A-Za-z_0-9]*)\s*::", path.read_text().split("#scope_file")[0], re.MULTILINE))
             for item in declarations:
                 if item["name"] in models or item["name"] == "TARGET_OS":
                     item["implementation"] = "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
+                    if item["name"] in abi_names:
+                        item["implementation"] = "reviewed native record/enum ABI; host official SDK size/alignment/member offsets/enum values verified; target runtime pending"
                 if item["name"].startswith("clang_") and item["name"] in models:
                     item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
+                    if item["name"] in extended_apis:
+                        item["implementation"] = "reviewed direct native binding implemented; source-checked only, direct invocation remains unverified"
                 if item["name"] in {"set_ExcludeDeclarationsFromPCH", "get_ExcludeDeclarationsFromPCH",
                                      "set_DisplayDiagnostics", "get_DisplayDiagnostics",
                                      "set_StorePreamblesInMemory", "get_StorePreamblesInMemory"}:

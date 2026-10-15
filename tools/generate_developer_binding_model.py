@@ -133,6 +133,43 @@ def main():
             source += "#if OS == .WINDOWS {\n" + windows + "} else {\n" + unix + "}\n"
     source += '\n#scope_file\nlibclang :: #foreign_library "../internal/developer-tools/clang-bindings/clang";\n'
     (directory / "native-parser-api.jai").write_text(source)
+    # The remaining native reexports are ABI bindings, not generator algorithms.
+    # Sort independently of inventory order and retain exact reviewed signatures.
+    reviewed = {}
+    for platform, inventory in [("Unix", unix_inventory), ("Windows", windows_inventory)]:
+        reviewed[platform] = dict(re.findall(r"^- `([A-Za-z_][A-Za-z_0-9]*) :: ([^`]+)`", inventory, re.MULTILINE))
+    implemented = {name for names in groups.values() for name in names} | set(api_names) | {"CXFile"}
+    extended_models = "// Additional reviewed native ABI types; no native implementation bodies are reproduced.\n\n"
+    extended_api = "// Additional reviewed native ABI reexports. Invocation coverage is tracked separately.\n\n"
+    for name in sorted(set(reviewed["Unix"]) | set(reviewed["Windows"])):
+        if name in implemented:
+            continue
+        variants = {platform: reviewed[platform].get(name) for platform in reviewed}
+        if any(value and re.search(r"\btime_t\b", value) for value in variants.values()):
+            continue  # Missing reviewed type dependency; see precise question12.
+        bodies = {}
+        for platform, declaration in variants.items():
+            if declaration is None:
+                bodies[platform] = ""
+            elif declaration.startswith(("struct", "enum", "union")):
+                bodies[platform] = aggregate(text, name, platform)
+            elif "#foreign libclang" in declaration or not declaration.startswith("("):
+                bodies[platform] = f"{name} :: {declaration};\n"
+            else:
+                bodies[platform] = ""  # Non-native helper needs its own implementation.
+        if bodies["Unix"] == bodies["Windows"]:
+            body = bodies["Unix"]
+        else:
+            body = "#if OS == .WINDOWS {\n" + bodies["Windows"] + "} else {\n" + bodies["Unix"] + "}\n"
+        if not any(bodies.values()):
+            continue
+        if name.startswith("clang_"):
+            extended_api += body + "\n"
+        else:
+            extended_models += body + "\n"
+    (directory / "native-extended-model.jai").write_text(extended_models)
+    extended_api += '\n#scope_file\nlibclang :: #foreign_library "../internal/developer-tools/clang-bindings/clang";\n'
+    (directory / "native-extended-api.jai").write_text(extended_api)
     # Exact compatibility arrays are specified in the reviewed refinement.
     names = ["RESERVED_NAMES", "RESERVED_TYPE_NAMES", "TYPEDEFS_TO_UNWRAP", "TYPEDEF_PREFIXES_TO_UNWRAP", "MACROS_TO_IGNORE"]
     constants = []
@@ -163,7 +200,8 @@ def main():
     generated = [
         directory / filename for filename in ["type-model.jai", "declaration-model.jai", "generation-options.jai",
                                                "model-flags.jai", "native-model.jai", "compatibility-names.jai",
-                                               "compatibility-tokens.jai", "native-parser-model.jai", "native-parser-api.jai"]]
+                                               "compatibility-tokens.jai", "native-parser-model.jai", "native-parser-api.jai",
+                                               "native-extended-model.jai", "native-extended-api.jai"]]
     subprocess.run([str(ROOT / "target/jaifmt"), "--config", str(ROOT / "jaifmt.toml"),
                     *[str(path) for path in generated]], cwd=ROOT, check=True)
     print("Generated thematic public model files and exact reviewed compatibility arrays")

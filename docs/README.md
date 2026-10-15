@@ -215,7 +215,7 @@ The WebAssembly compiler bundle and its releases. The hosted playground UI lives
 
 ## Tools and workflow
 
-- [Developer tooling](developer-tools.md): reflected C headers, libclang callbacks/tokens/virtual overlays/module maps, debug bit sets and staged native MSF parsing; [test provenance and commands](developer-tools-testing.md), [progress](status/developer-tools-progress.md) and [deviations](status/developer-tools-deviations.md).
+- [Developer tooling](developer-tools.md): reflected C headers, reviewed libclang native ABI probes/callbacks/overlays/module maps, debug bit sets and staged native MSF parsing; [test provenance and commands](developer-tools-testing.md), [progress](status/developer-tools-progress.md) and [deviations](status/developer-tools-deviations.md).
 
 Scripts, CI and project policies.
 

@@ -1,0 +1,5906 @@
+{
+  "scope": "host official SDK layouts and enum values; opaque pointees and direct procedure invocation excluded",
+  "assertions": 1176,
+  "sdk_prefix": "/opt/homebrew/opt/llvm",
+  "sdk_headers_sha256": {
+    "/opt/homebrew/opt/llvm/include/clang-c/BuildSystem.h": "d2881516aa13442a5e139eac3f83d7413b5044514b91ba85d7f0e3a3ed881fba",
+    "/opt/homebrew/opt/llvm/include/clang-c/CXCompilationDatabase.h": "38207d300ba333f08ef0c4eb75d265e2a85b0dff2376d1687a73f81e6cab4b76",
+    "/opt/homebrew/opt/llvm/include/clang-c/CXDiagnostic.h": "38ebaab016fd4faf9df6d2fc0c7e8dfffd8ae1740ae9126c077063a453b90afe",
+    "/opt/homebrew/opt/llvm/include/clang-c/CXErrorCode.h": "fbcc4225b3dd36e6cb1a90d26472522ccd9fe3d78e65b99d820181c9a624539b",
+    "/opt/homebrew/opt/llvm/include/clang-c/CXFile.h": "5c23551b7a08863501c992bda30d4fcc1b928a6881eca693a82f17b11a739e3c",
+    "/opt/homebrew/opt/llvm/include/clang-c/CXSourceLocation.h": "a1918b043df970ada2540d34cdbe7399f50d2c81bdc3c2cfd2296efc1c67622f",
+    "/opt/homebrew/opt/llvm/include/clang-c/CXString.h": "c82e38b8283c1f9d39ac0637d74f2ef4ead933fc344b880688e5ea2a7f321316",
+    "/opt/homebrew/opt/llvm/include/clang-c/Documentation.h": "5f61b503f4956ca0e5b3ef36149e12ebc13a411fbb2e69ce3e05948fc6a4775c",
+    "/opt/homebrew/opt/llvm/include/clang-c/ExternC.h": "d64d9d58750dc7d240a8c35b3192d8801672200f3df3d6417695ae5e59c12cbc",
+    "/opt/homebrew/opt/llvm/include/clang-c/FatalErrorHandler.h": "e2bc1b7fea90a98752afe4fae4a1d2f9605f5b0098dbdbc04856556a8678663f",
+    "/opt/homebrew/opt/llvm/include/clang-c/Index.h": "c3568d06272605871718f54f367ed061109e3082d5b8087a6dd99bfb96c24259",
+    "/opt/homebrew/opt/llvm/include/clang-c/Platform.h": "b2e246692d6cecea2c57aaef424fa9e35cd30a5dfcd4b0521e562fde059aaaa2",
+    "/opt/homebrew/opt/llvm/include/clang-c/Rewrite.h": "3ce45b1fd6f750376e4d23d29455de087f69043e8c14db50ca80a9c68d7fb8c1"
+  },
+  "compiler_version": "Homebrew clang version 23.1.2\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /opt/homebrew/Cellar/llvm/23.1.2/bin\nConfiguration file: /opt/homebrew/Cellar/llvm/23.1.2/etc/clang/arm64-apple-darwin27.cfg\n",
+  "probe_generator_sha256": "25cc2d042a16585ec5262398fc6024fb5631342f5feb29e9412b736949531ac5",
+  "public_symbol_lookups": 359,
+  "missing_public_symbols": [],
+  "native_expressions": [
+    {
+      "c": "sizeof(enum CXAvailabilityKind)",
+      "jai": "size_of(B.CXAvailabilityKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXAvailabilityKind)",
+      "jai": "align_of(B.CXAvailabilityKind)",
+      "value": 4
+    },
+    {
+      "c": "CXAvailability_Available",
+      "jai": "cast(s64) B.CXAvailabilityKind.Available",
+      "value": 0
+    },
+    {
+      "c": "CXAvailability_Deprecated",
+      "jai": "cast(s64) B.CXAvailabilityKind.Deprecated",
+      "value": 1
+    },
+    {
+      "c": "CXAvailability_NotAvailable",
+      "jai": "cast(s64) B.CXAvailabilityKind.NotAvailable",
+      "value": 2
+    },
+    {
+      "c": "CXAvailability_NotAccessible",
+      "jai": "cast(s64) B.CXAvailabilityKind.NotAccessible",
+      "value": 3
+    },
+    {
+      "c": "sizeof(enum CXBinaryOperatorKind)",
+      "jai": "size_of(B.CXBinaryOperatorKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXBinaryOperatorKind)",
+      "jai": "align_of(B.CXBinaryOperatorKind)",
+      "value": 4
+    },
+    {
+      "c": "CXBinaryOperator_Invalid",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Invalid",
+      "value": 0
+    },
+    {
+      "c": "CXBinaryOperator_PtrMemD",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.PtrMemD",
+      "value": 1
+    },
+    {
+      "c": "CXBinaryOperator_PtrMemI",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.PtrMemI",
+      "value": 2
+    },
+    {
+      "c": "CXBinaryOperator_Mul",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Mul",
+      "value": 3
+    },
+    {
+      "c": "CXBinaryOperator_Div",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Div",
+      "value": 4
+    },
+    {
+      "c": "CXBinaryOperator_Rem",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Rem",
+      "value": 5
+    },
+    {
+      "c": "CXBinaryOperator_Add",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Add",
+      "value": 6
+    },
+    {
+      "c": "CXBinaryOperator_Sub",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Sub",
+      "value": 7
+    },
+    {
+      "c": "CXBinaryOperator_Shl",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Shl",
+      "value": 8
+    },
+    {
+      "c": "CXBinaryOperator_Shr",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Shr",
+      "value": 9
+    },
+    {
+      "c": "CXBinaryOperator_Cmp",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Cmp",
+      "value": 10
+    },
+    {
+      "c": "CXBinaryOperator_LT",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.LT",
+      "value": 11
+    },
+    {
+      "c": "CXBinaryOperator_GT",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.GT",
+      "value": 12
+    },
+    {
+      "c": "CXBinaryOperator_LE",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.LE",
+      "value": 13
+    },
+    {
+      "c": "CXBinaryOperator_GE",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.GE",
+      "value": 14
+    },
+    {
+      "c": "CXBinaryOperator_EQ",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.EQ",
+      "value": 15
+    },
+    {
+      "c": "CXBinaryOperator_NE",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.NE",
+      "value": 16
+    },
+    {
+      "c": "CXBinaryOperator_And",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.And",
+      "value": 17
+    },
+    {
+      "c": "CXBinaryOperator_Xor",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Xor",
+      "value": 18
+    },
+    {
+      "c": "CXBinaryOperator_Or",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Or",
+      "value": 19
+    },
+    {
+      "c": "CXBinaryOperator_LAnd",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.LAnd",
+      "value": 20
+    },
+    {
+      "c": "CXBinaryOperator_LOr",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.LOr",
+      "value": 21
+    },
+    {
+      "c": "CXBinaryOperator_Assign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Assign",
+      "value": 22
+    },
+    {
+      "c": "CXBinaryOperator_MulAssign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.MulAssign",
+      "value": 23
+    },
+    {
+      "c": "CXBinaryOperator_DivAssign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.DivAssign",
+      "value": 24
+    },
+    {
+      "c": "CXBinaryOperator_RemAssign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.RemAssign",
+      "value": 25
+    },
+    {
+      "c": "CXBinaryOperator_AddAssign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.AddAssign",
+      "value": 26
+    },
+    {
+      "c": "CXBinaryOperator_SubAssign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.SubAssign",
+      "value": 27
+    },
+    {
+      "c": "CXBinaryOperator_ShlAssign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.ShlAssign",
+      "value": 28
+    },
+    {
+      "c": "CXBinaryOperator_ShrAssign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.ShrAssign",
+      "value": 29
+    },
+    {
+      "c": "CXBinaryOperator_AndAssign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.AndAssign",
+      "value": 30
+    },
+    {
+      "c": "CXBinaryOperator_XorAssign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.XorAssign",
+      "value": 31
+    },
+    {
+      "c": "CXBinaryOperator_OrAssign",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.OrAssign",
+      "value": 32
+    },
+    {
+      "c": "CXBinaryOperator_Comma",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Comma",
+      "value": 33
+    },
+    {
+      "c": "CXBinaryOperator_Last",
+      "jai": "cast(s64) B.CXBinaryOperatorKind.Last",
+      "value": 33
+    },
+    {
+      "c": "sizeof(enum CXCallingConv)",
+      "jai": "size_of(B.CXCallingConv)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXCallingConv)",
+      "jai": "align_of(B.CXCallingConv)",
+      "value": 4
+    },
+    {
+      "c": "CXCallingConv_Default",
+      "jai": "cast(s64) B.CXCallingConv.Default",
+      "value": 0
+    },
+    {
+      "c": "CXCallingConv_C",
+      "jai": "cast(s64) B.CXCallingConv.C",
+      "value": 1
+    },
+    {
+      "c": "CXCallingConv_X86StdCall",
+      "jai": "cast(s64) B.CXCallingConv.X86StdCall",
+      "value": 2
+    },
+    {
+      "c": "CXCallingConv_X86FastCall",
+      "jai": "cast(s64) B.CXCallingConv.X86FastCall",
+      "value": 3
+    },
+    {
+      "c": "CXCallingConv_X86ThisCall",
+      "jai": "cast(s64) B.CXCallingConv.X86ThisCall",
+      "value": 4
+    },
+    {
+      "c": "CXCallingConv_X86Pascal",
+      "jai": "cast(s64) B.CXCallingConv.X86Pascal",
+      "value": 5
+    },
+    {
+      "c": "CXCallingConv_AAPCS",
+      "jai": "cast(s64) B.CXCallingConv.AAPCS",
+      "value": 6
+    },
+    {
+      "c": "CXCallingConv_AAPCS_VFP",
+      "jai": "cast(s64) B.CXCallingConv.AAPCS_VFP",
+      "value": 7
+    },
+    {
+      "c": "CXCallingConv_X86RegCall",
+      "jai": "cast(s64) B.CXCallingConv.X86RegCall",
+      "value": 8
+    },
+    {
+      "c": "CXCallingConv_IntelOclBicc",
+      "jai": "cast(s64) B.CXCallingConv.IntelOclBicc",
+      "value": 9
+    },
+    {
+      "c": "CXCallingConv_Win64",
+      "jai": "cast(s64) B.CXCallingConv.Win64",
+      "value": 10
+    },
+    {
+      "c": "CXCallingConv_X86_64Win64",
+      "jai": "cast(s64) B.CXCallingConv.X86_64Win64",
+      "value": 10
+    },
+    {
+      "c": "CXCallingConv_X86_64SysV",
+      "jai": "cast(s64) B.CXCallingConv.X86_64SysV",
+      "value": 11
+    },
+    {
+      "c": "CXCallingConv_X86VectorCall",
+      "jai": "cast(s64) B.CXCallingConv.X86VectorCall",
+      "value": 12
+    },
+    {
+      "c": "CXCallingConv_Swift",
+      "jai": "cast(s64) B.CXCallingConv.Swift",
+      "value": 13
+    },
+    {
+      "c": "CXCallingConv_PreserveMost",
+      "jai": "cast(s64) B.CXCallingConv.PreserveMost",
+      "value": 14
+    },
+    {
+      "c": "CXCallingConv_PreserveAll",
+      "jai": "cast(s64) B.CXCallingConv.PreserveAll",
+      "value": 15
+    },
+    {
+      "c": "CXCallingConv_AArch64VectorCall",
+      "jai": "cast(s64) B.CXCallingConv.AArch64VectorCall",
+      "value": 16
+    },
+    {
+      "c": "CXCallingConv_SwiftAsync",
+      "jai": "cast(s64) B.CXCallingConv.SwiftAsync",
+      "value": 17
+    },
+    {
+      "c": "CXCallingConv_AArch64SVEPCS",
+      "jai": "cast(s64) B.CXCallingConv.AArch64SVEPCS",
+      "value": 18
+    },
+    {
+      "c": "CXCallingConv_M68kRTD",
+      "jai": "cast(s64) B.CXCallingConv.M68kRTD",
+      "value": 19
+    },
+    {
+      "c": "CXCallingConv_PreserveNone",
+      "jai": "cast(s64) B.CXCallingConv.PreserveNone",
+      "value": 20
+    },
+    {
+      "c": "CXCallingConv_RISCVVectorCall",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVectorCall",
+      "value": 21
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_32",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_32",
+      "value": 22
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_64",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_64",
+      "value": 23
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_128",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_128",
+      "value": 24
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_256",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_256",
+      "value": 25
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_512",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_512",
+      "value": 26
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_1024",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_1024",
+      "value": 27
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_2048",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_2048",
+      "value": 28
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_4096",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_4096",
+      "value": 29
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_8192",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_8192",
+      "value": 30
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_16384",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_16384",
+      "value": 31
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_32768",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_32768",
+      "value": 32
+    },
+    {
+      "c": "CXCallingConv_RISCVVLSCall_65536",
+      "jai": "cast(s64) B.CXCallingConv.RISCVVLSCall_65536",
+      "value": 33
+    },
+    {
+      "c": "CXCallingConv_Invalid",
+      "jai": "cast(s64) B.CXCallingConv.Invalid",
+      "value": 100
+    },
+    {
+      "c": "CXCallingConv_Unexposed",
+      "jai": "cast(s64) B.CXCallingConv.Unexposed",
+      "value": 200
+    },
+    {
+      "c": "sizeof(enum CXChildVisitResult)",
+      "jai": "size_of(B.CXChildVisitResult)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXChildVisitResult)",
+      "jai": "align_of(B.CXChildVisitResult)",
+      "value": 4
+    },
+    {
+      "c": "CXChildVisit_Break",
+      "jai": "cast(s64) B.CXChildVisitResult.Break",
+      "value": 0
+    },
+    {
+      "c": "CXChildVisit_Continue",
+      "jai": "cast(s64) B.CXChildVisitResult.Continue",
+      "value": 1
+    },
+    {
+      "c": "CXChildVisit_Recurse",
+      "jai": "cast(s64) B.CXChildVisitResult.Recurse",
+      "value": 2
+    },
+    {
+      "c": "sizeof(CXChoice)",
+      "jai": "size_of(B.CXChoice)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXChoice)",
+      "jai": "align_of(B.CXChoice)",
+      "value": 4
+    },
+    {
+      "c": "CXChoice_Default",
+      "jai": "cast(s64) B.CXChoice.Default",
+      "value": 0
+    },
+    {
+      "c": "CXChoice_Enabled",
+      "jai": "cast(s64) B.CXChoice.Enabled",
+      "value": 1
+    },
+    {
+      "c": "CXChoice_Disabled",
+      "jai": "cast(s64) B.CXChoice.Disabled",
+      "value": 2
+    },
+    {
+      "c": "sizeof(CXCodeCompleteResults)",
+      "jai": "size_of(B.CXCodeCompleteResults)",
+      "value": 16
+    },
+    {
+      "c": "_Alignof(CXCodeCompleteResults)",
+      "jai": "align_of(B.CXCodeCompleteResults)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXCodeCompleteResults, Results)",
+      "jai": "offset_of(B.CXCodeCompleteResults, \"Results\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXCodeCompleteResults, NumResults)",
+      "jai": "offset_of(B.CXCodeCompleteResults, \"NumResults\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(enum CXCodeComplete_Flags)",
+      "jai": "size_of(B.CXCodeComplete_Flags)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXCodeComplete_Flags)",
+      "jai": "align_of(B.CXCodeComplete_Flags)",
+      "value": 4
+    },
+    {
+      "c": "CXCodeComplete_IncludeMacros",
+      "jai": "cast(s64) B.CXCodeComplete_Flags.IncludeMacros",
+      "value": 1
+    },
+    {
+      "c": "CXCodeComplete_IncludeCodePatterns",
+      "jai": "cast(s64) B.CXCodeComplete_Flags.IncludeCodePatterns",
+      "value": 2
+    },
+    {
+      "c": "CXCodeComplete_IncludeBriefComments",
+      "jai": "cast(s64) B.CXCodeComplete_Flags.IncludeBriefComments",
+      "value": 4
+    },
+    {
+      "c": "CXCodeComplete_SkipPreamble",
+      "jai": "cast(s64) B.CXCodeComplete_Flags.SkipPreamble",
+      "value": 8
+    },
+    {
+      "c": "CXCodeComplete_IncludeCompletionsWithFixIts",
+      "jai": "cast(s64) B.CXCodeComplete_Flags.IncludeCompletionsWithFixIts",
+      "value": 16
+    },
+    {
+      "c": "sizeof(enum CXCompletionChunkKind)",
+      "jai": "size_of(B.CXCompletionChunkKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXCompletionChunkKind)",
+      "jai": "align_of(B.CXCompletionChunkKind)",
+      "value": 4
+    },
+    {
+      "c": "CXCompletionChunk_Optional",
+      "jai": "cast(s64) B.CXCompletionChunkKind.Optional",
+      "value": 0
+    },
+    {
+      "c": "CXCompletionChunk_TypedText",
+      "jai": "cast(s64) B.CXCompletionChunkKind.TypedText",
+      "value": 1
+    },
+    {
+      "c": "CXCompletionChunk_Text",
+      "jai": "cast(s64) B.CXCompletionChunkKind.Text",
+      "value": 2
+    },
+    {
+      "c": "CXCompletionChunk_Placeholder",
+      "jai": "cast(s64) B.CXCompletionChunkKind.Placeholder",
+      "value": 3
+    },
+    {
+      "c": "CXCompletionChunk_Informative",
+      "jai": "cast(s64) B.CXCompletionChunkKind.Informative",
+      "value": 4
+    },
+    {
+      "c": "CXCompletionChunk_CurrentParameter",
+      "jai": "cast(s64) B.CXCompletionChunkKind.CurrentParameter",
+      "value": 5
+    },
+    {
+      "c": "CXCompletionChunk_LeftParen",
+      "jai": "cast(s64) B.CXCompletionChunkKind.LeftParen",
+      "value": 6
+    },
+    {
+      "c": "CXCompletionChunk_RightParen",
+      "jai": "cast(s64) B.CXCompletionChunkKind.RightParen",
+      "value": 7
+    },
+    {
+      "c": "CXCompletionChunk_LeftBracket",
+      "jai": "cast(s64) B.CXCompletionChunkKind.LeftBracket",
+      "value": 8
+    },
+    {
+      "c": "CXCompletionChunk_RightBracket",
+      "jai": "cast(s64) B.CXCompletionChunkKind.RightBracket",
+      "value": 9
+    },
+    {
+      "c": "CXCompletionChunk_LeftBrace",
+      "jai": "cast(s64) B.CXCompletionChunkKind.LeftBrace",
+      "value": 10
+    },
+    {
+      "c": "CXCompletionChunk_RightBrace",
+      "jai": "cast(s64) B.CXCompletionChunkKind.RightBrace",
+      "value": 11
+    },
+    {
+      "c": "CXCompletionChunk_LeftAngle",
+      "jai": "cast(s64) B.CXCompletionChunkKind.LeftAngle",
+      "value": 12
+    },
+    {
+      "c": "CXCompletionChunk_RightAngle",
+      "jai": "cast(s64) B.CXCompletionChunkKind.RightAngle",
+      "value": 13
+    },
+    {
+      "c": "CXCompletionChunk_Comma",
+      "jai": "cast(s64) B.CXCompletionChunkKind.Comma",
+      "value": 14
+    },
+    {
+      "c": "CXCompletionChunk_ResultType",
+      "jai": "cast(s64) B.CXCompletionChunkKind.ResultType",
+      "value": 15
+    },
+    {
+      "c": "CXCompletionChunk_Colon",
+      "jai": "cast(s64) B.CXCompletionChunkKind.Colon",
+      "value": 16
+    },
+    {
+      "c": "CXCompletionChunk_SemiColon",
+      "jai": "cast(s64) B.CXCompletionChunkKind.SemiColon",
+      "value": 17
+    },
+    {
+      "c": "CXCompletionChunk_Equal",
+      "jai": "cast(s64) B.CXCompletionChunkKind.Equal",
+      "value": 18
+    },
+    {
+      "c": "CXCompletionChunk_HorizontalSpace",
+      "jai": "cast(s64) B.CXCompletionChunkKind.HorizontalSpace",
+      "value": 19
+    },
+    {
+      "c": "CXCompletionChunk_VerticalSpace",
+      "jai": "cast(s64) B.CXCompletionChunkKind.VerticalSpace",
+      "value": 20
+    },
+    {
+      "c": "sizeof(enum CXCompletionContext)",
+      "jai": "size_of(B.CXCompletionContext)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXCompletionContext)",
+      "jai": "align_of(B.CXCompletionContext)",
+      "value": 4
+    },
+    {
+      "c": "CXCompletionContext_Unexposed",
+      "jai": "cast(s64) B.CXCompletionContext.Unexposed",
+      "value": 0
+    },
+    {
+      "c": "CXCompletionContext_AnyType",
+      "jai": "cast(s64) B.CXCompletionContext.AnyType",
+      "value": 1
+    },
+    {
+      "c": "CXCompletionContext_AnyValue",
+      "jai": "cast(s64) B.CXCompletionContext.AnyValue",
+      "value": 2
+    },
+    {
+      "c": "CXCompletionContext_ObjCObjectValue",
+      "jai": "cast(s64) B.CXCompletionContext.ObjCObjectValue",
+      "value": 4
+    },
+    {
+      "c": "CXCompletionContext_ObjCSelectorValue",
+      "jai": "cast(s64) B.CXCompletionContext.ObjCSelectorValue",
+      "value": 8
+    },
+    {
+      "c": "CXCompletionContext_CXXClassTypeValue",
+      "jai": "cast(s64) B.CXCompletionContext.CXXClassTypeValue",
+      "value": 16
+    },
+    {
+      "c": "CXCompletionContext_DotMemberAccess",
+      "jai": "cast(s64) B.CXCompletionContext.DotMemberAccess",
+      "value": 32
+    },
+    {
+      "c": "CXCompletionContext_ArrowMemberAccess",
+      "jai": "cast(s64) B.CXCompletionContext.ArrowMemberAccess",
+      "value": 64
+    },
+    {
+      "c": "CXCompletionContext_ObjCPropertyAccess",
+      "jai": "cast(s64) B.CXCompletionContext.ObjCPropertyAccess",
+      "value": 128
+    },
+    {
+      "c": "CXCompletionContext_EnumTag",
+      "jai": "cast(s64) B.CXCompletionContext.EnumTag",
+      "value": 256
+    },
+    {
+      "c": "CXCompletionContext_UnionTag",
+      "jai": "cast(s64) B.CXCompletionContext.UnionTag",
+      "value": 512
+    },
+    {
+      "c": "CXCompletionContext_StructTag",
+      "jai": "cast(s64) B.CXCompletionContext.StructTag",
+      "value": 1024
+    },
+    {
+      "c": "CXCompletionContext_ClassTag",
+      "jai": "cast(s64) B.CXCompletionContext.ClassTag",
+      "value": 2048
+    },
+    {
+      "c": "CXCompletionContext_Namespace",
+      "jai": "cast(s64) B.CXCompletionContext.Namespace",
+      "value": 4096
+    },
+    {
+      "c": "CXCompletionContext_NestedNameSpecifier",
+      "jai": "cast(s64) B.CXCompletionContext.NestedNameSpecifier",
+      "value": 8192
+    },
+    {
+      "c": "CXCompletionContext_ObjCInterface",
+      "jai": "cast(s64) B.CXCompletionContext.ObjCInterface",
+      "value": 16384
+    },
+    {
+      "c": "CXCompletionContext_ObjCProtocol",
+      "jai": "cast(s64) B.CXCompletionContext.ObjCProtocol",
+      "value": 32768
+    },
+    {
+      "c": "CXCompletionContext_ObjCCategory",
+      "jai": "cast(s64) B.CXCompletionContext.ObjCCategory",
+      "value": 65536
+    },
+    {
+      "c": "CXCompletionContext_ObjCInstanceMessage",
+      "jai": "cast(s64) B.CXCompletionContext.ObjCInstanceMessage",
+      "value": 131072
+    },
+    {
+      "c": "CXCompletionContext_ObjCClassMessage",
+      "jai": "cast(s64) B.CXCompletionContext.ObjCClassMessage",
+      "value": 262144
+    },
+    {
+      "c": "CXCompletionContext_ObjCSelectorName",
+      "jai": "cast(s64) B.CXCompletionContext.ObjCSelectorName",
+      "value": 524288
+    },
+    {
+      "c": "CXCompletionContext_MacroName",
+      "jai": "cast(s64) B.CXCompletionContext.MacroName",
+      "value": 1048576
+    },
+    {
+      "c": "CXCompletionContext_NaturalLanguage",
+      "jai": "cast(s64) B.CXCompletionContext.NaturalLanguage",
+      "value": 2097152
+    },
+    {
+      "c": "CXCompletionContext_IncludedFile",
+      "jai": "cast(s64) B.CXCompletionContext.IncludedFile",
+      "value": 4194304
+    },
+    {
+      "c": "CXCompletionContext_Unknown",
+      "jai": "cast(s64) B.CXCompletionContext.Unknown",
+      "value": 8388607
+    },
+    {
+      "c": "sizeof(CXCompletionResult)",
+      "jai": "size_of(B.CXCompletionResult)",
+      "value": 16
+    },
+    {
+      "c": "_Alignof(CXCompletionResult)",
+      "jai": "align_of(B.CXCompletionResult)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXCompletionResult, CursorKind)",
+      "jai": "offset_of(B.CXCompletionResult, \"CursorKind\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXCompletionResult, CompletionString)",
+      "jai": "offset_of(B.CXCompletionResult, \"CompletionString\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(CXCursor)",
+      "jai": "size_of(B.CXCursor)",
+      "value": 32
+    },
+    {
+      "c": "_Alignof(CXCursor)",
+      "jai": "align_of(B.CXCursor)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXCursor, kind)",
+      "jai": "offset_of(B.CXCursor, \"kind\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXCursor, xdata)",
+      "jai": "offset_of(B.CXCursor, \"xdata\")",
+      "value": 4
+    },
+    {
+      "c": "offsetof(CXCursor, data)",
+      "jai": "offset_of(B.CXCursor, \"data\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(CXCursorAndRangeVisitor)",
+      "jai": "size_of(B.CXCursorAndRangeVisitor)",
+      "value": 16
+    },
+    {
+      "c": "_Alignof(CXCursorAndRangeVisitor)",
+      "jai": "align_of(B.CXCursorAndRangeVisitor)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXCursorAndRangeVisitor, context)",
+      "jai": "offset_of(B.CXCursorAndRangeVisitor, \"_context\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXCursorAndRangeVisitor, visit)",
+      "jai": "offset_of(B.CXCursorAndRangeVisitor, \"visit\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(enum CXCursorKind)",
+      "jai": "size_of(B.CXCursorKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXCursorKind)",
+      "jai": "align_of(B.CXCursorKind)",
+      "value": 4
+    },
+    {
+      "c": "CXCursor_UnexposedDecl",
+      "jai": "cast(s64) B.CXCursorKind.UnexposedDecl",
+      "value": 1
+    },
+    {
+      "c": "CXCursor_StructDecl",
+      "jai": "cast(s64) B.CXCursorKind.StructDecl",
+      "value": 2
+    },
+    {
+      "c": "CXCursor_UnionDecl",
+      "jai": "cast(s64) B.CXCursorKind.UnionDecl",
+      "value": 3
+    },
+    {
+      "c": "CXCursor_ClassDecl",
+      "jai": "cast(s64) B.CXCursorKind.ClassDecl",
+      "value": 4
+    },
+    {
+      "c": "CXCursor_EnumDecl",
+      "jai": "cast(s64) B.CXCursorKind.EnumDecl",
+      "value": 5
+    },
+    {
+      "c": "CXCursor_FieldDecl",
+      "jai": "cast(s64) B.CXCursorKind.FieldDecl",
+      "value": 6
+    },
+    {
+      "c": "CXCursor_EnumConstantDecl",
+      "jai": "cast(s64) B.CXCursorKind.EnumConstantDecl",
+      "value": 7
+    },
+    {
+      "c": "CXCursor_FunctionDecl",
+      "jai": "cast(s64) B.CXCursorKind.FunctionDecl",
+      "value": 8
+    },
+    {
+      "c": "CXCursor_VarDecl",
+      "jai": "cast(s64) B.CXCursorKind.VarDecl",
+      "value": 9
+    },
+    {
+      "c": "CXCursor_ParmDecl",
+      "jai": "cast(s64) B.CXCursorKind.ParmDecl",
+      "value": 10
+    },
+    {
+      "c": "CXCursor_ObjCInterfaceDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCInterfaceDecl",
+      "value": 11
+    },
+    {
+      "c": "CXCursor_ObjCCategoryDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCCategoryDecl",
+      "value": 12
+    },
+    {
+      "c": "CXCursor_ObjCProtocolDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCProtocolDecl",
+      "value": 13
+    },
+    {
+      "c": "CXCursor_ObjCPropertyDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCPropertyDecl",
+      "value": 14
+    },
+    {
+      "c": "CXCursor_ObjCIvarDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCIvarDecl",
+      "value": 15
+    },
+    {
+      "c": "CXCursor_ObjCInstanceMethodDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCInstanceMethodDecl",
+      "value": 16
+    },
+    {
+      "c": "CXCursor_ObjCClassMethodDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCClassMethodDecl",
+      "value": 17
+    },
+    {
+      "c": "CXCursor_ObjCImplementationDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCImplementationDecl",
+      "value": 18
+    },
+    {
+      "c": "CXCursor_ObjCCategoryImplDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCCategoryImplDecl",
+      "value": 19
+    },
+    {
+      "c": "CXCursor_TypedefDecl",
+      "jai": "cast(s64) B.CXCursorKind.TypedefDecl",
+      "value": 20
+    },
+    {
+      "c": "CXCursor_CXXMethod",
+      "jai": "cast(s64) B.CXCursorKind.CXXMethod",
+      "value": 21
+    },
+    {
+      "c": "CXCursor_Namespace",
+      "jai": "cast(s64) B.CXCursorKind.Namespace",
+      "value": 22
+    },
+    {
+      "c": "CXCursor_LinkageSpec",
+      "jai": "cast(s64) B.CXCursorKind.LinkageSpec",
+      "value": 23
+    },
+    {
+      "c": "CXCursor_Constructor",
+      "jai": "cast(s64) B.CXCursorKind.Constructor",
+      "value": 24
+    },
+    {
+      "c": "CXCursor_Destructor",
+      "jai": "cast(s64) B.CXCursorKind.Destructor",
+      "value": 25
+    },
+    {
+      "c": "CXCursor_ConversionFunction",
+      "jai": "cast(s64) B.CXCursorKind.ConversionFunction",
+      "value": 26
+    },
+    {
+      "c": "CXCursor_TemplateTypeParameter",
+      "jai": "cast(s64) B.CXCursorKind.TemplateTypeParameter",
+      "value": 27
+    },
+    {
+      "c": "CXCursor_NonTypeTemplateParameter",
+      "jai": "cast(s64) B.CXCursorKind.NonTypeTemplateParameter",
+      "value": 28
+    },
+    {
+      "c": "CXCursor_TemplateTemplateParameter",
+      "jai": "cast(s64) B.CXCursorKind.TemplateTemplateParameter",
+      "value": 29
+    },
+    {
+      "c": "CXCursor_FunctionTemplate",
+      "jai": "cast(s64) B.CXCursorKind.FunctionTemplate",
+      "value": 30
+    },
+    {
+      "c": "CXCursor_ClassTemplate",
+      "jai": "cast(s64) B.CXCursorKind.ClassTemplate",
+      "value": 31
+    },
+    {
+      "c": "CXCursor_ClassTemplatePartialSpecialization",
+      "jai": "cast(s64) B.CXCursorKind.ClassTemplatePartialSpecialization",
+      "value": 32
+    },
+    {
+      "c": "CXCursor_NamespaceAlias",
+      "jai": "cast(s64) B.CXCursorKind.NamespaceAlias",
+      "value": 33
+    },
+    {
+      "c": "CXCursor_UsingDirective",
+      "jai": "cast(s64) B.CXCursorKind.UsingDirective",
+      "value": 34
+    },
+    {
+      "c": "CXCursor_UsingDeclaration",
+      "jai": "cast(s64) B.CXCursorKind.UsingDeclaration",
+      "value": 35
+    },
+    {
+      "c": "CXCursor_TypeAliasDecl",
+      "jai": "cast(s64) B.CXCursorKind.TypeAliasDecl",
+      "value": 36
+    },
+    {
+      "c": "CXCursor_ObjCSynthesizeDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCSynthesizeDecl",
+      "value": 37
+    },
+    {
+      "c": "CXCursor_ObjCDynamicDecl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCDynamicDecl",
+      "value": 38
+    },
+    {
+      "c": "CXCursor_CXXAccessSpecifier",
+      "jai": "cast(s64) B.CXCursorKind.CXXAccessSpecifier",
+      "value": 39
+    },
+    {
+      "c": "CXCursor_OverloadCandidate",
+      "jai": "cast(s64) B.CXCursorKind.OverloadCandidate",
+      "value": 700
+    },
+    {
+      "c": "CXCursor_ConceptDecl",
+      "jai": "cast(s64) B.CXCursorKind.ConceptDecl",
+      "value": 604
+    },
+    {
+      "c": "CXCursor_FriendDecl",
+      "jai": "cast(s64) B.CXCursorKind.FriendDecl",
+      "value": 603
+    },
+    {
+      "c": "CXCursor_ObjCSuperClassRef",
+      "jai": "cast(s64) B.CXCursorKind.ObjCSuperClassRef",
+      "value": 40
+    },
+    {
+      "c": "CXCursor_ObjCProtocolRef",
+      "jai": "cast(s64) B.CXCursorKind.ObjCProtocolRef",
+      "value": 41
+    },
+    {
+      "c": "CXCursor_ObjCClassRef",
+      "jai": "cast(s64) B.CXCursorKind.ObjCClassRef",
+      "value": 42
+    },
+    {
+      "c": "CXCursor_TypeRef",
+      "jai": "cast(s64) B.CXCursorKind.TypeRef",
+      "value": 43
+    },
+    {
+      "c": "CXCursor_CXXBaseSpecifier",
+      "jai": "cast(s64) B.CXCursorKind.CXXBaseSpecifier",
+      "value": 44
+    },
+    {
+      "c": "CXCursor_TemplateRef",
+      "jai": "cast(s64) B.CXCursorKind.TemplateRef",
+      "value": 45
+    },
+    {
+      "c": "CXCursor_NamespaceRef",
+      "jai": "cast(s64) B.CXCursorKind.NamespaceRef",
+      "value": 46
+    },
+    {
+      "c": "CXCursor_MemberRef",
+      "jai": "cast(s64) B.CXCursorKind.MemberRef",
+      "value": 47
+    },
+    {
+      "c": "CXCursor_LabelRef",
+      "jai": "cast(s64) B.CXCursorKind.LabelRef",
+      "value": 48
+    },
+    {
+      "c": "CXCursor_OverloadedDeclRef",
+      "jai": "cast(s64) B.CXCursorKind.OverloadedDeclRef",
+      "value": 49
+    },
+    {
+      "c": "CXCursor_VariableRef",
+      "jai": "cast(s64) B.CXCursorKind.VariableRef",
+      "value": 50
+    },
+    {
+      "c": "CXCursor_StaticAssert",
+      "jai": "cast(s64) B.CXCursorKind.StaticAssert",
+      "value": 602
+    },
+    {
+      "c": "CXCursor_TypeAliasTemplateDecl",
+      "jai": "cast(s64) B.CXCursorKind.TypeAliasTemplateDecl",
+      "value": 601
+    },
+    {
+      "c": "CXCursor_InvalidFile",
+      "jai": "cast(s64) B.CXCursorKind.InvalidFile",
+      "value": 70
+    },
+    {
+      "c": "CXCursor_NoDeclFound",
+      "jai": "cast(s64) B.CXCursorKind.NoDeclFound",
+      "value": 71
+    },
+    {
+      "c": "CXCursor_NotImplemented",
+      "jai": "cast(s64) B.CXCursorKind.NotImplemented",
+      "value": 72
+    },
+    {
+      "c": "CXCursor_InvalidCode",
+      "jai": "cast(s64) B.CXCursorKind.InvalidCode",
+      "value": 73
+    },
+    {
+      "c": "CXCursor_ModuleImportDecl",
+      "jai": "cast(s64) B.CXCursorKind.ModuleImportDecl",
+      "value": 600
+    },
+    {
+      "c": "CXCursor_InclusionDirective",
+      "jai": "cast(s64) B.CXCursorKind.InclusionDirective",
+      "value": 503
+    },
+    {
+      "c": "CXCursor_UnexposedExpr",
+      "jai": "cast(s64) B.CXCursorKind.UnexposedExpr",
+      "value": 100
+    },
+    {
+      "c": "CXCursor_DeclRefExpr",
+      "jai": "cast(s64) B.CXCursorKind.DeclRefExpr",
+      "value": 101
+    },
+    {
+      "c": "CXCursor_MemberRefExpr",
+      "jai": "cast(s64) B.CXCursorKind.MemberRefExpr",
+      "value": 102
+    },
+    {
+      "c": "CXCursor_CallExpr",
+      "jai": "cast(s64) B.CXCursorKind.CallExpr",
+      "value": 103
+    },
+    {
+      "c": "CXCursor_ObjCMessageExpr",
+      "jai": "cast(s64) B.CXCursorKind.ObjCMessageExpr",
+      "value": 104
+    },
+    {
+      "c": "CXCursor_BlockExpr",
+      "jai": "cast(s64) B.CXCursorKind.BlockExpr",
+      "value": 105
+    },
+    {
+      "c": "CXCursor_IntegerLiteral",
+      "jai": "cast(s64) B.CXCursorKind.IntegerLiteral",
+      "value": 106
+    },
+    {
+      "c": "CXCursor_FloatingLiteral",
+      "jai": "cast(s64) B.CXCursorKind.FloatingLiteral",
+      "value": 107
+    },
+    {
+      "c": "CXCursor_ImaginaryLiteral",
+      "jai": "cast(s64) B.CXCursorKind.ImaginaryLiteral",
+      "value": 108
+    },
+    {
+      "c": "CXCursor_StringLiteral",
+      "jai": "cast(s64) B.CXCursorKind.StringLiteral",
+      "value": 109
+    },
+    {
+      "c": "CXCursor_CharacterLiteral",
+      "jai": "cast(s64) B.CXCursorKind.CharacterLiteral",
+      "value": 110
+    },
+    {
+      "c": "CXCursor_ParenExpr",
+      "jai": "cast(s64) B.CXCursorKind.ParenExpr",
+      "value": 111
+    },
+    {
+      "c": "CXCursor_UnaryOperator",
+      "jai": "cast(s64) B.CXCursorKind.UnaryOperator",
+      "value": 112
+    },
+    {
+      "c": "CXCursor_ArraySubscriptExpr",
+      "jai": "cast(s64) B.CXCursorKind.ArraySubscriptExpr",
+      "value": 113
+    },
+    {
+      "c": "CXCursor_BinaryOperator",
+      "jai": "cast(s64) B.CXCursorKind.BinaryOperator",
+      "value": 114
+    },
+    {
+      "c": "CXCursor_CompoundAssignOperator",
+      "jai": "cast(s64) B.CXCursorKind.CompoundAssignOperator",
+      "value": 115
+    },
+    {
+      "c": "CXCursor_ConditionalOperator",
+      "jai": "cast(s64) B.CXCursorKind.ConditionalOperator",
+      "value": 116
+    },
+    {
+      "c": "CXCursor_CStyleCastExpr",
+      "jai": "cast(s64) B.CXCursorKind.CStyleCastExpr",
+      "value": 117
+    },
+    {
+      "c": "CXCursor_CompoundLiteralExpr",
+      "jai": "cast(s64) B.CXCursorKind.CompoundLiteralExpr",
+      "value": 118
+    },
+    {
+      "c": "CXCursor_InitListExpr",
+      "jai": "cast(s64) B.CXCursorKind.InitListExpr",
+      "value": 119
+    },
+    {
+      "c": "CXCursor_AddrLabelExpr",
+      "jai": "cast(s64) B.CXCursorKind.AddrLabelExpr",
+      "value": 120
+    },
+    {
+      "c": "CXCursor_StmtExpr",
+      "jai": "cast(s64) B.CXCursorKind.StmtExpr",
+      "value": 121
+    },
+    {
+      "c": "CXCursor_GenericSelectionExpr",
+      "jai": "cast(s64) B.CXCursorKind.GenericSelectionExpr",
+      "value": 122
+    },
+    {
+      "c": "CXCursor_GNUNullExpr",
+      "jai": "cast(s64) B.CXCursorKind.GNUNullExpr",
+      "value": 123
+    },
+    {
+      "c": "CXCursor_CXXStaticCastExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXStaticCastExpr",
+      "value": 124
+    },
+    {
+      "c": "CXCursor_CXXDynamicCastExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXDynamicCastExpr",
+      "value": 125
+    },
+    {
+      "c": "CXCursor_CXXReinterpretCastExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXReinterpretCastExpr",
+      "value": 126
+    },
+    {
+      "c": "CXCursor_CXXConstCastExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXConstCastExpr",
+      "value": 127
+    },
+    {
+      "c": "CXCursor_CXXFunctionalCastExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXFunctionalCastExpr",
+      "value": 128
+    },
+    {
+      "c": "CXCursor_CXXTypeidExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXTypeidExpr",
+      "value": 129
+    },
+    {
+      "c": "CXCursor_CXXBoolLiteralExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXBoolLiteralExpr",
+      "value": 130
+    },
+    {
+      "c": "CXCursor_CXXNullPtrLiteralExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXNullPtrLiteralExpr",
+      "value": 131
+    },
+    {
+      "c": "CXCursor_CXXThisExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXThisExpr",
+      "value": 132
+    },
+    {
+      "c": "CXCursor_CXXThrowExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXThrowExpr",
+      "value": 133
+    },
+    {
+      "c": "CXCursor_CXXNewExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXNewExpr",
+      "value": 134
+    },
+    {
+      "c": "CXCursor_CXXDeleteExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXDeleteExpr",
+      "value": 135
+    },
+    {
+      "c": "CXCursor_UnaryExpr",
+      "jai": "cast(s64) B.CXCursorKind.UnaryExpr",
+      "value": 136
+    },
+    {
+      "c": "CXCursor_ObjCStringLiteral",
+      "jai": "cast(s64) B.CXCursorKind.ObjCStringLiteral",
+      "value": 137
+    },
+    {
+      "c": "CXCursor_ObjCEncodeExpr",
+      "jai": "cast(s64) B.CXCursorKind.ObjCEncodeExpr",
+      "value": 138
+    },
+    {
+      "c": "CXCursor_ObjCSelectorExpr",
+      "jai": "cast(s64) B.CXCursorKind.ObjCSelectorExpr",
+      "value": 139
+    },
+    {
+      "c": "CXCursor_ObjCProtocolExpr",
+      "jai": "cast(s64) B.CXCursorKind.ObjCProtocolExpr",
+      "value": 140
+    },
+    {
+      "c": "CXCursor_ObjCBridgedCastExpr",
+      "jai": "cast(s64) B.CXCursorKind.ObjCBridgedCastExpr",
+      "value": 141
+    },
+    {
+      "c": "CXCursor_PackExpansionExpr",
+      "jai": "cast(s64) B.CXCursorKind.PackExpansionExpr",
+      "value": 142
+    },
+    {
+      "c": "CXCursor_SizeOfPackExpr",
+      "jai": "cast(s64) B.CXCursorKind.SizeOfPackExpr",
+      "value": 143
+    },
+    {
+      "c": "CXCursor_LambdaExpr",
+      "jai": "cast(s64) B.CXCursorKind.LambdaExpr",
+      "value": 144
+    },
+    {
+      "c": "CXCursor_ObjCBoolLiteralExpr",
+      "jai": "cast(s64) B.CXCursorKind.ObjCBoolLiteralExpr",
+      "value": 145
+    },
+    {
+      "c": "CXCursor_ObjCSelfExpr",
+      "jai": "cast(s64) B.CXCursorKind.ObjCSelfExpr",
+      "value": 146
+    },
+    {
+      "c": "CXCursor_ArraySectionExpr",
+      "jai": "cast(s64) B.CXCursorKind.ArraySectionExpr",
+      "value": 147
+    },
+    {
+      "c": "CXCursor_ObjCAvailabilityCheckExpr",
+      "jai": "cast(s64) B.CXCursorKind.ObjCAvailabilityCheckExpr",
+      "value": 148
+    },
+    {
+      "c": "CXCursor_FixedPointLiteral",
+      "jai": "cast(s64) B.CXCursorKind.FixedPointLiteral",
+      "value": 149
+    },
+    {
+      "c": "CXCursor_OMPArrayShapingExpr",
+      "jai": "cast(s64) B.CXCursorKind.OMPArrayShapingExpr",
+      "value": 150
+    },
+    {
+      "c": "CXCursor_OMPIteratorExpr",
+      "jai": "cast(s64) B.CXCursorKind.OMPIteratorExpr",
+      "value": 151
+    },
+    {
+      "c": "CXCursor_CXXAddrspaceCastExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXAddrspaceCastExpr",
+      "value": 152
+    },
+    {
+      "c": "CXCursor_ConceptSpecializationExpr",
+      "jai": "cast(s64) B.CXCursorKind.ConceptSpecializationExpr",
+      "value": 153
+    },
+    {
+      "c": "CXCursor_RequiresExpr",
+      "jai": "cast(s64) B.CXCursorKind.RequiresExpr",
+      "value": 154
+    },
+    {
+      "c": "CXCursor_CXXParenListInitExpr",
+      "jai": "cast(s64) B.CXCursorKind.CXXParenListInitExpr",
+      "value": 155
+    },
+    {
+      "c": "CXCursor_PackIndexingExpr",
+      "jai": "cast(s64) B.CXCursorKind.PackIndexingExpr",
+      "value": 156
+    },
+    {
+      "c": "CXCursor_MacroInstantiation",
+      "jai": "cast(s64) B.CXCursorKind.MacroInstantiation",
+      "value": 502
+    },
+    {
+      "c": "CXCursor_MacroExpansion",
+      "jai": "cast(s64) B.CXCursorKind.MacroExpansion",
+      "value": 502
+    },
+    {
+      "c": "CXCursor_UnexposedStmt",
+      "jai": "cast(s64) B.CXCursorKind.UnexposedStmt",
+      "value": 200
+    },
+    {
+      "c": "CXCursor_LabelStmt",
+      "jai": "cast(s64) B.CXCursorKind.LabelStmt",
+      "value": 201
+    },
+    {
+      "c": "CXCursor_CompoundStmt",
+      "jai": "cast(s64) B.CXCursorKind.CompoundStmt",
+      "value": 202
+    },
+    {
+      "c": "CXCursor_CaseStmt",
+      "jai": "cast(s64) B.CXCursorKind.CaseStmt",
+      "value": 203
+    },
+    {
+      "c": "CXCursor_DefaultStmt",
+      "jai": "cast(s64) B.CXCursorKind.DefaultStmt",
+      "value": 204
+    },
+    {
+      "c": "CXCursor_IfStmt",
+      "jai": "cast(s64) B.CXCursorKind.IfStmt",
+      "value": 205
+    },
+    {
+      "c": "CXCursor_SwitchStmt",
+      "jai": "cast(s64) B.CXCursorKind.SwitchStmt",
+      "value": 206
+    },
+    {
+      "c": "CXCursor_WhileStmt",
+      "jai": "cast(s64) B.CXCursorKind.WhileStmt",
+      "value": 207
+    },
+    {
+      "c": "CXCursor_DoStmt",
+      "jai": "cast(s64) B.CXCursorKind.DoStmt",
+      "value": 208
+    },
+    {
+      "c": "CXCursor_ForStmt",
+      "jai": "cast(s64) B.CXCursorKind.ForStmt",
+      "value": 209
+    },
+    {
+      "c": "CXCursor_GotoStmt",
+      "jai": "cast(s64) B.CXCursorKind.GotoStmt",
+      "value": 210
+    },
+    {
+      "c": "CXCursor_IndirectGotoStmt",
+      "jai": "cast(s64) B.CXCursorKind.IndirectGotoStmt",
+      "value": 211
+    },
+    {
+      "c": "CXCursor_ContinueStmt",
+      "jai": "cast(s64) B.CXCursorKind.ContinueStmt",
+      "value": 212
+    },
+    {
+      "c": "CXCursor_BreakStmt",
+      "jai": "cast(s64) B.CXCursorKind.BreakStmt",
+      "value": 213
+    },
+    {
+      "c": "CXCursor_ReturnStmt",
+      "jai": "cast(s64) B.CXCursorKind.ReturnStmt",
+      "value": 214
+    },
+    {
+      "c": "CXCursor_GCCAsmStmt",
+      "jai": "cast(s64) B.CXCursorKind.GCCAsmStmt",
+      "value": 215
+    },
+    {
+      "c": "CXCursor_AsmStmt",
+      "jai": "cast(s64) B.CXCursorKind.AsmStmt",
+      "value": 215
+    },
+    {
+      "c": "CXCursor_ObjCAtTryStmt",
+      "jai": "cast(s64) B.CXCursorKind.ObjCAtTryStmt",
+      "value": 216
+    },
+    {
+      "c": "CXCursor_ObjCAtCatchStmt",
+      "jai": "cast(s64) B.CXCursorKind.ObjCAtCatchStmt",
+      "value": 217
+    },
+    {
+      "c": "CXCursor_ObjCAtFinallyStmt",
+      "jai": "cast(s64) B.CXCursorKind.ObjCAtFinallyStmt",
+      "value": 218
+    },
+    {
+      "c": "CXCursor_ObjCAtThrowStmt",
+      "jai": "cast(s64) B.CXCursorKind.ObjCAtThrowStmt",
+      "value": 219
+    },
+    {
+      "c": "CXCursor_ObjCAtSynchronizedStmt",
+      "jai": "cast(s64) B.CXCursorKind.ObjCAtSynchronizedStmt",
+      "value": 220
+    },
+    {
+      "c": "CXCursor_ObjCAutoreleasePoolStmt",
+      "jai": "cast(s64) B.CXCursorKind.ObjCAutoreleasePoolStmt",
+      "value": 221
+    },
+    {
+      "c": "CXCursor_ObjCForCollectionStmt",
+      "jai": "cast(s64) B.CXCursorKind.ObjCForCollectionStmt",
+      "value": 222
+    },
+    {
+      "c": "CXCursor_CXXCatchStmt",
+      "jai": "cast(s64) B.CXCursorKind.CXXCatchStmt",
+      "value": 223
+    },
+    {
+      "c": "CXCursor_CXXTryStmt",
+      "jai": "cast(s64) B.CXCursorKind.CXXTryStmt",
+      "value": 224
+    },
+    {
+      "c": "CXCursor_CXXForRangeStmt",
+      "jai": "cast(s64) B.CXCursorKind.CXXForRangeStmt",
+      "value": 225
+    },
+    {
+      "c": "CXCursor_SEHTryStmt",
+      "jai": "cast(s64) B.CXCursorKind.SEHTryStmt",
+      "value": 226
+    },
+    {
+      "c": "CXCursor_SEHExceptStmt",
+      "jai": "cast(s64) B.CXCursorKind.SEHExceptStmt",
+      "value": 227
+    },
+    {
+      "c": "CXCursor_SEHFinallyStmt",
+      "jai": "cast(s64) B.CXCursorKind.SEHFinallyStmt",
+      "value": 228
+    },
+    {
+      "c": "CXCursor_MSAsmStmt",
+      "jai": "cast(s64) B.CXCursorKind.MSAsmStmt",
+      "value": 229
+    },
+    {
+      "c": "CXCursor_NullStmt",
+      "jai": "cast(s64) B.CXCursorKind.NullStmt",
+      "value": 230
+    },
+    {
+      "c": "CXCursor_DeclStmt",
+      "jai": "cast(s64) B.CXCursorKind.DeclStmt",
+      "value": 231
+    },
+    {
+      "c": "CXCursor_OMPParallelDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelDirective",
+      "value": 232
+    },
+    {
+      "c": "CXCursor_OMPSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPSimdDirective",
+      "value": 233
+    },
+    {
+      "c": "CXCursor_OMPForDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPForDirective",
+      "value": 234
+    },
+    {
+      "c": "CXCursor_OMPSectionsDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPSectionsDirective",
+      "value": 235
+    },
+    {
+      "c": "CXCursor_OMPSectionDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPSectionDirective",
+      "value": 236
+    },
+    {
+      "c": "CXCursor_OMPSingleDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPSingleDirective",
+      "value": 237
+    },
+    {
+      "c": "CXCursor_OMPParallelForDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelForDirective",
+      "value": 238
+    },
+    {
+      "c": "CXCursor_OMPParallelSectionsDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelSectionsDirective",
+      "value": 239
+    },
+    {
+      "c": "CXCursor_OMPTaskDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTaskDirective",
+      "value": 240
+    },
+    {
+      "c": "CXCursor_OMPMasterDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPMasterDirective",
+      "value": 241
+    },
+    {
+      "c": "CXCursor_OMPCriticalDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPCriticalDirective",
+      "value": 242
+    },
+    {
+      "c": "CXCursor_OMPTaskyieldDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTaskyieldDirective",
+      "value": 243
+    },
+    {
+      "c": "CXCursor_OMPBarrierDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPBarrierDirective",
+      "value": 244
+    },
+    {
+      "c": "CXCursor_OMPTaskwaitDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTaskwaitDirective",
+      "value": 245
+    },
+    {
+      "c": "CXCursor_OMPFlushDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPFlushDirective",
+      "value": 246
+    },
+    {
+      "c": "CXCursor_SEHLeaveStmt",
+      "jai": "cast(s64) B.CXCursorKind.SEHLeaveStmt",
+      "value": 247
+    },
+    {
+      "c": "CXCursor_OMPOrderedDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPOrderedDirective",
+      "value": 248
+    },
+    {
+      "c": "CXCursor_OMPAtomicDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPAtomicDirective",
+      "value": 249
+    },
+    {
+      "c": "CXCursor_OMPForSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPForSimdDirective",
+      "value": 250
+    },
+    {
+      "c": "CXCursor_OMPParallelForSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelForSimdDirective",
+      "value": 251
+    },
+    {
+      "c": "CXCursor_OMPTargetDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetDirective",
+      "value": 252
+    },
+    {
+      "c": "CXCursor_OMPTeamsDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTeamsDirective",
+      "value": 253
+    },
+    {
+      "c": "CXCursor_OMPTaskgroupDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTaskgroupDirective",
+      "value": 254
+    },
+    {
+      "c": "CXCursor_OMPCancellationPointDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPCancellationPointDirective",
+      "value": 255
+    },
+    {
+      "c": "CXCursor_OMPCancelDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPCancelDirective",
+      "value": 256
+    },
+    {
+      "c": "CXCursor_OMPTargetDataDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetDataDirective",
+      "value": 257
+    },
+    {
+      "c": "CXCursor_OMPTaskLoopDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTaskLoopDirective",
+      "value": 258
+    },
+    {
+      "c": "CXCursor_OMPTaskLoopSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTaskLoopSimdDirective",
+      "value": 259
+    },
+    {
+      "c": "CXCursor_OMPDistributeDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPDistributeDirective",
+      "value": 260
+    },
+    {
+      "c": "CXCursor_OMPTargetEnterDataDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetEnterDataDirective",
+      "value": 261
+    },
+    {
+      "c": "CXCursor_OMPTargetExitDataDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetExitDataDirective",
+      "value": 262
+    },
+    {
+      "c": "CXCursor_OMPTargetParallelDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetParallelDirective",
+      "value": 263
+    },
+    {
+      "c": "CXCursor_OMPTargetParallelForDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetParallelForDirective",
+      "value": 264
+    },
+    {
+      "c": "CXCursor_OMPTargetUpdateDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetUpdateDirective",
+      "value": 265
+    },
+    {
+      "c": "CXCursor_OMPDistributeParallelForDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPDistributeParallelForDirective",
+      "value": 266
+    },
+    {
+      "c": "CXCursor_OMPDistributeParallelForSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPDistributeParallelForSimdDirective",
+      "value": 267
+    },
+    {
+      "c": "CXCursor_OMPDistributeSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPDistributeSimdDirective",
+      "value": 268
+    },
+    {
+      "c": "CXCursor_OMPTargetParallelForSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetParallelForSimdDirective",
+      "value": 269
+    },
+    {
+      "c": "CXCursor_OMPTargetSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetSimdDirective",
+      "value": 270
+    },
+    {
+      "c": "CXCursor_OMPTeamsDistributeDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTeamsDistributeDirective",
+      "value": 271
+    },
+    {
+      "c": "CXCursor_OMPTeamsDistributeSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTeamsDistributeSimdDirective",
+      "value": 272
+    },
+    {
+      "c": "CXCursor_OMPTeamsDistributeParallelForSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTeamsDistributeParallelForSimdDirective",
+      "value": 273
+    },
+    {
+      "c": "CXCursor_OMPTeamsDistributeParallelForDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTeamsDistributeParallelForDirective",
+      "value": 274
+    },
+    {
+      "c": "CXCursor_OMPTargetTeamsDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetTeamsDirective",
+      "value": 275
+    },
+    {
+      "c": "CXCursor_OMPTargetTeamsDistributeDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetTeamsDistributeDirective",
+      "value": 276
+    },
+    {
+      "c": "CXCursor_OMPTargetTeamsDistributeParallelForDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetTeamsDistributeParallelForDirective",
+      "value": 277
+    },
+    {
+      "c": "CXCursor_OMPTargetTeamsDistributeParallelForSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetTeamsDistributeParallelForSimdDirective",
+      "value": 278
+    },
+    {
+      "c": "CXCursor_OMPTargetTeamsDistributeSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetTeamsDistributeSimdDirective",
+      "value": 279
+    },
+    {
+      "c": "CXCursor_BuiltinBitCastExpr",
+      "jai": "cast(s64) B.CXCursorKind.BuiltinBitCastExpr",
+      "value": 280
+    },
+    {
+      "c": "CXCursor_OMPMasterTaskLoopDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPMasterTaskLoopDirective",
+      "value": 281
+    },
+    {
+      "c": "CXCursor_OMPParallelMasterTaskLoopDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelMasterTaskLoopDirective",
+      "value": 282
+    },
+    {
+      "c": "CXCursor_OMPMasterTaskLoopSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPMasterTaskLoopSimdDirective",
+      "value": 283
+    },
+    {
+      "c": "CXCursor_OMPParallelMasterTaskLoopSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelMasterTaskLoopSimdDirective",
+      "value": 284
+    },
+    {
+      "c": "CXCursor_OMPParallelMasterDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelMasterDirective",
+      "value": 285
+    },
+    {
+      "c": "CXCursor_OMPDepobjDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPDepobjDirective",
+      "value": 286
+    },
+    {
+      "c": "CXCursor_OMPScanDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPScanDirective",
+      "value": 287
+    },
+    {
+      "c": "CXCursor_OMPTileDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTileDirective",
+      "value": 288
+    },
+    {
+      "c": "CXCursor_OMPCanonicalLoop",
+      "jai": "cast(s64) B.CXCursorKind.OMPCanonicalLoop",
+      "value": 289
+    },
+    {
+      "c": "CXCursor_OMPInteropDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPInteropDirective",
+      "value": 290
+    },
+    {
+      "c": "CXCursor_OMPDispatchDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPDispatchDirective",
+      "value": 291
+    },
+    {
+      "c": "CXCursor_OMPMaskedDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPMaskedDirective",
+      "value": 292
+    },
+    {
+      "c": "CXCursor_OMPUnrollDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPUnrollDirective",
+      "value": 293
+    },
+    {
+      "c": "CXCursor_OMPMetaDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPMetaDirective",
+      "value": 294
+    },
+    {
+      "c": "CXCursor_OMPGenericLoopDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPGenericLoopDirective",
+      "value": 295
+    },
+    {
+      "c": "CXCursor_OMPTeamsGenericLoopDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTeamsGenericLoopDirective",
+      "value": 296
+    },
+    {
+      "c": "CXCursor_OMPTargetTeamsGenericLoopDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetTeamsGenericLoopDirective",
+      "value": 297
+    },
+    {
+      "c": "CXCursor_OMPParallelGenericLoopDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelGenericLoopDirective",
+      "value": 298
+    },
+    {
+      "c": "CXCursor_OMPTargetParallelGenericLoopDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPTargetParallelGenericLoopDirective",
+      "value": 299
+    },
+    {
+      "c": "CXCursor_OMPParallelMaskedDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelMaskedDirective",
+      "value": 300
+    },
+    {
+      "c": "CXCursor_OMPMaskedTaskLoopDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPMaskedTaskLoopDirective",
+      "value": 301
+    },
+    {
+      "c": "CXCursor_OMPMaskedTaskLoopSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPMaskedTaskLoopSimdDirective",
+      "value": 302
+    },
+    {
+      "c": "CXCursor_OMPParallelMaskedTaskLoopDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelMaskedTaskLoopDirective",
+      "value": 303
+    },
+    {
+      "c": "CXCursor_OMPParallelMaskedTaskLoopSimdDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPParallelMaskedTaskLoopSimdDirective",
+      "value": 304
+    },
+    {
+      "c": "CXCursor_OMPErrorDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPErrorDirective",
+      "value": 305
+    },
+    {
+      "c": "CXCursor_OMPScopeDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPScopeDirective",
+      "value": 306
+    },
+    {
+      "c": "CXCursor_OMPReverseDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPReverseDirective",
+      "value": 307
+    },
+    {
+      "c": "CXCursor_OMPInterchangeDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPInterchangeDirective",
+      "value": 308
+    },
+    {
+      "c": "CXCursor_OMPAssumeDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPAssumeDirective",
+      "value": 309
+    },
+    {
+      "c": "CXCursor_OMPStripeDirective",
+      "jai": "cast(s64) B.CXCursorKind.OMPStripeDirective",
+      "value": 310
+    },
+    {
+      "c": "CXCursor_OpenACCComputeConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCComputeConstruct",
+      "value": 320
+    },
+    {
+      "c": "CXCursor_OpenACCLoopConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCLoopConstruct",
+      "value": 321
+    },
+    {
+      "c": "CXCursor_OpenACCCombinedConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCCombinedConstruct",
+      "value": 322
+    },
+    {
+      "c": "CXCursor_OpenACCDataConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCDataConstruct",
+      "value": 323
+    },
+    {
+      "c": "CXCursor_OpenACCEnterDataConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCEnterDataConstruct",
+      "value": 324
+    },
+    {
+      "c": "CXCursor_OpenACCExitDataConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCExitDataConstruct",
+      "value": 325
+    },
+    {
+      "c": "CXCursor_OpenACCHostDataConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCHostDataConstruct",
+      "value": 326
+    },
+    {
+      "c": "CXCursor_OpenACCWaitConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCWaitConstruct",
+      "value": 327
+    },
+    {
+      "c": "CXCursor_OpenACCInitConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCInitConstruct",
+      "value": 328
+    },
+    {
+      "c": "CXCursor_OpenACCShutdownConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCShutdownConstruct",
+      "value": 329
+    },
+    {
+      "c": "CXCursor_OpenACCSetConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCSetConstruct",
+      "value": 330
+    },
+    {
+      "c": "CXCursor_OpenACCUpdateConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCUpdateConstruct",
+      "value": 331
+    },
+    {
+      "c": "CXCursor_OpenACCAtomicConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCAtomicConstruct",
+      "value": 332
+    },
+    {
+      "c": "CXCursor_OpenACCCacheConstruct",
+      "jai": "cast(s64) B.CXCursorKind.OpenACCCacheConstruct",
+      "value": 333
+    },
+    {
+      "c": "CXCursor_MacroDefinition",
+      "jai": "cast(s64) B.CXCursorKind.MacroDefinition",
+      "value": 501
+    },
+    {
+      "c": "CXCursor_TranslationUnit",
+      "jai": "cast(s64) B.CXCursorKind.TranslationUnit",
+      "value": 350
+    },
+    {
+      "c": "CXCursor_PreprocessingDirective",
+      "jai": "cast(s64) B.CXCursorKind.PreprocessingDirective",
+      "value": 500
+    },
+    {
+      "c": "CXCursor_UnexposedAttr",
+      "jai": "cast(s64) B.CXCursorKind.UnexposedAttr",
+      "value": 400
+    },
+    {
+      "c": "CXCursor_IBActionAttr",
+      "jai": "cast(s64) B.CXCursorKind.IBActionAttr",
+      "value": 401
+    },
+    {
+      "c": "CXCursor_IBOutletAttr",
+      "jai": "cast(s64) B.CXCursorKind.IBOutletAttr",
+      "value": 402
+    },
+    {
+      "c": "CXCursor_IBOutletCollectionAttr",
+      "jai": "cast(s64) B.CXCursorKind.IBOutletCollectionAttr",
+      "value": 403
+    },
+    {
+      "c": "CXCursor_CXXFinalAttr",
+      "jai": "cast(s64) B.CXCursorKind.CXXFinalAttr",
+      "value": 404
+    },
+    {
+      "c": "CXCursor_CXXOverrideAttr",
+      "jai": "cast(s64) B.CXCursorKind.CXXOverrideAttr",
+      "value": 405
+    },
+    {
+      "c": "CXCursor_AnnotateAttr",
+      "jai": "cast(s64) B.CXCursorKind.AnnotateAttr",
+      "value": 406
+    },
+    {
+      "c": "CXCursor_AsmLabelAttr",
+      "jai": "cast(s64) B.CXCursorKind.AsmLabelAttr",
+      "value": 407
+    },
+    {
+      "c": "CXCursor_PackedAttr",
+      "jai": "cast(s64) B.CXCursorKind.PackedAttr",
+      "value": 408
+    },
+    {
+      "c": "CXCursor_PureAttr",
+      "jai": "cast(s64) B.CXCursorKind.PureAttr",
+      "value": 409
+    },
+    {
+      "c": "CXCursor_ConstAttr",
+      "jai": "cast(s64) B.CXCursorKind.ConstAttr",
+      "value": 410
+    },
+    {
+      "c": "CXCursor_NoDuplicateAttr",
+      "jai": "cast(s64) B.CXCursorKind.NoDuplicateAttr",
+      "value": 411
+    },
+    {
+      "c": "CXCursor_CUDAConstantAttr",
+      "jai": "cast(s64) B.CXCursorKind.CUDAConstantAttr",
+      "value": 412
+    },
+    {
+      "c": "CXCursor_CUDADeviceAttr",
+      "jai": "cast(s64) B.CXCursorKind.CUDADeviceAttr",
+      "value": 413
+    },
+    {
+      "c": "CXCursor_CUDAGlobalAttr",
+      "jai": "cast(s64) B.CXCursorKind.CUDAGlobalAttr",
+      "value": 414
+    },
+    {
+      "c": "CXCursor_CUDAHostAttr",
+      "jai": "cast(s64) B.CXCursorKind.CUDAHostAttr",
+      "value": 415
+    },
+    {
+      "c": "CXCursor_CUDASharedAttr",
+      "jai": "cast(s64) B.CXCursorKind.CUDASharedAttr",
+      "value": 416
+    },
+    {
+      "c": "CXCursor_VisibilityAttr",
+      "jai": "cast(s64) B.CXCursorKind.VisibilityAttr",
+      "value": 417
+    },
+    {
+      "c": "CXCursor_DLLExport",
+      "jai": "cast(s64) B.CXCursorKind.DLLExport",
+      "value": 418
+    },
+    {
+      "c": "CXCursor_DLLImport",
+      "jai": "cast(s64) B.CXCursorKind.DLLImport",
+      "value": 419
+    },
+    {
+      "c": "CXCursor_NSReturnsRetained",
+      "jai": "cast(s64) B.CXCursorKind.NSReturnsRetained",
+      "value": 420
+    },
+    {
+      "c": "CXCursor_NSReturnsNotRetained",
+      "jai": "cast(s64) B.CXCursorKind.NSReturnsNotRetained",
+      "value": 421
+    },
+    {
+      "c": "CXCursor_NSReturnsAutoreleased",
+      "jai": "cast(s64) B.CXCursorKind.NSReturnsAutoreleased",
+      "value": 422
+    },
+    {
+      "c": "CXCursor_NSConsumesSelf",
+      "jai": "cast(s64) B.CXCursorKind.NSConsumesSelf",
+      "value": 423
+    },
+    {
+      "c": "CXCursor_NSConsumed",
+      "jai": "cast(s64) B.CXCursorKind.NSConsumed",
+      "value": 424
+    },
+    {
+      "c": "CXCursor_ObjCException",
+      "jai": "cast(s64) B.CXCursorKind.ObjCException",
+      "value": 425
+    },
+    {
+      "c": "CXCursor_ObjCNSObject",
+      "jai": "cast(s64) B.CXCursorKind.ObjCNSObject",
+      "value": 426
+    },
+    {
+      "c": "CXCursor_ObjCIndependentClass",
+      "jai": "cast(s64) B.CXCursorKind.ObjCIndependentClass",
+      "value": 427
+    },
+    {
+      "c": "CXCursor_ObjCPreciseLifetime",
+      "jai": "cast(s64) B.CXCursorKind.ObjCPreciseLifetime",
+      "value": 428
+    },
+    {
+      "c": "CXCursor_ObjCReturnsInnerPointer",
+      "jai": "cast(s64) B.CXCursorKind.ObjCReturnsInnerPointer",
+      "value": 429
+    },
+    {
+      "c": "CXCursor_ObjCRequiresSuper",
+      "jai": "cast(s64) B.CXCursorKind.ObjCRequiresSuper",
+      "value": 430
+    },
+    {
+      "c": "CXCursor_ObjCRootClass",
+      "jai": "cast(s64) B.CXCursorKind.ObjCRootClass",
+      "value": 431
+    },
+    {
+      "c": "CXCursor_ObjCSubclassingRestricted",
+      "jai": "cast(s64) B.CXCursorKind.ObjCSubclassingRestricted",
+      "value": 432
+    },
+    {
+      "c": "CXCursor_ObjCExplicitProtocolImpl",
+      "jai": "cast(s64) B.CXCursorKind.ObjCExplicitProtocolImpl",
+      "value": 433
+    },
+    {
+      "c": "CXCursor_ObjCDesignatedInitializer",
+      "jai": "cast(s64) B.CXCursorKind.ObjCDesignatedInitializer",
+      "value": 434
+    },
+    {
+      "c": "CXCursor_ObjCRuntimeVisible",
+      "jai": "cast(s64) B.CXCursorKind.ObjCRuntimeVisible",
+      "value": 435
+    },
+    {
+      "c": "CXCursor_ObjCBoxable",
+      "jai": "cast(s64) B.CXCursorKind.ObjCBoxable",
+      "value": 436
+    },
+    {
+      "c": "CXCursor_FlagEnum",
+      "jai": "cast(s64) B.CXCursorKind.FlagEnum",
+      "value": 437
+    },
+    {
+      "c": "CXCursor_ConvergentAttr",
+      "jai": "cast(s64) B.CXCursorKind.ConvergentAttr",
+      "value": 438
+    },
+    {
+      "c": "CXCursor_WarnUnusedAttr",
+      "jai": "cast(s64) B.CXCursorKind.WarnUnusedAttr",
+      "value": 439
+    },
+    {
+      "c": "CXCursor_WarnUnusedResultAttr",
+      "jai": "cast(s64) B.CXCursorKind.WarnUnusedResultAttr",
+      "value": 440
+    },
+    {
+      "c": "CXCursor_AlignedAttr",
+      "jai": "cast(s64) B.CXCursorKind.AlignedAttr",
+      "value": 441
+    },
+    {
+      "c": "CXCursor_FirstDecl",
+      "jai": "cast(s64) B.CXCursorKind.FirstDecl",
+      "value": 1
+    },
+    {
+      "c": "CXCursor_LastDecl",
+      "jai": "cast(s64) B.CXCursorKind.LastDecl",
+      "value": 39
+    },
+    {
+      "c": "CXCursor_LastExtraDecl",
+      "jai": "cast(s64) B.CXCursorKind.LastExtraDecl",
+      "value": 604
+    },
+    {
+      "c": "CXCursor_FirstExtraDecl",
+      "jai": "cast(s64) B.CXCursorKind.FirstExtraDecl",
+      "value": 600
+    },
+    {
+      "c": "CXCursor_FirstRef",
+      "jai": "cast(s64) B.CXCursorKind.FirstRef",
+      "value": 40
+    },
+    {
+      "c": "CXCursor_LastRef",
+      "jai": "cast(s64) B.CXCursorKind.LastRef",
+      "value": 50
+    },
+    {
+      "c": "CXCursor_FirstInvalid",
+      "jai": "cast(s64) B.CXCursorKind.FirstInvalid",
+      "value": 70
+    },
+    {
+      "c": "CXCursor_LastInvalid",
+      "jai": "cast(s64) B.CXCursorKind.LastInvalid",
+      "value": 73
+    },
+    {
+      "c": "CXCursor_FirstExpr",
+      "jai": "cast(s64) B.CXCursorKind.FirstExpr",
+      "value": 100
+    },
+    {
+      "c": "CXCursor_LastPreprocessing",
+      "jai": "cast(s64) B.CXCursorKind.LastPreprocessing",
+      "value": 503
+    },
+    {
+      "c": "CXCursor_FirstPreprocessing",
+      "jai": "cast(s64) B.CXCursorKind.FirstPreprocessing",
+      "value": 500
+    },
+    {
+      "c": "CXCursor_LastExpr",
+      "jai": "cast(s64) B.CXCursorKind.LastExpr",
+      "value": 156
+    },
+    {
+      "c": "CXCursor_FirstStmt",
+      "jai": "cast(s64) B.CXCursorKind.FirstStmt",
+      "value": 200
+    },
+    {
+      "c": "CXCursor_LastStmt",
+      "jai": "cast(s64) B.CXCursorKind.LastStmt",
+      "value": 333
+    },
+    {
+      "c": "CXCursor_FirstAttr",
+      "jai": "cast(s64) B.CXCursorKind.FirstAttr",
+      "value": 400
+    },
+    {
+      "c": "CXCursor_LastAttr",
+      "jai": "cast(s64) B.CXCursorKind.LastAttr",
+      "value": 441
+    },
+    {
+      "c": "sizeof(enum CXCursor_ExceptionSpecificationKind)",
+      "jai": "size_of(B.CXCursor_ExceptionSpecificationKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXCursor_ExceptionSpecificationKind)",
+      "jai": "align_of(B.CXCursor_ExceptionSpecificationKind)",
+      "value": 4
+    },
+    {
+      "c": "CXCursor_ExceptionSpecificationKind_None",
+      "jai": "cast(s64) B.CXCursor_ExceptionSpecificationKind.None",
+      "value": 0
+    },
+    {
+      "c": "CXCursor_ExceptionSpecificationKind_DynamicNone",
+      "jai": "cast(s64) B.CXCursor_ExceptionSpecificationKind.DynamicNone",
+      "value": 1
+    },
+    {
+      "c": "CXCursor_ExceptionSpecificationKind_Dynamic",
+      "jai": "cast(s64) B.CXCursor_ExceptionSpecificationKind.Dynamic",
+      "value": 2
+    },
+    {
+      "c": "CXCursor_ExceptionSpecificationKind_MSAny",
+      "jai": "cast(s64) B.CXCursor_ExceptionSpecificationKind.MSAny",
+      "value": 3
+    },
+    {
+      "c": "CXCursor_ExceptionSpecificationKind_BasicNoexcept",
+      "jai": "cast(s64) B.CXCursor_ExceptionSpecificationKind.BasicNoexcept",
+      "value": 4
+    },
+    {
+      "c": "CXCursor_ExceptionSpecificationKind_ComputedNoexcept",
+      "jai": "cast(s64) B.CXCursor_ExceptionSpecificationKind.ComputedNoexcept",
+      "value": 5
+    },
+    {
+      "c": "CXCursor_ExceptionSpecificationKind_Unevaluated",
+      "jai": "cast(s64) B.CXCursor_ExceptionSpecificationKind.Unevaluated",
+      "value": 6
+    },
+    {
+      "c": "CXCursor_ExceptionSpecificationKind_Uninstantiated",
+      "jai": "cast(s64) B.CXCursor_ExceptionSpecificationKind.Uninstantiated",
+      "value": 7
+    },
+    {
+      "c": "CXCursor_ExceptionSpecificationKind_Unparsed",
+      "jai": "cast(s64) B.CXCursor_ExceptionSpecificationKind.Unparsed",
+      "value": 8
+    },
+    {
+      "c": "CXCursor_ExceptionSpecificationKind_NoThrow",
+      "jai": "cast(s64) B.CXCursor_ExceptionSpecificationKind.NoThrow",
+      "value": 9
+    },
+    {
+      "c": "sizeof(enum CXDiagnosticDisplayOptions)",
+      "jai": "size_of(B.CXDiagnosticDisplayOptions)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXDiagnosticDisplayOptions)",
+      "jai": "align_of(B.CXDiagnosticDisplayOptions)",
+      "value": 4
+    },
+    {
+      "c": "CXDiagnostic_DisplaySourceLocation",
+      "jai": "cast(s64) B.CXDiagnosticDisplayOptions.DisplaySourceLocation",
+      "value": 1
+    },
+    {
+      "c": "CXDiagnostic_DisplayColumn",
+      "jai": "cast(s64) B.CXDiagnosticDisplayOptions.DisplayColumn",
+      "value": 2
+    },
+    {
+      "c": "CXDiagnostic_DisplaySourceRanges",
+      "jai": "cast(s64) B.CXDiagnosticDisplayOptions.DisplaySourceRanges",
+      "value": 4
+    },
+    {
+      "c": "CXDiagnostic_DisplayOption",
+      "jai": "cast(s64) B.CXDiagnosticDisplayOptions.DisplayOption",
+      "value": 8
+    },
+    {
+      "c": "CXDiagnostic_DisplayCategoryId",
+      "jai": "cast(s64) B.CXDiagnosticDisplayOptions.DisplayCategoryId",
+      "value": 16
+    },
+    {
+      "c": "CXDiagnostic_DisplayCategoryName",
+      "jai": "cast(s64) B.CXDiagnosticDisplayOptions.DisplayCategoryName",
+      "value": 32
+    },
+    {
+      "c": "sizeof(enum CXDiagnosticSeverity)",
+      "jai": "size_of(B.CXDiagnosticSeverity)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXDiagnosticSeverity)",
+      "jai": "align_of(B.CXDiagnosticSeverity)",
+      "value": 4
+    },
+    {
+      "c": "CXDiagnostic_Ignored",
+      "jai": "cast(s64) B.CXDiagnosticSeverity.Ignored",
+      "value": 0
+    },
+    {
+      "c": "CXDiagnostic_Note",
+      "jai": "cast(s64) B.CXDiagnosticSeverity.Note",
+      "value": 1
+    },
+    {
+      "c": "CXDiagnostic_Warning",
+      "jai": "cast(s64) B.CXDiagnosticSeverity.Warning",
+      "value": 2
+    },
+    {
+      "c": "CXDiagnostic_Error",
+      "jai": "cast(s64) B.CXDiagnosticSeverity.Error",
+      "value": 3
+    },
+    {
+      "c": "CXDiagnostic_Fatal",
+      "jai": "cast(s64) B.CXDiagnosticSeverity.Fatal",
+      "value": 4
+    },
+    {
+      "c": "sizeof(enum CXErrorCode)",
+      "jai": "size_of(B.CXErrorCode)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXErrorCode)",
+      "jai": "align_of(B.CXErrorCode)",
+      "value": 4
+    },
+    {
+      "c": "CXError_Success",
+      "jai": "cast(s64) B.CXErrorCode.Success",
+      "value": 0
+    },
+    {
+      "c": "CXError_Failure",
+      "jai": "cast(s64) B.CXErrorCode.Failure",
+      "value": 1
+    },
+    {
+      "c": "CXError_Crashed",
+      "jai": "cast(s64) B.CXErrorCode.Crashed",
+      "value": 2
+    },
+    {
+      "c": "CXError_InvalidArguments",
+      "jai": "cast(s64) B.CXErrorCode.InvalidArguments",
+      "value": 3
+    },
+    {
+      "c": "CXError_ASTReadError",
+      "jai": "cast(s64) B.CXErrorCode.ASTReadError",
+      "value": 4
+    },
+    {
+      "c": "sizeof(CXEvalResultKind)",
+      "jai": "size_of(B.CXEvalResultKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXEvalResultKind)",
+      "jai": "align_of(B.CXEvalResultKind)",
+      "value": 4
+    },
+    {
+      "c": "CXEval_Int",
+      "jai": "cast(s64) B.CXEvalResultKind.Int",
+      "value": 1
+    },
+    {
+      "c": "CXEval_Float",
+      "jai": "cast(s64) B.CXEvalResultKind.Float",
+      "value": 2
+    },
+    {
+      "c": "CXEval_ObjCStrLiteral",
+      "jai": "cast(s64) B.CXEvalResultKind.ObjCStrLiteral",
+      "value": 3
+    },
+    {
+      "c": "CXEval_StrLiteral",
+      "jai": "cast(s64) B.CXEvalResultKind.StrLiteral",
+      "value": 4
+    },
+    {
+      "c": "CXEval_CFStr",
+      "jai": "cast(s64) B.CXEvalResultKind.CFStr",
+      "value": 5
+    },
+    {
+      "c": "CXEval_Other",
+      "jai": "cast(s64) B.CXEvalResultKind.Other",
+      "value": 6
+    },
+    {
+      "c": "CXEval_UnExposed",
+      "jai": "cast(s64) B.CXEvalResultKind.UnExposed",
+      "value": 0
+    },
+    {
+      "c": "sizeof(CXFileUniqueID)",
+      "jai": "size_of(B.CXFileUniqueID)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXFileUniqueID)",
+      "jai": "align_of(B.CXFileUniqueID)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXFileUniqueID, data)",
+      "jai": "offset_of(B.CXFileUniqueID, \"data\")",
+      "value": 0
+    },
+    {
+      "c": "sizeof(CXGlobalOptFlags)",
+      "jai": "size_of(B.CXGlobalOptFlags)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXGlobalOptFlags)",
+      "jai": "align_of(B.CXGlobalOptFlags)",
+      "value": 4
+    },
+    {
+      "c": "CXGlobalOpt_None",
+      "jai": "cast(s64) B.CXGlobalOptFlags.None",
+      "value": 0
+    },
+    {
+      "c": "CXGlobalOpt_ThreadBackgroundPriorityForIndexing",
+      "jai": "cast(s64) B.CXGlobalOptFlags.ThreadBackgroundPriorityForIndexing",
+      "value": 1
+    },
+    {
+      "c": "CXGlobalOpt_ThreadBackgroundPriorityForEditing",
+      "jai": "cast(s64) B.CXGlobalOptFlags.ThreadBackgroundPriorityForEditing",
+      "value": 2
+    },
+    {
+      "c": "CXGlobalOpt_ThreadBackgroundPriorityForAll",
+      "jai": "cast(s64) B.CXGlobalOptFlags.ThreadBackgroundPriorityForAll",
+      "value": 3
+    },
+    {
+      "c": "sizeof(CXIdxAttrInfo)",
+      "jai": "size_of(B.CXIdxAttrInfo)",
+      "value": 64
+    },
+    {
+      "c": "_Alignof(CXIdxAttrInfo)",
+      "jai": "align_of(B.CXIdxAttrInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxAttrInfo, kind)",
+      "jai": "offset_of(B.CXIdxAttrInfo, \"kind\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxAttrInfo, cursor)",
+      "jai": "offset_of(B.CXIdxAttrInfo, \"cursor\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxAttrInfo, loc)",
+      "jai": "offset_of(B.CXIdxAttrInfo, \"loc\")",
+      "value": 40
+    },
+    {
+      "c": "sizeof(CXIdxAttrKind)",
+      "jai": "size_of(B.CXIdxAttrKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXIdxAttrKind)",
+      "jai": "align_of(B.CXIdxAttrKind)",
+      "value": 4
+    },
+    {
+      "c": "CXIdxAttr_Unexposed",
+      "jai": "cast(s64) B.CXIdxAttrKind.Unexposed",
+      "value": 0
+    },
+    {
+      "c": "CXIdxAttr_IBAction",
+      "jai": "cast(s64) B.CXIdxAttrKind.IBAction",
+      "value": 1
+    },
+    {
+      "c": "CXIdxAttr_IBOutlet",
+      "jai": "cast(s64) B.CXIdxAttrKind.IBOutlet",
+      "value": 2
+    },
+    {
+      "c": "CXIdxAttr_IBOutletCollection",
+      "jai": "cast(s64) B.CXIdxAttrKind.IBOutletCollection",
+      "value": 3
+    },
+    {
+      "c": "sizeof(CXIdxBaseClassInfo)",
+      "jai": "size_of(B.CXIdxBaseClassInfo)",
+      "value": 64
+    },
+    {
+      "c": "_Alignof(CXIdxBaseClassInfo)",
+      "jai": "align_of(B.CXIdxBaseClassInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxBaseClassInfo, base)",
+      "jai": "offset_of(B.CXIdxBaseClassInfo, \"base\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxBaseClassInfo, cursor)",
+      "jai": "offset_of(B.CXIdxBaseClassInfo, \"cursor\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxBaseClassInfo, loc)",
+      "jai": "offset_of(B.CXIdxBaseClassInfo, \"loc\")",
+      "value": 40
+    },
+    {
+      "c": "sizeof(CXIdxCXXClassDeclInfo)",
+      "jai": "size_of(B.CXIdxCXXClassDeclInfo)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXIdxCXXClassDeclInfo)",
+      "jai": "align_of(B.CXIdxCXXClassDeclInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxCXXClassDeclInfo, declInfo)",
+      "jai": "offset_of(B.CXIdxCXXClassDeclInfo, \"declInfo\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxCXXClassDeclInfo, bases)",
+      "jai": "offset_of(B.CXIdxCXXClassDeclInfo, \"bases\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxCXXClassDeclInfo, numBases)",
+      "jai": "offset_of(B.CXIdxCXXClassDeclInfo, \"numBases\")",
+      "value": 16
+    },
+    {
+      "c": "sizeof(CXIdxContainerInfo)",
+      "jai": "size_of(B.CXIdxContainerInfo)",
+      "value": 32
+    },
+    {
+      "c": "_Alignof(CXIdxContainerInfo)",
+      "jai": "align_of(B.CXIdxContainerInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxContainerInfo, cursor)",
+      "jai": "offset_of(B.CXIdxContainerInfo, \"cursor\")",
+      "value": 0
+    },
+    {
+      "c": "sizeof(CXIdxDeclInfo)",
+      "jai": "size_of(B.CXIdxDeclInfo)",
+      "value": 128
+    },
+    {
+      "c": "_Alignof(CXIdxDeclInfo)",
+      "jai": "align_of(B.CXIdxDeclInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, entityInfo)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"entityInfo\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, cursor)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"cursor\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, loc)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"loc\")",
+      "value": 40
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, semanticContainer)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"semanticContainer\")",
+      "value": 64
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, lexicalContainer)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"lexicalContainer\")",
+      "value": 72
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, isRedeclaration)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"isRedeclaration\")",
+      "value": 80
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, isDefinition)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"isDefinition\")",
+      "value": 84
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, isContainer)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"isContainer\")",
+      "value": 88
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, declAsContainer)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"declAsContainer\")",
+      "value": 96
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, isImplicit)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"isImplicit\")",
+      "value": 104
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, attributes)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"attributes\")",
+      "value": 112
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, numAttributes)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"numAttributes\")",
+      "value": 120
+    },
+    {
+      "c": "offsetof(CXIdxDeclInfo, flags)",
+      "jai": "offset_of(B.CXIdxDeclInfo, \"flags\")",
+      "value": 124
+    },
+    {
+      "c": "sizeof(CXIdxDeclInfoFlags)",
+      "jai": "size_of(B.CXIdxDeclInfoFlags)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXIdxDeclInfoFlags)",
+      "jai": "align_of(B.CXIdxDeclInfoFlags)",
+      "value": 4
+    },
+    {
+      "c": "CXIdxDeclFlag_Skipped",
+      "jai": "cast(s64) B.CXIdxDeclInfoFlags.CXIdxDeclFlag_Skipped",
+      "value": 1
+    },
+    {
+      "c": "sizeof(CXIdxEntityCXXTemplateKind)",
+      "jai": "size_of(B.CXIdxEntityCXXTemplateKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXIdxEntityCXXTemplateKind)",
+      "jai": "align_of(B.CXIdxEntityCXXTemplateKind)",
+      "value": 4
+    },
+    {
+      "c": "CXIdxEntity_NonTemplate",
+      "jai": "cast(s64) B.CXIdxEntityCXXTemplateKind.NonTemplate",
+      "value": 0
+    },
+    {
+      "c": "CXIdxEntity_Template",
+      "jai": "cast(s64) B.CXIdxEntityCXXTemplateKind.Template",
+      "value": 1
+    },
+    {
+      "c": "CXIdxEntity_TemplatePartialSpecialization",
+      "jai": "cast(s64) B.CXIdxEntityCXXTemplateKind.TemplatePartialSpecialization",
+      "value": 2
+    },
+    {
+      "c": "CXIdxEntity_TemplateSpecialization",
+      "jai": "cast(s64) B.CXIdxEntityCXXTemplateKind.TemplateSpecialization",
+      "value": 3
+    },
+    {
+      "c": "sizeof(CXIdxEntityInfo)",
+      "jai": "size_of(B.CXIdxEntityInfo)",
+      "value": 80
+    },
+    {
+      "c": "_Alignof(CXIdxEntityInfo)",
+      "jai": "align_of(B.CXIdxEntityInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxEntityInfo, kind)",
+      "jai": "offset_of(B.CXIdxEntityInfo, \"kind\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxEntityInfo, templateKind)",
+      "jai": "offset_of(B.CXIdxEntityInfo, \"templateKind\")",
+      "value": 4
+    },
+    {
+      "c": "offsetof(CXIdxEntityInfo, lang)",
+      "jai": "offset_of(B.CXIdxEntityInfo, \"lang\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxEntityInfo, name)",
+      "jai": "offset_of(B.CXIdxEntityInfo, \"name\")",
+      "value": 16
+    },
+    {
+      "c": "offsetof(CXIdxEntityInfo, USR)",
+      "jai": "offset_of(B.CXIdxEntityInfo, \"USR\")",
+      "value": 24
+    },
+    {
+      "c": "offsetof(CXIdxEntityInfo, cursor)",
+      "jai": "offset_of(B.CXIdxEntityInfo, \"cursor\")",
+      "value": 32
+    },
+    {
+      "c": "offsetof(CXIdxEntityInfo, attributes)",
+      "jai": "offset_of(B.CXIdxEntityInfo, \"attributes\")",
+      "value": 64
+    },
+    {
+      "c": "offsetof(CXIdxEntityInfo, numAttributes)",
+      "jai": "offset_of(B.CXIdxEntityInfo, \"numAttributes\")",
+      "value": 72
+    },
+    {
+      "c": "sizeof(CXIdxEntityKind)",
+      "jai": "size_of(B.CXIdxEntityKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXIdxEntityKind)",
+      "jai": "align_of(B.CXIdxEntityKind)",
+      "value": 4
+    },
+    {
+      "c": "CXIdxEntity_Unexposed",
+      "jai": "cast(s64) B.CXIdxEntityKind.Unexposed",
+      "value": 0
+    },
+    {
+      "c": "CXIdxEntity_Typedef",
+      "jai": "cast(s64) B.CXIdxEntityKind.Typedef",
+      "value": 1
+    },
+    {
+      "c": "CXIdxEntity_Function",
+      "jai": "cast(s64) B.CXIdxEntityKind.Function",
+      "value": 2
+    },
+    {
+      "c": "CXIdxEntity_Variable",
+      "jai": "cast(s64) B.CXIdxEntityKind.Variable",
+      "value": 3
+    },
+    {
+      "c": "CXIdxEntity_Field",
+      "jai": "cast(s64) B.CXIdxEntityKind.Field",
+      "value": 4
+    },
+    {
+      "c": "CXIdxEntity_EnumConstant",
+      "jai": "cast(s64) B.CXIdxEntityKind.EnumConstant",
+      "value": 5
+    },
+    {
+      "c": "CXIdxEntity_ObjCClass",
+      "jai": "cast(s64) B.CXIdxEntityKind.ObjCClass",
+      "value": 6
+    },
+    {
+      "c": "CXIdxEntity_ObjCProtocol",
+      "jai": "cast(s64) B.CXIdxEntityKind.ObjCProtocol",
+      "value": 7
+    },
+    {
+      "c": "CXIdxEntity_ObjCCategory",
+      "jai": "cast(s64) B.CXIdxEntityKind.ObjCCategory",
+      "value": 8
+    },
+    {
+      "c": "CXIdxEntity_ObjCInstanceMethod",
+      "jai": "cast(s64) B.CXIdxEntityKind.ObjCInstanceMethod",
+      "value": 9
+    },
+    {
+      "c": "CXIdxEntity_ObjCClassMethod",
+      "jai": "cast(s64) B.CXIdxEntityKind.ObjCClassMethod",
+      "value": 10
+    },
+    {
+      "c": "CXIdxEntity_ObjCProperty",
+      "jai": "cast(s64) B.CXIdxEntityKind.ObjCProperty",
+      "value": 11
+    },
+    {
+      "c": "CXIdxEntity_ObjCIvar",
+      "jai": "cast(s64) B.CXIdxEntityKind.ObjCIvar",
+      "value": 12
+    },
+    {
+      "c": "CXIdxEntity_Enum",
+      "jai": "cast(s64) B.CXIdxEntityKind.Enum",
+      "value": 13
+    },
+    {
+      "c": "CXIdxEntity_Struct",
+      "jai": "cast(s64) B.CXIdxEntityKind.Struct",
+      "value": 14
+    },
+    {
+      "c": "CXIdxEntity_Union",
+      "jai": "cast(s64) B.CXIdxEntityKind.Union",
+      "value": 15
+    },
+    {
+      "c": "CXIdxEntity_CXXClass",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXClass",
+      "value": 16
+    },
+    {
+      "c": "CXIdxEntity_CXXNamespace",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXNamespace",
+      "value": 17
+    },
+    {
+      "c": "CXIdxEntity_CXXNamespaceAlias",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXNamespaceAlias",
+      "value": 18
+    },
+    {
+      "c": "CXIdxEntity_CXXStaticVariable",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXStaticVariable",
+      "value": 19
+    },
+    {
+      "c": "CXIdxEntity_CXXStaticMethod",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXStaticMethod",
+      "value": 20
+    },
+    {
+      "c": "CXIdxEntity_CXXInstanceMethod",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXInstanceMethod",
+      "value": 21
+    },
+    {
+      "c": "CXIdxEntity_CXXConstructor",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXConstructor",
+      "value": 22
+    },
+    {
+      "c": "CXIdxEntity_CXXDestructor",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXDestructor",
+      "value": 23
+    },
+    {
+      "c": "CXIdxEntity_CXXConversionFunction",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXConversionFunction",
+      "value": 24
+    },
+    {
+      "c": "CXIdxEntity_CXXTypeAlias",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXTypeAlias",
+      "value": 25
+    },
+    {
+      "c": "CXIdxEntity_CXXInterface",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXInterface",
+      "value": 26
+    },
+    {
+      "c": "CXIdxEntity_CXXConcept",
+      "jai": "cast(s64) B.CXIdxEntityKind.CXXConcept",
+      "value": 27
+    },
+    {
+      "c": "sizeof(CXIdxEntityLanguage)",
+      "jai": "size_of(B.CXIdxEntityLanguage)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXIdxEntityLanguage)",
+      "jai": "align_of(B.CXIdxEntityLanguage)",
+      "value": 4
+    },
+    {
+      "c": "CXIdxEntityLang_None",
+      "jai": "cast(s64) B.CXIdxEntityLanguage.None",
+      "value": 0
+    },
+    {
+      "c": "CXIdxEntityLang_C",
+      "jai": "cast(s64) B.CXIdxEntityLanguage.C",
+      "value": 1
+    },
+    {
+      "c": "CXIdxEntityLang_ObjC",
+      "jai": "cast(s64) B.CXIdxEntityLanguage.ObjC",
+      "value": 2
+    },
+    {
+      "c": "CXIdxEntityLang_CXX",
+      "jai": "cast(s64) B.CXIdxEntityLanguage.CXX",
+      "value": 3
+    },
+    {
+      "c": "CXIdxEntityLang_Swift",
+      "jai": "cast(s64) B.CXIdxEntityLanguage.Swift",
+      "value": 4
+    },
+    {
+      "c": "sizeof(CXIdxEntityRefInfo)",
+      "jai": "size_of(B.CXIdxEntityRefInfo)",
+      "value": 96
+    },
+    {
+      "c": "_Alignof(CXIdxEntityRefInfo)",
+      "jai": "align_of(B.CXIdxEntityRefInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxEntityRefInfo, kind)",
+      "jai": "offset_of(B.CXIdxEntityRefInfo, \"kind\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxEntityRefInfo, cursor)",
+      "jai": "offset_of(B.CXIdxEntityRefInfo, \"cursor\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxEntityRefInfo, loc)",
+      "jai": "offset_of(B.CXIdxEntityRefInfo, \"loc\")",
+      "value": 40
+    },
+    {
+      "c": "offsetof(CXIdxEntityRefInfo, referencedEntity)",
+      "jai": "offset_of(B.CXIdxEntityRefInfo, \"referencedEntity\")",
+      "value": 64
+    },
+    {
+      "c": "offsetof(CXIdxEntityRefInfo, parentEntity)",
+      "jai": "offset_of(B.CXIdxEntityRefInfo, \"parentEntity\")",
+      "value": 72
+    },
+    {
+      "c": "offsetof(CXIdxEntityRefInfo, container)",
+      "jai": "offset_of(B.CXIdxEntityRefInfo, \"container\")",
+      "value": 80
+    },
+    {
+      "c": "offsetof(CXIdxEntityRefInfo, role)",
+      "jai": "offset_of(B.CXIdxEntityRefInfo, \"role\")",
+      "value": 88
+    },
+    {
+      "c": "sizeof(CXIdxEntityRefKind)",
+      "jai": "size_of(B.CXIdxEntityRefKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXIdxEntityRefKind)",
+      "jai": "align_of(B.CXIdxEntityRefKind)",
+      "value": 4
+    },
+    {
+      "c": "CXIdxEntityRef_Direct",
+      "jai": "cast(s64) B.CXIdxEntityRefKind.Direct",
+      "value": 1
+    },
+    {
+      "c": "CXIdxEntityRef_Implicit",
+      "jai": "cast(s64) B.CXIdxEntityRefKind.Implicit",
+      "value": 2
+    },
+    {
+      "c": "sizeof(CXIdxIBOutletCollectionAttrInfo)",
+      "jai": "size_of(B.CXIdxIBOutletCollectionAttrInfo)",
+      "value": 72
+    },
+    {
+      "c": "_Alignof(CXIdxIBOutletCollectionAttrInfo)",
+      "jai": "align_of(B.CXIdxIBOutletCollectionAttrInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxIBOutletCollectionAttrInfo, attrInfo)",
+      "jai": "offset_of(B.CXIdxIBOutletCollectionAttrInfo, \"attrInfo\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxIBOutletCollectionAttrInfo, objcClass)",
+      "jai": "offset_of(B.CXIdxIBOutletCollectionAttrInfo, \"objcClass\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxIBOutletCollectionAttrInfo, classCursor)",
+      "jai": "offset_of(B.CXIdxIBOutletCollectionAttrInfo, \"classCursor\")",
+      "value": 16
+    },
+    {
+      "c": "offsetof(CXIdxIBOutletCollectionAttrInfo, classLoc)",
+      "jai": "offset_of(B.CXIdxIBOutletCollectionAttrInfo, \"classLoc\")",
+      "value": 48
+    },
+    {
+      "c": "sizeof(CXIdxImportedASTFileInfo)",
+      "jai": "size_of(B.CXIdxImportedASTFileInfo)",
+      "value": 48
+    },
+    {
+      "c": "_Alignof(CXIdxImportedASTFileInfo)",
+      "jai": "align_of(B.CXIdxImportedASTFileInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxImportedASTFileInfo, file)",
+      "jai": "offset_of(B.CXIdxImportedASTFileInfo, \"file\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxImportedASTFileInfo, module)",
+      "jai": "offset_of(B.CXIdxImportedASTFileInfo, \"module\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxImportedASTFileInfo, loc)",
+      "jai": "offset_of(B.CXIdxImportedASTFileInfo, \"loc\")",
+      "value": 16
+    },
+    {
+      "c": "offsetof(CXIdxImportedASTFileInfo, isImplicit)",
+      "jai": "offset_of(B.CXIdxImportedASTFileInfo, \"isImplicit\")",
+      "value": 40
+    },
+    {
+      "c": "sizeof(CXIdxIncludedFileInfo)",
+      "jai": "size_of(B.CXIdxIncludedFileInfo)",
+      "value": 56
+    },
+    {
+      "c": "_Alignof(CXIdxIncludedFileInfo)",
+      "jai": "align_of(B.CXIdxIncludedFileInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxIncludedFileInfo, hashLoc)",
+      "jai": "offset_of(B.CXIdxIncludedFileInfo, \"hashLoc\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxIncludedFileInfo, filename)",
+      "jai": "offset_of(B.CXIdxIncludedFileInfo, \"filename\")",
+      "value": 24
+    },
+    {
+      "c": "offsetof(CXIdxIncludedFileInfo, file)",
+      "jai": "offset_of(B.CXIdxIncludedFileInfo, \"file\")",
+      "value": 32
+    },
+    {
+      "c": "offsetof(CXIdxIncludedFileInfo, isImport)",
+      "jai": "offset_of(B.CXIdxIncludedFileInfo, \"isImport\")",
+      "value": 40
+    },
+    {
+      "c": "offsetof(CXIdxIncludedFileInfo, isAngled)",
+      "jai": "offset_of(B.CXIdxIncludedFileInfo, \"isAngled\")",
+      "value": 44
+    },
+    {
+      "c": "offsetof(CXIdxIncludedFileInfo, isModuleImport)",
+      "jai": "offset_of(B.CXIdxIncludedFileInfo, \"isModuleImport\")",
+      "value": 48
+    },
+    {
+      "c": "sizeof(CXIdxLoc)",
+      "jai": "size_of(B.CXIdxLoc)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXIdxLoc)",
+      "jai": "align_of(B.CXIdxLoc)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxLoc, ptr_data)",
+      "jai": "offset_of(B.CXIdxLoc, \"ptr_data\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxLoc, int_data)",
+      "jai": "offset_of(B.CXIdxLoc, \"int_data\")",
+      "value": 16
+    },
+    {
+      "c": "sizeof(CXIdxObjCCategoryDeclInfo)",
+      "jai": "size_of(B.CXIdxObjCCategoryDeclInfo)",
+      "value": 80
+    },
+    {
+      "c": "_Alignof(CXIdxObjCCategoryDeclInfo)",
+      "jai": "align_of(B.CXIdxObjCCategoryDeclInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxObjCCategoryDeclInfo, containerInfo)",
+      "jai": "offset_of(B.CXIdxObjCCategoryDeclInfo, \"containerInfo\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxObjCCategoryDeclInfo, objcClass)",
+      "jai": "offset_of(B.CXIdxObjCCategoryDeclInfo, \"objcClass\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxObjCCategoryDeclInfo, classCursor)",
+      "jai": "offset_of(B.CXIdxObjCCategoryDeclInfo, \"classCursor\")",
+      "value": 16
+    },
+    {
+      "c": "offsetof(CXIdxObjCCategoryDeclInfo, classLoc)",
+      "jai": "offset_of(B.CXIdxObjCCategoryDeclInfo, \"classLoc\")",
+      "value": 48
+    },
+    {
+      "c": "offsetof(CXIdxObjCCategoryDeclInfo, protocols)",
+      "jai": "offset_of(B.CXIdxObjCCategoryDeclInfo, \"protocols\")",
+      "value": 72
+    },
+    {
+      "c": "sizeof(CXIdxObjCContainerDeclInfo)",
+      "jai": "size_of(B.CXIdxObjCContainerDeclInfo)",
+      "value": 16
+    },
+    {
+      "c": "_Alignof(CXIdxObjCContainerDeclInfo)",
+      "jai": "align_of(B.CXIdxObjCContainerDeclInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxObjCContainerDeclInfo, declInfo)",
+      "jai": "offset_of(B.CXIdxObjCContainerDeclInfo, \"declInfo\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxObjCContainerDeclInfo, kind)",
+      "jai": "offset_of(B.CXIdxObjCContainerDeclInfo, \"kind\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(CXIdxObjCContainerKind)",
+      "jai": "size_of(B.CXIdxObjCContainerKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXIdxObjCContainerKind)",
+      "jai": "align_of(B.CXIdxObjCContainerKind)",
+      "value": 4
+    },
+    {
+      "c": "CXIdxObjCContainer_ForwardRef",
+      "jai": "cast(s64) B.CXIdxObjCContainerKind.ForwardRef",
+      "value": 0
+    },
+    {
+      "c": "CXIdxObjCContainer_Interface",
+      "jai": "cast(s64) B.CXIdxObjCContainerKind.Interface",
+      "value": 1
+    },
+    {
+      "c": "CXIdxObjCContainer_Implementation",
+      "jai": "cast(s64) B.CXIdxObjCContainerKind.Implementation",
+      "value": 2
+    },
+    {
+      "c": "sizeof(CXIdxObjCInterfaceDeclInfo)",
+      "jai": "size_of(B.CXIdxObjCInterfaceDeclInfo)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXIdxObjCInterfaceDeclInfo)",
+      "jai": "align_of(B.CXIdxObjCInterfaceDeclInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxObjCInterfaceDeclInfo, containerInfo)",
+      "jai": "offset_of(B.CXIdxObjCInterfaceDeclInfo, \"containerInfo\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxObjCInterfaceDeclInfo, superInfo)",
+      "jai": "offset_of(B.CXIdxObjCInterfaceDeclInfo, \"superInfo\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxObjCInterfaceDeclInfo, protocols)",
+      "jai": "offset_of(B.CXIdxObjCInterfaceDeclInfo, \"protocols\")",
+      "value": 16
+    },
+    {
+      "c": "sizeof(CXIdxObjCPropertyDeclInfo)",
+      "jai": "size_of(B.CXIdxObjCPropertyDeclInfo)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXIdxObjCPropertyDeclInfo)",
+      "jai": "align_of(B.CXIdxObjCPropertyDeclInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxObjCPropertyDeclInfo, declInfo)",
+      "jai": "offset_of(B.CXIdxObjCPropertyDeclInfo, \"declInfo\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxObjCPropertyDeclInfo, getter)",
+      "jai": "offset_of(B.CXIdxObjCPropertyDeclInfo, \"getter\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxObjCPropertyDeclInfo, setter)",
+      "jai": "offset_of(B.CXIdxObjCPropertyDeclInfo, \"setter\")",
+      "value": 16
+    },
+    {
+      "c": "sizeof(CXIdxObjCProtocolRefInfo)",
+      "jai": "size_of(B.CXIdxObjCProtocolRefInfo)",
+      "value": 64
+    },
+    {
+      "c": "_Alignof(CXIdxObjCProtocolRefInfo)",
+      "jai": "align_of(B.CXIdxObjCProtocolRefInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxObjCProtocolRefInfo, protocol)",
+      "jai": "offset_of(B.CXIdxObjCProtocolRefInfo, \"protocol\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxObjCProtocolRefInfo, cursor)",
+      "jai": "offset_of(B.CXIdxObjCProtocolRefInfo, \"cursor\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxObjCProtocolRefInfo, loc)",
+      "jai": "offset_of(B.CXIdxObjCProtocolRefInfo, \"loc\")",
+      "value": 40
+    },
+    {
+      "c": "sizeof(CXIdxObjCProtocolRefListInfo)",
+      "jai": "size_of(B.CXIdxObjCProtocolRefListInfo)",
+      "value": 16
+    },
+    {
+      "c": "_Alignof(CXIdxObjCProtocolRefListInfo)",
+      "jai": "align_of(B.CXIdxObjCProtocolRefListInfo)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIdxObjCProtocolRefListInfo, protocols)",
+      "jai": "offset_of(B.CXIdxObjCProtocolRefListInfo, \"protocols\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIdxObjCProtocolRefListInfo, numProtocols)",
+      "jai": "offset_of(B.CXIdxObjCProtocolRefListInfo, \"numProtocols\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(CXIndexOptFlags)",
+      "jai": "size_of(B.CXIndexOptFlags)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXIndexOptFlags)",
+      "jai": "align_of(B.CXIndexOptFlags)",
+      "value": 4
+    },
+    {
+      "c": "CXIndexOpt_None",
+      "jai": "cast(s64) B.CXIndexOptFlags.None",
+      "value": 0
+    },
+    {
+      "c": "CXIndexOpt_SuppressRedundantRefs",
+      "jai": "cast(s64) B.CXIndexOptFlags.SuppressRedundantRefs",
+      "value": 1
+    },
+    {
+      "c": "CXIndexOpt_IndexFunctionLocalSymbols",
+      "jai": "cast(s64) B.CXIndexOptFlags.IndexFunctionLocalSymbols",
+      "value": 2
+    },
+    {
+      "c": "CXIndexOpt_IndexImplicitTemplateInstantiations",
+      "jai": "cast(s64) B.CXIndexOptFlags.IndexImplicitTemplateInstantiations",
+      "value": 4
+    },
+    {
+      "c": "CXIndexOpt_SuppressWarnings",
+      "jai": "cast(s64) B.CXIndexOptFlags.SuppressWarnings",
+      "value": 8
+    },
+    {
+      "c": "CXIndexOpt_SkipParsedBodiesInSession",
+      "jai": "cast(s64) B.CXIndexOptFlags.SkipParsedBodiesInSession",
+      "value": 16
+    },
+    {
+      "c": "sizeof(CXIndexOptions)",
+      "jai": "size_of(B.CXIndexOptions)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXIndexOptions)",
+      "jai": "align_of(B.CXIndexOptions)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIndexOptions, Size)",
+      "jai": "offset_of(B.CXIndexOptions, \"Size\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXIndexOptions, ThreadBackgroundPriorityForIndexing)",
+      "jai": "offset_of(B.CXIndexOptions, \"ThreadBackgroundPriorityForIndexing\")",
+      "value": 4
+    },
+    {
+      "c": "offsetof(CXIndexOptions, ThreadBackgroundPriorityForEditing)",
+      "jai": "offset_of(B.CXIndexOptions, \"ThreadBackgroundPriorityForEditing\")",
+      "value": 5
+    },
+    {
+      "c": "offsetof(CXIndexOptions, PreambleStoragePath)",
+      "jai": "offset_of(B.CXIndexOptions, \"PreambleStoragePath\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXIndexOptions, InvocationEmissionPath)",
+      "jai": "offset_of(B.CXIndexOptions, \"InvocationEmissionPath\")",
+      "value": 16
+    },
+    {
+      "c": "sizeof(enum CXLanguageKind)",
+      "jai": "size_of(B.CXLanguageKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXLanguageKind)",
+      "jai": "align_of(B.CXLanguageKind)",
+      "value": 4
+    },
+    {
+      "c": "CXLanguage_Invalid",
+      "jai": "cast(s64) B.CXLanguageKind.Invalid",
+      "value": 0
+    },
+    {
+      "c": "CXLanguage_C",
+      "jai": "cast(s64) B.CXLanguageKind.C",
+      "value": 1
+    },
+    {
+      "c": "CXLanguage_ObjC",
+      "jai": "cast(s64) B.CXLanguageKind.ObjC",
+      "value": 2
+    },
+    {
+      "c": "CXLanguage_CPlusPlus",
+      "jai": "cast(s64) B.CXLanguageKind.CPlusPlus",
+      "value": 3
+    },
+    {
+      "c": "sizeof(enum CXLinkageKind)",
+      "jai": "size_of(B.CXLinkageKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXLinkageKind)",
+      "jai": "align_of(B.CXLinkageKind)",
+      "value": 4
+    },
+    {
+      "c": "CXLinkage_Invalid",
+      "jai": "cast(s64) B.CXLinkageKind.Invalid",
+      "value": 0
+    },
+    {
+      "c": "CXLinkage_NoLinkage",
+      "jai": "cast(s64) B.CXLinkageKind.NoLinkage",
+      "value": 1
+    },
+    {
+      "c": "CXLinkage_Internal",
+      "jai": "cast(s64) B.CXLinkageKind.Internal",
+      "value": 2
+    },
+    {
+      "c": "CXLinkage_UniqueExternal",
+      "jai": "cast(s64) B.CXLinkageKind.UniqueExternal",
+      "value": 3
+    },
+    {
+      "c": "CXLinkage_External",
+      "jai": "cast(s64) B.CXLinkageKind.External",
+      "value": 4
+    },
+    {
+      "c": "sizeof(enum CXLoadDiag_Error)",
+      "jai": "size_of(B.CXLoadDiag_Error)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXLoadDiag_Error)",
+      "jai": "align_of(B.CXLoadDiag_Error)",
+      "value": 4
+    },
+    {
+      "c": "CXLoadDiag_None",
+      "jai": "cast(s64) B.CXLoadDiag_Error.None",
+      "value": 0
+    },
+    {
+      "c": "CXLoadDiag_Unknown",
+      "jai": "cast(s64) B.CXLoadDiag_Error.Unknown",
+      "value": 1
+    },
+    {
+      "c": "CXLoadDiag_CannotLoad",
+      "jai": "cast(s64) B.CXLoadDiag_Error.CannotLoad",
+      "value": 2
+    },
+    {
+      "c": "CXLoadDiag_InvalidFile",
+      "jai": "cast(s64) B.CXLoadDiag_Error.InvalidFile",
+      "value": 3
+    },
+    {
+      "c": "sizeof(enum CXNameRefFlags)",
+      "jai": "size_of(B.CXNameRefFlags)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXNameRefFlags)",
+      "jai": "align_of(B.CXNameRefFlags)",
+      "value": 4
+    },
+    {
+      "c": "CXNameRange_WantQualifier",
+      "jai": "cast(s64) B.CXNameRefFlags.WantQualifier",
+      "value": 1
+    },
+    {
+      "c": "CXNameRange_WantTemplateArgs",
+      "jai": "cast(s64) B.CXNameRefFlags.WantTemplateArgs",
+      "value": 2
+    },
+    {
+      "c": "CXNameRange_WantSinglePiece",
+      "jai": "cast(s64) B.CXNameRefFlags.WantSinglePiece",
+      "value": 4
+    },
+    {
+      "c": "sizeof(CXObjCDeclQualifierKind)",
+      "jai": "size_of(B.CXObjCDeclQualifierKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXObjCDeclQualifierKind)",
+      "jai": "align_of(B.CXObjCDeclQualifierKind)",
+      "value": 4
+    },
+    {
+      "c": "CXObjCDeclQualifier_None",
+      "jai": "cast(s64) B.CXObjCDeclQualifierKind.None",
+      "value": 0
+    },
+    {
+      "c": "CXObjCDeclQualifier_In",
+      "jai": "cast(s64) B.CXObjCDeclQualifierKind.In",
+      "value": 1
+    },
+    {
+      "c": "CXObjCDeclQualifier_Inout",
+      "jai": "cast(s64) B.CXObjCDeclQualifierKind.Inout",
+      "value": 2
+    },
+    {
+      "c": "CXObjCDeclQualifier_Out",
+      "jai": "cast(s64) B.CXObjCDeclQualifierKind.Out",
+      "value": 4
+    },
+    {
+      "c": "CXObjCDeclQualifier_Bycopy",
+      "jai": "cast(s64) B.CXObjCDeclQualifierKind.Bycopy",
+      "value": 8
+    },
+    {
+      "c": "CXObjCDeclQualifier_Byref",
+      "jai": "cast(s64) B.CXObjCDeclQualifierKind.Byref",
+      "value": 16
+    },
+    {
+      "c": "CXObjCDeclQualifier_Oneway",
+      "jai": "cast(s64) B.CXObjCDeclQualifierKind.Oneway",
+      "value": 32
+    },
+    {
+      "c": "sizeof(CXObjCPropertyAttrKind)",
+      "jai": "size_of(B.CXObjCPropertyAttrKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXObjCPropertyAttrKind)",
+      "jai": "align_of(B.CXObjCPropertyAttrKind)",
+      "value": 4
+    },
+    {
+      "c": "CXObjCPropertyAttr_noattr",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.noattr",
+      "value": 0
+    },
+    {
+      "c": "CXObjCPropertyAttr_readonly",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.readonly",
+      "value": 1
+    },
+    {
+      "c": "CXObjCPropertyAttr_getter",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.getter",
+      "value": 2
+    },
+    {
+      "c": "CXObjCPropertyAttr_assign",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.assign",
+      "value": 4
+    },
+    {
+      "c": "CXObjCPropertyAttr_readwrite",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.readwrite",
+      "value": 8
+    },
+    {
+      "c": "CXObjCPropertyAttr_retain",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.retain",
+      "value": 16
+    },
+    {
+      "c": "CXObjCPropertyAttr_copy",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.copy",
+      "value": 32
+    },
+    {
+      "c": "CXObjCPropertyAttr_nonatomic",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.nonatomic",
+      "value": 64
+    },
+    {
+      "c": "CXObjCPropertyAttr_setter",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.setter",
+      "value": 128
+    },
+    {
+      "c": "CXObjCPropertyAttr_atomic",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.atomic",
+      "value": 256
+    },
+    {
+      "c": "CXObjCPropertyAttr_weak",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.weak",
+      "value": 512
+    },
+    {
+      "c": "CXObjCPropertyAttr_strong",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.strong",
+      "value": 1024
+    },
+    {
+      "c": "CXObjCPropertyAttr_unsafe_unretained",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.unsafe_unretained",
+      "value": 2048
+    },
+    {
+      "c": "CXObjCPropertyAttr_class",
+      "jai": "cast(s64) B.CXObjCPropertyAttrKind.class",
+      "value": 4096
+    },
+    {
+      "c": "sizeof(CXPlatformAvailability)",
+      "jai": "size_of(B.CXPlatformAvailability)",
+      "value": 72
+    },
+    {
+      "c": "_Alignof(CXPlatformAvailability)",
+      "jai": "align_of(B.CXPlatformAvailability)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXPlatformAvailability, Platform)",
+      "jai": "offset_of(B.CXPlatformAvailability, \"Platform\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXPlatformAvailability, Introduced)",
+      "jai": "offset_of(B.CXPlatformAvailability, \"Introduced\")",
+      "value": 16
+    },
+    {
+      "c": "offsetof(CXPlatformAvailability, Deprecated)",
+      "jai": "offset_of(B.CXPlatformAvailability, \"Deprecated\")",
+      "value": 28
+    },
+    {
+      "c": "offsetof(CXPlatformAvailability, Obsoleted)",
+      "jai": "offset_of(B.CXPlatformAvailability, \"Obsoleted\")",
+      "value": 40
+    },
+    {
+      "c": "offsetof(CXPlatformAvailability, Unavailable)",
+      "jai": "offset_of(B.CXPlatformAvailability, \"Unavailable\")",
+      "value": 52
+    },
+    {
+      "c": "offsetof(CXPlatformAvailability, Message)",
+      "jai": "offset_of(B.CXPlatformAvailability, \"Message\")",
+      "value": 56
+    },
+    {
+      "c": "sizeof(enum CXPrintingPolicyProperty)",
+      "jai": "size_of(B.CXPrintingPolicyProperty)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXPrintingPolicyProperty)",
+      "jai": "align_of(B.CXPrintingPolicyProperty)",
+      "value": 4
+    },
+    {
+      "c": "CXPrintingPolicy_Indentation",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.Indentation",
+      "value": 0
+    },
+    {
+      "c": "CXPrintingPolicy_SuppressSpecifiers",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.SuppressSpecifiers",
+      "value": 1
+    },
+    {
+      "c": "CXPrintingPolicy_SuppressTagKeyword",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.SuppressTagKeyword",
+      "value": 2
+    },
+    {
+      "c": "CXPrintingPolicy_IncludeTagDefinition",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.IncludeTagDefinition",
+      "value": 3
+    },
+    {
+      "c": "CXPrintingPolicy_SuppressScope",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.SuppressScope",
+      "value": 4
+    },
+    {
+      "c": "CXPrintingPolicy_SuppressUnwrittenScope",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.SuppressUnwrittenScope",
+      "value": 5
+    },
+    {
+      "c": "CXPrintingPolicy_SuppressInitializers",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.SuppressInitializers",
+      "value": 6
+    },
+    {
+      "c": "CXPrintingPolicy_ConstantArraySizeAsWritten",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.ConstantArraySizeAsWritten",
+      "value": 7
+    },
+    {
+      "c": "CXPrintingPolicy_AnonymousTagLocations",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.AnonymousTagLocations",
+      "value": 8
+    },
+    {
+      "c": "CXPrintingPolicy_SuppressStrongLifetime",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.SuppressStrongLifetime",
+      "value": 9
+    },
+    {
+      "c": "CXPrintingPolicy_SuppressLifetimeQualifiers",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.SuppressLifetimeQualifiers",
+      "value": 10
+    },
+    {
+      "c": "CXPrintingPolicy_SuppressTemplateArgsInCXXConstructors",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.SuppressTemplateArgsInCXXConstructors",
+      "value": 11
+    },
+    {
+      "c": "CXPrintingPolicy_Bool",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.Bool",
+      "value": 12
+    },
+    {
+      "c": "CXPrintingPolicy_Restrict",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.Restrict",
+      "value": 13
+    },
+    {
+      "c": "CXPrintingPolicy_Alignof",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.Alignof",
+      "value": 14
+    },
+    {
+      "c": "CXPrintingPolicy_UnderscoreAlignof",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.UnderscoreAlignof",
+      "value": 15
+    },
+    {
+      "c": "CXPrintingPolicy_UseVoidForZeroParams",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.UseVoidForZeroParams",
+      "value": 16
+    },
+    {
+      "c": "CXPrintingPolicy_TerseOutput",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.TerseOutput",
+      "value": 17
+    },
+    {
+      "c": "CXPrintingPolicy_PolishForDeclaration",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.PolishForDeclaration",
+      "value": 18
+    },
+    {
+      "c": "CXPrintingPolicy_Half",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.Half",
+      "value": 19
+    },
+    {
+      "c": "CXPrintingPolicy_MSWChar",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.MSWChar",
+      "value": 20
+    },
+    {
+      "c": "CXPrintingPolicy_IncludeNewlines",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.IncludeNewlines",
+      "value": 21
+    },
+    {
+      "c": "CXPrintingPolicy_MSVCFormatting",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.MSVCFormatting",
+      "value": 22
+    },
+    {
+      "c": "CXPrintingPolicy_ConstantsAsWritten",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.ConstantsAsWritten",
+      "value": 23
+    },
+    {
+      "c": "CXPrintingPolicy_SuppressImplicitBase",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.SuppressImplicitBase",
+      "value": 24
+    },
+    {
+      "c": "CXPrintingPolicy_FullyQualifiedName",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.FullyQualifiedName",
+      "value": 25
+    },
+    {
+      "c": "CXPrintingPolicy_LastProperty",
+      "jai": "cast(s64) B.CXPrintingPolicyProperty.LastProperty",
+      "value": 25
+    },
+    {
+      "c": "sizeof(enum CXRefQualifierKind)",
+      "jai": "size_of(B.CXRefQualifierKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXRefQualifierKind)",
+      "jai": "align_of(B.CXRefQualifierKind)",
+      "value": 4
+    },
+    {
+      "c": "CXRefQualifier_None",
+      "jai": "cast(s64) B.CXRefQualifierKind.None",
+      "value": 0
+    },
+    {
+      "c": "CXRefQualifier_LValue",
+      "jai": "cast(s64) B.CXRefQualifierKind.LValue",
+      "value": 1
+    },
+    {
+      "c": "CXRefQualifier_RValue",
+      "jai": "cast(s64) B.CXRefQualifierKind.RValue",
+      "value": 2
+    },
+    {
+      "c": "sizeof(enum CXReparse_Flags)",
+      "jai": "size_of(B.CXReparse_Flags)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXReparse_Flags)",
+      "jai": "align_of(B.CXReparse_Flags)",
+      "value": 4
+    },
+    {
+      "c": "CXReparse_None",
+      "jai": "cast(s64) B.CXReparse_Flags.CXReparse_None",
+      "value": 0
+    },
+    {
+      "c": "sizeof(CXResult)",
+      "jai": "size_of(B.CXResult)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXResult)",
+      "jai": "align_of(B.CXResult)",
+      "value": 4
+    },
+    {
+      "c": "CXResult_Success",
+      "jai": "cast(s64) B.CXResult.Success",
+      "value": 0
+    },
+    {
+      "c": "CXResult_Invalid",
+      "jai": "cast(s64) B.CXResult.Invalid",
+      "value": 1
+    },
+    {
+      "c": "CXResult_VisitBreak",
+      "jai": "cast(s64) B.CXResult.VisitBreak",
+      "value": 2
+    },
+    {
+      "c": "sizeof(enum CXSaveError)",
+      "jai": "size_of(B.CXSaveError)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXSaveError)",
+      "jai": "align_of(B.CXSaveError)",
+      "value": 4
+    },
+    {
+      "c": "CXSaveError_None",
+      "jai": "cast(s64) B.CXSaveError.None",
+      "value": 0
+    },
+    {
+      "c": "CXSaveError_Unknown",
+      "jai": "cast(s64) B.CXSaveError.Unknown",
+      "value": 1
+    },
+    {
+      "c": "CXSaveError_TranslationErrors",
+      "jai": "cast(s64) B.CXSaveError.TranslationErrors",
+      "value": 2
+    },
+    {
+      "c": "CXSaveError_InvalidTU",
+      "jai": "cast(s64) B.CXSaveError.InvalidTU",
+      "value": 3
+    },
+    {
+      "c": "sizeof(enum CXSaveTranslationUnit_Flags)",
+      "jai": "size_of(B.CXSaveTranslationUnit_Flags)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXSaveTranslationUnit_Flags)",
+      "jai": "align_of(B.CXSaveTranslationUnit_Flags)",
+      "value": 4
+    },
+    {
+      "c": "CXSaveTranslationUnit_None",
+      "jai": "cast(s64) B.CXSaveTranslationUnit_Flags.CXSaveTranslationUnit_None",
+      "value": 0
+    },
+    {
+      "c": "sizeof(CXSourceLocation)",
+      "jai": "size_of(B.CXSourceLocation)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXSourceLocation)",
+      "jai": "align_of(B.CXSourceLocation)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXSourceLocation, ptr_data)",
+      "jai": "offset_of(B.CXSourceLocation, \"ptr_data\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXSourceLocation, int_data)",
+      "jai": "offset_of(B.CXSourceLocation, \"int_data\")",
+      "value": 16
+    },
+    {
+      "c": "sizeof(CXSourceRange)",
+      "jai": "size_of(B.CXSourceRange)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXSourceRange)",
+      "jai": "align_of(B.CXSourceRange)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXSourceRange, ptr_data)",
+      "jai": "offset_of(B.CXSourceRange, \"ptr_data\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXSourceRange, begin_int_data)",
+      "jai": "offset_of(B.CXSourceRange, \"begin_int_data\")",
+      "value": 16
+    },
+    {
+      "c": "offsetof(CXSourceRange, end_int_data)",
+      "jai": "offset_of(B.CXSourceRange, \"end_int_data\")",
+      "value": 20
+    },
+    {
+      "c": "sizeof(CXSourceRangeList)",
+      "jai": "size_of(B.CXSourceRangeList)",
+      "value": 16
+    },
+    {
+      "c": "_Alignof(CXSourceRangeList)",
+      "jai": "align_of(B.CXSourceRangeList)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXSourceRangeList, count)",
+      "jai": "offset_of(B.CXSourceRangeList, \"count\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXSourceRangeList, ranges)",
+      "jai": "offset_of(B.CXSourceRangeList, \"ranges\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(CXString)",
+      "jai": "size_of(B.CXString)",
+      "value": 16
+    },
+    {
+      "c": "_Alignof(CXString)",
+      "jai": "align_of(B.CXString)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXString, data)",
+      "jai": "offset_of(B.CXString, \"data\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXString, private_flags)",
+      "jai": "offset_of(B.CXString, \"private_flags\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(CXStringSet)",
+      "jai": "size_of(B.CXStringSet)",
+      "value": 16
+    },
+    {
+      "c": "_Alignof(CXStringSet)",
+      "jai": "align_of(B.CXStringSet)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXStringSet, Strings)",
+      "jai": "offset_of(B.CXStringSet, \"Strings\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXStringSet, Count)",
+      "jai": "offset_of(B.CXStringSet, \"Count\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(CXSymbolRole)",
+      "jai": "size_of(B.CXSymbolRole)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(CXSymbolRole)",
+      "jai": "align_of(B.CXSymbolRole)",
+      "value": 4
+    },
+    {
+      "c": "CXSymbolRole_None",
+      "jai": "cast(s64) B.CXSymbolRole.None",
+      "value": 0
+    },
+    {
+      "c": "CXSymbolRole_Declaration",
+      "jai": "cast(s64) B.CXSymbolRole.Declaration",
+      "value": 1
+    },
+    {
+      "c": "CXSymbolRole_Definition",
+      "jai": "cast(s64) B.CXSymbolRole.Definition",
+      "value": 2
+    },
+    {
+      "c": "CXSymbolRole_Reference",
+      "jai": "cast(s64) B.CXSymbolRole.Reference",
+      "value": 4
+    },
+    {
+      "c": "CXSymbolRole_Read",
+      "jai": "cast(s64) B.CXSymbolRole.Read",
+      "value": 8
+    },
+    {
+      "c": "CXSymbolRole_Write",
+      "jai": "cast(s64) B.CXSymbolRole.Write",
+      "value": 16
+    },
+    {
+      "c": "CXSymbolRole_Call",
+      "jai": "cast(s64) B.CXSymbolRole.Call",
+      "value": 32
+    },
+    {
+      "c": "CXSymbolRole_Dynamic",
+      "jai": "cast(s64) B.CXSymbolRole.Dynamic",
+      "value": 64
+    },
+    {
+      "c": "CXSymbolRole_AddressOf",
+      "jai": "cast(s64) B.CXSymbolRole.AddressOf",
+      "value": 128
+    },
+    {
+      "c": "CXSymbolRole_Implicit",
+      "jai": "cast(s64) B.CXSymbolRole.Implicit",
+      "value": 256
+    },
+    {
+      "c": "sizeof(enum CXTLSKind)",
+      "jai": "size_of(B.CXTLSKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXTLSKind)",
+      "jai": "align_of(B.CXTLSKind)",
+      "value": 4
+    },
+    {
+      "c": "CXTLS_None",
+      "jai": "cast(s64) B.CXTLSKind.None",
+      "value": 0
+    },
+    {
+      "c": "CXTLS_Dynamic",
+      "jai": "cast(s64) B.CXTLSKind.Dynamic",
+      "value": 1
+    },
+    {
+      "c": "CXTLS_Static",
+      "jai": "cast(s64) B.CXTLSKind.Static",
+      "value": 2
+    },
+    {
+      "c": "sizeof(CXTUResourceUsage)",
+      "jai": "size_of(B.CXTUResourceUsage)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXTUResourceUsage)",
+      "jai": "align_of(B.CXTUResourceUsage)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXTUResourceUsage, data)",
+      "jai": "offset_of(B.CXTUResourceUsage, \"data\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXTUResourceUsage, numEntries)",
+      "jai": "offset_of(B.CXTUResourceUsage, \"numEntries\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXTUResourceUsage, entries)",
+      "jai": "offset_of(B.CXTUResourceUsage, \"entries\")",
+      "value": 16
+    },
+    {
+      "c": "sizeof(CXTUResourceUsageEntry)",
+      "jai": "size_of(B.CXTUResourceUsageEntry)",
+      "value": 16
+    },
+    {
+      "c": "_Alignof(CXTUResourceUsageEntry)",
+      "jai": "align_of(B.CXTUResourceUsageEntry)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXTUResourceUsageEntry, kind)",
+      "jai": "offset_of(B.CXTUResourceUsageEntry, \"kind\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXTUResourceUsageEntry, amount)",
+      "jai": "offset_of(B.CXTUResourceUsageEntry, \"amount\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(enum CXTUResourceUsageKind)",
+      "jai": "size_of(B.CXTUResourceUsageKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXTUResourceUsageKind)",
+      "jai": "align_of(B.CXTUResourceUsageKind)",
+      "value": 4
+    },
+    {
+      "c": "CXTUResourceUsage_AST",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.AST",
+      "value": 1
+    },
+    {
+      "c": "CXTUResourceUsage_Identifiers",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.Identifiers",
+      "value": 2
+    },
+    {
+      "c": "CXTUResourceUsage_Selectors",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.Selectors",
+      "value": 3
+    },
+    {
+      "c": "CXTUResourceUsage_GlobalCompletionResults",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.GlobalCompletionResults",
+      "value": 4
+    },
+    {
+      "c": "CXTUResourceUsage_SourceManagerContentCache",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.SourceManagerContentCache",
+      "value": 5
+    },
+    {
+      "c": "CXTUResourceUsage_AST_SideTables",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.AST_SideTables",
+      "value": 6
+    },
+    {
+      "c": "CXTUResourceUsage_SourceManager_Membuffer_Malloc",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.SourceManager_Membuffer_Malloc",
+      "value": 7
+    },
+    {
+      "c": "CXTUResourceUsage_SourceManager_Membuffer_MMap",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.SourceManager_Membuffer_MMap",
+      "value": 8
+    },
+    {
+      "c": "CXTUResourceUsage_ExternalASTSource_Membuffer_Malloc",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.ExternalASTSource_Membuffer_Malloc",
+      "value": 9
+    },
+    {
+      "c": "CXTUResourceUsage_ExternalASTSource_Membuffer_MMap",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.ExternalASTSource_Membuffer_MMap",
+      "value": 10
+    },
+    {
+      "c": "CXTUResourceUsage_Preprocessor",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.Preprocessor",
+      "value": 11
+    },
+    {
+      "c": "CXTUResourceUsage_PreprocessingRecord",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.PreprocessingRecord",
+      "value": 12
+    },
+    {
+      "c": "CXTUResourceUsage_SourceManager_DataStructures",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.SourceManager_DataStructures",
+      "value": 13
+    },
+    {
+      "c": "CXTUResourceUsage_Preprocessor_HeaderSearch",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.Preprocessor_HeaderSearch",
+      "value": 14
+    },
+    {
+      "c": "CXTUResourceUsage_MEMORY_IN_BYTES_BEGIN",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.MEMORY_IN_BYTES_BEGIN",
+      "value": 1
+    },
+    {
+      "c": "CXTUResourceUsage_MEMORY_IN_BYTES_END",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.MEMORY_IN_BYTES_END",
+      "value": 14
+    },
+    {
+      "c": "CXTUResourceUsage_First",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.First",
+      "value": 1
+    },
+    {
+      "c": "CXTUResourceUsage_Last",
+      "jai": "cast(s64) B.CXTUResourceUsageKind.Last",
+      "value": 14
+    },
+    {
+      "c": "sizeof(enum CXTemplateArgumentKind)",
+      "jai": "size_of(B.CXTemplateArgumentKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXTemplateArgumentKind)",
+      "jai": "align_of(B.CXTemplateArgumentKind)",
+      "value": 4
+    },
+    {
+      "c": "CXTemplateArgumentKind_Null",
+      "jai": "cast(s64) B.CXTemplateArgumentKind.Null",
+      "value": 0
+    },
+    {
+      "c": "CXTemplateArgumentKind_Type",
+      "jai": "cast(s64) B.CXTemplateArgumentKind.Type",
+      "value": 1
+    },
+    {
+      "c": "CXTemplateArgumentKind_Declaration",
+      "jai": "cast(s64) B.CXTemplateArgumentKind.Declaration",
+      "value": 2
+    },
+    {
+      "c": "CXTemplateArgumentKind_NullPtr",
+      "jai": "cast(s64) B.CXTemplateArgumentKind.NullPtr",
+      "value": 3
+    },
+    {
+      "c": "CXTemplateArgumentKind_Integral",
+      "jai": "cast(s64) B.CXTemplateArgumentKind.Integral",
+      "value": 4
+    },
+    {
+      "c": "CXTemplateArgumentKind_Template",
+      "jai": "cast(s64) B.CXTemplateArgumentKind.Template",
+      "value": 5
+    },
+    {
+      "c": "CXTemplateArgumentKind_TemplateExpansion",
+      "jai": "cast(s64) B.CXTemplateArgumentKind.TemplateExpansion",
+      "value": 6
+    },
+    {
+      "c": "CXTemplateArgumentKind_Expression",
+      "jai": "cast(s64) B.CXTemplateArgumentKind.Expression",
+      "value": 7
+    },
+    {
+      "c": "CXTemplateArgumentKind_Pack",
+      "jai": "cast(s64) B.CXTemplateArgumentKind.Pack",
+      "value": 8
+    },
+    {
+      "c": "CXTemplateArgumentKind_Invalid",
+      "jai": "cast(s64) B.CXTemplateArgumentKind.Invalid",
+      "value": 9
+    },
+    {
+      "c": "sizeof(CXToken)",
+      "jai": "size_of(B.CXToken)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXToken)",
+      "jai": "align_of(B.CXToken)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXToken, int_data)",
+      "jai": "offset_of(B.CXToken, \"int_data\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXToken, ptr_data)",
+      "jai": "offset_of(B.CXToken, \"ptr_data\")",
+      "value": 16
+    },
+    {
+      "c": "sizeof(enum CXTokenKind)",
+      "jai": "size_of(B.CXTokenKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXTokenKind)",
+      "jai": "align_of(B.CXTokenKind)",
+      "value": 4
+    },
+    {
+      "c": "CXToken_Punctuation",
+      "jai": "cast(s64) B.CXTokenKind.Punctuation",
+      "value": 0
+    },
+    {
+      "c": "CXToken_Keyword",
+      "jai": "cast(s64) B.CXTokenKind.Keyword",
+      "value": 1
+    },
+    {
+      "c": "CXToken_Identifier",
+      "jai": "cast(s64) B.CXTokenKind.Identifier",
+      "value": 2
+    },
+    {
+      "c": "CXToken_Literal",
+      "jai": "cast(s64) B.CXTokenKind.Literal",
+      "value": 3
+    },
+    {
+      "c": "CXToken_Comment",
+      "jai": "cast(s64) B.CXTokenKind.Comment",
+      "value": 4
+    },
+    {
+      "c": "sizeof(enum CXTranslationUnit_Flags)",
+      "jai": "size_of(B.CXTranslationUnit_Flags)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXTranslationUnit_Flags)",
+      "jai": "align_of(B.CXTranslationUnit_Flags)",
+      "value": 4
+    },
+    {
+      "c": "CXTranslationUnit_None",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.None",
+      "value": 0
+    },
+    {
+      "c": "CXTranslationUnit_DetailedPreprocessingRecord",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.DetailedPreprocessingRecord",
+      "value": 1
+    },
+    {
+      "c": "CXTranslationUnit_Incomplete",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.Incomplete",
+      "value": 2
+    },
+    {
+      "c": "CXTranslationUnit_PrecompiledPreamble",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.PrecompiledPreamble",
+      "value": 4
+    },
+    {
+      "c": "CXTranslationUnit_CacheCompletionResults",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.CacheCompletionResults",
+      "value": 8
+    },
+    {
+      "c": "CXTranslationUnit_ForSerialization",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.ForSerialization",
+      "value": 16
+    },
+    {
+      "c": "CXTranslationUnit_CXXChainedPCH",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.CXXChainedPCH",
+      "value": 32
+    },
+    {
+      "c": "CXTranslationUnit_SkipFunctionBodies",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.SkipFunctionBodies",
+      "value": 64
+    },
+    {
+      "c": "CXTranslationUnit_IncludeBriefCommentsInCodeCompletion",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.IncludeBriefCommentsInCodeCompletion",
+      "value": 128
+    },
+    {
+      "c": "CXTranslationUnit_CreatePreambleOnFirstParse",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.CreatePreambleOnFirstParse",
+      "value": 256
+    },
+    {
+      "c": "CXTranslationUnit_KeepGoing",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.KeepGoing",
+      "value": 512
+    },
+    {
+      "c": "CXTranslationUnit_SingleFileParse",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.SingleFileParse",
+      "value": 1024
+    },
+    {
+      "c": "CXTranslationUnit_LimitSkipFunctionBodiesToPreamble",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.LimitSkipFunctionBodiesToPreamble",
+      "value": 2048
+    },
+    {
+      "c": "CXTranslationUnit_IncludeAttributedTypes",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.IncludeAttributedTypes",
+      "value": 4096
+    },
+    {
+      "c": "CXTranslationUnit_VisitImplicitAttributes",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.VisitImplicitAttributes",
+      "value": 8192
+    },
+    {
+      "c": "CXTranslationUnit_IgnoreNonErrorsFromIncludedFiles",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.IgnoreNonErrorsFromIncludedFiles",
+      "value": 16384
+    },
+    {
+      "c": "CXTranslationUnit_RetainExcludedConditionalBlocks",
+      "jai": "cast(s64) B.CXTranslationUnit_Flags.RetainExcludedConditionalBlocks",
+      "value": 32768
+    },
+    {
+      "c": "sizeof(CXType)",
+      "jai": "size_of(B.CXType)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(CXType)",
+      "jai": "align_of(B.CXType)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(CXType, kind)",
+      "jai": "offset_of(B.CXType, \"kind\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXType, data)",
+      "jai": "offset_of(B.CXType, \"data\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(enum CXTypeKind)",
+      "jai": "size_of(B.CXTypeKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXTypeKind)",
+      "jai": "align_of(B.CXTypeKind)",
+      "value": 4
+    },
+    {
+      "c": "CXType_Invalid",
+      "jai": "cast(s64) B.CXTypeKind.Invalid",
+      "value": 0
+    },
+    {
+      "c": "CXType_Unexposed",
+      "jai": "cast(s64) B.CXTypeKind.Unexposed",
+      "value": 1
+    },
+    {
+      "c": "CXType_Void",
+      "jai": "cast(s64) B.CXTypeKind.Void",
+      "value": 2
+    },
+    {
+      "c": "CXType_Bool",
+      "jai": "cast(s64) B.CXTypeKind.Bool",
+      "value": 3
+    },
+    {
+      "c": "CXType_Char_U",
+      "jai": "cast(s64) B.CXTypeKind.Char_U",
+      "value": 4
+    },
+    {
+      "c": "CXType_UChar",
+      "jai": "cast(s64) B.CXTypeKind.UChar",
+      "value": 5
+    },
+    {
+      "c": "CXType_Char16",
+      "jai": "cast(s64) B.CXTypeKind.Char16",
+      "value": 6
+    },
+    {
+      "c": "CXType_Char32",
+      "jai": "cast(s64) B.CXTypeKind.Char32",
+      "value": 7
+    },
+    {
+      "c": "CXType_UShort",
+      "jai": "cast(s64) B.CXTypeKind.UShort",
+      "value": 8
+    },
+    {
+      "c": "CXType_UInt",
+      "jai": "cast(s64) B.CXTypeKind.UInt",
+      "value": 9
+    },
+    {
+      "c": "CXType_ULong",
+      "jai": "cast(s64) B.CXTypeKind.ULong",
+      "value": 10
+    },
+    {
+      "c": "CXType_ULongLong",
+      "jai": "cast(s64) B.CXTypeKind.ULongLong",
+      "value": 11
+    },
+    {
+      "c": "CXType_UInt128",
+      "jai": "cast(s64) B.CXTypeKind.UInt128",
+      "value": 12
+    },
+    {
+      "c": "CXType_Char_S",
+      "jai": "cast(s64) B.CXTypeKind.Char_S",
+      "value": 13
+    },
+    {
+      "c": "CXType_SChar",
+      "jai": "cast(s64) B.CXTypeKind.SChar",
+      "value": 14
+    },
+    {
+      "c": "CXType_WChar",
+      "jai": "cast(s64) B.CXTypeKind.WChar",
+      "value": 15
+    },
+    {
+      "c": "CXType_Short",
+      "jai": "cast(s64) B.CXTypeKind.Short",
+      "value": 16
+    },
+    {
+      "c": "CXType_Int",
+      "jai": "cast(s64) B.CXTypeKind.Int",
+      "value": 17
+    },
+    {
+      "c": "CXType_Long",
+      "jai": "cast(s64) B.CXTypeKind.Long",
+      "value": 18
+    },
+    {
+      "c": "CXType_LongLong",
+      "jai": "cast(s64) B.CXTypeKind.LongLong",
+      "value": 19
+    },
+    {
+      "c": "CXType_Int128",
+      "jai": "cast(s64) B.CXTypeKind.Int128",
+      "value": 20
+    },
+    {
+      "c": "CXType_Float",
+      "jai": "cast(s64) B.CXTypeKind.Float",
+      "value": 21
+    },
+    {
+      "c": "CXType_Double",
+      "jai": "cast(s64) B.CXTypeKind.Double",
+      "value": 22
+    },
+    {
+      "c": "CXType_LongDouble",
+      "jai": "cast(s64) B.CXTypeKind.LongDouble",
+      "value": 23
+    },
+    {
+      "c": "CXType_NullPtr",
+      "jai": "cast(s64) B.CXTypeKind.NullPtr",
+      "value": 24
+    },
+    {
+      "c": "CXType_Overload",
+      "jai": "cast(s64) B.CXTypeKind.Overload",
+      "value": 25
+    },
+    {
+      "c": "CXType_Dependent",
+      "jai": "cast(s64) B.CXTypeKind.Dependent",
+      "value": 26
+    },
+    {
+      "c": "CXType_ObjCId",
+      "jai": "cast(s64) B.CXTypeKind.ObjCId",
+      "value": 27
+    },
+    {
+      "c": "CXType_ObjCClass",
+      "jai": "cast(s64) B.CXTypeKind.ObjCClass",
+      "value": 28
+    },
+    {
+      "c": "CXType_ObjCSel",
+      "jai": "cast(s64) B.CXTypeKind.ObjCSel",
+      "value": 29
+    },
+    {
+      "c": "CXType_Float128",
+      "jai": "cast(s64) B.CXTypeKind.Float128",
+      "value": 30
+    },
+    {
+      "c": "CXType_Half",
+      "jai": "cast(s64) B.CXTypeKind.Half",
+      "value": 31
+    },
+    {
+      "c": "CXType_Float16",
+      "jai": "cast(s64) B.CXTypeKind.Float16",
+      "value": 32
+    },
+    {
+      "c": "CXType_ShortAccum",
+      "jai": "cast(s64) B.CXTypeKind.ShortAccum",
+      "value": 33
+    },
+    {
+      "c": "CXType_Accum",
+      "jai": "cast(s64) B.CXTypeKind.Accum",
+      "value": 34
+    },
+    {
+      "c": "CXType_LongAccum",
+      "jai": "cast(s64) B.CXTypeKind.LongAccum",
+      "value": 35
+    },
+    {
+      "c": "CXType_UShortAccum",
+      "jai": "cast(s64) B.CXTypeKind.UShortAccum",
+      "value": 36
+    },
+    {
+      "c": "CXType_UAccum",
+      "jai": "cast(s64) B.CXTypeKind.UAccum",
+      "value": 37
+    },
+    {
+      "c": "CXType_ULongAccum",
+      "jai": "cast(s64) B.CXTypeKind.ULongAccum",
+      "value": 38
+    },
+    {
+      "c": "CXType_BFloat16",
+      "jai": "cast(s64) B.CXTypeKind.BFloat16",
+      "value": 39
+    },
+    {
+      "c": "CXType_Ibm128",
+      "jai": "cast(s64) B.CXTypeKind.Ibm128",
+      "value": 40
+    },
+    {
+      "c": "CXType_HLSLInlineSpirv",
+      "jai": "cast(s64) B.CXTypeKind.HLSLInlineSpirv",
+      "value": 181
+    },
+    {
+      "c": "CXType_HLSLAttributedResource",
+      "jai": "cast(s64) B.CXTypeKind.HLSLAttributedResource",
+      "value": 180
+    },
+    {
+      "c": "CXType_Complex",
+      "jai": "cast(s64) B.CXTypeKind.Complex",
+      "value": 100
+    },
+    {
+      "c": "CXType_Pointer",
+      "jai": "cast(s64) B.CXTypeKind.Pointer",
+      "value": 101
+    },
+    {
+      "c": "CXType_BlockPointer",
+      "jai": "cast(s64) B.CXTypeKind.BlockPointer",
+      "value": 102
+    },
+    {
+      "c": "CXType_LValueReference",
+      "jai": "cast(s64) B.CXTypeKind.LValueReference",
+      "value": 103
+    },
+    {
+      "c": "CXType_RValueReference",
+      "jai": "cast(s64) B.CXTypeKind.RValueReference",
+      "value": 104
+    },
+    {
+      "c": "CXType_Record",
+      "jai": "cast(s64) B.CXTypeKind.Record",
+      "value": 105
+    },
+    {
+      "c": "CXType_Enum",
+      "jai": "cast(s64) B.CXTypeKind.Enum",
+      "value": 106
+    },
+    {
+      "c": "CXType_Typedef",
+      "jai": "cast(s64) B.CXTypeKind.Typedef",
+      "value": 107
+    },
+    {
+      "c": "CXType_ObjCInterface",
+      "jai": "cast(s64) B.CXTypeKind.ObjCInterface",
+      "value": 108
+    },
+    {
+      "c": "CXType_ObjCObjectPointer",
+      "jai": "cast(s64) B.CXTypeKind.ObjCObjectPointer",
+      "value": 109
+    },
+    {
+      "c": "CXType_FunctionNoProto",
+      "jai": "cast(s64) B.CXTypeKind.FunctionNoProto",
+      "value": 110
+    },
+    {
+      "c": "CXType_FunctionProto",
+      "jai": "cast(s64) B.CXTypeKind.FunctionProto",
+      "value": 111
+    },
+    {
+      "c": "CXType_ConstantArray",
+      "jai": "cast(s64) B.CXTypeKind.ConstantArray",
+      "value": 112
+    },
+    {
+      "c": "CXType_Vector",
+      "jai": "cast(s64) B.CXTypeKind.Vector",
+      "value": 113
+    },
+    {
+      "c": "CXType_IncompleteArray",
+      "jai": "cast(s64) B.CXTypeKind.IncompleteArray",
+      "value": 114
+    },
+    {
+      "c": "CXType_VariableArray",
+      "jai": "cast(s64) B.CXTypeKind.VariableArray",
+      "value": 115
+    },
+    {
+      "c": "CXType_DependentSizedArray",
+      "jai": "cast(s64) B.CXTypeKind.DependentSizedArray",
+      "value": 116
+    },
+    {
+      "c": "CXType_MemberPointer",
+      "jai": "cast(s64) B.CXTypeKind.MemberPointer",
+      "value": 117
+    },
+    {
+      "c": "CXType_Auto",
+      "jai": "cast(s64) B.CXTypeKind.Auto",
+      "value": 118
+    },
+    {
+      "c": "CXType_Elaborated",
+      "jai": "cast(s64) B.CXTypeKind.Elaborated",
+      "value": 119
+    },
+    {
+      "c": "CXType_Pipe",
+      "jai": "cast(s64) B.CXTypeKind.Pipe",
+      "value": 120
+    },
+    {
+      "c": "CXType_OCLImage1dRO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage1dRO",
+      "value": 121
+    },
+    {
+      "c": "CXType_OCLImage1dArrayRO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage1dArrayRO",
+      "value": 122
+    },
+    {
+      "c": "CXType_OCLImage1dBufferRO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage1dBufferRO",
+      "value": 123
+    },
+    {
+      "c": "CXType_OCLImage2dRO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dRO",
+      "value": 124
+    },
+    {
+      "c": "CXType_OCLImage2dArrayRO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayRO",
+      "value": 125
+    },
+    {
+      "c": "CXType_OCLImage2dDepthRO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dDepthRO",
+      "value": 126
+    },
+    {
+      "c": "CXType_OCLImage2dArrayDepthRO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayDepthRO",
+      "value": 127
+    },
+    {
+      "c": "CXType_OCLImage2dMSAARO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dMSAARO",
+      "value": 128
+    },
+    {
+      "c": "CXType_OCLImage2dArrayMSAARO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayMSAARO",
+      "value": 129
+    },
+    {
+      "c": "CXType_OCLImage2dMSAADepthRO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dMSAADepthRO",
+      "value": 130
+    },
+    {
+      "c": "CXType_OCLImage2dArrayMSAADepthRO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayMSAADepthRO",
+      "value": 131
+    },
+    {
+      "c": "CXType_OCLImage3dRO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage3dRO",
+      "value": 132
+    },
+    {
+      "c": "CXType_OCLImage1dWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage1dWO",
+      "value": 133
+    },
+    {
+      "c": "CXType_OCLImage1dArrayWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage1dArrayWO",
+      "value": 134
+    },
+    {
+      "c": "CXType_OCLImage1dBufferWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage1dBufferWO",
+      "value": 135
+    },
+    {
+      "c": "CXType_OCLImage2dWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dWO",
+      "value": 136
+    },
+    {
+      "c": "CXType_OCLImage2dArrayWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayWO",
+      "value": 137
+    },
+    {
+      "c": "CXType_OCLImage2dDepthWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dDepthWO",
+      "value": 138
+    },
+    {
+      "c": "CXType_OCLImage2dArrayDepthWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayDepthWO",
+      "value": 139
+    },
+    {
+      "c": "CXType_OCLImage2dMSAAWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dMSAAWO",
+      "value": 140
+    },
+    {
+      "c": "CXType_OCLImage2dArrayMSAAWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayMSAAWO",
+      "value": 141
+    },
+    {
+      "c": "CXType_OCLImage2dMSAADepthWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dMSAADepthWO",
+      "value": 142
+    },
+    {
+      "c": "CXType_OCLImage2dArrayMSAADepthWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayMSAADepthWO",
+      "value": 143
+    },
+    {
+      "c": "CXType_OCLImage3dWO",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage3dWO",
+      "value": 144
+    },
+    {
+      "c": "CXType_OCLImage1dRW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage1dRW",
+      "value": 145
+    },
+    {
+      "c": "CXType_OCLImage1dArrayRW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage1dArrayRW",
+      "value": 146
+    },
+    {
+      "c": "CXType_OCLImage1dBufferRW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage1dBufferRW",
+      "value": 147
+    },
+    {
+      "c": "CXType_OCLImage2dRW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dRW",
+      "value": 148
+    },
+    {
+      "c": "CXType_OCLImage2dArrayRW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayRW",
+      "value": 149
+    },
+    {
+      "c": "CXType_OCLImage2dDepthRW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dDepthRW",
+      "value": 150
+    },
+    {
+      "c": "CXType_OCLImage2dArrayDepthRW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayDepthRW",
+      "value": 151
+    },
+    {
+      "c": "CXType_OCLImage2dMSAARW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dMSAARW",
+      "value": 152
+    },
+    {
+      "c": "CXType_OCLImage2dArrayMSAARW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayMSAARW",
+      "value": 153
+    },
+    {
+      "c": "CXType_OCLImage2dMSAADepthRW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dMSAADepthRW",
+      "value": 154
+    },
+    {
+      "c": "CXType_OCLImage2dArrayMSAADepthRW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage2dArrayMSAADepthRW",
+      "value": 155
+    },
+    {
+      "c": "CXType_OCLImage3dRW",
+      "jai": "cast(s64) B.CXTypeKind.OCLImage3dRW",
+      "value": 156
+    },
+    {
+      "c": "CXType_OCLSampler",
+      "jai": "cast(s64) B.CXTypeKind.OCLSampler",
+      "value": 157
+    },
+    {
+      "c": "CXType_OCLEvent",
+      "jai": "cast(s64) B.CXTypeKind.OCLEvent",
+      "value": 158
+    },
+    {
+      "c": "CXType_OCLQueue",
+      "jai": "cast(s64) B.CXTypeKind.OCLQueue",
+      "value": 159
+    },
+    {
+      "c": "CXType_OCLReserveID",
+      "jai": "cast(s64) B.CXTypeKind.OCLReserveID",
+      "value": 160
+    },
+    {
+      "c": "CXType_ObjCObject",
+      "jai": "cast(s64) B.CXTypeKind.ObjCObject",
+      "value": 161
+    },
+    {
+      "c": "CXType_ObjCTypeParam",
+      "jai": "cast(s64) B.CXTypeKind.ObjCTypeParam",
+      "value": 162
+    },
+    {
+      "c": "CXType_Attributed",
+      "jai": "cast(s64) B.CXTypeKind.Attributed",
+      "value": 163
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCMcePayload",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCMcePayload",
+      "value": 164
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCImePayload",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCImePayload",
+      "value": 165
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCRefPayload",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCRefPayload",
+      "value": 166
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCSicPayload",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCSicPayload",
+      "value": 167
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCMceResult",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCMceResult",
+      "value": 168
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCImeResult",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCImeResult",
+      "value": 169
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCRefResult",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCRefResult",
+      "value": 170
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCSicResult",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCSicResult",
+      "value": 171
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCImeResultSingleReferenceStreamout",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCImeResultSingleReferenceStreamout",
+      "value": 172
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCImeResultDualReferenceStreamout",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCImeResultDualReferenceStreamout",
+      "value": 173
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCImeSingleReferenceStreamin",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCImeSingleReferenceStreamin",
+      "value": 174
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCImeDualReferenceStreamin",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCImeDualReferenceStreamin",
+      "value": 175
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCImeResultSingleRefStreamout",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCImeResultSingleRefStreamout",
+      "value": 172
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCImeResultDualRefStreamout",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCImeResultDualRefStreamout",
+      "value": 173
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCImeSingleRefStreamin",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCImeSingleRefStreamin",
+      "value": 174
+    },
+    {
+      "c": "CXType_OCLIntelSubgroupAVCImeDualRefStreamin",
+      "jai": "cast(s64) B.CXTypeKind.OCLIntelSubgroupAVCImeDualRefStreamin",
+      "value": 175
+    },
+    {
+      "c": "CXType_ExtVector",
+      "jai": "cast(s64) B.CXTypeKind.ExtVector",
+      "value": 176
+    },
+    {
+      "c": "CXType_Atomic",
+      "jai": "cast(s64) B.CXTypeKind.Atomic",
+      "value": 177
+    },
+    {
+      "c": "CXType_BTFTagAttributed",
+      "jai": "cast(s64) B.CXTypeKind.BTFTagAttributed",
+      "value": 178
+    },
+    {
+      "c": "CXType_HLSLResource",
+      "jai": "cast(s64) B.CXTypeKind.HLSLResource",
+      "value": 179
+    },
+    {
+      "c": "CXType_FirstBuiltin",
+      "jai": "cast(s64) B.CXTypeKind.FirstBuiltin",
+      "value": 2
+    },
+    {
+      "c": "CXType_LastBuiltin",
+      "jai": "cast(s64) B.CXTypeKind.LastBuiltin",
+      "value": 40
+    },
+    {
+      "c": "sizeof(enum CXTypeLayoutError)",
+      "jai": "size_of(B.CXTypeLayoutError)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXTypeLayoutError)",
+      "jai": "align_of(B.CXTypeLayoutError)",
+      "value": 4
+    },
+    {
+      "c": "CXTypeLayoutError_Invalid",
+      "jai": "cast(s64) B.CXTypeLayoutError.Invalid",
+      "value": -1
+    },
+    {
+      "c": "CXTypeLayoutError_Incomplete",
+      "jai": "cast(s64) B.CXTypeLayoutError.Incomplete",
+      "value": -2
+    },
+    {
+      "c": "CXTypeLayoutError_Dependent",
+      "jai": "cast(s64) B.CXTypeLayoutError.Dependent",
+      "value": -3
+    },
+    {
+      "c": "CXTypeLayoutError_NotConstantSize",
+      "jai": "cast(s64) B.CXTypeLayoutError.NotConstantSize",
+      "value": -4
+    },
+    {
+      "c": "CXTypeLayoutError_InvalidFieldName",
+      "jai": "cast(s64) B.CXTypeLayoutError.InvalidFieldName",
+      "value": -5
+    },
+    {
+      "c": "CXTypeLayoutError_Undeduced",
+      "jai": "cast(s64) B.CXTypeLayoutError.Undeduced",
+      "value": -6
+    },
+    {
+      "c": "sizeof(enum CXTypeNullabilityKind)",
+      "jai": "size_of(B.CXTypeNullabilityKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXTypeNullabilityKind)",
+      "jai": "align_of(B.CXTypeNullabilityKind)",
+      "value": 4
+    },
+    {
+      "c": "CXTypeNullability_NonNull",
+      "jai": "cast(s64) B.CXTypeNullabilityKind.NonNull",
+      "value": 0
+    },
+    {
+      "c": "CXTypeNullability_Nullable",
+      "jai": "cast(s64) B.CXTypeNullabilityKind.Nullable",
+      "value": 1
+    },
+    {
+      "c": "CXTypeNullability_Unspecified",
+      "jai": "cast(s64) B.CXTypeNullabilityKind.Unspecified",
+      "value": 2
+    },
+    {
+      "c": "CXTypeNullability_Invalid",
+      "jai": "cast(s64) B.CXTypeNullabilityKind.Invalid",
+      "value": 3
+    },
+    {
+      "c": "CXTypeNullability_NullableResult",
+      "jai": "cast(s64) B.CXTypeNullabilityKind.NullableResult",
+      "value": 4
+    },
+    {
+      "c": "sizeof(enum CXUnaryOperatorKind)",
+      "jai": "size_of(B.CXUnaryOperatorKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXUnaryOperatorKind)",
+      "jai": "align_of(B.CXUnaryOperatorKind)",
+      "value": 4
+    },
+    {
+      "c": "CXUnaryOperator_Invalid",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.Invalid",
+      "value": 0
+    },
+    {
+      "c": "CXUnaryOperator_PostInc",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.PostInc",
+      "value": 1
+    },
+    {
+      "c": "CXUnaryOperator_PostDec",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.PostDec",
+      "value": 2
+    },
+    {
+      "c": "CXUnaryOperator_PreInc",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.PreInc",
+      "value": 3
+    },
+    {
+      "c": "CXUnaryOperator_PreDec",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.PreDec",
+      "value": 4
+    },
+    {
+      "c": "CXUnaryOperator_AddrOf",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.AddrOf",
+      "value": 5
+    },
+    {
+      "c": "CXUnaryOperator_Deref",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.Deref",
+      "value": 6
+    },
+    {
+      "c": "CXUnaryOperator_Plus",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.Plus",
+      "value": 7
+    },
+    {
+      "c": "CXUnaryOperator_Minus",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.Minus",
+      "value": 8
+    },
+    {
+      "c": "CXUnaryOperator_Not",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.Not",
+      "value": 9
+    },
+    {
+      "c": "CXUnaryOperator_LNot",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.LNot",
+      "value": 10
+    },
+    {
+      "c": "CXUnaryOperator_Real",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.Real",
+      "value": 11
+    },
+    {
+      "c": "CXUnaryOperator_Imag",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.Imag",
+      "value": 12
+    },
+    {
+      "c": "CXUnaryOperator_Extension",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.Extension",
+      "value": 13
+    },
+    {
+      "c": "CXUnaryOperator_Coawait",
+      "jai": "cast(s64) B.CXUnaryOperatorKind.Coawait",
+      "value": 14
+    },
+    {
+      "c": "sizeof(struct CXUnsavedFile)",
+      "jai": "size_of(B.CXUnsavedFile)",
+      "value": 24
+    },
+    {
+      "c": "_Alignof(struct CXUnsavedFile)",
+      "jai": "align_of(B.CXUnsavedFile)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(struct CXUnsavedFile, Filename)",
+      "jai": "offset_of(B.CXUnsavedFile, \"Filename\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(struct CXUnsavedFile, Contents)",
+      "jai": "offset_of(B.CXUnsavedFile, \"Contents\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(struct CXUnsavedFile, Length)",
+      "jai": "offset_of(B.CXUnsavedFile, \"Length\")",
+      "value": 16
+    },
+    {
+      "c": "sizeof(CXVersion)",
+      "jai": "size_of(B.CXVersion)",
+      "value": 12
+    },
+    {
+      "c": "_Alignof(CXVersion)",
+      "jai": "align_of(B.CXVersion)",
+      "value": 4
+    },
+    {
+      "c": "offsetof(CXVersion, Major)",
+      "jai": "offset_of(B.CXVersion, \"Major\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(CXVersion, Minor)",
+      "jai": "offset_of(B.CXVersion, \"Minor\")",
+      "value": 4
+    },
+    {
+      "c": "offsetof(CXVersion, Subminor)",
+      "jai": "offset_of(B.CXVersion, \"Subminor\")",
+      "value": 8
+    },
+    {
+      "c": "sizeof(enum CXVisibilityKind)",
+      "jai": "size_of(B.CXVisibilityKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXVisibilityKind)",
+      "jai": "align_of(B.CXVisibilityKind)",
+      "value": 4
+    },
+    {
+      "c": "CXVisibility_Invalid",
+      "jai": "cast(s64) B.CXVisibilityKind.Invalid",
+      "value": 0
+    },
+    {
+      "c": "CXVisibility_Hidden",
+      "jai": "cast(s64) B.CXVisibilityKind.Hidden",
+      "value": 1
+    },
+    {
+      "c": "CXVisibility_Protected",
+      "jai": "cast(s64) B.CXVisibilityKind.Protected",
+      "value": 2
+    },
+    {
+      "c": "CXVisibility_Default",
+      "jai": "cast(s64) B.CXVisibilityKind.Default",
+      "value": 3
+    },
+    {
+      "c": "sizeof(enum CXVisitorResult)",
+      "jai": "size_of(B.CXVisitorResult)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CXVisitorResult)",
+      "jai": "align_of(B.CXVisitorResult)",
+      "value": 4
+    },
+    {
+      "c": "CXVisit_Break",
+      "jai": "cast(s64) B.CXVisitorResult.Break",
+      "value": 0
+    },
+    {
+      "c": "CXVisit_Continue",
+      "jai": "cast(s64) B.CXVisitorResult.Continue",
+      "value": 1
+    },
+    {
+      "c": "sizeof(enum CX_BinaryOperatorKind)",
+      "jai": "size_of(B.CX_BinaryOperatorKind)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CX_BinaryOperatorKind)",
+      "jai": "align_of(B.CX_BinaryOperatorKind)",
+      "value": 4
+    },
+    {
+      "c": "CX_BO_Invalid",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Invalid",
+      "value": 0
+    },
+    {
+      "c": "CX_BO_PtrMemD",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.PtrMemD",
+      "value": 1
+    },
+    {
+      "c": "CX_BO_PtrMemI",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.PtrMemI",
+      "value": 2
+    },
+    {
+      "c": "CX_BO_Mul",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Mul",
+      "value": 3
+    },
+    {
+      "c": "CX_BO_Div",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Div",
+      "value": 4
+    },
+    {
+      "c": "CX_BO_Rem",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Rem",
+      "value": 5
+    },
+    {
+      "c": "CX_BO_Add",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Add",
+      "value": 6
+    },
+    {
+      "c": "CX_BO_Sub",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Sub",
+      "value": 7
+    },
+    {
+      "c": "CX_BO_Shl",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Shl",
+      "value": 8
+    },
+    {
+      "c": "CX_BO_Shr",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Shr",
+      "value": 9
+    },
+    {
+      "c": "CX_BO_Cmp",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Cmp",
+      "value": 10
+    },
+    {
+      "c": "CX_BO_LT",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.LT",
+      "value": 11
+    },
+    {
+      "c": "CX_BO_GT",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.GT",
+      "value": 12
+    },
+    {
+      "c": "CX_BO_LE",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.LE",
+      "value": 13
+    },
+    {
+      "c": "CX_BO_GE",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.GE",
+      "value": 14
+    },
+    {
+      "c": "CX_BO_EQ",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.EQ",
+      "value": 15
+    },
+    {
+      "c": "CX_BO_NE",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.NE",
+      "value": 16
+    },
+    {
+      "c": "CX_BO_And",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.And",
+      "value": 17
+    },
+    {
+      "c": "CX_BO_Xor",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Xor",
+      "value": 18
+    },
+    {
+      "c": "CX_BO_Or",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Or",
+      "value": 19
+    },
+    {
+      "c": "CX_BO_LAnd",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.LAnd",
+      "value": 20
+    },
+    {
+      "c": "CX_BO_LOr",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.LOr",
+      "value": 21
+    },
+    {
+      "c": "CX_BO_Assign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Assign",
+      "value": 22
+    },
+    {
+      "c": "CX_BO_MulAssign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.MulAssign",
+      "value": 23
+    },
+    {
+      "c": "CX_BO_DivAssign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.DivAssign",
+      "value": 24
+    },
+    {
+      "c": "CX_BO_RemAssign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.RemAssign",
+      "value": 25
+    },
+    {
+      "c": "CX_BO_AddAssign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.AddAssign",
+      "value": 26
+    },
+    {
+      "c": "CX_BO_SubAssign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.SubAssign",
+      "value": 27
+    },
+    {
+      "c": "CX_BO_ShlAssign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.ShlAssign",
+      "value": 28
+    },
+    {
+      "c": "CX_BO_ShrAssign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.ShrAssign",
+      "value": 29
+    },
+    {
+      "c": "CX_BO_AndAssign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.AndAssign",
+      "value": 30
+    },
+    {
+      "c": "CX_BO_XorAssign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.XorAssign",
+      "value": 31
+    },
+    {
+      "c": "CX_BO_OrAssign",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.OrAssign",
+      "value": 32
+    },
+    {
+      "c": "CX_BO_Comma",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.Comma",
+      "value": 33
+    },
+    {
+      "c": "CX_BO_LAST",
+      "jai": "cast(s64) B.CX_BinaryOperatorKind.LAST",
+      "value": 33
+    },
+    {
+      "c": "sizeof(enum CX_CXXAccessSpecifier)",
+      "jai": "size_of(B.CX_CXXAccessSpecifier)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CX_CXXAccessSpecifier)",
+      "jai": "align_of(B.CX_CXXAccessSpecifier)",
+      "value": 4
+    },
+    {
+      "c": "CX_CXXInvalidAccessSpecifier",
+      "jai": "cast(s64) B.CX_CXXAccessSpecifier.CXXInvalidAccessSpecifier",
+      "value": 0
+    },
+    {
+      "c": "CX_CXXPublic",
+      "jai": "cast(s64) B.CX_CXXAccessSpecifier.CXXPublic",
+      "value": 1
+    },
+    {
+      "c": "CX_CXXProtected",
+      "jai": "cast(s64) B.CX_CXXAccessSpecifier.CXXProtected",
+      "value": 2
+    },
+    {
+      "c": "CX_CXXPrivate",
+      "jai": "cast(s64) B.CX_CXXAccessSpecifier.CXXPrivate",
+      "value": 3
+    },
+    {
+      "c": "sizeof(enum CX_StorageClass)",
+      "jai": "size_of(B.CX_StorageClass)",
+      "value": 4
+    },
+    {
+      "c": "_Alignof(enum CX_StorageClass)",
+      "jai": "align_of(B.CX_StorageClass)",
+      "value": 4
+    },
+    {
+      "c": "CX_SC_Invalid",
+      "jai": "cast(s64) B.CX_StorageClass.Invalid",
+      "value": 0
+    },
+    {
+      "c": "CX_SC_None",
+      "jai": "cast(s64) B.CX_StorageClass.None",
+      "value": 1
+    },
+    {
+      "c": "CX_SC_Extern",
+      "jai": "cast(s64) B.CX_StorageClass.Extern",
+      "value": 2
+    },
+    {
+      "c": "CX_SC_Static",
+      "jai": "cast(s64) B.CX_StorageClass.Static",
+      "value": 3
+    },
+    {
+      "c": "CX_SC_PrivateExtern",
+      "jai": "cast(s64) B.CX_StorageClass.PrivateExtern",
+      "value": 4
+    },
+    {
+      "c": "CX_SC_OpenCLWorkGroupLocal",
+      "jai": "cast(s64) B.CX_StorageClass.OpenCLWorkGroupLocal",
+      "value": 5
+    },
+    {
+      "c": "CX_SC_Auto",
+      "jai": "cast(s64) B.CX_StorageClass.Auto",
+      "value": 6
+    },
+    {
+      "c": "CX_SC_Register",
+      "jai": "cast(s64) B.CX_StorageClass.Register",
+      "value": 7
+    },
+    {
+      "c": "sizeof(IndexerCallbacks)",
+      "jai": "size_of(B.IndexerCallbacks)",
+      "value": 64
+    },
+    {
+      "c": "_Alignof(IndexerCallbacks)",
+      "jai": "align_of(B.IndexerCallbacks)",
+      "value": 8
+    },
+    {
+      "c": "offsetof(IndexerCallbacks, abortQuery)",
+      "jai": "offset_of(B.IndexerCallbacks, \"abortQuery\")",
+      "value": 0
+    },
+    {
+      "c": "offsetof(IndexerCallbacks, diagnostic)",
+      "jai": "offset_of(B.IndexerCallbacks, \"diagnostic\")",
+      "value": 8
+    },
+    {
+      "c": "offsetof(IndexerCallbacks, enteredMainFile)",
+      "jai": "offset_of(B.IndexerCallbacks, \"enteredMainFile\")",
+      "value": 16
+    },
+    {
+      "c": "offsetof(IndexerCallbacks, ppIncludedFile)",
+      "jai": "offset_of(B.IndexerCallbacks, \"ppIncludedFile\")",
+      "value": 24
+    },
+    {
+      "c": "offsetof(IndexerCallbacks, importedASTFile)",
+      "jai": "offset_of(B.IndexerCallbacks, \"importedASTFile\")",
+      "value": 32
+    },
+    {
+      "c": "offsetof(IndexerCallbacks, startedTranslationUnit)",
+      "jai": "offset_of(B.IndexerCallbacks, \"startedTranslationUnit\")",
+      "value": 40
+    },
+    {
+      "c": "offsetof(IndexerCallbacks, indexDeclaration)",
+      "jai": "offset_of(B.IndexerCallbacks, \"indexDeclaration\")",
+      "value": 48
+    },
+    {
+      "c": "offsetof(IndexerCallbacks, indexEntityReference)",
+      "jai": "offset_of(B.IndexerCallbacks, \"indexEntityReference\")",
+      "value": 56
+    }
+  ]
+}

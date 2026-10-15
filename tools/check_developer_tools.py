@@ -9,6 +9,7 @@ import check_developer_bindings
 import build_developer_debug
 import check_developer_debug_windows
 import check_developer_msf
+import check_developer_native_abi
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
@@ -39,6 +40,7 @@ def main():
     build_developer_debug.main()
     check_developer_debug_windows.main()
     check_developer_msf.main()
+    check_developer_native_abi.main()
     prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
     framework = ROOT / "target/developer-tools-frameworks/OriginalNative.framework"
     (framework / "Modules").mkdir(parents=True, exist_ok=True)
@@ -111,6 +113,7 @@ def main():
     cases.append("debug-int-set")
     cases.append("bindings-clang-tokens")
     cases.append("bindings-clang-build-system")
+    cases.append("bindings-native-abi")
     run([JAIC, "tests/developer-tools/bindings-custom.jai", "-interp"], output="ok\n")
     for name in ["custom", "model"]:
         generated = ROOT / f"target/developer-tools-{name}-generated.jai"
@@ -120,7 +123,7 @@ def main():
     for os_name in ["linux", "windows"]:
         run([JAIC, "target/developer-tools-model-generated.jai", "-check", "-os", os_name, "-cpu", "x64"])
     for case in cases:
-        source = ROOT / f"tests/developer-tools/{case}.jai"
+        source = ROOT / "target/developer-tools-native-abi.jai" if case == "bindings-native-abi" else ROOT / f"tests/developer-tools/{case}.jai"
         error = "C header: C cannot project multiple return values" if case == "c-header-reject" else ""
         if case == "debug-native":
             error = "native debug output\n"
@@ -198,7 +201,8 @@ def main():
              ROOT / "stdlib/Check/module.jai",
              *sorted((ROOT / "stdlib/Bindings_Generator").glob("*.jai")),
              *sorted((ROOT / "stdlib/internal/developer-tools").glob("*.jai")),
-             *sorted((ROOT / "tests/developer-tools").glob("*.jai"))]
+             *sorted((ROOT / "tests/developer-tools").glob("*.jai")),
+             ROOT / "target/developer-tools-native-abi.jai"]
     format_paths = [*paths, *sorted((ROOT / "tests/developer-tools/rejections").glob("*.jai")),
                     *sorted((ROOT / "tests/developer-tools/compiler-requests").glob("*.jai"))]
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *format_paths])
