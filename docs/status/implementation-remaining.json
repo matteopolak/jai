@@ -202,5 +202,10 @@
   "deviations": [
     "Seven dependency-bound drafts remain partial; source not integrated until crypto owner supplies canonical model/signatures.",
     "Helper and loader template/cache/output policies are independent choices where reviewed signatures do not prescribe exact templates."
-  ]
+  ],
+  "commits": {
+    "tested_integration": "f4b12bc1",
+    "unloaded_dependency_drafts": "468aaec2",
+    "preserved_naming": "83ba1961"
+  }
 }

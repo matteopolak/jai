@@ -164,3 +164,9 @@ validation repairs both with failing-then-passing regressions.
 
 Full documentation: docs/android-orchestration.md. Exact current inventory:
 docs/status/implementation-remaining.json. Naming completion is retained separately.
+
+Committed handoff: f4b12bc1 contains tested host integration and reports;
+468aaec2 preserves six unloaded signing-dependent source/fixture drafts.
+The final integrated runner passed all 108 commands, including canonical shell
+quoting for valid inner-class activity names. Exact status remains 45 complete,
+7 partial, 0 missing names. Naming work at 83ba1961 is preserved unchanged.
