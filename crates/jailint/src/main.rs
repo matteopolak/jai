@@ -243,13 +243,11 @@ fn run() -> Result<ExitCode, String> {
             _ => warnings += 1,
         }
     }
-    if args.verbose {
-        for (root, error) in &outcome.incomplete {
-            eprintln!(
-                "jailint: {} did not compile completely ({error}); bodies that failed were not linted",
-                shown(&root.to_string_lossy())
-            );
-        }
+    for (root, error) in &outcome.incomplete {
+        eprintln!(
+            "jailint: {} did not compile completely ({error}); bodies that failed were not linted",
+            shown(&root.to_string_lossy())
+        );
     }
     if args.fix {
         // Fixes that wrap or overlap another are left for the next pass, which lints the
@@ -295,7 +293,7 @@ fn run() -> Result<ExitCode, String> {
             count(outcome.roots, "program"),
         );
     }
-    Ok(if errors > 0 {
+    Ok(if errors > 0 || !outcome.incomplete.is_empty() {
         ExitCode::from(1)
     } else {
         ExitCode::SUCCESS

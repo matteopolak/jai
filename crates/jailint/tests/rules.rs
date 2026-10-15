@@ -36,7 +36,9 @@ fn lint(file: &Path, levels: &[(&str, Level)]) -> (Vec<Lint>, String) {
     let options = jailint::driver::Options {
         paths: vec![file.to_path_buf()],
         import_dirs: Vec::new(),
-        stdlib: repo().join("stdlib"),
+        stdlib: std::env::var_os("JAIC_STDLIB")
+            .map(PathBuf::from)
+            .unwrap_or_else(|| repo().join("stdlib")),
         config,
         jobs: 1,
         verbose: false,
