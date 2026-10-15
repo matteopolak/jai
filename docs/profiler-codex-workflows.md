@@ -239,3 +239,19 @@ now resolved, including actual edited-program execution and native generated
 LLVM inspection. The owned inventory remains138 complete/1partial/0missing:
 Iprof.message requires the two exact compiler corrections, with no other owned
 API gap identified. Native Windows/Linux execution remains pending later.
+
+
+## Verified replay checkpoint073adb34
+
+Approved69e971b1 replay records196 commands: all22 runtime cases pass
+interpreter/native Mac O0/O2, as do formatter/full scoped strict lint, actual
+Codex native exports, hooks, expression boundaries and all16 configurations.
+Six expected rejection cases retain their required diagnostics. Both required
+-modules CLI builds fail on the same growable-array inst_flags mismatch; the
+runner exits1 and complete=false. The12-command independent dependency replay
+records successful unchanged member/enum/Basic.alloc/INDEX reductions and
+successful original array-local interpreter/nativeO0/O2 baseline; actual
+interpreted modules and unchanged array-local body modification still fail.
+The sole partial public name remains Iprof.message. No ownership or enum
+failure is retained as a stale blocker; remaining cause and exact compiler
+request are in the handoff. Inventory remains138 complete/1partial/0missing.

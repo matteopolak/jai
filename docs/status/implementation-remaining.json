@@ -5,8 +5,8 @@
     "Iprof",
     "Codex"
   ],
-  "timestamp_utc": "2026-10-15T19:14:35.990006+00:00",
-  "head": "3e6c0ef59314f63eac7d404cde9b6b252dea2639",
+  "timestamp_utc": "2026-10-15T19:40:49.744105+00:00",
+  "head": "073adb3431b08e1163a6e4aef59736e2aa45d8aa",
   "state": "committed production implementation; required producer editing failures retained",
   "denominator": "unique names from reviewed public declaration inventories; overload/conditional variants also counted separately; record members are audited as part of their aggregate, not additional API names",
   "totals": {
@@ -268,12 +268,11 @@
       ],
       "kind": "producer editing dependency",
       "rules": [
-        "Approved compiler59a69c03 (including b0430110) resolves INDEX reconstruction; original index modification and actual modules-disabled native CLI builds now pass at O0/O2. The edited program also executes through the interpreter child-workspace public plugin lifecycle.",
-        "Anonymous inline struct-member bodies still lack canonical compiler_modify_procedure ownership. Required -modules native O0/O2 builds and interpreted-module workspace reproduction fail. Original reductions: profiler-member-modify.jai and profiler-interpreted-modules.jai.",
-        "Inferred enum dot has valid public BINARY_OPERATOR metadata with null left and identifier right, but canonical printer returns false. Pure independent reduction profiler-enum-modify.jai (return take(.ONE)) and unchanged Basic.alloc reduction still fail. General compiler-owned printer correction required."
+        "Approved69e971b1 resolves retained anonymous member ownership and contextual inferred-enum reconstruction; original member, enum, Basic.alloc and INDEX modification reductions all pass with unchanged assertions.",
+        "Actual modules-enabled O0/O2 CLI builds and interpreted module workflow now fail on growable local-array reconstruction. Compiler type_inst exports ArraySize::Resizable inst_flags0x10 (TYPE_DIRECTIVE_DISTINCT) rather than reviewed RESIZABLE0x2, so values:[..]u32 prints as values:#type,distinct []u32 and real array_add is rejected. Original minimal profiler-array-local-input.jai passes interpreter/nativeO0/O2; profiler-array-local-modify.jai fails its required completion assertion."
       ],
-      "library_effort_estimate": "replay actual modules-enabled workflows after general member ownership and inferred-member printer corrections; no independently actionable missing owned library contract identified",
-      "affected_workflows": "automatic imported-module instrumentation, including Basic and anonymous members; general indexed-body instrumentation is resolved"
+      "library_effort_estimate": "replay actual modules-enabled workflows after general compiler growable-array flag mapping correction; no independently actionable missing owned library contract identified",
+      "affected_workflows": "automatic imported-module instrumentation, including Basic decimal formatting using growable local arrays; ownership/enum/index issues resolved"
     },
     {
       "names": [
@@ -285,17 +284,18 @@
     }
   ],
   "verification": {
-    "native": "All22 cases pass interpreter/native Mac O0/O2. Actual Codex CLI O0/O2 and modules-disabled Iprof CLI O0/O2 pass; required modules-enabled Iprof builds still fail. Actual edited indexed main executes in compiler interpreter through public lifecycle; native emitted LLVM inspected for original store and real profiling calls. Hooks, exact expression boundaries and all16 generated configurations remain executed.",
+    "native": "All22 cases pass interpreter/native Mac O0/O2. Actual Codex CLI and modules-disabled Iprof CLI O0/O2 pass; required modules-enabled Iprof builds still fail on growable-array flag metadata. Actual edited indexed main runs via interpreter public lifecycle. Hook, exact expression-boundary and all16 configuration children pass. New unedited local-array baseline passes interpreter/nativeO0/O2.",
     "format": "Unchanged repository formatter source-built; owned implementation and supported fixture format/idempotence checks passed.",
-    "strict_lint": "Full scoped module-root and all supported program fixtures pass -D warnings with approved59a69c03 dependencies. Compiler-request reductions that intentionally demonstrate producer failures retain their errors; no strict-lint success claimed for those failing reductions.",
+    "strict_lint": "Full scoped module-root and all22 supported program fixtures pass -D warnings with approved69e971b1 dependencies. New unedited array-local baseline also passes. Failing compiler-request reductions retain errors; no strict-lint success claimed for those reductions.",
     "other_targets": "Windows/Linux source-only checks; native execution pending later",
-    "report": "target/profiler-codex-checks.json:196 commands;6 expected rejection exits;2 required modules-enabled O0/O2 build failures; complete=false. target/profiler-codex-dependency-replay.json records original reductions, interpreted module failure and native emitted-IR build/run.",
+    "report": "target/profiler-codex-checks.json:196 commands;6 expected rejection exits;2 required modules-enabled O0/O2 build failures; complete=false. target/profiler-codex-dependency-replay.json:12 commands;5 former reductions pass, interpreted modules and array-local modification fail, original local-array baseline passes interpreter/nativeO0/O2.",
     "context_dependent_fixture": "iprof-hook-input.jai is compiled and executed with real production add_hook-generated bindings through iprof-hooks.jai; no standalone fragment-lint success is claimed.",
-    "compiler_source": "Exact approved independent59a69c03 Rust and compiler-owned Compiler/Program_Print/Code_Visit private/public sources, including b0430110, in owned local target/profiler-compiler-source-59a69c03; unchanged content source-built into assigned T7 target. Own stdlib copied intact then approved compiler-owned dependencies overlaid; runner --stdlib enforces every owned implementation byte-identical to canonical worktree. No canonical compiler, peer or other-owner module edits.",
+    "compiler_source": "Exact approved independent69e971b1 Rust and compiler-owned Compiler/Program_Print/Code_Visit private/public sources, built unchanged in owned local target/profiler-compiler-source-69e971b1 using assigned T7 target. Own stdlib copied intact before approved compiler dependencies overlaid; runner --stdlib enforces byte-identical owned production implementations. No canonical compiler, peer or other-owner module edits.",
     "resolved_dependencies": [
       "e9affab7 context-import ordering included and full strict lint replay passed",
       "114dda87 ordinary called library body interception original reduction passed",
-      "b0430110/59a69c03 general ARRAY_SUBSCRIPT reconstruction: original index reduction plus actual indexed native O0/O2 and interpreted edited body pass"
+      "b0430110/59a69c03 general ARRAY_SUBSCRIPT reconstruction: original index reduction plus actual indexed native O0/O2 and interpreted edited body pass",
+      "69e971b1 retained member/callback ownership and contextual inferred-enum reconstruction: original member/enum/Basic.alloc modification reductions pass unchanged"
     ]
   },
   "limitations": [
@@ -305,7 +305,7 @@
   ],
   "disjoint_handoff_batch": {
     "owner": "compiler/integrator",
-    "work": "general anonymous member-body ownership and inferred enum-member printing; original minimal reductions plus actual interpreted modules workflow in compiler handoff; no library scaffolding duplication"
+    "work": "general Code_Type_Instantiation RESIZABLE flag mapping: compiler exporter currently emits0x10 while reviewed RESIZABLE is0x2; original growable-array modification reduction in compiler handoff; no library changes needed to metadata or filters"
   },
   "delegated_scope_excluded": true,
   "head_kind": "implementation checkpoint audited; subsequent inventory-only commits do not change implementation",
