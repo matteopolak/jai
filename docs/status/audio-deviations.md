@@ -64,3 +64,23 @@
 - Shell here-documents fail due to denied temporary-file creation; edits use
   apply_patch/Python. Initial empty files were detected/replaced before claims.
 - No agent_message capability exists; commentary/status docs carry updates.
+
+- Remaining spatial behavior is provisional where exact contracts are missing:
+  multichannel spatial sources currently use one source-position plane direction
+  for every input, without applying stream.orientation; many-channel music uses
+  the locked-output routing helper. Closeness/stereo-dot rules and default vector
+  angles are independently selected. Degenerate VBAP arcs are skipped. These
+  paths have controlled math tests, not exact compatibility evidence, and need
+  the precise reviewed contracts requested in questions.
+- Cached Vorbis opens borrowed memory only; filename_to_stream_from is retained
+  as a public field but is not a separate file-streaming path. Opus is not
+  supported. Seven-channel routing remains provisional. Native device names are
+  cached for the process lifetime and do not reflect later hotplug changes.
+- get_bytes_between currently measures rear minus front modulo buffer length;
+  backend_needs_async_update_from_main_thread currently returns true because this
+  adapter requires ongoing producer calls. Their exact platform semantics remain
+  requested, not established by declaration/signature probes.
+- Mixing and page preparation hold the player lock while processing each caller
+  buffer, in accumulator chunks of up to 48000 frames. Page allocation and scalar
+  multichannel loops can extend that critical section; no real-time deadline or
+  worst-case setter latency is established by the functional tests.

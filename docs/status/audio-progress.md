@@ -65,3 +65,20 @@ native execution, Windows ARM64 SDK builds, physical routing and relocated relea
 packaging remain unverified. No peer dependency was staged or modified. Existing
 unmodified stdlib device regression also passed interpreter and native O0/O2;
 the OFFLINE/render_offline fixture is explicitly classified as unreviewed.
+
+Checkpoint 4 verification (2026-10-14): entity-lifecycle adds reviewed natural
+completion ordering, waiting for a silent mixer frame, DO_NOT_KILL, explicit-stop
+override, entity stop across managers, exact Sound_Data pointer identity and
+manager filtering. Final expanded version passes actual jaifmt --check,
+warnings-denied lint, interpreter, native O0/O2 and six target checks. Its nonzero
+sample goes only to a controlled caller buffer; native submissions remain silent.
+
+The full runner also passes with the unchanged tests/stdlib/sound-player-device
+regression included. Current runner totals: 23 positive fixtures, 22 interpreter
+and native O0/O2 paths, 132 common target checks and 2 Windows-only static ABI
+checks; additional logical 6/8-channel paths and both private-name negatives pass.
+One fixture is signature/link probes and history is public-call smoke coverage,
+not private-extrema conformance. The final strengthened lifecycle fixture was
+reverified separately after the full matrix; no implementation change followed.
+Remaining provisional implementation paths are now enumerated explicitly in
+[deviations](audio-deviations.md), with exact review requests in questions.

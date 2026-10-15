@@ -12,6 +12,8 @@ stream/entity lifecycle, callbacks outside the mixer lock and decoder retirement
 Each entity phase synchronizes only its own work. No lock spans caller code.
 Configure public stream fields before start; direct active-field edits can race
 mixing. Exported synchronized setters/stops remain usable between phase calls.
+Natural completion remains live until entity retirement observes a silent mixer
+frame. DO_NOT_KILL prevents that retirement; explicit stops still release it.
 Private output-history intervals record extrema; advance_history_cursor resets
 its next interval and partial progress, requiring caller serialization with mixing.
 Loading borrows the supplied complete byte string; PCM samples point into it.

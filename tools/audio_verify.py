@@ -10,6 +10,7 @@ COMPILER = ROOT / "target/compiler/debug/jaic"
 ENV = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"),
            JAIC_NATIVE_LIBS=str(ROOT / "target/audio-native"))
 CASES = sorted((ROOT / "tests/audio").glob("*.jai"))
+CASES += [ROOT / "tests/stdlib/sound-player-device.jai"]
 NEGATIVE = sorted((ROOT / "tests/audio/negative").glob("*.jai"))
 OWNED = [ROOT / "stdlib/Sound_Player/module.jai"]
 OWNED += sorted(p for p in (ROOT / "stdlib/internal/audio").glob("*.jai")
@@ -48,7 +49,7 @@ def main():
             print("windows-abi.jai: Windows x64/ARM64 static ABI checks; native execution unavailable", flush=True)
             continue
         expected = "ok\n"
-        if case.stem in {"device-lifecycle", "streams", "compressed-stream", "entity-phase"}:
+        if case.stem in {"device-lifecycle", "streams", "compressed-stream", "entity-phase", "entity-lifecycle"}:
             expected = lambda out: out in {"native-device-opened\nok\n", "native-device-unavailable\nok\n"}
         if case.stem == "controlled-output":
             expected = lambda out: out in {"native-2-channel-output-opened\nok\n", "native-6-channel-output-opened\nok\n", "native-8-channel-output-opened\nok\n", "native-device-unavailable\nok\n"}
@@ -62,7 +63,8 @@ def main():
         for target_os in ("linux", "windows", "macos"):
             for cpu in ("x64", "arm64"):
                 run([COMPILER, case, "-check", "-os", target_os, "-cpu", cpu], "")
-        label = "signature/link probes" if case.stem == "signatures" else "behavior test"
+        label = {"signatures": "signature/link probes",
+                 "history": "public call smoke test; private extrema have no accessor"}.get(case.stem, "behavior test")
         print(f"{case.name}: {label}, interpreter/native O0/O2 and six target checks passed", flush=True)
     controlled = ROOT / "tests/audio/controlled-output.jai"
     for channels in (6, 8):

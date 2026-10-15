@@ -12,6 +12,7 @@ def main():
     files = [ROOT / "stdlib/Sound_Player/module.jai"]
     files += sorted(p for p in (ROOT / "stdlib/internal/audio").glob("*.jai") if p.name != "wav.jai")
     tests = sorted((ROOT / "tests/audio").glob("*.jai"))
+    tests += [ROOT / "tests/stdlib/sound-player-device.jai"]
     rows = []
     missing = set()
     for line in inventory.splitlines():
