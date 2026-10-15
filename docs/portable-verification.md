@@ -123,3 +123,5 @@ bodies and ABI assertions check both CPUs (target/socket-final-bodies.log), but
 native Windows and active Windows lint remain unverified. Generation repeats with
 identical ABI/facade/ledger bytes.331 owned Jai files pass formatter/check; whole
 strict lint still fails with all configured groups attempted.
+
+Native TCP fields add36 public macOS accessors verified with256 complete native SDK C record pairs on host/x64 and Jai interpreter/native O0/O2. Active private implementation/public fixture strict lint passes;334 owned files format/check. Full102 positives/23 faults/14 negatives and integration checks rerun successfully; whole strict lint remains failed. Commands/provenance and initial staging failure: portable-socket-fields.md.

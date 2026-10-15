@@ -215,3 +215,5 @@ caller-balanced with WSACleanup. Negative timing inputs diagnose checked casts;
 close failure logs then resets the handle, with retry/resource risk awaiting
 review. Missing CMSG/bitfield/shape APIs are explicitly inventoried and not counted
 complete. See portable-windows-socket.md for locations, evidence and SDK provenance.
+
+Native TCP fields: no new production workaround. Explicit ABI offsets come only from official Apple C declarations and are measured by independent C record output on host/x64. Values truncate to native bitfield width; whole-record comparisons verify neighboring data preservation. Unsupported big-endian/other-platform behavior is not claimed. Source-generated C includes SDK headers, with no header/library body copied. Initial nested fixture used process-relative file path; #file anchoring repairs test staging only, with original failure retained. Active scoped strict lint passes; whole strict lint remains failed. Public CMSG/other field/shape inventory is still incomplete and separately named. Details/evidence/risks: portable-socket-fields.md.

@@ -58,9 +58,10 @@ policy but still a resource-risk question for review. No success boolean hides i
 ## Remaining concrete public surface
 
 Unix CMSG_FIRSTHDR/CMSG_ALIGN/CMSG_SIZE/CMSG_LEN/CMSG_DATA are still missing;
-CMSG_SIZE's intended relationship to native SPACE/LEN needs review. Native bitfield
-get/set families (tcphdr, tcp_info, tcp_connection_info and Windows scope/flow
-records) are still missing. The exact named inventory is recorded in
+CMSG_SIZE's intended relationship to native SPACE/LEN needs review. The36 macOS
+tcphdr/tcp_connection_info accessors are now implemented and verified against
+actual SDK C records; see portable-socket-fields.md. Linux/Android TCP/tcp_info
+and Windows scope/flow native bitfield families are still missing. The exact named inventory is recorded in
 docs/socket-native-ledger.json as authored wrapper/pending helper, not completed
 declarations. SHUT and several native record variants have unresolved reviewed
 shapes; Windows common wrappers above do not establish the whole native surface.
