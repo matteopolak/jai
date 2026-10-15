@@ -47626,9 +47626,8 @@
       "spec": "docs/specs/stdlib/modules/gl.md",
       "spec_sha256": "c6aa400220ad08badf6616fbcd4ae2fa4a351ca21e838a670b9252570c1e2d22",
       "counts": {
-        "implemented_manual": 22,
+        "implemented_manual": 23,
         "declared": 1591,
-        "unresolved": 1,
         "duplicate": 1
       },
       "member_counts": {},
@@ -47781,8 +47780,8 @@
           "signature": "gl_create_context :: (win: $Window, major_version: s32 = 0, minor_version: s32 = 0, compatibility := false, debug := false, wanted_msaa: s32 = DEFAULT_MSAA)",
           "condition": "",
           "spec_line": 25,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/GL/wrappers.jai"
         },
         {
           "name": "gl_enable_debug_output",
@@ -173599,9 +173598,9 @@
       "spec": "docs/specs/stdlib/modules/sdl.md",
       "spec_sha256": "6da7ac5449cc99a4714d4d5d58691978d4e8dcd8d3ade2ec27c745fab220f6da",
       "counts": {
-        "declared": 519,
+        "declared": 521,
         "implemented": 17,
-        "implemented_manual": 3
+        "implemented_manual": 1
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -174416,18 +174415,14 @@
           "signature": "SDL_RWFromFile :: (path: *u8, mode: *u8) -> *SDL_RWops #foreign SDL2",
           "condition": "",
           "spec_line": 132,
-          "status": "implemented_manual",
-          "artifact": "stdlib/SDL/wrappers.jai",
-          "native_abi_adapter": "SDL_RWFromFile"
+          "status": "declared"
         },
         {
           "name": "SDL_LoadBMP_RW",
           "signature": "SDL_LoadBMP_RW :: (src: *SDL_RWops, freesrc: int) -> *SDL_Surface #foreign SDL2",
           "condition": "",
           "spec_line": 133,
-          "status": "implemented_manual",
-          "artifact": "stdlib/SDL/wrappers.jai",
-          "native_abi_adapter": "SDL_LoadBMP_RW"
+          "status": "declared"
         },
         {
           "name": "SDL_FreeSurface",

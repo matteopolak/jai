@@ -1,9 +1,9 @@
 {
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
-    "declared": 28397,
-    "unresolved": 120,
-    "implemented_manual": 48,
+    "declared": 28399,
+    "unresolved": 119,
+    "implemented_manual": 47,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1
@@ -160,6 +160,31 @@
       "report": ".work/posix-stat-sdk-both-cpus.json",
       "sha256": "e7d88e16f6aa95f77de4dc8047168fae408a72a477489be63b1614cb8363e039",
       "scope": "Linux ARM64 adapter source/header checks; host macOS native regression checks. No Linux ARM64 execution claim."
+    },
+    {
+      "report": ".work/sdl-native-pointer-current.json",
+      "sha256": "e06f7715463f4c89afee38bb0d662589c59ceb49b37df769c0c2c439d785f09e",
+      "scope": "Current scoped native/source and configuration evidence; refreshed broad lint has 16 incomplete scopes, explicitly not an all-pass claim."
+    },
+    {
+      "report": ".work/gl-dispatch-current.json",
+      "sha256": "07a414b09697e0296a404dc9fdea5ac26d6138ab96e1905ed973cb0f1af61234",
+      "scope": "Current scoped native/source and configuration evidence; refreshed broad lint has 16 incomplete scopes, explicitly not an all-pass claim."
+    },
+    {
+      "report": ".work/gl-dispatch-configurations.json",
+      "sha256": "62aaa6b8d1067824c9e53eac6fb3435851099f1d7681777bccfd1f8d74c5ef39",
+      "scope": "Current scoped native/source and configuration evidence; refreshed broad lint has 16 incomplete scopes, explicitly not an all-pass claim."
+    },
+    {
+      "report": ".work/checkpoint-5-production-tools-retry.json",
+      "sha256": "eccff84f10e479a5b82e64576070aac3329b64b724a329f14bcda785df1e9f84",
+      "scope": "Current scoped native/source and configuration evidence; refreshed broad lint has 16 incomplete scopes, explicitly not an all-pass claim."
+    },
+    {
+      "report": ".work/stable-checkpoint-5-configurations.json",
+      "sha256": "a854d0339d643840c4e6d3ca7cde4231915516953306e91ee0dba3b1cfc5288d",
+      "scope": "Current scoped native/source and configuration evidence; refreshed broad lint has 16 incomplete scopes, explicitly not an all-pass claim."
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

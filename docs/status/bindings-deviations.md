@@ -81,30 +81,19 @@ correctness. Previously recorded failures remain required work.
   compiler Android support, followed by real device/API/ABI tests. No target
   constant overrides or native SDK mock are used to manufacture a pass.
 
-- **SDL RWops adapters (active implementation).** `SDL/wrappers.jai` now uses
-  complete private desktop `sdl-native.RWops` storage and typed C callbacks for
-  BMP decoding. `SDL_RWFromFile` allocates a public-prefix wrapper with native
-  ownership kept after that prefix; public callbacks independently forward file
-  operations with count/origin/result range checks. No native C code receives
-  the public 48-byte record. Observable tradeoff: each file handle has a small
-  extra wrapper allocation and each callback has an extra forwarding call.
-  A private live-handle registry guarded by real SDL atomics prevents copied
-  public callbacks from reading private storage past a copied record. Copies
-  are rejected with a real SDL error, preserving the original live stream.
-  Lookup is linear in live file handles; a private hash map is the proper
-  performance refinement if high handle counts matter. Closing a handle while
-  another thread uses that same handle remains outside the native file API's
-  lifetime contract; different-handle registry access is synchronized.
-  The original public native entry point is a C function with no hidden Jai
-  context, while public RWops callbacks require one. The adapter deliberately
-  supplies a default `#Context` to those callbacks; a caller's pushed context
-  cannot cross that C ABI. This policy is explicit in the regression and remains
-  a contract question, not claimed reference context behavior. Proper long-term
-  solution: reviewed context/ownership semantics or an explicit context-bearing
-  supported interface, without changing the existing API. Native sizes/offsets,
-  custom streams/canaries, real BMP decoding, file read/write/close and copied
-  callback rejection tests pass on the host. Public RWops/UserEvent mismatch
-  tests remain active failures.
+- **SDL RWops adapter removed after reviewed contract clarification.** The
+  earlier custom-stream adapter changed SDK pointer identity and introduced
+  default-context/copy policies not established by the current reviewed spec.
+  `SDL/wrappers.jai` no longer contains that owner, registry, or callback bridge;
+  the two entry points bind directly to their real native symbols. The 48-byte
+  public prefix cannot be used as a complete native value or Jai callback table.
+  Supported SDK-owned pointers remain safe to pass back to SDL. The private
+  complete native record is used only for explicit C ABI access/probes. Tests
+  now check symbol identity, real file operations, BMP decode, native close
+  lifetime on success/failure and both freesrc modes. Historical custom-table
+  passes are retained as historical evidence only. Proper long-term resolution
+  of standalone public record mismatch requires a reviewed API change; no
+  public fields/signatures are changed here and mismatch tests remain active.
 - **X11 helper policy and native evidence.** The independently authored simple
   window helper creates an unmapped borderless Xlib window at (0,0), using the
   parent's screen pixels; parent 0 selects the default root. It sets both the
@@ -263,17 +252,14 @@ correctness. Previously recorded failures remain required work.
   the tested 64-bit host. Public fields remain exact. The active
   `tests/native-bindings/sdl-layout.jai` intentionally reports the actual
   mismatch and fails; it has not been disabled or changed to accept it.
-  Native storage now remains behind public callback wrappers; BMP calls marshal
-  both native-file and caller-owned public streams through complete private
-  C records. Public records are never passed as native RWops. Whole
-  SDL_Event storage is native sized; tests retain native user-event payload
-  bytes through its padding. Risks: caller allocation and callback calling
-  conventions cannot be made safe by a cast. Proper fix: private complete
-  native storage and explicit callback marshalling where the public contract
-  permits it, with diagnostics for unrepresentable operations. The current
-  adapter passes real custom-stream and file-stream tests; default-context
-  policy and copied-record restrictions are documented above. The public
-  shape mismatch itself remains intentionally visible in the original probe.
+  Refreshed review explicitly supports SDK-owned pointers and does not support
+  constructed/copied Jai callback tables. Native foreign entry points now
+  preserve SDK pointer/symbol identity; no public record is allocated/passed
+  as native RWops. Whole SDL_Event storage remains native-sized and user-event
+  payload bytes retain genuine native round-trip coverage. Risk: dereferencing
+  public callback fields as Jai procedures is incompatible with native C.
+  Proper long-term fix for standalone shape mismatch requires a reviewed API
+  change; existing mismatch failures remain required and visible.
 - **Other provisional SDK layouts.** D3D anonymous overlays, ray-instance
   packed fields, ImFontGlyph and some Darwin packed records have public shapes
   that are incomplete or conflict with native layouts. Bitfield helpers
@@ -446,3 +432,30 @@ correctness. Previously recorded failures remain required work.
 No completion claim is made for the outstanding declaration, configuration,
 layout, privacy or runtime failures. Coordinator review must inspect both
 this report and the machine-readable evidence before production integration.
+
+- **Generic GL convenience lifetime and Linux result policy.** Current review
+  now defines this helper, superseding the old unresolved-handle question.
+  `stdlib/GL/wrappers.jai` creates a real context and makes it current; successful
+  resources remain native caller-owned with no additional public storage or
+  destroy export. This can leak if callers cannot recover/release native
+  handles, an inherent void convenience API limitation. Windows make-current
+  failure performs checked cleanup and logs; macOS attaches and sends the real
+  void selector. Linux ignores wanted_msaa and does not inspect glXMakeCurrents
+  return, explicitly required by reviewed behavior, rather than counted as an
+  unreviewed ignored error. Proper controlled-lifetime usage is the existing
+  platform constructor/native destroy APIs. macOS native current-context/view
+  and release tests pass; Windows/Linux native execution remains required.
+
+- **Refreshed production linter exposes incomplete roots.** The current safe
+  producer tool now correctly fails incomplete compilation. Broad lint of
+  Windows/Linux/mobile modules on macOS and direct private module roots fails
+  their real guards/visibility rules; rpmalloc/D3D also retain code/semantic
+  gaps. The CLI currently has no target-selection option. Earlier all-zero
+  lint evidence is historical for the earlier tool, not current complete
+  semantic lint coverage. Initial refreshed invocation also omitted the stdlib
+  environment; retry corrects that ordinary invocation mistake. Reports and a
+  minimal target/root reproducer are in native/lint-target-context.md. Risk:
+  unvisited bodies may still contain lint findings. Proper fix is general
+  target-aware module-root traversal in jailint, followed by all target runs,
+  plus actual remaining declaration fixes. No rule/global suppression,
+  visibility relaxation, compiler hack or fake target is used as a substitute.

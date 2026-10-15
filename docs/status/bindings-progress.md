@@ -119,3 +119,34 @@ unsafe stat forwarders as real adapters; it does not manufacture a coverage
 increase. The 58 configuration failures and retained SDL public ABI mismatch
 remain required work. Next: remaining reviewed wrappers and refreshed compiler
 configuration verification.
+
+Refreshed reviewed GL behavior now supports the exact generic current-context
+wrapper. It creates real WGL/GLX/NSOpenGL contexts, attaches the macOS view and
+makes the context current, retaining the reviewed native caller lifetime model.
+Six desktop source targets, all eighteen GL alternative configurations, and
+eight host native build/run checks pass (`.work/gl-dispatch-current.json`,
+`.work/gl-dispatch-configurations.json`). The complete configuration matrix now
+has **40 failures**, reduced from 58 by actual GL implementation. D3D forward
+overlay, rpmalloc, enabled telemetry and mobile target failures remain required.
+
+Refreshed SDL review explicitly requires actual SDK-owned RWops pointer
+identity and does not support Jai-created callback tables. Removed the prior
+custom owner/registry/context adapter, restored real native foreign symbols,
+and replaced unsupported custom-table tests with symbol identity, genuine file
+operations, BMP success/failure, exact native close counts and both freesrc
+modes. `.work/sdl-native-pointer-current.json`: twelve source, seven native,
+twenty-four privacy and 299 symbol checks pass. The one retained native failure
+is the unchanged public RWops/UserEvent ABI mismatch test.
+
+Current producer compiler and linter were rebuilt from safe NEW sources.
+Production formatter rebuilt unchanged and complete owned formatting/regeneration
+and 43 Python tests pass. Refreshed jailint now rejects incomplete roots rather
+than reporting a misleading pass. The broad retry records 25 successful commands
+and 16 incomplete lint scopes (native target guards, private-root import context,
+and real declaration gaps). Fresh-staged host GL/SDL/POSIX and changed native
+tests pass strict lint. Full target-aware lint is still required; no suppression
+or alternate target constant was introduced. See native/lint-target-context.md.
+
+Source ledger: 28,399 declared, 1,262 forwarded, 544 generated bodies, 47 manual,
+119 unresolved, one duplicate. Broad source/native matrix is running against a
+stable staged snapshot; scoped results above are not full integration evidence.
