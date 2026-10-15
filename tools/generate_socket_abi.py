@@ -125,7 +125,14 @@ def main():
         else:
             emitted = code + ";"
         output.append(guarded(emitted, guard))
-        exported.append(guarded(f"{name} :: ABI.{name};", guard))
+        foreign_variable = re.match(r"^\w+\s*:(?!:)", code) and re.search(r"#(?:foreign|elsewhere)\b", code)
+        if foreign_variable:
+            # :: is immutable. Forward the declaration through the compiler's
+            # general filtered-using mechanism, retaining its native storage.
+            facade_declaration = f'using,only({name}) #import "internal/net/socket-abi";'
+        else:
+            facade_declaration = f"{name} :: ABI.{name};"
+        exported.append(guarded(facade_declaration, guard))
         record["status"] = "native declaration; runtime/ABI verification separate"
         ledger.append(record)
     # Import only external reviewed Windows names needed by these declarations.

@@ -7,6 +7,7 @@ import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
+BINARIES = Path(os.environ.get("CARGO_TARGET_DIR", ROOT / "target/compiler")) / "debug"
 
 
 def main():
@@ -36,7 +37,7 @@ def main():
     for relative in ["Socket/native.jai", "internal/net/socket-abi.jai"]:
         shutil.copyfile(output / "generated/stdlib" / relative, library / relative)
     env = dict(os.environ, JAIC_STDLIB=str(library))
-    compiler = str(ROOT / "target/compiler/debug/jaic")
+    compiler = str(BINARIES / "jaic")
     source = ROOT / "tests/portable-stdlib/socket-resolver/main.jai"
     commands = [[compiler, "-interp", str(source)]]
     for flags, label in [([], "host"), (["-target", "x86_64-apple-darwin"], "x64")]:
@@ -50,7 +51,7 @@ def main():
             raise RuntimeError(f"{command!r}: {result.stdout}{result.stderr}")
     for cpu in ["x64", "arm64"]:
         subprocess.run([compiler, "-check", "-os", "macos", "-cpu", cpu, str(source)], env=env, check=True)
-    subprocess.run([str(ROOT / "target/compiler/debug/jailint"), "-D", "warnings",
+    subprocess.run([str(BINARIES / "jailint"), "-D", "warnings",
                     str(library / "Socket/native.jai"), str(library / "internal/net/socket-abi.jai"), str(source)], env=env, check=True)
     print("Jai public resolver passes interpreter/native both CPUs O0/O2, source checks and strict lint")
 

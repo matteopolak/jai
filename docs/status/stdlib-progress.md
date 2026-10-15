@@ -1,5 +1,16 @@
 # Portable stdlib progress
 
+Socket native global production fix: six reviewed variable names/ten conditional
+declarations now forward entities with filtered using, preserving C storage under
+immutable :: semantics. General generator correction emits no snapshot aliases.
+SDK C address equality/shared h_errno mutation/restoration passes interpreter and
+native O0/O2; scoped fixture/bridge strict lint and formatting pass. Whole Socket
+strict lint still red solely on general field-array type query. Interrupted CMSG
+regression now passes, resolver passes both native CPUs O0/O2, and old enum gap is
+resolved. Candidate addrinfo activation remains separate/pending full gate.
+Evidence target/socket-storage-workflow.log, socket-resolver-storage-corrected.log,
+socket-resolver-cmsg-corrected.log and socket-field-array-corrected.log.
+
 Separate Socket test correction: resolver used unreviewed AF.INET. Replaced only
 both input/output checks with reviewed AF_INET; all resolver assertions retained,
 no API invented. Corrected compiler lets real interpreter/ARM64+x64 native O0/O2

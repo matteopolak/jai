@@ -1,5 +1,15 @@
 # Portable stdlib worker deviations
 
+Socket reexports corrected: native variables now use filtered using, preserving
+canonical storage and visibility. No live mutable :: workaround remains in the
+owned generated facade. Actual SDK C address/mutation comparisons pass; scoped
+lint covers the new fixture/bridge, while whole generated binding lint remains
+red on general field-array-element type query. Mac resolver/CMSG runtime now pass
+with forward-enum fix; candidate source remains retained rather than claimed
+fully integrated. Runner selects only assigned CARGO_TARGET_DIR or own fallback;
+no peer/external build reuse. Initial dynamic test library naming corrected to
+documented stem resolution; no compiler or ABI semantics altered.
+
 Default plugin-generation pass now suppresses parser reporting/global actions;
 duplicate deprecated-option/context diagnostics removed through a general private
 parser phase parameter. No public API change or test exclusion. Full lint remains
