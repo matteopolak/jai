@@ -58,7 +58,8 @@ def enabled(condition, os_name, cpu, parameters=None):
               'ENABLE_ALL_EXTENSIONS': False, 'DUMP_GL_ERRORS': False, 'INCLUDE_DEBUG_BINDINGS': False,
               'INCLUDE_MEDIA_BINDINGS': False, 'INCLUDE_CAMERA_BINDINGS': False,
               'DEFINE_ANDROID_MAIN_AND_CALL_THIS': False, 'ENABLE_STATISTICS': True,
-              'RPMALLOC_FIRST_CLASS_HEAPS': True, 'USE_RAW':False,
+              # Authorized independent raw default, not a reference guarantee.
+              'RPMALLOC_FIRST_CLASS_HEAPS': False, 'USE_RAW':False,
               'USE_GLUE_NATIVE_PORT':True, 'NINTENDO_SUPPORT':False}
     values.update(parameters or {})
     return evaluate(condition,values)
@@ -197,6 +198,9 @@ def main():
         ('rpmalloc', 'rpmalloc-public-allocation.jai', TARGET_CONFIGS),
         ('rpmalloc', 'rpmalloc-public-callbacks.jai', TARGET_CONFIGS),
         ('rpmalloc', 'rpmalloc-public-configurable.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-raw.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-raw-callbacks.jai', TARGET_CONFIGS),
+        ('rpmalloc', 'rpmalloc-public-profiles.jai', TARGET_CONFIGS),
         ('d3d11', 'forward-overlay.jai', TARGET_CONFIGS),
         ('d3d12', 'd3d-interface-identity.jai', [('windows','x64'),('windows','arm64')]),
         ('SDL', 'sdl-layout.jai', TARGET_CONFIGS),
@@ -253,7 +257,9 @@ def main():
                             ('rpmalloc','callback_failure'), ('rpmalloc','callback_error'),
                             ('rpmalloc','NativeContext'), ('rpmalloc','invoke_map'),
                             ('rpmalloc','invoke_unmap'), ('rpmalloc','invoke_failure'),
-                            ('rpmalloc','invoke_error')]:
+                            ('rpmalloc','invoke_error'), ('rpmalloc','Checked'),
+                            ('rpmalloc','Boundary_Size'), ('rpmalloc','boundary_initialize'),
+                            ('rpmalloc','boundary_config'), ('rpmalloc','boundary_rpmalloc')]:
         if args.module and module.split('/')[0] not in args.module and module not in args.module:
             continue
         for os_name, cpu in TARGET_CONFIGS:
@@ -302,6 +308,9 @@ def main():
         runtime_tests.append('rpmalloc-public-allocation')
         runtime_tests.append('rpmalloc-public-callbacks')
         runtime_tests.append('rpmalloc-public-configurable')
+        runtime_tests.append('rpmalloc-public-raw')
+        runtime_tests.append('rpmalloc-public-raw-callbacks')
+        runtime_tests.append('rpmalloc-public-profiles')
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
             runtime_tests.append('x11-message-box')
@@ -329,7 +338,7 @@ def main():
                 relevant = ['ImGui']
             if name == 'posix-stat':
                 relevant = ['POSIX']
-            if name in ('rpmalloc-native-sdk','rpmalloc-native-storage','rpmalloc-public-allocation','rpmalloc-public-callbacks','rpmalloc-public-configurable'):
+            if name in ('rpmalloc-native-sdk','rpmalloc-native-storage','rpmalloc-public-allocation','rpmalloc-public-callbacks','rpmalloc-public-configurable','rpmalloc-public-raw','rpmalloc-public-raw-callbacks','rpmalloc-public-profiles'):
                 relevant = ['rpmalloc']
             if name in ('gl-context','reflection-procedure-flags','nsgl'):
                 relevant = ['GL']
@@ -363,6 +372,12 @@ def main():
                 scope = 'public_default_allocator_callbacks_lifetime_failure_concurrency'
             if name == 'rpmalloc-public-configurable':
                 scope = 'public_configurable_allocator_initialization'
+            if name == 'rpmalloc-public-raw':
+                scope = 'public_raw_allocator_lifecycle_allocation_statistics_file'
+            if name == 'rpmalloc-public-raw-callbacks':
+                scope = 'public_raw_allocator_callbacks_lifetime_failure'
+            if name == 'rpmalloc-public-profiles':
+                scope = 'public_allocator_statistics_profiles_and_domain_isolation'
             result.update(name=name, phase='build',scope=scope,status='passed' if result['exit']==0 else 'failed')
             if compiled_source != source:
                 result['private_unit_placement'] = str(compiled_source)

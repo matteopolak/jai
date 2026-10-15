@@ -8,6 +8,35 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Current rpmalloc raw/profile policy and callback corrections.**
+  `rpmalloc/context.jai` privately selects raw first-class heaps false because
+  the reviewed parameter is genuinely undeclared and the latest user explicitly
+  authorizes an independent default-zero policy. No public parameter or
+  reference-default guarantee is introduced. Raw first-class functions remain
+  unfinished and conditional. Real raw/rewrite wrappers now share a private
+  boundary. Statistics-disabled imports use separately compiled, prefixed SDK
+  symbols and matching callback/check helpers; native mixed-profile tests verify
+  independent ownership. Same-profile imports still share a domain and reject
+  overlap; other option profiles remain code gaps. `config()` exposes copied
+  mutable module storage with shallow public string pointers; C names have
+  separate terminated storage. Concurrent mutation or replacing callbacks while
+  allocations remain live is not promised. Reviewed mutation semantics remain
+  requested. Refreshed specs invalidated earlier tests for large/negative
+  offsets, custom mapping retry and missing-partner errors. Production now
+  enforces 0..65535, frees rejected mappings, confines retry to built-in mapping
+  and selects both built-ins if either partner is absent. Replacement tests keep
+  genuine failures, canaries and lifetime assertions, adding misalignment and
+  real cross-thread handoff. Earlier reports remain historical evidence.
+  Native C supplies no Jai assertion location: the real bridge call site remains
+  a documented substitute. Existing registry/TLS costs remain. Public heap/span
+  live-field marshalling is unfinished; no fake snapshots or cross-layout casts
+  were added. The [design](../native/rpmalloc-heap-adapter-design.md) records
+  traversal, atomic access and callback-lock constraints. All-owned strict lint
+  outside supported scope remains incomplete; no exclusions were added.
+
+The older rpmalloc entries below describe historical checkpoints. Their
+wide-offset/raw-blocker statements are superseded by the current entry above.
+
 - **Native rpmalloc storage views are not canonical public heaps.** Complete
   SDK source-derived records and all 66 field probes now pass both Mac CPUs;
   six desktop Jai source checks are separate evidence. Public Heap/Span remain

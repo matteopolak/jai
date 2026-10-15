@@ -9,8 +9,10 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [Private rpmalloc SDK backend](native/rpmalloc-native-backend.md): complete
   native forwarding, checked alignment boundary and remaining public work
 - [Public rpmalloc adapter progress](native/rpmalloc-public-adapter.md): actual
-  lifecycle/allocation/statistics and callback/configuration/lifetime tests,
-  generated contextual layouts and remaining profile/heap work
+  raw/rewrite allocation, callback/config lifetimes, real statistics profiles
+  and remaining public implementation
+- [Canonical rpmalloc heap adapter design](native/rpmalloc-heap-adapter-design.md):
+  typed ownership, live field/graph marshalling and required safety work
 - [rpmalloc heap ABI evidence](native/rpmalloc-heap-abi.md): complete pinned
   native storage probes and required separation from canonical public records
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs

@@ -1,5 +1,45 @@
 # Bindings worker progress
 
+Current public batch after `fc6c681`: real raw lifecycle/allocation/statistics,
+calloc/aligned calloc/memalign/checked POSIX alignment, statistics FILE output,
+collection and canonical raw aliases now share the rewrite's private boundary.
+`config()` returns stable copied mutable storage with reviewed shallow payloads.
+Refreshed contract defects fixed: missing partner selects both built-ins,
+custom failure does not call OS retry, offsets are bounded to 65535 and rejected
+offset/address mappings are released. Earlier contrary test expectations were
+incorrect oracles, explicitly corrected with replacement safety assertions.
+An independent private raw default false policy is authorized by the latest
+user steering; no public parameter or reference-default claim was added.
+
+Statistics-enabled/disabled SDK profiles now compile with separate exported
+symbols and matching callback/check helpers. Six public programs pass 36 desktop
+source checks and execute on both Mac CPUs (12 actual programs, 24 build/run
+checks). Cases include real callbacks/failures, config ownership, alignment,
+zeroing, output/statistics canaries, mixed domains and four-thread bidirectional
+allocation handoff across worker thread teardown. The production dependency
+builder and its actual host archives also run callback, raw and mixed-profile
+programs. SDK/storage native ABI assertions pass both CPUs, separately from
+public evidence. All-owned production formatting/regeneration and supported
+scoped strict lint pass; 63 Python regressions pass. Broader target lint and
+Windows/Linux native execution remain incomplete.
+
+Ledger: rpmalloc 34 unresolved + 46 partial + 31 declared; other modules retain
+36 unresolved. Six inventory views resolve through existing exact canonical
+aliases, rather than extra procedure bodies. All 18 configuration declaration
+checks now pass, but all 18 public-name checks still fail at unfinished generic
+allocator/dump APIs. No configuration failure was removed or called complete.
+Public heap/span field/identity/lifetime marshalling is not implemented by this
+batch; no public pointers cross native ABI. Its independent typed-association
+plan addresses atomic fields, graph identity, uninitialized reserved headers,
+stale cache links, ownership predicates and callback-safe locking:
+`docs/native/rpmalloc-heap-adapter-design.md`. This is actual remaining code work,
+not another missing native shape request. Precise remaining behavior questions
+are in `docs/specs/stdlib/native-bindings-questions.md`; other36 contracts remain
+required. Full integration/corpus/release verification remains coordinator-owned.
+
+Earlier checkpoint descriptions below are historical and superseded where the
+refreshed contract and current implementation differ.
+
 Native storage/source-export follow-up after `d8c9eb4`: all seven native
 heap/span/cache/counter records and 66 field offsets/widths now pass actual C
 ABI programs on both Mac CPUs, plus six desktop Jai source checks. Complete C
