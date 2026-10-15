@@ -1,5 +1,14 @@
 # Portable stdlib worker deviations
 
+Metaprogram_Plugins only record/parser are active. Real initializer candidate and
+positive dynamic-name test remain outside completed support because general
+compile-time add-source/forward-call suspension is missing. Full candidate lint
+and positive execution fail, not skipped/converted to pass. Source generation
+does not restrict requests to top-level CLI. Public parser's out-of-range index
+policy returns false safely; unreviewed prefix edge documented in dependency doc.
+Initial fixture redeclaration/.[] dynamic-array-literal errors were corrected
+without changing assertions or public contract. No legacy oracle adjustment.
+
 Default_Allocator optimized-target implementation uses owned C blocks/per-heap
 intrusive lists and one CAS lock, rather than span caches. This preserves real
 heap/resize/ownership/bulk-release behavior and exact standard public layouts;

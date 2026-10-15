@@ -1,5 +1,15 @@
 # Portable stdlib progress
 
+Metaprogram_Plugins refreshed17:24 contract consumed: canonical record and real
+public parser now pass interpreter/native O0/O2 and strict lint. Dynamic loading
+IS required. Positive independently authored dynamic.jai + Dynamic_Probe factory
+and real initializer candidate are durable; --dynamic-candidate correctly FAILS
+unknown initialize_imported_plugins before running the source-adding prefix.
+General minimal dynamic-build-source-continuation.jai also fails unknown callee.
+Exact compiler suspension/resumption handoff in metaprogram-plugins-dependency-request.md.
+No active fake init export, CLI-only restriction or passing-stub credit. Prefix
+handling when starting_index>0/plugins occur is a precise remaining review edge.
+
 Default_Allocator optimized-target public heap workflow now implemented with exact
 reviewed standard records. Real ownership/resize/free-all/create/destroy/init/finalize
 behavior passes Mac x64 interpreter/native O0/O2, 4threads x512cycles, disabled

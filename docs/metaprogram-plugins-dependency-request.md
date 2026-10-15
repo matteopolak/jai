@@ -1,5 +1,47 @@
 # Metaprogram_Plugins public contract and compiler handoff
 
+UPDATED17:24 review resolves the broad questions below. Dynamic names formed
+during compile-time execution ARE required, and the parser/grouping/borrowing/
+terminator/name-list consistency rules are now supplied. No CLI-only restriction
+is acceptable. Historical requests below should not be cited as unresolved.
+
+Real public parser and canonical record now pass interpreter/native O0/O2 and
+strict lint. Supported invalid-index policy is false/original input; review does
+not establish that edge outside the valid range. One narrow clarification remains:
+when starting_index>0 AND plugins occur, are earlier args[0..starting_index)
+retained? The independent implementation scans/retains from starting_index, while
+the specified no-plugin path always returns the original slice. Current behavior
+is documented, not claimed as reference evidence for the unclear prefix edge.
+
+Compiler owner concrete positive tests:
+
+- tests/portable-stdlib/pending/dynamic-build-source-continuation.jai: a stallable
+  run adds a function, then must execute that function. Current compile fails
+  'unknown identifier continuation' before the known prefix can add source.
+- tests/portable-stdlib/metaprogram-plugins/dynamic.jai forms a name with String.join
+  inside #run, requests module parameters, checks real init/options/workspace and
+  rejects a changed parameterized name list. Independent Dynamic_Probe producer
+  is under the adjacent modules/ directory; no application/vendor source used.
+
+Initializer candidate pending/metaprogram-plugins-init.jai generates ordinary
+qualified imports and a typed function, including all name/order consistency
+checks, factory calls, result append/workspace assignment and aggregated init
+success/no-init-option rejection. It uses real Compiler.add_build_string with
+module Code scope, then calls that new function. The required general suspension/
+source-processing/resumption mechanism belongs to the compiler; do not special-case
+this function, path, module or test. At present the call fails before any factory
+executes. No private source generation shim or fabricated record is a substitute.
+
+Reproduce: python3 -B tools/check_portable_metaprogram_plugins.py --dynamic-candidate.
+Parser tests pass, then the overall command correctly FAILS the positive dynamic
+test with unknown initialize_imported_plugins. Evidence
+target/metaprogram-plugin-dynamic.log. The ordinary runner without that switch
+only claims parser support and says explicitly that init_plugins is incomplete.
+Candidate has formatting/--check; strict lint cannot complete while that general
+unresolved-call boundary fails. It is retained outside active stdlib until the
+real dynamic initializer passes. The successful default CLI importer is not a
+replacement for this broader API.
+
 Portable worker, 2026-10-15. Priority: the filtered coordinator catalogue names
 this module as Focus's first missing dependency. No application/vendor bodies or
 raw corpus logs were inspected. The reviewed page currently specifies only three
