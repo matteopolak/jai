@@ -228,4 +228,3 @@ eleven-slot prefix; no missing SDK methods are added to its public shape, and
 only the shared method offsets are compared. Buffer-vtable and wave/buffer-format
 layout checks are broader. Windows runtime/DirectSound interface execution still
 requires coordinator CI; this is header/object/link evidence, never playback.
-
