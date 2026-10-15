@@ -5,9 +5,9 @@
     "Iprof",
     "Codex"
   ],
-  "timestamp_utc": "2026-10-15T16:16:13.657712+00:00",
-  "head": "8a284119b763fd9fbf79e0a6f21d0180b60fe482",
-  "state": "draft working-tree implementations on the named committed checkpoint",
+  "timestamp_utc": "2026-10-15T16:43:06.368671+00:00",
+  "head": "c24bb2fef1f0eae5ae2d63eed5aa6c558d9b2164",
+  "state": "committed production implementation",
   "denominator": "unique names from reviewed public declaration inventories; overload/conditional variants also counted separately; record members are audited as part of their aggregate, not additional API names",
   "totals": {
     "reviewed_declaration_variants": 144,
@@ -197,24 +197,7 @@
         "zone_begin",
         "zone_end"
       ],
-      "draft_new_export_names": [
-        "Config",
-        "HELP_STRING",
-        "add_hook",
-        "add_source",
-        "before_intercept",
-        "draw",
-        "draw_graph",
-        "get_current_graph_scaling",
-        "get_plugin",
-        "graph_select_sample",
-        "init",
-        "log_help",
-        "message",
-        "set_cursor_screen_coordinates",
-        "finish",
-        "shutdown"
-      ],
+      "draft_new_export_names": [],
       "reviewed_spec_sha256": "0e73714c63357c236eb05042e1b5c9caef5b17f41a2e63939c7a09420b951ca8"
     },
     "Codex": {
@@ -295,14 +278,23 @@
       "kind": "verification dependency",
       "rule": "Context registration after bootstrap layout; compiler owner e9affab7 fix must be reconciled and supplied as a safe source snapshot. No compiler edits or duplicate merges by this worker.",
       "effort_estimate": "one focused source build and verification replay after canonical integration"
+    },
+    {
+      "names": [
+        "shared tools/check_developer_tools.py Codex rejection expectations"
+      ],
+      "kind": "integration test classification",
+      "rule": "Replace obsolete conditional/Basic metric rejection expectations with the reviewed positive regressions. Other tooling owner/integrator owns that shared runner.",
+      "effort_estimate": "small test classification update; no implementation work"
     }
   ],
   "verification": {
-    "native": "Mac interpreter/native O0/O2 workflows verified; newer hook/conditional/empty-path edits still require final replay",
-    "format": "unchanged repository formatter source-built; final dirty-source check pending",
-    "strict_lint": "program fixtures pass; full module-root lint remains a visible failure",
+    "native": "All21 listed cases passed interpreter/native Mac O0/O2; real CLI Iprof/Codex children, hook forwarding children, exact expression-boundary children and all16 generated client configuration children executed. Codex dump additionally passed interpreter/native O0/O2.",
+    "format": "Unchanged repository formatter source-built; owned implementation and supported fixture format/idempotence checks passed.",
+    "strict_lint": "Program fixtures pass -D warnings. The full module-root check fails only on the documented context-layout ordering issue in this snapshot.",
     "other_targets": "Windows/Linux source-only checks; native execution pending later",
-    "report": "target/profiler-codex-checks.json records real commands and outcomes, complete=false while required module lint fails"
+    "report": "target/profiler-codex-checks.json:193 commands;6 expected rejection exits,1 unexpected required module-root lint failure; complete=false. Source hashes included.",
+    "context_dependent_fixture": "iprof-hook-input.jai is compiled and executed with real production add_hook-generated bindings through iprof-hooks.jai; no standalone fragment-lint success is claimed."
   },
   "limitations": [
     "Public plugin base does not expose private predicate/hook-name configuration; no public setter or derived cast invented.",
@@ -313,5 +305,7 @@
     "owner": "compiler/integrator",
     "work": "general module-root context ordering and called-standard-library body interception; no library scaffolding duplication"
   },
-  "delegated_scope_excluded": true
+  "delegated_scope_excluded": true,
+  "head_kind": "implementation checkpoint audited; subsequent inventory-only commits do not change implementation",
+  "draft_owned_implementation_changes": false
 }
