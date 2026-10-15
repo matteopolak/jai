@@ -1,5 +1,17 @@
 # Window/render progress
 
+Durable WGL investigation checkpoint: `5173209`. Final current-tree verification:
+186 focused compiler/program invocations pass, zero fail, using fresh source-built
+compiler/tools. Formatting passes on all owned Jai; strict lint passes on the
+byte-identical integrated native-host library roots and changed host regression.
+Windows-specific typed lint is mandatory in the prepared native CI tool.
+
+Next coordinator/native action: run `tools/window_render_wgl_ci.py` on BOTH Windows
+CPUs and return its filtered summary metadata. The current authorized feedback
+still contains no actual driver identity or failure-stage code. Bindings owner
+must review immediate error capture and private-DC failure cleanup. The WGL
+release blocker remains open; no Windows driver/runtime fix is claimed.
+
 Fresh-tool verification: rebuilt jaic/jailint from current NEW compiler sources and rebuilt jaifmt with them. Final full focused suite passed186/zero after cursor cleanup, using freshly rebuilt compiler/tools. All owned formatting checks pass; scoped integrated native-host lint passes with no incomplete-root diagnostics. New jailint correctly exposed incomplete roots when local facade paths prepended inherited dependencies, plus a remove-in-for finding in native cursor-close cleanup. Linting byte-identical staged production roots fixes dependency context without rewriting any imports; eight public facade roots, private context/lifecycle modules and native macOS event test now pass strict lint with no incomplete-root diagnostics. Cursor close now searches first and retires outside iteration; the real close-with-disabled-cursor regression passes interpreter/O0/O2. Wrong-platform/intentional-negative root body lint is not claimed as native coverage; the Windows CI tool requires a source-built matching jailint and treats any incomplete compilation as failure. No rule suppression or config exclusion was added.
 
 Actual Windows feedback reviewed: candidate0100a1f/run38658753246 has signed-wheel issue#1 passing on x64 and arm64, graphics linking, and WGL creation failure in all three execution modes on both CPUs. This is authorized filtered feedback, not a local Windows run. New production diagnostics report requested3.3 core/MSAA, actual installed PFD when available and prior/current native handles; post-cleanup error is labelled honestly. Added original native driver probe, actual public shader/texture/draw/readback regression, and explicit architecture-checked real-Mesa deployment/CI runner. Binding-owner failure-stage/error capture request is in docs/native/window-render-wgl-investigation.md. No proved constructor root cause or actual runner driver identity yet; Windows execution of the new diagnostics remains pending filtered CI feedback. No API downgrade, fake support, excluded assertion or peer edit. Local validation is in progress.
