@@ -442,3 +442,6 @@ Focused follow-up: seven reviewed Thread fixtures pass interpreter/native ARM64
 O0 and strict lint; original thread and native backtrace regressions pass. See
 [integration evidence](tools/cleanroom-integration.md) for the coverage changes
 and unresolved old negative assumptions. Full baseline remains red.
+
+The three original sandbox deadlock/timed-wake scenarios also pass through the
+compiler's actual private provider; native-only public Thread remains guarded.

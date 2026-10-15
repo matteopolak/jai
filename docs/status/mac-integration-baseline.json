@@ -4,7 +4,7 @@
   "ref": "integration/thread-fixtures",
   "snapshot": "90fea8ab84fa881b96a327d2bb117541e83429b4",
   "target": "macos-arm64",
-  "status": "measured-red",
+  "status": "measured-red-with-focused-repairs",
   "workspace": {
     "command": "cargo test --locked --workspace --all-targets --no-fail-fast",
     "passed": 822,
@@ -773,5 +773,39 @@
     "artifacts/mac-baseline/catalogue.log": "04be03b4d387483d4111924664bfb000610b784c4959e3639e03d8c053a49d48"
   },
   "timeouts": [],
-  "source_changes_during_measurement": false
+  "source_changes_during_measurement": false,
+  "focused_followups": [
+    {
+      "source_commit": "f9a1d45d61df84148dca171be9f5ebda0276db22",
+      "suite": "seven reviewed Thread fixtures",
+      "command": "python3 tools/stdlib_runtime.py --filter compiler/threads- --jobs 4 --timeout 60 --verbose",
+      "interp_passed": 7,
+      "native_arm64_O0_passed": 7,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "suite": "original Rust interpreted_threads",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "suite": "original native backtrace caller assertions after source-building Debug helper",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "suite": "original sandbox deadlock/timed-wake regression using private provider",
+      "scenarios": 3,
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "suite": "workspace clippy --locked --workspace --all-targets -- -D warnings",
+      "exit_code": 0
+    }
+  ]
 }

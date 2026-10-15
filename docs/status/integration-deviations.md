@@ -1493,6 +1493,18 @@ and Focus GUI remain unverified here. Process inspection is denied by the OS;
 no alternate inspection path was attempted. No remote action was performed.
 # Thread fixture contract migration audit
 
+`tests/compiler-semantics/sandbox-threads` intentionally uses opaque u64 tokens
+from our own SandboxHost provider, not native pthread structure layouts or a new
+public standard-library API. Its s64/s64 deadline and timeout110 follow that
+private provider's implementation. The fixtures are only executed with `-os wasm`.
+Native Thread availability is unchanged. The three existing CLI assertions remain
+strict, including deadlock detection and timed wake progress. Initial construction
+errors (missing context in a C callback and native-only Basic sleep) were corrected
+using an explicit captured context and the actual private usleep provider. No
+fallback return or fake wake event was added. Real wasm32/browser verification
+of this new exact fixture remains a later gate; this checkpoint proves CLI sandbox
+execution, not all browser/native platforms.
+
 Seven existing independent thread fixtures now use the reviewed public APIs;
 no Thread/Basic facade exports, compiler bypasses or production defaults changed.
 Removed tests assumed results from canonical void functions and invalid-state

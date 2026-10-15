@@ -323,60 +323,10 @@ fn memory_limit_stops_unbounded_allocation() {
 /// the virtual clock: a short wait times out, a longer one sees the signal sent after a sleep.
 #[test]
 fn sandbox_threads_wake_waiters_and_report_deadlocks() {
-    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("cli-sandbox-threads");
-    std::fs::create_dir_all(&dir).unwrap();
-    let programs = [
-        (
-            "returned.jai",
-            "quick :: (t: *Thread) -> s64 { return 0; }\n\
-             main :: () {\n\
-             \x20   init(*sem);\n\
-             \x20   t: Thread;\n\
-             \x20   thread_init(*t, quick);\n\
-             \x20   thread_start(*t);\n\
-             \x20   wait_for(*sem);\n\
-             \x20   print(\"woken\\n\");\n\
-             }\n",
-        ),
-        (
-            "blocked.jai",
-            "stuck :: (t: *Thread) -> s64 { wait_for(*sem); return 0; }\n\
-             main :: () {\n\
-             \x20   init(*sem);\n\
-             \x20   t: Thread;\n\
-             \x20   thread_init(*t, stuck);\n\
-             \x20   thread_start(*t);\n\
-             \x20   thread_deinit(*t);\n\
-             \x20   print(\"joined\\n\");\n\
-             }\n",
-        ),
-        (
-            "timed.jai",
-            "late :: (t: *Thread) -> s64 {\n\
-             \x20   sleep_milliseconds(50);\n\
-             \x20   signal(*sem);\n\
-             \x20   sleep_milliseconds(50);\n\
-             \x20   atomic_write(*flag, 1);\n\
-             \x20   return 0;\n\
-             }\n\
-             main :: () {\n\
-             \x20   init(*sem);\n\
-             \x20   t: Thread;\n\
-             \x20   thread_init(*t, late);\n\
-             \x20   thread_start(*t);\n\
-             \x20   early := wait_for(*sem, 10);\n\
-             \x20   later := wait_for(*sem, 1000);\n\
-             \x20   while atomic_read(*flag) == 0 {}\n\
-             \x20   thread_deinit(*t);\n\
-             \x20   print(\"% %\\n\", early, later);\n\
-             }\n",
-        ),
-    ];
-    let header = "#import \"Basic\";\n#import \"Thread\";\n#import \"Atomics\";\n\
-                  sem: Semaphore;\nflag: s32;\n";
-    for (name, body) in programs {
+    let dir = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../../tests/compiler-semantics/sandbox-threads");
+    for name in ["returned.jai", "blocked.jai", "timed.jai"] {
         let path = dir.join(name);
-        std::fs::write(&path, format!("{header}{body}")).unwrap();
         let output = Command::new(JAIC)
             .arg("-interp")
             .arg(&path)

@@ -698,6 +698,16 @@ All seven workspace failures remain enabled. Failure classifications are triage,
 not expected-failure exemptions. No original application/vendor source was read.
 # Focused repairs after the frozen measurement
 
+The original `sandbox_threads_wake_waiters_and_report_deadlocks` test now passes
+all three scenarios against the actual private SandboxHost pthread/condition
+provider. Returned-worker and blocked-worker cases still require the precise
+deadlock diagnostic and empty stdout; the timed case requires ETIMEDOUT followed
+by successful signaling, busy-wait progress, and a successful join. Public Thread's
+WASM guard is intact. These fixtures describe the compiler's private token protocol
+and are never native pthread ABI declarations. Strict contextual WASM lint,
+jaifmt, Rustfmt and workspace Clippy with warnings denied pass. This repairs a
+third focused baseline failure; no aggregate green claim follows from it.
+
 All seven `tests/compiler-regressions/threads-*.jai` now pass interpreter and
 native ARM64 O0 through `tools/stdlib_runtime.py --filter compiler/threads-`.
 The original Rust `interpreted_threads` test also passes, retaining its exact
