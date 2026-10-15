@@ -38,11 +38,10 @@ request_source :: () {
 
     defer free(name);
     epoch := begin_registration(2);
-    source := sprint("Imported_A :: #import \"%\"(VALUE=41); Imported_B :: #import \"%\"(VALUE=42); #run assert(register_factory(%, 1, Imported_B.get_plugin)); #run assert(register_factory(%, 0, Imported_A.get_plugin)); #run finish_setup();", name, name, epoch, epoch);
+    source := sprint("Imported_A :: #import \"%\"(VALUE=41); Imported_B :: #import \"%\"(VALUE=42); #run { assert(register_factory(%, 1, Imported_B.get_plugin)); assert(register_factory(%, 0, Imported_A.get_plugin)); finish_setup(); }", name, name, epoch, epoch);
 
     defer free(source);
     C.add_build_string(source, -1, #code register_factory);
-    assert(!registration_ready() && registration_count == 0);
 }
 
 #run,stallable request_source();

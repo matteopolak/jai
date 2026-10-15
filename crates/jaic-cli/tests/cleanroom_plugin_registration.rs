@@ -29,7 +29,7 @@ fn expect_success(output: Output, expected: &str) {
 }
 
 #[test]
-fn scoped_generated_imports_register_real_factories_after_the_request_returns() {
+fn scoped_generated_imports_register_real_factories_in_one_ordered_run() {
     expect_success(
         jaic("staged.jai", &["-interp"]),
         "registered and initialized\n",

@@ -1,5 +1,5 @@
 // Independent registrar primitive for the library owner; no servicing guarantee.
-Factory :: () -> *C.Metaprogram_Plugin;
+Factory :: #type () -> *C.Metaprogram_Plugin;
 factory_slots: [..] Factory;
 registration_epoch: int;
 registration_count: int;
