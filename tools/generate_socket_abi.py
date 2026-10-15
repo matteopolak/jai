@@ -42,10 +42,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--formatter", type=Path, required=True,
                         help="source-built repository jaifmt under target")
+    parser.add_argument("--output-root", type=Path, default=ROOT,
+                        help="write generated stdlib/docs under this owned checkout root (default: checkout)")
     args = parser.parse_args()
     formatter = args.formatter.resolve(strict=True)
     if not formatter.is_relative_to(ROOT / "target"):
         parser.error("formatter must be a source build under this checkout's target directory")
+    output_root = args.output_root.resolve()
+    if not output_root.is_relative_to(ROOT):
+        parser.error("generation output must remain in this owned checkout")
     page = ROOT / "docs/specs/stdlib/modules/socket.md"
     spec = parse_spec(page.read_text())
     shapes = defaultdict(list)
@@ -143,14 +148,15 @@ ws2_32 :: #system_library "ws2_32";
 #scope_export
 #load "socket-native-completions.jai";
 """
-    target = ROOT / "stdlib/internal/net/socket-abi.jai"
+    target = output_root / "stdlib/internal/net/socket-abi.jai"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(preamble + "\n".join(output))
     exported.append(guarded("in_addr :: ABI.in_addr;", "OS == .MACOS"))
-    facade = ROOT / "stdlib/Socket/native.jai"
+    facade = output_root / "stdlib/Socket/native.jai"
     facade.parent.mkdir(parents=True, exist_ok=True)
     facade.write_text("// Generated public native aliases.\n" + "\n".join(exported) + '\n#scope_file\nABI :: #import "internal/net/socket-abi";\n')
-    (ROOT / "docs/socket-native-ledger.json").write_text(json.dumps(ledger, indent=2) + "\n")
+    (output_root / "docs").mkdir(parents=True, exist_ok=True)
+    (output_root / "docs/socket-native-ledger.json").write_text(json.dumps(ledger, indent=2) + "\n")
     subprocess.run([str(formatter), "--config", str(ROOT / "jaifmt.toml"), str(target), str(facade)],
                    cwd=ROOT, check=True)
 

@@ -13,7 +13,7 @@ or legacy test expectations are inventory inputs.
 
 ### Android/Toolchain
 
-JNI/OID/JKS/SHA, ASN.1 primitive/cursor parsing and ADB host operations are implemented with independent behavior tests. ASN1_Value/printer/prefix contracts, actual SDK/device and Windows Process integration remain pending. Install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
+JNI/OID/JKS/SHA, ASN.1 primitive/cursor/value parsing and ADB host operations have independent behavior tests. Refreshed ADB discovery/server/quoting/storage contracts still require correction; real SDK/device and Windows Process integration remain pending. ASN.1 diagnostics printing, install recovery, higher-level build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
 
 Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 
@@ -37,7 +37,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `Android_Default_Theme :: enum u16` | All reviewed hosts |
 | `ANDROID_DYNAMIC_LOADER_VERSION :: 3` | All reviewed hosts |
 | `android_find_ndk_path :: (log_errors := false) -> bool, string` | All reviewed hosts |
-| `android_find_sdk_path :: () -> bool, string` | All reviewed hosts |
 | `android_generate_apk :: (options: Android_Build_Options, config: Android_Project_Config) -> bool, string` | All reviewed hosts |
 | `android_generate_apk :: (project_path: string, release := false) -> bool, string #deprecated "Use android_generate_apk that takes Android_Build_Options as first argument"` | All reviewed hosts |
 | `android_generate_apk_command_line_tools :: (options: Android_Build_Options, config: Android_Project_Config) -> bool, string` | All reviewed hosts |
@@ -74,9 +73,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `asn1_print :: (data: string, depth := 0, hack_skip_depth := false)` | All reviewed hosts |
 | `asn1_print :: (name: string, data: string)` | All reviewed hosts |
 | `asn1_print :: (name: string, value: ASN1_Value)` | All reviewed hosts |
-| `asn1_read_value :: (s: *string) -> ASN1_Value` | All reviewed hosts |
-| `asn1_read_value :: (s: *string, expected: ASN1_Tag) -> ASN1_Value` | All reviewed hosts |
-| `ASN1_Value :: struct` | All reviewed hosts |
 | `Certificiate :: struct` | All reviewed hosts |
 | `CheckSSL :: (result: s32, loc := #caller_location) #expand` | All reviewed hosts |
 | `copy_android_libcpp :: (cpu_target: CPU_Tag, output_dir: string) -> bool` | All reviewed hosts |
@@ -109,7 +105,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `read_binary_manifest_from_apk :: (apk_filename: string) -> bool, Android_Manifest_Binary` | All reviewed hosts |
 | `read_binary_manifest_from_file :: (filename: string) -> bool, Android_Manifest_Binary` | All reviewed hosts |
 | `read_binary_manifest_from_memory :: (data: string, filename := "<memory>") -> bool, Android_Manifest_Binary` | All reviewed hosts |
-| `read_length_prefixed_block :: (s: *string) -> string` | All reviewed hosts |
 | `run_android_link_command :: (message: *Message_Phase, options: Build_Options, extra_args: [] string = .[])` | All reviewed hosts |
 | `run_gradle_task :: (project_path: string, task: string, print_output := true) -> bool` | All reviewed hosts |
 | `sign_data :: (private_key_info: string, message: string) -> bool, string` | All reviewed hosts |
@@ -215,7 +210,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 156 missing reviewed declaration/overload/nested-operation rows
+Total: 151 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

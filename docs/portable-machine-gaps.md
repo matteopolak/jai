@@ -1,5 +1,14 @@
 # Machine_X64 compiler integration gaps
 
+Current general enum dependency evidence (Socket integration):
+tests/portable-stdlib/pending/socket-ai-forward-enum.jai fails unknown LATER;
+tests/portable-stdlib/socket-resolver/main.jai fails AI.MASK's later ADDRCONFIG.
+NEW compiler handoff independently identifies sequential enum_items and confirms
+the fix is still pending. Keep declaration/reflection order. A reviewed macOS
+addrinfo candidate is retained outside active source because activation also
+regresses existing Socket cmsg-layout. Native C SDK layout/resolver passes both
+host CPUs; no Jai/lint pass claimed. See portable-socket-resolver.md.
+
 ## Current implemented CPU-query batch
 
 The NEW compiler handoff documents real CPUID leaf/subleaf input and four results.

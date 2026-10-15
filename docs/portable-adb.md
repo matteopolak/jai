@@ -1,5 +1,89 @@
 # Android SDK command subsystem design
 
+CURRENT SDK/startup correction: android_find_sdk_path checks conventional home
+directory first, then ANDROID_HOME/ANDROID_SDK_ROOT/ANDROID_SDK_HOME in exact reviewed
+order, using the NEW foundation producer's real File_Utilities.is_directory. Set
+invalid environment candidates warn; absent values are skipped. SDK selection
+returns an active-context copy. is_adb_installed checks platform-tools/adb (adb.exe
+on Windows) and returns a temporary path without running version or a daemon.
+No PATH fallback or unrelated user directories are scanned. Conventional Windows
+path is AppData/Local/Android/Sdk; all other reviewed targets use Android/Sdk.
+
+With no explicit __adb_path, adb discovers once and retains an owned durable copy
+using the runtime default allocator, preserving its allocator for replacement.
+Public __adb_path is still the same mutable entity, with explicit caller overrides
+honored directly. SDK environment changes do not refresh a nonempty cache. An
+explicit clear permits rediscovery and releases the previous privately owned cache
+through its saved allocator/normal Basic free path. Process-lifetime retention of
+the current cache is intentional; no public teardown API is invented. Callers must
+serialize configuration/environment mutation; concurrent cache reconfiguration
+has no established public guarantee.
+
+Every valid wrapper call explicitly executes executable start-server before the
+requested command. Actual exit/launch/timeout failure logs/asserts and returns
+failure if assertions continue. Essential calls are outside optional assertions;
+captured startup buffers are released. No-command failure executes neither step.
+Startup protocol logs prove ordering; this is a source-built SDK-command fixture,
+not actual SDK/server/device/auth verification.
+
+Evidence: target/adb-sdk-final.log. Main and SDK/cache fixtures pass five
+interpreter/native ARM64+x64 O0/O2 modes each; verbosity passes three modes.
+Default Basic ENABLE_ASSERT=true/false startup success/failure each pass allfive
+modes, with verification explicitly importing a separate enabled instance. Both
+staged Basic defaults are changed, so this actually varies the ADB instance.
+Linux x64/ARM64 public bodies and strict lint pass. Formatting checks owned code.
+Dependency composition copies NEW foundations read-only into target/, not peer
+edits or completed coordinator integration. Public SDK environment fallback,
+empty SDK missing-executable, cache/reset/rediscovery and startup failure are
+tested. Existing conventional-home-directory precedence is implemented but that
+existing-directory branch is not native-tested here: the actual home SDK is absent,
+and tests do not mutate user home. Native Windows/Linux/Android and real SDK/device
+integration remain pending; Windows Process/System integration is peer-owned.
+
+Additional test corrections: expected fixture path first contained lexical ../
+segments unlike canonical environment paths; normalize only the expected fixture
+through public File.get_absolute_path and free its allocation. No production path
+special case was introduced. Standalone internal-file lint needed the actual module
+load context (facade plus file); both assertion configurations now receive it.
+Historical follow-up notes below preserve earlier evidence and are superseded by
+the CURRENT SDK/startup correction and first-policy batch where applicable.
+
+REFRESHED REVIEW FOLLOW-UP: synchronized Android/Toolchain behavior now specifies
+SDK discovery/cache, per-call server startup, generic shell double-quote wrapping,
+compression conflict assertion, exact version lines/temporary fields and device
+temporary-array backing. Existing implementation below predates that refinement
+and still requires correction. PID failure=-1 and first-PID warning also differ.
+Earlier protocol passes remain process/safety evidence, not conformance proof for
+these policies. No SDK/device integration success is claimed. New ASN.1 contract
+corrections are handled in a separate checkpoint before this ADB follow-through.
+
+First correction batch is now verified: version requires exactly three ordered
+prefix lines and returns temporary views into a retained temporary capture copy.
+Devices require the heading/row data, diagnose malformed required fields, retain
+temporary backing and return a temporary array; callers do not individually free
+fields/array. This chooses safe backing lifetime where original capture lifetime
+was ambiguous, as reviewer permits. Duplicate metadata simply updates a view.
+Generic shell arguments containing literal spaces are wrapped in double quotes,
+including prequoted strings; other characters are unchanged as reviewed. Transfer
+compression conflicts assert and fail, not silently prioritize disabled mode.
+PID failure is -1; success uses first PID and warns on ignored later values.
+No-command adb logs and fails; failed launch preserves default exit code0.
+SDK discovery/cache/server-start behavior remains a genuine open correction batch.
+
+Evidence: target/adb-reviewed-policies-final.log passes all five interpreter/native
+ARM64+x64 O0/O2 modes, verbosity, Linux both CPUs and strict lint. Explicit local
+temporary storage exercises lifetimes while regular allocations return to zero.
+Tests now require malformed-device assertion/error, both compression-conflict
+assertions, exact PID warnings/failures, shell argument bytes and empty-command
+diagnostics. Fatal verification handlers are restored after each intended failure.
+
+Separate harness correction: copyfile had dropped executable permission from
+the malformed-output fixture. Earlier malformed version/devices assertions only
+proved launch-failure fallback, not parsing. Refreshed diagnostic-count regression
+exposed this (target/adb-reviewed-policies-first.log). copy2 now preserves mode;
+the actual native malformed-output parser path runs. Earlier malformed coverage
+claims are superseded; positive/exit-status process evidence remains valid.
+
 Reviewed API: docs/specs/stdlib/modules/android-toolchain.md. SDK CLI protocol:
 https://android.googlesource.com/platform/packages/modules/adb/+/refs/heads/main/docs/user/adb.1.md
 

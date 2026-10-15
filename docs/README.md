@@ -11,12 +11,18 @@
 
 Current replacement integration: [commands and results](tools/cleanroom-integration.md), [deviations](status/integration-deviations.md), [module inventory](status/integration-module-inventory.json).111/135 reviewed module facades are present; presence does not establish complete functionality. Native CI and opaque public corpus/Focus remain coordinator work; publication is held.
 
+[macOS resolver candidate](portable-socket-resolver.md) records native C ABI
+evidence and the genuine forward-enum compiler gate, without a Jai success claim.
+
 Android host [ADB operations](portable-adb.md) now include app lifecycle status,
-force-stop and installation queries, with protocol tests and device gaps recorded.
+force-stop, installation queries and reviewed SDK discovery/cache/startup, with
+protocol/assertion-configuration tests and device gaps recorded.
 [JAVA_HOME discovery](portable-java-discovery.md) validates real launcher status
 and records its interpreter/native protocol coverage and Windows dependency.
 [Android configuration flags](portable-android-values.md) covers actual manifest
 mask parsing, diagnosed invalid input and independent target checks.
+[ASN.1 readers](portable-asn1.md) now follow refreshed value/TLV, known-array,
+OID equality/text and length-prefix contracts, with separate test corrections.
 
 
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).

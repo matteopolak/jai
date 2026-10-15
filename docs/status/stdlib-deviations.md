@@ -52,6 +52,53 @@ the absent Machine_X64 public System dependency. Reviewed Windows crash support
 is x64 only; ARM64 enabled-handler rejection is explicitly tested. The older
 private-root lint workaround has been replaced by general strict tool support.
 
+macOS addrinfo candidate excluded from active source while general forward-enum
+compiler defect persists. Location: pending/socket-macos-addrinfo.patch, generated
+staging target/portable-socket-resolver; gate tools/check_portable_socket_resolver.py.
+Observable effect: API remains missing, existing Socket code retains prior behavior.
+Evidence: both native C CPU probes pass; Jai resolver/strict lint fail ADDRCONFIG,
+minimal reduction fails LATER; activating shape regresses existing cmsg-layout.
+Risk: native Jai resolver remains unverified. Proper fix: compiler dependency graph
+retaining enum reflection order, then regenerate normally and run full gates.
+No source enum/member-order workaround or disabled assertions. Generated docs
+ledger manually marks the retained candidate; later normal generation removes
+that temporary documentation note. C-only evidence never counted as Jai support.
+
+ADB SDK/startup earlier gap is now implemented. Durable default-allocator cache
+retains one current executable path until rediscovery/process exit; allocator
+identity saved for proper Basic free on replacement. This prevents temporary reset
+from dangling the executable. Concurrent public cache/config mutation is not
+guaranteed; callers serialize it. Current cache retention is deliberate process
+lifetime, not a hidden per-call leak. Tests compose actual NEW foundation sources
+under target/ only; coordinator production integration is still pending.
+Existing-conventional-home precedence source implemented, not native exercised
+because host SDK directory absent and tests do not modify user home. Windows
+Process/System integration and real SDK/server/device verification remain pending.
+23 host protocol executions plus exact default-assert distinction prove startup
+ordering/failure, not an installed SDK. See portable-adb.md for test corrections.
+
+ADB reviewed policies first correction: temporary capture backing preserves
+device/version views until temp reset; array is temporary. Safe lifetime choice
+is explicit where reviewer says original backing lifetime ambiguous. Generic
+quote/compression/PID/error contracts corrected. SDK discovery/cache/server startup
+still missing and must be integrated before full ADB conformance claims.
+Test staging deviation exposed by new assertions: malformed executable copied
+without execute mode, so older tests accidentally covered launch failure only.
+copy2 fixes mode; stronger diagnostics prove native parser executes. Original
+failure retained in target/adb-reviewed-policies-first.log; no suppressed failures.
+
+Refreshed ASN.1 correction supersedes earlier signed/high-tag/active-only/alias
+assumptions below: single supported identifier, nonnegative1..8-byte INTEGER,
+full-record OID equality, dotted trailing period and known-array implemented.
+Value TLV/content borrowing and consumed expected mismatch now exact. Safe
+malformed diagnostics/cursor policy is explicitly independent where review grants
+no recovery contract. Generic readers still little-endian-target implementation;
+all configured targets currently little-endian. Original provisional tests/logs
+preserved as historical evidence, corrected oracles documented separately.
+ADB review also resolved many earlier fine policies; current startup/discovery,
+quote/cache/temp-storage/PID implementation requires correction. Those gaps are
+not completed by earlier host protocol totals; portable-adb.md records follow-up.
+
 Manifest flag parser: exact reviewed16 names/masks and official SDK | grammar
 implemented. Empty input gives no flags; unknown/empty components log+assert and
 return zero if assertions continue. Whitespace/invalid recovery fine policy is

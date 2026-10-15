@@ -167,6 +167,51 @@ remain coordinator gates. See cleanroom-integration.md, integration-requests.md,
 integration-deviations.md and legacy-contract-audit.md for exact commands/reasons.
 Platform-io now owns Windows File completion; no duplicated implementation begun.
 
+Test-only OID correction: removed obsolete android-oid-count expected assertion
+after refreshed whole-record equality. Positive android-oid now verifies all12
+slots and count bytes for -1/13/s64 extrema without count-based indexing. Public
+spec establishes the oracle; no production guard restored or assertion disabled.
+Focused strict lint/format pass; broad rerun follows. Original expected-fault
+failure preserved target/android-sdk-asn1-active-full.log; portable-asn1.md details.
+
+macOS addrinfo review consumed: generated canonical shape/facade candidate retained
+in pending/socket-macos-addrinfo.patch. Native SDK C layout+numeric resolver passes
+ARM64/x64. Jai full fixture and strict lint fail known general forward-enum
+ADDRCONFIG dependency; independent reduction pending/socket-ai-forward-enum.jai
+fails LATER. Candidate activation also fails existing cmsg-layout; preserved
+target/android-sdk-asn1-socket-full.log. Active source restored; no enum reordering,
+assertion removal or missing-API credit. Isolated generation/gate keeps failures
+visible and active public API unchanged pending compiler fix. Details:
+portable-socket-resolver.md. Active full regression rerun pending.
+
+SDK/startup milestone: real exact directory precedence/warnings and platform-tools
+executable discovery, durable allocator-owned cache, explicit per-call start-server
+and failure retention. Main/cache:10 interpreter/native runs; verbosity:3; actual
+default-assert true/false startup:10 with verification separately enabled. Linux
+both-CPU source checks and strict lint pass: target/adb-sdk-final.log. Newly composed
+foundation is read-only input/staged only. Conventional-existing-home branch and
+native Windows/real SDK/device remain unverified, documented in portable-adb.md.
+Missing152 ->151; no declaration-only credit or native Android generation claim.
+
+ADB review correction milestone: temporary version/device views+array, exact
+version lines, malformed-device diagnostics, double-quote-only shell wrapping,
+compression conflicts, first PID+warning/-1 failure, empty commands and launch0
+fixed. Five interpreter/native modes, verbosity/Linux checks/strict lint pass
+(target/adb-reviewed-policies-final.log). Harness copy-mode defect found/fixed:
+earlier malformed-output coverage was launch failure, now actual parser runs.
+Test corrections are separate; docs/portable-adb.md preserves exact evidence.
+SDK discovery/cache/server startup remains open, no new inventory row credited.
+
+Refreshed ASN.1 review consumed: full-record OID equality, trailing-period text,
+immutable one-element known array and supported nonnegative/single-tag domain
+corrected. Actual ASN1_Value + both read overloads and u32LE-prefixed borrowed
+block now implemented. Five programs pass interpreter/native ARM64+x64 O0/O2;
+four pure programs source-check Linux/Windows both CPUs; strict lint passes.
+517 INTEGER/183 OID vectors retained with corrected reviewed-domain expectations.
+Test corrections are explicit in portable-asn1.md, separate from production fixes.
+Missing156 ->152. ADB refreshed discovery/start-server/quoting/storage/PID policies
+are still pending correction; older ADB pass counts do not prove those contracts.
+
 Manifest flags milestone: canonical reviewed s32 enum_flags plus actual16-name
 pipe parser, duplicates ORed, invalid components diagnosed without partial result.
 All16 single/256 pair cases and7 malformed cases pass interpreter/native both
