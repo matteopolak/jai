@@ -114,17 +114,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `write_binary_app_manifest_to_builder :: (b: *String_Builder, config: Android_Project_Config) -> bool` | All reviewed hosts |
 | `write_binary_app_manifest_to_file :: (using config: Android_Project_Config, out_filepath: string) -> bool` | All reviewed hosts |
 | `write_binary_app_manifest_to_memory :: (config: Android_Project_Config) -> bool, string` | All reviewed hosts |
-| `zip_add_file :: (using w: *Zip_Writer, filepath: string, zip_filename: string, compression := Zip_Compression_Method.NONE, alignment := 0) -> bool` | All reviewed hosts |
-| `zip_add_file_from_memory :: (using w: *Zip_Writer, file_data: string, zip_filename: string, compression := Zip_Compression_Method.NONE, alignment := 0) -> bool` | All reviewed hosts |
-| `Zip_Central_Directory_Header :: struct` | All reviewed hosts |
-| `Zip_Compression_Method :: enum u16` | All reviewed hosts |
-| `Zip_End_Of_Central_Directory_Record :: struct` | All reviewed hosts |
-| `zip_init_writer :: (using w: *Zip_Writer, do_crcs := true, max_alignment := 0)` | All reviewed hosts |
-| `Zip_Local_File_Header :: struct` | All reviewed hosts |
-| `ZIP_LOCAL_HEADER_SIZE :: size_of(Zip_Local_File_Header)` | All reviewed hosts |
-| `ZIP_VERSION_DEFAULT : u16 : 0x0014` | All reviewed hosts |
-| `zip_write_central_directory :: (using w: *Zip_Writer)` | All reviewed hosts |
-| `Zip_Writer :: struct` | All reviewed hosts |
 
 ### Default_Metaprogram
 
@@ -179,7 +168,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 120 missing reviewed declaration/overload/nested-operation rows
+Total: 109 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.
