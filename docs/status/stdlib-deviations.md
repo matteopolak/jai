@@ -435,3 +435,10 @@ valid sample. Native Linux/Android and peer Windows remain verification/ownershi
 gaps. The new test is explicitly Unix-only for Windows target scope; every host
 assertion and Linux source check remains. Existing System test is unchanged.
 No blanket suppression or target constant substitution.
+
+Ownership metadata update only: latest resource/data split moves five modules
+and55 missing rows to the data worker.191 current retained missing rows do not
+mean those55 APIs were implemented. No code overlap/pending source existed in
+those modules; mutation/format scopes exclude their public/private/test names.
+Coordinator will merge new producer sources and exact private-root ownership
+when supplied; no other checkout was read or written for this update.

@@ -18,16 +18,6 @@ MODULES = [
      'Windows-host Unreal cross-link orchestration remains missing; actual external toolchain/native integration is also pending.'),
     ('Build and toolchain', 'Project_Generator', 'project-generator', set(),
      'Mutable project state, compiler message integration and actual Visual Studio output generation remain missing, including nested public operations.'),
-    ('Images and resources', 'Ico_File', 'ico-file', set(),
-     'Bitmap loading/resize/ICO encoding remain missing. Review image-size set, component/padding counts and returned-storage contract before claiming exact compatibility.'),
-    ('Images and resources', 'Icon', 'icon', set(),
-     'Plugin option parsing, diagnostics and real resource attachment remain missing; no fake plugin success or placeholder help string.'),
-    ('Images and resources', 'Windows_Resources', 'windows-resources', set(),
-     'Resource updates, manifest generation, actual tool discovery and console workspace configuration remain missing. Exact resource-ID defaults and manifest DPI/ownership policy need review.'),
-    ('Text and packages', 'Subtitles', 'subtitles', set(),
-     'Parsing/serialization/formatting and real ownership remain missing; the versioned grammar, escaping/CSV/HTML and exact storage rules need review.'),
-    ('Text and packages', 'Simple_Package', 'simple-package', set(),
-     'Archive creation/validation/loading remain missing; package/TOC magic and entry wire representation are unresolved. No substitute wire format.'),
 ]
 
 

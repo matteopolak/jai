@@ -414,3 +414,13 @@ compile rejections plus actual SMTP/IPC/runtime and Linux/Windows source checks
 (target/system-time-final-full.log).390 owned files pass format/check. Registry
 candidate failure remains independently documented, not counted as passing
 module functionality by that broad test total.
+
+Latest inbox ownership split adopted: Ico_File, Icon, Windows_Resources, Subtitles
+and Simple_Package now belong to the new independent data worker. No production
+code or pending implementation overlapped those five. Public/private/test
+formatting scope excludes them, ledger marks delegated, missing-row generator
+removes only the assigned modules. Current retained missing inventory is191
+rows, reduced from246 solely by transfer of55 rows, not implementation credit.
+Regeneration is byte-stable; current390 owned files still pass formatting/check.
+Compiler-dependent Registry/toolchain scope and six uncommitted Registry candidate
+files remain ours. No data-worker checkout access or mutation occurred.
