@@ -1,5 +1,25 @@
 # Window/render deviations and implementation gaps
 
+Resolved cache-preflight overconstraint: a6371ec's optional missing VS2026 INCLUDE
+entry is now recorded as missing, distinct from selected mandatory SDK/tool input.
+Real search directories retain full content fingerprints and order; later creation
+changes the key. Native-root authority now includes explicit VSINSTALLDIR/
+VCINSTALLDIR/UniversalCRTSdkDir metadata for genuine auxiliary/UCRT inputs, without
+guessing SDK paths. Required ARM64 headers, static CRT/platform library sets and
+tools must exist and be reachable without shadowing. The minimum-file check uses
+documented Microsoft names/layouts; it does not claim complete ABI/build success.
+Native compiler, linked output/PE, dependency and GL execution gates remain required.
+
+Cache configuration schema2 adds required-file and absent-search-entry identities;
+old receipt keys are not automatically migrated. This can require a cold LLVM
+build when only an older policy key exists, but avoids accepting inputs the old
+policy never represented. a6371ec failed before producing a key/build. Subsequent
+schema2 hits keep full installed-file integrity verification. No optional entry is
+blanket ignored or substituted with a hardcoded SDK. Metadata-layout tests are not
+native SDK execution; all native Windows evidence for this change is pending.
+Rechecking inputs before sealing a new LLVM receipt adds SDK/tool hashing I/O,
+but rejects mid-build input changes instead of mislabelling cached artifacts.
+
 Resolved helper defect: -Dplatforms=[] in window_render_mesa_windows.py disabled
 the real Windows WGL targets despite an OpenGL-enabled build. Candidatee223538
 compiled/installed other Mesa output, then correctly failed the required pair

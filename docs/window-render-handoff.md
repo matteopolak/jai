@@ -1,5 +1,27 @@
 # Window/render worker handoff
 
+Narrow normal-CI fix fora6371ec: distinguish optional configured search paths from
+mandatory native SDK/tool inputs. Missing VS2026 auxiliary INCLUDE/LIB entries are
+recorded deterministically; real directories still hash completely and later
+creation invalidates the key. Required selected ARM64 SDK/runtime/platform files
+must exist and be the first reachable matches. Missing compiler/SDK/library sets
+still fail. Explicit native VS/VC/UCRT root metadata authorizes real auxiliary
+directories; no alternate SDK is guessed. New configuration schema2 preserves
+full LLVM completion receipts, with no unsafe old-key migration. All WGL target,
+install/hash, export/dependency and loaded-driver checks are unchanged.
+
+Validation: `python3 tests/window-render/test_mesa_source.py` ten pass;
+`python3 tests/window-render/test_mesa_install.py` eight pass; prepared venv Python
+`tests/window-render/test_mesa_python.py` one pass. SDK-layout fixtures contain
+original metadata bytes only, never runnable compilers/drivers. Current filtered
+WebGPU headless/windowed positives on both Windows CPUs remain separate from
+unverified WGL. Coordinator should run normal native CI using the same selected
+vcvars/venv and fresh Mesa output/full-receipt cache commands documented in the
+[native build handoff](native/window-render-wgl-investigation.md). Publication held.
+Python py_compile and --plan checks pass. Full owned jaifmt --check and the
+existing integrated native-host jailint -D warnings scope rerun pass, without
+incomplete diagnostics. These checks do not replace normal native Windows CI.
+
 Latest native install work: e223538 useda68544c and reached Mesa install but no
 required WGL pair was found. Pinned Mesa source validates those names and proves
 our empty platforms option omitted the WGL target subdirectories. Corrected to

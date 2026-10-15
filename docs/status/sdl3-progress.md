@@ -1,6 +1,12 @@
 # SDL3 progress — 2026-10-15
 
-## Current narrow correction: e223538 checkout bytes
+## Current SDK packaging correction: a6371ec
+
+Coordinator reports Linux/macOS both CPUs pass; both Windows jobs fail post-install packaging at assumed Unix `lib/cmake/SDL3`. The pinned SDL install rules actually default MSVC exports to `cmake`. The builder now discovers/validates the real directory from `install_manifest.txt` and preserves the complete official SDK prefix under `sdl3/sdk`, retaining library/import/runtime identities, headers, export-relative layout and licenses. Every SDK file is hashed/audited. Four C/C++ static/shared consumers build and run against a separately relocated SDK through actual installed CMake targets, rejecting source-stage/system paths. [Full actual versus fixture evidence and SDK usage](../extensions/sdl3-sdk.md).
+
+Actual local verification: 38 Python tests (Windows/Unix/custom layout and relocation fixtures plus all strict byte/GPU checks); macOS arm64 offline and integrated native builds with original producer smoke and all four relocated native consumers; audit of 87 installed SDK files, all compiler-facing/native SDK artifact identities, 1,329 exports/95 GPU symbols and licenses/hashes; all four linked Jai fixtures; all-six-target strict regeneration and Python compilation. No generated API/metadata/coverage changes. Corrected Windows packaging and new native consumers on other platforms remain coordinator ordinary CI pending; fixture success is not Windows execution. Release hold preserved, no dispatch/comments/tags/publication.
+
+## Earlier narrow correction: e223538 checkout bytes
 
 Coordinator reports ordinary native CI `e223538` passes Linux and macOS both CPUs. Windows both CPUs fail the generator/build-contract gate on the ledger byte hash. Converting the unchanged LF payload to CRLF reproduces the exact digest pair (`ae2a4818…198829` versus `3339502c…3f230f`); no metadata/API change is involved. Root attributes now keep only owned SDL3 module/generated native/ABI assets as LF. Generation writes/checks explicit UTF-8 bytes; CRLF remains a stale-file error, and stored hashes are unchanged. Packaged SDL3 notices follow the same byte/encoding/path-order contract. [Exact scope, hashes, regressions and commands](../extensions/sdl3-generated-bytes.md) are documented.
 
