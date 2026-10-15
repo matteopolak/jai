@@ -17,6 +17,25 @@ MODULES = {
     "Rewrite": "rewrite",
 }
 
+GENERATOR_EMISSION_NAMES = {
+    "prepend_comment", "append_prefix_comment", "append_postfix_comment",
+    "get_name_alignment", "maybe_add_spacing", "append_indentation",
+    "fill_comment", "fill_location_and_comment_if_needed", "get_name_for_cursor",
+    "debug_print_cursor",
+}
+GENERATOR_EMISSION_IMPLEMENTED = GENERATOR_EMISSION_NAMES - {
+    "maybe_add_spacing", "fill_comment", "fill_location_and_comment_if_needed",
+}
+GENERATOR_EMISSION_STATUS = (
+    "partial; reassigned helper behavior verified Mac interpreter/native O0/O2, "
+    "official SDK cursor oracle, six desktop source checks, format/strict lint; "
+    "contract pending: generator-emission.md and specs/questions/generator-emission.md"
+)
+
+
+def function_pending(entry):
+    return entry["implementation"] == "pending" or "contract pending:" in entry["implementation"]
+
 
 def remaining_matrix(inventory):
     questions = {
@@ -40,13 +59,17 @@ def remaining_matrix(inventory):
         for entry in information["declarations"]:
             if re.search(r"::\s*(?:inline\s+)?\(", entry["declaration"]):
                 functions.setdefault(entry["name"], []).append(entry)
-        pending = {name: entries for name, entries in functions.items() if any(entry["implementation"] == "pending" for entry in entries)}
+        pending = {name: entries for name, entries in functions.items() if any(function_pending(entry) for entry in entries)}
         source_only = {name: entries for name, entries in functions.items() if any("invocation remains unverified" in entry["implementation"] for entry in entries)}
         output += [f"## {module}", "", f"{len(pending)} function names have pending declarations; {len(source_only)} native function names still lack invocation fixtures.", ""]
         if pending:
             output += ["| Function | Reviewed overload variants | Pending variants | Next work / precise question |", "| --- | ---: | ---: | --- |"]
             for name, entries in sorted(pending.items()):
                 reason = questions.get((module, name), "Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior.")
+                if module == "Bindings_Generator" and name in GENERATOR_EMISSION_NAMES:
+                    reason = "Reassigned to generator-platform; implemented independent policies remain partial pending reviewed contracts; see ../specs/questions/generator-emission.md"
+                    if name not in GENERATOR_EMISSION_IMPLEMENTED:
+                        reason = "Reassigned to generator-platform; active-options singleton dependency and exact spacing/comment-fill contracts; see ../specs/questions/generator-emission.md"
                 if module == "Debug_Info" and ("msf" in name or "stream" in name or name in {"parse_pdb", "get_stream_size", "stream_exists", "is_valid_page_number", "is_valid_stream_number", "is_valid_user_stream_number", "verify_integrity", "ensure_room", "is_free_page", "alloc_page", "free_page", "is_fpm_page_number"}):
                     reason = "Reviewed MSF/UPN/UNSN shapes resolved; canonical integration pending. Question7 retains parameter policies/PDB map shape and user-stream bounds"
                 if module == "Codex":
@@ -61,7 +84,7 @@ def remaining_matrix(inventory):
                     reason = "Real DWARF4 line byte decoder is staged/tested; public integration, DIE/abbreviation parsing and questions8/10 remain unfinished"
                 if module == "Debug" and name in {"init", "enable_signal_handler", "disable_signal_handler", "os_enable_signal_handler", "os_disable_signal_handler", "no_assert", "print_assert", "trace_assert", "set_report_mode"}:
                     reason = "Mac lifecycle/assertion effects verified; Windows implementation pending. Report-mode storage awaits graphics integration; minidump/attachment policy remains in Debug questions."
-                unfinished = sum(entry["implementation"] == "pending" for entry in entries)
+                unfinished = sum(function_pending(entry) for entry in entries)
                 output.append(f"| `{name}` | {len(entries)} | {unfinished} | {reason} |")
             output.append("")
         if module == "Codex":
@@ -154,6 +177,8 @@ def main():
                     item["implementation"] = "reviewed platform contracts and documented independent policies; active canonical Generator, exact-key persistent cache, include roots, libclang copy/update and original native object/library effects verified interpreter/Mac O0/O2; six desktop source checks, format and full strict lint; see generator-platform.md for ownership and limits"
                 if item["name"] == "library_symbol_cache":
                     item["implementation"] = "single canonical Library_Symbols cache state; reviewed exact keys, success-only insertion, owned miss and borrowed mutable hit behavior; original interpreter/Mac O0/O2 ownership and temporary-allocation lifetime effects"
+                if item["name"] in GENERATOR_EMISSION_IMPLEMENTED:
+                    item["implementation"] = GENERATOR_EMISSION_STATUS
                 if item["name"].startswith("clang_") and item["name"] in models:
                     item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
                     if item["name"] in extended_apis:

@@ -4,6 +4,15 @@ Role: developer-tools. Scope is the ten modules in implementation-ownership.md. 
 
 ## Supported implementation and evidence
 
+- **Reassigned generator emission checkpoint:** seven of ten newly assigned
+  names have actual implementations under documented independent policies;
+  both alignment overloads and configured cursor-name branches are covered.
+  Mac interpreter/O0/O2, official C SDK cursor oracles, six desktop source
+  checks, format and strict lint pass. All seven remain partial pending reviewed
+  contracts. The three options-dependent spacing/comment-fill names have exact
+  unresolved questions and a shared owner dependency; see
+  [emission status](../generator-emission.md). Prior platform scope stays complete.
+
 - **Generator platform worker checkpoint:** all ten assigned names/eleven overloads
   execute reviewed libclang basename/mtime/size copying, original object/archive
   symbol queries, native loading/lookup, exact-key persistent cache, active canonical

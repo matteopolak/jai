@@ -1,0 +1,19 @@
+{
+  "owner": "generator-platform",
+  "baseline": "7467b49d",
+  "prior_scope_complete": true,
+  "implemented_with_contract_questions": [
+    "prepend_comment", "append_prefix_comment", "append_postfix_comment",
+    "get_name_alignment", "append_indentation", "get_name_for_cursor",
+    "debug_print_cursor"
+  ],
+  "remaining": [
+    {"name": "maybe_add_spacing", "variants": 2, "question": "generator-emission.md:4", "dependency": "reviewed spacing semantics and tooling-owned active options protocol", "effort": "medium"},
+    {"name": "fill_comment", "variants": 1, "question": "generator-emission.md:6", "dependency": "reviewed comment/location/ownership semantics and tooling-owned preservation option", "effort": "medium"},
+    {"name": "fill_location_and_comment_if_needed", "variants": 1, "question": "generator-emission.md:7", "dependency": "reviewed filled-field predicates and fill_comment dependency", "effort": "small"}
+  ],
+  "evidence": "../native/generator-emission-evidence.json",
+  "questions": "../specs/questions/generator-emission.md",
+  "runtime_platforms": ["macOS arm64"],
+  "other_platforms": "source checked only"
+}

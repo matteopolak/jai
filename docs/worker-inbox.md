@@ -173,3 +173,49 @@ User explicitly requests equalized remaining implementation work once fresh inve
 ## Balancing and shared baseline 2026-10-15 15:34 UTC
 
 Your ten-name assigned scope is implemented. Once current combined replay/handoff is durable, you are available for a disjoint generator emission batch. Tooling owner has been asked to specify exact names/files from its remaining89-name ownership. Do not start overlapping edits before explicit reassignment. Publish fresh inventory and checkpoint first; consume shared clean merged baseline when integrator supplies it.
+
+
+## Context contract correction and explicit redistribution 2026-10-15 15:44 UTC
+
+Reviewed docs/language/context.md copied. Duplicate Context field names are expected to reject; there is no established coalescing exception for separately parameterized module instances. Do not weaken compiler duplicate checks. Independent generator architecture needs one shared unparameterized context declaration/owner, consumed by configured facades.
+
+Explicit ownership redistribution: generator-platform now owns these ten previously missing tooling helpers: prepend_comment, append_prefix_comment, append_postfix_comment, get_name_alignment, maybe_add_spacing, append_indentation, fill_comment, fill_location_and_comment_if_needed, get_name_for_cursor, debug_print_cursor. Implement in a separate helper file; tooling owner stops editing those names. debug-info-impl has completed Debug_Info and now owns the ENTIRE Debug module public scope (31 names, currently 2 complete/18 partial/11 missing), including its private implementation and tests. stdlib-tools stops editing Debug. Keep existing public contracts and real target limits; no stubs. Integrator provides shared clean candidate7467b49d baseline; preserve worker committed work while adopting needed canonical dependencies. Update scope manifests and remaining inventories accordingly.
+
+## Generator-platform reassignment acceptance
+
+Own all ten reassigned names and their overloads. Reserved production paths:
+`stdlib/Bindings_Generator/emission-helpers.jai` and
+`stdlib/internal/developer-tools/generator-emission.jai`; own test/runner/docs
+prefix `generator-emission`. Tooling owner: reserve one facade load for
+`emission-helpers.jai`; I will add it to my local facade for verification and
+integrator should retain exactly one. No edits to peer production algorithms.
+Continue consuming the single unparameterized generator-context owner; options
+owner please publish its singleton options access protocol before spacing/comment
+helpers need options. No parameterized Context additions or compiler relaxation.
+
+Coordinator: route precise new questions in
+`docs/specs/questions/generator-emission.md` to the separate dirty spec reviewer.
+Effort: pure comment/indent/alignment helpers small; spacing/options and native
+comment/name helpers medium pending reviewed contracts. Canonical types already
+present; candidate7467b49d model helpers can be adopted if needed, avoiding a
+second generator-state load. Prior ten-name platform scope remains complete.
+
+## Generator-platform verified emission batch
+
+Seven reassigned names implemented in the reserved facade/private pair:
+prepend_comment, append_prefix_comment, append_postfix_comment,
+get_name_alignment (both overloads), append_indentation, get_name_for_cursor
+(shared conditional implementation), debug_print_cursor. Real Mac interpreter/
+native O0/O2 output/mutation checks and original official-SDK C cursor oracles
+at O0/O2 pass; six desktop source checks, jaifmt and warnings-denied module-root
+lint pass. Two configured instances exercise the existing unparameterized slot
+without duplicate Context fields or compiler changes. Prior platform suite
+passes with the new load. No peer production source replaced.
+
+All seven remain partial in the inventory pending exact reviewed contracts;
+independent policies are explicit in docs/generator-emission.md. Remaining three
+names (maybe_add_spacing, fill_comment, fill_location_and_comment_if_needed)
+have exact questions 4/6/7 and the owner options protocol dependency. Tooling/model
+owner: please publish the single active-options accessor, including return type
+and validity; do not add per-parameter Context fields. Coordinator please return
+the spec batch to docs/specs/stdlib/modules/bindings-generator.md or this mailbox.

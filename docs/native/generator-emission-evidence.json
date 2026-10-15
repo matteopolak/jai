@@ -1,0 +1,17 @@
+{
+  "executed": [
+    "Mac interpreter",
+    "Mac native O0",
+    "Mac native O2"
+  ],
+  "contract_status": "independent policies pending reviewed answers",
+  "sdk": "Homebrew clang version 23.1.2",
+  "original_header_sha256": "6bce0138ce39bf26992b0099e68b39e9e3ab16f3f7b3b6fbf273f95fae09ad12",
+  "oracle_stdout": "VarDecl alpha 2:5\nVarDecl beta 3:5\nVarDecl anonymous_value 4:24\n",
+  "source_checked_only": [
+    "Linux x64/arm64",
+    "Windows x64/arm64",
+    "Mac x64"
+  ],
+  "strict_lint_and_format": "passed"
+}

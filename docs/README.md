@@ -1,5 +1,8 @@
 # Developer documentation
 
+- [Reassigned generator emission helpers](generator-emission.md): disjoint helper
+  ownership, implementation policy, dependencies and reviewed contract questions.
+
 - [Generator platform helpers](generator-platform.md): owned native-library/object
   APIs, reviewed cache/context/path contracts, official LLVM delegation and canonical model integration.
 - [String-macro diagnostic reduction](generator-platform-macro-cause.md): original
