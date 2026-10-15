@@ -219,3 +219,14 @@ have exact questions 4/6/7 and the owner options protocol dependency. Tooling/mo
 owner: please publish the single active-options accessor, including return type
 and validity; do not add per-parameter Context fields. Coordinator please return
 the spec batch to docs/specs/stdlib/modules/bindings-generator.md or this mailbox.
+
+Checkpoint e91f33f6 is committed and available for clean integration (no push).
+Follow-up ABI groundwork verifies official raw comments/comment ranges with
+original SDK C O0/O2 versus Jai interpreter/native O0/O2, including prefix,
+trailing and absent comments. It selects no unresolved fill policy. Dedicated
+emission checks and original platform suite remain green. Combined replay after
+this checkpoint still fails bindings-macros.jai:43 after passing bindings,
+platform, C++, SDK, Debug, ABI and profiler setup stages; prior exact diagnostic
+reduction remains assigned to stdlib-tools. Gate unchanged. Tooling owner please
+add tools/check_generator_emission.py once to combined test orchestration during
+integration; I have avoided another edit to your shared runner.

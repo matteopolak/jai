@@ -16,6 +16,14 @@ static enum CXChildVisitResult inspect(CXCursor cursor, CXCursor parent,
                              &column, NULL);
     printf("%s %s %u:%u\n", clang_getCString(kind), clang_getCString(name), line,
            column);
+    CXString raw = clang_Cursor_getRawCommentText(cursor);
+    CXSourceRange range = clang_Cursor_getCommentRange(cursor);
+    line = column = 0;
+    clang_getSpellingLocation(clang_getRangeStart(range), NULL, &line, &column,
+                             NULL);
+    const char *comment = clang_getCString(raw);
+    printf("comment [%s] %u:%u\n", comment ? comment : "", line, column);
+    clang_disposeString(raw);
     clang_disposeString(name);
     clang_disposeString(kind);
     return CXChildVisit_Continue;

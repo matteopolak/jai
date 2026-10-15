@@ -17,6 +17,22 @@ inspect :: (cur: B.CXCursor, _parent: B.CXCursor, data: *void) -> B.CXChildVisit
         free(first);
         free(second);
         B.debug_print_cursor(cur);
+        // Native ABI groundwork for the pending comment-fill contract. This
+        // probes official raw-comment/range APIs, not an invented fill policy.
+        raw := B.clang_Cursor_getRawCommentText(cur);
+
+        defer B.clang_disposeString(raw);
+        pointer := B.clang_getCString(raw);
+        comment := ifx pointer then to_string(pointer) else "";
+        range := B.clang_Cursor_getCommentRange(cur);
+        line, column: u32;
+
+        B.clang_getSpellingLocation(B.clang_getRangeStart(range), null, *line, *column, null);
+        if count.* == 1 assert(comment == "/// Alpha documentation." && line == 1 && column == 1);
+        if count.* == 2 assert(comment == "///< Beta documentation." && line == 3 && column == 11);
+        if count.* == 3 assert(comment == "" && B.clang_Range_isNull(range) != 0);
+
+        print("comment [%] %:%\n", comment, line, column);
     }
 
     return .Continue;

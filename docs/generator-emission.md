@@ -67,3 +67,18 @@ no-op body is installed. See `status/generator-emission-progress.json`.
 
 The complete prior platform suite also passes with the new facade loaded.
 Runtime evidence is Mac only; other desktop targets are source checks.
+
+The native fixture also verifies raw-comment CXString and comment-range ABI
+against the original C oracle: the leading comment starts at 1:1, trailing
+comment at 3:11, and the uncommented variable has an empty string/null range.
+These are observed official SDK facts for the original fixture, not a decision
+about the unresolved `fill_comment` policy. Both SDK O0/O2 and Jai
+interpreter/native O0/O2 agree.
+
+The combined `tools/check_developer_tools.py` replay after `e91f33f6` passes the
+private bindings pipeline, prior platform suite, C++ callbacks, configured SDK,
+Debug lifecycle, native ABI and profiler setup stages. It then fails at the
+unchanged `bindings-macros.jai:43` gate, matching the independently reduced lost
+string-macro diagnostic in `generator-platform-macro-cause.md`. The proper owner
+was notified through the mailbox. This checkpoint does not claim a green combined
+suite or alter its gate.
