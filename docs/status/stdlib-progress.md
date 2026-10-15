@@ -1,5 +1,16 @@
 # Portable stdlib progress
 
+Default_Allocator optimized-target public heap workflow now implemented with exact
+reviewed standard records. Real ownership/resize/free-all/create/destroy/init/finalize
+behavior passes Mac x64 interpreter/native O0/O2, 4threads x512cycles, disabled
+module assertions,9 invalid-input runs, strict lint and owned formatting. No
+cache/stats fiction: immediate release means real zero cached bytes; reviewed
+standard global stats are dummy. Per-heap intrusive ownership uses one CAS lock,
+with linear ownership lookup: documented performance tradeoff, no stack-address
+registry. Exact upper rejection span byte size remains a numeric review question
+(independent64KiB margin documented); native other OS pending. Evidence
+target/default-allocator-final.log; details portable-default-allocator.md.
+
 Mac Socket five real records activated from refreshed reviewed shapes: addrinfo,
 hostent/netent/protoent/servent. Active database closure now matches official C SDK
 all field offsets/canonical names/types and real host/protocol/service operations

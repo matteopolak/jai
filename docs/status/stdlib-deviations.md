@@ -1,5 +1,18 @@
 # Portable stdlib worker deviations
 
+Default_Allocator optimized-target implementation uses owned C blocks/per-heap
+intrusive lists and one CAS lock, rather than span caches. This preserves real
+heap/resize/ownership/bulk-release behavior and exact standard public layouts;
+linear ownership/free lookup and global contention are performance risks. Public
+size-class/cache fields stay zero because this backend has no caches; real heap
+cache counts are zero, and standard global dummy stats are reviewed behavior.
+Proper long-term optimization: indexed ownership/per-heap locking/real caches,
+retaining all lifecycle and concurrency regressions. Pointer alignment16 is
+validated on actual Mac x64; other native SDK targets pending. Validated numeric
+limit uses64KiB margin because reviewed page names a span but omits its byte size;
+exact boundary review requested, no source-equivalence claim. Existing fallback
+source remains unchanged. Details portable-default-allocator.md.
+
 Active Mac Socket record batch: real SDK/interpreter/native behavior validated,
 but full generated-binding strict lint remains FAILED because the compiler cannot
 evaluate type_of(fd_set.fds_bits[0]) where fd_set denotes a type. Location and
