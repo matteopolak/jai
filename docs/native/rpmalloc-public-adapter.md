@@ -1,5 +1,16 @@
 # Public rpmalloc adapter progress
 
+Current allocator/dump follow-up: all generic modes and enabled/disabled builder
+forms now have real behavior from the refreshed contract. The original23
+unresolved entries are now 0 unresolved,80 partial: all18 original configuration
+checks pass in both private heap selections. The partial count remains because
+other native option combinations are not implemented. Raw-base handles have
+their exact field layout in two additional domains; no public pointer reaches
+SDK calls. Immutable real counter captures permit recursive allocator-backed
+formatting and roll back allocation failure. See [the allocator protocol](rpmalloc-allocator-protocol.md)
+for API behavior, negative/failure evidence and remaining scope. Native Windows/
+Linux, metadata OOM and final package integration are not called complete.
+
 Raw heap follow-up: eleven raw SDK-backed procedures and nine exact aliases now
 execute through their own reviewed public mirror, with actual atomic members
 and typed SDK ownership. `configure_rpmalloc.py` supplies the missing source

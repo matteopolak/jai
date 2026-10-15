@@ -2,12 +2,12 @@
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
     "declared": 28397,
-    "unresolved": 39,
+    "unresolved": 36,
     "implemented_manual": 52,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1,
-    "partially_implemented": 77
+    "partially_implemented": 80
   },
   "reports": [
     {
@@ -585,6 +585,100 @@
       "prepared_source_sha256": "35ff487986188f2a605990f3f765c665e352b4e178e9292f3b0a56d01356fff0"
     },
     {
+      "report": ".work/rpmalloc-generic-final-26.json",
+      "sha256": "794586c9ef5ce527cb0239e45af8b8c08be05d4d78ffb5014957c858c40adda5",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "checks": 191,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-generic-heap-scope-25.json",
+      "sha256": "ba0e77ee5a933ef9bc44bc10d10df372388d6ef99314c170b7dfc0dc9b3b68a0",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "checks": 177,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-generic-enabled-heap-scope-25.json",
+      "sha256": "b0c6b97af219db0d0aaa3d81322f709ba58c29c87023c22f961035381577ecd9",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "checks": 199,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-generic-configurations-25.json",
+      "sha256": "ca0dac799fe72c9e11bd09de0b05f289d375be49536915819565e56bf783df69",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "checks": 36,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-generic-enabled-configurations-25.json",
+      "sha256": "18ccd72a59b0e15ef5eb7c96a9068fa366c00df77a423bedc8a879f0b0be5483",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "checks": 36,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-public-complete-default-25.json",
+      "sha256": "cb42b3bb9d2d68620c33b9eed4934b25b5565fc56bc9ba3c48dfc547047c4783",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 108
+        },
+        "native": {
+          "passed": 32
+        },
+        "privacy": {
+          "passed": 198
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-public-complete-enabled-26.json",
+      "sha256": "8d3dead4584da4195027bc033903cc4472878f64a827317a5375635518b8a7a9",
+      "scope": "Scoped rpmalloc source/native/public privacy; incomplete public inventory",
+      "results": {
+        "targets": {
+          "passed": 120
+        },
+        "native": {
+          "passed": 36
+        },
+        "privacy": {
+          "passed": 198
+        },
+        "symbols": {}
+      },
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "source_hashes_recorded": true
+    },
+    {
+      "report": ".work/rpmalloc-worker-production-26.json",
+      "sha256": "4555ffbaa30df73653d3431e24707ca48207f525f779ad8debe92769a48b495b",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "checks": 169,
+      "failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-pretty-off-25.json",
+      "sha256": "f548681252c823d5515a34b0fa6acacff626712786a1bdd31804c57420a3da0e",
+      "scope": "Explicit private raw PRETTY_PRINT=false; actual text-output gate on both Mac CPUs",
+      "checks": 4,
+      "failures": 0
+    },
+    {
+      "report": ".work/generic-owned-format-26.json",
+      "sha256": "984d4a1cbcc92b6e48952aa8bfd756958bff1226a36782e65bf928f9f34be6e3",
+      "scope": "Actual native build or full owned production formatting",
+      "checks": 1,
+      "failures": 0
+    },
+    {
       "report": ".work/rpmalloc-raw-heaps-final-24.json",
       "sha256": "aba624756bbed54b094914b951fe62fe1f76acfd84fed795cec763fa0d853059",
       "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
@@ -662,9 +756,9 @@
     },
     {
       "report": ".work/native/rpmalloc-build.json",
-      "sha256": "2aecd2fb456f2ec6cf7fd91d9753663526471f9211de76117b1d495e8bc2edca",
+      "sha256": "16bb960b801a88c8564befebfee08e5b70045ca713b97f29298f49fab8323e6f",
       "scope": "Actual native build or full owned production formatting",
-      "checks": 32,
+      "checks": 48,
       "failures": 0
     },
     {

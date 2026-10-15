@@ -8,6 +8,46 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Generic allocator and diagnostic capture scope.** The reviewed mode table
+  now has real dispatch for every mode. Raw-base generic heaps retain their
+  exact public record shape in two additional SDK domains, even without named
+  heap exports. There are now six separately compiled native domains. This
+  increases native cache/domain footprint; existing full-graph copying and
+  serialization costs remain. CAPS returns the reviewed exact flags and a
+  stable independently chosen `rpmalloc` name; exact original bytes remain a
+  filtered question because the reviewed page supplies no spelling. STARTUP's
+  ignored result is an explicit reviewed contract, not an invented success.
+  Raw PRETTY_PRINT has an independent private true default and configurable
+  private off selection, with real output-gating tests. No public parameter
+  is added. Proper completion still requires other cache/assertion/page-advice
+  and numeric build profiles plus native Windows/Linux evidence.
+
+- **Diagnostic capture allocation and remaining heap metadata OOM.**
+  `rpmalloc-heaps/heap-snapshot.inc` transactionally allocates compact immutable
+  native counter captures. Either calloc failure rolls back and the public
+  builder receives failed=true. Formatting occurs outside the native lease,
+  including when it allocates on the very allocator being captured; actual
+  formatter growth failure preserves the prior prefix. Independent real libc
+  fault injection, SDK counter comparisons and sanitizer cleanup checks pass.
+  The heap/span association metadata allocator still aborts on OOM; this is
+  separate and not called fixed by snapshot rollback. Proper future fix needs
+  preallocated typed metadata/lifetime reservations before SDK mutation, not
+  post-mutation allocation failure or stale cached views. Diagnostic capture
+  adds temporary memory/copy costs; native counters are genuine captured data,
+  not fabricated statistics or a permanently cached substitute.
+
+- **Native package integration remains coordinator-owned.** The worker
+  dependency builder produces real static/shared host archives for all six
+  SDK/callback domains and the existing caller-context bridge, with actual
+  host program evidence. That does not establish the coordinator's final
+  `tools/build_native_libs.py` manifest, package search paths or Windows link.
+  The supplied worker snapshot of that manifest still lists only legacy
+  `rpmalloc`; integrator must retain all generated native profile identities,
+  preparation patch/hash checks and shared SDK dependencies. No original/shared
+  checkout cache was accessed: that script's shared_root route was not run.
+  The filtered xxHash ARM64 repair is now exclusively assigned to the separate
+  native-build-repair owner; no duplicate source patch or peer edit was made.
+
 - **Explicit raw heap source profile and native domain cost.** Private
   `rpmalloc-build` (false FIRST_CLASS_HEAPS default) supplies the missing
   compile-time selection through `configure_rpmalloc.py`, without changing
