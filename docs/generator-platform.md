@@ -66,3 +66,18 @@ Combined tools/check_developer_tools.py reaches an existing string-macro callbac
 diagnostic mismatch at bindings-macros.jai:43. It reproduces with this facade
 unloaded. Thus the dedicated scope passes, while the full combined suite is not
 green; the reduced public-API probe and owner notification are retained locally.
+
+## Canonical model integration
+
+The single Generator, Token_Info and Library_Symbols declarations are integrated
+verbatim from model owner's explicitly authorized clean commit 4675c90a, file
+generator-state.jai. The obsolete Windows-only Library_Symbols declaration is
+removed. module.jai loads generator-state directly until the model owner's facade
+is combined; then retain its load and remove this direct load.
+
+Original canonical tests execute pointer identity through Generator.libraries,
+Token_Info storage, zero defaults, and real native-cursor Hash_Table callbacks in
+the interpreter and Mac O0/O2. All six desktop branches are source checked. This
+supplies the shared model dependency without introducing a second cache/registry.
+Context activation and the single cache lifetime are still with stdlib-tools/model
+owner; a save/restore nested-session proposal is recorded in worker-inbox.md.

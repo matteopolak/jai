@@ -1,7 +1,7 @@
 # Developer documentation
 
 - [Generator platform helpers](generator-platform.md): owned native-library/object
-  APIs, official LLVM delegation and precise outstanding contract dependencies.
+  APIs, official LLVM delegation, canonical model integration and precise outstanding contract dependencies.
 
 Start with [compiler architecture](compiler/architecture.md). Real projects that compile are listed in [upstream corpus](tools/upstream-corpus.md#project-status).
 

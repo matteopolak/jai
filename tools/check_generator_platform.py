@@ -53,13 +53,15 @@ def main():
     diagnostic_file.write_text("preserve diagnostic path content")
     owned = [fixture, ROOT / "tests/developer-tools/generator-platform-target.jai",
              ROOT / "stdlib/Bindings_Generator/platform-helpers.jai",
-             ROOT / "stdlib/internal/developer-tools/generator-platform.jai"]
+             ROOT / "stdlib/internal/developer-tools/generator-platform.jai",
+             ROOT / "stdlib/Bindings_Generator/generator-state.jai",
+             ROOT / "tests/developer-tools/generator-platform-canonical.jai"]
     for path in owned:
         run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", path])
         run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", path])
     checked = ROOT / "target/generator-platform-linted.txt"
     run([ROOT / "target/debug/jailint", "-D", "warnings", "--checked-files", checked,
-         ROOT / "stdlib/Bindings_Generator/module.jai", fixture, owned[1]])
+         ROOT / "stdlib/Bindings_Generator/module.jai", fixture, owned[1], owned[-1]])
     linted = checked.read_text().splitlines()
     if any(str(path) not in linted for path in owned):
         raise RuntimeError("Integrated strict lint omitted an owned Jai source")
@@ -71,6 +73,10 @@ def main():
         executable = ROOT / f"target/generator-platform-o{optimization}"
         run([ROOT / "target/debug/jaic", fixture, f"-O{optimization}", "-exe", executable], "")
         run([executable], "ok\n")
+        canonical = ROOT / f"target/generator-platform-canonical-o{optimization}"
+        run([ROOT / "target/debug/jaic", owned[-1], "-interp"], "ok\n")
+        run([ROOT / "target/debug/jaic", owned[-1], f"-O{optimization}", "-exe", canonical], "")
+        run([canonical], "ok\n")
     # Exercise actual discovery with the local link absent, and restore precisely
     # the source-built tooling configuration even when the check fails.
     link = ROOT / "stdlib/internal/developer-tools/clang-bindings/libclang.dylib"
@@ -94,6 +100,7 @@ def main():
     for os_name in ["macos", "linux", "windows"]:
         for cpu in ["x64", "arm64"]:
             run([ROOT / "target/debug/jaic", owned[1], "-check", "-os", os_name, "-cpu", cpu], "")
+            run([ROOT / "target/debug/jaic", owned[-1], "-check", "-os", os_name, "-cpu", cpu], "")
     if list((ROOT / "target").glob("jai-symbols-*")):
         raise RuntimeError("Object staging leaked temporary files")
     evidence["executed"] = ["interpreter", "Mac native O0", "Mac native O2"]
