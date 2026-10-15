@@ -631,3 +631,4 @@ compiler gate. [The API inventory](status/asn1-socket-remaining.json) keeps six
 Android rows partial and other native platforms unverified.
 
 - [Retained portable shared audit](status/stdlib-shared-audit.json): per-API current audit distinct from 929 historical bookkeeping rows
+- [Current shared integration baseline](status/shared-integration-baseline.json): exact candidate, commands, measured counts and unresolved failures

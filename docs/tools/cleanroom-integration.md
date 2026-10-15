@@ -1,5 +1,40 @@
 # Clean-room integration verification
 
+## Shared tree, 2026-10-15
+
+Current integration work is in `stdlib-shared`, branch `codex/stdlib-shared`;
+the older thread-fixtures checkout is retained evidence, not the active tree.
+Canonical ASN.1/Socket, JKS/crypto/APK and narrow generator/tools/bindings producer
+sources are reconciled. No stale producer specs, inboxes, whole library overlays,
+unsupported live::alias implementation or generated native binaries were committed.
+See [current machine report](../status/shared-integration-baseline.json) and
+[portable commands/limits](shared-portable-verification.md).
+
+The unchanged repository jaifmt builds against combined production and checks
+the adopted source. Complete program-context jailint checks crypto/Socket and
+the real virtual-conversion regression with warnings denied. Rustfmt and
+warnings-denied workspace clippy pass. Actual Mac interpreter/native O0 public
+portable, retained allocator/watcher/reflection/table and virtual-member checks
+pass; these scoped results do not certify incomplete producer algorithms.
+
+The unused-code target fixture now performs the public plugin loader's real
+empty compile-time initialization for Metaprogram_Plugins and Default_Metaprogram.
+That supplies its declared generated body before `-no_dce`, retaining all original
+procedure checking, targets and failure comparisons. Both real Mac ARM64 contexts
+typecheck; no expected-failure ledger entries or compiler rules are relaxed.
+The old import-only fixture was an invalid construction for this deferred loader.
+
+Native LLVM helpers are freshly built from independent C/C++ sources with the
+official installed LLVM23 SDK. The Mac builder records original and relocated
+hashes and changes load paths/signatures for libclang, LLVM, zstd and z3. All four
+source/output hashes were independently verified, and actual Jai interpreter/native
+virtual-conversion checks pass without DYLD overrides. This is development package
+evidence, not final installed compiler/release relocation verification.
+
+Full original corpus and Focus remain coordinator-owned. The latest filtered
+400-case replay is red, and the all-zero PDB/CIE failure remains unresolved.
+Linux/Windows/device native results must not be inferred from source checks.
+
 ## Stable combined native ARM64 replay, 2026-10-15
 
 Current415-case replay at081ecbff: interpreter391 passed/13 failed; native382

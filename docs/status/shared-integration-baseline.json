@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "candidate_path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "ref": "codex/stdlib-shared",
+  "snapshot": "d3547c8855a719b3d42822c2dff5126e1f51cce7",
+  "target": "macos-arm64",
+  "status": "preparing-full-workspace",
+  "workspace": {
+    "command": "cargo test --locked --workspace --all-targets --no-fail-fast -- --test-threads=1",
+    "status": "not-started",
+    "passed": null,
+    "failed": null,
+    "ignored": null
+  },
+  "shared_portable": {
+    "command": "python3 -B tools/check_shared_portable.py",
+    "measured_parent": "71c54d8e",
+    "verified_worktree_now_committed_in": "ebe1d615",
+    "passed": 28,
+    "failed": 0,
+    "ignored": 0,
+    "runtime_passed": 18,
+    "native_build_passed": 9,
+    "negative_passed": 1
+  },
+  "crypto_packaging": {
+    "command": "python3 -B tools/test_android_crypto_native.py",
+    "passed": 3,
+    "failed": 0,
+    "ignored": 0
+  },
+  "retained_portable": {
+    "log": "artifacts/shared-integration/logs/retained-production.log",
+    "runtime_passed": 8,
+    "native_build_passed": 4,
+    "failed": 0,
+    "ignored": 0
+  },
+  "remaining_failures": [
+    {
+      "name": "PDB/CIE all-zero corruption",
+      "classification": "historical genuine failure; cause not reproduced or waived"
+    },
+    {
+      "name": "bindings-aggregate.jai:83",
+      "classification": "producer aggregate negative-cycle assertion failure; owner repairing"
+    },
+    {
+      "name": "compiler-using-records-preserve-filters",
+      "classification": "retained independent regression needs compiler-owned Program_Print production checkpoint"
+    },
+    {
+      "name": "two metaprogram placeholder catalogue cases",
+      "classification": "deferred scheduling integration regressions; compiler owner request"
+    },
+    {
+      "name": "WASI tour / stdlib target ledger",
+      "classification": "previous complete workspace red; current result not yet measured"
+    }
+  ],
+  "external_corpus": {
+    "owner": "coordinator",
+    "snapshot": "a7bd9b9c",
+    "compile": {
+      "passed": 331,
+      "failed": 69
+    },
+    "interp": {
+      "passed": 318,
+      "failed": 82
+    },
+    "native_O0": {
+      "passed": 295,
+      "failed": 87,
+      "not_run": 18
+    }
+  },
+  "native_other_platforms": "not executed; unverified"
+}
