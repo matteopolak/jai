@@ -4,6 +4,17 @@ This work owns Basic builder/formatting, String utilities, Hash scalars and
 File_Utilities. Inherited spec, argument/runtime and Command_Line edits are
 retained in the worktree and excluded from foundations commits.
 
+Stable API completion checkpoint is f972441. The shortest-digit audit was rerun
+on the current composition: all 2300 intervals/minimum precisions pass native
+and production WASI O0/O2. The current NEW Flat_Pool producer was also integrated
+read-only with its virtual-memory helper; basic-preamble now uses its actual CAPS
+procedure rather than a simulated allocator-family callback. Canonical Pool,
+Flat_Pool and temporary exclusions are tested; exact wrapper-family matching
+remains a narrow question, explicitly distinct from missing exports.
+The unreviewed modules/Pool string heuristic is removed. After that removal,
+real-provider Preamble checks pass interpreter/native O0/O2, WASI O0/O2,
+warnings-denied focused lint and six native unused-code targets.
+
 Current owned export audit has no genuine missing names/overloads. Resolved
 whole-value scalar FNV, exact wide-conversion guards and all-OS x64 division
 diagnostic are implemented and tested. The diagnostic always runs real fixed

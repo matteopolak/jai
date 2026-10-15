@@ -87,6 +87,15 @@ predicate. The historical failure below is retained, not still treated as a gap.
   in prior checkpoints. Basic never
   fabricates provider names. The CAPS-only callback additionally tests exact
   zero sizes/null data and borrowed name identity, not an allocator substitute.
+- **Preamble provider integration** — NEW Flat_Pool and its private virtual-memory
+  source are now copied read-only into selected staging. The old simulated flat-
+  family callback was removed from basic-preamble.jai; the native test uses the
+  actual allocator's zero-data CAPS name and verifies the real early return.
+  WASI correctly excludes this unavailable native API and still tests Preamble's
+  cross early return. The provisional modules/Pool string heuristic was removed:
+  canonical Pool uses procedure identity, and Flat_Pool uses its documented
+  version string. Canonical Pool/temp and real Flat_Pool behavior are tested;
+  no broader unspecified wrapper-family compatibility is claimed.
 
 Current follow-up supersedes the historical helper-policy entries below:
 new reviewed behavior now defines sequence quoting, hex bytes/newlines, copying

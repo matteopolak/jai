@@ -1,5 +1,16 @@
 # Foundations progress
 
+Stable API completion checkpoint: f972441. The independent shortest-float audit
+has been rerun after the current numeric/Pool changes: all 2300 normal power
+intervals and minimal precisions pass native O0/O2 and production WASI O0/O2.
+The NEW real Flat_Pool producer is now available and integrated read-only with
+its private virtual-memory source; the Preamble test no longer uses a simulated
+flat-family callback. Actual zero-data CAPS and early-return behavior pass
+interpreter, native O0/O2, WASI O0/O2, strict focused lint and all six native
+unused-code targets. The unreviewed modules/Pool name heuristic was removed;
+canonical Pool procedure identity and documented Flat_Pool CAPS are sufficient
+for the actual providers. No producer checkout or bootstrap parameter changed.
+
 Final owned export batch implements the resolved scalar FNV overload, exact
 to_s128/to_u128 #modify guards/conversions, and public all-OS CPU.X64 division
 exercise. No genuine reviewed API name/overload remains missing in the owned

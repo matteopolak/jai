@@ -29,11 +29,12 @@ No source implementation outside the authorized NEW producers is an input.
 - [x] Implement resolved scalar FNV overload, division exercise and wide-conversion
   guards; original public-call reproducers now pass as positive API gates.
 - [ ] Retest unavailable Windows/WASI transport when producers supply it.
-- [ ] After each coherent batch: real jaifmt format/check, warnings-denied lint,
-  interpreter/native O0/O2 and supported WASI checks, relevant unused-code
-  targets; update API audit, deviations, handoff/index and commit owned changes.
-- [ ] Final owned pass: all production cases/configurations, shortest-float
-  audit, real unchanged jaifmt CLI and scoped lint. Coordinator owns full corpus.
+- [x] Final supported execution/configuration pass, shortest-float interval audit,
+  real unchanged jaifmt CLI/check and focused warnings-denied lint; API audit,
+  deviations, handoff/index and stable owned commits are current.
+- [ ] Complete target-aware/negative-source strict lint after general producer
+  workflow support, and WASI unused-code checks after File's private ABI guard.
+  Current failures remain visible. Coordinator owns full corpus verification.
 
 No absent user approval or peer response gates independent supported work.
 The declaration inventory is a checklist, not an organization template.
