@@ -13,7 +13,7 @@ or legacy test expectations are inventory inputs.
 
 ### Android/Toolchain
 
-JNI/OID/JKS constants/SHA, ASN.1 primitives/diagnostics/X509, ZIP32 records/writer/CRC/offset/unit helpers, APK whole-file views/iteration, manifest flags, Java launcher and reviewed ADB operations have independent behavior tests. Deflate uses real stored blocks (size tradeoff). Real SDK/device and Windows Process integration remain pending. Install recovery, higher-level build/signing/manifest and remaining helpers are missing; marker-only APK is not claimed signature-valid.
+JNI/OID/JKS constants/SHA, ASN.1/X509, ZIP32 writer, APK views/iteration, Java/ADB and canonical hex formatter aliases have independent tests. Direct key generation is real on POSIX with native crypto CLI, partial across platforms. Deflate uses real stored blocks. Project/config/manifest/SDK-build orchestration is transferred and excluded. Remaining owned APK signing/JKS/native crypto/hex-string functions are missing; APK marker is not signature verification.
 
 Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 
@@ -21,7 +21,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | --- | --- |
 | `Algorithm_Id :: enum u32` | All reviewed hosts |
 | `android_generate_jks_keystore :: (java_bin_path: string, keystore_path: string, key_alias := DEFAULT_KEYSTORE_ALIAS, key_password := DEFAULT_KEYSTORE_PASSWORD, algorithm := Android_Signing_Key_Signature_Algorithm.EC, key_size := 0, common_name := "Jai Android", organization_name := "Jai", country_code := "US") -> bool, Android_Signing_Key` | All reviewed hosts |
-| `android_generate_signing_key_direct :: (out_path: string, key_name: string, algorithm := Android_Signing_Key_Signature_Algorithm.EC, key_size := 0, common_name := "Jai Android", organization_name := "Jai", country_code := "US") -> bool, Android_Signing_Key` | All reviewed hosts |
 | `apk_compute_digest_libressl :: (apk: Android_Apk, algorithm: Digest_Hash_Algorithm) -> [SHA256_DIGEST_LENGTH] u8` | All reviewed hosts |
 | `apk_read_signing_block_v2 :: (s: *string) -> bool, Apk_Signing_Block_V2` | All reviewed hosts |
 | `apk_sign :: (unsigned_apk_filepath: string, keystore_filepath: string, keystore_password := "password") -> bool, string` | All reviewed hosts |
@@ -34,10 +33,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `decrypt_private_key :: (encrypted_private_key_info: string, password: string) -> bool, private_key_info: string` | All reviewed hosts |
 | `Digest :: struct` | All reviewed hosts |
 | `Digest_Hash_Algorithm :: enum` | All reviewed hosts |
-| `fh :: #bake_arguments formatInt(base = 16)` | All reviewed hosts |
-| `fh2 :: #bake_arguments formatInt(minimum_digits = 2, base = 16)` | All reviewed hosts |
-| `fh4 :: #bake_arguments formatInt(minimum_digits = 4, base = 16)` | All reviewed hosts |
-| `fh8 :: #bake_arguments formatInt(minimum_digits = 8, base = 16)` | All reviewed hosts |
 | `jdk_decrypt_private_key :: (encrypted_data: string, password: string) -> bool, string` | All reviewed hosts |
 | `jks_read :: (data: string, password: string) -> bool, certificate: string, encrypted_private_key_info: string` | All reviewed hosts |
 | `libressl_error_callback :: (str: *u8, len: u64, u: *void) -> s32 #c_call` | All reviewed hosts |
@@ -60,7 +55,6 @@ Reviewed contract: [module page](specs/stdlib/modules/default-metaprogram.md).
 
 | Missing public declaration | Condition |
 | --- | --- |
-| `build :: ()` | All reviewed hosts |
 
 ### Example_Plugin
 
@@ -95,7 +89,7 @@ Reviewed contract: [module page](specs/stdlib/modules/project-generator.md).
 | Missing public declaration | Condition |
 | --- | --- |
 
-Total: 39 missing reviewed declaration/overload/nested-operation rows
+Total: 33 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

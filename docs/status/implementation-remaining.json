@@ -1,14 +1,14 @@
 {
   "worker": "portable-stdlib",
-  "generated_utc": "2026-10-15T17:41:19.170725+00:00",
-  "head_at_inventory": "6882141e896dba0223b1027a873ac833ddf040ab",
+  "generated_utc": "2026-10-15T19:07:02.593765+00:00",
+  "head_at_inventory": "154db7cd94ae062b882f35ecc8956e5b4e5f5427",
   "count_unit": "unique reviewed declaration/overload/condition rows plus reviewed nested procedures",
   "policy": "Conservative source implementation classification, not conformance/test totals. Only explicitly completed module/API batches earn complete. Present declarations in partial modules remain partial until finer per-API audit; they are not all missing bodies. Native/platform/tool verification gaps remain separate. Complete supported-source does not claim every platform execution.",
   "scope_exclusions": "Ownership ledger reserved modules; Basic except time/calendar; String/Hash/File_Utilities/File; audio/tooling/data transfers; executable_formats transferred to object-formats2026-10-15 16:14; compiler bootstrap/Preload. Windows-specific Runtime/Process/System/Thread branches belong to platform-io. Extensions unchanged.",
   "counts": {
-    "complete": 3567,
-    "partial": 455,
-    "missing": 54
+    "complete": 3571,
+    "partial": 456,
+    "missing": 49
   },
   "remaining": [
     {
@@ -16,7 +16,7 @@
       "name": "android_generate_signing_key_direct",
       "declaration": "android_generate_signing_key_direct :: (out_path: string, key_name: string, algorithm := Android_Signing_Key_Signature_Algorithm.EC, key_size := 0, common_name := \"Jai Android\", organization_name := \"Jai\", country_code := \"US\") -> bool, Android_Signing_Key",
       "condition": "",
-      "status": "missing",
+      "status": "partial",
       "source_state": "committed"
     },
     {
@@ -215,38 +215,6 @@
       "module": "Android/Toolchain",
       "name": "jdk_decrypt_private_key",
       "declaration": "jdk_decrypt_private_key :: (encrypted_data: string, password: string) -> bool, string",
-      "condition": "",
-      "status": "missing",
-      "source_state": "committed"
-    },
-    {
-      "module": "Android/Toolchain",
-      "name": "fh",
-      "declaration": "fh :: #bake_arguments formatInt(base = 16)",
-      "condition": "",
-      "status": "missing",
-      "source_state": "committed"
-    },
-    {
-      "module": "Android/Toolchain",
-      "name": "fh2",
-      "declaration": "fh2 :: #bake_arguments formatInt(minimum_digits = 2, base = 16)",
-      "condition": "",
-      "status": "missing",
-      "source_state": "committed"
-    },
-    {
-      "module": "Android/Toolchain",
-      "name": "fh4",
-      "declaration": "fh4 :: #bake_arguments formatInt(minimum_digits = 4, base = 16)",
-      "condition": "",
-      "status": "missing",
-      "source_state": "committed"
-    },
-    {
-      "module": "Android/Toolchain",
-      "name": "fh8",
-      "declaration": "fh8 :: #bake_arguments formatInt(minimum_digits = 8, base = 16)",
       "condition": "",
       "status": "missing",
       "source_state": "committed"
@@ -4099,9 +4067,9 @@
       "module": "Android/Toolchain",
       "spec": "docs/specs/stdlib/modules/android-toolchain.md",
       "counts": {
-        "complete": 85,
-        "partial": 0,
-        "missing": 32
+        "complete": 89,
+        "partial": 1,
+        "missing": 27
       },
       "status_basis": "JNI/OID/JKS constants/SHA, ASN.1 readers/diagnostics/X509, ADB host operations/discovery/cache, Java discovery/manifest flags, ZIP32 layouts/writer/CRC/EOCD/units, and APK owned file views/entry iteration implemented. Real Mac interpreter/native O0/O2, independent OpenSSL/zlib/ZIP/SDK-protocol tests and scoped strict lint pass; see subsystem docs for exact evidence and limitations. DEFLATE currently stored blocks, no size reduction. Real SDK/device/native other OS, install/build/manifest/signing/JKS APIs remain incomplete. portable-missing-surface.md inventories102 remaining rows; delegated55 rows are not completion credit."
     },
@@ -4698,9 +4666,9 @@
   ],
   "counts_by_source_state": {
     "committed": {
-      "complete": 3567,
-      "partial": 455,
-      "missing": 54
+      "complete": 3571,
+      "partial": 456,
+      "missing": 49
     },
     "draft": {
       "complete": 0,
@@ -5070,6 +5038,22 @@
       },
       {
         "name": "read",
+        "condition": ""
+      },
+      {
+        "name": "fh",
+        "condition": ""
+      },
+      {
+        "name": "fh2",
+        "condition": ""
+      },
+      {
+        "name": "fh4",
+        "condition": ""
+      },
+      {
+        "name": "fh8",
         "condition": ""
       },
       {
@@ -19057,7 +19041,7 @@
     ]
   },
   "total_reviewed_owned_api_rows": 4076,
-  "complete_source_percentage": 87.51,
+  "complete_source_percentage": 87.61,
   "private_handoffs": [
     {
       "name": "internal/runtime/android-output.discard_pending_output",
@@ -19068,6 +19052,9 @@
   "verification_gaps": [
     "Historical stable combined coordinator Mac baseline822 passed/7 failed. Latest filtered original-corpus compile-only run316 passed/84 failed on frozen older snapshot (execution run304/96); neither is a current full integration rerun by this worker.",
     "Default_Metaprogram real Check-enabled builds/configuration, plugins, failures and full owned strict lint pass; unsupported compiler backend/debugger and target argument readback remain separate dependencies.",
+    "Metaprogram_Plugins parser passes; proper typed-placeholder deferred initializer staged, awaiting general compiler checkpoint. Rejected direct undeclared-call draft is not required semantics.",
+    "Direct signing-key POSIX crypto CLI workflow and canonical hex formatter aliases pass interpreter/native O0/O2 and strict lint; Windows key backend/JKS remain pending, host Java absent.",
+    "Private crash helper relocated-package native Mac ON/OFF tests pass after install-name fix0504879; production package inclusion/architecture/minimum deployment and Linux native gate pending.",
     "Selected-workspace Build_Options.compile_time_command_line readback fails in child #run. Original top-level getter scope expectation was unspecified; corrected reproducer uses get_build_options().",
     "Project_Generator real target/artifact/mtime tests pass; jailint SandboxHost lacks _NSGetExecutablePath. Natvis resource and actual VS execution pending.",
     "Active Mac addrinfo and hostent/netent/protoent/servent layouts and real resolver/database SDK calls pass interpreter/native ARM64/x64 O0/O2. CMSG/native global storage tests pass; whole binding lint remains blocked by general field-array-element type query.",

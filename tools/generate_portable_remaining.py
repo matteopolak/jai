@@ -99,6 +99,8 @@ def main():
                 status = "complete" if api in KNOWN[slug] else "missing"
                 if slug == "default-metaprogram" and api == "build":
                     status = "partial"
+                if slug == "android-toolchain" and api == "android_generate_signing_key_direct":
+                    status = "partial"  # Real POSIX backend; Windows explicitly unsupported.
             elif not present:
                 status = "missing"
             elif slug in COMPLETE or slug == "basic":
@@ -141,6 +143,9 @@ def main():
         "verification_gaps": [
             "Historical stable combined coordinator Mac baseline822 passed/7 failed. Latest filtered original-corpus compile-only run316 passed/84 failed on frozen older snapshot (execution run304/96); neither is a current full integration rerun by this worker.",
             "Default_Metaprogram real Check-enabled builds/configuration, plugins, failures and full owned strict lint pass; unsupported compiler backend/debugger and target argument readback remain separate dependencies.",
+            "Metaprogram_Plugins parser passes; proper typed-placeholder deferred initializer staged, awaiting general compiler checkpoint. Rejected direct undeclared-call draft is not required semantics.",
+            "Direct signing-key POSIX crypto CLI workflow and canonical hex formatter aliases pass interpreter/native O0/O2 and strict lint; Windows key backend/JKS remain pending, host Java absent.",
+            "Private crash helper relocated-package native Mac ON/OFF tests pass after install-name fix0504879; production package inclusion/architecture/minimum deployment and Linux native gate pending.",
             "Selected-workspace Build_Options.compile_time_command_line readback fails in child #run. Original top-level getter scope expectation was unspecified; corrected reproducer uses get_build_options().",
             "Project_Generator real target/artifact/mtime tests pass; jailint SandboxHost lacks _NSGetExecutablePath. Natvis resource and actual VS execution pending.",
             "Active Mac addrinfo and hostent/netent/protoent/servent layouts and real resolver/database SDK calls pass interpreter/native ARM64/x64 O0/O2. CMSG/native global storage tests pass; whole binding lint remains blocked by general field-array-element type query.",

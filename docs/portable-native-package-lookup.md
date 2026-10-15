@@ -1,5 +1,17 @@
 # Portable native helper distribution lookup
 
+Integrator pickup: relocation fix is commit0504879. b0703cb is the separate pending
+plugin initializer, not the relocation fix. Build command:
+python3 -B tools/build_portable_runtime.py. Install the resulting host-architecture
+binary at <selected-stdlib>/internal/runtime/crash-native/libportable_crash.dylib
+(Mac) or libportable_crash.so (Linux), beside runtime.c. The current builder uses
+the host architecture; universal/multiarch and deployment minimum are packaging
+gates, not automatically provided by this fixture.
+
+Exact verification command: python3 -B tools/check_portable_native_package.py.
+Evidence target/native-package-red.log and target/native-package-final.log;
+actual selected relocated directory/rpath and native OFF/ON signal tests checked.
+
 Assigned-path audit: Runtime's private crash helper is a source-relative #library
 reference, crash-native/portable_crash, resolved below the selected stdlib package.
 Other audited Runtime/Android helper references are normal system libraries
