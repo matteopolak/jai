@@ -148,3 +148,13 @@ CPU/mask bodies still check Windows, without claiming Windows native coverage.
 Generator emits explicit independently grouped values, normalizes/checks source
 and regenerates identically. Whole strict lint remains failed; architecture-specific
 machine checks use an actual source-built x64 linter, never a fabricated target.
+
+Pool checked-extents batch: positive sizes whose private total cannot fit s64
+return null before invoking the signed-size allocator; invalid extents no longer
+wrap negative. This is independent allocation-safety policy rather than an
+asserted reference boundary result. Interpreter/native O0/O2 and focused strict
+lint verify genuine failure preservation and cleanup. No mock production allocator
+or fabricated success; the test's supplied allocator deliberately returns null
+above its budget to exercise failure. USE_UNMAPPING_ALLOCATOR specialization
+remains rejected and unfinished pending exact reviewed retention/ownership
+contract. Details/risk/evidence and long-term review need: portable-pool.md.

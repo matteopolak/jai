@@ -81,3 +81,14 @@ focused machine runner. The lint driver attempts the ordinary, configured-time
 and x64 groups even when one fails, and still fails the total gate. There is no
 architecture fallback or suppression. On this ARM64 macOS host build the x64
 linter with --locked -p jailint --target x86_64-apple-darwin into target/compiler.
+
+Post-machine/Pool rerun passes100 positives,23 expected faults in both modes and
+ten compile rejections plus prior integration/target checks
+(target/pool-full-suite.log). Four additional reviewed typed-constant write
+rejections for Unicode offsets/firstByteMark and Adpcm step/index tables pass
+separately (target/immutable-tables-negative.log), and are now required by the
+runner, bringing its negative list to fourteen. That100-case rerun predates those
+four additions; there is no claimed fourteen-negative full rerun. All318 owned
+Jai files pass formatting/check. Pool's focused strict lint and interpreter/native
+O0/O2 pass. Whole-scope strict lint remains failed, including intentional negatives,
+with no new exclusion or suppression.

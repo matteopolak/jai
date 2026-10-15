@@ -185,6 +185,10 @@ def main():
         ("mpeg-scalar-store", "cannot assign to constant"),
         ("mpeg-quantizer-store", "cannot assign into the constant `M.QUANT_TAB`"),
         ("mpeg-window-store", "cannot assign into the constant `M.SYNTHESIS_WINDOW`"),
+        ("unicode-offsets-store", "cannot assign into the constant `U.offsetsFromUTF8`"),
+        ("unicode-first-byte-store", "cannot assign into the constant `U.firstByteMark`"),
+        ("adpcm-step-store", "cannot assign into the constant `A.step_table`"),
+        ("adpcm-index-store", "cannot assign into the constant `A.index_table`"),
         ("register-scalar", "expected a SIMD register operand"),
         ("meow-lane", "INDEX >= 0 && INDEX < 2"),
     ]:
