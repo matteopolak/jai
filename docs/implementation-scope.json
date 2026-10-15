@@ -1,0 +1,341 @@
+{
+  "module": "executable_formats",
+  "independent_base": "ad575d16",
+  "reviewed_row_count": 508,
+  "original_reviewed_row_count": 507,
+  "refinement": "Arch_File adds one reviewed row; counts include types and constants",
+  "implemented_row_count": 467,
+  "implementation_source_state": "committed",
+  "remaining_row_count": 41,
+  "audit_kind": "declaration coverage; semantic support and verification in portable-executable-formats.md",
+  "remaining": [
+    {
+      "module": "executable_formats",
+      "name": "nlist",
+      "declaration": "nlist :: struct",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "nlist_64",
+      "declaration": "nlist_64 :: struct",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "Coff_Raw_Codeview_Info",
+      "declaration": "Coff_Raw_Codeview_Info :: struct",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "Coff_Codeview_Info",
+      "declaration": "Coff_Codeview_Info :: struct",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "set_input_from_string",
+      "declaration": "set_input_from_string :: (lexer: *Lexer, input: string)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "set_input_from_file",
+      "declaration": "set_input_from_file :: (lexer: *Lexer, file_path: string) -> bool",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "peek_next_token",
+      "declaration": "peek_next_token :: (using lexer: *Lexer) -> *Token",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "get_last_token",
+      "declaration": "get_last_token :: (lexer: *Lexer) -> Token",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "starts_identifier",
+      "declaration": "starts_identifier :: inline (c: u8) -> bool",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "get_and_eat_remainder_of_line",
+      "declaration": "get_and_eat_remainder_of_line :: (lexer: *Lexer, line: s32, column: s32) -> string",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "eat_character",
+      "declaration": "eat_character :: (using lexer: *Lexer)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "peek_next_character",
+      "declaration": "peek_next_character :: (lexer: *Lexer) -> s16",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "report_parse_error",
+      "declaration": "report_parse_error :: (lexer: *Lexer, format: string, arguments: .. Any)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "report_parse_error",
+      "declaration": "report_parse_error :: (lexer: *Lexer, token: *Token, format: string, arguments: .. Any)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "report_detail",
+      "declaration": "report_detail :: (lexer: *Lexer, format: string, arguments: .. Any)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "report_parse_error",
+      "declaration": "report_parse_error :: (lexer: *Lexer, line: s32, col: s32, format: string, arguments: .. Any)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "report_detail",
+      "declaration": "report_detail :: (lexer: *Lexer, line: s32, col: s32, format: string, arguments: .. Any)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "get_hex_digit",
+      "declaration": "get_hex_digit :: (lexer: *Lexer, type: Hex_Digit_Type) -> (value: u8, success: bool)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "get_decimal_digit",
+      "declaration": "get_decimal_digit :: (lexer: *Lexer) -> s32",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "set_end_of_token",
+      "declaration": "set_end_of_token :: (lexer: *Lexer, token: *Token)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "unwind_one_character",
+      "declaration": "unwind_one_character :: (lexer: *Lexer)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "continues_identifier",
+      "declaration": "continues_identifier :: (c: s32) -> bool",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "starts_number",
+      "declaration": "starts_number :: (c: s32) -> bool",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "get_unused_token",
+      "declaration": "get_unused_token :: (lexer: *Lexer) -> *Token",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "parse_ident",
+      "declaration": "parse_ident :: (lexer: *Lexer, result: *Token) -> string",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "check_for_keyword",
+      "declaration": "check_for_keyword :: (token: *Token) -> Token_Type",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "make_ident_or_keyword",
+      "declaration": "make_ident_or_keyword :: (lexer: *Lexer) -> *Token",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "make_string_constant",
+      "declaration": "make_string_constant :: (lexer: *Lexer, end_char: s16) -> *Token",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "make_one_character_token",
+      "declaration": "make_one_character_token :: (lexer: *Lexer, c: Token_Type) -> *Token",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "count_herestring_lines",
+      "declaration": "count_herestring_lines :: (lexer: *Lexer, token: *Token) -> s64",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "eat_token",
+      "declaration": "eat_token :: (lexer: *Lexer)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "check_for_equals",
+      "declaration": "check_for_equals :: (lexer: *Lexer, c: Token_Type, augmented: Token_Type, eat := true, subtractor: s32 = 0) -> *Token",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "eat_input_due_to_block_comment",
+      "declaration": "eat_input_due_to_block_comment :: (lexer: *Lexer)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "eat_until_newline",
+      "declaration": "eat_until_newline :: (lexer: *Lexer)",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "compose_new_token",
+      "declaration": "compose_new_token :: (lexer: *Lexer) -> *Token",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "is_non_newline_whitespace",
+      "declaration": "is_non_newline_whitespace :: (c: s16) -> bool",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "peek_token",
+      "declaration": "peek_token :: (lexer: *Lexer, lookahead_index: s32) -> *Token",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "has_a_big_exponent",
+      "declaration": "has_a_big_exponent :: inline (value: float64) -> bool",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "parse_tbd_file",
+      "declaration": "parse_tbd_file :: (path: string) -> success: bool, [] Text_Based_Dylib",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "is_tbd",
+      "declaration": "is_tbd :: (file_content: string) -> bool",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    },
+    {
+      "module": "executable_formats",
+      "name": "parse_tbd",
+      "declaration": "parse_tbd :: (file_content: string, path := \"(unspecified file)\") -> success: bool, [] Text_Based_Dylib",
+      "condition": "",
+      "status": "missing",
+      "source_state": "committed"
+    }
+  ]
+}
