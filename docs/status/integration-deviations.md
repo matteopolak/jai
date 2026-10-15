@@ -2,6 +2,22 @@
 
 ## Shared portable transition, 2026-10-15
 
+- Optional-assert fixes in `internal/input/keymap-text.jai`,
+  `internal/numerics/ui_text.jai`, `internal/clipboard/cocoa.jai` and
+  `internal/rendering/{dynamic-fonts,font-features}.jai` execute necessary native
+  operations before diagnostics. Font metrics/glyphs/GSUB bytes come from real
+  FreeType calls; failed size selection returns null from pointer loaders, failed
+  glyph work clears partial prepared output and is not cached. No fake metrics
+  or textures were added. Cocoa controls use a real unique native pasteboard,
+  not a memory replacement; general system clipboard/bitmap and GPU integration
+  remain separate gates. Private font registries retain their reviewed lifetime.
+- `tools/portable_assertion_test_config.py` creates the root-authorized default
+  Basic-disabled test configuration by changing exactly one existing default in
+  fresh source copies. Actual default-instance checks and before/after hashes
+  distinguish it from a separate caller-only import. One earlier font debugging
+  copy was transiently modified, then restored/hash-verified; that intermediate
+  experiment is disclosed and is not final proof. Final receipts use fresh copies.
+
 - `tools/developer_native_runtime.py::stage_macos_sdk` relocates and signs the
   real configured libclang/LLVM/zstd/z3 images and records source/output hashes.
   Its stage contains no license-copy step. Loader closure is verified locally;

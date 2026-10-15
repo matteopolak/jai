@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+from portable_assertion_test_config import disabled_default_copy
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -26,26 +27,13 @@ def main():
     fixture = ROOT / "tests/native-regressions/pl-mpeg-clip.mpg"
     source = ROOT / "tests/portable-stdlib/mpeg-default-assertions.jai"
     library = ROOT / "stdlib"
-    captured = {str(p.relative_to(library)): p.read_bytes()
-                for p in library.rglob("*.jai")}
-    disabled = work / "disabled-stdlib"
-    for name, contents in captured.items():
-        path = disabled / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(contents)
-    basic = disabled / "Basic/module.jai"
-    original = basic.read_text()
-    assert original.count("ENABLE_ASSERT := true") == 1
-    basic.write_text(original.replace("ENABLE_ASSERT := true", "ENABLE_ASSERT := false", 1))
-    changed = sorted(name for name, contents in captured.items()
-                     if (disabled / name).read_bytes() != contents)
-    assert changed == ["Basic/module.jai"]
+    disabled, captured = disabled_default_copy(ROOT, work)
     identity = {
         "shared_head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "compiler_sha256": digest(compiler), "test_sha256": digest(source),
         "fixture_sha256": digest(fixture),
         "source_hashes": {name: hashlib.sha256(body).hexdigest() for name, body in captured.items()},
-        "configuration_changes": changed,
+        "configuration_changes": ["Basic/module.jai"],
         "configuration_diff": "Basic/module.jai: ENABLE_ASSERT := true -> ENABLE_ASSERT := false",
         "policy": "Current clean shared Jai source copy only; no copied binaries. Default Basic identity is checked by the test.",
     }
