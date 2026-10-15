@@ -151,9 +151,10 @@ def main():
                                               if line.startswith(prefixes)]}
                                    for item in records if item["case"] == "windows-wgl-driver"]}
     summary["native_failures"] = [
-        {"case": item["case"], "mode": item["mode"], "line": line}
+        {"case": item["case"], "mode": item["mode"],
+         "line": line[line.index("WGL native failure:"):]}
         for item in records for line in (item["stdout"] + item["stderr"]).splitlines()
-        if line.startswith("WGL native failure:")]
+        if "WGL native failure:" in line]
     # Transfer diagnostic headers/locations, never source excerpts or raw logs.
     # This supplies the missing rule and location for the current native lint
     # failure without exposing any dependency/corpus implementation body.

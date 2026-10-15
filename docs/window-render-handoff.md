@@ -1,5 +1,10 @@
 # Window/render worker handoff
 
+Implementation checkpoint `821adb4`; final runner186/zero, including final Windows
+lifecycle source checks. Strict host lint also covers standalone Cocoa and portable
+native fields; no incomplete roots/warnings. Mesa build on macOS correctly exits2
+requiring native Windows ARM64; do not count that guard/plan as a built driver.
+
 Latest WGL batch: filtered run38662728329 establishes actual x64 Mesa4.6 and
 passing public probe/events/drawing in interpreter/O0/O2. Lifecycle and native
 Windows lint remain failures; ARM64 has actual GDI Generic1.1. No raw logs read.

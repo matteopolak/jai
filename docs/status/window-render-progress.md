@@ -1,5 +1,14 @@
 # Window/render progress
 
+Durable current implementation checkpoint: `821adb4`. Final full focused runner
+passed186/zero, including the final queued-texture retirement regression source
+checks on both Windows CPUs. Final host lint additionally includes standalone
+Cocoa and portable native-field modules; zero warnings/incomplete roots. Owned
+tree is clean after commit and Extensions diff is empty. Running the Mesa builder
+without --plan on this macOS host exits2 with an explicit native ARM64 requirement;
+this expected guard is not a driver build pass. Native Windows follow-up below
+remains required. Filtered WGL error extraction tolerates logger severity prefixes.
+
 2026-10-14 lifecycle batch, awaiting native rerun: filtered run38662728329
 confirms x64 real Mesa4.6 probe/events/public rendering pass all modes; issue#1
 passes both CPUs. Lifecycle fails context selection and Windows strict lint fails
