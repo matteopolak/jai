@@ -1,5 +1,22 @@
 # Platform I/O compiler/tool integration handoff
 
+## General Windows async unwind metadata (implemented minimal patch)
+
+The original exported named-fault fixture demonstrates an O2 ABI failure:
+platform_io_fault_leaf pushes RBP, and platform_io_fault_middle allocates stack,
+saves RBP and makes a call, yet neither had .pdata entries; O0 did. LLVM nounwind
+inference must not suppress Windows SEH frame metadata. The small owned lib.rs
+patch applies uwtable(async), enum value 2, to defined Windows ABI functions using
+Arch classification. Public compiler options/defaults and Unix attributes stay
+unchanged. Apply this minimal patch plus its original regression to the current
+producer; the local staged producer is not a replacement source checkout.
+
+The original unit fails before/passes after, all 19 LLVM library tests and scoped
+clippy pass, and fresh x64 O2 PE unwind dumps now cover both real export addresses
+with correct native unwind codes. Native named-fault fixture additionally calls
+RtlLookupFunctionEntry for each frame function. Actual Windows quality/cleanup
+execution remains required. See [evidence](platform-io-e8c312d-follow-up.md).
+
 ## e8c312d thread native-handle interoperability
 
 The current independent producer's win32.rs::create_thread returns a synthetic

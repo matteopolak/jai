@@ -1,5 +1,11 @@
 # Portable stdlib worker deviations
 
+Platform-io's generic Windows unwind-table patch and bounded frame-iterator
+cost/stack limits are recorded in [platform deviations](platform-io-deviations.md).
+Pure iterator/parser tests and cross-built ABI metadata are distinguished from
+native fault/symbol/cleanup evidence; original x64/thread failures remain open
+pending precise coordinator output and native reruns.
+
 Platform-io e8c312d records real ARM64 crash positives separately from open x64
 enabled-fault/thread-output failures. Its private x64 cleanup, additional SDK/named
 trace tests, exact own-result capture and compiler real-thread-handle reproducer

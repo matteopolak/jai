@@ -1,5 +1,12 @@
 # Portable stdlib progress
 
+Platform-io continuation after 2cdbd9b: implemented generic Windows async unwind
+metadata after an original O2 fixture exposed missing required .pdata entries;
+19 LLVM unit tests/clippy and fresh PE metadata checks pass. Corrected bounded
+x64 frame iteration with initial-repeat/skip/recursion/cycle unit coverage.
+Actual x64 fault/thread output request and native verification remain pending;
+earlier ARM64 12-case native positives stay intact. See platform progress/deviations.
+
 Platform-io e8c312d: private ARM64 native startup/fault OFF/ON/default O0/O2 now
 passes all 12 cases. x64 four enabled faults and interpreter thread output on both
 CPUs remain open, with exact own-output request pending. Added private x64 session

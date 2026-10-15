@@ -514,7 +514,9 @@ fn apply_codegen_attributes(
     codegen: &Codegen,
     triple: &TargetTriple,
 ) {
-    let apple = triple.as_str().to_string_lossy().contains("apple");
+    let target_text = triple.as_str().to_string_lossy();
+    let apple = target_text.contains("apple");
+    let windows = jaic::abi::Arch::from_triple(&target_text).is_some_and(|arch| arch.is_windows());
     let frame_pointer = match codegen.frame_pointers {
         Some(true) => Some("all"),
         // Apple's ABIs require frame records (`docs/metaprogramming/build-options.md`).
@@ -527,6 +529,15 @@ fn apply_codegen_attributes(
     for function in module.get_functions() {
         if function.count_basic_blocks() == 0 {
             continue;
+        }
+        if windows {
+            // Windows native frame metadata is an ABI requirement even when
+            // optimization proves that a function cannot throw a language exception.
+            // LLVM's async UWTableKind is 2: retain instruction-precise SEH unwinding.
+            function.add_attribute(
+                AttributeLoc::Function,
+                context.create_enum_attribute(Attribute::get_named_enum_kind_id("uwtable"), 2),
+            );
         }
         if let Some(value) = frame_pointer {
             function.remove_string_attribute(AttributeLoc::Function, "frame-pointer");
@@ -1483,6 +1494,55 @@ fn library_args(lib: &Library, flavor: LinkFlavor, cross: bool) -> Result<Vec<Li
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn windows_frame_functions_keep_async_unwind_tables_even_when_nounwind() {
+        for target in [
+            "x86_64-pc-windows-msvc",
+            "x86_64-pc-windows-gnu",
+            "aarch64-pc-windows-msvc",
+            "aarch64-unknown-linux-gnu",
+            "arm64-apple-macosx11.0",
+        ] {
+            let context = Context::create();
+            let module = context.create_module("native_unwind_contract");
+            let function = module.add_function(
+                "frame_function",
+                context.void_type().fn_type(&[], false),
+                None,
+            );
+            let declaration = module.add_function(
+                "foreign_declaration",
+                context.void_type().fn_type(&[], false),
+                None,
+            );
+            let block = context.append_basic_block(function, "entry");
+            let builder = context.create_builder();
+            builder.position_at_end(block);
+            builder.build_return(None).unwrap();
+            function.add_attribute(
+                AttributeLoc::Function,
+                context.create_enum_attribute(Attribute::get_named_enum_kind_id("nounwind"), 0),
+            );
+            apply_codegen_attributes(
+                &context,
+                &module,
+                &Codegen::default(),
+                &TargetTriple::create(target),
+            );
+            let kind = Attribute::get_named_enum_kind_id("uwtable");
+            let actual = function
+                .get_enum_attribute(AttributeLoc::Function, kind)
+                .map(|attribute| attribute.get_enum_value());
+            let windows = jaic::abi::Arch::from_triple(target).unwrap().is_windows();
+            assert_eq!(actual, windows.then_some(2), "target {target}");
+            assert!(
+                declaration
+                    .get_enum_attribute(AttributeLoc::Function, kind)
+                    .is_none()
+            );
+        }
+    }
 
     #[test]
     fn other_units_write_their_own_ir_files() {
