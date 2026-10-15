@@ -12,6 +12,7 @@ import csv
 import check_developer_bindings
 import check_developer_cpp_custom
 import check_developer_type_emission
+import check_developer_value_emission
 import check_developer_check
 import build_developer_debug
 import check_developer_debug_lifecycle
@@ -126,6 +127,7 @@ def main():
     check_developer_bindings.main()
     check_developer_cpp_custom.main()
     check_developer_type_emission.main()
+    check_developer_value_emission.main()
     check_developer_check.main()
     configured_cases = check_developer_sdk_configuration.main()
     build_developer_debug.main()

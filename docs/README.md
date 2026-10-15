@@ -169,6 +169,7 @@ The LLVM backend, C ABI and linking.
 - [Portable implementation gaps](portable-stdlib-gaps.md): focused pending reproducers and unresolved behavior
 - [Assigned implementation remainder](status/implementation-remaining.json): fresh exact owned names, committed/draft status, effort and verification gaps
 - [Canonical generator model dependency](generator-model.md): staged NEW producer records/helpers and explicit ownership policies
+- [Public generator value-emission workflow](../tools/check_developer_value_emission.py): typed integer/float/string/enum values, expressions and native default calls
 - [Public generator type-emission workflow](../tools/check_developer_type_emission.py): C++ declarators, generated Jai callbacks, borrowed type identity and diagnosed failures
 - [Check mangled-signature workflow](../tools/check_developer_check.py): official LLVM AST parsing, staged Mac effects and real pool statistics
 - [Debug signal/assertion lifecycle tests](../tools/check_developer_debug_lifecycle.py): actual handler restoration and native fatal callback evidence

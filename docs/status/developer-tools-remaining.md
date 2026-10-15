@@ -6,23 +6,17 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Bindings_Generator
 
-148 function names have pending declarations; 217 native function names still lack invocation fixtures.
+114 function names have pending declarations; 217 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
-| `_create_declaration` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `add_access_flags` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `add_type_flags` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `append_as_signed_integer_hex` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `append_as_unsigned_integer_hex` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_bitfield_helpers` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_calling_convention_directives` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_cpp_wrapper` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_elsewhere` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_indentation` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `append_integer` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `append_maybe_left_shift` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `append_maybe_right_shift` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_parent_field_path` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_parent_path` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `append_postfix_comment` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -37,16 +31,13 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `check_if_foreign_function_should_be_omitted` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `check_macro_value` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `compute_enum_names` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `contains_equivalent_function` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `convert_children_to_expression` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `convert_objc_selector_name_to_function_identifier` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `count_asterisks` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `count_namespace_refs` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_declaration` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_declaration_inner` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_elaborated_type` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `create_empty_struct_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `create_enum` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
+| `create_enum` | 2 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_expression_from_cursor` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_function` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_function_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -55,7 +46,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `create_namespace` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_objc_interface` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_objc_type_param` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `create_omit_cpp_functions_visitor` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_reference_expression` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_struct` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `create_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -74,44 +64,22 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `find_closing_paren_token_index` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `find_first_member_offset` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `find_lib_for_foreign_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `find_name_clash` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `find_or_create_enum_for_macro` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `find_or_create_extra_info` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `find_referenced_declaration` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `find_underlying_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `finish_bitfield` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `fix_macos_foreign_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `function_has_a_valist_arg` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `function_is_missing_foreign_library` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `functions_are_equivalent` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_enum_value_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_libc_paths` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_name_alignment` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_name_for_cursor` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `get_primitive_or_array_primitive_type_size` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_scoped_token_string` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `get_type_alignment` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_type_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `handle_toplevel_cursors` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `init_generator` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_16byte_integer_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_assignment_operator` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_char_pointer_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_extern_declaration` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_function_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_incomplete_array` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_operator` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_operator_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_pointer_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_prefix_comment` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_struct_field` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_target_type_signed` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_target_type_unsigned` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_targeting_apple_os` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_token` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_va_list` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_valid_identifier_start` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `is_zero_int_expression` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `log` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `log_error` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `macro_literals_are_equal` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -136,9 +104,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `print_declaration_to_builder` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_enum` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_enum_body` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `print_expression_to_builder` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_function` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `print_literal_to_builder` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_namespace` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_objc_selector_identifier` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_struct` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -171,7 +137,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `append_cpp_type_modifiers` | Reference/cv suffixes execute; wider context-flag semantics await question14. |
 | `print_type_to_builder` | Standard represented types and output paths execute; default expressions, existing-declaration synthesis and wider flags remain open. |
 | `type_to_string` | Standard printer and caller-owned result execute; exact lifetime policy awaits question14. |
-| `print_function_type_to_builder` | C-call signatures execute; special methods/variadics/default expressions remain unfinished. NO_ARGUMENT_DEFAULTS is supported. |
+| `print_function_type_to_builder` | C-call signatures and literal/operator defaults execute, including inferred bool defaults and NO_ARGUMENT_DEFAULTS. Special methods/variadics/raw/template defaults remain unfinished. |
 | `exceeds_signed_int_value` | 8/16/32/64-bit thresholds execute; larger represented integer widths remain unsupported. |
 | `strip_type` | Selected alias/enum/pointer traversal retains original component identity and diagnoses cycles; wider implicit-generator behavior is not inferred. |
 
