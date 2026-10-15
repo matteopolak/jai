@@ -3,7 +3,6 @@
 import os
 from pathlib import Path
 import platform
-import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,6 +21,10 @@ def main():
                              ["stdlib/Socket/native.jai", "stdlib/internal/net/socket-abi.jai", "docs/socket-native-ledger.json"]))
     if initial[0] != initial[1]:
         raise RuntimeError("review-derived declaration generation is not stable")
+    for relative, generated in zip(
+            ["stdlib/Socket/native.jai", "stdlib/internal/net/socket-abi.jai", "docs/socket-native-ledger.json"], initial[0]):
+        if (ROOT / relative).read_bytes() != generated:
+            raise RuntimeError(f"production generated source is stale: {relative}")
     expected = [48, 8, 0, 4, 8, 12, 16, 24, 32, 40, 32123, 0x7f000001]
     for flags, label in [([], "host"), (["-arch", "x86_64"], "x64")]:
         native = output / ("sdk-probe-" + label)
@@ -31,12 +34,9 @@ def main():
         if result.stderr or list(map(int, result.stdout.split())) != expected:
             raise RuntimeError(f"actual SDK ABI/resolver mismatch: {result.stdout}{result.stderr}")
         print(f"Actual macOS C SDK {label} layout and numeric resolver pass:", result.stdout.strip(), flush=True)
-    library = output / "stdlib"
-    shutil.copytree(ROOT / "target/portable-integration-stdlib", library, dirs_exist_ok=True)
-    for relative in ["Socket/native.jai", "internal/net/socket-abi.jai"]:
-        shutil.copyfile(output / "generated/stdlib" / relative, library / relative)
+    library = ROOT / "stdlib"
     env = dict(os.environ, JAIC_STDLIB=str(library))
-    compiler = str(ROOT / "target/compiler/debug/jaic")
+    compiler = str(ROOT / "target/debug/jaic")
     source = ROOT / "tests/portable-stdlib/socket-resolver/main.jai"
     commands = [[compiler, "-interp", str(source)]]
     for flags, label in [([], "host"), (["-target", "x86_64-apple-darwin"], "x64")]:
@@ -50,7 +50,8 @@ def main():
             raise RuntimeError(f"{command!r}: {result.stdout}{result.stderr}")
     for cpu in ["x64", "arm64"]:
         subprocess.run([compiler, "-check", "-os", "macos", "-cpu", cpu, str(source)], env=env, check=True)
-    subprocess.run([str(ROOT / "target/compiler/debug/jailint"), "-D", "warnings",
+    subprocess.run([str(ROOT / "target/debug/jailint"), "-D", "warnings", "--config", str(ROOT / "jailint.toml"),
+                    "--context", str(source),
                     str(library / "Socket/native.jai"), str(library / "internal/net/socket-abi.jai"), str(source)], env=env, check=True)
     print("Jai public resolver passes interpreter/native both CPUs O0/O2, source checks and strict lint")
 

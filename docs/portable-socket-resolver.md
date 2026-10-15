@@ -1,12 +1,23 @@
-# Reviewed macOS addrinfo integration candidate
+# Reviewed macOS addrinfo production integration
+
+Current refresh23 result: compiler6080ff0a and the canonical generated Mac record
+are integrated. `python3 tools/check_portable_socket_resolver.py` passes both C
+SDK probes, interpreter, native ARM64/x64 O0/O2, both CPU source checks and strict
+lint on the actual Root production library. It compares two regenerations with
+the production bytes; no staged library overlay is used. The fixture additionally
+checks original C storage addresses and live h_errno mutation/restoration. The
+producer fixture's unreviewed AF.INET spelling was corrected to reviewed AF_INET;
+all address/port/type/value assertions remain. Full C ABI suite still fails the
+separate missing Mac hostent shape, requested precisely from contract review.
+
+The following records the original blocked candidate and its retained failures;
+those failures are superseded only for the resolver by the production run above.
 
 Refreshed Socket spec defines the exact macOS addrinfo record, including public
 AI/SOCK/IPPROTO enum types, u32 socklen_t and canonname-before-address order.
 Review-derived generation now produces its canonical record and same-entity
-facade alias. The durable own-source candidate is
-[pending/socket-macos-addrinfo.patch](../pending/socket-macos-addrinfo.patch).
-It is excluded from active stdlib until the general compiler dependency is fixed.
-macOS addrinfo is still missing from the active public surface, not completed.
+facade alias. The former pending/socket-macos-addrinfo.patch candidate has been
+removed after normal production generation and the general compiler repair.
 
 Native C compiled from the official Apple SDK netdb.h verifies both ARM64 and
 translated x64: size48, alignment8, field offsets0/4/8/12/16/24/32/40. It also
@@ -28,7 +39,7 @@ target/android-sdk-asn1-socket-full.log. Candidate therefore remains staged only
 No existing Socket assertion or fixture was weakened/disabled. The next compiler
 checkpoint must make both the new resolver gate and existing Socket suite pass.
 
-Run python3 -B tools/check_portable_socket_resolver.py. It regenerates twice under
+The original python3 -B tools/check_portable_socket_resolver.py regenerated twice under
 its own target/ output root, requires byte identity/format, executes both native C
 probes, then strictly fails at the current Jai compiler dependency. Dedicated
 staging leaves the active library untouched. Generic generator --output-root

@@ -125,7 +125,13 @@ def main():
         else:
             emitted = code + ";"
         output.append(guarded(emitted, guard))
-        exported.append(guarded(f"{name} :: ABI.{name};", guard))
+        # Immutable declarations alias values/types/overload sets. Mutable native
+        # storage must be reexported by name resolution, never read into a :: copy.
+        if re.match(rf"{re.escape(name)}\s*:(?!:)", code):
+            public = f'using,only({name}) #import "internal/net/socket-abi";'
+        else:
+            public = f"{name} :: ABI.{name};"
+        exported.append(guarded(public, guard))
         record["status"] = "native declaration; runtime/ABI verification separate"
         ledger.append(record)
     # Import only external reviewed Windows names needed by these declarations.
