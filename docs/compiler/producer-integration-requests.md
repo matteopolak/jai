@@ -94,3 +94,12 @@ The unchanged NEW SDK reproducer is staged and cross-checks/builds with NEW Thre
 and its text helper. Native Windows execution remains pending; exact fixtures,
 protected-close/error/lifetime checks and unmanaged duplicate bounds are in
 [thread handle handoff](windows-thread-handles.md). No peer source was edited.
+
+## Forward overlays ready; D3D dependency/order gates remain
+
+General forward alias/type/layout resolution passes library-free execution and
+reflection/IDE tests. Public source order is preserved. Staged NEW combined
+D3D/DXC checks now stop at missing ID3D11ModuleInstance in d3d11; no compiler
+export was invented. Native SDK shapes differ in discriminator order from
+reviewed/generated records and require bindings/spec review. Exact source, SDK
+assertions and retained failures: [overlay handoff](forward-overlay-layout.md).

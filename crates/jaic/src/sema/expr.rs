@@ -600,6 +600,15 @@ impl Compiler {
         name: Sym,
         span: Span,
     ) -> Result<Operand> {
+        if f.type_only
+            && let Some(ty) = self.struct_field_type(scope, name, span)?
+        {
+            let addr = f.b.iconst(Ty::Ptr, 0);
+            return Ok(Operand::Place {
+                ty,
+                addr,
+            });
+        }
         match self.lookup_full(scope, name)? {
             Found::Using(entry, member) => {
                 let place = match &entry {
@@ -625,7 +634,7 @@ impl Compiler {
             Found::Entities(ids) => {
                 if ids.is_empty() {
                     if f.type_only
-                        && let Some(ty) = self.struct_field_type(scope, name)
+                        && let Some(ty) = self.struct_field_type(scope, name, span)?
                     {
                         // Only the type is wanted, so the address is never used.
                         let addr = f.b.iconst(Ty::Ptr, 0);
@@ -654,18 +663,35 @@ impl Compiler {
         }
     }
 
-    /// The type of field `name` of a struct whose body encloses `scope`, if already laid out.
-    fn struct_field_type(&self, scope: ScopeId, name: Sym) -> Option<TypeId> {
+    /// Resolve a lexical field type without requesting the containing struct's offsets.
+    pub(super) fn struct_field_type(
+        &mut self,
+        scope: ScopeId,
+        name: Sym,
+        use_span: Span,
+    ) -> Result<Option<TypeId>> {
         let mut s = Some(scope);
         while let Some(sid) = s {
-            if let Some(fields) = self.field_types.get(&sid)
-                && let Some(&(_, ty)) = fields.iter().find(|(n, _)| *n == name)
+            if self.scope(sid).names.contains_key(&name) {
+                return Ok(None);
+            }
+            if let Some(decl) = self
+                .field_declarations
+                .get(&sid)
+                .and_then(|fields| fields.get(&name))
+                .cloned()
             {
-                return Some(ty);
+                let ty = self.resolve_field_decl_type(sid, &decl)?;
+                let declared = decl.names.iter().find(|n| n.name == name).unwrap().span;
+                self.ide_note_named_field(use_span, name, declared, ty);
+                return Ok(Some(ty));
+            }
+            if let Some(ty) = self.declared_promoted_field_type(sid, name, use_span)? {
+                return Ok(Some(ty));
             }
             s = self.scope(sid).parent;
         }
-        None
+        Ok(None)
     }
 
     pub fn entities_operand(

@@ -1,5 +1,7 @@
 # Compiler integration handoff
 
+Forward-overlay repair ready: declaration/type resolution and iterative offset dependencies retain source/reflection order and ABI offsets without module exceptions. Native/WASM64 O0/O2 aliases/reflection, IDE, privacy, cycles, mapper identity and long chains pass, alongside scoped regressions/tools. D3D SDK member-order discrepancy and missing ID3D11ModuleInstance remain independent gates; no 40-config completion claim. See compiler/forward-overlay-layout.md. Inbox CPUID behavior is next.
+
 Windows thread handle checkpoint f08f80b ready for native CI: retain real kernel handles in shared scheduler state; native Set/GetThreadDescription, pseudo handles, rights and HRESULTs remain authoritative. Protected-close failure preserves ownership/error, teardown releases references, and unmanaged duplicate suspension is explicitly bounded. Original host regression and scoped checks pass; actual Windows interpreter/native execution remains pending. See compiler/windows-thread-handles.md for fixtures, commands, producer staging and deviations.
 
 Windows unwind checkpoint 0d49463: ABI-required uwtable(async) survives inferred nounwind and O2 for x64/ARM64, including synthesis defaults and optimized definitions. Original metadata red/green, six object/PE cases and native SDK driver are in compiler/windows-unwind.md. Native Windows execution remains required; producer named-fault O2 leaf is a genuine frameless leaf and its unconditional table assertion needs review. Portable runtime adoption remains pending.
