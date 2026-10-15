@@ -1830,3 +1830,7 @@ public context selection; temporary storage is freed only after completion and
 deinit. Group logging is explicitly disabled in fixtures to retain exact stdout,
 not suppressed globally or by the test runner. Mac native Debug prerequisite was
 source-built, with no library overlay. Other platforms remain unverified.
+
+## Basic/Math shared context checkpoint b821bf6d
+
+Combined production sources pass39/39 focused commands via check-core-public.py (artifacts/mac-baseline/core-b821-combined/results.json). The runner now accepts existing test-tool environment selection instead of assuming a producer T7 directory. Cross-configuration struct callbacks in stdlib/internal/basic/format-support.jai copy the complete builder prefix/output through canonical owned storage; this preserves output and allocator ownership but adds allocation/copy cost and does not establish raw cross-configuration buffer identity. Exact identity and signed128 overflow questions remain in specs/questions/basic-core-public.md. No compatibility aliases were invented. Full combined baseline remains pending.

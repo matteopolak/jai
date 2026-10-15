@@ -92,6 +92,14 @@ client fixture is the original reproducer for the compiler/linter owner. Its
 incomplete lint result is not counted as success; the positive consumer context
 does not replace it or claim to fix compiler generic sketches.
 
+The resumed investigation independently reduces this to rejected concrete
+generic overload instances being treated as IDE audit roots. No stand-in sketch
+is needed. The exact production context and two reductions remain required red
+gates, with native/interpreted behavior passing. The compiler/linter owner
+request is in [the general defect handoff](../compiler/rejected-overload-lint-request.md).
+The coordinator's absent baseline report is not a blocker; no serializer/type
+restriction or library workaround is added to disguise the compiler defect.
+
 After the empty-key repair, all10 Json catalogue tests pass native O0/O2, and
 all11 Http tests pass native O2 again. The original Io6/Byte_Search1 native O0/O2
 runs are unchanged and passing. Final changed-file formatting passes on all16
