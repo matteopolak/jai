@@ -479,3 +479,13 @@ Exact commands/results are at tools/cleanroom-integration.md. Coordinator may
 review this committed source for the next normal temporary native CI candidate,
 including WGL retirement/x64 cleanup and SDL3 Windows path repair. It is not a
 green integration or release approval. No push/dispatch/publication performed.
+
+Refresh12 final milestone: full639-file LSP sweep17073edits/2762443assertions,
+zero failures; genuine caller-font cases21extra invocations pass. Optimized
+compiler float oracle passes all five modes; ordinary portable134/134 pass with
+six Windows target failures retained. Latest SDL policy now verifies exact public
+prefixes and complete private records separately, every offset/alignment and C
+write canaries; actual SDK aggregate zero failures, no public layout/API change.
+Historical mismatch evidence remains. New manifest13 compiler-unwind and portable
+SIMD/CAPS checkpoints await integration; UI/archive actual lint fixes are in
+secondary verification. Publication held, nativeCI/corpus/Focus coordinator-only.
