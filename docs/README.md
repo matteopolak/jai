@@ -472,3 +472,6 @@ real host select/canary, strict unused-code and original C ABI checks pass.
 Merged Extensions:28 native ARM64 O0 passes;27 interpreter passes and one Json
 numbers timeout, recorded as failure. Native clipboard fixtures now require
 restoration and bounded child cleanup; no clipboard substitute is used.
+
+- [Mac compiler catalogue repairs](compiler/mac-catalogue-repairs.md): reviewed fixture migrations, live AST links and correct union alignment.
+- [Rejected-overload lint audit](compiler/rejected-overload-audit.md): speculative instances stay outside declaration audit roots; selected and invalid concrete bodies remain checked.

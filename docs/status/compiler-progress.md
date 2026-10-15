@@ -1,5 +1,64 @@
 # Compiler progress
 
+2026-10-15 overload audit: concrete generic instances cached while matching no
+longer become independent unreferenced declaration audit roots. Actual selected
+instances remain queued/checked, including later reuse of a previously rejected
+instance. Four original positive/negative audit regressions pass. Staged producer
+and Http reductions pass strict lint; the generic reduction executes interpreter
+and native ARM64 O0/O2. Full Http client context remains independently blocked on
+atomic_compare_exchange. See compiler/rejected-overload-audit.md for scope/evidence.
+
+2026-10-15 decimal review follow-up: float-literal-precision and rules-numbers
+pass interpreter and actual ARM64 O0/O2 with corrected reviewed metadata oracles.
+Implicit required-float64 narrowing remains rejected in initialization/arithmetic
+regressions. WASI source checks pass; no WASM runtime claim. Current focused
+ledger is20/22 interpreter,18 native executable +2 compile-time-only at O0/O2;
+the remaining public protocol/prerequisite dependencies belong to other owners.
+
+Verified stable Mac source checkpoints: b377ed7c, 427fbfdc, 6d5e2172, 9e527a22.
+Exact 22-case focused replay and per-case native/compile-only status are recorded
+in status/compiler-mac-repairs.json. Remaining four owner/review requests are in
+status/compiler-mac-owner-requests.md; original baseline JSON is untouched.
+
+Fresh Mac follow-up: 18/22 original unresolved compiler fixtures now pass normal
+interpreter replay. At both O0/O2 the existing runner executes16 natively and
+records2 compile-time-only (resolved-nodes/typechecked-notes), not fake runtime
+passes. General pointer member-path classification and null-to-ready record
+linking fix the unchanged member-path and notes/header-body assertions. Core:
+165 library +11 layout +8 reflection pass; new late-link regression preserves
+identity/user edits, cycles and rollback after invalid target fill. Normalized
+inspection/type-name oracles, real configured import lookup and proper void/null
+values preserve useful behavior without unreviewed exact text. Modern tests the
+explicit unsupported Run/assert return; that printer feature is not implemented.
+Remaining4: public Protocol comparison (portable), custom-link portable_crash
+prerequisite (integrator), two unchanged numeric inference fixtures (spec review).
+No route/setup/Default_Metaprogram/Extensions edits, no profiles/benchmarks. See
+compiler/mac-catalogue-repairs.md and status/compiler-mac-owner-requests.md.
+
+First Mac catalogue checkpoint b377ed7c is committed. Further verified printing
+batch resolves compiler-resolved-nodes, rules-code-values-and-insertion,
+poly-struct-type-names, rules-structs and type-of-polymorphic-template. Actual
+interpreter/native O0/O2 pass for the four runtime fixtures; resolved-nodes is
+explicitly compile-time-only on the native runner. Original statement/mixed/
+backtick round-trip fixture executes natively at O0/O2. Root printing and compound
+scope flags are fixed generally; no fake AST fields or type names. Current
+printer limits and per-fixture oracle reasons: compiler/mac-catalogue-repairs.md.
+
+Fresh approved d30311a5 compiler-mac-repairs scope: classified all22 unresolved
+compiler catalogue fixtures against reviewed contracts. Six contract migrations
+pass interpreter/native ARM64 O0/O2: build-options-main-defaults,
+compiler-build-file-and-literals, compiler-get-code-rerun, macro-code-variable-arg,
+rules-scoping, using-only-import. Structural/value/type assertions replace
+unestablished exact-print whitespace; debugger unavailability remains a required
+negative CLI test. Custom-link arity migrated but normal runner now exposes missing
+portable_crash native prerequisite; no pass claimed. Missing public Protocol
+compare_alloc_and_free_traces remains a portable-owner dependency, not deleted.
+Compiler-resolved-nodes now checks print success and exposes missing compound
+printing. Next cohesive implementation: supported AST printing/reconstruction.
+Classification/reasons/evidence: compiler/mac-catalogue-repairs.md. Own T7 target
+only; local source/evidence retained. No routing/prerequisite/Default_Metaprogram/
+Extensions changes, no profiles/benchmarks, no mutable initialized constants.
+
 Forward enum dependency implementation committed and verified: 7ddabf5.
 Original MASK/LAST reduction now passes host/WASM CLI source checks; interpreter
 returns intended value5. Declaration collection/lazy entities replace sequential

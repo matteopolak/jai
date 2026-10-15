@@ -1,5 +1,74 @@
 # Compiler deviations and implementation gaps
 
+## Generic instance audit provenance
+
+Binding scopes distinguish concrete generic instances from source declarations.
+NotNeeded instances are not audit roots; selected instances still queue/check
+normally, caches remain intact and unreferenced concrete declarations still fail
+on errors. Four original lint regressions and actual generic-producer Mac runtime
+checks pass. This does not promise checking all uninstantiated generic bodies.
+Full Http context is not green: it now reports the separate missing
+atomic_compare_exchange dependency. No Extensions source was modified.
+
+## Reviewed decimal fixture correction
+
+No numeric implementation or implicit-conversion rule changed. The reviewed
+compiler metadata contract replaces obsolete total-digit/type and 18-significant
+formatting oracles with fractional-digit/default-context checks and actual
+rounded-value assertions. Two negative cases retain initialization/arithmetic
+narrowing errors. Evidence is actual Mac interpreter/native O0/O2; WASI is source
+checking only. External protocol/native prerequisites remain unresolved here.
+
+## Late record links and final Mac scope
+
+records.rs journals mutated identities; record_build.rs indexes pending null
+references and links newly available metadata without reallocating objects or
+overwriting other metaprogram edits. This is a general null-to-ready reference
+mechanism, not a procedure/header/field-name shortcut. It does not synchronize
+arbitrary scalar/list or already non-null field changes. Pending indices/journal
+retain linear metadata state until compilation teardown; failed arena allocations
+remain owned until teardown as before, while cached IDs and published links roll
+back. Regression covers failed-fill repair/cycles/edit preservation. Long-term
+wider synchronization needs a reviewed ownership/update contract, not replay of
+whole records that destroys user edits. No performance claim or benchmark added.
+
+Member using-path recognition now accepts deferred typed declarations as well as
+expanded field items. Existing layout/reflection order and privacy/filter checks
+remain intact. Fresh focused checks:165 library,11 layout,8 reflection; 18/22
+catalogue interpreter passes,16 actual native cases per O0/O2 plus2 compile-time
+only. Four remaining errors are recorded rather than hidden. The missing public
+Protocol comparator remains required, numeric assertions remain unchanged, and
+native crash helper setup remains integrator-owned. Explicit unsupported Run
+printing is a negative capability test, not claimed complete serialization.
+
+## Program_Print and Code reconstruction bounds
+
+Supported compound/comma/exists/backtick output uses reviewed record fields and
+returns real success only after all children print. compiler_get_code omits root
+expression parentheses to preserve statement syntax. Original mixed/backtick
+runtime round-trip and catalogue cases pass, with no fixture-specific compiler
+bypass. Non-null exists sync fields and mixed typed assignment records still
+return false rather than invent syntax. Run/assert export currently lacks a
+reviewed procedure-body encoding; no private expression/message fields were
+invented. The explicit unsupported-return regression is not counted as Run/assert
+printing support. Exact pretty-string/name oracles were migrated to public AST,
+type/parameter metadata and meaningful inspection checks; docs list every reason.
+
+## Mac catalogue repair scope (2026-10-15)
+
+Test oracle corrections are documented per fixture in compiler/mac-catalogue-repairs.md.
+No module/path/type-name bypass, fake metadata, ignored assertion or whole-suite
+deletion. Exact unreviewed Program_Print whitespace checks are replaced with
+successful printing plus explicit AST names/values/types. Debugger remains
+unavailable and is required to diagnose in an original negative CLI test. Six
+fixtures pass actual interpreter/native ARM64 O0/O2. Custom-link's fixed API
+still exposes a missing native portable_crash prerequisite in normal runner;
+only -no_workspace_output interpreter execution passes, not normal integration.
+Protocol comparison is public but absent; preserve failure for portable owner.
+Numeric inference needs reviewed reconciliation with lexer fractional-digit flags;
+existing numeric checks remain failing, not changed to current behavior.
+No production semantic workaround or API extension is included in this migration.
+
 ## Enum dependency checkpoint (2026-10-15)
 
 No module/source-name bypass, fabricated constants, weakened assertions, public
