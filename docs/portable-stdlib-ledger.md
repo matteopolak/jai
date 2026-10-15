@@ -39,7 +39,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [dxc-compiler](specs/stdlib/modules/dxc-compiler.md) | Reserved for bindings worker; not implemented or modified here |
 | [dxgi](specs/stdlib/modules/dxgi.md) | Reserved for bindings worker; not implemented or modified here |
 | [example-plugin](specs/stdlib/modules/example-plugin.md) | Owned portable scope; not implemented |
-| [executable-formats](specs/stdlib/modules/executable-formats.md) | Owned portable scope; not implemented |
+| [executable-formats](specs/stdlib/modules/executable-formats.md) | Partial: real bounded classic/GNU/COFF/BSD ar parsing, symbol indexes and universal signature detection. Native original C archive and malformed/lifetime tests pass. Missing Arch_File shape blocks universal records; remaining object/debug/text parsers unfinished |
 | [file-utilities](specs/stdlib/modules/file-utilities.md) | Partial paths, Unix metadata, recursive listing/copy and replacement implemented; tree copying, self-copy rejection and metadata pass interpreter/native. Visit aliases missing reviewed signatures |
 | [file-watcher](specs/stdlib/modules/file-watcher.md) | Owned portable scope; not implemented |
 | [file](specs/stdlib/modules/file.md) | Reserved completion for platform-io worker. Existing partial Unix implementation retained; offset/EOF/write/seek cases remain integration regressions. Windows/Android not completed here |
@@ -67,7 +67,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [linux](specs/stdlib/modules/linux.md) | Reserved for bindings worker; not implemented or modified here |
 | [lz4](specs/stdlib/modules/lz4.md) | Reserved for bindings worker; not implemented or modified here |
 | [machine-x64](specs/stdlib/modules/machine-x64.md) | Owned portable scope; not implemented |
-| [macos-bundler](specs/stdlib/modules/macos-bundler.md) | Owned portable scope; not implemented |
+| [macos-bundler](specs/stdlib/modules/macos-bundler.md) | All reviewed procedures implemented for macOS bundle/icon operations and portable XML scalar helpers. Real copied executable/resources/ten-size ICNS round-trip and native plist validation pass both modes. Float output requires NEW formatting foundation; detailed copy/name/Any policies await review |
 | [macos](specs/stdlib/modules/macos.md) | Reserved for bindings worker; not implemented or modified here |
 | [mail](specs/stdlib/modules/mail.md) | SMTP/MIME transport implemented through new Curl bindings; text/HTML, envelope/header recipients, binary attachments, explicit fixture auth, rejection and required-TLS failure tested against loopback in interpreter/native. Scramble, exact serialization and positive encrypted delivery unresolved/unverified |
 | [math](specs/stdlib/modules/math.md) | Reserved for numerics worker; not implemented or modified here |
@@ -114,7 +114,7 @@ Ownership exclusions are listed in [implementation ownership](implementation-own
 | [soa](specs/stdlib/modules/soa.md) | Generated canonical component arrays, indexed gather/scatter and value/pointer loops implemented; overlay/constant omission, empty extent and writeback on continue/break/return tested. General overlapping-union selection requires review |
 | [socket](specs/stdlib/modules/socket.md) | Partial Unix wrappers plus generated native declarations. IPv4 loopback, fd sets and IPv6 formatting pass interpreter/native; Windows wrappers and remaining native/helper gaps recorded separately |
 | [sort](specs/stdlib/modules/sort.md) | Implemented both callback forms and built-in comparators; numeric sorting checks pass interpreter/native |
-| [sound-player](specs/stdlib/modules/sound-player.md) | Owned portable scope; not implemented |
+| [sound-player](specs/stdlib/modules/sound-player.md) | Partial: nineteen canonical common records/enums, sample arithmetic, bounded magic reads and live topology/accumulator/retired-decoder storage. Real arithmetic/layout/mutable-identity tests; playback, queues, device backends, spatial mixing and compressed decoders unfinished |
 | [srgb](specs/stdlib/modules/srgb.md) | Reserved for window/render worker by current ownership; not modified here |
 | [stb-image-resize](specs/stdlib/modules/stb-image-resize.md) | Reserved for bindings worker; not implemented or modified here |
 | [stb-image-write](specs/stdlib/modules/stb-image-write.md) | Reserved for bindings worker; not implemented or modified here |

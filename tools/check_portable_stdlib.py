@@ -7,6 +7,7 @@ Unimplemented module fixtures remain unchanged in tests/stdlib-contract.
 import argparse
 import os
 from pathlib import Path
+import plistlib
 import shutil
 import signal
 import subprocess
@@ -14,11 +15,22 @@ import sys
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def valid_bundle_plist(output, require_reals=False):
+    expected = {"a<&\"'": "value<&\"'\r\né", "true": True, "false": False,
+                "negative": -9223372036854775808, "unsigned": 18446744073709551615}
+    if require_reals:
+        expected.update({"real": 0.125, "large-real": 1.25e100})
+    return plistlib.loads(output.encode("utf-8")) == expected
+
+
 CONTRACTS = [
     "basic", "string", "memory", "pcg", "codec", "bit-array", "reflection",
     "unicode", "pool", "adpcm", "bucket-array", "file-utils", "socket", "thread", "process", "command-line",
 ]
 EXPECTED = {
+    "bundle-plist": valid_bundle_plist,
     "print-color": "\x1b[1;31mcolor 42\x1b[0m\x1b[4;32mscope\x1b[0mok\n",
     "basic-output": "out 7++",
     "runtime": "runtime -9223372036854775808 ff\n",
@@ -29,6 +41,8 @@ EXPECTED = {
 EXPECTED_STDERR = {"print-color": "\x1b[0;44merror\x1b[0m", "basic-output": "err true"}
 EXPECTED_EXIT = {"basic-output": 17}
 FAULT_EXPECTATIONS = {
+    "sound-channels": ("assertion failed", "audio sample input/channel range invalid"),
+    "sound-magic": ("assertion failed", "audio magic read outside input"),
     "atomic-bit-index": ("assertion failed", "atomic bit index out of range"),
     "deep-copy-fixed": ("assertion failed", "Deep_Copy does not support fixed arrays"),
     "deep-copy-any": ("assertion failed", "Deep_Copy does not support this reflected value kind"),
@@ -86,6 +100,7 @@ def main():
         parser.error("compiler must be a source build under this checkout's target directory")
     subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_runtime.py")], cwd=ROOT, check=True)
     subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_zip_fixtures.py")], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, "-B", str(ROOT / "tools/build_portable_archive_fixtures.py")], cwd=ROOT, check=True)
     subprocess.run([sys.executable, "-B", str(ROOT / "tools/check_portable_mpeg_matrix.py")], cwd=ROOT, check=True)
     if args.stdlib:
         root = args.stdlib.resolve(strict=True)
