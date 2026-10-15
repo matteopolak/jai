@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run actual macOS bundle/icon tools on original source fixtures in both modes."""
+import argparse
 import os
 from pathlib import Path
 import platform
@@ -24,10 +25,16 @@ image = b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 16, 16, 8,
 pixels = (b"\0" + bytes([30, 90, 170, 255]) * 16) * 16
 image += chunk(b"IDAT", zlib.compress(pixels)) + chunk(b"IEND", b"")
 (output / "bundle-image.png").write_bytes(image)
-env = dict(os.environ, JAIC_STDLIB=str(ROOT / "target/portable-integration-stdlib"))
-compiler = ROOT / "target/compiler/debug/jaic"
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--jaic", type=Path, default=ROOT / "target/debug/jaic")
+parser.add_argument("--stdlib", type=Path, default=ROOT / "stdlib")
+args = parser.parse_args()
+compiler = args.jaic.resolve(strict=True)
+library = args.stdlib.resolve(strict=True)
+env = dict(os.environ, JAIC_STDLIB=str(library))
 source = ROOT / "tests/portable-stdlib/bundle-app/main.jai"
 executable = output / "bundle-app-test"
+executable.parent.mkdir(parents=True, exist_ok=True)
 subprocess.run([str(compiler), str(source), "-exe", str(executable)],
                cwd=ROOT, env=env, check=True, timeout=60)
 fixtures = output / "bundle app fixtures"

@@ -198,3 +198,11 @@ implementation and original behavior assertions together, preserving their cover
 These are integration-detected compatibility gaps, not unspecified contracts or
 permission to weaken tests. This worker continues compiler/tool integration while
 the active owner corrects the shared foundation batch.
+
+## Refresh eleven follow-up
+
+SDL proxy request above is resolved in source by bindings40e37e9; production native verification remains pending. Basic helper batch is corrected by foundations841b417; production regression rerun pending. Runtime configuration consumer is adopted in canonical internal/runtime, with actual production CLI allocation tests passing.
+
+Portable owner: reconcile internal/simd/lanes.jai and its generator/tests with latest reviewed simd.md. Comparisons use scalar bool-to-element values (integer1/0), get_mask tests truthiness, load returns SIMD_Array(N,F), gather/scatter use byte offsets and ordered repeated writes, looping indices are i*STEP, and horizontal_add fills all interleaved pair sums. Preserve documented reviewed reference defects; do not treat now-settled contracts as unspecified.
+
+Compiler owner: create_thread ignores stack/security arguments and unknown flags. Implement actual supported native handling or explicit diagnostics; default-input tests cannot establish nondefault support. Preserve suspended/resume/count and real ABI/thread identities.

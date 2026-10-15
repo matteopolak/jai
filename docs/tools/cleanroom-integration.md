@@ -311,3 +311,14 @@ This is a source checkpoint for normal temporary CI, not a completion claim.
 Broad suite outcomes and newly settled foundation discrepancies are pending below
 and in integration-requests.md. Historical evidence is retained in the sections
 that follow.
+
+## Refresh eleven canonical runtime and source checkpoint
+
+Merged compiler72bdba5, foundationsf9cd1c3, portable43f1d1f, bindings40e37e9, windowbfd1c5c and platforme40c412 with prior numerics/LSP/SDL3, plus authorized coordinator CI candidatee8c312d. Latest manifest may contain newer pending heads; it is not a claim of consumption. Production runtime configuration failed before consumer adoption, then passed:
+
+```sh
+JAIC_STDLIB="$PWD/stdlib" target/debug/jaic tests/compiler-semantics/runtime-configuration/allocation.jai -interp
+LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm RUSTC_WRAPPER= cargo test --locked -p jaic-cli --test cleanroom_runtime_config
+```
+
+Actual canonical library, no overlays: 65536-byte allocation and last-byte access, zero/null and131072 child allocations, late child update of root size, nativeO0/O2 and interpreter all pass (secondary artifacts/runtime-config-production-tests.log; prior rejection retained). No native Windows or production WASI allocation claim yet. Compiler/LSP/jailint production source build passes (secondary artifacts/build-refresh11.log). Native SDL pointer correction is integrated; broad new tests and final integrated lint remain pending. Coordinator CIe8c312d proves wheelbothCPUs and ARM64 crash12cases, while x64 crash, thread output and WGLshared lifecycle failures and ARM64driver capability remain real gates. Full opaque corpus is coordinator-only.
