@@ -1,13 +1,13 @@
 {
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
-    "declared": 28397,
-    "unresolved": 36,
-    "implemented_manual": 52,
+    "declared": 28396,
+    "implemented_manual": 67,
+    "partially_implemented": 88,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1,
-    "partially_implemented": 80
+    "unresolved": 14
   },
   "reports": [
     {
@@ -1203,6 +1203,272 @@
       "sha256": "d5f6f7da97b308fae5e489ce7674132f7c18220045e5697ddb1844b8847b87a3",
       "scope": "Observed regression with fresh-only callback contexts before synchronous context borrowing",
       "observed_failure": 134
+    },
+    {
+      "report": ".work/rpmalloc-global-cache-first.json",
+      "sha256": "0ddfe5fce0beedabbfdc5be7c9844bb85af01745cdeb10eb00a7923cc28e5e3e",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 238,
+      "failures": 0,
+      "expected_failures": 10
+    },
+    {
+      "report": ".work/rpmalloc-global-cache-enabled.json",
+      "sha256": "ee28b6aeb1506c49ac3c6459629a44730ab659576f5f273c9cf064100e16b471",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "passed": 126
+        },
+        "native": {
+          "passed": 38
+        },
+        "privacy": {
+          "passed": 198
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-cache-matrix-final.json",
+      "sha256": "18cd7f81a714f3411cc580da497475b80068717ecb04d26d109a5eca6ebe87d7",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 357,
+      "failures": 0,
+      "expected_failures": 10
+    },
+    {
+      "report": ".work/rpmalloc-cache-configurations.json",
+      "sha256": "853b5efad2b7940673a009693b40fb0494b63b935380dd5bbd78ca511bf91303",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 192,
+      "failures": 0,
+      "expected_failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-cache-enabled-configurations.json",
+      "sha256": "737aac06143be58b131217724058d090e20d006f09b9642dab32f14af5655085",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 192,
+      "failures": 0,
+      "expected_failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-cache-production-enabled.json",
+      "sha256": "bfd1a730c34d2ef39ed45c2d652287a3410138b817f129517ab56a319a14da49",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 349,
+      "failures": 0,
+      "expected_failures": 8
+    },
+    {
+      "report": ".work/rpmalloc-cache-full-enabled.json",
+      "sha256": "66f9086ac3d36f25c1e07952f14a058b67e1e1e0a345f49d1f4ad169bb9be6ff",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "passed": 132
+        },
+        "native": {
+          "passed": 40
+        },
+        "privacy": {
+          "passed": 198
+        }
+      }
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-before.json",
+      "sha256": "359fef502f268e5868a89dc3248a54fb8e17ce934910811865fef2e16dabfa67",
+      "scope": "Genuine metadata OOM before heap acquisition; original failing evidence",
+      "compiler_sha256": null,
+      "checks": 2,
+      "failures": 1,
+      "expected_failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-after.json",
+      "sha256": "4a2947fdaee594518b82be6334115953189bf2d7f959fc8685417e88c8f7d26b",
+      "scope": "Typed heap reservation OOM and real native map failure preserve ownership and release metadata",
+      "compiler_sha256": null,
+      "checks": 2,
+      "failures": 0,
+      "expected_failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-matrix.json",
+      "sha256": "ae642539d9960871410ebd4509720eb6e7fdb2bb44f730664f568fde4ab122e6",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 357,
+      "failures": 1,
+      "expected_failures": 10
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-production.json",
+      "sha256": "541f8bbc263c786629cf1ffa9ad8a0b6e2afa7ee773344ec5160af7c6c6ee2ca",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 349,
+      "failures": 1,
+      "expected_failures": 8
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-regeneration.json",
+      "sha256": "fdd8bd6cd9f79e2c6f9ac78ec09f05aa587b776c103dfab16551974dbf023a2b",
+      "scope": "Actual failed generated-hash checks rerun after regeneration; original native evidence preserved",
+      "compiler_sha256": null,
+      "checks": 3,
+      "failures": 0,
+      "expected_failures": 0
+    },
+    {
+      "report": ".work/rpmalloc-heap-reservation-final.json",
+      "sha256": "b7a38c0e9a7fd365b63d229b7bddad8ca2f84401f7e7759a92eb0040c61bcb90",
+      "scope": "Public heap behavior/configurations; separate private ABI/native counters and host C sanitizers",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "checks": 357,
+      "failures": 0,
+      "expected_failures": 10
+    },
+    {
+      "report": ".work/objc-runtime-complete/checks.json",
+      "sha256": "f6b69cdfeba4342848e1e8560e2d3dce88dcb640262625cdef80fedf8be40c34",
+      "scope": null,
+      "compiler_sha256": null,
+      "checks": 5,
+      "failures": 0,
+      "observed_expected_rejections": 0
+    },
+    {
+      "report": ".work/objc-runtime-complete/negative.json",
+      "sha256": "3052edd2362f371c613fb65864531a533613fe9f5b74eaaa2def0e64faa7800f",
+      "scope": null,
+      "compiler_sha256": null,
+      "checks": 4,
+      "failures": 0,
+      "observed_expected_rejections": 2
+    },
+    {
+      "report": ".work/objc-helper-module.json",
+      "sha256": "48a2965c067360da006127ab785053bbf95a8f6bbca10b6af9efe7a57d9f0f29",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "unsupported": 4,
+          "passed": 8
+        },
+        "native": {
+          "passed": 6
+        },
+        "privacy": {
+          "unsupported": 40,
+          "passed": 20
+        }
+      }
+    },
+    {
+      "report": ".work/shader-helper-modules.json",
+      "sha256": "c1984349260f56b01627992fd0e23298b6bb78f0cc9bdb713e134603085c8ff8",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "unsupported": 8,
+          "passed": 24
+        },
+        "native": {
+          "passed": 4
+        },
+        "privacy": {
+          "unsupported": 48,
+          "passed": 24
+        }
+      }
+    },
+    {
+      "report": ".work/shader-helpers-current/native-and-lint.json",
+      "sha256": "44cf58cb6e7287324bba01c6a92f7303eebecfa6bd30cc18b267a153e523e02e",
+      "scope": null,
+      "compiler_sha256": null,
+      "checks": 5,
+      "failures": 0,
+      "observed_expected_rejections": 0
+    },
+    {
+      "report": ".work/shader-helpers-current/clipboard-checks.json",
+      "sha256": "2332a02d0e3a14781d794a3948b5f9e48a82e9ba50aee175ce2839d698c9a553",
+      "scope": null,
+      "compiler_sha256": null,
+      "checks": 7,
+      "failures": 0,
+      "observed_expected_rejections": 0
+    },
+    {
+      "report": ".work/bindings-mac-combined-current.json",
+      "sha256": "9bb68c47b4e35e48c456c275a784a7b558626896048a51cc0cac2716b6ab59b8",
+      "scope": null,
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "unsupported": 26,
+          "passed": 146
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 98
+        },
+        "privacy": {
+          "passed": 116,
+          "unsupported": 40
+        }
+      }
+    },
+    {
+      "report": ".work/x11-android-reviewed-final.json",
+      "sha256": "980e41520a1231763bbf99e03351ea98f68a28cafb164854d42e0afe8c1a1005",
+      "scope": "Existing independent local baseline plus owned bindings; no Android device or Linux X server execution",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "unsupported": 10,
+          "passed": 22
+        },
+        "native": {
+          "passed": 4
+        },
+        "privacy": {
+          "passed": 12,
+          "unsupported": 48
+        }
+      }
+    },
+    {
+      "report": ".work/bindings-mac-helpers-current.json",
+      "sha256": "1b50e432ee45c055541f16e5cc66fcc9993f26b28482fd2bdb3dbc5b0d2fa103",
+      "scope": "Existing independent local baseline plus owned bindings; no Android device or Linux X server execution",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "unsupported": 26,
+          "passed": 148
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 100
+        },
+        "privacy": {
+          "passed": 116,
+          "unsupported": 40
+        }
+      }
     }
   ],
   "canonical_compiler_sha256": "9b4c4fd3179a9c08d9912ec256688491bba3c9698bbba859e6356c33b43ba535",

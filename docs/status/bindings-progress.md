@@ -1,5 +1,147 @@
 # Bindings worker progress
 
+Reviewed X11/Android helper batch: all ten names now have authored bodies; both
+modules have zero unresolved ledger entries. Full native-port Android command
+bodies and compact foreign delegates now select the correct record branches.
+X11 has initialization, DND replacement/ancestor awareness and exact requestor
+filtering. Android has real command/asset/finish/log routes, with no fake SDK
+success. Mac command/policy tests pass on both CPUs and under host address/
+undefined sanitizers; pinned Bionic ABI checks pass on both Android CPUs.
+Combined isolated worker Mac sweep is green:148 source,100 native build/run,
+116 privacy passes, with unavailable cases separate. Strict X11/core lint,
+formatting, regeneration and73 Python tests pass. Full Android Jai type/lint
+checks and native device execution remain unavailable; the Runtime flush versus
+literal discard integration detail is explicitly documented. Only telemetry14
+remains unresolved root declarations; existing Objective_C7/rpmalloc80 partial
+entries remain. See [implementation/evidence](../native/x11-android-helpers.md).
+
+Implementation checkpoint `2d84553`. Android logger is conservatively partial
+for its forced-flush versus required discard substitution; the generated ledger
+now records that distinction (88 total partial entries). Its other reviewed
+logging behavior has real source implementation. This is a new Runtime
+integration gap, not an unresolved old X11/Android behavioral question.
+
+Historical checkpoint before the latest review:
+
+Post-`0488c78` focused checkpoint: no new public helper is counted complete.
+Current reviewed pages/inbox still omit ten helper behavior contracts; the
+question ledger now has ten narrow per-procedure requests. X11 three, Android
+seven and enabled telemetry fourteen remain missing. The verifier gained an
+existing-local-stage path that never discovers peer checkouts, and a real
+private runtime owner-selection bug was fixed. Focused checks retain two Linux
+X11 missing-export failures; 14 source and ten privacy checks pass. Clipboard
+ownership/canary/idempotence executes successfully on both Mac CPUs. All71
+Python regressions, owned formatting, strict X11 lint and regeneration pass.
+Android CLI target is still rejected, not verified. See
+[current evidence](../native/x11-android-contract-status.md). No optional
+rpmalloc profile/performance work, guessed helper ABI or public stub was added.
+
+Combined worker Mac baseline is green: `.work/bindings-mac-combined-current.json`
+has zero failures, with 146 source, 98 native build/run and 116 privacy passes.
+Unavailable target/iOS cases are separate, not passed. This stages current NEW
+producer sources and owned bindings; coordinator corpus/final integration is
+not claimed. X11 clipboard cleanup now has real locking/ownership behavior,
+Linux CPU source checks and both-CPU Mac allocator/canary/idempotence tests.
+Production lint, formatting, regeneration and 68 Python tests pass.
+
+Current missing declarations: X11 three (initialization/DND/predicate contracts),
+Android seven (glue/app/asset/logging behavior) and enabled telemetry fourteen
+(matching commercial SDK unavailable). D3D compiler and DXC have no missing
+public declarations; Objective_C all eight helper bodies execute but seven
+retain conservative partial compatibility status. rpmalloc retains its 80
+partial entries and 24 existing verified profiles. No optional matrix expansion
+or benchmark ran. Precise filtered requests are in native-bindings-questions.md.
+
+Shader compiler helper checkpoint `484c306`: d3d_compiler now has both missing
+string overloads; dxc_compiler now has its missing version procedure. These two
+modules have zero unresolved public declarations. D3D ignores define slices as
+reviewed, preserves HRESULT, copies exact blob bytes and releases native
+references only in the memory overload; file output references transfer to the
+caller. DXC formats the reviewed version text and releases native custom
+text/interfaces. Canonical Windows/bootstrap types remain exact. Both Windows
+CPU source programs pass. Module sweeps pass 24 source, four Mac portable-copy
+build/run and 24 privacy checks; formatting, strict Windows-target lint and
+regeneration pass. Actual Windows SDK execution remains a required later gate.
+Other-module unresolved count is 25; Objective_C seven and rpmalloc 80 partial
+entries remain honest. Next: X11 clipboard ownership cleanup. No optional
+profile expansion or benchmark ran.
+
+Objective_C helper batch after `5b6ac6f`: all eight missing public helper bodies
+now exist, including the newly reviewed runtime-size member-stub generator.
+Real x64/ARM64 Mac tests verify native encoding parsing, class/ivar layout,
+instance/metaclass dispatch,32-byte return ABI, object release and failed class
+cleanup. Full module source/native/privacy sweep has zero applicable failures;
+formatting, strict lint, regeneration and68 Python tests pass. Seven helpers
+remain conservatively partial for unsupported reflected categories and exact
+Jai-specific policy review; no unsupported diagnostic is counted as completed
+functionality. Objective_C has0 unresolved declarations,7 partial helpers.
+Other-module unresolved count is now28; rpmalloc remains80 partial with its
+existing24 verified cache profiles. No profile expansion or benchmark ran.
+The framework-path fallback is documented in deviations; combined coordinator
+Mac corpus result remains unavailable to this isolated worker. Next: reviewed
+D3D string overloads, DXC version helper, then X11 missing helper group.
+
+Heap handle OOM batch after `4fa38d7`: typed canonical HeapView storage is now
+reserved before SDK ownership mutation. Reservation OOM returns null/ENOMEM;
+actual SDK mapping failure frees the reservation. The original fault injection
+aborted (signal6); the same real test now verifies unchanged native heap buckets,
+orphan lists, active counts and allocation balance, then successful allocation
+and cleanup. Extra allocation/zeroing/free cost on reuse is explicit. Graph and
+default-thread metadata OOM still remain fail-fast; full metadata transactions
+are not claimed. No new SDK source patch or public shape/type/signature change.
+
+Both rebuilt native scopes passed all native/source/ABI/sanitizer/lint/format
+checks, but each correctly failed the stale coverage-ledger hash check. Those
+original reports remain intact; regeneration and actual failed-check retries
+pass, together with68 Python tests. The final357-check run passes completely and records all shared/private
+test-source hashes, including22 positive Mac executions and72 C sanitizer
+executions across24 profiles. Fresh static/shared worker builds succeed. All owned scope is still incomplete:0 unresolved/80 partial
+rpmalloc declarations and36 other-module unresolved declarations, with the
+original18 configuration failures resolved. Native Windows/Linux remain
+unverified. Precise option/OOM questions are in
+`docs/specs/stdlib/native-bindings-questions.md`.
+
+Thread-cache option batch after `154ff0d`: all four thread/global-cache
+selections now use24 real SDK/callback domains, preserving every conditional
+public Heap field. Native independent public mirror offsets/sizes pass with
+thread cache absent in raw-base, raw-enabled and rewrite layouts, with both
+statistics selections. Shared public regressions also exercise real four-thread
+free handoff, resize/data retention, heap lifetime and independent domain state.
+Universal Mac builds pass. `.work/rpmalloc-cache-matrix-final.json` passes357
+checks:66 desktop source checks,22 positive Mac executions,72 C sanitizer
+executions across24 profiles,72 C mirror target/layout checks, strict lint,
+formatting, regeneration and68 Python tests. Ten expected failure checks retain
+actual observed exits. Both private heap selections pass192 configuration
+declaration/public-name checks each (all16 public cache/statistics/raw options
+on six desktop targets). Earlier original18 failures remain resolved. Fresh worker native static/shared
+builder succeeds for all24 domains; its raw-enabled host scope passes349
+checks. The ordinary full enabled verifier passes132 source,40 host build/run
+and198 privacy checks. This is worker evidence, not final package integration.
+
+Declaration ledger stays0 unresolved/80 partial rpmalloc plus36 other-module
+unresolved APIs. Adaptive cache/assertion/validation/page-advice/numeric/huge
+and unmap options remain incomplete. Metadata association OOM remains fail-fast;
+diagnostic snapshot allocation is transactional. More native domains increase
+package/build size, and view copying/serialization remain explicit costs.
+Native Windows/Linux and final coordinator integration remain unverified.
+
+Global-cache option batch after `7eafe15`: ENABLE_GLOBAL_CACHE=false now
+selects a genuinely separately compiled SDK/callback/ownership domain for each
+raw/rewrite/statistics shape. All twelve domains build for both Mac CPUs.
+Focused verification passes238 checks:60 desktop source checks,20 positive
+Mac executions,36 native C sanitizer executions, strict lint, formatting,
+regeneration and67 Python tests, with expected assertion/type failures retained.
+Real allocation/resize/free/heap ownership and callback failure rollback pass;
+SDK counters show no retained global cache, and default-domain ownership/data
+survive independent cache-disabled lifecycle changes. No new SDK source patch.
+
+The ledger remains0 unresolved/80 partial rpmalloc declarations, plus36
+other-module unresolved APIs. Thread-cache/adaptive/assertion/page-advice and
+numeric options remain incomplete. Heap/span metadata OOM remains fail-fast;
+diagnostic snapshot OOM is transactional. Native Windows/Linux and coordinator
+package verification remain unverified. Twelve domains increase native package
+size; full-view copy and serialization costs remain explicit.
+
 Allocator/dump milestone after `9106bfb`: all reviewed generic modes and both
 rewrite builder forms are implemented. Raw-base generic handles have exact
 canonical records even with named heaps disabled, bringing the real native

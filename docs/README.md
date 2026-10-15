@@ -61,6 +61,16 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
   textures, depth/stencil and asynchronous readback evidence;
   [remaining deviations](status/window-render-deviations.md).
 
+- [Shader compiler helpers](native/shader-compiler-helpers.md): reviewed D3D
+  string ownership and DXC version text, with separate native/source evidence
+- [X11 clipboard ownership](native/x11-clipboard-ownership.md): real cleanup,
+  allocator tracking and separate native/source verification
+- [Reviewed X11/Android helpers](native/x11-android-helpers.md): ten source/API
+  implementations, native command/policy tests and explicit device limitations
+- [Current combined worker Mac evidence](native/bindings-mac-current.md):
+  current producer staging, zero failures and explicit remaining gates
+- [Objective-C runtime helpers](native/objc-runtime-helpers.md): real encoding,
+  runtime class/method installation, member declarations and native ABI tests
 - [FSEvents context adapter](native/fsevents-context.md): exact public order,
   private SDK marshalling, callback lifetime and native canary/event checks
 - [Direct3D canonical interface dependencies and compiler repros](native/d3d-source-dependencies.md)
@@ -76,6 +86,10 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
   build selection and separate canonical raw record marshalling
 - [rpmalloc allocator protocol and diagnostic snapshots](native/rpmalloc-allocator-protocol.md):
   complete reviewed mode dispatch, raw-base records, transactional capture and output gates
+- [rpmalloc native cache selections](native/rpmalloc-global-cache-plan.md):
+  real SDK domains, conditional public layouts and cache-option verification.
+- [Transactional rpmalloc heap handle reservation](native/rpmalloc-heap-reservation.md):
+  preflight OOM/null handling, actual SDK failure rollback and remaining graph allocation limits
 - [rpmalloc heap ABI evidence](native/rpmalloc-heap-abi.md): complete pinned
   native storage probes and required separation from canonical public records
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs

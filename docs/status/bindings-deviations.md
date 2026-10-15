@@ -8,6 +8,129 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Reviewed Android helpers: source/device and buffer boundary.** All seven
+  reviewed helper names now have real source bodies. Full and compact command
+  branches were corrected; compact SDK calls require runtime-origin native
+  storage and never allocate an undersized public record for the SDK. Command
+  transitions and logging/path policy run with real host pthread/pipe/free
+  operations on both Mac CPUs and host sanitizers. Actual Android target
+  type/lint checking, full app-record ABI and device calls remain unverified
+  because the current compiler/tool CLI rejects Android. No fake SDK calls
+  count as success. The logger currently invokes the reviewed public Runtime
+  forced flush before its SDK log call; Basic has no reviewed discard hook.
+  This can flush pending output where literal discard was intended. The proper
+  fix, if review requires discard, is a canonical Runtime-owned internal hook,
+  with owner confirmation requested in the question ledger. No private peer
+  implementation or invented public export was used. Source/test/provenance
+  details and the preserved sanitizer cross-build rejection are in
+  [helper evidence](../native/x11-android-helpers.md).
+  Location: `stdlib/Android/wrappers.jai:android_logger`. Its ledger entry remains
+  partially implemented until that discard boundary is resolved; real logging
+  alone is not counted as completed buffer semantics.
+
+- **X11 helper native boundary.** All three remaining helpers are implemented,
+  source-checked on both Linux CPUs and strictly linted. Real X server resource,
+  parent-property, input-method and cursor execution remains unverified on this
+  Mac host. Display/thread/cursor setup failure aborts because the reviewed
+  procedure has no failure result; XIM/XIC failure leaves nullable handles.
+  Module-owned typelists retain their allocation domain for correct replacement
+  frees; callers must keep that allocator alive. No public layout was changed.
+  The new real-X-server test retains property, replacement and predicate
+  assertions for Linux native CI. Earlier missing-export failures are preserved
+  as historical evidence and now pass source checks.
+
+- **Focused verification ownership bug, repaired.** The private runtime-test
+  fallback assigned clipboard and shader byte-copy units to DXC despite their
+  X11/D3D placements. A module-filtered run could omit real ownership tests.
+  `verify.py` now derives the facade from the private placement, with a
+  regression over every registration. Current X11 selection executes the
+  clipboard test; both Mac CPU native executions also pass independently.
+  `--existing-stdlib` reuses the local independent baseline without discovering
+  peer checkouts. This is worker staging, not fresh coordinator integration.
+  The ten requested X11/Android public helpers remain missing for the precise
+  contracts in the question ledger. Two current X11 export failures remain
+  active; Android source/runtime and native Linux remain unverified. No helper
+  policy was fabricated to change the ledger count. See
+  [focused report](../native/x11-android-contract-status.md).
+
+- **X11 clipboard and combined Mac evidence.** Clipboard buffers are freed
+  through canonical Basic hooks in the calling allocator domain under native
+  Display locking. The private generic operation is tested with real allocator
+  delegation, canaries and idempotence on both Mac CPUs; it is not a fake Xlib
+  implementation. Native Linux/X server behavior remains unverified. Other X11
+  helper policies remain unspecified and unimplemented, explicitly requested.
+  One combined current-producer worker Mac run has zero applicable failures;
+  unavailable targets remain unsupported and coordinator corpus/package proof
+  is not claimed. General --target-os scoping narrows source/privacy checks
+  without changing assertions, test oracles or the default full desktop scope.
+
+- **Shader helper platform and error evidence.** D3D ignored define slices are
+  an explicit refreshed public contract. Exact native blob byte counts include
+  embedded/terminal NUL if supplied; copies use canonical Preload memcpy and
+  caller Basic allocator ownership. Invalid UTF-8 filenames return E_INVALIDARG
+  before an impossible conversion/call. The private DXC HRESULT check uses
+  active assertion plus a guaranteed stop if a handler returns, retaining safe
+  COM ownership and the reviewed no-status-result interface. No legacy private
+  CheckCom body is restored or inferred. Native Windows SDK behavior remains
+  unverified; Mac verifies only portable copying/ownership. The absent console
+  SDK variant is not invented. No SDK patch or public record change was added.
+  Real Windows executions of the new public programs remain required.
+
+- **Objective-C helper scope and framework path.** The eight missing bodies
+  are implemented with real native SDK calls. Seven encoding/class/method
+  helpers remain partial for unsupported reflection categories and unreviewed
+  Jai-specific policy; natural C layouts are checked, arbitrary overlays and
+  implicit-context IMPs are rejected before unsafe calls. Returned strings are
+  owned by the active Basic allocator; original naming/collision/error policy
+  equivalence remains a public review question. The member stub tries the
+  documented framework path and then installed .framework bundle spelling,
+  closing its handle in both successful routes. This fallback is required
+  because the prose spelling omits the actual native bundle suffix. Proper
+  fix: clarify the public path selection contract and remove unnecessary
+  alternate routing. Native both-CPU ABI/lifetime tests and strict lint pass;
+  .work/objc-helper-module.json has zero applicable failures. The first
+  large-return fixture had a missing push_context in its C callback; this
+  fixture correction preserves the32-byte native return assertion. No compiler
+  exception, public type replacement or extra root AppKit export was added.
+
+- **Heap handle reservation and remaining graph OOM.** After `4fa38d7`,
+  `rpmalloc-heaps/bridge.c` reserves typed HeapView storage before SDK acquisition.
+  OOM returns null/ENOMEM before native mutation; actual native mapping failure
+  frees the reservation. Cold and established-domain fault injection verifies
+  native bucket/orphan/active-count stability and no live metadata leak. This
+  replaces the abort for this specific preflight failure, not every metadata
+  path. Graph/default-thread association publication can still abort on OOM.
+  Observable independent policy and the exact remaining question are documented
+  in native-bindings-questions.md. A reused heap incurs an extra calloc/free of
+  handle-sized storage: explicit allocation/zeroing cost. Proper long-term fix
+  is typed reservation pools tied to native mapping/retirement, reserving graph
+  capacity before mutation without partial publication or stale associations.
+  No SDK source patch, changed public layout or compiler exception is added.
+  Original native signal6 failure evidence remains recorded.
+
+- **Thread-cache option domains and conditional storage.** After `154ff0d`,
+ 24 real SDK/callback domains cover both thread/global cache choices, all three
+ public layouts and both statistics selections. Public cache fields disappear
+ only under the reviewed condition; private SDK-correct storage remains
+ separate. Independent mirror offsets/widths and real native lifetime/thread
+ handoff/sanitizer tests are active;357 checks pass, plus192 configuration checks
+ for each raw heap selection. Added domains increase code/package/build cost;
+ no extra public parameters, substituted opaque public records or changed
+ public layouts. Long-term selected-domain packaging should avoid shipping
+ unused combinations. Other options, association metadata OOM, serialized
+ mutation/full-view copies and native Windows/Linux proof remain open.
+
+- **Global-cache option domains.** After `7eafe15`, six additional real SDK
+  and callback domains implement ENABLE_GLOBAL_CACHE=false. Public layouts and
+  typed heap/span ownership are preserved; official C cache semantics execute
+  directly. `.work/rpmalloc-global-cache-first.json` has238 passing checks,
+  including native SDK cache counters and ASan/UBSan across all twelve profiles.
+  Cost: doubled domain inventory/build artifacts, plus existing metadata/copy
+  and serialization costs. No new C source patch, fake cache statistics or
+  default-library forwarding. Proper long-term packaging should build selected
+  required domains while retaining exact option identities. Other options and
+  native Windows/Linux remain open; this is not full profile completion.
+
 - **Generic allocator and diagnostic capture scope.** The reviewed mode table
   now has real dispatch for every mode. Raw-base generic heaps retain their
   exact public record shape in two additional SDK domains, even without named
