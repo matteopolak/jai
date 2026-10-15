@@ -7,6 +7,9 @@ main :: () {
     second := Source_Code_Location.{ "original-once.jai", 17, 4 };
     attached := D.is_debugger_present();
 
+    assert(D.attach_to_debugger() == attached);
+    assert(!D.os_attach_to_debugger());
+
     assert(D.break_once(first) == attached);
     assert(!D.break_once(first));
     assert(!D.break_once(first));

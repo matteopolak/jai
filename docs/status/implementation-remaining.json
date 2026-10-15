@@ -1,18 +1,28 @@
 {
   "module": "Debug",
-  "timestamp": "2026-10-15T16:12:37.990487+00:00",
-  "head": "d34c1a74c4d8a3921df49a793442b59a1c06421f",
+  "timestamp": "2026-10-15T16:41:50.431701+00:00",
+  "head": "e288a74804cc534bf3e85939d323399056deb3af",
   "counts": {
     "complete": 2,
-    "partial": 20,
-    "missing": 9
+    "partial": 28,
+    "missing": 0,
+    "excluded_by_reviewed_condition": 1
   },
   "complete": [
     "is_debugger_present",
     "os_is_debugger_present"
   ],
   "partial": [
+    "attach_to_debugger",
+    "break_assert",
     "break_once",
+    "get_written_minidump_filename",
+    "interactive_assert",
+    "os_attach_to_debugger",
+    "os_logger",
+    "os_show_assert_dialog",
+    "set_minidump_state",
+    "write_minidump",
     "abort",
     "backtrace",
     "breakpoint",
@@ -30,76 +40,56 @@
     "output",
     "print_assert",
     "set_report_mode",
-    "trace_assert",
-    "os_logger"
+    "trace_assert"
   ],
-  "missing": [
-    "attach_to_debugger",
-    "break_assert",
-    "get_written_minidump_filename",
-    "init_crash_handler_thread",
-    "interactive_assert",
-    "os_attach_to_debugger",
-    "os_show_assert_dialog",
-    "set_minidump_state",
-    "write_minidump"
+  "missing": [],
+  "draft": [
+    "Final reviewed assertion/configuration/Unix and Windows launch/minidump functionality: available Mac/SDK checks pass; combined runner and commit checkpoint pending"
   ],
-  "draft": [],
   "committed_prior_scope": "Debug_Info complete at 530aee67; preserved",
-  "classification": "All target variants required for complete; partial includes implemented hosts with outstanding platform execution evidence.",
+  "classification": "Source scope is complete, including reviewed conditional absence; partial retains real platform execution boundaries, not missing functionality.",
   "verification_gaps": [
-    "Windows native execution unavailable on Mac; original SDK/native Jai fixtures ready",
-    "Linux native execution pending; shared POSIX source is exercised only on Mac",
-    "Asynchronous foreign-thread/fatal callbacks tested native O0/O2, not interpreter",
-    "Graphics configuration is unresolved; set_report_mode storage cannot yet be exercised through interactive_assert",
-    "Android target rejected by compiler CLI; reviewed false-result detection branch is source-defined only"
+    "Windows native execution pending: SDK x64 DLL/executable O0/O2, arm64 object, public Jai checks/lint are cross-build evidence only",
+    "Linux X11 dialog/native runtime execution pending; x64/arm64 type/lint checks pass",
+    "Android compiler CLI target unavailable; reviewed false-result detection is source-defined only"
   ],
   "batches": [
     {
       "names": [
-        "break_once"
-      ],
-      "effort": "completed",
-      "dependency": "committed b6d52ef6; Windows/Linux native execution outstanding"
-    },
-    {
-      "names": [
-        "init",
-        "os_enable_signal_handler",
-        "os_disable_signal_handler",
-        "enable_signal_handler",
-        "disable_signal_handler",
-        "os_logger"
-      ],
-      "effort": "implementation and available checks completed; committed d34c1a74",
-      "dependency": "Windows/Linux native execution external"
-    },
-    {
-      "names": [
-        "interactive_assert",
-        "os_show_assert_dialog"
-      ],
-      "effort": "medium after exact parameter/dependency contract",
-      "dependency": "question1; attachment question2 for interactive Debug response"
-    },
-    {
-      "names": [
+        "is_debugger_present",
+        "os_is_debugger_present",
         "attach_to_debugger",
-        "os_attach_to_debugger",
-        "break_assert"
-      ],
-      "effort": "medium after reviewed launcher contract",
-      "dependency": "question2"
-    },
-    {
-      "names": [
+        "break_assert",
+        "break_once",
         "get_written_minidump_filename",
+        "init_crash_handler_thread",
+        "interactive_assert",
+        "os_attach_to_debugger",
+        "os_logger",
+        "os_show_assert_dialog",
         "set_minidump_state",
         "write_minidump",
-        "init_crash_handler_thread"
+        "abort",
+        "backtrace",
+        "breakpoint",
+        "disable_signal_handler",
+        "enable_signal_handler",
+        "free_backtrace",
+        "init",
+        "is_valid_pointer",
+        "no_assert",
+        "os_abort",
+        "os_backtrace",
+        "os_backtrace_symbols",
+        "os_disable_signal_handler",
+        "os_enable_signal_handler",
+        "output",
+        "print_assert",
+        "set_report_mode",
+        "trace_assert"
       ],
-      "effort": "large; requires real target execution",
-      "dependency": "questions3/4; Unix unsupported-target behavior and Windows thread/path/state ownership"
+      "effort": "Final reviewed source scope implemented; available checks pass; preparing combined evidence and commit",
+      "dependency": "No unresolved function contract; native Windows/Linux evidence external"
     }
   ],
   "committed": {
@@ -107,17 +97,7 @@
     "Windows lifecycle/init/logger and owned native contexts": "d34c1a74: all available Mac native/interpreter and Windows SDK checks pass; native Windows/Linux pending",
     "ignored_asserts": "d34c1a74: canonical public table behavior Mac interpreter/native O0/O2"
   },
-  "remaining_dependencies": {
-    "attach_to_debugger": "Question2: real launch/selection/completion/failure contract",
-    "os_attach_to_debugger": "Question2: Unix and Windows underlying launcher contract",
-    "break_assert": "Resolved print/Boolean contract; real attachment dependency question2",
-    "interactive_assert": "Question1: exact USE_GRAPHICS module parameter shape; Debug response also needs attachment question2",
-    "os_show_assert_dialog": "Question1: exact graphics availability/configuration and canonical dependency",
-    "get_written_minidump_filename": "Question3: successful/failed attempt state, ownership and unavailable targets",
-    "set_minidump_state": "Question3: automatic versus explicit dump effects, state scope and unavailable targets",
-    "write_minidump": "Question3: real path/state/ownership and unavailable Unix target contract; crash-time thread dependency question4",
-    "init_crash_handler_thread": "Question4: observable initialization/lifecycle with CRASH_HANDLER_USE_SEPARATE_THREAD false"
-  },
+  "remaining_dependencies": {},
   "additional_checks": [
     "Linux x64/arm64 public lifecycle type checks",
     "Windows x64/arm64 public ignored_asserts canonical table checks",
@@ -125,5 +105,18 @@
     "Full20-fixture Debug_Info SDK/public interpreter/native O0/O2 regression runner passed; prior code unchanged"
   ],
   "combined_evidence": "docs/native/debug-public-evidence.json: all four suites exited0 at d34c1a74",
-  "handoff": "docs/status/debug-integration-handoff.md"
+  "handoff": "docs/status/debug-integration-handoff.md",
+  "excluded": {
+    "init_crash_handler_thread": "Correctly absent under supplied false source constant; reviewed alternate conditional declaration promises no effect"
+  },
+  "source_completion": {
+    "implemented_applicable_names": 30,
+    "reviewed_conditional_absence_names": 1,
+    "unresolved_function_contracts": 0
+  },
+  "intentional_evidence_boundaries": [
+    "Fatal/foreign-thread callbacks execute native O0/O2, not interpreter",
+    "Native Mac dialogs return reviewed Abort without display; no fabricated Ignore/Debug choices",
+    "Pure command substitution oracle executes Mac C, not a Windows debugger launch"
+  ]
 }

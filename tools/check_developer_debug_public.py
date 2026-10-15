@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run assigned Debug and preserved Debug_Info workflows with local evidence."""
 import datetime
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -19,8 +20,14 @@ def main():
                 "coverage": "Mac public interpreter/native O0/O2 and original SDK oracles; Windows SDK cross-build only",
                 "limitations": ["No Windows/Linux native execution", "No Android compiler target",
                                 "Foreign-thread/fatal callbacks executed native only"], "checks": []}
+    production = [ROOT / "stdlib/Debug/module.jai", ROOT / "stdlib/internal/debug-state/module.jai",
+                  *sorted((ROOT / "stdlib/internal/developer-tools").glob("debug-*.jai")),
+                  *sorted((ROOT / "stdlib/internal/developer-tools/debug-native").glob("*.c")),
+                  *sorted((ROOT / "stdlib/internal/developer-tools/debug-native").glob("*.h"))]
+    evidence["production_sha256"] = {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()
+                                     for path in production}
     report = ROOT / "docs/native/debug-public-evidence.json"
-    suites = ["check_developer_debug_once.py", "check_developer_debug_lifecycle.py",
+    suites = ["check_developer_debug_once.py", "check_developer_debug_lifecycle.py", "check_developer_debug_final.py",
               "check_developer_debug_windows.py", "check_debug_info_public.py"]
     for suite in suites:
         result = subprocess.run([sys.executable, str(ROOT / "tools" / suite)], cwd=ROOT,

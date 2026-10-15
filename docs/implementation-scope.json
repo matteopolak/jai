@@ -42,5 +42,9 @@
     "completed": true,
     "handoff": "docs/status/debug-info-impl.md",
     "head": "530aee67528ec1958e12c572e66360e9c861436a"
+  },
+  "final_review": "docs/specs/stdlib/modules/debug.md: all prior behavioral questions resolved",
+  "conditional_absence": {
+    "init_crash_handler_thread": "OS Windows and CRASH_HANDLER_USE_SEPARATE_THREAD true only; supplied false"
   }
 }

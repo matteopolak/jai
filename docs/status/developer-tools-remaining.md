@@ -434,19 +434,9 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Debug
 
-9 function names have missing declarations. The other22 assigned names have implementations;20 retain platform/configuration verification gaps, and2 preserve the coordinator-accepted complete classification. Original Mac SDK public breakpoint/lifecycle/ownership/table tests run interpreter/native O0/O2 where appropriate. Windows lifecycle/init/logger, symbols and memory/output helpers cross-build against the SDK for x64/arm64; native Windows/Linux execution remains pending. See [runtime policies](../debug-public-runtime.md), [assigned inventory](implementation-remaining.json) and [exact dependency questions](../specs/questions/debug-impl.md). No compiler relaxation or duplicate Context field was added.
+0 function names have pending implementations or unresolved contracts. All31 assigned names are accounted for:30 applicable implementations and the correctly absent init_crash_handler_thread under the supplied false constant. USE_GRAPHICS=true/false presence and shared canonical state are tested; Unix reviewed no-launch/empty-dump behavior and Windows actual launch/minidump flows are implemented. Real Linux X11 dialog code is conditional on graphics support.
 
-| Function | Reviewed overload variants | Pending variants | Next work / precise question |
-| --- | ---: | ---: | --- |
-| `attach_to_debugger` | 1 | 1 | Real launch policy: debug-impl question2. |
-| `break_assert` | 1 | 1 | Resolved behavior depends on real attachment: question2. |
-| `get_written_minidump_filename` | 1 | 1 | Filename state/ownership and unavailable-target behavior: question3. |
-| `init_crash_handler_thread` | 1 | 1 | Real initialization/lifecycle with separate-thread constant false: question4. |
-| `interactive_assert` | 1 | 1 | Exact USE_GRAPHICS parameter shape and attachment dependency: questions1/2. |
-| `os_attach_to_debugger` | 2 | 2 | Real Unix/Windows launch/selection/failure policy: question2. |
-| `os_show_assert_dialog` | 2 | 2 | Exact graphics declaration availability and canonical dependency: question1. |
-| `set_minidump_state` | 1 | 1 | Automatic/explicit dump effects and unavailable targets: question3. |
-| `write_minidump` | 2 | 2 | Real dump path/state/ownership and crash-thread dependency: questions3/4. |
+Mac public interpreter/native O0/O2, original SDK tracing/lifecycle/ownership/concurrency and strict format/lint pass. Windows x64 DLL/executable O0/O2 and arm64 object/public Jai checks pass as cross-build evidence only; native Windows/Linux execution remains pending. See [runtime policies](../debug-public-runtime.md), [exact scope inventory](implementation-remaining.json) and [resolved question ledger](../specs/questions/debug-impl.md). No duplicate Context field or compiler relaxation was added.
 
 ## Debug_Info
 
