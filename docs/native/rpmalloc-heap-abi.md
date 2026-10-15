@@ -22,7 +22,8 @@ Span occupies 96 bytes; native span_t occupies 88, and their deferred-free-list
 offsets also differ. These active assertions prevent treating equal heap sizes
 as permission for a pointer cast. No public heap/span is passed to the SDK.
 
-The native probe includes the unmodified pinned C source with every external
+The native probe includes the pinned C source (now with the separately recorded
+heap-pool page-granularity build fix, which changes no record ABI) with every external
 SDK definition prefixed. That separately compiled probe SDK instance is never
 initialized or used for allocations; only independently authored size/offset
 and non-atomic field accessors execute. The production SDK retains its exact

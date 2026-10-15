@@ -302,6 +302,9 @@ def main():
     temporary.write_text(jai)
     run([args.formatter.resolve(), '--config', ROOT/'jaifmt.toml', temporary])
     provenance = dict(repository=pin['repository'], revision=pin['revision'], files=pin['files'],
+                      build_fixes=[dict(path='stdlib/internal/bindings/rpmalloc-heaps/sdk-page-granularity.patch',
+                                       sha256=hashlib.sha256((ROOT/'stdlib/internal/bindings/rpmalloc-heaps/sdk-page-granularity.patch').read_bytes()).hexdigest(),
+                                       purpose='Round native heap-pool mappings to whole configured pages')],
                       scope='Private native SDK only; reviewed public Jai callbacks/heaps require separate adapters',
                       native_build_options=RPMALLOC_SDK_BUILD_OPTIONS,
                       functions=[dict(name=n['name'],signature=function(n)) for n in functions],

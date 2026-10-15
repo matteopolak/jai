@@ -11,7 +11,8 @@ boundary, so making a canonical heap current does not bypass its metadata.
 SDK heap pointers only reach SDK calls after private association resolution.
 Public records retain the generated reviewed layout and reflected names.
 
-The SDK is included unchanged from its verified pinned C source in the adapter
+The SDK is included from its verified pinned C source with the separately
+hash-recorded page-granularity build fix described below in the adapter
 translation unit. This permits actual C atomic loads and checked heap acquisition
 without copying an assumed private layout or invoking the SDK acquire function's
 unchecked success assumption. Every defined heap scalar/counter and live span
@@ -42,6 +43,25 @@ and hand allocations back to the caller. No initializer context is retained.
 
 ## Open policies and implementation limitations
 
+The independent configurable heap program exposed an official SDK defect:
+heap-pool mapping sizes are rounded to spans rather than configured pages.
+With 4 KiB spans and 16 KiB pages, pristine SDK initialization aborts at its
+active mmap-size assertion. The minimal independently authored C reproducer is
+`tests/native-bindings/rpmalloc_sdk_page_granularity.c`; the pre-fix failure is
+retained in `.work/rpmalloc-sdk-page-granularity-before-fix.json`.
+
+`tools/native_bindings/prepare_rpmalloc.py` checks every official source hash,
+copies into a build directory, and applies the owned
+`sdk-page-granularity.patch`. The patch rounds only the pool mapping size to
+whole pages, updates its actual native span count and leaves excess spans to
+the existing native reserve lifecycle. Public configuration/layouts and all
+native ABI assertions remain intact. Vendor source files are never changed.
+Each build records original, patch and result hashes in provenance.json. The
+proper long-term solution is an audited upstream native fix and removal of
+this local patch after repinning/revalidating ABI and behavior. The remaining
+portability risk is native page/reserve accounting; tests retain sanitizer,
+callback/unmap and real configurable allocation coverage.
+
 The refreshed reviewed contract establishes allocator-owned Heap/Span fields:
 direct client writes have no supported writeback behavior. API operations
 publish real SDK state; direct edits are replaced at the next publication.
@@ -71,6 +91,31 @@ publication with consistent native synchronization, not stale cached counters.
 Arbitrary allocation reentrancy during SDK pool initialization is not promised;
 the SDK itself can hold its native global lock while calling a map provider.
 Native Windows/Linux execution and other build profiles remain incomplete.
+
+## Reproduce this verification scope
+
+Build the own compiler and production formatter from current NEW producer
+sources, then build real host dependencies with
+`python3 tools/native_bindings/build_dependencies.py --output .work/native`.
+The builder prepares and records the checked native source patch automatically.
+Run the durable heap scope with:
+
+```sh
+python3 tools/native_bindings/verify_rpmalloc_heaps.py \
+  --compiler .work/target-latest/debug/jaic \
+  --formatter .work/jaifmt-production --native-libs .work/native \
+  --report .work/rpmalloc-heaps.json
+```
+
+This runs all six desktop source configurations, actual host public programs,
+private field/counter ABI probes, both host C sanitizer profiles, formatting,
+strict scoped lint and regeneration. Mac `--macos-both-cpus` additionally runs
+both CPU targets and requires universal native archives plus x64 execution
+support; the ordinary dependency builder produces host archives. Native
+Windows/Linux evidence cannot be inferred from source checks or Mac execution.
+Run `verify.py --module rpmalloc --runtime` and `verify_configurations.py`
+separately for the complete public-name/conditional inventory: the heap scope
+does not mark their remaining failures complete.
 
 ## Original architectural requirements
 

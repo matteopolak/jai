@@ -6,7 +6,7 @@ public module still has 23 unresolved and 57 partially implemented declarations;
 failures remain active. No public callback/config/heap record is cast to C.
 
 Production SDK compilation now uses `rpmalloc-heaps/bridge.c`, which includes
-the unchanged pinned official SDK source and adds canonical record ownership,
+the pinned official SDK source with the hash-recorded heap-pool page fix and adds canonical record ownership,
 atomic field marshalling, real deferred-free routing and unmap-driven retirement.
 The original 35 native SDK functions and storage ABI remain unchanged. Public
 and private evidence are distinguished in the canonical heap design document.
@@ -17,8 +17,9 @@ and disabled SDK libraries. Disabled exports use the generated
 callback library prefixes its own lifecycle functions and calls that same SDK
 domain. Checked alignment imports the same parameterized SDK. The production
 dependency builder reads the verified complete export metadata and compiles
-the unmodified pinned source with ENABLE_STATISTICS=0 for the alternate domain.
-It does not rewrite vendor function bodies. Mixed-profile native programs verify
+the prepared pinned source with ENABLE_STATISTICS=0 for the alternate domain.
+The original vendor files stay untouched; the separate build patch and all
+hashes are documented in the canonical heap design. Mixed-profile native programs verify
 allocation, failure rollback and lifetime isolation. Default-profile native
 Heap/Span layout probes do not establish disabled-profile heap layout; no public
 heap operation uses either native record as its public representation.
@@ -47,7 +48,7 @@ first-class heaps, statistics, assertions and argument validation, and disables
 malloc overriding. These choices are centralized in
 `tools/native_bindings/config.py`; they are not inferred public Jai defaults.
 Other public option combinations require their own faithful implementation or
-reviewed native adapters. `build_dependencies.py` now builds the unmodified
+reviewed native adapters. `build_dependencies.py` now builds the hash-verified prepared
 source into `binding_rpmalloc_sdk`, plus the generated C layout probe. The actual
 full native dependency builder passed with outputs in
 `.work/native-production-check`; this is dependency-build evidence, not final

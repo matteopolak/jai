@@ -14,6 +14,7 @@ import shutil
 import tarfile
 import urllib.request
 from config import RPMALLOC_SDK_BUILD_OPTIONS
+from prepare_rpmalloc import prepare as prepare_rpmalloc
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -51,6 +52,7 @@ def main():
                 with tarfile.open(archive) as stream:
                     stream.extractall(vendor, filter='data')
     args.output.mkdir(parents=True, exist_ok=True)
+    rpmalloc_source = prepare_rpmalloc(vendor/'rpmalloc', args.output/'rpmalloc-source')
     if platform.system() == 'Darwin':
         apple_object = args.output/'apple_abi_probe.o'
         run(['cc','-Wall','-Wextra','-Werror','-c',ROOT/'tests/native-bindings/apple_abi_probe.m',
@@ -103,7 +105,7 @@ def main():
             if name == 'imgui_abi_probe':
                 includes = ['-isystem',vendor/manifest['imgui']['archive']['root']]
             if name.startswith('binding_rpmalloc_') or name in ('rpmalloc_sdk_probe', 'rpmalloc_callback_probe', 'rpmalloc_storage_probe'):
-                includes = ['-isystem', vendor/'rpmalloc/rpmalloc']
+                includes = ['-isystem', rpmalloc_source]
                 options = dict(RPMALLOC_SDK_BUILD_OPTIONS)
                 if name.endswith('_nostats'):
                     options['ENABLE_STATISTICS'] = 0

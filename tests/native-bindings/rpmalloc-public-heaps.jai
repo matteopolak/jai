@@ -4,6 +4,24 @@
 RPM :: #import "rpmalloc";
 Small :: #import "rpmalloc"(ENABLE_STATISTICS = false);
 
+check_links :: (head: *$T) -> s64 {
+    if !head return 0;
+
+    count: s64 = 1;
+    tail := head;
+
+    while tail.next {
+        next := tail.next;
+        assert(next.prev == tail);
+        tail = next;
+        count += 1;
+    }
+
+    assert(head.prev == tail);
+
+    return count;
+}
+
 main :: () {
     assert(RPM.initialize() == 0);
     assert(Small.initialize() == 0);
@@ -63,6 +81,23 @@ main :: () {
     }
 
     assert(span_found);
+    // Occupy enough blocks to exercise multi-element full and partial lists.
+    blocks: [64] *void;
+    for *blocks {
+        it.* = RPM.heap_alloc(first, 6000);
+        assert(it.* != null && RPM.heap_is_this_yours(first, it.*));
+    }
+
+    full_spans: s64;
+
+    for 0..125 {
+        check_links(first.size_class[it].partial_span);
+        full_spans += check_links(first.full_span[it]);
+    }
+
+    assert(full_spans >= 2);
+    for blocks RPM.heap_free(first, it);
+
     current_allocations: s64;
     for 0..126 current_allocations += first.size_class_use[it].alloc_current;
 
@@ -88,8 +123,21 @@ main :: () {
     RPM.heap_thread_set_current(first);
     memory = RPM.rpmalloc(512);
     assert(memory != null && RPM.heap_is_this_yours(first, memory));
+    (cast(*u8) memory)[0] = 93;
+    current := RPM.heap_acquire();
+
+    assert(current != null);
+    RPM.heap_thread_set_current(current);
+    // Replacing the current heap ends first's handle lifetime. Its outstanding
+    // allocation remains freeable through the matching global family.
+    assert((cast(*u8) memory)[0] == 93);
     RPM.rpfree(memory);
-    RPM.heap_release(first);
+    memory = RPM.rpmalloc(512);
+    assert(memory != null && RPM.heap_is_this_yours(current, memory));
+    RPM.rpfree(memory);
+    RPM.heap_thread_set_current(current);
+    assert(RPM.is_thread_initialized());
+    RPM.heap_release(current);
     RPM.thread_initialize();
     RPM.finalize();
 }

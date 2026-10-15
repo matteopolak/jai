@@ -8,6 +8,21 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Native SDK heap-pool page-granularity fix.** The new public configurable
+  heap regression and independent pristine-C reproducer both hit the SDK's
+  active mmap-size assertion with 4 KiB spans/16 KiB pages. The defect is native
+  heap-pool byte rounding, independently reproduced without our facade. Owned
+  `rpmalloc-heaps/sdk-page-granularity.patch` rounds that mapping to configured
+  pages and updates its real span count; existing SDK reserve/unmap machinery
+  owns the excess spans. `prepare_rpmalloc.py` verifies pinned source hashes,
+  copies to a separate build directory, applies the patch and records all
+  provenance hashes. No vendor edit, public shape change, assertion removal or
+  configuration substitution is used. Both statistics profiles pass the C
+  reproducer under ASan/UBSan. Remaining risk: native reserve/unmap accounting
+  across other OS page granularities. Proper fix: audited upstream C correction,
+  repin, revalidate and remove the build patch. The original failed run remains
+  `.work/rpmalloc-sdk-page-granularity-before-fix.json`.
+
 - **Canonical heap adapter publication and unresolved metadata policies.**
   `internal/bindings/rpmalloc-heaps` now allocates complete reviewed public
   records separately from typed SDK handles and copies actual defined state,

@@ -1,5 +1,26 @@
 # Bindings worker progress
 
+Stable canonical heap implementation: `7fedc8e`. Follow-up tests now exercise
+multi-element full/partial list prev/next links, current-heap replacement with
+outstanding allocations, repeated selection of the same current heap, and
+configurable heaps across four span sizes and six allocation sizes. They found
+a genuine official SDK pool-map alignment defect (4 KiB spans/16 KiB pages).
+An independent pristine-C reproducer fails at the SDK mmap assertion; an owned
+hash-checked build patch fixes whole-page pool allocation without changing
+public layouts/options or disabling assertions. Both statistics profiles pass
+that C regression under ASan/UBSan. Post-patch checkpoint-22 passes all 66 heap
+scope checks, including eight actual Mac program executions and 24 desktop
+source checks; independent SDK/native storage suites pass both CPUs. The actual
+production dependency builder succeeds, then checkpoint-23 passes all 58 heap
+scope checks against its host archives. All owned production formatting passes;
+strict scoped lint/regeneration and 65 Python tests pass. The full rpmalloc
+verifier records 72 source passes, six public-inventory failures, 132 privacy
+passes and 22 host build/run passes. All 18 configuration public-name failures
+remain, with declaration checks passing. Counts stay 23 unresolved/57 partial
+rpmalloc and 36 other unresolved declarations. Full native Windows/Linux,
+remaining option profiles, metadata exhaustion and remaining public contracts
+are required work; no full completion or integration claim is made.
+
 Canonical heap milestone after `2a18c3c`: all eleven rewrite heap procedures now
 have actual private SDK forwarding and complete canonical public Heap/Span
 storage, with both supported statistics profiles. Public pointers never reach

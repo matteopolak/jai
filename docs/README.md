@@ -13,7 +13,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
   and remaining public implementation
 - [Canonical rpmalloc heap adapter design](native/rpmalloc-heap-adapter-design.md):
   implemented typed ownership, native field/graph marshalling, atomic probes,
-  callback-safe publication and remaining writeback/resource policies
+  callback-safe publication, the pinned C page-granularity fix and remaining resource policies
 - [rpmalloc heap ABI evidence](native/rpmalloc-heap-abi.md): complete pinned
   native storage probes and required separation from canonical public records
 - [License](license.md): AGPL-3.0-or-later with a runtime library exception for compiled programs
