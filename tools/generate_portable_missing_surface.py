@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Enumerate missing owned public declarations from reviewed specs only."""
 from pathlib import Path
+import json
 import re
 from portable_api_spec import parse_spec
 
@@ -22,6 +23,7 @@ MODULES = [
       'Zip_Compression_Method', 'Zip_Local_File_Header', 'Zip_Central_Directory_Header',
       'Zip_End_Of_Central_Directory_Record', 'ZIP_LOCAL_HEADER_SIZE', 'ZIP_VERSION_DEFAULT',
       'Zip_Writer', 'zip_init_writer', 'zip_add_file', 'zip_add_file_from_memory', 'zip_write_central_directory',
+      'Android_Signing_Key', 'Android_Signing_Key_Kind', 'Android_Signing_Key_Signature_Algorithm',
       'Android_Apk', 'Android_Apk_Entry', 'apk_load', 'apk_deinit', 'for_expansion', 'apk_print_sections',
       'ANDROID_APK_SIGNING_BLOCK_MAGIC',
       'ASN1_Tag_Class', 'ASN1_Tag_Length_Value', 'ASN1_Universal_Type', 'ASN1_Tag', 'ASN1_KNOWN_OIDS',
@@ -30,7 +32,7 @@ MODULES = [
      'JNI/OID/JKS constants/SHA, ASN.1 primitives/diagnostics/X509, ZIP32 records/writer/CRC/offset/unit helpers, APK whole-file views/iteration, manifest flags, Java launcher and reviewed ADB operations have independent behavior tests. Deflate uses real stored blocks (size tradeoff). Real SDK/device and Windows Process integration remain pending. Install recovery, higher-level build/signing/manifest and remaining helpers are missing; marker-only APK is not claimed signature-valid.'),
     ('Build and toolchain', 'Default_Metaprogram', 'default-metaprogram',
      {'HELP_STRING', 'is_absolute_path', 'message_loop', 'plugins', 'verbose'},
-     'Real workspace builds, options, plugin imports/callback ordering, paths, help/version and failures are implemented and tested with explicit -no_check. build remains incomplete: the delegated Check producer/reviewed page supplies no Mac plugin factory or binding-check configuration; compiler target command-line forwarding is separately defective. Full strict lint and ordinary default builds remain blocked, not counted complete.'),
+     'Real Check-enabled workspace builds, binding configuration, options, plugin imports/callback ordering, paths, help/version and failures pass, including full owned strict lint. build remains partial only for unsupported compiler backend/debugger and selected-workspace command-line execution dependencies; no CLI bypass or fabricated completion.'),
     ('Build and toolchain', 'Example_Plugin', 'example-plugin',
      {'HELP_STRING', 'My_Plugin', 'add_source', 'before_intercept', 'finish', 'get_plugin', 'init', 'log_help', 'message', 'shutdown'},
      'All reviewed record/options/lifecycle exports implemented. Canonical type/defaults, initialized state, malformed options, phase/typecheck/completion diagnostics and owned shutdown pass interpreter/native O0/O2 and strict lint; the actual default workspace loader builds and runs a target with +Example_Plugin. No source/artifact-producing callback is fabricated.'),
@@ -44,6 +46,8 @@ MODULES = [
 
 
 def main():
+    transfer_file = ROOT / 'docs/status/portable-scope-transfers.json'
+    transferred = json.loads(transfer_file.read_text())['Android/Toolchain']['excluded_names'] if transfer_file.exists() else []
     lines = ['# Remaining owned public surface', '',
              'Generated from reviewed specs by tools/generate_portable_missing_surface.py.',
              'Every row below is MISSING, including types/constants; a name in this inventory',
@@ -61,7 +65,8 @@ def main():
             previous_group = group
         page = ROOT/f'docs/specs/stdlib/modules/{slug}.md'
         spec = parse_spec(page.read_text())
-        remaining = [d for d in spec.declarations if d.name not in implemented]
+        remaining = [d for d in spec.declarations if d.name not in implemented
+                     and not (module == 'Android/Toolchain' and d.name in transferred)]
         lines += [f'### {module}', '', note, '',
                   f'Reviewed contract: [module page](specs/stdlib/modules/{slug}.md).', '',
                   '| Missing public declaration | Condition |', '| --- | --- |']

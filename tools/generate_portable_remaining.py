@@ -63,6 +63,7 @@ def main():
     modules = []
     socket_native = {(r['name'], r['condition']): r['status'] for r in
                      json.loads((ROOT / 'docs/socket-native-ledger.json').read_text())}
+    transferred_android = set(json.loads((ROOT / 'docs/status/portable-scope-transfers.json').read_text())['Android/Toolchain']['excluded_names'])
     for slug, note in sorted(notes.items()):
         spec_path = ROOT / f"docs/specs/stdlib/modules/{slug}.md"
         spec_text = spec_path.read_text()
@@ -77,6 +78,8 @@ def main():
             for match in re.finditer(r'^\s*(\w+)\s*::\s*(\([^\n]+)', shape.code, re.MULTILINE):
                 declarations.append((f"{shape.name}.{match[1]}", f"{match[1]} :: {match[2]}", shape.condition))
         for api, declaration, condition in declarations:
+            if slug == 'android-toolchain' and api in transferred_android:
+                continue
             if slug == "basic" and api not in TIME_NAMES:
                 continue
             if slug in {"runtime-support", "runtime-support-crash-handler", "process", "system", "thread"} and "OS == .WINDOWS" in condition:
@@ -137,7 +140,7 @@ def main():
                               "source_state": "committed ca8570d", "status": "host interpreter/native O0/O2 and strict lint pass; binding patch/native adoption pending"}],
         "verification_gaps": [
             "Stable combined coordinator Mac baseline last reported822 passed/7 failed; not rerun by this worker.",
-            "Default_Metaprogram default Check factory/configuration absent from reviewed producer; -no_check actual workflow passes, full lint fails.",
+            "Default_Metaprogram real Check-enabled builds/configuration, plugins, failures and full owned strict lint pass; unsupported compiler backend/debugger and target argument readback remain separate dependencies.",
             "Selected-workspace Build_Options.compile_time_command_line readback fails in child #run. Original top-level getter scope expectation was unspecified; corrected reproducer uses get_build_options().",
             "Project_Generator real target/artifact/mtime tests pass; jailint SandboxHost lacks _NSGetExecutablePath. Natvis resource and actual VS execution pending.",
             "Socket resolver/CMSG and native global storage tests pass; whole binding lint remains blocked by general field-array-element type query. Mac addrinfo candidate not activated.",
@@ -146,9 +149,7 @@ def main():
         ],
         "candidate_disjoint_transfer_batches": [
             {"batch": "Android project/config model, manifests and host packaging/NDK/helper orchestration",
-             "estimate": "large: 1-3 worker days, contract/dependency dependent",
-             "boundaries": "new private android-project/android-manifest/android-build files; one canonical model owned by that worker; no generator/context/runtime rewrite; shared facade integration by coordinator",
-             "dependencies": "review SDK_LEVEL/DEFAULT_ACTIVITY/key defaults and exact manifest ownership; real SDK tools available for later execution"},
+             "status": "ALREADY TRANSFERRED to generator-names; exact excluded API names in portable-scope-transfers.json. Shared signing key types remain portable-owned and committed6f20c37."},
             {"batch": "Android APK v2/JKS/signing cryptography",
              "estimate": "large: 1-3 worker days plus SDK/crypto validation",
              "boundaries": "new private crypto/android-signing implementation; reuse committed ZIP/APK/ASN1/SHA; no duplicate parsers or models",
