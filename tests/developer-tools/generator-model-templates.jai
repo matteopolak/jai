@@ -3,6 +3,8 @@ B :: #import "Bindings_Generator";
 
 S :: type_of(context._bindings_generator_session.*);
 
+#load "../../target/generator-model-template-layout-oracle.jai";
+
 Capture :: struct {
     saved: #Context;
     children: [..] B.CXCursor;
@@ -43,7 +45,7 @@ main :: () {
 
     B.clang_visitChildren(root, visit, *capture);
     defer array_free(capture.children);
-    assert(capture.children.count == 3);
+    assert(capture.children.count == 9);
     generator: B.Generator;
     generator.translation_unit = unit;
     session := S.open(*generator, B.TARGET_OS);
@@ -94,6 +96,50 @@ main :: () {
         info, generated := B.find_or_create_extra_info(record.type, cast(*B.Declaration) record);
 
         assert(info == *B.struct_extra_info_unknown && generated == null);
+        native_instance := B.clang_getPointeeType(B.clang_getCursorType(capture.children[3]));
+        native_record := B.clang_getTypeDeclaration(native_instance);
+        native_template := B.clang_getSpecializedCursorTemplate(native_record);
+
+        assert(B.clang_equalLocations(B.clang_getCursorLocation(native_record), B.clang_getCursorLocation(native_template)) != 0);
+        instance := B.create_declaration(capture.children[3], root);
+
+        assert(instance != null);
+        instantiated := instance.type.pointer_to;
+
+        assert(instantiated.type_of_struct == record && instantiated.template_instantiation_params.count == 2);
+        first_type := cast(*B.Type_Reference) instantiated.template_instantiation_params[0];
+        second_type := cast(*B.Type_Reference) instantiated.template_instantiation_params[1];
+
+        assert(first_type.kind == .TYPE_REFERENCE && first_type.type == generator.type_def_s32);
+        assert(second_type.kind == .TYPE_REFERENCE && second_type.type == generator.type_def_float64);
+        assert(instantiated.size == Native_Template_Size && instantiated.alignment == Native_Template_Alignment);
+        constant := B.create_declaration(capture.children[4], root).type.pointer_to;
+
+        assert((constant.flags & .CONST) != 0 && constant.template_instantiation_params.count == 2);
+        assert(constant.template_instantiation_params.data != instantiated.template_instantiation_params.data);
+        assert(constant.template_instantiation_params[0] != instantiated.template_instantiation_params[0]);
+        nested := B.create_declaration(capture.children[5], root).type.pointer_to;
+        nested_argument := (cast(*B.Type_Reference) nested.template_instantiation_params[0]).type;
+
+        assert(nested_argument.pointer_to.type_of_struct == record);
+        assert(nested_argument.pointer_to.template_instantiation_params.count == 2);
+        const_argument := (cast(*B.Type_Reference) nested.template_instantiation_params[1]).type;
+
+        assert((const_argument.flags & .CONST) != 0);
+        bases := B.create_struct(capture.children[7]);
+
+        assert(bases.parents.count == 2);
+        assert(bases.parents[0] != bases.parents[1]);
+        assert(bases.parents[0].type.type_of_struct == bases.parents[1].type.type_of_struct);
+        assert((cast(*B.Type_Reference) bases.parents[0].type.template_instantiation_params[0]).type == generator.type_def_s32);
+        assert((cast(*B.Type_Reference) bases.parents[1].type.template_instantiation_params[0]).type == generator.type_def_float64);
+        pointer_refs: Capture;
+        pointer_refs.saved = context;
+        B.clang_visitChildren(fields.children[3], visit, *pointer_refs);
+        defer array_free(pointer_refs.children);
+        substituted_pointer := B.create_type_inner(B.clang_getCursorType(fields.children[3]), root, false, substitute_children = pointer_refs.children);
+
+        assert(substituted_pointer.pointer_to.type_of_declaration == parameter);
 
         push_context {
             context.logger = log;
@@ -106,8 +152,36 @@ main :: () {
         }
 
         assert(errors == 2 && !session.failed);
+
+        push_context {
+            context.logger = log;
+            assert(B.create_type_inner(B.clang_getCursorType(fields.children[3]), root, false) == null);
+            assert(errors == 3 && session.failed);
+            malformed: [] B.CXCursor;
+            malformed.count = 1;
+            assert(B.create_type_inner(B.clang_getCursorType(fields.children[3]), root, false, substitute_children = malformed) == null);
+            assert(errors == 4);
+        }
     }
 
+    aggregate_children: Capture;
+    aggregate_children.saved = context;
+    B.clang_visitChildren(capture.children[8], visit, *aggregate_children);
+    defer array_free(aggregate_children.children);
+    initializer: B.CXCursor;
+    for child: aggregate_children.children if B.clang_isExpression(child.kind) != 0 initializer = child;
+
+    assert(initializer.kind == .InitListExpr);
+    rejection := S.open(*generator, B.TARGET_OS);
+
+    push_context {
+        S.activate(*generator, null, *rejection);
+        context.logger = log;
+        expression, skip := B.create_expression_from_cursor(initializer, capture.children[8]);
+        assert(expression == null && !skip && errors == 5 && rejection.failed);
+    }
+
+    S.close(*rejection);
     print("ok\n");
 }
 

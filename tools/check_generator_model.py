@@ -75,6 +75,19 @@ def main():
         oracle.write_text(layout)
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", oracle])
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", oracle])
+        template_layout = None
+        for optimization in [0, 2]:
+            probe = TARGET / f"generator-model-template-layout-O{optimization}"
+            run([prefix / "bin/clang++", "-std=c++17", "-Wall", "-Wextra", "-Werror",
+                 f"-O{optimization}", ROOT / "tests/developer-tools/generator-model-template-layout.cpp", "-o", probe])
+            output = run([probe])
+            if template_layout is not None and output != template_layout:
+                raise RuntimeError("Original SDK template layout oracle differs between O0/O2")
+            template_layout = output
+        template_oracle = TARGET / "generator-model-template-layout-oracle.jai"
+        template_oracle.write_text(template_layout)
+        run([TARGET / "jaifmt", "--config", "jaifmt.toml", template_oracle])
+        run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", template_oracle])
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", *OWNED])
         run([TARGET / "debug/jailint", "-D", "warnings", *OWNED])
         for os_name in ["windows", "linux"]:

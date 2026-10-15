@@ -6,3 +6,9 @@ template<typename T, typename U> struct OriginalGeneric {
 };
 template<int N> struct OriginalNonType { int value; };
 template<typename... T> struct OriginalPack { int value; };
+OriginalGeneric<int, double> *original_instance;
+const OriginalGeneric<int, double> *original_const_instance;
+OriginalGeneric<OriginalGeneric<int, double> *, const int> *original_nested_instance;
+OriginalGeneric<int, double> original_concrete;
+struct OriginalTwoBases : OriginalGeneric<int, double>, OriginalGeneric<double, int> {};
+OriginalGeneric<int, double> original_template_aggregate = { 1, nullptr, nullptr };
