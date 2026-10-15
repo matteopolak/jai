@@ -8,6 +8,34 @@ correctness. Previously recorded failures remain required work.
 
 ## Integration and tools
 
+- **Reviewed Android helpers: source/device and buffer boundary.** All seven
+  reviewed helper names now have real source bodies. Full and compact command
+  branches were corrected; compact SDK calls require runtime-origin native
+  storage and never allocate an undersized public record for the SDK. Command
+  transitions and logging/path policy run with real host pthread/pipe/free
+  operations on both Mac CPUs and host sanitizers. Actual Android target
+  type/lint checking, full app-record ABI and device calls remain unverified
+  because the current compiler/tool CLI rejects Android. No fake SDK calls
+  count as success. The logger currently invokes the reviewed public Runtime
+  forced flush before its SDK log call; Basic has no reviewed discard hook.
+  This can flush pending output where literal discard was intended. The proper
+  fix, if review requires discard, is a canonical Runtime-owned internal hook,
+  with owner confirmation requested in the question ledger. No private peer
+  implementation or invented public export was used. Source/test/provenance
+  details and the preserved sanitizer cross-build rejection are in
+  [helper evidence](../native/x11-android-helpers.md).
+
+- **X11 helper native boundary.** All three remaining helpers are implemented,
+  source-checked on both Linux CPUs and strictly linted. Real X server resource,
+  parent-property, input-method and cursor execution remains unverified on this
+  Mac host. Display/thread/cursor setup failure aborts because the reviewed
+  procedure has no failure result; XIM/XIC failure leaves nullable handles.
+  Module-owned typelists retain their allocation domain for correct replacement
+  frees; callers must keep that allocator alive. No public layout was changed.
+  The new real-X-server test retains property, replacement and predicate
+  assertions for Linux native CI. Earlier missing-export failures are preserved
+  as historical evidence and now pass source checks.
+
 - **Focused verification ownership bug, repaired.** The private runtime-test
   fallback assigned clipboard and shader byte-copy units to DXC despite their
   X11/D3D placements. A module-filtered run could omit real ownership tests.

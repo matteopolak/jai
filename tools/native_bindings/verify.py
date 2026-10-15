@@ -36,6 +36,7 @@ PRIVATE_UNITS = {'ios-sdk-host':'iOS/sdk-host-unit.jai',
 PRIVATE_UNITS['rpmalloc-no-thread-cache'] = 'rpmalloc/sdk-no-thread-cache-unit.jai'
 PRIVATE_UNITS['shader-bytes'] = 'd3d_compiler/sdk-shader-bytes-unit.jai'
 PRIVATE_UNITS['clipboard-owned-data'] = 'X11/sdk-clipboard-owned-data-unit.jai'
+PRIVATE_UNITS['android-commands'] = 'Android/sdk-command-unit.jai'
 
 
 def private_unit_module(name):
@@ -265,7 +266,9 @@ def main():
         ('X11', 'x11-window-helpers.jai', [('linux','x64'),('linux','arm64')]),
         ('X11', 'x11-message-box.jai', [('linux','x64'),('linux','arm64')]),
         ('X11', 'x11-clipboard-release.jai', [('linux','x64'),('linux','arm64')]),
+        ('X11', 'x11-initialization.jai', [('linux','x64'),('linux','arm64')]),
         ('X11', 'clipboard-owned-data.jai', TARGET_CONFIGS),
+        ('Android', 'android-commands.jai', [c for c in TARGET_CONFIGS if c[0] in ('linux','macos')]),
         ('dxc_compiler', 'dxc-reflect.jai', [('windows','x64'),('windows','arm64')]),
         ('dxc_compiler', 'dxc-wide.jai', [('windows','x64'),('windows','arm64')]),
         ('dxc_compiler', 'dxc-compile-unit.jai', [('windows','x64'),('windows','arm64')]),
@@ -273,6 +276,7 @@ def main():
         ('dxc_compiler', 'dxc-version.jai', [('windows','x64'),('windows','arm64')]),
         ('d3d_compiler', 'shader-bytes.jai', TARGET_CONFIGS),
         ('Android/EGL', 'android-egl-context.jai', [('android','x64'),('android','arm64')]),
+        ('Android', 'android-helpers.jai', [('android','x64'),('android','arm64')]),
         ('iOS', 'ios.jai', [('ios','x64'),('ios','arm64')]),
         ('ImGui', 'imgui-nested.jai', TARGET_CONFIGS),
         ('POSIX', 'posix-stat.jai', [('linux','x64'),('linux','arm64'),('macos','x64'),('macos','arm64')]),
@@ -305,6 +309,9 @@ def main():
                             ('SDL', 'NativeSDL'), ('SDL', 'Binding_File_RWops'),
                             ('SDL', 'Binding_RW_State'), ('SDL', 'binding_files'),
                             ('GL', 'NativeWGL'), ('X11', 'Native'),
+                            ('X11', 'binding_typelist_allocator'),
+                            ('Android', 'Commands'), ('Android', 'Policy'),
+                            ('Android', 'binding_received_window'), ('Android', 'binding_app'),
                             ('X11', 'ClipboardOwned'),
                             ('X11', 'Binding_Message_Choices'), ('X11', 'binding_message_event'),
                             ('X11', 'binding_message_button'), ('dxc_compiler', 'ID3D12ShaderReflection'),
@@ -378,18 +385,20 @@ def main():
         runtime_tests.append('dxc-options')
         runtime_tests.append('shader-bytes')
         runtime_tests.append('clipboard-owned-data')
+        runtime_tests.append('android-commands')
         runtime_tests.extend(rpmalloc_fixtures(args.rpmalloc_first_class_heaps))
         if sys.platform.startswith('linux'):
             runtime_tests.append('x11-window-helpers')
             runtime_tests.append('x11-message-box')
             runtime_tests.append('x11-clipboard-release')
+            runtime_tests.append('x11-initialization')
         for name in runtime_tests:
             relevant = {'xxhash': ['xxHash'], 'images': ['stb_image', 'stb_image_write', 'stb_image_resize', 'stb_vorbis'], 'posix': ['POSIX'], 'curl':['Curl'], 'ios':['iOS'], 'objective-c':['Objective_C'], 'objc-runtime':['Objective_C'], 'mojoshader':['MojoShader'], 'macos':['macOS'], 'metal':['Metal'], 'gl':['GL'], 'graphics-math':['d3d12'], 'sdl':['SDL'], 'sdl-layout':['SDL']}.get(name, [name])
             if name == 'appkit':
                 relevant = ['Objective_C']
             if name in ('d3d-strings', 'shader-bytes'):
                 relevant = ['d3d_compiler']
-            if name in ('clipboard-owned-data', 'x11-clipboard-release'):
+            if name in ('clipboard-owned-data', 'x11-clipboard-release', 'x11-initialization'):
                 relevant = ['X11']
             if name == 'dxc-version':
                 relevant = ['dxc_compiler']

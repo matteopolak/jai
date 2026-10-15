@@ -1,5 +1,9 @@
 # X11 and Android remaining helper status
 
+Historical checkpoint before the 14:54 UTC review. The ten helper questions
+below are now resolved and all ten names have implementations; see
+[current implementation and evidence](x11-android-helpers.md).
+
 After `0488c78`, the complete synchronized X11 and Android reviewed pages and
 the worker inbox were rechecked. The supplied pages resolve clipboard cleanup,
 but still do not specify the remaining ten helpers' behavioral policies. The

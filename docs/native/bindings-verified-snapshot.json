@@ -1,13 +1,13 @@
 {
   "scope": "Incomplete bindings worker progress. Ordinary producer compiler/tooling and real native CPU/SDK results are separate from source-only/unavailable targets and historical trials. Not coordinator integration/release verification.",
   "root_declaration_counts": {
-    "declared": 28397,
-    "unresolved": 24,
-    "implemented_manual": 57,
+    "declared": 28396,
+    "implemented_manual": 68,
     "implemented": 544,
     "forwarded": 1262,
     "duplicate": 1,
-    "partially_implemented": 87
+    "partially_implemented": 87,
+    "unresolved": 14
   },
   "reports": [
     {
@@ -1424,6 +1424,45 @@
         "native": {
           "unsupported": 1,
           "passed": 98
+        },
+        "privacy": {
+          "passed": 116,
+          "unsupported": 40
+        }
+      }
+    },
+    {
+      "report": ".work/x11-android-reviewed-final.json",
+      "sha256": "980e41520a1231763bbf99e03351ea98f68a28cafb164854d42e0afe8c1a1005",
+      "scope": "Existing independent local baseline plus owned bindings; no Android device or Linux X server execution",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "unsupported": 10,
+          "passed": 22
+        },
+        "native": {
+          "passed": 4
+        },
+        "privacy": {
+          "passed": 12,
+          "unsupported": 48
+        }
+      }
+    },
+    {
+      "report": ".work/bindings-mac-helpers-current.json",
+      "sha256": "1b50e432ee45c055541f16e5cc66fcc9993f26b28482fd2bdb3dbc5b0d2fa103",
+      "scope": "Existing independent local baseline plus owned bindings; no Android device or Linux X server execution",
+      "compiler_sha256": "915eeea13c240bc6dc936625e9f2e42e2e935445083e880101aa1e9a61d6f852",
+      "results": {
+        "targets": {
+          "unsupported": 26,
+          "passed": 148
+        },
+        "native": {
+          "unsupported": 1,
+          "passed": 100
         },
         "privacy": {
           "passed": 116,

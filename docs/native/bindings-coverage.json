@@ -4,10 +4,10 @@
   "modules": {
     "Android": {
       "spec": "docs/specs/stdlib/modules/android.md",
-      "spec_sha256": "ab5c469a03c7b1fd00311aa65ba2e8ed21aaeeef0323df921dd78dd506bcecf8",
+      "spec_sha256": "43e884139a18c1b62822e971bbe16138cf6a0fe2fce40dd6ac45b7bd817fcf0c",
       "counts": {
-        "declared": 933,
-        "unresolved": 7
+        "declared": 932,
+        "implemented_manual": 8
       },
       "member_counts": {},
       "contextual_shapes": [],
@@ -5960,7 +5960,7 @@
           "signature": "android_app_post_exec_cmd :: (android_app: *Android_App, cmd: s8) -> void #foreign lib_glue",
           "condition": "",
           "spec_line": 856,
-          "effective_condition": "USE_GLUE_NATIVE_PORT",
+          "effective_condition": "!USE_GLUE_NATIVE_PORT",
           "status": "declared"
         },
         {
@@ -5968,33 +5968,35 @@
           "signature": "android_app_post_exec_cmd :: (android_app: *Android_App, cmd: s8)",
           "condition": "",
           "spec_line": 857,
-          "effective_condition": "!USE_GLUE_NATIVE_PORT",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "effective_condition": "USE_GLUE_NATIVE_PORT",
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/wrappers.jai"
         },
         {
           "name": "android_app_pre_exec_cmd",
           "signature": "android_app_pre_exec_cmd :: (android_app: *Android_App, cmd: s8) -> void #foreign lib_glue",
           "condition": "",
           "spec_line": 858,
-          "effective_condition": "USE_GLUE_NATIVE_PORT",
-          "status": "declared"
+          "effective_condition": "!USE_GLUE_NATIVE_PORT",
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/wrappers.jai",
+          "native_abi_adapter": "android_app_pre_exec_cmd"
         },
         {
           "name": "android_app_pre_exec_cmd",
           "signature": "android_app_pre_exec_cmd :: (android_app: *Android_App, cmd: s8)",
           "condition": "",
           "spec_line": 859,
-          "effective_condition": "!USE_GLUE_NATIVE_PORT",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "effective_condition": "USE_GLUE_NATIVE_PORT",
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/wrappers.jai"
         },
         {
           "name": "android_app_read_cmd",
           "signature": "android_app_read_cmd :: (android_app: *Android_App) -> s8 #foreign lib_glue",
           "condition": "",
           "spec_line": 860,
-          "effective_condition": "USE_GLUE_NATIVE_PORT",
+          "effective_condition": "!USE_GLUE_NATIVE_PORT",
           "status": "declared"
         },
         {
@@ -6002,9 +6004,9 @@
           "signature": "android_app_read_cmd :: (android_app: *Android_App) -> s8",
           "condition": "",
           "spec_line": 861,
-          "effective_condition": "!USE_GLUE_NATIVE_PORT",
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "effective_condition": "USE_GLUE_NATIVE_PORT",
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/wrappers.jai"
         },
         {
           "name": "Android_Command_Proc",
@@ -6018,24 +6020,24 @@
           "signature": "android_directory_exists_in_package :: (name: string) -> bool",
           "condition": "",
           "spec_line": 863,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/wrappers.jai"
         },
         {
           "name": "android_file_exists_in_package",
           "signature": "android_file_exists_in_package :: (name: string) -> bool",
           "condition": "",
           "spec_line": 864,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/wrappers.jai"
         },
         {
           "name": "android_finish_activity_and_exit",
           "signature": "android_finish_activity_and_exit :: (status := cast(s32) 0)",
           "condition": "",
           "spec_line": 865,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/wrappers.jai"
         },
         {
           "name": "Android_Input_Proc",
@@ -6049,8 +6051,8 @@
           "signature": "android_logger :: (message: string, data: *void, info: Log_Info)",
           "condition": "",
           "spec_line": 867,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/Android/wrappers.jai"
         },
         {
           "name": "Android_Poll_Source",
@@ -214954,11 +214956,10 @@
     },
     "X11": {
       "spec": "docs/specs/stdlib/modules/x11.md",
-      "spec_sha256": "6e7dad4c19bc188b0736a18f13e86173d1b1108a298abf4f65f9dff269b1fc06",
+      "spec_sha256": "17fa086c36bd64dd6e4967eb2ea8a3081681cc30ac808ecdfb1b7cc251265847",
       "counts": {
         "declared": 1248,
-        "implemented_manual": 11,
-        "unresolved": 3,
+        "implemented_manual": 14,
         "implemented": 7
       },
       "member_counts": {},
@@ -215279,16 +215280,16 @@
           "signature": "init_global_display :: ()",
           "condition": "",
           "spec_line": 52,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "enable_drag_and_drop",
           "signature": "enable_drag_and_drop :: (window: Window, typelist: [] string)",
           "condition": "",
           "spec_line": 53,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "x_demand_attention",
@@ -215303,8 +215304,8 @@
           "signature": "x_selection_notify_predicate :: (display: *Display, event: *XEvent, arg: XPointer) -> Bool #c_call",
           "condition": "",
           "spec_line": 55,
-          "status": "unresolved",
-          "reason": "Requires independently authored wrapper body"
+          "status": "implemented_manual",
+          "artifact": "stdlib/X11/wrappers.jai"
         },
         {
           "name": "x_window_is_ours",

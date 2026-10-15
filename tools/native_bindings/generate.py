@@ -171,6 +171,8 @@ def guard(code, condition):
 
 
 def normalized_signature(code):
+    code = re.sub(r'("(?:\\.|[^"\\])*")|#discard\b',
+                  lambda match: match[1] or '', code)
     tokens = re.findall(r'"(?:\\.|[^"\\])*"|[^\s"]+',code.strip().rstrip(';'))
     return ''.join(tokens)
 
@@ -233,7 +235,7 @@ def condition_for(module, declaration, spec=None):
     if module == 'GL' and declaration.name == 'DumpGLErrors':
         condition = '!DUMP_GL_ERRORS' if '#discard' in declaration.code else 'DUMP_GL_ERRORS'
     if module == 'Android' and declaration.name in ('android_app_read_cmd','android_app_pre_exec_cmd','android_app_post_exec_cmd'):
-        condition = 'USE_GLUE_NATIVE_PORT' if '#foreign' in declaration.code else '!USE_GLUE_NATIVE_PORT'
+        condition = '!USE_GLUE_NATIVE_PORT' if '#foreign' in declaration.code else 'USE_GLUE_NATIVE_PORT'
     if spec is not None and module in ('d3d11', 'd3d12'):
         debug_types = {s.name for s in spec.shapes if s.condition == 'INCLUDE_DEBUG_BINDINGS'}
         if any(declaration.name == t or declaration.name == t+'_VTable' or declaration.name.startswith(t+'_') or re.search(r'\*'+re.escape(t)+r'\b',declaration.code) for t in debug_types):

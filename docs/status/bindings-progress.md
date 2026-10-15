@@ -1,5 +1,22 @@
 # Bindings worker progress
 
+Reviewed X11/Android helper batch: all ten names now have authored bodies; both
+modules have zero unresolved ledger entries. Full native-port Android command
+bodies and compact foreign delegates now select the correct record branches.
+X11 has initialization, DND replacement/ancestor awareness and exact requestor
+filtering. Android has real command/asset/finish/log routes, with no fake SDK
+success. Mac command/policy tests pass on both CPUs and under host address/
+undefined sanitizers; pinned Bionic ABI checks pass on both Android CPUs.
+Combined isolated worker Mac sweep is green:148 source,100 native build/run,
+116 privacy passes, with unavailable cases separate. Strict X11/core lint,
+formatting, regeneration and73 Python tests pass. Full Android Jai type/lint
+checks and native device execution remain unavailable; the Runtime flush versus
+literal discard integration detail is explicitly documented. Only telemetry14
+remains unresolved root declarations; existing Objective_C7/rpmalloc80 partial
+entries remain. See [implementation/evidence](../native/x11-android-helpers.md).
+
+Historical checkpoint before the latest review:
+
 Post-`0488c78` focused checkpoint: no new public helper is counted complete.
 Current reviewed pages/inbox still omit ten helper behavior contracts; the
 question ledger now has ten narrow per-procedure requests. X11 three, Android
