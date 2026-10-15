@@ -13,11 +13,11 @@ Reviewed declaration rows: 213. Missing names: none.
 | ADPCM_BLOCKS_PER_PAGE | common | adpcm.jai | no direct genuine-test reference |
 | Adpcm_Decoder | common | types.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | Audio_Channel | common | types.jai | panning; signature/link probe (not behavioral evidence) |
-| Audio_Dest_Sample | common | types.jai | pcm-mixing, silence-cursors; signature/link probe (not behavioral evidence) |
+| Audio_Dest_Sample | common | types.jai | pcm-mixing, reviewed-edges, silence-cursors; signature/link probe (not behavioral evidence) |
 | Audio_Sample_Base | common | types.jai | sample-math; signature/link probe (not behavioral evidence) |
 | Audio_Source_Sample | common | types.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | Backend_Properties | common | types.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
-| Buffer_Bounds | common | types.jai | pcm-mixing; signature/link probe (not behavioral evidence) |
+| Buffer_Bounds | common | types.jai | pcm-mixing, reviewed-edges; signature/link probe (not behavioral evidence) |
 | CACHED_OGG_DECODE_NUM_THREADS | common | cache.jai | no direct genuine-test reference |
 | CACHED_OGG_DECODE_THREADED | common | cache.jai | no direct genuine-test reference |
 | CONFIG | OS == .WINDOWS | windows-abi.jai | windows-abi; signature/link probe (not behavioral evidence); Windows branch checked only (no Windows native execution) |
@@ -90,30 +90,30 @@ Reviewed declaration rows: 213. Missing names: none.
 | SPEAKER_TOP_FRONT_CENTER | OS == .WINDOWS | windows-abi.jai | no direct genuine-test reference; Windows branch checked only (no Windows native execution) |
 | SPEAKER_TOP_FRONT_LEFT | OS == .WINDOWS | windows-abi.jai | no direct genuine-test reference; Windows branch checked only (no Windows native execution) |
 | SPEAKER_TOP_FRONT_RIGHT | OS == .WINDOWS | windows-abi.jai | no direct genuine-test reference; Windows branch checked only (no Windows native execution) |
-| Scale_Mapping | common | types.jai | panning; signature/link probe (not behavioral evidence) |
+| Scale_Mapping | common | types.jai | controlled-output, panning, reviewed-edges; signature/link probe (not behavioral evidence) |
 | Sound_Category | common | types.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
-| Sound_Data | common | types.jai | cache-pages, compressed-stream, controlled-output, entity-lifecycle, entity-phase, identity, ogg-pages, pcm-mixing, reviewed-gain, silence-cursors, streams, sound-player-device; signature/link probe (not behavioral evidence) |
+| Sound_Data | common | types.jai | cache-pages, compressed-stream, controlled-output, entity-lifecycle, entity-phase, identity, ogg-pages, pcm-mixing, reviewed-edges, reviewed-gain, silence-cursors, streams, sound-player-device; signature/link probe (not behavioral evidence) |
 | Sound_Player_Config | common | types.jai | compressed-stream, controlled-output, device-lifecycle, entity-lifecycle, entity-phase, failed-init, identity, streams, verbose-config, sound-player-device; signature/link probe (not behavioral evidence) |
-| Sound_Stream | common | types.jai | compressed-stream, entity-lifecycle, entity-phase, identity, panning, pcm-mixing, reviewed-gain, silence-cursors, streams, sound-player-device; signature/link probe (not behavioral evidence) |
+| Sound_Stream | common | types.jai | compressed-stream, controlled-output, entity-lifecycle, entity-phase, identity, panning, pcm-mixing, reviewed-edges, reviewed-gain, silence-cursors, streams, sound-player-device; signature/link probe (not behavioral evidence) |
 | Source_Direction | common | types.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | TEST_K | common | mixer.jai | no direct genuine-test reference |
 | VERY_CLOSE | common | panning.jai | no direct genuine-test reference |
-| Vbap_Arc | common | types.jai | no direct genuine-test reference |
+| Vbap_Arc | common | types.jai | reviewed-edges |
 | WAVEFORMATEXTENSIBLE | OS == .WINDOWS | windows-abi.jai | windows-abi; Windows branch checked only (no Windows native execution) |
 | WAVE_FORMAT_EXTENSIBLE | OS == .WINDOWS | windows-abi.jai | no direct genuine-test reference; Windows branch checked only (no Windows native execution) |
 | accum_scale_target_2_source_mono | common | panning.jai | panning; signature/link probe (not behavioral evidence) |
 | accum_scale_target_2_source_n | common | panning.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
-| accum_scale_target_all_source_mono | common | panning.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
+| accum_scale_target_all_source_mono | common | panning.jai | controlled-output; signature/link probe (not behavioral evidence) |
 | accum_scale_target_all_source_n | common | panning.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | accumulate_buffer_f | common | mixer.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
-| accumulate_stream | common | mixer.jai | pcm-mixing, silence-cursors; signature/link probe (not behavioral evidence) |
+| accumulate_stream | common | mixer.jai | pcm-mixing, reviewed-edges, silence-cursors; signature/link probe (not behavioral evidence) |
 | accumulator_element_size | common | mixer.jai | no direct genuine-test reference |
 | add | common | samples.jai | sample-math; signature/link probe (not behavioral evidence) |
 | add_decode_queue_item | common | decode-queue.jai, types.jai | decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
-| add_vbap_gain_for_direction | common | panning.jai | panning; signature/link probe (not behavioral evidence) |
-| adjust_stereo_dots_by_closeness | common | panning.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
+| add_vbap_gain_for_direction | common | panning.jai | panning, reviewed-edges; signature/link probe (not behavioral evidence) |
+| adjust_stereo_dots_by_closeness | common | panning.jai | reviewed-edges; signature/link probe (not behavioral evidence) |
 | advance_history_cursor | common | history.jai | history; signature/link probe (not behavioral evidence) |
-| arcs | common | panning.jai | panning |
+| arcs | common | panning.jai | panning, reviewed-edges |
 | arcs_6ch | common | panning.jai | identity, panning |
 | arcs_8ch | common | panning.jai | no direct genuine-test reference |
 | async_audio_update | common | player.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
@@ -129,9 +129,9 @@ Reviewed declaration rows: 213. Missing names: none.
 | backend_lock_fill_regions | OS == .LINUX | backend.jai | device-lifecycle; signature/link probe (not behavioral evidence) |
 | backend_lock_fill_regions | OS == .MACOS | backend.jai | device-lifecycle; signature/link probe (not behavioral evidence) |
 | backend_lock_fill_regions | OS == .WINDOWS | backend.jai | device-lifecycle; signature/link probe (not behavioral evidence); Windows branch checked only (no Windows native execution) |
-| backend_needs_async_update_from_main_thread | OS == .LINUX | backend.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
-| backend_needs_async_update_from_main_thread | OS == .MACOS | backend.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
-| backend_needs_async_update_from_main_thread | OS == .WINDOWS | backend.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence); Windows branch checked only (no Windows native execution) |
+| backend_needs_async_update_from_main_thread | OS == .LINUX | backend.jai | reviewed-edges; signature/link probe (not behavioral evidence) |
+| backend_needs_async_update_from_main_thread | OS == .MACOS | backend.jai | reviewed-edges; signature/link probe (not behavioral evidence) |
+| backend_needs_async_update_from_main_thread | OS == .WINDOWS | backend.jai | reviewed-edges; signature/link probe (not behavioral evidence); Windows branch checked only (no Windows native execution) |
 | backend_play | OS == .LINUX | backend.jai | device-lifecycle; signature/link probe (not behavioral evidence) |
 | backend_play | OS == .MACOS | backend.jai | device-lifecycle; signature/link probe (not behavioral evidence) |
 | backend_play | OS == .WINDOWS | backend.jai | device-lifecycle; signature/link probe (not behavioral evidence); Windows branch checked only (no Windows native execution) |
@@ -162,17 +162,17 @@ Reviewed declaration rows: 213. Missing names: none.
 | free_unmarked_pages | common | cache.jai | cache-pages, ogg-pages; signature/link probe (not behavioral evidence) |
 | get_audio_sampling_rate | common | player.jai | entity-lifecycle, entity-phase, failed-init, streams, sound-player-device; signature/link probe (not behavioral evidence) |
 | get_base_address | common | cache.jai | cache-pages; signature/link probe (not behavioral evidence) |
-| get_buffer_bounds | common | mixer.jai | pcm-mixing; signature/link probe (not behavioral evidence) |
-| get_bytes_between | OS == .MACOS | backend.jai | no direct genuine-test reference |
-| get_bytes_between | OS == .WINDOWS | backend.jai | no direct genuine-test reference; Windows branch checked only (no Windows native execution) |
+| get_buffer_bounds | common | mixer.jai | pcm-mixing, reviewed-edges; signature/link probe (not behavioral evidence) |
+| get_bytes_between | OS == .MACOS | backend.jai | reviewed-edges |
+| get_bytes_between | OS == .WINDOWS | backend.jai | reviewed-edges; Windows branch checked only (no Windows native execution) |
 | get_compressed_rate_channels_and_size | common | vorbis.jai | ogg-pages; signature/link probe (not behavioral evidence) |
 | get_desired_volume_perceptual | common | panning.jai | reviewed-gain; signature/link probe (not behavioral evidence) |
 | get_devices | common | player.jai | sound-player-device; signature/link probe (not behavioral evidence) |
 | get_icursor_and_remainder | common | samples.jai | sample-math; signature/link probe (not behavioral evidence) |
 | get_magic4 | common | loading.jai | loading; signature/link probe (not behavioral evidence) |
 | get_next_completed_decode_queue_item | common | decode-queue.jai | decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
-| get_plane_dir | common | panning.jai | panning; signature/link probe (not behavioral evidence) |
-| get_target_2_closeness | common | panning.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
+| get_plane_dir | common | panning.jai | panning, reviewed-edges; signature/link probe (not behavioral evidence) |
+| get_target_2_closeness | common | panning.jai | reviewed-edges; signature/link probe (not behavioral evidence) |
 | init_KSDATAFORMAT_SUBTYPE_PCM | OS == .WINDOWS | windows-abi.jai | windows-abi; signature/link probe (not behavioral evidence); Windows branch checked only (no Windows native execution) |
 | init_sound_player_decode_queue | common | decode-queue.jai | decode-queue, queue-retirement; signature/link probe (not behavioral evidence) |
 | init_wave_format | OS == .WINDOWS | windows-abi.jai | windows-abi; signature/link probe (not behavioral evidence); Windows branch checked only (no Windows native execution) |
@@ -196,14 +196,14 @@ Reviewed declaration rows: 213. Missing names: none.
 | recompute_page_adpcm | common | adpcm.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | recompute_page_ogg | common | vorbis.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | retired_decoders | common | cache.jai | no direct genuine-test reference |
-| sample_n_channels | common | mixer.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
+| sample_n_channels | common | mixer.jai | reviewed-edges; signature/link probe (not behavioral evidence) |
 | samples_to_bytes | common | mixer.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | set_master_volume | common | panning.jai | compressed-stream, controlled-output, entity-lifecycle, entity-phase, reviewed-gain, streams, sound-player-device; signature/link probe (not behavioral evidence) |
 | set_repeating | common | player.jai | controlled-output, entity-lifecycle, entity-phase, reviewed-gain, streams, sound-player-device; signature/link probe (not behavioral evidence) |
-| skip_this_output_channel | common | panning.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
+| skip_this_output_channel | common | panning.jai | reviewed-edges; signature/link probe (not behavioral evidence) |
 | sound_player_init | common | player.jai | compressed-stream, controlled-output, entity-lifecycle, entity-phase, failed-init, streams, verbose-config, sound-player-device; signature/link probe (not behavioral evidence) |
 | sound_player_shutdown | common | player.jai | compressed-stream, controlled-output, decode-queue, entity-lifecycle, entity-phase, failed-init, queue-retirement, streams, verbose-config, sound-player-device; signature/link probe (not behavioral evidence) |
-| source_dir_to_target_dir | common | panning.jai | panning; signature/link probe (not behavioral evidence) |
+| source_dir_to_target_dir | common | panning.jai | panning, reviewed-edges; signature/link probe (not behavioral evidence) |
 | start_playing | common | player.jai | compressed-stream, controlled-output, entity-lifecycle, entity-phase, streams, sound-player-device; signature/link probe (not behavioral evidence) |
 | start_vorbis_file | common | vorbis.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | stop_all_sounds_abruptly | common | player.jai | entity-lifecycle, streams; signature/link probe (not behavioral evidence) |
@@ -213,12 +213,12 @@ Reviewed declaration rows: 213. Missing names: none.
 | times_equals | common | samples.jai | sample-math; signature/link probe (not behavioral evidence) |
 | unmark_all_pages | common | cache.jai | cache-pages, ogg-pages; signature/link probe (not behavioral evidence) |
 | update | common | player.jai | compressed-stream, sound-player-device; signature/link probe (not behavioral evidence) |
-| update_desired_rate | common | player.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
+| update_desired_rate | common | player.jai | reviewed-edges; signature/link probe (not behavioral evidence) |
 | update_from_async_thread | common | player.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
-| update_listener | common | panning.jai | panning; signature/link probe (not behavioral evidence) |
+| update_listener | common | panning.jai | controlled-output, panning, reviewed-edges; signature/link probe (not behavioral evidence) |
 | update_panning | common | panning.jai | controlled-output; signature/link probe (not behavioral evidence) |
 | update_panning_helper | common | panning.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
 | update_panning_helper_for_locked_output | common | panning.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
-| update_panning_helper_for_many_channel_music | common | panning.jai | no direct genuine-test reference; signature/link probe (not behavioral evidence) |
+| update_panning_helper_for_many_channel_music | common | panning.jai | controlled-output; signature/link probe (not behavioral evidence) |
 | vbap_source_directions | common | panning.jai | identity |
-| vbap_speaker_directions | common | panning.jai | identity, panning |
+| vbap_speaker_directions | common | panning.jai | identity, panning, reviewed-edges |

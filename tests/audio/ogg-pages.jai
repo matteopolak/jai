@@ -17,6 +17,7 @@ main :: () {
     data.nchannels = 2;
     data.sampling_rate = 44100;
     data.nsamples_times_nchannels = frames * channels;
+    data.filename_to_stream_from = "metadata-only-do-not-open.ogg";
     decoder := create_ogg_decoder(*data, 1024);
 
     assert(decoder != null);

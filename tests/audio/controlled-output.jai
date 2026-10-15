@@ -1,4 +1,5 @@
 #import "Basic";
+#import "Math";
 #import "Sound_Player";
 
 main :: () {
@@ -24,14 +25,59 @@ main :: () {
     data.nchannels = 1;
     data.samples = pcm.data;
     data.nsamples_times_nchannels = 1;
+    // Reviewed locked and music mappings, without starting these probe records.
+    probe: Sound_Stream;
+    probe.sound_data = *data;
+    probe.num_channels = 1;
+    update_panning_helper_for_many_channel_music(*probe, 1);
+
+    if properties.num_channels == 2 {
+        assert(probe.input_scale_mappings[0].source_scale_for_this_output_index[0] == 0.5);
+        assert(probe.input_scale_mappings[0].source_scale_for_this_output_index[1] == 0.5);
+    } else {
+        scales := probe.input_scale_mappings[0].source_scale_for_this_output_index;
+        assert(scales[0] == 0.8 && scales[1] == 0.8 && scales[2] == 1 && scales[3] == 1);
+        for i: 4..properties.num_channels - 1 assert(scales[i] == 0.5);
+    }
+
+    probe.input_scale_mappings = .{};
+    probe.num_channels = 2;
+    update_panning_helper_for_many_channel_music(*probe, 1);
+    assert(probe.input_scale_mappings[0].source_scale_for_this_output_index[0] == 1);
+    assert(probe.input_scale_mappings[1].source_scale_for_this_output_index[1] == 1);
+    assert(probe.input_scale_mappings[0].source_scale_for_this_output_index[1] == 0);
+
+    if properties.num_channels > 2 {
+        assert(probe.input_scale_mappings[0].source_scale_for_this_output_index[2] == 0.7);
+        assert(probe.input_scale_mappings[1].source_scale_for_this_output_index[3] == 0.7);
+        assert(probe.input_scale_mappings[0].source_scale_for_this_output_index[4] == 0.5);
+        probe.input_scale_mappings = .{};
+        probe.num_channels = 1;
+        probe.user_flags = .SPATIALIZED | .IS_FOOTSTEP;
+        probe.inner_radius = 4;
+        update_listener(.{}, Quaternion.{});
+        scale: Scale_Mapping;
+
+        accum_scale_target_all_source_mono(*probe, .{ 1, 0 }, 1, *scale);
+        assert(scale.source_scale_for_this_output_index[3] == 0);
+        assert(scale.source_scale_for_this_output_index[4] == 0 && scale.source_scale_for_this_output_index[5] == 0);
+        power: float;
+        for i: 0..properties.num_channels - 1 power += scale.source_scale_for_this_output_index[i] * scale.source_scale_for_this_output_index[i];
+
+        assert(abs(power - 1) < 0.00001);
+    }
+
     set_master_volume(1);
     a := make_stream(*data);
     b := make_stream(*data);
+    c := make_stream(*data);
 
     set_repeating(a, true);
     set_repeating(b, true);
+    set_repeating(c, true);
     start_playing(a);
     start_playing(b);
+    start_playing(c);
     output: [32] s16;
     bytes: string = .{ properties.num_channels * 2 * 4, cast(*u8) output.data };
 
@@ -44,14 +90,16 @@ main :: () {
     }
 
     b.user_flags |= .PAUSED_DUE_TO_MENU;
+    c.user_flags |= .PAUSED_DUE_TO_MENU;
     before := b.play_cursor;
 
     fill_sample_buffer(bytes);
     assert(b.play_cursor == before);
-    if properties.num_channels == 2 assert(output[0] > 17000 && output[0] < 18000);
+    if properties.num_channels == 2 assert(output[0] == 12288);
     else assert(output[2] == 24576);
 
     b.user_flags &= ~ .PAUSED_DUE_TO_MENU;
+    c.user_flags &= ~ .PAUSED_DUE_TO_MENU;
     pcm[0] = -24576;
     fill_sample_buffer(bytes);
 

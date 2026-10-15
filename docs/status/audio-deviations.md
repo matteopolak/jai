@@ -107,3 +107,19 @@
   remains fatal to avoid freeing state still reachable by callbacks. Physical
   hotplug/GUI focus/sleep-wake are source-only recovery evidence; the real harness
   exercises SDK pause/resume and controlled reopen with zero PCM.
+
+- Refreshed contracts supersede earlier provisional PCM completion booleans,
+  circular-distance direction, Linux async semantics, MONO mapping and constant-
+  power locked mono split. Reclassified those test expectations explicitly;
+  three-stream clipping keeps genuine saturation coverage with the reviewed
+  0.5-per-side split. Added signed/zero-rate, page-edge, missing-page, listener,
+  outside-coverage VBAP, music and footstep regressions.
+- Spatial channel routing now uses each configured source direction, locked/music
+  rules and planar closeness. Invalid edited arcs assert rather than being silently
+  skipped. The spec does not numerically define shared stereo base/default angles/
+  blend equation; independent current choices are documented in questions rather
+  than falsely presented as exact numeric compatibility. Stereo position override
+  and filename-driven decoding are absent from reviewed active behavior and are
+  not unfinished requirements. Seven channels preserve configured directions;
+  no dedicated center-rear mapping is invented. Android private hooks require
+  compiler support; PS5/Switch unavailable bodies imply no implementation work.

@@ -15,6 +15,7 @@ main :: () {
     invert(*m, *m);
     assert(near(m._11, inverse._11) && near(m._22, inverse._22));
     stream: Sound_Stream;
+    stream.user_flags |= .SPATIALIZED;
     stream.position = .{ 0, 10, 0 };
     update_listener(.{}, Quaternion.{});
     direction := get_plane_dir(*stream, stream.position);
@@ -34,13 +35,16 @@ main :: () {
     scale = .{};
     stream.position = .{ 0, 10, 0 };
     accum_scale_target_2_source_mono(*stream, .{ 0, 1 }, 1, *scale);
-    assert(near(scale.source_scale_for_this_output_index[0], 1));
-    assert(near(scale.source_scale_for_this_output_index[1], 0));
+    left := scale.source_scale_for_this_output_index[0];
+    right := scale.source_scale_for_this_output_index[1];
+
+    assert(left > right && right > 0);
+    assert(near(left * left + right * right, 1));
     channel, success := source_dir_to_target_dir(.SUBWOOFER_CENTER_FORWARD);
 
     assert(success && channel == .SUBWOOFER);
     channel, success = source_dir_to_target_dir(.MONO);
-    assert(!success);
+    assert(success && channel == .CENTER);
 
     vbap_speaker_directions = .[
         .{ ROOT_2_OVER_2, ROOT_2_OVER_2 }, .{ ROOT_2_OVER_2, -ROOT_2_OVER_2 },

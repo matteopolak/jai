@@ -9,6 +9,10 @@ Implemented behavior includes PCM interpolation/accumulation, signed 16-bit outp
 repeat wrapping, silence outside source bounds, menu pause/resume, listener
 transforms, stereo and editable VBAP gain helpers, perceptual gain, rate slew,
 stream/entity lifecycle, callbacks outside the mixer lock and decoder retirement.
+Reviewed refinements include signed/zero playback rates, always-false accumulation
+status, held interpolation at page ends, planar closeness, outside-coverage VBAP
+selection, locked/music coefficients and footstep rear exclusions. Filename
+metadata is unread; seven channels have no inferred center-rear layout.
 Each entity phase synchronizes only its own work. No lock spans caller code.
 Configure public stream fields before start; direct active-field edits can race
 mixing. Exported synchronized setters/stops remain usable between phase calls.

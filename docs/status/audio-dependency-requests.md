@@ -20,6 +20,8 @@ No peer sources or shared manifest files were changed.
 - Reviewed-spec coordinator: resolve remaining helper contracts and Android
   conditional public signatures in sound-player questions; no absent-user prompt
   is needed. The refreshed history and phase synchronization contracts are resolved.
+  Refreshed questions 2/4/6/7/9 are now implemented; remaining numeric clarification
+  is narrow and does not justify seeking original private source behavior.
 - Compiler owner: add Android to the target OS model and CLI. An actual `-os
   android` check currently exits 2 (unknown OS); Linux is not counted as Android.
   Native Android/Windows ARM64 SDKs and native Linux/Windows execution remain

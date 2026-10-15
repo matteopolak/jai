@@ -106,3 +106,26 @@ Physical GUI focus/hotplug/sleep events remain untested; Linux/Windows runtime,
 Windows ARM64 SDK build and Android compiler/backend remain dependencies. See
 [the self-contained integration plan](../features/audio-native-integration.md).
 The refreshed spatial/cursor review is now available and is the next scope.
+
+Reviewed-contract checkpoint after 92c24a9: implemented refreshed spatial routing,
+locked/music coefficients, planar closeness, greatest-minimum VBAP selection with
+positive outside-coverage contribution, footstep rear exclusions and listener/
+SPATIALIZED gating. Buffer success flags now true/true with repeat truncation;
+accumulate_stream always returns false, supports signed/zero rates, holds initial
+decoder waits and otherwise advances through missing-page silence. Circular
+rear-to-front distance and Linux false async-hook semantics are corrected; main
+updates now follow the platform hook even with an audio thread. Filename metadata
+is intentionally unread. Seven-channel loading preserves directions without an
+invented center-rear layout. Android hooks are private; only its compiler/backend
+remain dependencies, not facade declaration gaps.
+
+The new reviewed-edges regression first failed against previous bounds behavior
+and passes after the source changes. Earlier provisional PCM/silence completion
+booleans, hard-panning/mono mapping and locked-gain expectations were explicitly
+reclassified. Clipping coverage is preserved with three streams at the reviewed
+0.5 stereo split. Full expanded suite passes strict tools, interpreter/native
+O0/O2, 138 common target checks plus 2 Windows ABI checks; extra controlled 6/8
+paths include music and near-footstep assertions. Final filename-only and seven-
+channel refinements also receive targeted strict/native/target verification.
+Numeric choices absent from the prose are stated narrowly in questions and are
+not treated as a requirement to seek original private behavior.

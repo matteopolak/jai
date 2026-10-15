@@ -17,7 +17,7 @@ main :: () {
     output: [8] Audio_Dest_Sample;
     finished := accumulate_stream(*stream, output, output.count);
 
-    assert(finished && stream.play_cursor == 6);
+    assert(!finished && stream.play_cursor == 6);
     assert(output[0].channels[0] == 0 && output[1].channels[0] == 0);
     assert(output[2].channels[0] == 0.25 && output[3].channels[0] == 0.5);
     assert(output[6].channels[0] == 0 && output[7].channels[0] == 0);
