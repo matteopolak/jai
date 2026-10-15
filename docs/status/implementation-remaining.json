@@ -4,8 +4,8 @@
     "counts": {
       "complete_committed": 4,
       "complete_draft": 0,
-      "missing": 46,
-      "partial_committed": 10,
+      "missing": 41,
+      "partial_committed": 15,
       "partial_draft": 0,
       "staged_blocked": 1
     },
@@ -33,7 +33,6 @@
         "fill_template_arguments_for_expression",
         "finish_bitfield",
         "get_scoped_token_string",
-        "get_type_name",
         "handle_toplevel_cursors",
         "log",
         "log_error",
@@ -55,15 +54,11 @@
         "print_struct_vtable",
         "print_typedef",
         "raw_string_from_macro_tokens",
-        "raw_tokens_string_from_cursor",
         "should_be_omitted",
         "should_unwrap_typedef",
-        "size_from_number_flags",
         "string_from_macro_value",
         "stripped_name",
-        "to_string",
-        "try_find_struct_in_type",
-        "type_has_name"
+        "to_string"
       ],
       "partial_committed": [
         "append_as_signed_integer_hex",
@@ -71,10 +66,15 @@
         "append_cpp_type",
         "append_cpp_type_modifiers",
         "exceeds_signed_int_value",
+        "get_type_name",
         "print_expression_to_builder",
         "print_function_type_to_builder",
         "print_literal_to_builder",
         "print_type_to_builder",
+        "raw_tokens_string_from_cursor",
+        "size_from_number_flags",
+        "try_find_struct_in_type",
+        "type_has_name",
         "type_to_string"
       ],
       "partial_draft": [],
@@ -154,7 +154,8 @@
     "9ba9fcd5 Check AST verification",
     "4d3a1106 seven owned type/query helpers",
     "0105403a canonical clean model dependency staging",
-    "4805fc6f seven committed value/emission APIs, real foreign defaults and corrected context/overload classification"
+    "4805fc6f seven committed value/emission APIs, real foreign defaults and corrected context/overload classification",
+    "a2bb7175 persistent configured Check factory; fresh interpreter/native Mac O0/O2 plus source/strict lint"
   ],
   "count_unit": "Unique reviewed public function names, with overload/path limits recorded; type/field/native-SDK inventories remain in developer-tools-api.json.",
   "definitions": {
@@ -165,7 +166,7 @@
   "disjoint_batch_candidate": {
     "status": "The proposed ten-name batch is explicitly reassigned to generator-platform; Debug entirely to debug-info-impl. No edits to those names/modules continue here."
   },
-  "head": "4805fc6f7f03a3cd32b7c0e047964acdaa6ed081",
+  "head": "a2bb717529080a8d87fa4e15df691da4a3f8f609",
   "not_counted": [
     "generator-model",
     "generator-platform",
@@ -306,9 +307,9 @@
   },
   "role": "stdlib-tools / generator emission",
   "shared_context_protocol": "docs/developer-tools-context-protocol.md (internal handoff contract; implementation owned by canonical model)",
-  "timestamp_utc": "2026-10-15T16:51:21.877103+00:00",
+  "timestamp_utc": "2026-10-15T17:05:57.997710+00:00",
   "verification_gaps": [
-    "Full isolated production tooling gate passed after committed value/model integration; new Check factory targeted tests pass and full gate rerun is pending. Combined coordinator Mac/corpus count unavailable.",
+    "Fresh full isolated tooling gate passed after Check factory and five cursor/type helpers, including native Mac O0/O2 effects, configured SDK links, formatter --check and strict lint. No current combined coordinator Mac/corpus result is available; last filtered integration snapshot had12 shared-mode failures and one interpreter-only JSON timeout.",
     "Canonical NEW model batch4675c90a copied unchanged and passed its own format/lint, two source targets, four interpreter/eight native executions locally.",
     "Seven committed value helpers and generated values pass interpreter/native Mac O0/O2 plus strict format/lint; integer default foreign calls additionally pass configured C++ O0/O2.",
     "Check Windows-only code is staged on Mac: real LLVM types/accounting pass, but Windows native execution is unperformed and actual Compiler ELSEWHERE metadata remains missing.",

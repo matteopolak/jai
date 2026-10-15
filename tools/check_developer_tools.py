@@ -15,6 +15,7 @@ import check_developer_type_emission
 import check_developer_value_emission
 import check_developer_check
 import check_developer_check_plugin
+import check_developer_cursor_source
 import build_developer_debug
 import check_developer_debug_lifecycle
 import check_developer_debug_windows
@@ -131,6 +132,7 @@ def main():
     check_developer_value_emission.main()
     check_developer_check.main()
     check_developer_check_plugin.main()
+    check_developer_cursor_source.main()
     configured_cases = check_developer_sdk_configuration.main()
     build_developer_debug.main()
     check_developer_debug_lifecycle.main()

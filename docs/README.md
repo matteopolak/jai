@@ -170,6 +170,7 @@ The LLVM backend, C ABI and linking.
 - [Assigned implementation remainder](status/implementation-remaining.json): fresh exact owned names, committed/draft status, effort and verification gaps
 - [Canonical generator model dependency](generator-model.md): staged NEW producer records/helpers and explicit ownership policies
 - [Public generator value-emission workflow](../tools/check_developer_value_emission.py): typed integer/float/string/enum values, expressions and native default calls
+- [Public generator cursor/type-query workflow](../tools/check_developer_cursor_source.py): copied SDK source tokens, compiled C++ effects, borrowed model identity and cycle diagnostics
 - [Public generator type-emission workflow](../tools/check_developer_type_emission.py): C++ declarators, generated Jai callbacks, borrowed type identity and diagnosed failures
 - [Shared generator context protocol](developer-tools-context-protocol.md): internal canonical-owner handoff, supplied options and lifetime requirements
 - [Check factory workflow](../tools/check_developer_check_plugin.py): persistent plugin storage and real configured compiler-message effects

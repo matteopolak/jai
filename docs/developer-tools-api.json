@@ -946,7 +946,7 @@
         "declaration": "try_find_struct_in_type :: (type: *CType) -> *Struct",
         "section": "Public declaration inventory",
         "spec_line": 141,
-        "implementation": "pending"
+        "implementation": "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
       },
       {
         "name": "maybe_convert_expression_zero_to_null",
@@ -1079,7 +1079,7 @@
         "declaration": "type_has_name :: (type: *CType) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 160,
-        "implementation": "pending"
+        "implementation": "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
       },
       {
         "name": "fill_comment",
@@ -1338,7 +1338,7 @@
         "declaration": "size_from_number_flags :: (flags: Number_Flags) -> u32",
         "section": "Public declaration inventory",
         "spec_line": 197,
-        "implementation": "pending"
+        "implementation": "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
       },
       {
         "name": "init_generator",
@@ -1520,7 +1520,7 @@
         "declaration": "get_type_name :: (type: *CType, output_name := true, strip_pointers := false) -> string",
         "section": "Public declaration inventory",
         "spec_line": 223,
-        "implementation": "pending"
+        "implementation": "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
       },
       {
         "name": "get_type_alignment",
@@ -8702,7 +8702,7 @@
         "declaration": "raw_tokens_string_from_cursor :: (cur: CXCursor) -> string",
         "section": "Windows-specific declarations",
         "spec_line": 1293,
-        "implementation": "pending"
+        "implementation": "public cursor/type query subset; live SDK cursor token reconstruction survives TU disposal and compiles/runs configured C++ O0/O2; borrowed nominal names, width flags, pointer/array/alias struct identity and cycle diagnostics execute interpreter/native Mac O0/O2; precise edge/format questions in questions/generator-emission.md"
       },
       {
         "name": "should_be_moved_to_global_scope",

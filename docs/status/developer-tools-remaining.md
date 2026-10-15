@@ -6,7 +6,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Bindings_Generator
 
-114 function names have pending declarations; 217 native function names still lack invocation fixtures.
+109 function names have pending declarations; 217 native function names still lack invocation fixtures.
 
 | Function | Reviewed overload variants | Pending variants | Next work / precise question |
 | --- | ---: | ---: | --- |
@@ -76,7 +76,6 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `get_name_alignment` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_name_for_cursor` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `get_scoped_token_string` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `get_type_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `handle_toplevel_cursors` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `init_generator` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `is_token` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
@@ -111,19 +110,15 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `print_struct_vtable` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `print_typedef` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `raw_string_from_macro_tokens` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `raw_tokens_string_from_cursor` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `replace_operator_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `run_generator` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `shared_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `should_be_moved_to_global_scope` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `should_be_omitted` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `should_unwrap_typedef` | 2 | 2 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `size_from_number_flags` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `string_from_macro_value` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `stripped_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 | `to_string` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `try_find_struct_in_type` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
-| `type_has_name` | 1 | 1 | Implementation pending; reviewed declarations are available. Check linked questions before choosing unspecified behavior. |
 
 
 | Implemented generator with remaining paths | Remaining work |
