@@ -57,8 +57,6 @@ def main():
                     item["implementation"] = "reviewed data/defaults/constants implemented; behavioral coverage varies by model"
                 if item["name"].startswith("clang_") and item["name"] in models:
                     item["implementation"] = "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
-                    if item["name"] in {"clang_getDiagnosticNumRanges", "clang_getDiagnosticRange", "clang_EvalResult_getAsInt"}:
-                        item["implementation"] = "reviewed native signature implemented; direct invocation remains source-only"
                 if item["name"] in {"set_ExcludeDeclarationsFromPCH", "get_ExcludeDeclarationsFromPCH",
                                      "set_DisplayDiagnostics", "get_DisplayDiagnostics",
                                      "set_StorePreamblesInMemory", "get_StorePreamblesInMemory"}:
@@ -72,6 +70,12 @@ def main():
                                      "change_return_type", "change_return_type_to_enum", "change_argument_type_to_enum",
                                      "create_pointer_to", "get_int_type"}:
                     item["implementation"] = "standalone model traversal/mutation subset; snapshot callbacks and ownership effects verified"
+                if item["name"] in {"append_cpp_literal", "append_cpp_expression"}:
+                    item["implementation"] = "C++17 fragment subset; generated native consumers O0/O2 from interpreter/native emitter runs, unsupported output preservation"
+                if item["name"] in {"is_void_type", "is_bool_type", "is_same_location"}:
+                    item["implementation"] = "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
+                if item["name"] in {"fill_location", "get_clang_type_alignment", "create_null_literal"}:
+                    item["implementation"] = "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
         if module == "Performance_Report":
             for item in declarations:
                 item["implementation"] = "implemented; measured native compiler plugin fixture"
@@ -83,6 +87,8 @@ def main():
                 item["implementation"] = "supported subset; actual compiler-message rewrite and edit safety fixture"
         if module == "Debug_Info":
             for item in declarations:
+                if item["name"] in {"Int_Set", "cardinality", "is_set"}:
+                    item["implementation"] = "reviewed bit-set record and operations; interpreter/native O0/O2 boundaries and borrowed-storage mutation verified"
                 if item["name"] in {"Call_Frame_Address_Instruction_Type", "Call_Frame_Address_Instruction",
                                      "Frame_Common_Information_Entry", "decode_cfa_instructions", "parse_common_information_entry"}:
                     item["implementation"] = "supported DWARF frame subset; native-produced CIE and malformed-input fixture"
@@ -97,7 +103,7 @@ def main():
                          "is_valid_pointer", "output", "abort", "os_abort", "breakpoint"}
             for item in declarations:
                 if item["name"] in supported:
-                    item["implementation"] = "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+                    item["implementation"] = "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
         if module == "Iprof":
             supported = {"Report", "Report_Row", "Report_Mode", "Zone", "Zone_History", "NUM_VALUES", "NUM_TITLE",
                          "NUM_HEADER", "NUM_FRAME_SLOTS", "save_csv_report", "log_text_report"}

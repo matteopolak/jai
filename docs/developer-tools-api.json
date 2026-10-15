@@ -239,14 +239,14 @@
         "declaration": "append_cpp_expression :: (builder: *String_Builder, expression: *Expression, target_type: *CType = null, current_scope: *Declaration = null) -> valid: bool",
         "section": "Public declaration inventory",
         "spec_line": 40,
-        "implementation": "pending"
+        "implementation": "C++17 fragment subset; generated native consumers O0/O2 from interpreter/native emitter runs, unsupported output preservation"
       },
       {
         "name": "append_cpp_literal",
         "declaration": "append_cpp_literal :: (builder: *String_Builder, lit: *Literal, target_type: *CType = null, current_scope: *Declaration = null, print_integers_as_hex := false) -> valid: bool",
         "section": "Public declaration inventory",
         "spec_line": 41,
-        "implementation": "pending"
+        "implementation": "C++17 fragment subset; generated native consumers O0/O2 from interpreter/native emitter runs, unsupported output preservation"
       },
       {
         "name": "append_cpp_type_modifiers",
@@ -449,14 +449,14 @@
         "declaration": "is_void_type :: (t: *CType) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 70,
-        "implementation": "pending"
+        "implementation": "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
       },
       {
         "name": "is_bool_type",
         "declaration": "is_bool_type :: (t: *CType) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 71,
-        "implementation": "pending"
+        "implementation": "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
       },
       {
         "name": "Function_Type",
@@ -575,7 +575,7 @@
         "declaration": "is_same_location :: (a: Location, b: Location) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 88,
-        "implementation": "pending"
+        "implementation": "model predicate subset; parsed native bool/void aliases, cycle diagnostics and live SDK file-handle metadata verified"
       },
       {
         "name": "Declaration",
@@ -778,7 +778,7 @@
         "declaration": "get_clang_type_alignment :: (ty: CXType) -> s64",
         "section": "Public declaration inventory",
         "spec_line": 117,
-        "implementation": "pending"
+        "implementation": "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
       },
       {
         "name": "create_function_type",
@@ -1002,7 +1002,7 @@
         "declaration": "create_null_literal :: () -> *Literal",
         "section": "Public declaration inventory",
         "spec_line": 149,
-        "implementation": "pending"
+        "implementation": "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
       },
       {
         "name": "create_literal",
@@ -1107,7 +1107,7 @@
         "declaration": "fill_location :: (location: *Location, cur: CXCursor)",
         "section": "Public declaration inventory",
         "spec_line": 164,
-        "implementation": "pending"
+        "implementation": "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
       },
       {
         "name": "create_empty_struct_type",
@@ -1716,7 +1716,7 @@
         "declaration": "fill_location :: (location: *Location, cur: CXCursor)",
         "section": "Public declaration inventory",
         "spec_line": 251,
-        "implementation": "pending"
+        "implementation": "native location/alignment and owned null literal helpers; live SDK values/errors and generated C++17 pointer effect verified"
       },
       {
         "name": "log",
@@ -2255,14 +2255,14 @@
         "declaration": "clang_getDiagnosticNumRanges :: (unknown0: CXDiagnostic) -> u32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 368,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getDiagnosticRange",
         "declaration": "clang_getDiagnosticRange :: (Diagnostic: CXDiagnostic, Range: u32) -> CXSourceRange #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 369,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getDiagnosticNumFixIts",
@@ -4579,7 +4579,7 @@
         "declaration": "clang_EvalResult_getAsInt :: (E: CXEvalResult) -> s32 #foreign libclang",
         "section": "Unix-specific declarations",
         "spec_line": 700,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsLongLong",
@@ -5629,14 +5629,14 @@
         "declaration": "clang_getDiagnosticNumRanges :: (unknown0: CXDiagnostic) -> u32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 853,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getDiagnosticRange",
         "declaration": "clang_getDiagnosticRange :: (Diagnostic: CXDiagnostic, Range: u32) -> CXSourceRange #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 854,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_getDiagnosticNumFixIts",
@@ -7953,7 +7953,7 @@
         "declaration": "clang_EvalResult_getAsInt :: (E: CXEvalResult) -> s32 #foreign libclang",
         "section": "Windows-specific declarations",
         "spec_line": 1185,
-        "implementation": "reviewed native signature implemented; direct invocation remains source-only"
+        "implementation": "direct native parser API subset; official SDK interpreter/native O0/O2 struct and callback ABI effects"
       },
       {
         "name": "clang_EvalResult_getAsLongLong",
@@ -23743,14 +23743,14 @@
         "declaration": "CRASH_HANDLER_USE_SEPARATE_THREAD :: false",
         "section": "Public declaration inventory",
         "spec_line": 7,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "Exit_Code",
         "declaration": "Exit_Code :: enum s32",
         "section": "Public declaration inventory",
         "spec_line": 8,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "Crash_Handler",
@@ -23771,35 +23771,35 @@
         "declaration": "backtrace :: (trace: []*void, skip:=0) -> int",
         "section": "Public declaration inventory",
         "spec_line": 11,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "backtrace",
         "declaration": "backtrace :: (skip:=0) -> [] string",
         "section": "Public declaration inventory",
         "spec_line": 12,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "free_backtrace",
         "declaration": "free_backtrace :: (trace_symbols: [] string)",
         "section": "Public declaration inventory",
         "spec_line": 13,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "backtrace_symbols",
         "declaration": "backtrace_symbols :: os_backtrace_symbols",
         "section": "Public declaration inventory",
         "spec_line": 14,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "translate_symbols",
         "declaration": "translate_symbols :: backtrace_symbols",
         "section": "Public declaration inventory",
         "spec_line": 15,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "break_once",
@@ -23813,14 +23813,14 @@
         "declaration": "breakpoint :: () -> bool #expand #no_debug",
         "section": "Public declaration inventory",
         "spec_line": 17,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "is_debugger_present",
         "declaration": "is_debugger_present :: inline () -> bool",
         "section": "Public declaration inventory",
         "spec_line": 18,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "attach_to_debugger",
@@ -23834,14 +23834,14 @@
         "declaration": "output :: (text: string)",
         "section": "Public declaration inventory",
         "spec_line": 20,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "abort",
         "declaration": "abort :: (exit_code := Exit_Code.Abort)",
         "section": "Public declaration inventory",
         "spec_line": 21,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "get_written_minidump_filename",
@@ -23855,7 +23855,7 @@
         "declaration": "Minidump_State :: enum",
         "section": "Public declaration inventory",
         "spec_line": 23,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "set_minidump_state",
@@ -23925,7 +23925,7 @@
         "declaration": "is_valid_pointer :: (ptr : *void) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 33,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "write_minidump",
@@ -23946,21 +23946,21 @@
         "declaration": "os_is_debugger_present :: inline () -> bool",
         "section": "Unix-specific declarations",
         "spec_line": 39,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_is_debugger_present",
         "declaration": "os_is_debugger_present :: () -> bool",
         "section": "Unix-specific declarations",
         "spec_line": 40,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_is_debugger_present",
         "declaration": "os_is_debugger_present :: () -> bool",
         "section": "Unix-specific declarations",
         "spec_line": 41,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_attach_to_debugger",
@@ -23974,7 +23974,7 @@
         "declaration": "os_abort :: (exit_code: Exit_Code)",
         "section": "Unix-specific declarations",
         "spec_line": 43,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_enable_signal_handler",
@@ -23995,14 +23995,14 @@
         "declaration": "os_backtrace :: (trace: [] *void, maxcount: int, skip := 0) -> int",
         "section": "Unix-specific declarations",
         "spec_line": 46,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_backtrace_symbols",
         "declaration": "os_backtrace_symbols :: (trace: []*void, n: int) -> [] string",
         "section": "Unix-specific declarations",
         "spec_line": 47,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_show_assert_dialog",
@@ -24023,7 +24023,7 @@
         "declaration": "os_is_debugger_present :: inline () -> bool",
         "section": "Windows-specific declarations",
         "spec_line": 53,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_attach_to_debugger",
@@ -24037,7 +24037,7 @@
         "declaration": "os_abort :: (exit_code: Exit_Code)",
         "section": "Windows-specific declarations",
         "spec_line": 55,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_enable_signal_handler",
@@ -24058,14 +24058,14 @@
         "declaration": "os_backtrace :: (trace: [] *void, maxcount: int, skip:=0) -> int",
         "section": "Windows-specific declarations",
         "spec_line": 58,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "os_backtrace_symbols",
         "declaration": "os_backtrace_symbols :: (trace: [] *void, n: int) -> [] string",
         "section": "Windows-specific declarations",
         "spec_line": 59,
-        "implementation": "native macOS/Linux subset; Android/WASM debugger false; see target limits"
+        "implementation": "macOS native effects; Windows SDK cross-build/signature checks, runtime pending; Linux source-only; Android/WASM debugger false"
       },
       {
         "name": "init_crash_handler_thread",
@@ -25111,21 +25111,21 @@
         "declaration": "Int_Set :: struct",
         "section": "Public declaration inventory",
         "spec_line": 140,
-        "implementation": "pending"
+        "implementation": "reviewed bit-set record and operations; interpreter/native O0/O2 boundaries and borrowed-storage mutation verified"
       },
       {
         "name": "cardinality",
         "declaration": "cardinality :: (set: Int_Set) -> u64",
         "section": "Public declaration inventory",
         "spec_line": 141,
-        "implementation": "pending"
+        "implementation": "reviewed bit-set record and operations; interpreter/native O0/O2 boundaries and borrowed-storage mutation verified"
       },
       {
         "name": "is_set",
         "declaration": "is_set :: (set: Int_Set, i: int) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 142,
-        "implementation": "pending"
+        "implementation": "reviewed bit-set record and operations; interpreter/native O0/O2 boundaries and borrowed-storage mutation verified"
       },
       {
         "name": "Msf",
