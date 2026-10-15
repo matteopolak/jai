@@ -424,3 +424,17 @@ rows, reduced from246 solely by transfer of55 rows, not implementation credit.
 Regeneration is byte-stable; current390 owned files still pass formatting/check.
 Compiler-dependent Registry/toolchain scope and six uncommitted Registry candidate
 files remain ours. No data-worker checkout access or mutation occurred.
+
+ADB host subsystem:15 reviewed public declarations implemented, including live
+path/serial/verbose storage, three canonical records/enums and nine command/
+query/transfer procedures. Source-built native SDK-protocol fixture passes real
+process/argv/output/exit/parser/quoting/allocator-cleanup tests in interpreter and
+ARM64+x64 native O0/O2. Strict scoped lint and Linux both-CPU checking pass;
+unrelated Windows digests retain their source checks after dependency isolation.
+Actual SDK is absent from PATH, no daemon/device/auth commands executed, and
+Windows ADB depends on peer Process integration.191 retained missing rows become
+176; fine ownership/escaping/serial policies are explicitly recorded as review
+questions, not assumed reference behavior. README-linked portable-adb.md contains
+exact evidence and remaining higher-level/build/install gaps.
+Registry original reproducer is committed at tests/portable-stdlib/pending/opaque-pointer-constant.jai;
+NEW compiler raw-pointer handoff is now available and will be rebuilt/validated next.

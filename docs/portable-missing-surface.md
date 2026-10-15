@@ -13,29 +13,15 @@ or legacy test expectations are inventory inputs.
 
 ### Android/Toolchain
 
-JNI ABI naming, counted OID identity, reviewed JKS constants and real SHA-1/SHA-256 digests are implemented. Device/build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
+JNI/OID/JKS/SHA primitives and ADB command/version/device-parser/transfer operations are implemented. ADB host protocol fixtures pass; actual SDK/device and Windows Process integration remain pending. Install recovery, higher-level device/build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.
 
 Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 
 | Missing public declaration | Condition |
 | --- | --- |
-| `__adb_path: string` | All reviewed hosts |
 | `__debug_manifest_reading := false` | All reviewed hosts |
 | `__no_gradle_build_be_verbose := false` | All reviewed hosts |
-| `adb :: (command_args: .. string, device_serial := "", log_adb_command_errors := false, print_captured_output := false, loc := #caller_location, try_and_escape_spaces_in_shell_arguments := true) -> (bool, output_string := "", error_string := "", exit_code := 0)` | All reviewed hosts |
-| `adb_be_verbose := !true` | All reviewed hosts |
-| `Adb_Compression_Algorithm :: enum` | All reviewed hosts |
-| `Adb_Device :: struct` | All reviewed hosts |
-| `adb_device_serial: string` | All reviewed hosts |
-| `adb_devices :: (return_only_ready_devices := false) -> bool, [] Adb_Device` | All reviewed hosts |
 | `adb_install :: (apk_path: string, reinstall_keeping_data := false, allow_test_apk := false, allow_version_code_downgrade := false, uninstall_and_retry_on_key_mismatch := true, log_errors := true) -> bool` | All reviewed hosts |
-| `adb_pull :: (remote_source: string, local_destination := "", preserve_timestamps := true, disable_compression := false, compression_algorithm := Adb_Compression_Algorithm.UNSPECIFIED) -> bool` | All reviewed hosts |
-| `adb_push :: (local_source: string, remote_destination: string, only_update_newer_files := false, dry_run := false, compression_algorithm := Adb_Compression_Algorithm.UNSPECIFIED, disable_compression := false) -> bool` | All reviewed hosts |
-| `adb_shell_mkdir :: (path: string) -> bool` | All reviewed hosts |
-| `adb_shell_pidof :: (package_name: string) -> bool, s32` | All reviewed hosts |
-| `adb_uninstall :: (package_name: string) -> bool` | All reviewed hosts |
-| `adb_version :: () -> Adb_Version_Info, bool` | All reviewed hosts |
-| `Adb_Version_Info :: struct` | All reviewed hosts |
 | `Algorithm_Id :: enum u32` | All reviewed hosts |
 | `Android_Apk :: struct` | All reviewed hosts |
 | `Android_Apk_Entry :: struct` | All reviewed hosts |
@@ -124,7 +110,6 @@ Reviewed contract: [module page](specs/stdlib/modules/android-toolchain.md).
 | `get_ndk_libclang_paths :: () -> [] string` | All reviewed hosts |
 | `get_ndk_paths :: () -> NDK_Paths` | All reviewed hosts |
 | `gradle_install_apk :: (project_path: string, release := false) -> bool` | All reviewed hosts |
-| `is_adb_installed :: () -> bool, string` | All reviewed hosts |
 | `is_app_running :: (package_name: string) -> running: bool, success: bool` | All reviewed hosts |
 | `JAVA_ENV_NAME :: "JAVA_HOME"` | All reviewed hosts |
 | `jdk_decrypt_private_key :: (encrypted_data: string, password: string) -> bool, string` | All reviewed hosts |
@@ -250,7 +235,7 @@ Missing nested public operations:
 - `Project_Generator.process_message :: (message: *Message);`
 - `Project_Generator.reset :: ();`
 
-Total: 191 missing reviewed declaration/overload/nested-operation rows
+Total: 176 missing reviewed declaration/overload/nested-operation rows
 in these largely unimplemented modules. This is not the full library gap
 count: partial module behavior, platform backends, compiler dependencies,
 independent test review and integrated/native verification remain separate.

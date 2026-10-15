@@ -120,6 +120,7 @@ The LLVM backend, C ABI and linking.
 - [Socket ancillary helpers and actual native SDK vectors](portable-socket-cmsg.md)
 - [Windows Registry native APIs and unresolved pseudo-handle ABI](portable-windows-registry.md)
 - [Android toolchain ABI naming, OID identity, digests and remaining APIs](portable-android-toolchain.md)
+- [Android SDK ADB command subsystem](portable-adb.md): native host CLI protocol tests, canonical records and live configuration
 - [Exact missing owned public declarations](portable-missing-surface.md)
 - [Windows UTF-8 helpers](portable-windows-utf8.md): real Kernel32 conversion code, ABI checks and outstanding native execution
 - [Owned source format/lint runner](../tools/format_portable_stdlib.py): explicit scope and source-built jaifmt/jailint

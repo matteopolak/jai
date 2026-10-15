@@ -8,8 +8,11 @@ ROOT = Path(__file__).resolve().parents[1]
 MODULES = [
     ('Build and toolchain', 'Android/Toolchain', 'android-toolchain',
      {'get_android_project_jni_architecture_name', 'ASN1_Object_Identifier', 'asn1_oid_equals',
-      'OID_SUN_JKS_ENCRYPTION', 'JKS_MAGIC', 'JKS_MAGIC_LITTLE_ENDIAN', 'sha1', 'sha256'},
-     'JNI ABI naming, counted OID identity, reviewed JKS constants and real SHA-1/SHA-256 digests are implemented. Device/build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.'),
+      'OID_SUN_JKS_ENCRYPTION', 'JKS_MAGIC', 'JKS_MAGIC_LITTLE_ENDIAN', 'sha1', 'sha256',
+      'Adb_Version_Info', 'Adb_Device', 'Adb_Compression_Algorithm', '__adb_path', 'adb_device_serial',
+      'adb_be_verbose', 'adb', 'adb_version', 'adb_devices', 'is_adb_installed', 'adb_push', 'adb_pull',
+      'adb_shell_mkdir', 'adb_shell_pidof', 'adb_uninstall'},
+     'JNI/OID/JKS/SHA primitives and ADB command/version/device-parser/transfer operations are implemented. ADB host protocol fixtures pass; actual SDK/device and Windows Process integration remain pending. Install recovery, higher-level device/build/signing/manifest and remaining helpers are missing; no device, SDK or signing success is fabricated.'),
     ('Build and toolchain', 'Default_Metaprogram', 'default-metaprogram', set(),
      'Build orchestration and option/message behavior remain implementation work; exact help text/option grammar require further review.'),
     ('Build and toolchain', 'Example_Plugin', 'example-plugin', set(),

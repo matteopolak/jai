@@ -442,3 +442,17 @@ mean those55 APIs were implemented. No code overlap/pending source existed in
 those modules; mutation/format scopes exclude their public/private/test names.
 Coordinator will merge new producer sources and exact private-root ownership
 when supplied; no other checkout was read or written for this update.
+
+ADB first batch: native C CLI fixture models official SDK protocol strictly for
+unit/process/argv/error/parser/ownership regression, not an Android SDK binary
+or device verification substitute. No actual SDK found on PATH; no device/daemon/
+auth accessed. Independent finer policies: context-owned return strings/array;
+explicit nonempty serial wins; optional generic escaping only spaces; high-level
+remote literal quoting; disable compression wins; malformed parse rejects and
+pidof returns the first positive signed32 PID. These remain precise questions
+where review is silent. No public convenience exports added. Windows Process
+remains unintegrated for ADB; the dependency is local to adb so digests/types
+retain Windows use. Original dependency/indexing/lint failures are retained.
+No test assertions were weakened, invalid SDK/device results manufactured or
+errors mapped to success. Registry candidates remain excluded until compiler
+rebuild and original-probe validation.
