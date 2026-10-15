@@ -1,5 +1,20 @@
 # Compiler deviations and implementation gaps
 
+## Mac catalogue repair scope (2026-10-15)
+
+Test oracle corrections are documented per fixture in compiler/mac-catalogue-repairs.md.
+No module/path/type-name bypass, fake metadata, ignored assertion or whole-suite
+deletion. Exact unreviewed Program_Print whitespace checks are replaced with
+successful printing plus explicit AST names/values/types. Debugger remains
+unavailable and is required to diagnose in an original negative CLI test. Six
+fixtures pass actual interpreter/native ARM64 O0/O2. Custom-link's fixed API
+still exposes a missing native portable_crash prerequisite in normal runner;
+only -no_workspace_output interpreter execution passes, not normal integration.
+Protocol comparison is public but absent; preserve failure for portable owner.
+Numeric inference needs reviewed reconciliation with lexer fractional-digit flags;
+existing numeric checks remain failing, not changed to current behavior.
+No production semantic workaround or API extension is included in this migration.
+
 ## Enum dependency checkpoint (2026-10-15)
 
 No module/source-name bypass, fabricated constants, weakened assertions, public

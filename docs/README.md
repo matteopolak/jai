@@ -1,5 +1,7 @@
 # Developer documentation
 
+- [Focused Mac compiler catalogue classifications and repairs](compiler/mac-catalogue-repairs.md)
+
 - [Extensions Io/Args dependency migration](extensions/dependency-migration.md):
   allocator ownership, fiber scratch lifecycle and actual WASI termination;
   [measured status and remaining dependency handoff](status/extensions-dependencies.md).

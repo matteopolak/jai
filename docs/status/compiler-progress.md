@@ -1,5 +1,20 @@
 # Compiler progress
 
+Fresh approved d30311a5 compiler-mac-repairs scope: classified all22 unresolved
+compiler catalogue fixtures against reviewed contracts. Six contract migrations
+pass interpreter/native ARM64 O0/O2: build-options-main-defaults,
+compiler-build-file-and-literals, compiler-get-code-rerun, macro-code-variable-arg,
+rules-scoping, using-only-import. Structural/value/type assertions replace
+unestablished exact-print whitespace; debugger unavailability remains a required
+negative CLI test. Custom-link arity migrated but normal runner now exposes missing
+portable_crash native prerequisite; no pass claimed. Missing public Protocol
+compare_alloc_and_free_traces remains a portable-owner dependency, not deleted.
+Compiler-resolved-nodes now checks print success and exposes missing compound
+printing. Next cohesive implementation: supported AST printing/reconstruction.
+Classification/reasons/evidence: compiler/mac-catalogue-repairs.md. Own T7 target
+only; local source/evidence retained. No routing/prerequisite/Default_Metaprogram/
+Extensions changes, no profiles/benchmarks, no mutable initialized constants.
+
 Forward enum dependency implementation committed and verified: 7ddabf5.
 Original MASK/LAST reduction now passes host/WASM CLI source checks; interpreter
 returns intended value5. Declaration collection/lazy entities replace sequential
