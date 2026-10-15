@@ -461,15 +461,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 
 ## Debug_Info
 
-4 function names have pending declarations; 0 native function names still lack invocation fixtures.
-
-| Function | Reviewed overload variants | Pending variants | Next work / precise question |
-| --- | ---: | ---: | --- |
-| `decode_inline_site_line_info` | 1 | 1 | Exact typed procedure/site symbol base-storage dependency: [Debug_Info worker question1](../specs/questions/debug-info-impl.md). No guessed prefix or empty parser supplied. |
-| `overlay_inlinesite` | 1 | 1 | Exact typed procedure/site symbol base-storage dependency: [Debug_Info worker question1](../specs/questions/debug-info-impl.md). No guessed prefix or empty parser supplied. |
-| `overlay_inlinesites` | 1 | 1 | Exact typed procedure/site symbol base-storage dependency: [Debug_Info worker question1](../specs/questions/debug-info-impl.md). No guessed prefix or empty parser supplied. |
-| `parse_codeview_symbols` | 1 | 1 | Exact typed procedure/site symbol base-storage dependency: [Debug_Info worker question1](../specs/questions/debug-info-impl.md). No guessed prefix or empty parser supplied. |
-
+0 function names have pending declarations; 0 native function names still lack invocation fixtures.
 
 | Implemented map helper with remaining paths | Remaining work |
 | --- | --- |
@@ -478,7 +470,7 @@ Generated from the reviewed per-API inventory by tools/audit_developer_tools.py.
 | `free_page` | In-range bits execute; caller initializes bounds, rover remains0. |
 | `is_fpm_page_number` | MSF7 4096-byte big-map positions execute; other layouts remain unsupported. |
 
-Public DWARF4 compilation-unit/type/scope/line and MSF parsing workflows now execute interpreter/native O0/O2 with SDK object/stream oracles. See [policies and limits](../debug-info-public-parsers.md); CodeView type/PDB/name-map/TPI/IPI workflows, lookups/descriptions/dumps and deep line clipping now also execute with SDK metadata oracles. Four symbol/inline APIs retain the exact ABI dependency above.
+Public DWARF4 compilation-unit/type/scope/line and MSF parsing workflows now execute interpreter/native O0/O2 with SDK object/stream oracles. See [policies and limits](../debug-info-public-parsers.md); CodeView type/PDB/name-map/TPI/IPI workflows, lookups/descriptions/dumps and deep line clipping now also execute with SDK metadata oracles. The final four symbol/inline APIs now execute original SDK procedure/annotation/graph fixtures and Mac interpreter/native O0/O2. Typed procedure/site storage follows the resolved target-derived Jai ABI; auxiliary symbol projections and unsupported wire encodings remain explicit format limits, not contract blockers.
 
 ## Print_Vars
 

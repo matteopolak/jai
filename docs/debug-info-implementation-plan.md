@@ -13,4 +13,4 @@ Design: bounded readers reuse verified line/MSF decoding. DWARF abbreviation and
 
 No separate design approval requested: user authorizes choosing documented independent policies and continuing unblocked implementation.
 
-CodeView type/PDB public workflows, lookups/descriptions/dumps and deep clipping were added after refreshed reviewed type-base/opaque-map contracts unblocked them. Four symbol/inline functions retain exact public storage dependencies; see specs/questions/debug-info-impl.md.
+CodeView type/PDB public workflows, lookups/descriptions/dumps and deep clipping were added after refreshed reviewed type-base/opaque-map contracts unblocked them. The final reviewed symbol contract resolves those dependencies. All four symbol/inline APIs are implemented with transactional C13 parsing, bounded inline state and ordered contained overlays. Original SDK symbol/annotation/source oracles, corrupt-reference/encoding/allocator tests and target-derived ABI checks are integrated into the combined Mac runner.

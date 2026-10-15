@@ -19,3 +19,27 @@ Reviewed bindings-generator.md confirms Generator and Library_Symbols are import
 ## Debug_Info verified integration handoff
 
 Commits3ec74dd4 and822da42b are ready for coordinator integration. The second commit adds the public CodeView type/PDB/TPI/IPI workflows, lookup/description/dump helpers and deep line clipping. Twenty-one formerly missing public names (22 overloads) now have implementations and real invocation evidence. `python3 tools/check_debug_info_public.py` passes all18 Debug_Info fixtures in Mac interpreter/native O0/O2 with SDK oracles, formatter and strict lint. Four symbol/inline functions remain blocked only by the precise typed symbol storage question above; each is listed in specs/questions/debug-info-impl.md. No other worktree/integration source was accessed. See status/debug-info-impl.md for exact APIs, commits, limits and test scope. No agent_message tool is available, so this inbox is the local notification for routing the remaining ABI question.
+
+
+## Final model and typed symbol contract batch 2026-10-15 15:04 UTC
+
+Reviewed debug-info refreshed. Generator pending model table now covers cursor registration/redeclarations, type/template/child-consumption, implicit this, literal/expression/macro/null semantics, token lifetime/equality, parenthesis start convention, member bit offsets, bool default omission, ObjC behavior. Repeated create_function returns null while preserving canonical record. Debug_Info typed procedure/inline leading base storage/discriminants and decoder behavior now specified. ABI determines later offsets; source does not promise deep-copy independence or zero-length annotation success. Implement remaining assigned APIs now; do not retain resolved contract blockers.
+
+## Final symbol/inline implementation ready
+
+All four APIs from the final contract batch are implemented. The public C13 workflow returns reviewed compiler/procedure/inline roots and source tables; annotations decode to owned bounded ranges; overlays split containing regions and apply ordered children. Target-derived Jai ABI is used throughout. Nonzero scope references, compressed operands, input bounds and allocation cleanup have native-object/synthetic regressions. The combined runner now includes20 fixtures, four additional x64/arm64 O0/O2 original inline objects with SDK field/graph/annotation/source oracles, and Windows/Linux/Mac x64/arm64 ABI checks. No stale contract blocker remains. Projection/encoding limits are explicit in debug-info-public-parsers.md and specs/questions/debug-info-impl.md. The source permits aliasing views; independent ownership in this implementation is not asserted as reference equivalence. Final commit/test evidence follows in the integration checkpoint.
+
+
+## Current remaining-work count requested
+
+Please publish a fresh docs/status/implementation-remaining.json inventory with complete/partial/missing public API counts and exact remaining names, plus current verification gaps. Count only your assigned ownership, distinguish draft from committed, include timestamp and head. User asks how much implementation remains; old aggregate counts are stale. Continue implementation while updating this short ledger.
+
+
+## User-approved implementation balancing
+
+User explicitly requests equalized remaining implementation work once fresh inventories arrive, and permits consolidating clean trees so workers share complete canonical dependencies. Include effort/dependency estimates with remaining API names. Integrator should produce a shared clean merged generator/model/platform/tooling baseline promptly; preserve one Generator/context lifecycle implementation and clear file ownership. Do not copy original/quarantined code or read dirty transcripts. Workers should identify a disjoint batch another worker can take, rather than duplicate shared scaffolding. Continue current implementation until reassignment is explicit.
+
+
+## Balancing and shared baseline 2026-10-15 15:34 UTC
+
+Twenty-fixture success is ready for handoff. Publish the requested fresh implementation-remaining.json now and commit final symbol implementations and tests. After completed assigned scope, you are next available for a disjoint generator emission batch. Tooling owner asked to propose exact names/files. Do not duplicate pending peer changes. Preserve final parser review/bounds/ownership regressions.

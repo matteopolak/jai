@@ -62,3 +62,50 @@ release_pdb :: (pdb: *D.Pdb) {
     free(pdb.name_table.string_to_name_map.deleted.words.data);
     release_msf(*pdb.msf);
 }
+
+release_sequences :: (sequences: [] D.Codeview_Line_Info_Sequence) {
+    for sequence: sequences {
+        for block: sequence.file_blocks {
+            free(block.lines.data);
+            free(block.columns.data);
+        }
+
+        array_free(sequence.file_blocks);
+    }
+
+    free(sequences.data);
+}
+
+release_debug_symbols :: (info: *D.Codeview_Debug_Info) {
+    for symbol: info.symbols {
+        if D.is_procedure(symbol) array_free((cast(*D.Codeview_Symbol_Procedure) symbol).inlinesites);
+
+        if symbol.symbol_type == .INLINESITE {
+            site := cast(*D.Codeview_Symbol_Inline_Site) symbol;
+            array_free(site.binary_annotations);
+            array_free(site.children);
+        }
+
+        free(symbol);
+    }
+
+    array_free(info.symbols);
+    for checksum: info.file_checksums free(checksum.checksum.data);
+
+    array_free(info.file_checksums);
+
+    for sequence: info.line_info {
+        for block: sequence.file_blocks {
+            free(block.lines.data);
+            free(block.columns.data);
+        }
+
+        array_free(sequence.file_blocks);
+    }
+
+    array_free(info.line_info);
+    for inlinee: info.inlinee_line_info free(inlinee.extra_files.data);
+
+    array_free(info.inlinee_line_info);
+    free(info.string_table.data);
+}

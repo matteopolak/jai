@@ -14,7 +14,7 @@ Start with [compiler architecture](compiler/architecture.md). Real projects that
 - [Portable MPEG](portable-mpeg.md): MPEG-1 streams/video/CRC-checked audio, independent fixtures and remaining gaps
 - [Portable SIMD](portable-simd.md): allocation-free scalar lane kernels and unresolved load/interleaving contracts
 - [Portable Meow](portable-meow.md): canonical register macros, real calico hashing and native C vector provenance
-- [Debug_Info public parsers](debug-info-public-parsers.md): DWARF4 units, CodeView types, MSF/PDB/TPI/IPI workflows, SDK oracles and remaining symbol ABI dependencies
+- [Debug_Info public parsers](debug-info-public-parsers.md): DWARF4 units, CodeView types/symbols/inline overlays, MSF/PDB/TPI/IPI workflows and SDK oracles
   ([isolated implementation checkpoint](status/debug-info-impl.md))
 
 ## Language

@@ -215,21 +215,29 @@ def main():
     check_developer_msf.main()
     codeview = codeview_fixtures()
     pdb = pdb_oracle()
+    import check_debug_info_symbols
+    symbols = check_debug_info_symbols.main()
     owned = [ROOT / path for path in ["stdlib/Debug_Info/module.jai",
              "stdlib/internal/developer-tools/dwarf-public.jai", "stdlib/internal/developer-tools/msf-streams.jai",
              "stdlib/internal/developer-tools/msf-wire.jai", "stdlib/internal/developer-tools/msf-page-bits.jai",
              "stdlib/Debug_Info/codeview-type-model.jai", "stdlib/Debug_Info/pdb-model.jai",
+             "stdlib/Debug_Info/codeview-symbol-model.jai", "stdlib/internal/developer-tools/codeview-inline.jai",
+             "stdlib/internal/developer-tools/codeview-symbol-parser.jai", "tests/developer-tools/codeview-inline.jai",
+             "tests/developer-tools/codeview-symbol-parser.jai",
              "stdlib/internal/developer-tools/codeview-types.jai", "stdlib/internal/developer-tools/pdb-parser.jai",
              "stdlib/internal/developer-tools/codeview-truncate.jai", "tests/developer-tools/codeview-truncate.jai",
              "tests/developer-tools/codeview-test-support.jai", "tests/developer-tools/codeview-type-parser.jai",
              "tests/developer-tools/codeview-dump.jai", "tests/developer-tools/pdb-parser.jai", "tests/developer-tools/dwarf-public.jai", "tests/developer-tools/msf-parser.jai"]]
-    generated = [TARGET / f"debug-info-{name}.jai" for name in ["sdk", "synthetic", "codeview-sdk", "pdb-sdk"]]
+    generated = [TARGET / f"debug-info-{name}.jai" for name in ["sdk", "synthetic", "codeview-sdk", "pdb-sdk", "symbol-sdk", "symbol-mutations", "symbol-synthetic"]]
     run([TARGET / "jaifmt", "--config", ROOT / "jaifmt.toml", *generated])
     run([TARGET / "jaifmt", "--config", ROOT / "jaifmt.toml", "--check", *owned, *generated])
-    fixtures = [ROOT / f"tests/developer-tools/{name}.jai" for name in ["dwarf-public", "msf-parser", "codeview-type-parser", "pdb-parser", "codeview-truncate", "codeview-dump"]]
+    fixtures = [ROOT / f"tests/developer-tools/{name}.jai" for name in ["dwarf-public", "msf-parser", "codeview-type-parser", "pdb-parser", "codeview-truncate", "codeview-dump", "codeview-inline", "codeview-symbol-parser"]]
     fixtures += existing_regressions()
     run([LINT, "-D", "warnings", ROOT / "stdlib/Debug_Info/module.jai",
          *fixtures])
+    for os_name in ["windows", "linux", "macos"]:
+        for cpu in ["x64", "arm64"]:
+            run([JAIC, ROOT / "tests/developer-tools/codeview-inline.jai", "-check", "-os", os_name, "-cpu", cpu])
     for fixture in fixtures:
         stdout, stderr = run([JAIC, fixture, "-interp"])
         output_ok = stdout == "ok\n" if fixture.stem != "codeview-dump" else stdout.endswith("ok\n") and "original_debug_entry" in stdout and "type 4097: int ()" in stdout
@@ -243,9 +251,9 @@ def main():
             if not output_ok or stderr:
                 raise RuntimeError(f"Unexpected native diagnostics: {stdout}\n{stderr}")
     (ROOT / "docs/native/debug-info-public-evidence.json").write_text(json.dumps({
-        "scope": "public DWARF4 parser metadata compared with relocated original SDK objects; CodeView record kinds/fields and PDB metadata compared with official SDK; public MSF streams compared with SDK exports; Mac interpreter/native O0/O2", "dwarf": evidence, "codeview": codeview, "pdb": pdb,
+        "scope": "public DWARF4 parser metadata compared with relocated original SDK objects; CodeView types/procedures/inline graphs/annotations/source tables and PDB metadata compared with official SDK; public MSF streams compared with SDK exports; Mac interpreter/native O0/O2", "dwarf": evidence, "codeview": codeview, "pdb": pdb, "symbols": symbols,
         "fixtures": [fixture.name for fixture in fixtures],
-        "verification": ["formatter", "strict lint", "interpreter", "native O0", "native O2"]}, indent=2) + "\n")
+        "verification": ["formatter", "strict lint", "interpreter", "native O0", "native O2", "target-derived symbol ABI checks: Windows/Linux/Mac x64/arm64"]}, indent=2) + "\n")
     print("Public Debug_Info parser checks passed")
 
 

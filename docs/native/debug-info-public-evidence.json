@@ -1,5 +1,5 @@
 {
-  "scope": "public DWARF4 parser metadata compared with relocated original SDK objects; CodeView record kinds/fields and PDB metadata compared with official SDK; public MSF streams compared with SDK exports; Mac interpreter/native O0/O2",
+  "scope": "public DWARF4 parser metadata compared with relocated original SDK objects; CodeView types/procedures/inline graphs/annotations/source tables and PDB metadata compared with official SDK; public MSF streams compared with SDK exports; Mac interpreter/native O0/O2",
   "dwarf": [
     {
       "architecture": "x86",
@@ -478,6 +478,651 @@
       "sha256": "4065d9339d7b30745a4f9faab69f3e5917ed5140403c4eb99a3bf498584e5470"
     }
   ],
+  "symbols": [
+    {
+      "architecture": "x64",
+      "optimization": 0,
+      "sha256": "92a01b12696b4cb4fafebde5d19c5f7d485a0d2224e97f508900c65974473c87",
+      "projected_symbols": [
+        {
+          "kind": "COMPILE3",
+          "children": [],
+          "cpu": 208,
+          "language": 0,
+          "compiler": "Homebrew clang version 23.1.2",
+          "frontend": [
+            23,
+            1,
+            2,
+            0
+          ],
+          "backend": [
+            23012,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "GPROC32_ID",
+          "children": [
+            2,
+            5
+          ],
+          "name": "original_inline_entry",
+          "length": 124,
+          "segment": 0,
+          "offset": 0,
+          "type": 4100
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [
+            3,
+            4
+          ],
+          "inlinee": 4098,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 16,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 30,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 34,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 24,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 11,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 7,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 60,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 11,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 7,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 97,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 11,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 9,
+              "first_signed": false
+            }
+          ]
+        }
+      ],
+      "inlinees": [
+        {
+          "inlinee": 4098,
+          "file": 0,
+          "line": 6
+        },
+        {
+          "inlinee": 4099,
+          "file": 0,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "optimization": 2,
+      "sha256": "df3777005695370c387b4090758ece66f66b9a215404a897662bf6110d801408",
+      "projected_symbols": [
+        {
+          "kind": "COMPILE3",
+          "children": [],
+          "cpu": 208,
+          "language": 0,
+          "compiler": "Homebrew clang version 23.1.2",
+          "frontend": [
+            23,
+            1,
+            2,
+            0
+          ],
+          "backend": [
+            23012,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "GPROC32_ID",
+          "children": [
+            2,
+            5
+          ],
+          "name": "original_inline_entry",
+          "length": 33,
+          "segment": 0,
+          "offset": 0,
+          "type": 4100
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [
+            3,
+            4
+          ],
+          "inlinee": 4098,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 1,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 6,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 8,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 1,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 3,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 3,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 7,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 3,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 3,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 23,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 3,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 3,
+              "first_signed": false
+            }
+          ]
+        }
+      ],
+      "inlinees": [
+        {
+          "inlinee": 4098,
+          "file": 0,
+          "line": 6
+        },
+        {
+          "inlinee": 4099,
+          "file": 0,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 0,
+      "sha256": "2816db4ff4318b39769e8e99283c3b6ef1685a02823ffb606b426871f60b3c98",
+      "projected_symbols": [
+        {
+          "kind": "COMPILE3",
+          "children": [],
+          "cpu": 246,
+          "language": 0,
+          "compiler": "Homebrew clang version 23.1.2",
+          "frontend": [
+            23,
+            1,
+            2,
+            0
+          ],
+          "backend": [
+            23012,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "GPROC32_ID",
+          "children": [
+            2,
+            5
+          ],
+          "name": "original_inline_entry",
+          "length": 152,
+          "segment": 0,
+          "offset": 0,
+          "type": 4100
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [
+            3,
+            4
+          ],
+          "inlinee": 4098,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 16,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 36,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 44,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 24,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 12,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 12,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 68,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 12,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 12,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 116,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 12,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 12,
+              "first_signed": false
+            }
+          ]
+        }
+      ],
+      "inlinees": [
+        {
+          "inlinee": 4098,
+          "file": 0,
+          "line": 6
+        },
+        {
+          "inlinee": 4099,
+          "file": 0,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 2,
+      "sha256": "c566a6b3687408fdd19bbcb151cdc37eaecf46f489483a5548b79aeb3e1bd56d",
+      "projected_symbols": [
+        {
+          "kind": "COMPILE3",
+          "children": [],
+          "cpu": 246,
+          "language": 0,
+          "compiler": "Homebrew clang version 23.1.2",
+          "frontend": [
+            23,
+            1,
+            2,
+            0
+          ],
+          "backend": [
+            23012,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "kind": "GPROC32_ID",
+          "children": [
+            2,
+            5
+          ],
+          "name": "original_inline_entry",
+          "length": 44,
+          "segment": 0,
+          "offset": 0,
+          "type": 4100
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [
+            3,
+            4
+          ],
+          "inlinee": 4098,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 4,
+              "second": 2,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 4,
+              "second": -1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 4,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 8,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 4,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 4,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 4,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 4,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_CODE_OFFSET_AND_LINE_OFFSET",
+              "first": 8,
+              "second": 1,
+              "second_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 4,
+              "first_signed": false
+            }
+          ]
+        },
+        {
+          "kind": "INLINESITE",
+          "children": [],
+          "inlinee": 4099,
+          "annotations": [
+            {
+              "opcode": "CHANGE_LINE_OFFSET",
+              "first": 1,
+              "first_signed": true
+            },
+            {
+              "opcode": "CHANGE_CODE_OFFSET",
+              "first": 24,
+              "first_signed": false
+            },
+            {
+              "opcode": "CHANGE_CODE_LENGTH",
+              "first": 4,
+              "first_signed": false
+            }
+          ]
+        }
+      ],
+      "inlinees": [
+        {
+          "inlinee": 4098,
+          "file": 0,
+          "line": 6
+        },
+        {
+          "inlinee": 4099,
+          "file": 0,
+          "line": 1
+        }
+      ]
+    }
+  ],
   "fixtures": [
     "dwarf-public.jai",
     "msf-parser.jai",
@@ -485,6 +1130,8 @@
     "pdb-parser.jai",
     "codeview-truncate.jai",
     "codeview-dump.jai",
+    "codeview-inline.jai",
+    "codeview-symbol-parser.jai",
     "dwarf-cfa.jai",
     "dwarf-eh-frame.jai",
     "dwarf-fde.jai",
@@ -503,6 +1150,7 @@
     "strict lint",
     "interpreter",
     "native O0",
-    "native O2"
+    "native O2",
+    "target-derived symbol ABI checks: Windows/Linux/Mac x64/arm64"
   ]
 }
