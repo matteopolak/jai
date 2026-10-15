@@ -24320,21 +24320,21 @@
         "declaration": "Codeview_Symbol_Defrange_Register_Rel :: struct",
         "section": "Public declaration inventory",
         "spec_line": 27,
-        "implementation": "pending"
+        "implementation": "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
       },
       {
         "name": "get_spilled_udt_member",
         "declaration": "get_spilled_udt_member :: (s: *Codeview_Symbol_Defrange_Register_Rel) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 28,
-        "implementation": "pending"
+        "implementation": "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
       },
       {
         "name": "get_offset_parent",
         "declaration": "get_offset_parent :: (s: *Codeview_Symbol_Defrange_Register_Rel) -> u16",
         "section": "Public declaration inventory",
         "spec_line": 29,
-        "implementation": "pending"
+        "implementation": "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
       },
       {
         "name": "Codeview_Symbol_Objname",
@@ -24404,14 +24404,14 @@
         "declaration": "Codeview_Address_Range :: struct",
         "section": "Public declaration inventory",
         "spec_line": 39,
-        "implementation": "pending"
+        "implementation": "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
       },
       {
         "name": "Codeview_Address_Gap",
         "declaration": "Codeview_Address_Gap :: struct",
         "section": "Public declaration inventory",
         "spec_line": 40,
-        "implementation": "pending"
+        "implementation": "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
       },
       {
         "name": "Type_Id",
@@ -24628,7 +24628,7 @@
         "declaration": "Codeview_Line_Info :: struct",
         "section": "Public declaration inventory",
         "spec_line": 71,
-        "implementation": "pending"
+        "implementation": "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
       },
       {
         "name": "Codeview_Column_Type",
@@ -24656,21 +24656,21 @@
         "declaration": "get_line_number :: (using info: Codeview_Line_Info) -> u32",
         "section": "Public declaration inventory",
         "spec_line": 75,
-        "implementation": "pending"
+        "implementation": "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
       },
       {
         "name": "get_line_number_end_delta",
         "declaration": "get_line_number_end_delta :: (using info: Codeview_Line_Info) -> u8",
         "section": "Public declaration inventory",
         "spec_line": 76,
-        "implementation": "pending"
+        "implementation": "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
       },
       {
         "name": "line_info_is_for_statement",
         "declaration": "line_info_is_for_statement :: (using info: Codeview_Line_Info) -> bool",
         "section": "Public declaration inventory",
         "spec_line": 77,
-        "implementation": "pending"
+        "implementation": "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
       },
       {
         "name": "get_id_type",

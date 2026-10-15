@@ -29,6 +29,17 @@ def main():
          "-c", "tests/developer-tools/dwarf-native.c", "-o", "target/developer-tools-dwarf.o"])
     run([prefix / "bin/llvm-objcopy", "--dump-section", ".eh_frame=target/developer-tools-eh-frame.bin",
          "target/developer-tools-dwarf.o"])
+    for architecture, triple in [("x64", "x86_64-pc-windows-msvc"), ("arm64", "aarch64-pc-windows-msvc")]:
+        object_path = ROOT / f"target/developer-tools-codeview-{architecture}.obj"
+        data_path = ROOT / f"target/developer-tools-codeview-{architecture}.bin"
+        run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-target", triple,
+             "-c", "tests/developer-tools/codeview-lines.c", "-o", object_path])
+        run([prefix / "bin/llvm-objcopy", "--dump-section", f".data={data_path}", object_path])
+        register_object = ROOT / f"target/developer-tools-codeview-register-{architecture}.obj"
+        register_data = ROOT / f"target/developer-tools-codeview-register-{architecture}.bin"
+        run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-target", triple,
+             "-c", "tests/developer-tools/codeview-register.c", "-o", register_object])
+        run([prefix / "bin/llvm-objcopy", "--dump-section", f".data={register_data}", register_object])
     cases = ["c-header", "c-header-roundtrip", "c-header-reject", "c-header-modes", "c-header-lifetime", "c-header-support-roundtrip", "bindings-public", "bindings-public-roundtrip", "bindings-literals", "bindings-tree", "bindings-sdk-public", "bindings-sdk-roundtrip", "bindings-clang-api", "print-vars", "rewrite", "dwarf-cfa", "debug-native", "iprof-report", "codex-inspection", "check-porting"]
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-I", prefix / "include",
          "tests/developer-tools/bindings-sdk-layout.c", "-o", "target/developer-tools-sdk-layout"])
@@ -57,7 +68,7 @@ def main():
     run([JAIC, "tests/developer-tools/bindings-sdk-public.jai", "-interp"], output="ok\n")
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib",
          "tests/developer-tools/bindings-sdk.c", "-o", "target/libdeveloper_tools_sdk.dylib"])
-    cases.extend(["bindings-clang-diagnostics", "bindings-callback-context", "bindings-custom", "bindings-custom-roundtrip", "bindings-clang-options", "bindings-macros", "bindings-macros-roundtrip"])
+    cases.extend(["bindings-clang-diagnostics", "bindings-callback-context", "bindings-custom", "bindings-custom-roundtrip", "bindings-clang-options", "bindings-macros", "bindings-macros-roundtrip", "codeview-lines", "codeview-register"])
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib", "-I", prefix / "include",
          "tests/developer-tools/bindings-options.c", "-o", "target/libdeveloper_tools_options.dylib"])
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", "-dynamiclib",

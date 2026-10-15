@@ -86,6 +86,10 @@ def main():
                 if item["name"] in {"Call_Frame_Address_Instruction_Type", "Call_Frame_Address_Instruction",
                                      "Frame_Common_Information_Entry", "decode_cfa_instructions", "parse_common_information_entry"}:
                     item["implementation"] = "supported DWARF frame subset; native-produced CIE and malformed-input fixture"
+                if item["name"] in {"Codeview_Line_Info", "get_line_number", "get_line_number_end_delta",
+                                     "line_info_is_for_statement", "Codeview_Address_Range", "Codeview_Address_Gap",
+                                     "Codeview_Symbol_Defrange_Register_Rel", "get_spilled_udt_member", "get_offset_parent"}:
+                    item["implementation"] = "reviewed CodeView field subset; Microsoft public header and Windows x64/arm64 ABI-produced data, host interpreter/native effects"
         if module == "Debug":
             supported = {"Exit_Code", "Minidump_State", "CRASH_HANDLER_USE_SEPARATE_THREAD", "backtrace",
                          "free_backtrace", "backtrace_symbols", "translate_symbols", "os_backtrace",
