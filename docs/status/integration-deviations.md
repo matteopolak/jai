@@ -687,3 +687,33 @@ release defect was reached through a public disabled-assert configuration.
   adding high-bit close flags. DXC source/ownership/COM checks remain blocked at
   public D3D forward overlays and need real Windows execution, not private-unit
   passes counted as public support.
+
+## Refresh14 editor recovery and verification corrections
+
+Source scope lookup used strict import admission even while collecting IDE facts.
+An unrelated missing anonymous import hid an otherwise valid overload reexport.
+lookup_import now retains/deduplicates the real diagnostic and continues
+independent lookup only with editor facts enabled. Direct admission and ordinary
+CLI lookup remain strict. Existing links regression retains the missing-module
+error, canonical aliases, nested reexport and all other links. It distinguishes
+one selected call overload from both overloads at an uncalled alias; resolving
+calls exposed the old two-target expectation as incorrect.
+
+Member completion uses the existing compiled_before cache when all source
+before the receiver and every other open file match, retaining current symbol
+offset adjustment. Changed declarations still trigger compilation. All three
+links and all24 semantic tests pass; full recovery/privacy suites remain next.
+
+Browser jai/source test formerly required a #load token in the public Basic
+facade, which now uses canonical imported aliases. It decodes JSON and requires
+byte-exact complete current facade content, using existing pinned serde_json
+solely as a test dependency. No runtime dependency or library overlay is added.
+The focused browser source test passes; complete browser suite still has a
+genuine WASM Thread backend gap.
+
+Foundation lint stopped before behavior tests on required positive API
+failures (scalar FNV and division diagnostic). The runner correction retains
+each failed target and missing coverage as final failures while continuing other
+targets and behavior checks. An independently executed behavior/cross run of
+unchanged production code also preserves both positive failures. Neither run is
+called a full strict-lint pass.

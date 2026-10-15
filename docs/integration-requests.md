@@ -271,3 +271,17 @@ opaque blocking foreign-call limits, with explicit unsupported behavior where
 necessary. Closing through external native code must also preserve/validate
 ownership and handle-reuse identity; transferred raw handles cannot shadow an
 unrelated reused kernel object.
+
+## Reviewed current portable/foundation gaps
+
+Latest Basic/Hash specs resolve previously withheld behavior: seconds_since_init
+uses a lazy first-call monotonic baseline (no first-use thread-safety guarantee);
+scalar fnv1a_hash performs whole-u64 xor then one FNV multiply;
+test_unsigned_division is x64-conditional with documented deterministic/random
+callback exercise; wide conversions have exact kind guards. These are supported
+work requests, not unresolved oracle questions. Producer2f54d0c/ad84008 still lack
+the first three APIs and wide guards. Required positive sources are
+tests/portable-stdlib/pending/hash-scalar-fnv.jai and basic-division-exercise.jai.
+Foundation runner keeps them red. Portable owns the lazy clock helper;
+foundations owns the others. Integration independently fixed clock_gettime and
+Flat_Pool release side effects inside optional assertions; preserve those fixes.

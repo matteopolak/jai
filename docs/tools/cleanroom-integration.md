@@ -385,3 +385,22 @@ pass (sdl-prefix-modes.log/sdl-prefix-lint.log). Historical equality failures re
 See native/sdl-native-abi.md. Native other-platform execution remains required.
 Latest manifest13 adds compiler Windows unwind and portable SIMD/CAPS/adoption
 snapshots; these are pending consumption, not covered by refresh12 totals.
+
+## Refresh14 complete broad-run evidence
+
+Checkpoint ee4de74 consumes compiler3084377, portable2f54d0c, bindings204f6f6,
+foundationsad84008 and platform2d36a08. Unchanged production compiler/jailint/
+jailsp/jaifmt builds pass; all860 integrated Jai files format/check; full Rust
+formatting/item-spacing passes. SDL SDK verification reports zero failures with
+separate exact public-prefix/private-native oracles and high-bit close lifetime
+coverage. No source overlay or tool-only repair was used.
+
+Full workspace:704 aggregate passes/54failures/one inherited ignored test in77
+summaries/nine failed targets (workspace-refresh14.log). Full483-case stdlib
+behavior run: interpreter281pass/202fail; native274pass/201fail/eight compile-time
+only, zero skips (stdlib-refresh14.log). Broad quality:51/174 failed checks over
+860files, stable hashes (quality-refresh14.json). Full foundation behavior/cross
+run executes independently despite strict lint stopping at genuine missing APIs;
+both required positives remain failures (foundations-behavior-refresh14.log).
+These are failure inventories, not completion/platform certification. Subsequent
+editor corrections and required API requests are tracked in integration reports.

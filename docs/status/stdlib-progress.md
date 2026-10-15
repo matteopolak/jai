@@ -524,3 +524,14 @@ Flat_Pool initialization rerun complete:95 cases/23 faults both modes plus eight
 Windows_Utf8 checkpoint: both reviewed procedures have real Kernel32 conversion, correct explicit/default termination and failure cleanup. Original Windows fixture covers non-BMP/embedded-NUL/empty/native-invalid/allocation-failure cases, and both CPU bodies/ABI type-check. Actual Windows execution remains unavailable and unclaimed; dedicated runner requires Windows for --native. All293 owned files pass format/check/strict lint. Provisional Performance_Report remains uncommitted/excluded. Continue remaining portable/time/backend work after inbox review.
 
 Virtual-memory backend checkpoint: shared private reservation/commit/release/page-size operations preserve real POSIX execution and add Windows VirtualAlloc/VirtualFree. Full Flat_Pool fixture now type-checks Windows x64/ARM64 including initialization/default/overwrite/lifecycle, rather than record-only checks. Actual Windows execution remains unverified. Full95-case/23-fault interpreter/native suite and prior eight rejections/integration/target checks pass; dedicated native O2 passes; all294 owned files pass format/check/strict lint. Continue portable time gaps and remaining modules after inbox review.
+
+Refresh14 integrated source checkpoint ee4de74 includes all five updated stable
+producer snapshots. Rebuilt production compiler/lint/LSP and unchanged jaifmt;
+860Jai format/check and full Rust formatting pass. SDL SDK/prefix/high-bit lifetime
+verification passes. Full workspace704aggregatepass/54fail/ninefailedtargets;
+full483stdlib cases interp281/202, native274/201 plus8compiletimeonly, zeroskips.
+Broad strict quality51/174 failures; source hashes stable. Foundations behavior
+and seven source profiles run separately; scalarFNV/division remain genuine
+required failures. New general IDE import-recovery/cache fixes and exact browser
+source test pass focused27+1tests in secondary; full regression review next.
+Publication held; nativeWindows/corpus/Focus coordinator-only.
