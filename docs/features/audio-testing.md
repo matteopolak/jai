@@ -1,0 +1,68 @@
+# Sound_Player testing and provenance
+
+All required audio fixtures live under tests/audio and are independently authored
+from the reviewed Sound_Player spec and official C/OS SDK contracts. The
+[manifest](../../tests/audio/manifest.json) records each fixture's provenance,
+execution modes and hardware preconditions. The verifier requires the manifest
+to match discovered positive and negative Jai files. Signature probes are labeled
+separately from behavioral assertions; history exposes no private state accessor
+and receives public-call smoke coverage only.
+
+Independent review is requested through the coordinator. Producer-authored passing
+tests are not claimed to be independently reviewed or exhaustive. The dirty
+reviewer can audit the manifest and public behavior assertions without reading
+clean implementation bodies. Missing per-public-name direct references remain
+visible in [the API inventory](../status/audio-api-inventory.md).
+
+Build own jaic/jailint and actual jaifmt from NEW repository source. Then:
+
+```sh
+python3 tools/audio_build_native.py --test-runtime --require-device
+python3 tools/audio_verify.py --require-device --require-multichannel
+python3 tools/audio_verify_release.py --require-device --check-targets
+```
+
+The native build must finish before verification starts. The first command builds
+owned C/ObjC with warnings denied and compiles the existing pinned opaque official
+C decoder (its upstream warning is reported). The second runs actual jaifmt
+--check, warnings-denied jailint, interpreter/native host O0/O2, six desktop source
+targets and intentional private-name rejections. The third proves host relocation
+without shared audio/decoder libraries, and separately checks all six desktop
+Jai targets. Per-target SDK commands and dependencies are in
+[native integration](audio-native-integration.md).
+
+Normal headless Linux CI should install its public ALSA development/runtime
+packages and set JAI_AUDIO_ALSA_DEVICE=null. Native tests use the real ALSA null
+PCM. Windows requires a real/virtual endpoint for device evidence. SDK format
+availability can differ by device: omit --require-multichannel when 6/8-channel
+logical streams are unavailable, retaining the explicit opened/unavailable counts.
+Omitting --require-device permits explicit unavailable-device outcomes; those are
+never playback evidence. Fixture assertions are unchanged when a native device
+opens. All actual device submissions are zero PCM. Nonzero panning/clipping and
+channel samples stay in controlled buffers. Physical speakers, hotplug, GUI focus
+and sleep/wake are separately unverified.
+
+The latest coordinator instruction retires legacy replaced-stdlib gates.
+tests/stdlib/sound-player-device.jai and sound-player-offline-api.jai are no longer
+audio gates or inventory evidence. The former had valid observed public behavior,
+now covered independently by NEW device/loading/streams fixtures. The latter
+requires unreviewed OFFLINE/render_offline extensions. Neither is restored as a
+compatibility gate, and their physical retirement is left to the integration
+owner's coherent migration. Extensions tests are not classified as obsolete.
+
+To add a fixture, derive its assertions from a named spec section or official SDK
+contract, add its provenance/modes/hardware condition to manifest.json, format
+with actual jaifmt, then run the appropriate verifier. For a failure, first record
+the exact expected value and compare it to the current reviewed contract. Classify
+production defects, incorrect/obsolete oracles, unavailable SDK/hardware and
+unspecified behavior separately. Preserve valid regression assertions. The
+4 MiB concurrency fixture exceeded the interpreter's 60-second harness budget;
+its 256 KiB replacement retains the coordinated page-transition/stop barrier and
+full-buffer silence/lifetime assertions without claiming a timing deadline.
+
+Coordinator review request: independently audit all current manifest cases and
+source-only Windows ABI coverage, particularly signed/zero rates, page-end holds,
+missing-data silence, outside-coverage VBAP selection, locked/music coefficients,
+borrowed regions and callbacks outside both private locks. Review numeric spatial
+choices only against the prose actually supplied; unavailable original private
+behavior is not a prerequisite. Record missing coverage as missing.

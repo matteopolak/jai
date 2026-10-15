@@ -807,3 +807,37 @@ reviewer added print_bytes: actual4 ab newline agrees exactly with basic.md line
 Manifest now includes those bytes, retaining all formatter assertions. This is a
 test harness oracle correction, no production change. Original failure log is
 artifacts/integration-clean/reviewed-foundations-O0.log. Complete rerun pending.
+
+
+Audio11bc663 source audit/integration: real SDK-owned C output/byte accounting,
+queue/seek decode, phase-independent locks and bounded256frame mixing are
+present. Existing canonical records/topology/accumulator retained over duplicate
+producer types/storage; retired decoder list now lives only with synchronized
+cache. Private VBAP helper remains file-local, using reviewed greatest-minimum
+selection; superseded first-containing-arc path removed. Gain step reads actual
+initialized backend sampling rate and asserts positive, with no invented1Hz
+fallback. Producer verifier accepts explicit production compiler/linter/library/
+native paths and performs actual Windows target lint.
+
+Panning test setup correction: producer test called a nonpublic helper; earlier
+integration adapted it to a public helper before a backend existed. With real
+backend, that helper correctly routes an uninitialized output as stereo, so the
+old isolated6channel expectation is invalid setup. Exact unit-direction VBAP
+assertion is moved (and strengthens other-channel-zero assertions) into the
+existing controlled-output fixture only after actual6/8channel native init.
+No private export invented; stereo panning/topology identity tests remain. Actual
+multichannel execution is still required, never counted from this source edit.
+
+Detected operational-assertion risk: player.jai shutdown join, decode-queue.jai
+join/wait, vorbis.jai open/seek actions occur inside assertion arguments. Sound
+currently imports default asserted Basic, but this pattern risks disappearing
+actions under future/default check changes and unsafe continuation on join/seek
+failure. Exact owner follow-through requested in integration-requests.md; not
+called completed error-path support. Native close failure retains C callback
+storage but Jai can drop its handle if caller assertion handling continues:
+potential resource leak; proper retryable ownership or unconditional fatal
+diagnostic needed. Audio's source-present213rows are not integration-certified
+complete. OS hardware/focus/hotplug, Linux/Windows execution, spatial numeric
+choices, one-worker throughput, per-device snapshot retention and package
+adoption limits remain as enumerated in producer audio-deviations.md. No fake
+audio/clipboard/font/native success substituted.

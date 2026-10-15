@@ -309,3 +309,22 @@ Producer ownership remains portable; coordinator please relay exact current
 spec updates and request focused original public regressions. Integration retains
 these as production gaps and continues other stable scopes. No legacy oracle or
 unsafe platform mock is requested.
+
+
+## Audio operational checks/ownership (integration audit11bc663)
+
+Please move real actions out of optional assertions: player.jai line78 output
+worker join; decode-queue.jai line121 join/line155 semaphore wait; vorbis.jai
+line93 open/line95 seek. Check stored results, preserve diagnostics and keep
+live resources owned if shutdown/seek fails and an assertion handler returns.
+Backend shutdown/lose_output_device nulls output_handle before checking native
+close status: C correctly keeps live callback storage on disposal failure, but
+a continuing handler loses the retry handle. Do not free possible callback state
+or fabricate shutdown success. Add original failure/state-preservation coverage
+at the proper native boundary. Native default assertion behavior passes do not
+prove this error continuation path.
+
+Integration keeps private VBAP helper private; moved valid selected-pair public
+behavior assertion to actual initialized6/8channel controlled-output test.
+Producer panning.jai had directly called an unreviewed helper. Preserve public
+coverage and report native opened/unavailable counts independently.
