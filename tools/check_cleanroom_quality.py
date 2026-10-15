@@ -11,7 +11,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
-from cleanroom_lint_contexts import TARGETS, checked_coverage, resolve_contexts
+from cleanroom_lint_contexts import TARGETS, checked_coverage, resolve_contexts, target_coverage_gaps
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -72,8 +72,10 @@ def main():
     if args.contexts:
         result["context_manifest"] = str(args.contexts.resolve())
         result["context_manifest_sha256"] = hashlib.sha256(args.contexts.read_bytes()).hexdigest()
-        jobs = resolve_contexts(json.loads(args.contexts.read_text()), ROOT)
+        context_document = json.loads(args.contexts.read_text())
+        jobs = resolve_contexts(context_document, ROOT)
         covered = set()
+        target_coverage = {}
         result["lint_contexts"] = []
         for job in jobs:
             label = "context-" + job["id"]
@@ -89,8 +91,13 @@ def main():
             result["lint_contexts"].append({"id": job["id"], "target": job["target"],
                                            "manifest": str(manifest), **coverage})
             covered.update(coverage["visited_complete"])
+            target_coverage.setdefault(job["target"], set()).update(coverage["visited_complete"])
         result["uncovered_owned_files"] = [str(p.relative_to(ROOT)) for p in files
                                            if str(p.resolve()) not in covered]
+        result["uncovered_by_target"] = {
+            target: [str(path.relative_to(ROOT)) for path in paths]
+            for target, paths in target_coverage_gaps(
+                files, target_coverage, context_document.get("required_targets", list(TARGETS))).items()}
         result["source_sha256"] = fingerprints()
         result["changed_during_checks"] = [name for name in checked_sources
                                            if checked_sources[name] != result["source_sha256"][name]]
@@ -98,7 +105,8 @@ def main():
         report.write_text(json.dumps(result, indent=2) + "\n")
         failed = (sum(not c["passed"] for c in result["checks"])
                   + sum(not c["clean"] for c in result["lint_contexts"])
-                  + len(result["uncovered_owned_files"]) + int(not result["source_stable"]))
+                  + sum(len(paths) for paths in result["uncovered_by_target"].values())
+                  + int(not result["source_stable"]))
         print(f'{len(files)} owned files; {len(result["uncovered_owned_files"])} without clean complete context; {failed} failures; report: {report}')
         return int(failed != 0)
     result["context_mode"] = "legacy diagnostic isolation; target/context completeness not established"
