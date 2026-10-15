@@ -1,5 +1,5 @@
 {
-  "scope": "public DWARF4 parser metadata compared with relocated original SDK objects; public MSF streams compared with SDK exports; Mac interpreter/native O0/O2",
+  "scope": "public DWARF4 parser metadata compared with relocated original SDK objects; CodeView record kinds/fields and PDB metadata compared with official SDK; public MSF streams compared with SDK exports; Mac interpreter/native O0/O2",
   "dwarf": [
     {
       "architecture": "x86",
@@ -367,6 +367,136 @@
         "str": "5828b8f9a8c74739c35b423846e70c484f66eb1aae7189ae4588610c9a08a455"
       }
     }
+  ],
+  "codeview": [
+    {
+      "architecture": "x64",
+      "optimization": 0,
+      "kinds": [
+        "ARGLIST",
+        "PROCEDURE",
+        "FUNC_ID",
+        "STRUCTURE",
+        "MODIFIER",
+        "FIELDLIST",
+        "STRUCTURE",
+        "STRING_ID",
+        "UDT_SRC_LINE",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "BUILDINFO"
+      ],
+      "section_sha256": "89dd24f84d7356249344a44fbd5ac28dea6b5c81773c49c843d0f693167be2a9"
+    },
+    {
+      "architecture": "x64",
+      "optimization": 2,
+      "kinds": [
+        "ARGLIST",
+        "PROCEDURE",
+        "FUNC_ID",
+        "STRUCTURE",
+        "MODIFIER",
+        "FIELDLIST",
+        "STRUCTURE",
+        "STRING_ID",
+        "UDT_SRC_LINE",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "BUILDINFO"
+      ],
+      "section_sha256": "80dd08079453ff686341c77d285dd458762913dc69ba4bbaf6d3bc03095b4e73"
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 0,
+      "kinds": [
+        "ARGLIST",
+        "PROCEDURE",
+        "FUNC_ID",
+        "STRUCTURE",
+        "MODIFIER",
+        "FIELDLIST",
+        "STRUCTURE",
+        "STRING_ID",
+        "UDT_SRC_LINE",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "BUILDINFO"
+      ],
+      "section_sha256": "a1573760ee737443eee145d8fd281630afb1a4e8afe3c8ec97ed01847b2bd4ed"
+    },
+    {
+      "architecture": "arm64",
+      "optimization": 2,
+      "kinds": [
+        "ARGLIST",
+        "PROCEDURE",
+        "FUNC_ID",
+        "STRUCTURE",
+        "MODIFIER",
+        "FIELDLIST",
+        "STRUCTURE",
+        "STRING_ID",
+        "UDT_SRC_LINE",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "STRING_ID",
+        "BUILDINFO"
+      ],
+      "section_sha256": "adb77562ba0dce0b3bee4db54ee7c151a561a41e7879a4251dc05df20f11b22a"
+    }
+  ],
+  "pdb": [
+    {
+      "architecture": "x64",
+      "signature": 321710894,
+      "guid": "132ceb2e-2b80-d54e-4c4c-44205044422e",
+      "age": 1,
+      "tpi_count": 3,
+      "ipi_count": 7,
+      "sha256": "b0a488282c51363b5d1ca1b577b8fee15ee34aa56f1f4dbe2df545e469af775c"
+    },
+    {
+      "architecture": "arm64",
+      "signature": 1072624733,
+      "guid": "3feef45d-a7d5-b846-4c4c-44205044422e",
+      "age": 1,
+      "tpi_count": 3,
+      "ipi_count": 7,
+      "sha256": "4065d9339d7b30745a4f9faab69f3e5917ed5140403c4eb99a3bf498584e5470"
+    }
+  ],
+  "fixtures": [
+    "dwarf-public.jai",
+    "msf-parser.jai",
+    "codeview-type-parser.jai",
+    "pdb-parser.jai",
+    "codeview-truncate.jai",
+    "codeview-dump.jai",
+    "dwarf-cfa.jai",
+    "dwarf-eh-frame.jai",
+    "dwarf-fde.jai",
+    "dwarf-line-query.jai",
+    "dwarf-line-wire.jai",
+    "dwarf-type-lookup.jai",
+    "codeview-strings.jai",
+    "msf-public.jai",
+    "msf-wire.jai",
+    "msf-page-bits.jai",
+    "codeview-lines.jai",
+    "codeview-register.jai"
   ],
   "verification": [
     "formatter",

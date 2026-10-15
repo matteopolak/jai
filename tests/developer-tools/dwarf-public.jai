@@ -3,6 +3,7 @@
 D :: #import "Debug_Info";
 BA :: #import "Bucket_Array";
 #load "../../target/debug-info-sdk.jai";
+#load "../../target/debug-info-synthetic.jai";
 
 errors: s64;
 allocations: s64;
@@ -95,11 +96,22 @@ main :: () {
 }
 
 check_all :: () {
+    check_synthetic_dwarf();
+    bad_directory: D.Line_Info;
+
+    array_add(*bad_directory.dirs, string.{ 1, null });
+    defer array_free(bad_directory.dirs);
+    assert(D.get_filename(bad_directory, .{ dir_id = 1, path = "a" }) == "");
     // Malformed interpreted attributes must not turn into invented empty text.
     malformed := u8.[9, 0, 0, 0, 4, 0, 0, 0, 0, 0, 8, 1, 42];
     wrong_name_form := u8.[1, 0x11, 0, 3, 0x0b, 0, 0, 0];
     bad, bad_ok := D.parse_dwarf_debug_info(malformed, wrong_name_form, .{}, .{});
 
+    assert(!bad_ok && bad.compilation_units.count == 0);
+    negative_high := u8.[17, 0, 0, 0, 4, 0, 0, 0, 0, 0, 8, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0x7f];
+    high_abbrev := u8.[1, 0x11, 0, 0x11, 1, 0x12, 0x0d, 0, 0, 0];
+
+    bad, bad_ok = D.parse_dwarf_debug_info(negative_high, high_abbrev, .{}, .{});
     assert(!bad_ok && bad.compilation_units.count == 0);
     check_sdk_units();
     info, info_ok := read_entire_file(tprint("%../../target/debug-info-info.bin", #filepath));

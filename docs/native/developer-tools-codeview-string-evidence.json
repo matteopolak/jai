@@ -8,19 +8,19 @@
         {
           "id": 0,
           "filename_id": 1,
-          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.h",
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/debug-info-impl/tests/developer-tools/codeview-strings-native.h",
           "digest_offset": 6,
           "digest_size": 16
         },
         {
           "id": 24,
-          "filename_id": 118,
-          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.c",
+          "filename_id": 121,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/debug-info-impl/tests/developer-tools/codeview-strings-native.c",
           "digest_offset": 30,
           "digest_size": 16
         }
       ],
-      "debug_s_sha256": "c0d9dd8e8d231c18bdd9658dcba4a8b498523dd3ed7856214c69e696d0743400"
+      "debug_s_sha256": "c0285a7d8bc663f496b986f4edb8e6f4597e16e38e27a56c384beb7daa7b2125"
     },
     {
       "architecture": "x64",
@@ -29,19 +29,19 @@
         {
           "id": 0,
           "filename_id": 1,
-          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.h",
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/debug-info-impl/tests/developer-tools/codeview-strings-native.h",
           "digest_offset": 6,
           "digest_size": 16
         },
         {
           "id": 24,
-          "filename_id": 118,
-          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.c",
+          "filename_id": 121,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/debug-info-impl/tests/developer-tools/codeview-strings-native.c",
           "digest_offset": 30,
           "digest_size": 16
         }
       ],
-      "debug_s_sha256": "8d56e1e6f12f0f53de14006fc5b1f18f2a63e93406d75b5ae33b404e494abfdf"
+      "debug_s_sha256": "45cd4c6898992fb0e8c1043f4c2878e34fa4bec036c0ec1434831210f394b65f"
     },
     {
       "architecture": "arm64",
@@ -50,19 +50,19 @@
         {
           "id": 0,
           "filename_id": 1,
-          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.h",
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/debug-info-impl/tests/developer-tools/codeview-strings-native.h",
           "digest_offset": 6,
           "digest_size": 16
         },
         {
           "id": 24,
-          "filename_id": 118,
-          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.c",
+          "filename_id": 121,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/debug-info-impl/tests/developer-tools/codeview-strings-native.c",
           "digest_offset": 30,
           "digest_size": 16
         }
       ],
-      "debug_s_sha256": "86f043eaf72e41f06d2720393e7b9a826c260c297f7405818cc3f09ea02259ac"
+      "debug_s_sha256": "81836a87e53cd66daf3a5dc2c705b483f9b69ada9c17eeacb8a5763663230e0e"
     },
     {
       "architecture": "arm64",
@@ -71,19 +71,19 @@
         {
           "id": 0,
           "filename_id": 1,
-          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.h",
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/debug-info-impl/tests/developer-tools/codeview-strings-native.h",
           "digest_offset": 6,
           "digest_size": 16
         },
         {
           "id": 24,
-          "filename_id": 118,
-          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-tools/tests/developer-tools/codeview-strings-native.c",
+          "filename_id": 121,
+          "name": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/debug-info-impl/tests/developer-tools/codeview-strings-native.c",
           "digest_offset": 30,
           "digest_size": 16
         }
       ],
-      "debug_s_sha256": "098bac684b7f893aa4b04660994b9f13a118729e44fd9fc88a0d0d207ff5abc9"
+      "debug_s_sha256": "d2b87add960f619e185422c67e3636ee87f99dac2e67b7b07127556090139781"
     }
   ]
 }
