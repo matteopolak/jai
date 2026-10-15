@@ -1,5 +1,14 @@
 # Portable stdlib progress
 
+Default parent-output phase FIXED using reviewed set_build_options_dc do_output,
+preserving parent static output type/name/path and existing dynamic settings.
+Parent debugger configuration also uses DC. Both normal/interpreter drivers build
+actual native child artifacts, with deletion/recreation proof. Target O0/O2 uses
+reviewed -very_debug/-od; native path/callback suites retained. Full default/Check/
+options/plugins/replay/errors/parent-state assertions and strict lint pass
+target/default-dynamic-options-final.log. No compiler change or CLI subprocess
+bypass. Earlier parent-phase dependency note is superseded by this proper API fix.
+
 Direct signing-key workflow now creates real EC/P256 or fixed RSA2048 DER keys
 and self-signed certificates. Real SDK cross-parsing, public-key match/signature,
 subjects/private permissions/repeated distinct outputs and real SDK failure cleanup

@@ -62,7 +62,8 @@ def main():
         assert run([str(executable)]) == "ok\n"
 
     def build(arguments, status=0, contains=None, optimization="-O0"):
-        return run([compiler, str(CASE / "build.jai"), optimization, "-add", "#run,stallable run_build();", "-", *arguments], status, contains)
+        target_optimization = "-very_debug" if optimization == "-O0" else "-od"
+        return run([compiler, str(CASE / "build.jai"), optimization, "-add", "#run,stallable run_build();", "-", target_optimization, *arguments], status, contains)
 
     target = OUTPUT / "target-program"
     common = ["-no_check", "target.jai", "-exe", target.name,
@@ -70,6 +71,9 @@ def main():
     for optimization in ["-O0", "-O2"]:
         build(common, optimization=optimization)
         assert run([str(target)]) == "target ok\n"
+    target.unlink()
+    run([compiler, "-interp", str(CASE / "build.jai"), "-add", "#run,stallable run_build();", "-", *common])
+    assert run([str(target)]) == "target ok\n"
     default_common = common[1:]
     for binding_flag in [[], ["-no_check_bindings"], ["-check_bindings"]]:
         build([*default_common, *binding_flag])

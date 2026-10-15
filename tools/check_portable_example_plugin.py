@@ -30,7 +30,8 @@ def main():
         run([compiler, str(fixture), optimization, "-exe", str(program)])
         assert run([str(program)]) == expected
         target = OUTPUT / ("example-target" + optimization)
-        text = run([compiler, str(CASE / "build.jai"), optimization, "-add", "#run,stallable run_build();", "-", "-no_check", "target.jai",
+        target_optimization = "-very_debug" if optimization == "-O0" else "-od"
+        text = run([compiler, str(CASE / "build.jai"), optimization, "-add", "#run,stallable run_build();", "-", target_optimization, "-no_check", "target.jai",
                     "-exe", target.name, "-output_path", str(OUTPUT),
                     "+Example_Plugin", "-option", "hello"], cwd=CASE)
         assert "Example_Plugin option: hello" in text

@@ -1,5 +1,16 @@
 # Portable default build workflow
 
+Parent phase correction: build() now uses the reviewed set_build_options_dc with
+do_output=false, preserving its parent's static output type/name/path and existing
+dynamic write/extension settings. Parent debugger changes also use that dynamic
+API. No late frozen Build_Options mutation remains. Both normal compiler invocation
+and interpreter build-driver mode produce real native child artifacts through
+Compiler workspace APIs; an existing target is deleted before the interpreter
+case to prove it is recreated. Target O0/O2 is explicitly selected with reviewed
+-very_debug/-od options; paths/callbacks retain native O0/O2 tests. No new compiler
+semantic exception or CLI child-process bypass. Full workflow, parent-state
+assertions and strict lint pass in target/default-dynamic-options-final.log.
+
 Current2026-10-15 Check integration is RESOLVED: the NEW tools producer supplies
 the reviewed persistent get_plugin factory and CHECK_BINDINGS module parameter.
 Default imports the exact true/false instance lazily in its private factory, and

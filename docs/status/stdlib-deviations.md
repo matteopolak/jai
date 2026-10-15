@@ -1,5 +1,13 @@
 # Portable stdlib worker deviations
 
+REMOVED Default late-parent-option workaround: reviewed during-compile API controls
+do_output/debugger, preserving static output type/name/path and dynamic settings.
+Normal/interpreter build-driver modes both create actual native child workspaces;
+no interpreter-only restriction remains. Target optimization explicitly selected
+with reviewed options; new parent-state assertions and all existing native/runtime
+assertions pass alongside full owned strict lint. Previous parent-output dependency
+below is superseded. No compiler change, name exception or external CLI bypass.
+
 Direct signing keys use installed native crypto CLI on POSIX hosts, not a linked
 LibreSSL ABI backend. Production dependency: compatible openssl req/pkcs8/x509 on
 PATH; absence/failure yields explicit false/diagnostic, never fabricated key data.
