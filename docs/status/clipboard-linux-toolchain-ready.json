@@ -1,0 +1,57 @@
+{
+  "owner": "stdlib-portable",
+  "status": "source_configuration_verified_normal_CI_rerun_pending",
+  "files": {
+    ".github/workflows/clipboard-linux.yml": "4cdaab357a5a55674b5a4c55eb5e69033e0aba0d72368a393d69f7f0ed04f277",
+    "docs/clipboard-linux-toolchain.md": "5f9de4ba671799d1386b1ec55b75ea5c5845758f4c209dd2c0a4f8874e55672d",
+    "tools/test_clipboard_linux_toolchain.py": "b2c1dcdce10376a8bfd1ee93b905b5035f39264755ee19346be2401cce3a7a41"
+  },
+  "protected_unchanged": {
+    "docs/status/shared-candidate-f1a7e3a8.json": "bfa9f5271974cd3b7631d0ab662a409bd53635c51562daec90f6c7a967ea2f69",
+    "docs/status/shared-final-source-equivalence.json": "cebe362bb32e8e2fb717a6ec5e2118af5c193de454531ba107af0100d4b34f79",
+    "rust-toolchain.toml": "192f8a2605d7677fa2e3f0c3191ecf19835af172804aed1edd8708cd274d51a0",
+    "stdlib/Clipboard/module.jai": "340363dc073f8f25aa8d3c2d333e4627bd084d7c5111c62dede7529f9ed26aa5",
+    "stdlib/Clipboard/tests/cocoa-operations.jai": "61808d3c15d293491fff01b570c66c344984c5681195d42aaadd834cf06daadc",
+    "stdlib/internal/clipboard/cocoa.jai": "fe163c1651866f7ba3ad4b73c713caab3941d4a6735f61ace2909826e353772b",
+    "stdlib/internal/clipboard/linux.jai": "b3c8efd5342abb94752057d197ac5cf959a301c570931b7a4202d2885d92789c",
+    "stdlib/internal/clipboard/native/data.c": "bcc854fbdb8f7c0ab087784bcd32161b88e19edf2c3e95e0ca72d8a95607f6e8",
+    "stdlib/internal/clipboard/native/data.h": "ddf31f56f5e6299d9dc23d227d34680f6b94b5d87bc65d39a52dbce797e67b94",
+    "stdlib/internal/clipboard/native/x11.c": "68691a1c9fd224300ab4c21a6092ab33cdab34588de49bde2dc9b5f675d2c50b",
+    "stdlib/internal/clipboard/win32.jai": "3ba354c6670c9742337b66b624d0e77bc7612b639b4fbee6247a161ee01aa358",
+    "stdlib/internal/window/connection.jai": "0e637aee5a538263a72872c8b94974191755791ad0ddacf715b73ee0496685c3",
+    "tools/build_portable_clipboard.py": "831a7b460491d2a7f8c19382c7fc269c38c0031cd38db1c3247308017ab76b7d",
+    "tools/build_portable_runtime.py": "aa757e9d710a12b10035011e5b72e58da748ba80484e7f2d592665523288b1d1",
+    "tools/check_clipboard_linux_package.py": "a5801a1b8a176de4a7d9692c8f653170ad970d401eaa079524f33da7246de031",
+    "tools/check_portable_clipboard.py": "33b59e06a57a0df482d93d206a7d8ccaa3e6af869ef48cf486ebf7980141b407"
+  },
+  "verification": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/clipboard-ci-provisioning/verification.json",
+  "validation_commands": 6,
+  "unit_cases": 9,
+  "actual_CI_provisioning_verified": false,
+  "Clipboard_runtime_API_verified": false,
+  "known_failure": {
+    "run": "38933357784",
+    "job": "117082611052",
+    "phase": "Rust toolchain provisioning before helper/runtime tests",
+    "filtered_diagnostic": "rustfmt-preview-x86_64-unknown-linux-gnu install conflict bin/cargo-fmt",
+    "cause_of_conflicting_file": "Unknown from provided filtered context"
+  },
+  "changes": [
+    "Install pinned minimal toolchain with canonical rustfmt/clippy explicitly",
+    "Persist disjoint run/attempt-specific Rustup/Cargo state through GITHUB_ENV",
+    "Select dated toolchain job-wide and disable missing-toolchain implicit installation",
+    "Fail on unexpected existing isolated state; verify both components before fetch",
+    "Run standard-library-only configuration regressions and trigger on pin/test changes"
+  ],
+  "preserved": [
+    "Canonical rust-toolchain.toml",
+    "Clipboard/prelude/runtime/helper production",
+    "Real Xvfb clients/helper/runtime/relocated-package checks byte-for-byte",
+    "Finalf1 source receipt and source-equivalence marker",
+    "All prior failed receipts"
+  ],
+  "remaining": [
+    "Root normal CI rerun to establish real Rust provisioning success and then actual Clipboard runtime/package outcomes"
+  ],
+  "integration": "Only these three files plus this ready manifest; integration solely stages/commits. Global docs README link requested."
+}
