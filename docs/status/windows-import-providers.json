@@ -1,0 +1,64 @@
+{
+  "status": "source_and_metadata_verified_actual_windows_runtime_pending",
+  "producer": "8e81e901",
+  "crates_tree": "f3cd2afa0486a55476eab9f563973b1001cac976",
+  "input_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-imports/source-8e81-inputs.json",
+  "controlled_source": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-imports/source-8e81",
+  "scope": [
+    "Windows import archive provider resolution",
+    "shared MSVC SDK discovery",
+    "required-library error details"
+  ],
+  "verified": {
+    "core_tests": 171,
+    "metadata_tests": 8,
+    "llvm_tests": 17,
+    "windows_x64_llvm_free_cli_sourcecheck": "pass",
+    "windows_arm64_llvm_free_cli_sourcecheck": "pass",
+    "core_and_llvm_clippy_warnings_denied": "pass",
+    "windows_x64_arm64_clippy_warnings_denied": "pass"
+  },
+  "actual_windows_dll_executions": 0,
+  "actual_gui_sdk_programs": 0,
+  "fixtures": {
+    "generation": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-imports/official-tools-fixtures.json",
+    "meaning": "Independent generated metadata only; LLVM x64/ARM64 and GNU x64. Not SDK runtime capability evidence."
+  },
+  "supported_metadata": [
+    "MS short import",
+    "GNU .idata$7 relocation-free names",
+    "long COFF descriptor Name relocations"
+  ],
+  "limits": [
+    "Static archives cannot be dynamically loaded.",
+    "Multiple-provider archives reject explicitly.",
+    "BigObj import metadata and directory-bearing provider names unsupported.",
+    "Provider resolution does not implement import-symbol renaming."
+  ],
+  "diagnostics": "Original required native library prefix retained; concrete provider/archive/CPU/Win32 error appended.",
+  "sdk_evidence": "NEW binding handoff plus official Microsoft/LLVM format docs; no Extensions body access.",
+  "remaining": [
+    "Actual Windows bindings provider check with selected SDK archive, x64/ARM64 as available.",
+    "Interpreter/native WebGPU headless and120-frame window replay.",
+    "Root private browser canvas provider contract review remains open; Process unsupported runner classification integration-owned."
+  ],
+  "preserved_failures": [
+    "../windows-imports-red.log",
+    "metadata-second.log (own fixture name length omitted terminator; corrected14-byte extent, assertions retained)",
+    "clippy-core.log",
+    "clippy-final.log",
+    "clippy-windows-x64.log",
+    "clippy-windows-arm64.log"
+  ],
+  "logs": [
+    "core-metadata-final.log",
+    "llvm-unit-final.log",
+    "check-windows-x64.log",
+    "check-windows-arm64.log",
+    "clippy-core-final.log",
+    "clippy-llvm-final.log",
+    "clippy-windows-x64-verified.log",
+    "clippy-windows-arm64-verified.log"
+  ],
+  "boundaries": "Own accepted NEW source only; shared integration untouched. BindingT7 metadata read denied once, not retried. No /Users/matthew/projects/jai-reference/quarantine/history/transcripts/Extensions bodies, no remote/releases/nativeGUI/fault/benchmarks."
+}

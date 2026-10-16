@@ -833,3 +833,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Windows cross CI triage](native/windows-cross-ci-triage.md): platform/provider selection, stale fixture contracts and eight retained source failures; [integration review](status/windows-cross-integration-review.json).
 
 - [Io Linux accept-burst diagnosis](extensions/io-linux-accept-burst-diagnosis.md): failure-only stage evidence, unchanged load/assertions and [integration review](status/io-burst-integration-review.json).
+
+- [Windows interpreter import providers](compiler/windows-import-providers.md): COFF metadata and shared SDK discovery; [integration review](status/windows-import-integration-review.json).

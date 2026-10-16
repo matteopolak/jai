@@ -1,0 +1,30 @@
+{
+  "producer_commit": "54a5cca01629a740a4da0a47a432bd666301e8f3",
+  "exact_export_sha256": "183d6de6989a8ca91f63b5b97652aeaa1e1caefe324a28ed55b5e8f60ed5bb2f",
+  "base": "11d8668e",
+  "adjustment": "Archive provider failures consume load_checked captured io::Error directly; never reread last_os_error after temporary cleanup",
+  "tests": {
+    "core_passed": 171,
+    "metadata_passed": 8,
+    "failed": 0,
+    "ignored": 0,
+    "rustfmt": "pass scoped Rust files",
+    "clippy": "pass core + LLVM warnings denied",
+    "initial_clippy_invocation_error": "duplicate --lib; preserved loader-clippy.log, corrected invocation passed"
+  },
+  "actual_windows_runtime_executions": 0,
+  "required": [
+    "Actual SDK archive provider identity and Jai interpreter/native x64 and ARM64",
+    "Retain WebGPU headless and window120-frame gates"
+  ],
+  "limits": [
+    "Static or multiple-provider archives reject",
+    "Unsupported BigObj/path provider archives reject",
+    "No import symbol renaming"
+  ],
+  "files": {
+    "crates/jaic/src/interp/native/windows.rs": "0d5cf410629a8a5a6894525b947707af8a33188f30fcadc5f25edc867431e890",
+    "crates/jaic/src/interp/native/windows_imports.rs": "01865ec74a8ea5102e30f687b673ddf2afab6b5090cba3092d9645b8db35994d",
+    "crates/jaic/src/msvc.rs": "6d06bf6ba32c8ace7958b44986ee999c80c9acfee5fd65fc15535b63c3237266"
+  }
+}
