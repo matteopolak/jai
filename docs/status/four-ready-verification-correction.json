@@ -1,0 +1,16 @@
+{
+  "supersedes_reported_policy_count": 78,
+  "verified_unique_policy_count": 72,
+  "breakdown": {
+    "clipboard": 16,
+    "basic": 2,
+    "io_stress": 6,
+    "io_collector": 11,
+    "cross_runtime_ci_accounting": 37
+  },
+  "cause": "Handoff count16 for windows selection was incorrect; actual runner has10. Recount retained exact commands/results.",
+  "unchanged": "Rust171,source52,fmt12,compiler/library/native identities unchanged",
+  "test_setup_defect": "Observer tests previously assumed fresh CARGO_TARGET_DIR already exists; corrected fixture mkdir retains all assertions and production behavior. Initial four FileNotFoundErrors retained in policy-recount-2.log.",
+  "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/four-ready-1792177330487261000/policy-recount.json",
+  "original_receipt_retained": "docs/status/shared-candidate-2a29b054.json retains original historical78; use this correction until next combined receipt"
+}

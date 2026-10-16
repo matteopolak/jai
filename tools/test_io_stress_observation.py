@@ -15,7 +15,9 @@ import io_stress as stress
 
 class Observation(unittest.TestCase):
     def fixture(self):
-        return tempfile.TemporaryDirectory(dir=os.environ["CARGO_TARGET_DIR"])
+        base = Path(os.environ["CARGO_TARGET_DIR"])
+        base.mkdir(parents=True, exist_ok=True)
+        return tempfile.TemporaryDirectory(dir=base)
 
     def test_same_child_cwd_streams_timeout_and_exit_without_retry(self):
         with self.fixture() as temporary:
