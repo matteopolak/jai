@@ -3,7 +3,7 @@
   "worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
   "branch": "codex/stdlib-shared",
   "source_snapshot_before_report": "1daa7bb8842e966a4483508381e476af48864ca8",
-  "state": "Current known batch selectively committed; accepted8fa native assets retained; final pin waits stable AppKit/projection",
+  "state": "Known cohort committed including options-only projection and Minimal96/0; final source pin waits AppKit stable facade/Cocoa pair",
   "ready_committed": {
     "rpmalloc_metadata": "bdd1ff4e; ABI8 native23 profiles,92 libraries built from exact source",
     "runtime_hooks": "f3b4b2f4;27/0",
@@ -18,22 +18,23 @@
     "table_order": "624a7d58;30 own combined checks, field offsets preserved",
     "model_defaults_comparison": "3dde5d4a;22+audit hashes verified,284 producer gate/3 own focused; six partial constructor rows remain",
     "runtime_meow_audits": "8370ec96;99/60 own checks, serialized",
-    "minimal_partial": "f0d8af86;92/4 actual corrected-premise checks, genuine projection failures retained"
+    "minimal_partial": "f0d8af86;92/4 actual corrected-premise checks, genuine projection failures retained",
+    "workspace_projection": "f8c7bde3;7 ownAPI/object+77core pass, source/options-only guards and clippy clean",
+    "minimal_verified": "5e407a4c;12 exact hashes;96/0 producer fresh fullsourceguard after f8, old80/6+92/4 preserved"
   },
   "ready_pending_dependency": {
     "cocoa_enum_callers": "4 exact ready files; hold with AppKit stable facade pair"
   },
   "active": {
     "appkit_cocoa": "Reviewed inheritance consumed; Forbear producer source pass; final67 immutable handoff pending",
-    "child_workspace_projection": "Isolated compiler-workspace-options owner; four Minimal child settings failures remain genuine; helper path semantics settled, no path rewrite needed",
     "callable_metadata": "Primary compiler owns; optional include only stable checkpoint, no alias refresh",
-    "windows_uri": "LSP Mac24 requests, broader suite active; native Windows pending"
+    "windows_uri": "HOLD: root reviewer stored-document key mismatch;886/fc5 exports NOT adopted, followup required; native Windows pending"
   },
   "blocked_or_excluded": {
     "alias_refresh": "586be99b and c018dd52 not applied; latest oracle explicitly rejects premise",
-    "minimal": "PARTIAL committed f0d8af86;92/4, only child projection genuine; original80/6 preserved",
     "bits76": "no stable manifest supplied",
-    "PDB_CIE": "original all-zero fixture issue remains unresolved; not waived"
+    "PDB_CIE": "original all-zero fixture issue remains unresolved; not waived",
+    "uri886_fc5": "Unadopted; source-confirmed alias request key inconsistency; owner corrective patch pending"
   },
   "verification_policy": {
     "baseline": "one native ARM64 baseline/catalogue once known batch ready; no optional profile expansion",
@@ -92,10 +93,21 @@
       "failed": 0,
       "ignored": 0
     },
-    "minimal_corrected_premise": {
-      "passed": 92,
-      "failed": 4,
+    "workspace_options_api_objects": {
+      "passed": 7,
+      "failed": 0,
       "ignored": 0
+    },
+    "workspace_options_core": {
+      "passed": 77,
+      "failed": 0,
+      "ignored": 0
+    },
+    "minimal_verified": {
+      "passed": 96,
+      "failed": 0,
+      "ignored": 0,
+      "source_guard_passed": true
     }
   },
   "superseded_failed_runs": [
@@ -116,5 +128,10 @@
     "Windows/Linux native CI later; no unsupported platform green",
     "Original all-zero PDB/CIE issue not waived"
   ],
-  "source_head_before_report": "f0d8af8633be2cd60fbc3ba6868586ec673c8faa"
+  "source_head_before_report": "5e407a4c673aabe2402c3df2d87dfb8216de24d7",
+  "historical_minimal": {
+    "original": "80/6;two invalid path-positive premises",
+    "corrected_pre_projection": "92/4;genuine child options failure",
+    "files": "docs/status/shared-minimal-partial-checkpoint.json retained unchanged"
+  }
 }
