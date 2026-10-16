@@ -933,3 +933,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Canonical runtime allocator alias](runtime-default-allocator-alias.md): exact reviewed Default_Allocator entity, public visibility and default-context identity; obsolete disconnected allocator removed. Seven owned postimages/deletion and three reviewed contracts verified. Producer18 actual ARM/x64 program modes pass; original Windows x64 TOML remains required CI. No native C inputs changed.
 
 - [Input original fixture adoption](tools/input-original-adoption.md): six exact source hashes, persistent production resize storage and signed-wheel/window/payload assertions retained. Four source checks pass; prior nine Mac runtime outcomes are separately pinned, current combined GUI smoke remains root-owned.
+
+- [Complete Windows target provider receipt](status/windows-target-binding-providers-complete.json):52 real archives including retained SDK/storage probes, all-object PE link and target-machine verification; no Windows runtime claim.
