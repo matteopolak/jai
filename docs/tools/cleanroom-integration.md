@@ -1289,3 +1289,16 @@ HTTP CI now samples one existing backends:o2:1:0 copy among the unchanged12. Its
 
 
 Verification correction: [fresh policy recount](../status/four-ready-verification-correction.json) is72 unique checks, not78. Windows selection has10 tests, not the16 stated in the prior handoff. The original receipt is retained rather than rewriting it. A fresh assigned scratch directory also exposed four observer test-construction errors; its fixture now creates that directory before TemporaryDirectory. Runtime sampler/workload/timeout/assertions are unchanged. Final six policy groups pass16+2+6+37+11+14SDL; no native program runs.
+
+
+## CI companion and fresh native pin940fc8cf
+
+[Final combined receipt](../status/shared-candidate-940fc8cf.json) freezes source940fc8cf5abb2980d8cd7b12be8436cf1623bfe1 with2778 committed source inputs and174 native assets. Fresh92 SDK/callback +4counter +2crash artifacts replace the affected inputs;76 unrelated assets are rehashed. Actual23MacARM64 build_flags queries pass exactABI8/options, and all96SDK/callback/counter static/shared files pass LLVM target-header inspection. ActualLinuxlink/runtime remains unverified.
+
+The four tools remain byte-identical to the freshly built2a cohort after verifying1212 actual Rust-source/Cargo/Jai formatter/stdlib production inputs. No identical compiler rebuild was performed for CI/test/native-header-only companions. Original repository formatter --check passes the five current focused files; previous12 equivalent-input checks remain valid. No repaired tool-only library was substituted.
+
+Focused totals are174Rust tests (171core/LSP plus3filesystem controls),104uniquePython checks,52desktop compiler source checks and23actualMacABIqueries, with0fail/ignored in these scopes. The16actual-CI scratch controls include12earlier cases plus4new controls; they are not added twice. Fullworkspace/filter counts remain explicitly separate in the receipt. Both HTTP andWindows actionlint pass without suppressions.
+
+HTTP setup fix940fc8cf passes with CARGO_TARGET_DIR/TMPDIRbothunset andfresh assigned CI runner scratch. No original12-load copy, timeout, sampler cap or production runtime predicate changed; originalconnect failure remains required. Initial mocked accounting cleanup attempted default/tmp when envwasunset; its denied path was not retried/read, and the test now assigns all scratch inside its caller fixture. Native source setup initially lacked official pinnedC input; the failed attempt is retained, followed by native-onlyhash-checked fetch and fresh successful build.
+
+Root owns current fullworkspace --all-targets, full400/runtime/Focus and actualplatformCI. The receipt provides exact command/environment/input request. New AppKit receiver, Thread ABI/naming, formatter, platform accounting and numerics handoffs remain separately queued; they are not silently included in this cohort. Original718400369rawPASS/classified31fail and secondLSP125sRED are historical, not current acceptance. Benchmarks skipped; publication remains held.
