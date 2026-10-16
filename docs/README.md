@@ -903,3 +903,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Audio Windows environment ownership](status/audio-windows-env-request.md): reviewed `_dupenv_s` copy/free and explicit acquisition errors; all3 source/test hashes and3 other nonindex postimages verified;2 status documents retain accepted shared context. Mac/MinGW supplied proof is distinct from required MSVC/Windows CI.
 
 - [Cross-host ABI8 callback preparation](native/windows-cross-host-providers.md): complete real host provider closure before compile-time foreign calls; target PE and Windows runtime qualifications remain separate.
+
+- [Generator native setup and reviewed C++ ABI fixtures](generator-runtime-ci.md): stable setup17/C++9 source cohorts hash-verified together; five orchestration controls pass. Supplied actual Mac C++ consumers pass, while the required original C-model enum conversion remains RED and is assigned separately. No whole generator CI acceptance claimed.
