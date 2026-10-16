@@ -51,6 +51,7 @@ OWNED = [
     "tests/developer-tools/generator-model-lifecycle.jai",
     "tests/developer-tools/generator-model-arrays.jai",
     "tests/developer-tools/generator-model-boundaries.jai",
+    "tests/developer-tools/generator-model-dependencies.jai",
 ]
 FIXTURES = [
     "generator-model-helpers",
@@ -73,6 +74,7 @@ FIXTURES = [
     "generator-model-vtables",
     "generator-model-arrays",
     "generator-model-boundaries",
+    "generator-model-dependencies",
 ]
 evidence = []
 
