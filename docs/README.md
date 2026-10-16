@@ -785,3 +785,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 [Windows time-zone ABI](windows-time-zone-abi.md) restores the real SDK record with complete layout/field source checks and native MSVC comparison jobs; Windows execution remains pending.
 
 [Metal texture resource promotion](native/metal-texture-resource.md) retains the exact unnamed using edge, canonical method signatures and qualified offscreen SDK proof; no implicit-pointer conversion or #as substitute.
+
+- [HTTP CI case coverage](tools/http-ci-case-coverage.md): exact twelve-case dispatch; seven native Io cases remain unavailable on WASM, never passed.
