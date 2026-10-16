@@ -107,3 +107,12 @@ The exact original overloaded proc-type-defaults-ifx source (SHAe2aaa5f6...) has
 
 
 The two Linux-host Windows cross jobs now run the shared enabled-backend dependency installer before any host SDL/native preparation. This includes X11, Wayland, XTEST, ALSA, PulseAudio, PipeWire and OpenGL development packages; no SDL/audio backend is disabled. The Windows target libraries are still built with their existing x64/ARM64 toolchains. Local bash syntax and package-list checks qualify configuration only; actual Ubuntu apt/CMake/build acceptance remains CI-owned.
+
+
+Current940 x64 cross failure117173045800 was before Jai compilation: bare llvm-rc
+was not on PATH. Cross resource construction now passes the actual versioned
+LLVM23 RC/LLD/readobj paths. The signed package setup explicitly installs the
+tools packages and checks all three executables. Bash syntax and workflow
+actionlint pass; actual Ubuntu provisioning/RC execution remain CI-required.
+The separate private callback provider closure remains required, with host
+compile-time and target link search kept distinct.
