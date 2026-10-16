@@ -1,5 +1,15 @@
 # Sound_Player testing and provenance
 
+For provider diagnostics, run
+`PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests/audio -p test_provider_receipts.py`.
+These NEW unit tests validate receipt preservation and strict failure/unavailable
+classification; they are not native SDK evidence. The actual SDK helper preserves
+each process's stdout/stderr in audio-runtime.json, audio-routing-runtime.json and
+audio-close-runtime.json. CI must surface those receipts even on failure. The
+real harness emits acquisition events before checks so an opened device followed
+by a failed proof cannot be confused with either unavailability or a native pass.
+See [Linux provider setup and pending rerun](../status/audio-ci-provider-request.md).
+
 All required audio fixtures live under tests/audio and are independently authored
 from the reviewed Sound_Player spec and official C/OS SDK contracts. The
 [manifest](../../tests/audio/manifest.json) records each fixture's provenance,

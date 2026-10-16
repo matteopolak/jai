@@ -1,5 +1,15 @@
 # Audio desktop native integration
 
+Provider CI failure triage and the integration-owned shared Linux setup request
+are tracked in [the focused handoff](../status/audio-ci-provider-request.md).
+The SDK builder honors CARGO_TARGET_DIR for native outputs and its opaque decoder
+cache. Compiler and runtime child temporary directories use that root too.
+Runtime receipts preserve stdout/stderr and explicit failure reasons;
+nonempty stderr still fails even at exit zero. Device acquisition is recorded
+independently of completed/passed SDK proof. Optional unavailability is never a
+native pass. A complete proof requires process success plus passing SDK, routing
+and close-injection receipts; host macOS evidence cannot substitute for Linux.
+
 The audio-owned builder and verifier are self-contained within this worktree.
 They do not invoke the shared-root native builder, edit a shared manifest, use
 peer artifacts or publish anything. All compiler commands below refer to the

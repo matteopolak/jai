@@ -1,5 +1,18 @@
 # Audio deviations, remaining work and evidence limits
 
+Job117139967666 follow-up: no original SDK stderr/runtime receipt is surfaced in
+this worker, so its exit-zero diagnostic is still unclassified. No stderr
+allowlist/suppression or fake provider was added. The helper now preserves full
+SDK/routing/close stdout/stderr and failure reasons, records real acquisitions,
+and marks optional unavailability as not passed. All output/cache honors explicit
+CARGO_TARGET_DIR, satisfying the assigned T7 storage directive without using the
+old target symlink. Metadata-only unit fixtures are not native evidence. Actual
+required-device Mac SDK/routing/NDEBUG-close proof passed on T7; Linux rerun remains
+required and is requested through the inbox-linked focused CI handoff. The missing
+jaic path after a failed provider step is not an independent compiler verdict.
+No new compiler/stdlib workaround, visibility bypass or relaxed native error gate
+is introduced by this focused batch. Existing unrelated code/evidence is retained.
+
 Current implementation is NEW independent source in this worktree. Initial
 assignment-described Sound_Player code was absent; only the separate wav.jai
 dependency existed. No peer code was staged, modified or sought through alternate

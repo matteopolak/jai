@@ -1,5 +1,24 @@
 # Audio worker progress
 
+2026-10-16 — focused job117139967666 provider triage. Read refreshed ownership,
+inbox and reviewed platform contract. Original helper stderr/audio-runtime.json
+is not surfaced; root's supplied verdict is exit0 plus stderr, followed by a
+downstream missing jaic path. Source confirms old metadata discarded diagnostic
+text; local CI snapshot lacks the new provider call and cannot prove job config.
+Preserved strict stderr/exit failure, added captured SDK/routing/close receipts,
+truthful acquisition/completion/pass flags, and optional-unavailable distinction.
+Native output/cache now honors assigned CARGO_TARGET_DIR rather than the archived
+target symlink. Six metadata/protocol unit checks pass; fresh actual ARM64 Mac
+SDK/routing/NDEBUG close proof passes with required real device and empty stderr.
+All output is assigned T7, no active local paths. Exact shared Linux provider CI
+setup and required actual Linux rerun/receipt request are in
+audio-ci-provider-request.md and the inbox reply. Linux failure is not yet closed;
+no diagnostic was declared harmless and no Linux/compiler success was fabricated.
+Storage refinement: the first output-only proof inherited host compiler scratch;
+the final configured proof puts child TMPDIR/TMP/TEMP under assigned T7 too and
+records the directory. Earlier captures are retained. No builds remain active;
+the SDK/fault slot is released with LSP priority. Linux rerun remains open.
+
 2026-10-14: Read AGENTS.md, ownership and reviewed Sound_Player/review-status.
 The initial snapshot had no Sound_Player facade or implementation, only wav.jai.
 A coordinator follow-up authorized NEW peer sources; none have been read/staged.
