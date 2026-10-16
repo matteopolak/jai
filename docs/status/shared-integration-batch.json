@@ -218,24 +218,24 @@
     "native_slot": "released"
   },
   "post_60d_cohort": {
-    "head": "29274924",
+    "head": "3090183092a9652a6d131a666bba6f43d9e562f6",
     "ready_committed": [
       "Color attachment f3500b41: one productionfield,22source/linkPASS,3nativepending",
       "Pointer dispatch bbc962fe: exactfb7hunks,82focusedPASS, canonicalpublicfilterfixture",
       "HTTP807b6d45: exact9ownedhashes/12policychecks, actualSDK37symbolsqualified; Mac/Linuxruntimepending",
-      "Readiness29274924: exactcfad12scopehunks; RED6/2 ->67/0; noobserver"
+      "Readiness29274924: exactcfad12scopehunks; RED6/2 ->67/0; noobserver",
+      "BucketArray9c53667c: realcanonicalbody/export, all24hashes; 24frozen source/lint checks plus12actualO0/O2programs",
+      "Frozen309:97combinedRustPASS; exact committedformat replayPASS;173ABI8assets"
     ],
     "active_waiting": [
-      "Foundations75585 finalBucketArray body/export/test/format/lint/sourceguardmanifest",
-      "Rootlease release forColor3actualSDKprograms",
-      "ProtectedRuntimeOS_IS_UNIX circular dependency: owner independent valid reduction; Focus not fixed"
+      "Protected Runtime OS_IS_UNIX circular dependency valid owner reduction",
+      "Linux Clipboard and Windows/Linux FileWatcher target implementations (do not delay309 replay)"
     ],
     "capture_policy": "One next immutablepin after coherent knownsource andnormalCIsetupfixes stable; nopeerWIP; current60d/root15347 inputs unchanged",
     "execution_policy": "Root15347 activealltargets; no independentnativeJai/GUI/fault oroldbroad reruns. Source/lib focusedchecks allowed.",
     "native_pending": [
-      "Color3SDKprograms",
-      "Merged pointer native/WASIcurrentcandidate",
-      "Root full400/diffcases andFocus/manualacceptance"
+      "Root original400/diffcases/runtime and Focus/manualacceptance",
+      "Normal HTTP Mac/Linux four-mode conformance/stress and native Windows/macOSx64 CI"
     ],
     "release_permitted": false,
     "coordinator_full_workspace_60d": {
@@ -244,6 +244,10 @@
       "ignored": 1,
       "exit": 101,
       "classification": "Rootreported136suite summaries; LLDB7+minstallinterruptednonpass, missingnativeassetinitialfail retained, native/WASM/AppleDouble/oldmanifest failures not green"
-    }
+    },
+    "candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-30901830",
+    "receipt": "docs/status/shared-candidate-30901830.json",
+    "state": "Known ready batch frozen and focused verified; broad acceptance remains red/pending",
+    "native_slot": "released"
   }
 }
