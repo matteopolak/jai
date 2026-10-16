@@ -793,3 +793,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Windows cross-build stream accounting](status/shared-windows-cross-streams.json): exact status/stdout/stderr contract and timeout controls; actual Windows execution pending.
 
 - [Current merged repair ledger](status/shared-known-cohort-progress.json): exact scoped counts, remaining canonical Basic array closure and platform/runtime gates.
+
+- [Basic program parameter identity](basic-program-parameter-identity.md): corrected reviewed header, nominal identity/configuration controls and retained negative; native proof qualified separately.

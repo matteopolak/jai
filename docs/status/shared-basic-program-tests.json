@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "header_commit": "4cf7afac",
+  "producer_manifest": "docs/status/basic-program-parameter-identity.json",
+  "own_current_proof": {
+    "passed": 9,
+    "failed": 0,
+    "ignored": 0,
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/insert-32d-merged/basic-program-header-current.json"
+  },
+  "scope": "Seven positive source fixtures, exact unrelated-nominal rejection, one actual visualization-disabled filesystem/conversion interpreter; eight source fixtures only, no generated executables staged.",
+  "live_library_qualification": "Current canonical array owner closure source, not yet final frozen combined production proof",
+  "files": {
+    "tests/portable-stdlib/basic-program-parameters/assertions-disabled.jai": "69137a074598fbc32d3e26bfa65f82752fc67bc481e862d4172f0dc40dfd82e7",
+    "tests/portable-stdlib/basic-program-parameters/assertions-enabled.jai": "83ce97ff08be1e7f3113c068eba9c52604a6891d6ce8184029e3524c0984ba44",
+    "tests/portable-stdlib/basic-program-parameters/default-assignment.jai": "9ddb1710cb08bd6a4f28c42fbf022c9ee810e7974771a8c1189045578de38ad5",
+    "tests/portable-stdlib/basic-program-parameters/default-conversion.jai": "5e54e77eb81c9c11646f49f719490dc2666fc4a99b126c28dc5533862ce0ad67",
+    "tests/portable-stdlib/basic-program-parameters/nominal-negative.jai": "5d9603b09c212c8fa2330e9bac3b6f2eebccddf0bc9cc7917d25a18a32ba7bd8",
+    "tests/portable-stdlib/basic-program-parameters/program-assignment.jai": "8eaac8f819fb77728fb9dda77e863ad620520b213d7ee15c7671350ac3aabbb5",
+    "tests/portable-stdlib/basic-program-parameters/program-conversion.jai": "02fbcb89fb57a6f7badd0dc00da865c92920e10c8534f09b6d9ef0c9b0d33fd9",
+    "tests/portable-stdlib/basic-program-parameters/runtime-conversion.jai": "55e5ad07a1c2f57da59486188a874659804fcdf6f3424ef7fa0a118c20c9b76b",
+    "docs/basic-program-parameter-identity.md": "2c2124126db4e4c32a44577552b7bd1a01f45cd3eae01ff55fd7ff5dea69abef",
+    "docs/status/basic-program-parameter-identity.json": "21bec8b4845fe375ce16d3138846b7766ca15123e90a52502c25ef874e2faca3"
+  },
+  "native_executions": 0
+}
