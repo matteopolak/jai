@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "files": {
+    "stdlib/Metal/declarations.jai": "2079134aa74ec5bb119f6cfd8f450dccceb142a703171f8ead44a1a9536631a3",
+    "docs/specs/stdlib/modules/metal.md": "4929dbd2e4ed1f5d232eddcbe916dbb7cff9ef6e1f21696a5e6e5ecbc6bb2c26",
+    "tests/native-bindings/metal-resource-source-controls.jai": "e0715039bc8d926f0573c83ea4a5a2f01cfffacae03020c4e2153447990a9a57",
+    "tests/native-bindings/metal-texture-resource.jai": "684ee538ebd920b11280e8a5e1039c584d3c5b63a55f3fc0ba447868fa64804a",
+    "tests/native-bindings/metal_resource_probe.m": "c197f34d0bbd857453446fd55f2cb004533d35254adf9c1f6049a851a217ac87",
+    "tools/native_bindings/test_unnamed_using.py": "ec9309050fd577115fe598265c28c9e1506806be3d0d00b491193b5b8d3be7c8",
+    "tools/native_bindings/verify_metal_resource.py": "85ba9c1b75831d83a4ea6f409753909f0a90c88f08667f689906e223cbd3ce03",
+    "docs/native/metal-texture-resource.md": "17ac4ebf46f2473302b516d5d7dbcdaa666c57379fb6657aa4b7b2924d349594",
+    "docs/status/bindings-deviations.md": "be58d2460ba34f458b65039eda898817e9777ecd75a607afb87e75261116664e"
+  },
+  "scope": "Exactone unnamed usingMTLResource firstmember; no #as/customname/copiedmethods",
+  "producer_source_link_checks": 27,
+  "producer_native": "Newappendreports3offscreenARM64programs O0/O2/ASanUBSan, qualifiedcapturedsource; Jaiinstrumented, SDKhelper/frameworksnotinstrumented",
+  "canonical_body_and_ABI_unchanged": true,
+  "implicit_pointer_conversion": "Rootoracle rejects implicitconversiondiscriminator; applicationexplicitautocast accepted; no compilerchange invented",
+  "root_controlled_UI": "CHECK_PASS qualifiedrootreplay; finalintegratedpinpending",
+  "pending": [
+    "Nativefinalreceipttransport/readiness refresh",
+    "RootprotectedUIreplayfinalpin",
+    "Macx64native"
+  ]
+}

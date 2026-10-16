@@ -6409,5 +6409,116 @@
     "native_programs_active": 0,
     "native_slot": "Explicitlyreleased afterexact3sequentialprograms",
     "gui_executed": false
+  },
+  "ready_metal_texture_resource_checkpoint": {
+    "state": "READY: source/lint/privacy/SDKlink27 + three actual ARM64 SDK executions PASS",
+    "scope": [
+      "MTLTexture first using MTLResource;",
+      "all10 canonical Resource procedures promoted without wrappers or #as"
+    ],
+    "body_status": "Existing Resource dynamic dispatch bodies/signatures unchanged; no missing method body in this repaired surface",
+    "contract_status": "Exact unnamed edge resolved by public declaration review; optional implicit-pointer conversion separately unestablished",
+    "native_status": "Exactly3 O0/O2/ASanUBSan actual SDK executions exit0/empty stdoutstderr, lease finally released",
+    "platforms": {
+      "macos_arm64": "actual SDK O0/O2/ASanUBSan source-paired executionPASS on own pinned compiler, not future combinedpin",
+      "macos_x64": "source/lint/SDKobject only",
+      "windows_linux": "outside reviewed Mac-only Metal availability"
+    },
+    "preserved": [
+      "Render/Color using edges",
+      "AppKit NSWindow alias",
+      "Root Objective_C privacy",
+      "no unreviewed Buffer resource edge"
+    ],
+    "remaining": [
+      "Macx64 native verification",
+      "future combined-pin regression gate",
+      "four unrelated AppKitreceiver mismatches remain pending coherent forwarding contract"
+    ],
+    "receipt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-resource/metal-resource-u2u5wbll/report.json",
+      "sha256": "bf15a52ecc526d0d4af6faad3688f8a5fb217f1b56b6ef900e002e8e0a1bbbbb",
+      "checks": 27,
+      "pass": 27,
+      "native_execution_count": 0,
+      "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-resource/bindings-inputs-nufax8ik",
+      "inputs_unchanged": true
+    },
+    "per_api": [
+      {
+        "api": "MTLTexture.setPurgeableState",
+        "body": "promoted canonical MTLResource body unchanged",
+        "contract": "exact unnamed using edge + canonical signature resolved",
+        "verification": "bothMacCPU lookup/type identity; actualARM64 O0/O2/ASanUBSan canonicalprocedureaddressidentity + SDKbehavior PASS"
+      },
+      {
+        "api": "MTLTexture.makeAliasable",
+        "body": "promoted canonical MTLResource body unchanged",
+        "contract": "exact unnamed using edge + canonical signature resolved",
+        "verification": "bothMacCPU lookup/type identity; actualARM64 O0/O2/ASanUBSan canonicalprocedureaddressidentity + SDKbehavior PASS"
+      },
+      {
+        "api": "MTLTexture.isAliasable",
+        "body": "promoted canonical MTLResource body unchanged",
+        "contract": "exact unnamed using edge + canonical signature resolved",
+        "verification": "bothMacCPU lookup/type identity; actualARM64 O0/O2/ASanUBSan canonicalprocedureaddressidentity + SDKbehavior PASS"
+      },
+      {
+        "api": "MTLTexture.label",
+        "body": "promoted canonical MTLResource body unchanged",
+        "contract": "exact unnamed using edge + canonical signature resolved",
+        "verification": "bothMacCPU lookup/type identity; actualARM64 O0/O2/ASanUBSan canonicalprocedureaddressidentity + SDKbehavior PASS"
+      },
+      {
+        "api": "MTLTexture.setLabel",
+        "body": "promoted canonical MTLResource body unchanged",
+        "contract": "exact unnamed using edge + canonical signature resolved",
+        "verification": "bothMacCPU lookup/type identity; actualARM64 O0/O2/ASanUBSan canonicalprocedureaddressidentity + SDKbehavior PASS"
+      },
+      {
+        "api": "MTLTexture.device",
+        "body": "promoted canonical MTLResource body unchanged",
+        "contract": "exact unnamed using edge + canonical signature resolved",
+        "verification": "bothMacCPU lookup/type identity; actualARM64 O0/O2/ASanUBSan canonicalprocedureaddressidentity + SDKbehavior PASS"
+      },
+      {
+        "api": "MTLTexture.cpuCacheMode",
+        "body": "promoted canonical MTLResource body unchanged",
+        "contract": "exact unnamed using edge + canonical signature resolved",
+        "verification": "bothMacCPU lookup/type identity; actualARM64 O0/O2/ASanUBSan canonicalprocedureaddressidentity + SDKbehavior PASS"
+      },
+      {
+        "api": "MTLTexture.storageMode",
+        "body": "promoted canonical MTLResource body unchanged",
+        "contract": "exact unnamed using edge + canonical signature resolved",
+        "verification": "bothMacCPU lookup/type identity; actualARM64 O0/O2/ASanUBSan canonicalprocedureaddressidentity + SDKbehavior PASS"
+      },
+      {
+        "api": "MTLTexture.heap",
+        "body": "promoted canonical MTLResource body unchanged",
+        "contract": "exact unnamed using edge + canonical signature resolved",
+        "verification": "bothMacCPU lookup/type identity; actualARM64 O0/O2/ASanUBSan canonicalprocedureaddressidentity + SDKbehavior PASS"
+      },
+      {
+        "api": "MTLTexture.allocatedSize",
+        "body": "promoted canonical MTLResource body unchanged",
+        "contract": "exact unnamed using edge + canonical signature resolved",
+        "verification": "bothMacCPU lookup/type identity; actualARM64 O0/O2/ASanUBSan canonicalprocedureaddressidentity + SDKbehavior PASS"
+      }
+    ],
+    "native_receipt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-resource/metal-texture-resource-native-proof.json",
+      "sha256": "d156ea63eeea303de47c445783efb153a8066695b7dd2407850866e7c705cd41",
+      "execution_count": 3,
+      "all_passed": true,
+      "inputs_before_after": true,
+      "old_link_receipt_preserved": true,
+      "selected_current_shared_inputs_match": true,
+      "basic_snapshot_sha256": "d78e4945a2957822a70ff0baf062ec18b61a5475b9ba71c318de7226d261b407",
+      "basic_current_sha256": "d78e4945a2957822a70ff0baf062ec18b61a5475b9ba71c318de7226d261b407",
+      "lease_released": true
+    },
+    "root_application_replay": "Root reports protectedoriginalUI-builder CHECK_PASS; worker neither reads excluded dependencies nor claims originalnativeexecution",
+    "conversion_contract": "Rootofficial zero-size implicitChildpointer conversionREJECT, applicationexplicitautocastACCEPT; no compilerconversionfix"
   }
 }

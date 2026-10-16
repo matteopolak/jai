@@ -783,3 +783,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 [HTTP WASM termination controls](extensions/http-wasm-test-termination.md) retain failure counters/nonzero exits through real WASI/browser hosts; portable codec assertions remain unconditional and live-clock checks remain native.
 
 [Windows time-zone ABI](windows-time-zone-abi.md) restores the real SDK record with complete layout/field source checks and native MSVC comparison jobs; Windows execution remains pending.
+
+[Metal texture resource promotion](native/metal-texture-resource.md) retains the exact unnamed using edge, canonical method signatures and qualified offscreen SDK proof; no implicit-pointer conversion or #as substitute.
