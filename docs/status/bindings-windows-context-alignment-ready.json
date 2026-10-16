@@ -1,0 +1,58 @@
+{
+  "role": "bindings",
+  "state": "Windows x64 source/cross repair ready; native MSVC CI pending",
+  "trigger": "Windows x64 MSVC940 CI job117173045723 SDK ABI alignment M128A16/Jai8 and CONTEXT16/Jai8",
+  "production_changes": {
+    "stdlib/Windows/declarations.jai": [
+      "M128A :: struct #align 16",
+      "CONTEXT :: struct #type_info_none #align 16"
+    ]
+  },
+  "all_other_declaration_lines_unchanged": true,
+  "files": {
+    "stdlib/Windows/declarations.jai": "e063d67621fe514f84d77b0900b712b261a0e0771dfb2643d04fe801bfa251fb",
+    "tests/native-bindings/windows-context-alignment.jai": "474b1ca9b37013dd500c285962567a8d7cf6b6db97f307fb789e066550576688",
+    "tests/native-bindings/windows_context_alignment_sdk.c": "cb6e294266eed3eabda6898159697f41c4cb9f0bed1a8e9218405324e5c1a65b",
+    "tools/native_bindings/verify_windows_context_alignment.py": "3ef71f89b3a519f86d289b6ff44d107c64478dd9a3f15ec57eff452dab76af9f",
+    "docs/native/windows-context-alignment.md": "f0e8601ad540ccf49311a4e579b6a1c46ba7ed3b6f51fd8116e93ccfe1e02fe1"
+  },
+  "evidence": {
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/windows-context-alignment/windows-context-qroemmqw/report.json": "42ca24f155fe9e94acbcba73f08368c84991b29754e560cda08f4974e3817d02",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/windows-context-alignment/sdk-provenance.json": "4211e0592e5b0b5cb3a3bee521a394a2179336c7fe66aa8e9e613bb2c4e5f482",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/windows-context-alignment/exact-two-declaration-diff.json": "ad81e1fd4369399e75d47ef29f609097b67777ebc8500e09ba9dfd84ef844ed3",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/windows-context-alignment/source-red.txt": "f2dd60215007cdd0d11478aeb9b39af45e563b68ba3271ff5bba861eb1634960"
+  },
+  "verified": {
+    "windows_x64_jai_source": true,
+    "strict_lint_warnings_denied": true,
+    "format": true,
+    "mingw_x64_sdk_C_assertions": true,
+    "actual_sdk_dependencies_hashed": 289,
+    "actual_COFF_machine": "AMD64 0x8664",
+    "sizes_offsets_embedded_arrays_and_public_field_types": true,
+    "native_programs_executed": 0,
+    "native_windows_verified": false
+  },
+  "official_sdk": {
+    "repository": "https://github.com/microsoft/win32metadata",
+    "commit": "0f012441d654d3bb7de898fdc664b5fcad52bdcc",
+    "url": "https://raw.githubusercontent.com/microsoft/win32metadata/0f012441d654d3bb7de898fdc664b5fcad52bdcc/generation/WinSDK/RecompiledIdlHeaders/um/winnt.h",
+    "sha256": "404019933323ca25f5db8ce14437483e1054398ce454d5c75df2e187cec2ae40",
+    "scope": "Official public SDK header; no Jai/reference implementation input"
+  },
+  "tools": {
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/beec-appkit-metal/compiler-target/debug/jaic": "179ce7a0aa38aeea5eca24c179889f55c82afb22c212d466c9c7282489ad7694",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/beec-appkit-metal/compiler-target/debug/jailint": "6410105673e8a47541d9bad6aed92fffd2c291cf3104ac031bd30b3c07c9111c",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/jaifmt": "a9978ba7340f707f9514d0cbcef6e7543fa372a69afade3e2bf2bbfbc073cbfb",
+    "/opt/homebrew/opt/llvm/bin/clang": "5b3adae66bf3e36a0aa2e90db47e3456d31bf5f992124fd09ae9119b076e00be"
+  },
+  "receiver_repair": "all ready source hashes unchanged",
+  "remaining_required": [
+    "Original Windows x64 native MSVC ABI suite rerun; no gate changes",
+    "Reviewed Windows shape annotations must retain explicit align16 on both types before ordinary regeneration"
+  ],
+  "regeneration_coordination": "Narrow exact annotation request appended to reviewer/integrator inbox; no generator special case or whole ledger edit",
+  "qualification": "Host Mac source checking + MinGW Windows x64 COFF cross compilation only. No native Windows, ARM64 SDK ABI, runtime/thread/fault evidence claimed.",
+  "index_append_request": "Selectively link docs/native/windows-context-alignment.md from docs/README.md",
+  "integrator_sole_git_index": true
+}

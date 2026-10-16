@@ -909,3 +909,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Http fixture target review](extensions/http-app-fixture-target-review.md): exact two App/Client positives retain native runtime assertions and explicit WASM unavailability; three metadata controls pass against adopted production selection, portable codec coverage unchanged. Native replay still required.
 
 - Latest root-reviewed [Input](specs/stdlib/modules/input.md) and [Runtime_Support](specs/stdlib/modules/runtime-support.md) refinements are retained: platform hook availability/unknown external-event ownership and default context allocator capability boundaries. No new exports or guessed behavior added.
+
+- [Windows x64 context alignment](native/windows-context-alignment.md): exact two record annotations, five ready source/doc hashes verified; real source/SDK evidence remains distinct from required native MSVC replay. Narrow formatter corrections cover the newly guarded WebGPU helpers and two ready fixtures only.
