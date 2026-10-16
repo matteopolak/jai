@@ -1,0 +1,47 @@
+{
+  "base": "673a14d9e69dc17b17ae54748b99562205561869",
+  "scope": "general C numeric WASI exports and sandbox numeric boundary; no Extensions/Basic/sema edits",
+  "source_postimages": {
+    "crates/jaic/src/build.rs": "8786170b6933fec49d312ef28b0ea86914714225a1c0f707fb037b2dd24bcae2",
+    "crates/jaic/src/interp/sandbox.rs": "164d5ff757687cfd4d1de553dbed7ff71b460ebf69222754fe8720832dafe62c",
+    "crates/jaic/src/interp/sandbox/numeric.rs": "a3a66a96e319421eed2e68b0f97e91583d95e49db74e73206bfea0b7d9cdc515",
+    "stdlib/Wasi_Numeric_Runtime/module.jai": "f7e9bd70fcc1f94155fc1c49684c60a3ab0c58ba33ba2c58966bfb684796c532",
+    "stdlib/internal/wasi-numeric/module.jai": "43eeeef1547dc8a712b0470d6cf1cead31f9ed21b1d5a2ca9df98a6fb03b63dc",
+    "tests/compiler-semantics/wasm-c-numeric.jai": "67d1d507942919f5a285b3a4fed9a884dea0a983fc0a30153e301ed5ef136876",
+    "tests/producer-requests/json-numeric-boundary/main.jai": "2716546411a9fd401bf0402cfded4343c3abe5b2ed89bfde31c1c9d0208ff86c",
+    "tests/producer-requests/json-numeric-boundary/phases.jai": "1c851b859f54fa4bdc164ff76023fc771c0568fc14d513f3e6539327c97ee318",
+    "tests/producer-requests/json-numeric-boundary/workspace.jai": "4db6ff08626924894ad787fb1846c91f349fb820b33208c21d58edfa9d2dbdd7",
+    "docs/native/wasm-c-numeric.md": "643522bbbabe39f5a69acffb99393d98ab79168fafb9070e87d73fc72abaccaf",
+    "docs/specs/questions/wasm-c-numeric.md": "8bbf856db5f49b5bd4484fcbe20ff7bb8c524631968fdea069ed8398d7164855",
+    "docs/README.md": "f5b64d7a23b50767ae046859e2a440e302424e1eb8de002a961304cae9e3b8f6"
+  },
+  "tools": {
+    "jaic": "0a256de12b792a93d7b6ecde7a83ca38fd76830c4ac886c87712df8712ffc4fd",
+    "jailint": "aa987b83426b7b28282603e60432072241e29549779dd7c96667b8d111b157e6"
+  },
+  "source_guard_files": 1390,
+  "source_drift": [],
+  "original_json_sha256": "e369150756a7155d0afa9ca295b5f925a355c237161ea010f32ee22eee8838cc",
+  "checks": {
+    "rust_numeric_units": 8,
+    "rustfmt": "PASS",
+    "core_clippy_deny_warnings": "PASS",
+    "jai_format": "PASS six new sources",
+    "jai_strict_lint": "PASS six new source contexts",
+    "original_json_host_interpreter_seconds": 148.29483254201477,
+    "original_json_node_O0_seconds": 3.5994077089999337,
+    "original_json_node_O2_seconds": 0.9080731669964734,
+    "workspace_numeric_node_O2": "PASS",
+    "generated_ieee_patterns": 4096,
+    "finite_exact_hexadecimal_subjects": 4087
+  },
+  "receipts": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/wasm-numeric-673a/capture",
+  "qualification": [
+    "WASM runtime proofs use exact SDK-produced durable byte copies; normal output zeroing remains unresolved",
+    "Earlier live833 timeout remains recorded; own accepted673a unchanged original passes same180s bound; exact CI argv was not logged",
+    "Non-C locales and other floating rounding modes unsupported",
+    "C11 implementation-defined underflow errno: rounded-to-zero signals ERANGE; subnormals preserve errno",
+    "Initial wrong linker path/context-required call/output-path control receipts retained, no historical rewrite"
+  ],
+  "integration": "sole shared index; worker only owns isolated commit"
+}
