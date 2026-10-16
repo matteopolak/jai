@@ -815,3 +815,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Retained startup native replay](status/shared-typed-retained-native.json): committed combined compiler ARM64/bare-wasm64 O0/O2 execution and preserved harness environment failure.
 
 - [Public runtime constant integration](status/shared-public-runtime-constant-adoption.json): canonical provenance, preserved negative contracts and292combined compiler tests.
+
+- [Reviewed GL debug policy](native/gl-debug-output-policy.md): exact core/ARB/unsupported behavior and [integration proof boundaries](status/shared-gl-policy-adoption.json).

@@ -6520,5 +6520,51 @@
     },
     "root_application_replay": "Root reports protectedoriginalUI-builder CHECK_PASS; worker neither reads excluded dependencies nor claims originalnativeexecution",
     "conversion_contract": "Rootofficial zero-size implicitChildpointer conversionREJECT, applicationexplicitautocastACCEPT; no compilerconversionfix"
+  },
+  "ready_gl_debug_policy_checkpoint": {
+    "state": "READY exact public behavior; source25PASS + three actualARM64 policy executions qualified to earlierimmutablefixture",
+    "production_sha256": "664d473fae852e744418325ed3f72314132e8e60578b27f9ec214bb42fbf83c0",
+    "source_receipt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/gl-debug-policy/gl-debug-policy-1c3yl_y0/report.json",
+      "sha256": "a2455450dc406442ed2b7c66e8e88ecf4e93763f116451240ef9472c179ed1c0",
+      "checks": 25,
+      "all_pass": true
+    },
+    "native_receipt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/gl-debug-policy/gl-debug-policy-0dtt4wxa/report.json",
+      "sha256": "20633817cb504ef39a7efcea2d04c728fb86e7bf69d2839b5c437bd86b732d81",
+      "native_count": 3,
+      "all_exit0_empty_outputs": true,
+      "inputs_guarded": true,
+      "lease_released": true,
+      "initial_source_failures": [
+        "source default windows arm64",
+        "source default windows x64",
+        "source all windows arm64",
+        "source all windows x64"
+      ],
+      "qualification": "Nativefixture retains incorrectWindows-onlyglEnableassignment; correctedcurrentfixture passes all6sources, productionhash identical. No fourthnative/currentfixtureprojection."
+    },
+    "per_api": [
+      {
+        "api": "gl_enable_debug_output",
+        "body": "core4.3/ARBselection; unsupportedreturn/noKHR; sharedstatecapture; syncwhenbreaktrue",
+        "contract": "resolved reviewedgl.md",
+        "verification": "unsupported4.1/KHRonly, coreprecedence, ARBfallback default/allprofile interpreter+nativepolicy; true/sync source-only"
+      },
+      {
+        "api": "private debug callback",
+        "body": "capturedlogger/data; application/OTHER/UNDEFINEDfilter; debug_break onenabledERROR",
+        "contract": "resolved reviewedfilter/sharedstate",
+        "verification": "selected/errorfalse +suppression +retainedcallbacknewlogger/data identity pass; trueERRORbreak not executed"
+      }
+    ],
+    "missing_pointer_contract": "Unspecified whenreportedcapability hasmissingpointer; no inventedfallback",
+    "remaining": [
+      "Root actualMac4.1 SDK unsupported-path and protectedFocus startup replay",
+      "Supported-driver callback/sync and explicit debugger-break native verification",
+      "Macx64/Linux/Windows native; future source-matchedcombinedcompilerpin gate"
+    ],
+    "scope": "GLwrappers/privatecallback/tests/tools/docs only; unrelatedGLguards andMetal receipts unchanged"
   }
 }

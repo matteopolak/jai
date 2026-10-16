@@ -1231,3 +1231,9 @@ Reviewed bf436691 exact841ba987 and621d7a3e exact8f48 packages integrate over a5
 This is a source checkpoint. No new native runtime execution or matched compiler/tool build is claimed; frozen e0 tools remain immutable historical artifacts. Public size-constant transport still awaits its stable owner handoff. Full workspace/original corpus/Focus and platform execution remain coordinator gates, and all historical red aggregates remain unchanged.
 
 The committed76fc7ef6 backend follow-up passed retained startup on real ARM64 native O0/O2 and bare wasm64 Node O0/O2 (four executions, one Rust test; zero failed/ignored, one other test filtered). [Exact receipt](../status/shared-typed-retained-native.json) preserves the earlier missing-Cargo PATH launch failure and corrected invocation. No source/assertion repair; native lease released. This is not WASI/browser or Focus proof.
+
+## Final public constant / GL known cohort
+
+Exact98dd347403bc new-only runtime patch combines with typedbf and retained621.292actual shared-source core tests pass (0failed/ignored), rustfmt and compiler/CLI/LLVM/lint/LSP all-targets Clippy-Dwarnings pass. ExactGLsixfile3d0c package hashes verified, wrapper664d473f follows current reviewed core4.3/ARB/return contract. No peer WIP/status wholesale staging.
+
+Source-matched tools/native immutable capture follows this committed cohort. Root owns full400/Focus and real GPU/manual wheel validation; actual watcher registration failure remains unresolved with production unchanged. Historical staged Focus check/build and all old failed receipts remain qualified rather than rewritten.
