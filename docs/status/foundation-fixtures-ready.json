@@ -1,0 +1,102 @@
+{
+  "owner": "stdlib Basic foundation fixture migration",
+  "status": "POSITIVE_FIXTURES_READY_REQUIRED_NONMAIN_COMPILER_BOUNDARY_RED",
+  "base": "a52cbf2631895b0b8bbb423c53b29872b36fc67b",
+  "production_changes": 0,
+  "existing_owned_paths": [
+    "tests/portable-stdlib/basic-configuration.jai",
+    "tests/portable-stdlib/memory-debugger-interface.jai",
+    "tests/portable-stdlib/format-aggregates.jai",
+    "tests/portable-stdlib/format-grammar.jai"
+  ],
+  "positive_entries": [
+    "tests/portable-stdlib/basic-configuration.jai",
+    "tests/portable-stdlib/basic-configuration-disabled.jai",
+    "tests/portable-stdlib/basic-configuration-isolated-combined.jai",
+    "tests/portable-stdlib/memory-debugger-interface.jai",
+    "tests/portable-stdlib/memory-debugger-interface-disabled.jai",
+    "tests/portable-stdlib/format-aggregates.jai",
+    "tests/portable-stdlib/format-grammar.jai"
+  ],
+  "new_positive_runner_entries": [
+    "tests/portable-stdlib/basic-configuration-disabled.jai",
+    "tests/portable-stdlib/basic-configuration-isolated-combined.jai",
+    "tests/portable-stdlib/memory-debugger-interface-disabled.jai"
+  ],
+  "negative_controls": {
+    "competing-main": {
+      "entry": "tests/portable-stdlib/foundation-config-negative/competing-main.jai",
+      "expected": "reject ENABLE_ASSERT conflicting PROGRAM configuration",
+      "actual": "six required rejects PASS"
+    },
+    "non-main": {
+      "entry": "tests/portable-stdlib/foundation-config-negative/non-main.jai",
+      "helper": "tests/portable-stdlib/foundation-config-negative/modules/Non_Main_Basic_Parameters/module.jai",
+      "expected": "reject non-main Basic PROGRAM configuration",
+      "actual": "six unexpected compile0 accepts; required RED, compilerowner/root disposition pending",
+      "runtime": "not executed"
+    }
+  },
+  "files": {
+    "tests/portable-stdlib/basic-configuration.jai": "182a54b99d1f6936a57713131e97b31a7a54954e926a050737a4d7c1f80d5369",
+    "tests/portable-stdlib/basic-configuration-disabled.jai": "25d2364e0ae8c168b5ef689eca1e894c79fc39524a4d5eefa2bce04ece69be78",
+    "tests/portable-stdlib/basic-configuration-isolated-combined.jai": "097d0370322efa0e502bc6ab72ca304b38880f0009454b223c552a4b09afdc93",
+    "tests/portable-stdlib/memory-debugger-interface.jai": "5a0f2d588dfcf3598b2be2628eae1100b4eeff950ae6a93c2f8ad9e2226e682e",
+    "tests/portable-stdlib/memory-debugger-interface-disabled.jai": "f2f511d550ba81dc9ab2f8b1bef8e4c30269d7723dd786a6be5fcf95f0e27213",
+    "tests/portable-stdlib/format-aggregates.jai": "77dbd1c8b6fe1f4ecfcfb0feaba5a1fd970a77316d20eb899238097a4cc1d3d1",
+    "tests/portable-stdlib/format-grammar.jai": "07acc359121d4d9d08b5d2cfba2bc043888c7311afe3903c7bfe06e1b913e7fa",
+    "tests/portable-stdlib/foundation-config-negative/competing-main.jai": "1ae59676f2124c2082dd0fb4b49807c6f86aa11687064ae228f4d15d3a1e918f",
+    "tests/portable-stdlib/foundation-config-negative/non-main.jai": "36c68637d7af08d5eae54cd0b4298c610b48513ea879443db708af5b5cc63faf",
+    "tests/portable-stdlib/foundation-config-negative/modules/Non_Main_Basic_Parameters/module.jai": "0d8326a8b6d38e9a01a6a0e3a547811b03d5337952bdc2009463272b978ff570",
+    "docs/foundation-fixture-configuration.md": "a7be8531b37115570c5a59d84fe67b6a76c5aabf92a91f19bc7bbc74ccb6718a",
+    "docs/specs/stdlib/portable-foundation-fixture-questions.md": "f3f5b6d64d15c8b1a189b27999841ad3d2b04404723df259af0987876137e9f5"
+  },
+  "source_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/foundation-fixtures/verification-1792181704972938000/summary.json",
+  "source_commands_total": 100,
+  "source_commands_passed": 94,
+  "source_commands_required_red": 6,
+  "positive_source_checks_passed": 42,
+  "strict_lint_complete_contexts_passed": 42,
+  "competing_main_required_rejects_passed": 6,
+  "source_drift": [],
+  "runtime_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/foundation-fixtures/runtime-final/summary.json",
+  "runtime_commands_passed": 35,
+  "runtime_program_modes_passed": 21,
+  "runtime_modes": [
+    "interpreter",
+    "MacARM64nativeO0",
+    "MacARM64nativeO2"
+  ],
+  "required_output": "ok newline, empty stderr, exit0",
+  "compiler_sha256": "179ce7a0aa38aeea5eca24c179889f55c82afb22c212d466c9c7282489ad7694",
+  "companion_unchanged": {
+    "tests/portable-stdlib/support/test-heap.jai": {
+      "sha256": "228a86d97a1e42f8702fe02feba24cfddc0216aadba23625eb8749cdfcf271f1",
+      "matches_tracked_blob": true
+    }
+  },
+  "legacy_oracle_correction": "format-aggregates partial-null Any success assertion retired under ROOT official fault verdict; named valid borrowed payload assertions added; existing format-any-missing-value/type requiredfault controls retained unchanged",
+  "preserved_behavior": [
+    "enabled/disabled builderlayout andcanonical reimport identity",
+    "ensured-space/fullcapacitygrowth andcanarychecks",
+    "disabledassertargument/message/location sideeffects omitted; testchecks unconditional",
+    "combinedmemorydebug/disabledassert/tempstamping/overflowreclamation",
+    "custominterface canonicaltype/privatevisibility/hooks/failedresizeownership/arrays/builders/customheaps",
+    "aggregate/enum/array/grammar/style/logger/callback formatting andborrowedAnyalias"
+  ],
+  "old_receipt": "verification-1792181617442787000/summary.json preserved mixed-writer drift/Mac source failures; not final proof",
+  "ownership_conflict_resolution": "Foundations ceased fixturewrites, restored own prewrite peer bytes and preserved/removed unused provisionalalternatives. Stdlib restored selfcontained isolatedcombined, final guard stable. Collided combined filename excluded.",
+  "protected_source_pins": {
+    "stdlib/Basic/module.jai": "9196e3a311487215a1382f4b048def65dc267ecbaaf9d3c50c3c382870d4e6b2",
+    "stdlib/internal/basic/module.jai": "82d3a619984e5317ba1f5b60cff2d33c6bea7bf204f5ecc318b0e5db47e22a7d",
+    "stdlib/internal/basic/format.jai": "64031d03c7667be3d15fa19e78df71b0c2e5a5e1b8696b2224a1a25ccb238058",
+    "stdlib/internal/thread/lifecycle.jai": "3c0f09cfa1a730f1b8c0a3f6231c112a1901c0a98c3732e74fe209fd39f30eba"
+  },
+  "native_slot": "RELEASED; all processes reaped",
+  "remaining": [
+    "Compiler/root disposition for preciselyreproduced non-main PROGRAM configuration acceptance",
+    "Linux/Windows actualnative CI replay ofcorrectedpositives",
+    "Foundationsrunner/contextlist adoption ofthree newpositivepaths; integrationsoleindex/README"
+  ],
+  "integration": "Adopt positive migration independently from pendingnonmainnegative. Nevercountunexpectedaccept asnegativePASS. All13paths are test/doc only, no production or runner changes."
+}
