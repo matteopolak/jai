@@ -758,3 +758,4 @@ Ready final cohort: [AppKit/Cocoa](status/shared-appkit-cocoa-checkpoint.json), 
 - [HTTP conformance native dependency setup and CI failure triage](tools/http-native-setup.md)
 
 [Conditional readiness and error retention](compiler/conditional-readiness-errors.md) records the generic speculative-expansion repair, corrected official positive, preserved rejected controls and protected-replay boundary.
+- [Bucket_Array physical pointer indexing](foundations-bucket-pointer.md): reviewed canonical operator, address/hole/privacy source proofs and pending native gates.
