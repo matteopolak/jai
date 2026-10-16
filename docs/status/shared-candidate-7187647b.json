@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "snapshot": "7187647b3c3769abbc9daa3118a4febe9ee7f4dd",
+  "ref": "codex/stdlib-shared",
+  "shared_worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b",
+  "stdlib": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/stdlib",
+  "stdlib_tree": "36f369185121a9718bfc31465cca1b89dfcc3784",
+  "compiler_source_tree": "0846320750c55eea1bb3a3c2443753d2efbfe2e4",
+  "source_files": 5587,
+  "source_identity_sha256": "5c511ca216b24e39bb742d1a4bdf23b58441c988172a044b93c5ef8ae6474a29",
+  "native_artifacts": 173,
+  "native_asset_identity_sha256": "1e84b18ad2f143d29f77c4d60923d8c5b5fe88cf3a3b9a17a680ee18863eee70",
+  "environment": {
+    "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/stdlib",
+    "JAIC_NATIVE_LIBS": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/native-inputs/catalogue-probes:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/native-inputs/rpmalloc:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/native-inputs/cache-0:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/native-inputs/cache-1:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/native-inputs/cache-2:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/native-inputs/cache-3"
+  },
+  "binaries": {
+    "jaic": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/bin/jaic",
+      "sha256": "6f14a15fe73dc63b551612fd1de67da8e2c9eb4d604a414186fe991c1734b0fe"
+    },
+    "jailint": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/bin/jailint",
+      "sha256": "9a9398967a1d3ec65477132b97900343ab1aa7e48609e9b04485957ea6229293"
+    },
+    "jailsp": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/bin/jailsp",
+      "sha256": "a0bba7ae320088b96cf1e7825716e54e79c849f79c73e3639655d9eafbb81bd2"
+    },
+    "jaifmt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/bin/jaifmt",
+      "sha256": "19865904c8d29ce93dfc836e8db9dcdf8c8232ccd53fc565189b6a4ca14b0574"
+    }
+  },
+  "build_command": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "-p",
+    "jaic-cli",
+    "-p",
+    "jailint",
+    "-p",
+    "jai-language-server"
+  ],
+  "build_cwd": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "build_log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/matching-tools.log",
+  "formatter_build_command": [
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/bin/jaic",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/jaifmt/main.jai",
+    "-O2",
+    "-exe",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/candidate-7187647b/bin/jaifmt"
+  ],
+  "formatter_build_log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/formatter-build.log",
+  "producer_patch_sha256": "bf0aed7991fcf8961e182d2e83f982e59befefae0fbaec2c385d809fa2845b27",
+  "producer_manifest_sha256": "e65560fd666fb574bd3c0bca489152f530d8b25887ec15dc45ef9c4a200b9d0c",
+  "source_overlay": "NONE: committed718 sources only; peer Clipboard and network collector WIP excluded",
+  "native_sources": "173 accepted ABI8 assets reused from5b; committed production native implementation/build inputs unchanged, every asset rehashed; noABI7/no fake providers",
+  "verification": {
+    "focused_tests": {
+      "passed": 295,
+      "failed": 0,
+      "ignored": 0,
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "jaic",
+        "--lib",
+        "--test",
+        "cleanroom_expansion_phases",
+        "--test",
+        "cleanroom_library_phases",
+        "--test",
+        "cleanroom_readiness_preservation",
+        "--test",
+        "cleanroom_runtime_contract",
+        "--test",
+        "cleanroom_modules",
+        "--test",
+        "cleanroom_default_type",
+        "--test",
+        "cleanroom_windows_imports",
+        "-p",
+        "jai-language-server",
+        "--test",
+        "editor_audit"
+      ]
+    },
+    "native_constructor_protocols": {
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0,
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "jaic-cli",
+        "--test",
+        "native_link_always",
+        "--",
+        "--test-threads=1"
+      ]
+    },
+    "windows_source_checks": {
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/windows-source-checks.json",
+      "windows_native_executions": 0
+    },
+    "strict_lint_contexts": {
+      "passed": 5,
+      "failed": 0,
+      "incomplete": 0,
+      "unvisited": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/lint-checks.json"
+    },
+    "formatter_check": {
+      "passed": true,
+      "files": 6,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/formatter-check.json"
+    },
+    "rustfmt": "PASS six scoped Rust files",
+    "clippy": "PASS focused core/LSP targets -Dwarnings",
+    "fresh_tools_built": 4
+  },
+  "native_lease": "RELEASED after two constructor tests and one formatting check; all children reaped",
+  "limitations": [
+    "No fullworkspace/all-targets/original400/Focus acceptance claimed; root runs next combined snapshot",
+    "Actual Windows/Linux native execution required; Windows source checks are not native ABI proof",
+    "Original LSP scale remains RED110s; accepted initial IDE patch preserved exactly, later repair owner-active",
+    "Io late configuration and non-overloaded ifx defaults remain unresolved; rejected broad import discovery absent",
+    "Root corrected Any formatting facts supersede prior boxing hypothesis; no eager box_any patch adopted, Basic contract/formatter owner-active",
+    "SDL helpers, real caller-font and Windows-resource inputs pending exact ready owner handoffs",
+    "Benchmarks SKIPPED; publication/release/tag/deletion actions not performed"
+  ],
+  "input_scope": "Committed independent production/tools/specs and producer request fixtures; corpus/vendor library directories omitted. Root supplies opaque original/fullworkspace test inputs.",
+  "release_permitted": false,
+  "original_corpus_and_focus_owner": "root coordinator"
+}

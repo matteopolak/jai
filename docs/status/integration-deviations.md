@@ -2385,3 +2385,17 @@ FreeTypefixture Macfontliteral remainsgenuineLinuxconstructiongap, NOTskipped; s
 | .github/workflows/windows-native.yml | Six inherited ShellCheck findings remain RED, zero introduced; actual platform probes pending. | Proper shell fixes under workflow ownership and normalCI replay, never suppress warnings or adapters. |
 | candidate-5b25c83a | Production/tool/spec-only immutable input; corpus/vendor and fullfixture inputs intentionally omitted. Runtime tests deferred under root lease. | Root supplies opaque originals/fullworkspace fixtures and executes required tests; omissions never count passed. |
 | FreeType font / Windowsresource fixture inputs | Existing caller-input failures remain; no synthetic font/resource provider staged. | Named owners deliver real inputs/native packaging, then actual platform runner verification. |
+
+
+## Numericsc0c merged7187647b audit (2026-10-16)
+
+| Path/scope | Effect/risk | Proper verification/remaining fix |
+| --- | --- | --- |
+| crates/jaic/src/sema/scope.rs | Successful plain conditional selection retained as cloned AST branch; unresolved probes still defer to normal diagnostics. Existing declaration visibility preserved. No broad import registration. | Eight readiness/error/exactly-once/official-cycle controls PASS in merged295; root original corpus/fullsuite still required. |
+| crates/jaic/src/ir.rs and sema/mod.rs | Internal cross_target bit distinguishes selectedOS/CPU from compiler host; only cross-target compile-time eager target requirements are isolated. | Explicit foreign lookup, runtime requirements and same-host requirements retained; four phase controls and two actual C-constructor protocols PASS. Actual targetWindows runtime still required. |
+| crates/jaic/src/interp/mod.rs | Exact guard hunk merged around accepted07bf checked-open/error retention. Producer whole-file hash differs by preserved loader code. | No whole-file replacement;12 other producer hashes match and Windows/Type/IDE guards unchanged. |
+| candidate718/native-inputs |173 unchanged-source-paired ABI8 files reused/rehashed; no fresh SDK run or other-platform capability inferred. | Actual root platformCI/runtime proof; no ABI7 or synthetic providers. |
+| tests/producer-requests/numerics-ifx-defaults and numerics-cross-source-configuration | Known unresolved positive/control frontier remains RED; not counted as functioning just because fixtures are committed. Rejected import-discovery experiments absent. | Exact reviewed header/configuration contracts and proper compiler-owner fixes; retain cycle negatives. |
+| Basic Any contract / earlier boxing hypothesis | Latest root official boundary facts contradict earlier typed-null-payload formatter expectation; eagerbox_any grant withdrawn. No boxing prototype integrated. | Basic owner final reviewed renderer/spec/test repair required; preserve ignored/address-only/zero-sized/alias positives. Prior receipts remain historical. |
+| LSP original scale | Current original audit still around110s, not60s accepted; accepted first IDE repair preserved. Focused4 causal+36unit passes do not establish corpus responsiveness. | Owner later causal repair and root unchanged-bound original replay. |
+| .gitignore /TODO.md | Root-local ignore rule present; local file preserved and remains tracked until coordinator history rewrite. No deletion/history operation here. | Root final reviewed history filter after gates; not an integration-source workaround. |
