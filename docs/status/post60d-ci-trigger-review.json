@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "source_head": "3493a85c98d8d39c3356d4a44b2ad668eb00c9c4",
+  "scope": "Only workflow delta since60d: HTTP dependency helper/test/build setup and paths",
+  "workflow": ".github/workflows/http-conformance.yml",
+  "workflow_sha256": "75f2de63f96d881a17b30a1b29b368e5c1e2798e108b42b0e45cf1b00b47038a",
+  "triggers": [
+    "push paths",
+    "pull_request paths",
+    "workflow_dispatch"
+  ],
+  "permissions": {
+    "contents": "read"
+  },
+  "publication_steps": false,
+  "credentials_persisted": false,
+  "assertions_and_modes_preserved": [
+    "interp",
+    "native",
+    "wasm-interp",
+    "wasm-native",
+    "stress default/O2/LinuxASan"
+  ],
+  "validation": "actionlint PASS;12policytestsPASS;nativeHTTPpending",
+  "root_action": "Coordinator reviews exact nextpin before normal temporary codex/cleanroom-integration push. No action performed here.",
+  "release_permitted": false
+}
