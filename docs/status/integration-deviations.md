@@ -2256,3 +2256,44 @@ Frozen309 has5024source inputs and173 real matched ABI8 assets; exact CLI/lint/L
   merged 320-test pass. A first Windows caller test construction omitted required
   test metadata (one pass/five errors); only fixture metadata was corrected,
   preserving production status/stream/timeout assertions.
+## Frozen e0e287ea verification qualifications
+
+- `artifacts/shared-integration/check_e0e_cli.py` initially globbed eight
+  AppleDouble files as Jai programs. Its original `cli-final.json` stays
+  59PASS/9FAIL. Correct source identity selects every actual committed program,
+  with no metadata counted as a program or skipped assertion. Three insertion
+  fixture formatting failures were corrected only in the test-source companion;
+  the frozen library/tools remain unchanged. `cli-followup.json` records 15
+  actual corrected checks separately. The unsupported initial `jaifmt --write`
+  command exited2 without mutation; the documented in-place invocation was used.
+- `docs/status/basic-array-context-ready.json` includes filesystem sidecar
+  paths. `shared-array-owner-adoption.json` retains their exact exclusion list
+  and all real source hashes; no sidecar/scratch backup is committed as source.
+- The array producer's initial native8-command proof may have overlapped an
+  integration lease. Its qualified receipt remains, without a global scheduling
+  claim. Integration subsequently ran the exact newly captured family/default
+  debugger fixtures in four sequential native O0/O2 programs against frozen
+  e0 production tools/library after explicit producer release. No library or
+  provider overlay was used.
+- Custom `REPLACEMENT_INTERFACE=Hooks` is a confirmed supported positive that
+  still fails parameter ordering. Root supplied three official independent
+  build accepts; the frozen current check remains failed, not expected-reject.
+  General compiler repair is active. Focus's nondefault temporary-storage guard
+  is independently root-reported and remains unwaived.
+- `.github/workflows/windows-native.yml` now builds CPU-matched runtime helpers
+  and a real loader/export/file-identity C probe. Integration removed three new
+  echo/command-substitution wrappers: direct cygpath preserves conversion errors
+  and eliminates introduced ShellCheck warnings. Six inherited Windows workflow
+  diagnostics remain red, with zero introduced; actual Windows execution and
+  release-package helper/provider closure remain pending.
+- `tools/case_capabilities.py`, catalogue and smoke accounting defer only
+  explicitly confirmed native Windows color consumers. The exact jai-format
+  test step is unavailable, while ANSI release/format still execute. Unavailable
+  parent cases keep null pass status. Policy mocks and source guard rejections
+  do not establish native functionality; the partial native color prototype is
+  excluded. Existing smoke LSP E731 remains a separate lint failure.
+- All new Linux Clipboard provider/packaging/Xvfb and Linux/Windows watcher or
+  timezone runtime jobs still require actual target execution. Mac source/C
+  checks and display-free units do not certify those platforms. Prior relocated
+  SDK proof is qualified by unchanged native input/asset hashes; complete
+  release resource/static-notice/provider closure is not declared finished.

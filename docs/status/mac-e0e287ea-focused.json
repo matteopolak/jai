@@ -1,0 +1,264 @@
+{
+  "schema": 1,
+  "product_snapshot": "e0e287eab27745746f4848eaa0bad3a552081815",
+  "product_candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea",
+  "integration_branch": "codex/stdlib-shared",
+  "companion_parent": "388fedd08fae65cb3f266c26d2c7b1c8ef0dc940",
+  "product_crates_tree": "a459b60f93d44ccbd65cc8f7461bfda7a7015f2c",
+  "product_stdlib_tree": "1e3965b7acea8bee1d2316e07add637f3382f5d0",
+  "source_files": 5439,
+  "source_matched_abi8_assets": 173,
+  "tools": {
+    "jaic": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/bin/jaic",
+      "sha256": "1dd3c9ecd20cc072a1257d0fe7a9879d1fe8e908d9937d0cd63ffc042b40480c"
+    },
+    "jailint": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/bin/jailint",
+      "sha256": "b3a65d8d029822790c19744b6cb24245f94072deda9f0938dd681667583b99d1"
+    },
+    "jailsp": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/bin/jailsp",
+      "sha256": "deebb021156a5533eb6635e3b241c5903a2dddbf119fb335c2eba7c454999259"
+    },
+    "jaifmt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/bin/jaifmt",
+      "sha256": "372ddc2d178df91ae19514f8c31105550b412c823105843f90ba843f623c7b9e"
+    }
+  },
+  "checks": [
+    {
+      "name": "merged-core",
+      "unit": "Rust tests",
+      "passed": 320,
+      "failed": 0,
+      "ignored": 0,
+      "command": "exact argv in docs/status/shared-insert-scope-checkpoint.json",
+      "qualification": "same frozen compiler crates; library449 for this regression run"
+    },
+    {
+      "name": "merged-LSP",
+      "unit": "Rust tests",
+      "passed": 37,
+      "failed": 0,
+      "ignored": 0,
+      "command": "cargo test --locked --offline -p jai-language-server --test named_arguments --test file_uris --test navigation_associations --test callback_arguments --test build_metaprograms",
+      "qualification": "same frozen compiler crates; library449 for this regression run"
+    },
+    {
+      "name": "frozen-CLI-original-aggregate",
+      "unit": "commands",
+      "passed": 59,
+      "failed": 9,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-e0e287ea/cli-final.json",
+      "classification": {
+        "filesystem_metadata_construction": 8,
+        "format_check": 1
+      },
+      "native_programs": 6,
+      "wasi_programs": 6
+    },
+    {
+      "name": "manifest-selection-and-formatted-fixtures",
+      "unit": "commands",
+      "passed": 15,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-e0e287ea/cli-followup.json",
+      "qualification": "Test-only whitespace companion; source identities choose all eight actual committed programs, no metadata inputs; original aggregate retained"
+    },
+    {
+      "name": "frozen-Metal",
+      "unit": "checks",
+      "passed": 30,
+      "failed": 0,
+      "ignored": 0,
+      "native_programs": 3,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-e0e287ea/metal/metal-resource-lznyd_y7/report.json"
+    },
+    {
+      "name": "frozen-watcher",
+      "unit": "source/interpreter checks",
+      "passed": 29,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/file-watcher-proof-o0phophq/summary.json",
+      "linux_windows_runtime": false
+    },
+    {
+      "name": "frozen-timezone",
+      "unit": "source checks",
+      "passed": 5,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/windows-time-zone-brjm6481/summary.json",
+      "windows_sdk_runtime": false
+    },
+    {
+      "name": "frozen-array-ownership",
+      "unit": "native build/run commands",
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0,
+      "native_programs": 4,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-e0e287ea/arrays/report.json"
+    },
+    {
+      "name": "frozen-array-runner",
+      "unit": "source/interpreter outcomes",
+      "passed": 26,
+      "failed": 0,
+      "ignored": 0,
+      "command": "python3 tools/check_basic_array_context.py --compiler <pin>/bin/jaic --stdlib <pin>/stdlib --capture <verification>/array-owner-ready"
+    },
+    {
+      "name": "frozen-native-LSP-named",
+      "unit": "phases",
+      "passed": 34,
+      "failed": 0,
+      "ignored": 0,
+      "feature_requests": 54,
+      "servers": 2,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-e0e287ea/lsp-named/report.json"
+    },
+    {
+      "name": "frozen-native-LSP-URI",
+      "unit": "phases",
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0,
+      "feature_requests": 24,
+      "servers": 2,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-e0e287ea/lsp-uris/report.json"
+    },
+    {
+      "name": "frozen-HTTP-Mac",
+      "unit": "case outcomes",
+      "counts": {
+        "interp": {
+          "passed": 3,
+          "failed": 0,
+          "platform_unavailable": 0,
+          "compile_time_only": 0,
+          "expected_negative_checks": 0
+        },
+        "native": {
+          "passed": 3,
+          "failed": 0,
+          "platform_unavailable": 0,
+          "compile_time_only": 0,
+          "expected_negative_checks": 0
+        }
+      },
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-e0e287ea/http-mac-O0.json"
+    },
+    {
+      "name": "frozen-HTTP-WASM",
+      "unit": "case outcomes",
+      "counts": {
+        "wasm-interp": {
+          "passed": 5,
+          "failed": 0,
+          "platform_unavailable": 7,
+          "compile_time_only": 0,
+          "expected_negative_checks": 0
+        },
+        "wasm-native": {
+          "passed": 5,
+          "failed": 0,
+          "platform_unavailable": 7,
+          "compile_time_only": 0,
+          "expected_negative_checks": 0
+        }
+      },
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-e0e287ea/http-wasm-O0.json",
+      "qualification": "14 platform-unavailable rows remain passed:null; no nativeIo/fiber support invented"
+    },
+    {
+      "name": "coherent-final-capability-policy",
+      "unit": "unit tests",
+      "passed": 53,
+      "failed": 0,
+      "ignored": 0,
+      "qualification": "Accounting mocks, not platform runtime proof"
+    },
+    {
+      "name": "Windows-provider-policy",
+      "unit": "configuration tests",
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0,
+      "qualification": "No Windows runtime execution"
+    },
+    {
+      "name": "Windows-provider-actionlint",
+      "unit": "diagnostics",
+      "passed": 0,
+      "failed": 6,
+      "ignored": 0,
+      "classification": "inherited ShellCheck; zero introduced; three introduced wrappers corrected without suppression",
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/insert-32d-merged/windows-provider-workflow-review.json"
+    },
+    {
+      "name": "custom typed program-interface positive",
+      "unit": "supported positive source case",
+      "passed": 0,
+      "failed": 1,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-e0e287ea/custom-interface-positive.json",
+      "classification": "Genuine compatibility defect; root official three independent build positives establish typed program-interface support. Not an expected rejection or waived assertion."
+    },
+    {
+      "name": "Clipboard clock/queue failure units",
+      "unit": "display-free commands",
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0,
+      "native_programs": 2,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/clipboard-clock-der24hjs/summary.json",
+      "qualification": "Exact input hashes equal frozen source; sanitized actual Mac C units only, no Linux/X11 clipboard runtime"
+    }
+  ],
+  "rustfmt": "PASS",
+  "clippy_warnings_denied": "PASS jaic/CLI/jailint all-targets; exact source crates unchanged",
+  "failure_classification_current": [
+    {
+      "name": "custom REPLACEMENT_INTERFACE typed program setting",
+      "class": "confirmed compatibility defect: root official three independent BUILD positives; compiler ordering repair active; not expected rejection"
+    },
+    {
+      "name": "Focus nondefault temporary_storage_size=1048576",
+      "class": "root frozen source/build guard rejection; main compiler runtime_config/retained-state repair active; no guard removal or app workaround"
+    },
+    {
+      "name": "Linux Clipboard/FileWatcher; Windows watcher/timezone/provider",
+      "class": "actual native target runtime pending CI; no Mac-host native claim"
+    },
+    {
+      "name": "original workspace/PDB-CIE fixtures and Json interpreter timeout",
+      "class": "historical failed evidence remains; full workspace/corpus requires root opaque inputs, no aggregate rewritten"
+    }
+  ],
+  "completion_counts": {
+    "canonical_public_array_names_with_real_family_proof": 21,
+    "whole_stdlib_modules_certified_all_platforms": null,
+    "qualification": "Source/export counts do not establish module functionality; library remains unfinished"
+  },
+  "coordinator_required": {
+    "workspace_command": "cargo test --locked --offline --workspace --all-targets --no-fail-fast -- --test-threads=1",
+    "cwd": "root external safe mirror of exact committed candidate plus opaque corpus inputs",
+    "environment": {
+      "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/stdlib",
+      "JAIC_NATIVE_LIBS": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/native-inputs/catalogue-probes:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/native-inputs/rpmalloc:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/native-inputs/cache-0:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/native-inputs/cache-1:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/native-inputs/cache-2:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea/native-inputs/cache-3",
+      "JAIC_TEST_FONT_PATH": "/System/Library/Fonts/Supplemental/Arial.ttf"
+    },
+    "original_corpus_400": false,
+    "Focus_GUI_and_manual_wheel_acceptance": false,
+    "normal_temporary_CI_branch": "codex/cleanroom-integration; coordinator review/push only"
+  },
+  "native_slot": "released; all own processes reaped",
+  "publication": "held; no remote/release/tag/comment operations",
+  "original_aggregates_immutable": true,
+  "overall": "NOT GREEN: confirmed typed program-interface positive fails; root Focus startup guard and full workspace/corpus/platform gates remain. Scoped passing checks are not a whole Mac acceptance."
+}

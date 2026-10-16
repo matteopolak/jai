@@ -1177,3 +1177,49 @@ An initial command named a nonexistent Cargo test target and executed zero
 tests; `core.log` retains that command error, with the corrected run separately
 recorded in `core-corrected.log`. Original corpus, Focus, native platform CI and
 GUI/manual acceptance remain coordinator gates.
+## Frozen e0e287ea product and CI companions
+
+The exact product is `e0e287eab27745746f4848eaa0bad3a552081815`, at
+`/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-e0e287ea`.
+The [candidate receipt](../status/shared-candidate-e0e287ea.json) pins four actual
+source-built tools, 5,439 committed inputs and 173 byte-matched Mac ABI8 assets.
+All input/tool/native hashes were checked again after execution. The current
+shared branch's later test/doc/CI companions preserve the exact same crates and
+stdlib trees; no repeated compiler/native profile build was needed.
+
+The [Mac focused report](../status/mac-e0e287ea-focused.json) separates units,
+phases, commands, actual program executions and unavailable cases. Core320 and
+LSP37 Rust regressions pass. Frozen Metal30, watcher29, timezone5, array-runner26,
+four actual array/debugger native programs, six insertion native programs and
+six WASI programs pass. Actual native LSP named/URI runs pass 38 phases and 78
+feature requests. Three selected HTTP cases pass Mac interpreter/native O0;
+the twelve-case WASM selection has five passes and seven unavailable cases per
+mode. Actual Linux/Windows native runtime remains required.
+
+The original CLI aggregate remains 59 passed/9 failed: eight AppleDouble
+filesystem sidecars were wrongly globbed as source, and the real formatter
+reported three unformatted positive insertion fixtures. The maintained own
+runner now selects all eight actual programs from committed source identity.
+Only those three test files received formatting changes; frozen production
+inputs were not repaired. Fifteen explicit selection/format/source/interpreter
+follow-up checks pass. The raw failed receipt is never rewritten or labelled
+green. The array producer manifest also listed sidecars: the adoption receipt
+records every excluded metadata path and verifies every real source file.
+
+This is not a green whole Mac baseline: the supported custom typed program
+interface positive still fails, and root reports Focus reaches the nondefault
+temporary-storage startup guard. Both compiler repairs are owner-active. Root
+must run the complete workspace command with opaque corpus inputs, original400,
+Focus GUI and manual wheel acceptance. Historical workspace/PDB-CIE fixture and
+Json timeout failures remain intact. No aggregate or all-platform success is
+inferred from scoped passing results.
+
+The Windows provider companion builds matching CPU helpers and uses actual
+ordinary DLL loading/file identity in normal CI. Four configuration tests pass;
+Windows execution is pending. Direct cygpath calls replace three masking echo
+wrappers. Full Windows actionlint remains red with six inherited diagnostics
+and zero introduced. The capability companion reports only the confirmed
+unotest check and jai-format test step as user-deferred on Windows; ANSI
+release/format and real ABI/WGL checks remain required. Its 53 accounting tests
+pass, with no mocked execution counted as native functionality. Normal temporary
+CI remains coordinator-owned; release/push/dispatch/tag/publication is held.

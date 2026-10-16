@@ -803,3 +803,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Windows native provider environment](status/shared-windows-provider-environment.json): matching CPU helper, ordinary DLL loading and file-identity CI checks; native Windows acceptance pending.
 
 - [User-deferred capability accounting](tools/user-deferred-capabilities.md) reports native Windows console-color consumers as unavailable, preserves ANSI/native-required checks and keeps failures separate from deferrals.
+
+- [Frozen e0e287ea candidate](status/shared-candidate-e0e287ea.json) and [Mac focused results](status/mac-e0e287ea-focused.json): exact source/tool/native identity, corrected construction checks and retained genuine compatibility/platform failures.
