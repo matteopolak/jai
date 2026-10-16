@@ -965,3 +965,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [WASM C numeric conversion](native/wasm-c-numeric.md): C-locale/direct precision and general WASI exports; canonical output durability still required.
 
 - [HTTP termination accounting](extensions/io-http-833-evidence.md): exact status/stdout/stderr protocols; Linux connection failures remain unresolved.
+
+- [Integration deviations](status/integration-deviations.md): remaining semantic bounds, staging substitutes and skipped platform verification for the combined ready cohort.

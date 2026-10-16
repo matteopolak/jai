@@ -1306,3 +1306,11 @@ Root owns current fullworkspace --all-targets, full400/runtime/Focus and actualp
 ### Real native workspace providers
 
 The POSIX compiler matrix now builds the canonical source-relative portable_crash provider before Cargo native tests. Compiler, runtime, upstream and sanitizer consumers build the actual compiler/Debug/generator helpers in their normal production locations. Three Windows native jobs build the actual Windows Debug DLL after their platform runtime. No provider failure is suppressed. Local validation: two ordering policies, six native provisioning policies and actionlint passed. Actual Linux/Windows/native CI replay remains required.
+
+### Combined ready cohort and remaining gates
+
+Integrated Thread/pthread, AppKit receiver, CLI fixtures, platform accounting, audio, WASM tour, LSP discovery, enum/origin/import groups, canonical Runtime allocator alias, TOML formatting, Windows provider closure, Input fixtures, GetRect, IO child MAIN and HTTP lifetime fixes. Later ready packets add opaque printing, SDL Python setup, POSIX crash executable lifetime, unconditional Debug report state and C numeric WASI support. Shared peer WIP is excluded from immutable candidates. Actual full source and tool/native hashes belong to the dated candidate JSON receipt.
+
+Recent independent checks: 8 C numeric Rust tests; rustfmt; all-targets clippy for jaic/jaic-llvm/CLI/lint/LSP with warnings denied; matching three-tool build; 60 SDL Python checks; 15 capability policies; 12 runtime policies; 5 HTTP protocol policies; 6 browser-accounting checks; 5 crash setup policies; 2 provider-order policies; 6 native provisioning policies; actionlint. Counts describe distinct named scoped suites and are not a full workspace/native baseline. Original HTTP accounting RED is retained before correction. Producer proofs retain their own source/tool/platform identities.
+
+Required open: canonical emitted-WASM durability, three original C-model contracts, reviewed Windows Debug native effect, exact rpmalloc profile identity fixture selection, real Linux crash/Clipboard/HTTP execution, Windows/native matrix, full current original400/runtime and Focus. Benchmark work remains skipped by user direction. Root alone owns opaque input execution and temporary CI push.
