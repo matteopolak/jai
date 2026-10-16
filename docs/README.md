@@ -735,3 +735,5 @@ Minimal’s supported LLVM Mac workflow now passes [96 guarded checks](status/sh
 Ready final cohort: [AppKit/Cocoa](status/shared-appkit-cocoa-checkpoint.json), [declaration-bound callable metadata](status/shared-callable-metadata-checkpoint.json), and [all14 reviewed matrix operators](foundations-math-matrix-operators.md). The [current ledger](status/shared-integration-batch.json) separates ownchecks, qualifiedproducerproof, heldURIwork androot400/Focus acceptance.
 
 - [Current shared integration checkpoint](status/shared-integration-batch.json), [603 production receipts](status/shared-candidate-60321c1d.json), [constant evaluation repair](status/shared-callable-constant-checkpoint.json) and [paired public operator filters](status/shared-operator-filter-checkpoint.json). Full original400/Focus remain coordinator-owned; no release acceptance is inferred.
+
+- [Pinned beec9491 compiler/library/native candidate](status/shared-candidate-beec9491.json) and [actual POSIX stream storage proof](status/shared-posix-stream-checkpoint.json): exact source/binary/environment receipt for coordinator original400 replay. Final focused gates/catalogue are recorded separately.

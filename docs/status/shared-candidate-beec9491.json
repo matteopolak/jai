@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "snapshot": "beec9491b19150c373c91492a8a43ff3827ff472",
+  "ref": "codex/stdlib-shared",
+  "shared_worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491",
+  "stdlib": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/stdlib",
+  "stdlib_tree": "b4e2ea148f9b36c515412290df15ac2919512d5e",
+  "compiler_source_tree": "27c276a124f6062bcc5c093fecef0577e9985633",
+  "source_files": 4778,
+  "source_identity_sha256": "96032b9c3c5843498717d56101a9eda8825973d5dc706e701390022b428ec967",
+  "native_asset_identity_sha256": "b834c2904d64175d7399e2d30868e705892caf57994f22ce50cafd0f2be4173e",
+  "native_artifacts": 173,
+  "environment": {
+    "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/stdlib",
+    "JAIC_NATIVE_LIBS": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/native-inputs/catalogue-probes:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/native-inputs/rpmalloc:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/native-inputs/cache-0:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/native-inputs/cache-1:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/native-inputs/cache-2:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/native-inputs/cache-3",
+    "JAIC_TEST_FONT_PATH": "/System/Library/Fonts/Supplemental/Arial.ttf"
+  },
+  "source_overlay": false,
+  "native_sources": "Seven normal source-built production helpers/packages. ABI8 SDK/callback assets freshly built from exact bdd1ff4e; all 68 pinned native/build inputs hash-equal to candidate.23 Mac ARM64 profiles, full build_flags queries verified;92 library files installed. ALL ABI7 allocator files omitted across native layers.",
+  "verification": "Actual source-built compiler/lint/LSP and unchanged formatter, all source/native hash guards; immutable focused production checks pending",
+  "release_permitted": false,
+  "original_corpus_and_focus_owner": "coordinator",
+  "limitations": [
+    "Only exact committed known-batch handoffs included; no working-tree implementation overlay",
+    "Full current baseline/catalogue deferred by latest combine-known-fixes-before-broad directive",
+    "Android unknown OS remains blocked; other native platforms unverified",
+    "Remaining metadata OS/pool/native constructor/target ABI limits and distribution resource/sysroot closure remain open"
+  ],
+  "source_changes_since_r2": [
+    "crates/jaic/src/sema/decls.rs",
+    "crates/jaic/src/sema/scope.rs",
+    "crates/jaic/src/sema/using.rs",
+    "crates/jaic/tests/cleanroom_callable_provenance.rs",
+    "docs/README.md",
+    "docs/specs/stdlib/compiler-questions.md",
+    "docs/specs/stdlib/modules/basic.md",
+    "docs/specs/stdlib/modules/compiler.md",
+    "docs/specs/stdlib/modules/linux-build.md",
+    "docs/specs/stdlib/modules/posix.md",
+    "docs/specs/stdlib/modules/runtime-support.md",
+    "docs/status/bindings-deviations.md",
+    "docs/status/bindings-shared-audit.json",
+    "docs/status/integration-deviations.md",
+    "docs/status/shared-integration-batch.json",
+    "stdlib/Basic/module.jai",
+    "stdlib/Bit_Array/module.jai",
+    "stdlib/Math/module.jai",
+    "stdlib/POSIX/declarations.jai",
+    "stdlib/RadixSort/module.jai",
+    "stdlib/Soa/module.jai",
+    "stdlib/Xar/module.jai",
+    "tools/check_generator_model.py",
+    "tools/stdlib_test_catalog.py",
+    "tools/test_stdlib_runtime.py"
+  ],
+  "native_reuse": "All production C/build inputs and68ABI8sourcepins unchanged from r2;166existingnativeassets reusedwithSHAguards plus6real testprobe assets and RPMALLOClicense.23ABI8profiles92libs, nooptionalprofiles/ABI7. Publicfacade6literals+POSIX6foreignstrings changed, no C ABI layoutchange.",
+  "native_fixture_pairing": "Six required real rpmalloc test assets, same ABI8 prepared C source, dynamic SDK rpath sibling rpmalloc directory; static archives avoid a second native SDK image. SDK license notice included.",
+  "binaries": {
+    "jaic": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/bin/jaic",
+      "sha256": "3f56e9b25ba5107074191825e1c14239a946471b3237427de6d79acc01095596"
+    },
+    "jailint": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/bin/jailint",
+      "sha256": "8d29d750c75d0ef1370d63971a4a27803e14392471b81e87f28b73c82b3b303c"
+    },
+    "jailsp": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/bin/jailsp",
+      "sha256": "f28d666a69c952f1d5692558d56338b3f05f9668aecdbdcd410fe996d6456f47"
+    },
+    "jaifmt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/bin/jaifmt",
+      "sha256": "91185870960584d01a8b128d44cf8118ce34d7d833e8d21d90930b2207320cc7"
+    }
+  },
+  "build_command": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/Cargo.toml",
+    "-p",
+    "jaic-cli",
+    "-p",
+    "jailint",
+    "-p",
+    "jai-language-server"
+  ],
+  "formatter_build_command": [
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/bin/jaic",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/jaifmt/main.jai",
+    "-exe",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-beec9491/bin/jaifmt"
+  ],
+  "compiler_version": "jaic 0.17.0",
+  "rust_toolchain": "rustc 1.100.0-nightly (17fd5b8a3 2026-08-28)\nbinary: rustc\ncommit-hash: 17fd5b8a37b6667b6cc137f3cc35f09759768a3b\ncommit-date: 2026-08-28\nhost: aarch64-apple-darwin\nrelease: 1.100.0-nightly\nLLVM version: 23.1.0\n",
+  "llvm_version": "23.1.2",
+  "verification_state": "Final known cohort built; exact pinned nativePOSIX and combined gates running",
+  "proof_report": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/report.json"
+}

@@ -17,6 +17,12 @@
     "inputs_unchanged": true,
     "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/posix-streams/bindings-inputs-2owo7yn0"
   },
-  "runtime": "Owner leased3processes pending; no runtime pass claimed",
+  "runtime": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/posix-native/posix-streams-396kpdmm/report.json",
+    "passed": 31,
+    "failed": 0,
+    "ignored": 0,
+    "source": "Own exact frozenbeec compiler/stdlib; actual O0/O2/ASan+UBSan executions, SDK addresses and two-way mutation before restoration"
+  },
   "other_platforms": "Macx64/sourceSDK only; Linux/Android declarations unchanged, no native pass claimed"
 }
