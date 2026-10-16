@@ -95,5 +95,24 @@
     "Compiler resource/sysroot closure and all static distribution notices remain separate.",
     "Native Windows/Linux not executed.",
     "Existing pinned candidate06e8ea96 is not rewritten with these tooling changes."
-  ]
+  ],
+  "python39_followup": {
+    "source_parent": "209c2bca",
+    "interpreter": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "version": "3.9",
+    "passed": [
+      "dependency notices/hash identity",
+      "loader-relative closure after move",
+      "real libclang record generation",
+      "real Itanium demangler",
+      "real Microsoft demangler",
+      "original helper identity",
+      "native code signatures after relocation",
+      "missing notice rejection",
+      "conflicting notice rejection and exact restoration"
+    ],
+    "failed": [],
+    "fix": "stream SHA256 in bounded chunks; no Python3.11-only hashlib.file_digest dependency",
+    "command": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3 -B tools/check_developer_runtime_package.py --sdk /opt/homebrew/opt/llvm --binding-helper <candidate06>/stdlib/internal/developer-tools/clang-bindings/developer-tools-clang --demangler <candidate06>/stdlib/internal/developer-tools/check-native/libdeveloper_tools_check.dylib --output-root <integration>/package-checks"
+  }
 }

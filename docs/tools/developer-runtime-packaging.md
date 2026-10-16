@@ -41,3 +41,8 @@ other static/distribution inputs remain separate packaging work. This is not a
 claim that the full compiler/library distribution is self-contained or ready to
 publish. Candidate06e8ea96 retains its original packaging source and recorded
 limits; these new packaging-tool changes do not silently mutate its receipt.
+
+The real relocated-consumer suite also passes all9 checks under Xcode Python3.9.
+Notice/image hashing streams bounded chunks rather than requiring the Python3.11-only
+`hashlib.file_digest`; notice conflict/missing-input failures remain mandatory.
+The initial Python3.9 SDK-builder failure is retained in integration artifacts.
