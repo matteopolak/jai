@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "candidate": "60321c1de653dfb416f64ed000d38b657e7bbc9a",
+  "fix_scope": "build.rs::write_output; prepare emitted IR only with an actual backend",
+  "root_owned_pass": "semantic-603-supervised-1792140729256249000 / external tool session 87777",
+  "own_controller_running": false,
+  "no_whole_pass_restart": true,
+  "original_stall": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/semantic-603-supervised-1792140729256249000/PixelRifts--Jai-Shader-Transpiler/supervision-stall.json",
+  "baseline_cli_source_check": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/shader-603-cli-check-receipt.json",
+  "original_reduction": "modify-reduction-child-output: timeout after5s; NO_OUTPUT control completes",
+  "focused_after_fix": [
+    {
+      "name": "child-output-modify-fixed",
+      "status": 1,
+      "seconds": 1.068258625,
+      "scanner_sha256": "f1a28720941a1bc2e4ba5d9ec5cb1d4f9028222265fccb819394191691a59be3",
+      "selected_inputs": [],
+      "counts": {
+        "files": 2,
+        "audited_files": 2,
+        "unexecuted_files": 0,
+        "unqueried_files": 0,
+        "typecheck_failed_files": 0,
+        "identifiers": 51,
+        "planned_identifiers": 51,
+        "planned_definitions": 47,
+        "planned_by_role": {
+          "declaration": 12,
+          "directive": 4,
+          "member": 4,
+          "named": 1,
+          "use": 30
+        },
+        "queries": {
+          "hover_attempted": 51,
+          "hover_completed": 51,
+          "definition_attempted": 47,
+          "definition_completed": 47
+        },
+        "incomplete_query_files": 0,
+        "syntax_tokens": 10,
+        "gaps": 7,
+        "unexpected_gaps": 7,
+        "reviewed_gaps": 0,
+        "stale_reviews": 0,
+        "missing_oracles": 0,
+        "failures": 0,
+        "by_role": {
+          "member": 2,
+          "use": 5
+        },
+        "by_missing": {
+          "hover:false definition:true wrong:false": 7
+        },
+        "by_failure": {},
+        "gaps_in_failed_files": 0,
+        "semantic_unreached_files": 0,
+        "incomplete_context_files": 0
+      },
+      "failures": [
+        [],
+        []
+      ]
+    },
+    {
+      "name": "shader-fixed-first-input",
+      "status": 1,
+      "seconds": 1.999692,
+      "scanner_sha256": "f1a28720941a1bc2e4ba5d9ec5cb1d4f9028222265fccb819394191691a59be3",
+      "selected_inputs": [
+        "--only-inputs",
+        "f000000"
+      ],
+      "counts": {
+        "files": 1,
+        "audited_files": 1,
+        "unexecuted_files": 7,
+        "unqueried_files": 7,
+        "typecheck_failed_files": 0,
+        "identifiers": 467,
+        "planned_identifiers": 467,
+        "planned_definitions": 439,
+        "planned_by_role": {
+          "declaration": 89,
+          "directive": 28,
+          "member": 109,
+          "named": 3,
+          "use": 238
+        },
+        "queries": {
+          "hover_attempted": 467,
+          "hover_completed": 467,
+          "definition_attempted": 439,
+          "definition_completed": 439
+        },
+        "incomplete_query_files": 0,
+        "syntax_tokens": 140,
+        "gaps": 32,
+        "unexpected_gaps": 32,
+        "reviewed_gaps": 0,
+        "stale_reviews": 0,
+        "missing_oracles": 0,
+        "failures": 0,
+        "by_role": {
+          "declaration": 6,
+          "member": 1,
+          "use": 25
+        },
+        "by_missing": {
+          "hover:false definition:true wrong:false": 32
+        },
+        "by_failure": {},
+        "gaps_in_failed_files": 0,
+        "semantic_unreached_files": 0,
+        "incomplete_context_files": 0
+      },
+      "failures": [
+        []
+      ]
+    }
+  ],
+  "validation": {
+    "new_core_lifecycle_tests": 2,
+    "core_unit_tests": 168,
+    "existing_lsp_build_metaprogram_tests": 8,
+    "existing_lsp_ide_audit_tests": 14,
+    "native_executable_execution": "not performed",
+    "whole_corpus_green": false
+  },
+  "remaining": "32 definition gaps in selected shader input; seven unselected files retained unexecuted. General no-progress dependency guard remains with its owner; this patch only repairs check-only lifecycle."
+}
