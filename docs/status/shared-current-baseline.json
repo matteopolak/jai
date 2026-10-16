@@ -3,13 +3,14 @@
   "candidate_path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/artifacts/shared-integration/frozen-06e8ea96",
   "snapshot": "06e8ea965129889f9a24b84d99adb179021f75ff",
   "shared_ref": "codex/stdlib-shared",
-  "status": "current-catalogue-running",
+  "status": "catalogue-finished-red-workspace-running",
   "workspace": {
-    "status": "pending serialized run; frozen source deliberately excludes forbidden corpus/vendor bodies; missing fixture setup will remain failures, never pass/skip substitutions",
+    "status": "running; fixture omissions and inherited inactive project gate explicitly tracked",
     "command": "cargo test --locked --workspace --all-targets --no-fail-fast -- --test-threads=1",
     "passed": null,
     "failed": null,
-    "ignored": null
+    "ignored": null,
+    "report": "artifacts/shared-integration/workspace-06e8ea96.json"
   },
   "catalogue": {
     "command": [
@@ -30,21 +31,21 @@
       "--report",
       "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/artifacts/shared-integration/catalogue-06e8ea96.json"
     ],
-    "status": "running",
+    "status": "finished",
     "selected_cases": 420,
-    "completed_records": 732,
+    "completed_records": 840,
     "counts": {
       "interp": {
-        "passed": 348,
-        "failed": 12,
-        "platform_unavailable": 1,
+        "passed": 396,
+        "failed": 13,
+        "platform_unavailable": 6,
         "compile_time_only": 0,
         "expected_negative_checks": 5
       },
       "native": {
-        "passed": 336,
+        "passed": 385,
         "failed": 12,
-        "platform_unavailable": 1,
+        "platform_unavailable": 6,
         "compile_time_only": 12,
         "expected_negative_checks": 5
       }
@@ -207,20 +208,62 @@
       {
         "name": "Clipboard/tests/cocoa-operations",
         "mode": "interp",
-        "classification": "unclassified current failure; investigate exact diagnostic",
+        "classification": "catalogue omitted required enabled argument; unchanged frozen source followup passes",
         "timed_out": false,
         "elapsed_seconds": 0.2695102500001667
       },
       {
         "name": "Clipboard/tests/cocoa-operations",
         "mode": "native",
-        "classification": "unclassified current failure; investigate exact diagnostic",
+        "classification": "catalogue omitted required enabled argument; unchanged frozen source followup passes",
         "timed_out": false,
         "elapsed_seconds": 0.4140331250091549
+      },
+      {
+        "name": "Extensions/Json/tests/numbers",
+        "mode": "interp",
+        "classification": "interpreter timeout; native passes",
+        "timed_out": true,
+        "elapsed_seconds": 180.00631441699807
       }
     ],
-    "ignored": 0
+    "ignored": 0,
+    "runtime_passed": 781,
+    "failed": 25,
+    "cocoa_setup_followup": {
+      "snapshot": "06e8ea965129889f9a24b84d99adb179021f75ff",
+      "runtime_passed": 2,
+      "native_build_passed": 1,
+      "failed": 0,
+      "source_overlay": false,
+      "correction": "provide required enabled argument; fixture validates actual default via assertion side effect",
+      "original_aggregate_rewritten": false
+    }
   },
   "older_failed_aggregates": "Retained unchanged in shared-integration-baseline.json, snapshot6295584c.",
-  "original_corpus_and_focus": "coordinator-owned; no success claim"
+  "original_corpus_and_focus": "coordinator-owned; no success claim",
+  "verification": {
+    "rustfmt": "passed exact frozen06e8ea96",
+    "clippy": "cargo clippy --locked --offline --workspace --all-targets -- -D warnings passed after permitted fixture inputs staged; initial missing-input compile failure retained",
+    "packaging": "a4d28b63 separate tools checkpoint;9 actual package checks passed; does not mutate06"
+  },
+  "coordinator_original_corpus": {
+    "snapshot": "06e8ea965129889f9a24b84d99adb179021f75ff",
+    "compile": {
+      "passed": 331,
+      "failed": 69
+    },
+    "interp": {
+      "passed": 316,
+      "failed": 84
+    },
+    "native": {
+      "passed": 293,
+      "failed": 89,
+      "not_run": 18
+    },
+    "source_body_disclosure": false,
+    "remaining_new_runtime_class": "two SDL example timeouts both modes; root investigation",
+    "acceptance": false
+  }
 }
