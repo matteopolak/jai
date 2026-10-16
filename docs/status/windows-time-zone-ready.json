@@ -1,0 +1,136 @@
+{
+  "role": "stdlib-tools",
+  "updated_utc": "2026-10-16T13:19:19.658508+00:00",
+  "status": "READY source-verified TIME_ZONE_INFORMATION repair; actual MSVC ABI acceptance pending normal CI",
+  "scope": "Only public Windows TIME_ZONE_INFORMATION record; direct dependency ABI tests/docs/tool. No SYSTEMTIME/WORD/type aliases/functions/provider/Metal/Print_Color/HTTP edits.",
+  "production_delta": {
+    "path": "stdlib/Windows/declarations.jai",
+    "before_sha256": "b0eeb0ef7a0805a1c2a025ca8f4cc752c4d7e2d65fdd0cb7db578b78f1ab9d6a",
+    "after_sha256": "6e16201abba3b8202873904b66281cda19841787915299368cbb6701417953e9",
+    "outside_assigned_record": "EXACT BYTE MATCH proven by reversing only the single authorized block"
+  },
+  "contract": {
+    "SDK": "https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-time_zone_information",
+    "members": [
+      [
+        "Bias",
+        "s32",
+        0
+      ],
+      [
+        "StandardName",
+        "[32]u16",
+        4
+      ],
+      [
+        "StandardDate",
+        "Windows.SYSTEMTIME",
+        68
+      ],
+      [
+        "StandardBias",
+        "s32",
+        84
+      ],
+      [
+        "DaylightName",
+        "[32]u16",
+        88
+      ],
+      [
+        "DaylightDate",
+        "Windows.SYSTEMTIME",
+        152
+      ],
+      [
+        "DaylightBias",
+        "s32",
+        168
+      ]
+    ],
+    "size": 172,
+    "alignment": 4,
+    "layout_method": "ordinary real fields; no packing/size/padding/opaque substitution",
+    "dependency_audit": "SYSTEMTIME canonical existing eight u16 fields, size16 align2, every offset/type asserted; WORD::u16 present. Public WCHAR and LONG absent, gap declared BEFORE edit; SDK-equivalent u16/s32 used without adding aliases."
+  },
+  "evidence": {
+    "baseline_red": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/time-zone-red-e1mnt7id/red.json",
+    "baseline_expected_failure": "size_of(Windows.TIME_ZONE_INFORMATION)==172 false with empty record",
+    "focused_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/windows-time-zone-5lq3uxv4/summary.json",
+    "command_count": 6,
+    "all_commands_passed": true,
+    "source_drift": [],
+    "tool_hashes": {
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/debug/jaic": "f40042309c3edf6aa7b8bb459632bb0463b0c07cd1176b12a0f7fa5ea22d19e9",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/debug/jailint": "d6c96417a398f07f72ff902c9555eacc5d78c5b81626c87b673cb7a9d39a039e",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/jaifmt": "6fe948b197a4365917bada14388e93a0b523ca1d50880aa18ec83d3b8edba33e"
+    },
+    "source_platforms": [
+      "Windows x64 from Mac",
+      "Windows arm64 from Mac"
+    ],
+    "format_lint": "actual source-built jaifmt --check both owned Jai paths, jailint -D warnings complete Windows contexts both CPUs, Ruff check/format, clang-format --dry-run --Werror, whitespace PASS",
+    "actual_windows_sdk_c_builds": 0,
+    "actual_windows_native_or_interpreter_executions": 0,
+    "native_mac_programs": 0,
+    "qualification": "Cross-source checks are not Windows native ABI acceptance. C SDK macros uncompiled on Mac; actual normal Windows CI must run.",
+    "source_input_count": 1352,
+    "focused_receipt_sha256": "3954f7f2a43379d84bae7b4e4e119f46e4c91645fbd7abb5395dd4f11fe7339a"
+  },
+  "actual_windows_ci": {
+    "command": "CARGO_TARGET_DIR=<assigned-target> python3 tools/check_windows_time_zone.py --sdk-runtime",
+    "prerequisites": [
+      "actual Windows host",
+      "configured MSVC cl + official SDK headers",
+      "source-built jaifmt in assigned target",
+      "normal matching compiler helper environment if required by native Jai"
+    ],
+    "checks": "MSVC /std:c11 /W4 /WX real SDK C executable; compare 39 actual metrics to Jai interpreter/native O0/O2: sizes, alignments, each member offset/size, signed bias values, array counts.",
+    "runner_scratch": "Unique windows-time-zone-* directory under CARGO_TARGET_DIR; /Fo and /Fe explicitly stay there; no shared fixtures mutated"
+  },
+  "remaining": [
+    "Coordinator actual normal Windows CI SDK/native ABI rerun; prior CI449 eighteen failures remain historical, no retrospective green claim.",
+    "Reviewer can confirm public scalar spelling if WCHAR/LONG aliases were intended; none established and none added."
+  ],
+  "deviations": [
+    "SDK LONG/WCHAR mapped to existing s32/u16; no extra facade names.",
+    "No new helper/provider/library dependencies, staged peer overlays, fake SDK values, suppressions or reference access."
+  ],
+  "file_watcher_preservation": {
+    "audit_path": "docs/status/stdlib-tools-shared-audit.json",
+    "sha256": "867ae3d992948417b468265843ff34d3762baf4347845589623a330a94eef4bf",
+    "changed": false
+  },
+  "integration": {
+    "index_owner": "integration only; no worker index/branch/commit mutations",
+    "files": [
+      {
+        "path": "stdlib/Windows/declarations.jai",
+        "sha256": "6e16201abba3b8202873904b66281cda19841787915299368cbb6701417953e9"
+      },
+      {
+        "path": "docs/specs/stdlib/modules/windows.md",
+        "sha256": "8ef865e2ec9689bb476355dc0971d6a8674c66329a583fb496c459cc0461aa64"
+      },
+      {
+        "path": "tests/native-bindings/windows-time-zone-layout.jai",
+        "sha256": "8b7cd18313c4e9286ab453841d49053d26305733e1d6db77346d99bf3a9b4e94"
+      },
+      {
+        "path": "tests/native-bindings/windows_time_zone_sdk.c",
+        "sha256": "0d1e38fd755cc07bd6ebb3383fc18b45deabea96f3c6bdbf019cef54394f1579"
+      },
+      {
+        "path": "tools/check_windows_time_zone.py",
+        "sha256": "8738b812d3af638ef0fae0e6acce599b0ca1c8763e6a26241becb89584548cd5"
+      },
+      {
+        "path": "docs/windows-time-zone-abi.md",
+        "sha256": "7b808060229426b691e5c5418b5d322eb14bec30c6f6c7c02db204359fcb3aaa"
+      }
+    ],
+    "include_manifest_path": "docs/status/windows-time-zone-ready.json",
+    "global_docs_request": "Add docs/windows-time-zone-abi.md to docs/README.md; preserve peer sections",
+    "suggested_commit": "fix(windows): define time zone information SDK layout"
+  }
+}
