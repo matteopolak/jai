@@ -47,3 +47,6 @@ need no change. Global docs indexing also belongs to integration.
 
 
 The diagnostic test creates its assigned `TMPDIR` or `CARGO_TARGET_DIR` before allocating captures. CI runs these unit checks before build preparation, so that directory need not exist yet. It never selects an internal-disk fallback.
+
+
+Configuration tests share an explicit scratch selector: caller CARGO_TARGET_DIR; on CI, assigned RUNNER_TEMP or GITHUB_WORKSPACE/target/test-scratch; otherwise caller TMPDIR. The chosen directory is created before TemporaryDirectory. Local runs with no assignment fail clearly rather than selecting an internal-disk default. The actual-CI regression unsets both Cargo and TMPDIR and supplies a fresh assigned runner path; all diagnostic assertions remain active. The mocked accounting runner's scratch is assigned inside its test fixture too. This setup repair does not establish Clipboard/HTTP native runtime success.

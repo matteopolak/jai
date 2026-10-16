@@ -1,0 +1,25 @@
+{
+  "status": "PASS CI configuration prerequisite only",
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "tools.test_ci_test_scratch",
+    "tools.test_io_stress_observation",
+    "tools.test_clipboard_linux_diagnostics",
+    "tools.test_reference_rejected_accounting"
+  ],
+  "environment": {
+    "CI": "true",
+    "CARGO_TARGET_DIR": "UNSET",
+    "TMPDIR": "UNSET",
+    "RUNNER_TEMP": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/four-ready-1792177330487261000/unset-cargo-CI-scratch"
+  },
+  "passed": 16,
+  "failed": 0,
+  "ignored": 0,
+  "native_or_HTTP_workload_executions": 0,
+  "unchanged": "Actual12copies/variant/workload/supervisor timeout/observer cap/runtime package predicates and all production compiler/stdlib source",
+  "original_failure": "Root21667104 HTTP38958583817 two jobs:4 CARGO_TARGET_DIR KeyErrors before runtime; not connect failure clearance",
+  "initial_recount_failure": "Mocked accounting runner allocated default /tmp scratch when TMPDIR explicitlyunset; cleanup denied. No denied path retried/read; test now assigns its accounting scratch under caller fixture. Original failure log retained."
+}
