@@ -795,3 +795,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Current merged repair ledger](status/shared-known-cohort-progress.json): exact scoped counts, remaining canonical Basic array closure and platform/runtime gates.
 
 - [Basic program parameter identity](basic-program-parameter-identity.md): corrected reviewed header, nominal identity/configuration controls and retained negative; native proof qualified separately.
+
+- [Canonical Basic array ownership](status/shared-array-owner-source-checkpoint.json): original shared array bodies declared in public Basic context, with private allocator dependency closure; remaining custom configuration failure retained.
