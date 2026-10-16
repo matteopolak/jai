@@ -652,3 +652,5 @@ include exact file/line/source hashes and required platform limits.
 
 - [Developer runtime packaging](tools/developer-runtime-packaging.md): real relocated LLVM consumers, dynamic dependency notices and explicit resource/distribution limits.
 - [Pinned shared candidate06e8ea96](status/shared-candidate-06e8ea96.json): exact compiler hashes, committed stdlib tree, native asset search order and coordinator replay environment.
+
+- [Unmapping allocator](portable-unmapping-allocator.md): real protection-failure ownership retention, Windows VM backend and [scoped integration verification](status/shared-unmapping-verification.json).

@@ -1,7 +1,7 @@
 {
   "worker": "portable-stdlib",
-  "updated_utc": "2026-10-15T23:43:51.505118+00:00",
-  "shared_head_at_report": "6295584c42cf004999267d28835dfa8e1b00e95f",
+  "updated_utc": "2026-10-16T00:27:09.458113+00:00",
+  "shared_head_at_report": "a4d28b63648ebe4365a717e5f24a411c09df829e",
   "checkpoint_adoption": "Production adoption observed; facade differs and transition tool/reproducer reconciliation requested via inbox. No cherry-pick/index changes by this owner.",
   "historical_checkpoint": "feae909e201564e69d7218e324dd9c6bed88df85",
   "historical_counts": {
@@ -592,77 +592,88 @@
       "name": "base64_encode",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Base64",
       "name": "base64_decode",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Base64",
       "name": "base64url_encode",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Base64",
       "name": "base64url_decode",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Base64",
       "name": "BASE64_ENCODER_TABLE",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Base64",
       "name": "BASE64_DECODER_TABLE",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Base64",
       "name": "BASE64URL_ENCODER_TABLE",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Base64",
       "name": "BASE64URL_DECODER_TABLE",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Base64",
       "name": "test_base64",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Base64",
       "name": "test_base64_url",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Base64",
       "name": "test_base64_module",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Basic",
@@ -1061,42 +1072,48 @@
       "name": "crc64",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Metaprogram",
       "name": "is_absolute_path",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Metaprogram",
       "name": "message_loop",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_compiler_dependency"
     },
     {
       "module": "Default_Metaprogram",
       "name": "HELP_STRING",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Metaprogram",
       "name": "plugins",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Metaprogram",
       "name": "verbose",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Example_Plugin",
@@ -2006,161 +2023,184 @@
       "name": "random_get",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "PCG",
       "name": "random_get_within_bound",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "PCG",
       "name": "random_get_zero_to_one",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "PCG",
       "name": "random_get_within_range",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "PCG",
       "name": "random_seed",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "PCG",
       "name": "random_get",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "PCG",
       "name": "random_get_within_bound",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "PCG",
       "name": "random_get_within_bound2",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "PCG",
       "name": "random_get_zero_to_one",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "PCG",
       "name": "random_get_within_range",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "PCG",
       "name": "random_seed",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "POOL_BUCKET_SIZE_DEFAULT",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "POOL_OVERSIZED_SIZE_DEFAULT",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "STAMP",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "HEADER_SIZE",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "Pool",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "set_allocators",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "get",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "release",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "reset",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "pool_allocator_proc",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "calculate_used_memory",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Pool",
       "name": "example_usage",
       "condition": "",
       "historical_source_status": "complete",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Project_Generator",
@@ -3948,7 +3988,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -3958,7 +3999,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -3968,7 +4010,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_contract_question"
     },
     {
       "module": "Default_Allocator",
@@ -3978,7 +4021,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -3988,7 +4032,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -3998,7 +4043,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -4008,7 +4054,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -4018,7 +4065,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -4028,7 +4076,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -4038,7 +4087,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -4048,7 +4098,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -4058,7 +4109,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Default_Allocator",
@@ -4068,7 +4120,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_contract_question"
     },
     {
       "module": "Default_Metaprogram",
@@ -4078,7 +4131,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_compiler_dependency"
     },
     {
       "module": "File_Watcher",
@@ -4268,7 +4322,7 @@
       "source_state": "committed",
       "historical_source_status": "missing",
       "shared_audit": "audited",
-      "current_source_status": "missing_body_contract_question"
+      "current_source_status": "implemented_compiler_dependency"
     },
     {
       "module": "linux_build",
@@ -4338,7 +4392,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Mail",
@@ -4348,7 +4403,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Mail",
@@ -4358,7 +4414,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_supported_subset"
     },
     {
       "module": "Mail",
@@ -4368,7 +4425,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_contract_question"
     },
     {
       "module": "Minimal_Metaprogram",
@@ -5114,7 +5172,7 @@
       "source_state": "committed",
       "historical_source_status": "missing",
       "shared_audit": "audited",
-      "current_source_status": "missing_body_contract_question"
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "pl_mpeg",
@@ -5972,7 +6030,7 @@
       "source_state": "committed",
       "historical_source_status": "missing",
       "shared_audit": "audited",
-      "current_source_status": "missing_body_contract_question"
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "pl_mpeg",
@@ -6016,7 +6074,7 @@
       "source_state": "committed",
       "historical_source_status": "missing",
       "shared_audit": "audited",
-      "current_source_status": "missing_body_contract_question"
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "pl_mpeg",
@@ -6173,7 +6231,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6183,7 +6242,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6193,7 +6253,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6203,7 +6264,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6213,7 +6275,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6223,7 +6286,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6233,7 +6297,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6243,7 +6308,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6253,7 +6319,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6263,7 +6330,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6273,7 +6341,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6283,7 +6352,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6293,7 +6363,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6303,7 +6374,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6313,7 +6385,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6323,7 +6396,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Process",
@@ -6333,7 +6407,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Reflection",
@@ -6894,7 +6969,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -6904,7 +6980,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -6914,7 +6991,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -6924,7 +7002,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -6934,7 +7013,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -6944,7 +7024,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -6954,7 +7035,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -6964,7 +7046,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -6974,7 +7057,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -6984,7 +7068,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -6994,7 +7079,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7004,7 +7090,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_supported_subset"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7014,7 +7101,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7024,7 +7112,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7034,7 +7123,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7044,7 +7134,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7054,7 +7145,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7064,7 +7156,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7074,7 +7167,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7084,7 +7178,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7094,7 +7189,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7104,7 +7200,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7114,7 +7211,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7124,7 +7222,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7134,7 +7233,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7144,7 +7244,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7154,7 +7255,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7164,7 +7266,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7174,7 +7277,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7184,7 +7288,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7194,7 +7299,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7204,7 +7310,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7214,7 +7321,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Shared_Memory_Channel",
@@ -7224,7 +7332,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "System",
@@ -7234,7 +7343,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7244,7 +7354,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7254,7 +7365,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7264,7 +7376,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7274,7 +7387,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7284,7 +7398,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7294,7 +7409,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7304,7 +7420,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7314,7 +7431,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7324,7 +7442,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7334,7 +7453,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7344,7 +7464,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7354,7 +7475,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7364,7 +7486,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7374,7 +7497,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7384,7 +7508,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7394,7 +7519,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "System",
@@ -7404,7 +7530,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7414,7 +7541,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7424,7 +7552,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "missing_configuration_behavior"
     },
     {
       "module": "Thread",
@@ -7434,7 +7563,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7444,7 +7574,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7454,7 +7585,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7464,7 +7596,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7474,7 +7607,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7484,7 +7618,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7494,7 +7629,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7504,7 +7640,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7514,7 +7651,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7524,7 +7662,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7534,7 +7673,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7544,7 +7684,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7554,7 +7695,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7564,7 +7706,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7574,7 +7717,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7584,7 +7728,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7594,7 +7739,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7604,7 +7750,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7614,7 +7761,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7624,7 +7772,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7634,7 +7783,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7644,7 +7794,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7654,7 +7805,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7664,7 +7816,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7674,7 +7827,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7684,7 +7838,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7694,7 +7849,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7704,7 +7860,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7714,7 +7871,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "missing_configuration_behavior"
     },
     {
       "module": "Thread",
@@ -7724,7 +7882,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "missing_configuration_behavior"
     },
     {
       "module": "Thread",
@@ -7734,7 +7893,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "missing_configuration_behavior"
     },
     {
       "module": "Thread",
@@ -7744,7 +7904,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "missing_configuration_behavior"
     },
     {
       "module": "Thread",
@@ -7754,7 +7915,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "missing_configuration_behavior"
     },
     {
       "module": "Thread",
@@ -7764,7 +7926,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "missing_configuration_behavior"
     },
     {
       "module": "Thread",
@@ -7774,7 +7937,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7784,7 +7948,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7794,7 +7959,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7804,7 +7970,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7814,7 +7981,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7824,7 +7992,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7834,7 +8003,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7844,7 +8014,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7854,7 +8025,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7864,7 +8036,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7874,7 +8047,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Thread",
@@ -7884,7 +8058,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "supported_body_complete"
     },
     {
       "module": "Unmapping_Allocator",
@@ -7894,7 +8069,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Unmapping_Allocator",
@@ -7904,7 +8080,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Unmapping_Allocator",
@@ -7914,7 +8091,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Unmapping_Allocator",
@@ -7924,7 +8102,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     },
     {
       "module": "Unmapping_Allocator",
@@ -7934,7 +8113,8 @@
       "status": "partial",
       "source_state": "committed",
       "historical_source_status": "partial",
-      "shared_audit": "pending"
+      "shared_audit": "audited",
+      "current_source_status": "implemented_native_backend_partial_verification"
     }
   ],
   "current_api_audit": [
@@ -11154,40 +11334,40 @@
       "name": "Unmapping_Allocator",
       "declaration": "Unmapping_Allocator :: struct",
       "condition": "",
-      "source_status": "implemented_supported_subset",
-      "remaining_gap": "Real POSIX map/protect/metadata lifecycle passes current Mac interpreter. Windows backend is absent (explicit module rejection), requiring actual VirtualAlloc/VirtualProtect lifecycle implementation; native Linux/Windows and console gates remain."
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Real Windows reserve/commit/read-only protection backend implemented with minimum8-byte effective extent and preserved canonical record; all six Mac/Linux/Windows x64/ARM64 source/lint contexts pass. Actual Mac lifecycle, guard/freed-write protection, concurrent allocations and SDK failure/retry pass. Native Windows/Linux and console verification remain external gates; no absent Windows body remains."
     },
     {
       "module": "Unmapping_Allocator",
       "name": "get_unmapping_allocator",
       "declaration": "get_unmapping_allocator :: () -> Allocator",
       "condition": "",
-      "source_status": "implemented_supported_subset",
-      "remaining_gap": "Real POSIX map/protect/metadata lifecycle passes current Mac interpreter. Windows backend is absent (explicit module rejection), requiring actual VirtualAlloc/VirtualProtect lifecycle implementation; native Linux/Windows and console gates remain."
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Real Windows reserve/commit/read-only protection backend implemented with minimum8-byte effective extent and preserved canonical record; all six Mac/Linux/Windows x64/ARM64 source/lint contexts pass. Actual Mac lifecycle, guard/freed-write protection, concurrent allocations and SDK failure/retry pass. Native Windows/Linux and console verification remain external gates; no absent Windows body remains."
     },
     {
       "module": "Unmapping_Allocator",
       "name": "deinit_unmapping_allocator",
       "declaration": "deinit_unmapping_allocator :: (a: Allocator)",
       "condition": "",
-      "source_status": "implemented_supported_subset",
-      "remaining_gap": "Real POSIX map/protect/metadata lifecycle passes current Mac interpreter. Windows backend is absent (explicit module rejection), requiring actual VirtualAlloc/VirtualProtect lifecycle implementation; native Linux/Windows and console gates remain."
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Real Windows reserve/commit/read-only protection backend implemented with minimum8-byte effective extent and preserved canonical record; all six Mac/Linux/Windows x64/ARM64 source/lint contexts pass. Actual Mac lifecycle, guard/freed-write protection, concurrent allocations and SDK failure/retry pass. Native Windows/Linux and console verification remain external gates; no absent Windows body remains."
     },
     {
       "module": "Unmapping_Allocator",
       "name": "deinit",
       "declaration": "deinit :: (ua: *Unmapping_Allocator)",
       "condition": "",
-      "source_status": "implemented_supported_subset",
-      "remaining_gap": "Real POSIX map/protect/metadata lifecycle passes current Mac interpreter. Windows backend is absent (explicit module rejection), requiring actual VirtualAlloc/VirtualProtect lifecycle implementation; native Linux/Windows and console gates remain."
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Real Windows reserve/commit/read-only protection backend implemented with minimum8-byte effective extent and preserved canonical record; all six Mac/Linux/Windows x64/ARM64 source/lint contexts pass. Actual Mac lifecycle, guard/freed-write protection, concurrent allocations and SDK failure/retry pass. Native Windows/Linux and console verification remain external gates; no absent Windows body remains."
     },
     {
       "module": "Unmapping_Allocator",
       "name": "unmapping_allocator_proc",
       "declaration": "unmapping_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void",
       "condition": "",
-      "source_status": "implemented_supported_subset",
-      "remaining_gap": "Real POSIX map/protect/metadata lifecycle passes current Mac interpreter. Windows backend is absent (explicit module rejection), requiring actual VirtualAlloc/VirtualProtect lifecycle implementation; native Linux/Windows and console gates remain."
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Real Windows reserve/commit/read-only protection backend implemented with minimum8-byte effective extent and preserved canonical record; all six Mac/Linux/Windows x64/ARM64 source/lint contexts pass. Actual Mac lifecycle, guard/freed-write protection, concurrent allocations and SDK failure/retry pass. Native Windows/Linux and console verification remain external gates; no absent Windows body remains."
     },
     {
       "module": "Clipboard",
@@ -11301,16 +11481,648 @@
       "source_status": "supported_body_complete",
       "remaining_gap": "",
       "verification_note": "Current CPU font workflow with actual official FreeType SDK and original private TTF/BDF inputs passes default Basic enabled/disabled interpreter/native Mac ARM64 O0/O2. Renderer NONE is reviewed existing CPU configuration; no GPU/window coverage claimed. Borrowed face bytes and module font/atlas retention follow reviewed lifetime."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Header",
+      "declaration": "Header :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Read_Channel",
+      "declaration": "Read_Channel :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Write_Channel",
+      "declaration": "Write_Channel :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Message_Queue_Header",
+      "declaration": "Message_Queue_Header :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Reserved_Message",
+      "declaration": "Reserved_Message :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Read_Message",
+      "declaration": "Read_Message :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "OFFSET_TO_HEADER_OS_SPECIFIC",
+      "declaration": "OFFSET_TO_HEADER_OS_SPECIFIC :: 64",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "OFFSET_TO_MESSAGE_QUEUE_HEADER",
+      "declaration": "OFFSET_TO_MESSAGE_QUEUE_HEADER :: 128",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "OFFSET_TO_MESSAGE_DATA",
+      "declaration": "OFFSET_TO_MESSAGE_DATA :: 256",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "PER_MESSAGE_OVERHEAD_SIZE",
+      "declaration": "PER_MESSAGE_OVERHEAD_SIZE :: 16",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "WRAPPING_SENTINEL",
+      "declaration": "WRAPPING_SENTINEL :: 0xcafebabef00dface",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_create_channel",
+      "declaration": "reader_create_channel :: (name: string, bytes: s64) -> (success: bool, channel: Read_Channel)",
+      "condition": "",
+      "source_status": "implemented_supported_subset",
+      "remaining_gap": "Ordinary Mac mapping/lifecycle verified interpreter/native O0/O2, including separate processes. POSIX failed cleanup drops private registration; retention/retry resilience remains explicit, reviewed failure policy requested in portable-channel-questions.md."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "get_message_queue_header",
+      "declaration": "get_message_queue_header :: inline (header: *Header) -> *Message_Queue_Header",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "writer_reserve_message",
+      "declaration": "writer_reserve_message :: (channel: *Write_Channel, data_bytes: s64) -> (success: bool, reserved: Reserved_Message)",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "writer_commit_message",
+      "declaration": "writer_commit_message :: (channel: *Write_Channel, message: Reserved_Message) -> success: bool",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_poll_for_message",
+      "declaration": "reader_poll_for_message :: (channel: *Read_Channel) -> (found: bool, fatal_error: bool, message: Read_Message)",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_done_with_message",
+      "declaration": "reader_done_with_message :: (message: *Read_Message) -> bool",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "PROTOCOL_VERSION",
+      "declaration": "PROTOCOL_VERSION :: 1",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "CHANNEL_MAGIC",
+      "declaration": "CHANNEL_MAGIC :: \"ShmC\"",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "MESSAGE_MAGIC",
+      "declaration": "MESSAGE_MAGIC :: \"ShmM2022\"",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Header_Os_Specific",
+      "declaration": "Header_Os_Specific :: struct",
+      "condition": "OS == .WINDOWS",
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Read_Channel_Os_Specific",
+      "declaration": "Read_Channel_Os_Specific :: struct",
+      "condition": "OS == .WINDOWS",
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Write_Channel_Os_Specific",
+      "declaration": "Write_Channel_Os_Specific :: struct",
+      "condition": "OS == .WINDOWS",
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_create_channel_os_specific",
+      "declaration": "reader_create_channel_os_specific :: (name: string, bytes: s64) -> (success: bool, channel: Read_Channel)",
+      "condition": "OS == .WINDOWS",
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_release_channel",
+      "declaration": "reader_release_channel :: (channel: *Read_Channel) -> bool",
+      "condition": "OS == .WINDOWS",
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "writer_connect",
+      "declaration": "writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: bool, channel: Write_Channel)",
+      "condition": "OS == .WINDOWS",
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "writer_disconnect",
+      "declaration": "writer_disconnect :: (channel: *Write_Channel) -> bool",
+      "condition": "OS == .WINDOWS",
+      "source_status": "implemented_native_backend_partial_verification",
+      "remaining_gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Header_Os_Specific",
+      "declaration": "Header_Os_Specific :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Read_Channel_Os_Specific",
+      "declaration": "Read_Channel_Os_Specific :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Write_Channel_Os_Specific",
+      "declaration": "Write_Channel_Os_Specific :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_create_channel_os_specific",
+      "declaration": "reader_create_channel_os_specific :: (name: string, bytes: s64) -> (success: bool, channel: Read_Channel)",
+      "condition": "",
+      "source_status": "implemented_supported_subset",
+      "remaining_gap": "Ordinary Mac mapping/lifecycle verified interpreter/native O0/O2, including separate processes. POSIX failed cleanup drops private registration; retention/retry resilience remains explicit, reviewed failure policy requested in portable-channel-questions.md."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_release_channel",
+      "declaration": "reader_release_channel :: (channel: *Read_Channel) -> bool",
+      "condition": "",
+      "source_status": "implemented_supported_subset",
+      "remaining_gap": "Ordinary Mac mapping/lifecycle verified interpreter/native O0/O2, including separate processes. POSIX failed cleanup drops private registration; retention/retry resilience remains explicit, reviewed failure policy requested in portable-channel-questions.md."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "writer_connect",
+      "declaration": "writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: bool, channel: Write_Channel)",
+      "condition": "",
+      "source_status": "implemented_supported_subset",
+      "remaining_gap": "Ordinary Mac mapping/lifecycle verified interpreter/native O0/O2, including separate processes. POSIX failed cleanup drops private registration; retention/retry resilience remains explicit, reviewed failure policy requested in portable-channel-questions.md."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "writer_disconnect",
+      "declaration": "writer_disconnect :: (channel: *Write_Channel) -> bool",
+      "condition": "",
+      "source_status": "implemented_supported_subset",
+      "remaining_gap": "Ordinary Mac mapping/lifecycle verified interpreter/native O0/O2, including separate processes. POSIX failed cleanup drops private registration; retention/retry resilience remains explicit, reviewed failure policy requested in portable-channel-questions.md."
+    },
+    {
+      "module": "Default_Metaprogram",
+      "name": "is_absolute_path",
+      "declaration": "is_absolute_path :: (path: string) -> bool",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Default_Metaprogram",
+      "name": "build",
+      "declaration": "build :: ()",
+      "condition": "",
+      "source_status": "implemented_compiler_dependency",
+      "remaining_gap": "Fresh source-built compiler rejects generated initializer placeholder before actual default workspace/plugin work. Independent plugin-empty-initialization and general deferred-body-added-before-indirect-call both reproduce. Existing real bodies retained; no CLI bypass/workaround. Exact dependency routed to compiler owner."
+    },
+    {
+      "module": "Default_Metaprogram",
+      "name": "message_loop",
+      "declaration": "message_loop :: (w: Workspace)",
+      "condition": "",
+      "source_status": "implemented_compiler_dependency",
+      "remaining_gap": "Fresh source-built compiler rejects generated initializer placeholder before actual default workspace/plugin work. Independent plugin-empty-initialization and general deferred-body-added-before-indirect-call both reproduce. Existing real bodies retained; no CLI bypass/workaround. Exact dependency routed to compiler owner."
+    },
+    {
+      "module": "Default_Metaprogram",
+      "name": "HELP_STRING",
+      "declaration": "HELP_STRING :: #string DONE",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Default_Metaprogram",
+      "name": "plugins",
+      "declaration": "plugins: [..] *Metaprogram_Plugin",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Default_Metaprogram",
+      "name": "verbose",
+      "declaration": "verbose := false",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Crc",
+      "name": "crc64",
+      "declaration": "crc64 :: (s: string) -> u64",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "base64_encode",
+      "declaration": "base64_encode :: (input: string, table: string = BASE64_ENCODER_TABLE, pad := true) -> string",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "base64_decode",
+      "declaration": "base64_decode :: (input: string, table: [256]u8 = BASE64_DECODER_TABLE) -> string, success: bool",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "base64url_encode",
+      "declaration": "base64url_encode :: (input: string) -> string",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "base64url_decode",
+      "declaration": "base64url_decode :: (input: string) -> string, success: bool",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "BASE64_ENCODER_TABLE",
+      "declaration": "BASE64_ENCODER_TABLE :: \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/\"",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "BASE64_DECODER_TABLE",
+      "declaration": "BASE64_DECODER_TABLE :: [256]u8",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "BASE64URL_ENCODER_TABLE",
+      "declaration": "BASE64URL_ENCODER_TABLE :: \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_\"",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "BASE64URL_DECODER_TABLE",
+      "declaration": "BASE64URL_DECODER_TABLE :: [256]u8",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "test_base64",
+      "declaration": "test_base64 :: ()",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "test_base64_url",
+      "declaration": "test_base64_url :: ()",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Base64",
+      "name": "test_base64_module",
+      "declaration": "test_base64_module :: ()",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_get",
+      "declaration": "random_get :: inline () -> u32",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_get_within_bound",
+      "declaration": "random_get_within_bound :: inline (bound: u32) -> u32",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_get_zero_to_one",
+      "declaration": "random_get_zero_to_one :: () -> float",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_get_within_range",
+      "declaration": "random_get_within_range :: (min: float, max: float) -> float",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_seed",
+      "declaration": "random_seed :: (new_seed : u32)",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_get",
+      "declaration": "random_get :: (state : *u64) -> u32",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_get_within_bound",
+      "declaration": "random_get_within_bound :: (state: *u64, range: u32) -> u32",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_get_within_bound2",
+      "declaration": "random_get_within_bound2 :: (state: *u64, range: u32) -> u32",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_get_zero_to_one",
+      "declaration": "random_get_zero_to_one :: (state: *u64) -> float",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_get_within_range",
+      "declaration": "random_get_within_range :: (state: *u64, min: float, max: float) -> float",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "PCG",
+      "name": "random_seed",
+      "declaration": "random_seed :: (state: *u64, new_seed : u32)",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Mail",
+      "name": "Mail_Server",
+      "declaration": "Mail_Server :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Mail",
+      "name": "Mail_Message",
+      "declaration": "Mail_Message :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Mail",
+      "name": "mail_send",
+      "declaration": "mail_send :: (smtp: Mail_Server, msg: Mail_Message) -> bool",
+      "condition": "",
+      "source_status": "implemented_supported_subset",
+      "remaining_gap": "Real shared Curl MIME/SMTP plain/HTML/synthetic-auth/rejection/TLS-required failure pass actual Mac interpreter/native O0/O2. Exact enable_ssl connection policy and positive CA/encrypted validation remain, native Windows/Linux unverified; details portable-mail-questions.md."
+    },
+    {
+      "module": "Mail",
+      "name": "scramble",
+      "declaration": "scramble :: (text: string, secret: string) -> string",
+      "condition": "",
+      "source_status": "implemented_contract_question",
+      "remaining_gap": "Real reversible64-character XOR implementation present; numeric alphabet index ordering needs reviewed vector/mapping. No independently authored ciphertext is reference evidence."
+    },
+    {
+      "module": "Pool",
+      "name": "POOL_BUCKET_SIZE_DEFAULT",
+      "declaration": "POOL_BUCKET_SIZE_DEFAULT :: 65536",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "POOL_OVERSIZED_SIZE_DEFAULT",
+      "declaration": "POOL_OVERSIZED_SIZE_DEFAULT :: 6554",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "STAMP",
+      "declaration": "STAMP :: 0xcc",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "HEADER_SIZE",
+      "declaration": "HEADER_SIZE :: size_of(Memblock)",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "Pool",
+      "declaration": "Pool :: struct",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "set_allocators",
+      "declaration": "set_allocators :: (pool: *Pool, block_allocator : Allocator = .{})",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "get",
+      "declaration": "get :: (using pool: *Pool, nbytes: s64) -> *void",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "release",
+      "declaration": "release :: (using pool: *Pool)",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "reset",
+      "declaration": "reset :: (using pool: *Pool)",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "pool_allocator_proc",
+      "declaration": "pool_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "calculate_used_memory",
+      "declaration": "calculate_used_memory :: (using pool: Pool) -> inband_size: s64, outband_count: s64",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
+    },
+    {
+      "module": "Pool",
+      "name": "example_usage",
+      "declaration": "example_usage :: ()",
+      "condition": "",
+      "source_status": "supported_body_complete",
+      "remaining_gap": ""
     }
   ],
   "audited_counts": {
     "contract_question": 2,
-    "supported_body_complete": 301,
-    "implemented_compiler_dependency": 1,
-    "implemented_contract_question": 8,
-    "implemented_supported_subset": 9,
+    "supported_body_complete": 364,
+    "implemented_compiler_dependency": 3,
+    "implemented_contract_question": 9,
+    "implemented_supported_subset": 10,
     "missing_configuration_behavior": 4,
-    "implemented_native_backend_partial_verification": 4
+    "implemented_native_backend_partial_verification": 16
   },
   "verification": {
     "runtime.json": {
@@ -11392,6 +12204,86 @@
       "scope": "Three MPEG APIs only; Walk_Table compiler-dependent separately red.",
       "source_and_lint": "mpeg-public-macros-usxlb55d/source-lint.json:18 source targets and3 strict owned context gates pass.",
       "format": "All four owned source files and corresponding new positive/pending fixtures jaifmt check pass."
+    },
+    "unmapping_protection_retention": {
+      "red": "unmapping-retention-whdn9os_/before-native-corrected-library.json: native O0/O2 exit5 proves tracking lost after actual SDK protection failure",
+      "green": "unmapping-protection-v_x4derp/results.json",
+      "runtime_passed": 4,
+      "native_builds_passed": 4,
+      "failed": 0,
+      "format_lint": "Fixture/source format, strict fixture lint and complete owned context manifest owned-lint.json passed.",
+      "limits": "Mac native only. Custom Mach foreign helper unavailable in interpreter; Windows backend remains absent."
+    },
+    "unmapping_cross_platform": {
+      "receipt": "stdlib/shared-target/unmapping-protection-167zerx6",
+      "runtime_passed": 10,
+      "native_builds_passed": 8,
+      "source_targets_passed": 6,
+      "owned_lint_contexts_passed": 6,
+      "format_passed": 5,
+      "existing_regressions": "existing-regressions.json:6 executions +4build pass, guard-page/freed-write faults and concurrency included",
+      "limits": "Native Mac only; Windows/Linux six source gates are not native SDK validation."
+    },
+    "shared_memory_channel": {
+      "receipt": "stdlib/shared-target/channel-lifecycle-qg348z45",
+      "runtime_passed": 18,
+      "native_builds_passed": 4,
+      "source_targets_passed": 6,
+      "full_owned_lint_contexts_passed": 6,
+      "scope": "Zero/small packets, wrap, actual separate-process IPC, successful release, both default assertion configurations verified by explicit side-effect control.",
+      "limits": "Native Mac only; failure-retention and duplicate/reconnect policy remain precise gaps; no production channel fix claimed."
+    },
+    "default_current_dependency": {
+      "receipt": "stdlib/shared-target/default-shared-1__m10vx",
+      "state": "RED",
+      "note": "Fresh actual-shared workflow runner:13 failures,6passes (two option errors/four source formats); no successful build or runtime execution claimed.",
+      "reductions": [
+        "tests/portable-stdlib/pending/plugin-empty-initialization.jai",
+        "tests/portable-stdlib/pending/deferred-body-added-before-indirect-call.jai"
+      ],
+      "source_build": "cargo build --locked --manifest-path ../compiler/Cargo.toml --bin jaic completed in assigned own target before test."
+    },
+    "codec_contracts": {
+      "receipt": "stdlib/shared-target/codecs-shared-ln556uns",
+      "runtime_passed": 9,
+      "native_builds_passed": 6,
+      "source_targets_passed": 6,
+      "full_owned_lint_contexts_passed": 6,
+      "constant_mutation_negative": "Rejected because exported decoder table constant.",
+      "scope": "Reviewed full table mapping/tails/custom tables and alphabets/CRC vectors/PCG state+global/all overloads. No production change; native Mac only."
+    },
+    "python_owned_runners": "ruff check and ruff format --check pass for unmapping/channel/default/codecs runners; formatter preserved all four Python ASTs exactly.",
+    "filtered_corpus_name_review": {
+      "input": "docs/status/coordinator-full-corpus-06e8ea96.json",
+      "scope": "Historical first diagnostics only; no original bodies/raw logs/reference source read.",
+      "report": "docs/portable-corpus-name-review.md",
+      "receipt": "stdlib/shared-target/public-names-_5spayef",
+      "source_targets_passed": 6,
+      "fixture_lint_format": "passed",
+      "classification": "17 distinct names:10 canonical namespace exports present,3 Basic exclusions, Context/operator/2ObjC names need language/client/API premise facts. No opaque case fixed/passing claim."
+    },
+    "mail_shared": {
+      "receipt": "stdlib/shared-target/mail-shared-xa4wue8s",
+      "runtime_passed": 15,
+      "native_builds_passed": 2,
+      "full_owned_lint_contexts_passed": 6,
+      "scope": "Real loopback native Curl SMTP/MIME; no external delivery/real credentials; source/fixture hashes unchanged. Original scripted receiver uses synthetic fixture auth only.",
+      "limits": "Positive encrypted/custom CA, exact TLS policy, Windows/Linux native pending. Source format and Python ruff check/format pass."
+    },
+    "pool_current": {
+      "receipt": "stdlib/shared-target/pool-shared-2hhhl3cs",
+      "runtime_passed": 12,
+      "native_builds_passed": 8,
+      "full_owned_lint_contexts_passed": 12,
+      "scope": "Accepted value-lifetime/setter guards after release/reset, real returned Basic leak reports, size limits and CAPS stability. Both Pool configurations source checked six targets. Actual USE_UNMAPPING lifecycle also passes6 executions/4build in earlier same-source unmapping receipt.",
+      "limits": "Native Mac only; backing allocator Windows native pending. Explicit readonly behavior supported; contradictory stale-read-fault prose under review."
+    },
+    "cross_target_clock": {
+      "receipt": "stdlib/shared-target/cross-clock-i24tnarw",
+      "host_source_passed": 2,
+      "linux_target_source_failed": 2,
+      "sdk_control": "Mac id6/status0; Linux id1/status-1. Initial errno lookup unavailable __errno_location on Mac.",
+      "state": "External compiler/native host-target ABI dependency; no library fallback or fabricated timestamp."
     }
   },
   "manifest_gate": "Four current owned-module contexts complete; incomplete and unvisited_files empty. Source/test format checks and strict lint passed without suppression.",
@@ -11446,11 +12338,33 @@
       "location": "stdlib/internal/collections/hash-table.jai",
       "change": "Walk_Table implemented with exported hash/index, loop slot hash, tombstone walk and labelled control semantics.",
       "evidence": "Source present but actual public fixture blocked by independently reproduced compiler condition-value export hygiene; no completed behavior claim."
+    },
+    {
+      "location": "stdlib/internal/allocation/unmapping.jai:protect_old",
+      "change": "Return after diagnosed mprotect failure before removing the tracking entry, preserving ownership for a genuine retry with recovering/disabled assertions.",
+      "evidence": "Actual Mach maximum-protection restriction on an owned mapped page forces mprotect failure. Tracking remains; replacement of the exact owned page permits real successful FREE retry."
+    },
+    {
+      "location": "stdlib/Unmapping_Allocator/module.jai; internal/allocation/unmapping.jai; internal/allocation/virtual-memory.jai",
+      "change": "Implement Windows VM backend through shared private reserve/commit/read-only operations; effective small request extent8bytes; retained mappings/ownership and OS error logs; public record and five declarations unchanged.",
+      "evidence": "Initial Windows source rejection preserved; final six source/strict lint contexts pass and actual Mac lifecycle/failure/fault/concurrency regressions pass."
     }
   ],
   "test_corrections_this_batch": [
     "Process lint invocation requested inapplicable Windows source files on Mac. Corrected the requested target/ownership paths; original diagnostic and manifest retained. No source/test assertions changed.",
-    "Walk_Table initial fixture used invalid backtick before labelled continue/break. Corrected to reviewed ordinary labelled jumps, retained every slot/control assertion; genuine missing-export red then compiler hygiene red retained."
+    "Walk_Table initial fixture used invalid backtick before labelled continue/break. Corrected to reviewed ordinary labelled jumps, retained every slot/control assertion; genuine missing-export red then compiler hygiene red retained.",
+    {
+      "location": "unmapping-protection-retention SDK runner",
+      "change": "Initial interpreter run cannot call custom foreign helper; initial native wrapper incorrectly supplied a dylib extension to #library. Corrected extensionless library name before establishing native O0/O2 exit5 red. Neither setup failure counted as production defect."
+    },
+    {
+      "location": "tests/portable-stdlib/channel-lifecycle.jai and tools/check_portable_channel_shared.py",
+      "change": "Fixed draft result-variable redeclaration before runtime. Corrected readiness existence/content race: recorded disabled-interpreter reader timeout had no writer row. Final waits for full marker, same packet checks and production source unchanged."
+    },
+    {
+      "location": "tests/portable-stdlib/codec-contracts.jai",
+      "change": "Draft CRC oracle omitted parentheses around cast before shift; parenthesizing resolves exit7 without production change. Final removes mirrored Jai algorithm in favor of independent Python polynomial-derived bytes0..255 vector."
+    }
   ],
   "deviations": [
     "No production workaround introduced. New tests intentionally avoid unspecified narrow-input returned-bound policy; existing unresolved evidence retained.",
@@ -11570,31 +12484,31 @@
       "module": "Unmapping_Allocator",
       "name": "Unmapping_Allocator",
       "declaration": "Unmapping_Allocator :: struct",
-      "gap": "Real POSIX map/protect/metadata lifecycle passes current Mac interpreter. Windows backend is absent (explicit module rejection), requiring actual VirtualAlloc/VirtualProtect lifecycle implementation; native Linux/Windows and console gates remain."
+      "gap": "Real Windows reserve/commit/read-only protection backend implemented with minimum8-byte effective extent and preserved canonical record; all six Mac/Linux/Windows x64/ARM64 source/lint contexts pass. Actual Mac lifecycle, guard/freed-write protection, concurrent allocations and SDK failure/retry pass. Native Windows/Linux and console verification remain external gates; no absent Windows body remains."
     },
     {
       "module": "Unmapping_Allocator",
       "name": "get_unmapping_allocator",
       "declaration": "get_unmapping_allocator :: () -> Allocator",
-      "gap": "Real POSIX map/protect/metadata lifecycle passes current Mac interpreter. Windows backend is absent (explicit module rejection), requiring actual VirtualAlloc/VirtualProtect lifecycle implementation; native Linux/Windows and console gates remain."
+      "gap": "Real Windows reserve/commit/read-only protection backend implemented with minimum8-byte effective extent and preserved canonical record; all six Mac/Linux/Windows x64/ARM64 source/lint contexts pass. Actual Mac lifecycle, guard/freed-write protection, concurrent allocations and SDK failure/retry pass. Native Windows/Linux and console verification remain external gates; no absent Windows body remains."
     },
     {
       "module": "Unmapping_Allocator",
       "name": "deinit_unmapping_allocator",
       "declaration": "deinit_unmapping_allocator :: (a: Allocator)",
-      "gap": "Real POSIX map/protect/metadata lifecycle passes current Mac interpreter. Windows backend is absent (explicit module rejection), requiring actual VirtualAlloc/VirtualProtect lifecycle implementation; native Linux/Windows and console gates remain."
+      "gap": "Real Windows reserve/commit/read-only protection backend implemented with minimum8-byte effective extent and preserved canonical record; all six Mac/Linux/Windows x64/ARM64 source/lint contexts pass. Actual Mac lifecycle, guard/freed-write protection, concurrent allocations and SDK failure/retry pass. Native Windows/Linux and console verification remain external gates; no absent Windows body remains."
     },
     {
       "module": "Unmapping_Allocator",
       "name": "deinit",
       "declaration": "deinit :: (ua: *Unmapping_Allocator)",
-      "gap": "Real POSIX map/protect/metadata lifecycle passes current Mac interpreter. Windows backend is absent (explicit module rejection), requiring actual VirtualAlloc/VirtualProtect lifecycle implementation; native Linux/Windows and console gates remain."
+      "gap": "Real Windows reserve/commit/read-only protection backend implemented with minimum8-byte effective extent and preserved canonical record; all six Mac/Linux/Windows x64/ARM64 source/lint contexts pass. Actual Mac lifecycle, guard/freed-write protection, concurrent allocations and SDK failure/retry pass. Native Windows/Linux and console verification remain external gates; no absent Windows body remains."
     },
     {
       "module": "Unmapping_Allocator",
       "name": "unmapping_allocator_proc",
       "declaration": "unmapping_allocator_proc :: (mode: Allocator_Mode, requested_size: s64, old_size: s64, old_memory: *void, allocator_data: *void) -> *void",
-      "gap": "Real POSIX map/protect/metadata lifecycle passes current Mac interpreter. Windows backend is absent (explicit module rejection), requiring actual VirtualAlloc/VirtualProtect lifecycle implementation; native Linux/Windows and console gates remain."
+      "gap": "Real Windows reserve/commit/read-only protection backend implemented with minimum8-byte effective extent and preserved canonical record; all six Mac/Linux/Windows x64/ARM64 source/lint contexts pass. Actual Mac lifecycle, guard/freed-write protection, concurrent allocations and SDK failure/retry pass. Native Windows/Linux and console verification remain external gates; no absent Windows body remains."
     },
     {
       "module": "Clipboard",
@@ -11625,11 +12539,107 @@
       "name": "load_font_part_2",
       "declaration": "load_font_part_2 :: (result: *Dynamic_Font, loaded_font: Loaded_Font, pixel_height: int)",
       "gap": "Exact reinitialization/late-native-error receiver rollback contract not established; valid fresh initialization exercised through same private helper, SDK failures diagnosed. Public signature unchanged; no transactional reload claim."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_create_channel",
+      "declaration": "reader_create_channel :: (name: string, bytes: s64) -> (success: bool, channel: Read_Channel)",
+      "gap": "Ordinary Mac mapping/lifecycle verified interpreter/native O0/O2, including separate processes. POSIX failed cleanup drops private registration; retention/retry resilience remains explicit, reviewed failure policy requested in portable-channel-questions.md."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Header_Os_Specific",
+      "declaration": "Header_Os_Specific :: struct",
+      "gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Read_Channel_Os_Specific",
+      "declaration": "Read_Channel_Os_Specific :: struct",
+      "gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "Write_Channel_Os_Specific",
+      "declaration": "Write_Channel_Os_Specific :: struct",
+      "gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_create_channel_os_specific",
+      "declaration": "reader_create_channel_os_specific :: (name: string, bytes: s64) -> (success: bool, channel: Read_Channel)",
+      "gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_release_channel",
+      "declaration": "reader_release_channel :: (channel: *Read_Channel) -> bool",
+      "gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "writer_connect",
+      "declaration": "writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: bool, channel: Write_Channel)",
+      "gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "writer_disconnect",
+      "declaration": "writer_disconnect :: (channel: *Write_Channel) -> bool",
+      "gap": "Windows body/layout source checked x64/ARM64; actual native Windows mapping/cleanup validation pending."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_create_channel_os_specific",
+      "declaration": "reader_create_channel_os_specific :: (name: string, bytes: s64) -> (success: bool, channel: Read_Channel)",
+      "gap": "Ordinary Mac mapping/lifecycle verified interpreter/native O0/O2, including separate processes. POSIX failed cleanup drops private registration; retention/retry resilience remains explicit, reviewed failure policy requested in portable-channel-questions.md."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "reader_release_channel",
+      "declaration": "reader_release_channel :: (channel: *Read_Channel) -> bool",
+      "gap": "Ordinary Mac mapping/lifecycle verified interpreter/native O0/O2, including separate processes. POSIX failed cleanup drops private registration; retention/retry resilience remains explicit, reviewed failure policy requested in portable-channel-questions.md."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "writer_connect",
+      "declaration": "writer_connect :: (name: string, name_not_found_is_quiet := false) -> (success: bool, channel: Write_Channel)",
+      "gap": "Ordinary Mac mapping/lifecycle verified interpreter/native O0/O2, including separate processes. POSIX failed cleanup drops private registration; retention/retry resilience remains explicit, reviewed failure policy requested in portable-channel-questions.md."
+    },
+    {
+      "module": "Shared_Memory_Channel",
+      "name": "writer_disconnect",
+      "declaration": "writer_disconnect :: (channel: *Write_Channel) -> bool",
+      "gap": "Ordinary Mac mapping/lifecycle verified interpreter/native O0/O2, including separate processes. POSIX failed cleanup drops private registration; retention/retry resilience remains explicit, reviewed failure policy requested in portable-channel-questions.md."
+    },
+    {
+      "module": "Default_Metaprogram",
+      "name": "build",
+      "declaration": "build :: ()",
+      "gap": "Fresh source-built compiler rejects generated initializer placeholder before actual default workspace/plugin work. Independent plugin-empty-initialization and general deferred-body-added-before-indirect-call both reproduce. Existing real bodies retained; no CLI bypass/workaround. Exact dependency routed to compiler owner."
+    },
+    {
+      "module": "Default_Metaprogram",
+      "name": "message_loop",
+      "declaration": "message_loop :: (w: Workspace)",
+      "gap": "Fresh source-built compiler rejects generated initializer placeholder before actual default workspace/plugin work. Independent plugin-empty-initialization and general deferred-body-added-before-indirect-call both reproduce. Existing real bodies retained; no CLI bypass/workaround. Exact dependency routed to compiler owner."
+    },
+    {
+      "module": "Mail",
+      "name": "mail_send",
+      "declaration": "mail_send :: (smtp: Mail_Server, msg: Mail_Message) -> bool",
+      "gap": "Real shared Curl MIME/SMTP plain/HTML/synthetic-auth/rejection/TLS-required failure pass actual Mac interpreter/native O0/O2. Exact enable_ssl connection policy and positive CA/encrypted validation remain, native Windows/Linux unverified; details portable-mail-questions.md."
+    },
+    {
+      "module": "Mail",
+      "name": "scramble",
+      "declaration": "scramble :: (text: string, secret: string) -> string",
+      "gap": "Real reversible64-character XOR implementation present; numeric alphabet index ordering needs reviewed vector/mapping. No independently authored ciphertext is reference evidence."
     }
   ],
   "next_batches": [
     "Validate Walk_Table public full fixture after general compiler named-while value hygiene fix.",
-    "Complete Unmapping_Allocator missing Windows backend and real SDK failed-protection tracking retention; no allocator source edits started yet.",
+    "Finish remaining implementable retained public APIs; Unmapping Windows body complete, native platform validation external.",
     "Complete current mixed-platform owned denominator and remaining supported APIs; native/contract boundaries remain exact."
   ],
   "hash_cluster_followup": {
@@ -11693,5 +12703,16 @@
       "risk": "Intermediate copied-body experiment is historical debugging only and not a current-production integration gate; initial identity would have been misleading if left unrestored.",
       "long_term_fix": "Do not mutate recorded copies. Shared test helper creates unique fresh copies for every run and verifies own sources/configuration/fixtures after execution."
     }
-  ]
+  ],
+  "authorized_application_diagnosis": {
+    "manifest": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/application-corpus/ACCESS.json",
+    "authorization": "Explicit inbox user authorization for curated application consumers, read-only. Original/source_root/excluded/vendor/reference bodies remain denied.",
+    "read_hash_matched": [
+      "focus-editor--focus/first.jai",
+      "rluba--cluster/cluster.jai",
+      "rluba--cluster/module.jai",
+      "rluba--uniform/first.jai"
+    ],
+    "execution": "No application build scripts executed; no application sources modified/copied into production."
+  }
 }
