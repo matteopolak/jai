@@ -53,3 +53,5 @@ python tools/test_sdl3.py --audit-only --platform $target --native "artifacts/na
 ```
 
 Requires installed CMake supporting the actual VS release (VS 18/2026: CMake >=4.2), stable Visual Studio/Build Tools with MSBuild, target VC tools and Windows SDK. No developer prompt initialization or manual SDL installation is required. Windows execution of this correction remains CI pending. No Windows pass is claimed from simulations or macOS tests. Release/publication hold remains in force; no workflow dispatch, issue reply, push, tag, release or version change was performed. The coordinator integrates this own-branch checkpoint and reruns ordinary native CI.
+
+SDL Python matrix833:60 local source/configuration checks PASS with missing helper keys removed; new explicit scratch/canonical defaults/pinned-header prerequisite packet ready. Integration owns workflow adoption; native/ordinary matrix not claimed. Sealed c5db6625 packet unchanged. See [scope/evidence](sdl-python-matrix-833.md).

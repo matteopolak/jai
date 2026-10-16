@@ -1,0 +1,128 @@
+{
+  "source_object": "4bbbcb9672118f9bcf49e05ff0e1b247dc90adbb",
+  "accepted_source": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "patch": "patches/sdl-python-matrix-833.patch",
+  "patch_sha256": "7f69a4ab9eb639729c190f9f73c8ed01f4a1a526bb698633a7732e8d31009301",
+  "files": [
+    {
+      "path": "tools/test_sdl3_coverage.py",
+      "base_sha256": "b8c9847bf2dfb23380ee21b3085cca93178fae96e5abd5a3ac3b37f1269ec7aa",
+      "patched_sha256": "fc9fd2f33cf67ba6d6d0c94bc9eb83f9ee06bab3fd67a3a2f5d4f681ddbfabdc"
+    },
+    {
+      "path": "tools/test_sdl3_gen.py",
+      "base_sha256": "d4c557dbaf65f8bc4e34abb7c4ff928af1172c4c9330f8537f099aea21a36b12",
+      "patched_sha256": "70de75a7994a3e8f17aa00ea2f8366f2045402c5168663951c59bb0891eaa0c3"
+    },
+    {
+      "path": "tools/test_sdl3_native.py",
+      "base_sha256": "85e76d5dd7771e6a5df0bb0bad4f7c777fc99cb1435e7bc699563906b998bfab",
+      "patched_sha256": "f09e24d5a9cdb4331cd271432de2a6de9f2e82966889766cc08dcd8ed7c3e672"
+    },
+    {
+      "path": "tools/test_sdl_fixture_paths.py",
+      "base_sha256": "b7089bfe0315910aa341d42ef77fc76b5a2868c2847622788907fb12a40c380d",
+      "patched_sha256": "b75b3f8159740070f75690493a4a5d1aa0e4626eb30119d523fb1349173c65c0"
+    },
+    {
+      "path": "tools/test_sdl_sdk_headers.py",
+      "base_sha256": "6ff084b61bd392080e4ff2eb419f4ee427c646b1bbbfaf116959dc647d41d46b",
+      "patched_sha256": "0dcecd1d70f085d93bf7286e639caba0374ae0fed8b2b63e14d930b6a59f3eef"
+    },
+    {
+      "path": "tools/sdl_test_support.py",
+      "base_sha256": null,
+      "patched_sha256": "8a70a0f9477ca9837e9d1ca101b751e2e4cfd00dcba8decc6d39791aa7e0b354"
+    },
+    {
+      "path": "tools/prepare_sdl_python_tests.py",
+      "base_sha256": null,
+      "patched_sha256": "033e11b1886e6c742e4978b1e7d8c416ec4705cd9f2e913503252e8e265aa920"
+    },
+    {
+      "path": "tools/test_sdl_python_setup.py",
+      "base_sha256": null,
+      "patched_sha256": "f49a705c4748239c1fa4a365757cf97324dbff2ec2433d5feaa2e476b85c41d4"
+    }
+  ],
+  "evidence": "60 scoped SDL Python checks pass, 8 new setup regressions; all handoff-specific SDL_FIXTURE_TEST/SDL_SDK_TEST env keys removed; offline verified official input cache; no SDK/native execution",
+  "scratch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/sdl3/target/sdl-python-matrix",
+  "sealed_previous_packet_sha256": "6846d8fbbb58b262a9c2cfd9504a6a3f7e30e8a1c3369cd7c712d458f5c052ce",
+  "workflow_adoption_request": {
+    "owner": "integration",
+    "paths": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/sdl3.yml"
+    ],
+    "before": "Python unittest discovery",
+    "run": "python3 tools/prepare_sdl_python_tests.py --scratch \"$RUNNER_TEMP/sdl-python\" --cache \"$RUNNER_TEMP/sdl-python-cache\" >> \"$GITHUB_ENV\"",
+    "prerequisites": [
+      "Python >=3.9",
+      "CMake for existing script-mode header test",
+      "Git for existing autocrlf checkout test",
+      "network to exact pinned archive unless checksum cache restored; --offline supported"
+    ],
+    "status": "Requested; not adopted or CI-executed in this producer"
+  },
+  "unchanged_inputs": {
+    "tools/native_bindings/dependencies.json": "bafb3abe2a024d9d2ee0512715b592a88ecbbdbc21bebbcce449f5608a2f2e7c",
+    "tools/native_bindings/verify.py": "e0d465895a2660a654091547853f205f42174128f5f745812b13c6ce2192133e",
+    "tools/native_bindings/build_dependencies.py": "7466f267956a09405ce98a02b67c48b87b8e6086cc8d9743037fb05dcfe4c2ad",
+    "tools/native_bindings/sdl_sdk_headers.py": "42f19baa3453ae8bccecb113e9a9e7ce8e24c9c7c315e1213111ec614f4f8a6a",
+    "stdlib/SDL/tests/sdl-layout.jai": "982715b14a0c755ca0897e11a5de0ac9b8f7e214ae0c921d2c51d1651b094d92",
+    "stdlib/SDL/tests/sdl-rwops.jai": "bb84261478815d261ad860cc25ba4cadcc2ecd1282e6e2a11ed68fb5a3efa100",
+    "stdlib/SDL/tests/sdl-wm.jai": "367ba5ad6c0e5e71788f1212dbcf5a8102104c02b630415b1a86d6080c5607de",
+    "stdlib/Extensions/SDL3/inventory.json": "c81647097522313fe307bf89206254c5aaac2ea9373ffb0c40dce3f8b639a83e",
+    "stdlib/Extensions/SDL3/coverage.json": "3e495e4d95eae8640181eba6d97d6ab84a7c3a1d3b5175ccb55ca4bcb82fb101"
+  },
+  "docs_patch": "patches/sdl-python-matrix-833-docs.patch",
+  "docs_patch_sha256": "dc2eb7a2d0a22317be016a99a08951c681c76b858cf556a1c7c57dec59513e92",
+  "docs_files": [
+    {
+      "path": "docs/status/sdl-python-matrix-833.md",
+      "base_sha256": null,
+      "patched_sha256": "4dbba181435f7aa64a1806acd2cf23ffda2c94e86e06d248a73e38d8c4ee0901"
+    },
+    {
+      "path": "docs/README.md",
+      "base_sha256": "9b9bdccaea8c284478be970e2d308e75f054a1d5fef88ab87eec005779f96575",
+      "patched_sha256": "210c9da8f6c1ac6acba3937b8acfa207981861984a516fe184cc9822545cdb5d"
+    },
+    {
+      "path": "docs/status/sdl3-progress.md",
+      "base_sha256": "fe74dd41f56642dc9e3896167167d7e6b6aa7653ae502aee64691b6acc0a1fca",
+      "patched_sha256": "aa61c242d3902aa4ca45774cbad438fe82474efc4b5a7cf355f15bd376c243c8"
+    },
+    {
+      "path": "docs/status/sdl3-deviations.md",
+      "base_sha256": "c28e400e150d9b37d9f3285367facac41a30ee66132651ebf190f6549d9372a4",
+      "patched_sha256": "77d4830f40c54baa7b3c1c96d29051cf14caee78144c1203190e54e4376073d1"
+    }
+  ],
+  "verification_detail": {
+    "fresh_patch_replay": "8 output hashes match;60 tests pass after offline CLI preparation; handoff helper keys unset",
+    "python_compilation": "8 explicit source files pass",
+    "ruff": "3 new files + fixture/SDK test files check+format PASS",
+    "preserved_style_debt": "49 E701/E702 findings in existing3 compact SDL3 tests match baseline exactly; no full Python lint claim",
+    "native": "not executed",
+    "workflow": "integration adoption/ordinary CI pending",
+    "final_dependency_guard": "60 tests pass against current verifier; all9 selected shared dependency hashes stable before/after final run; earlier common-owner verifier change preserved separately"
+  },
+  "final_guarded_inputs": {
+    "tools/native_bindings/dependencies.json": "bafb3abe2a024d9d2ee0512715b592a88ecbbdbc21bebbcce449f5608a2f2e7c",
+    "tools/native_bindings/verify.py": "ed747f92590038e46a396b74afa80689bc5faae732c087606ea8104290ff3d30",
+    "tools/native_bindings/build_dependencies.py": "7466f267956a09405ce98a02b67c48b87b8e6086cc8d9743037fb05dcfe4c2ad",
+    "tools/native_bindings/sdl_sdk_headers.py": "42f19baa3453ae8bccecb113e9a9e7ce8e24c9c7c315e1213111ec614f4f8a6a",
+    "stdlib/SDL/tests/sdl-layout.jai": "982715b14a0c755ca0897e11a5de0ac9b8f7e214ae0c921d2c51d1651b094d92",
+    "stdlib/SDL/tests/sdl-rwops.jai": "bb84261478815d261ad860cc25ba4cadcc2ecd1282e6e2a11ed68fb5a3efa100",
+    "stdlib/SDL/tests/sdl-wm.jai": "367ba5ad6c0e5e71788f1212dbcf5a8102104c02b630415b1a86d6080c5607de",
+    "stdlib/Extensions/SDL3/inventory.json": "c81647097522313fe307bf89206254c5aaac2ea9373ffb0c40dce3f8b639a83e",
+    "stdlib/Extensions/SDL3/coverage.json": "3e495e4d95eae8640181eba6d97d6ab84a7c3a1d3b5175ccb55ca4bcb82fb101"
+  },
+  "observed_peer_drift_since_first_capture": {
+    "tools/native_bindings/verify.py": {
+      "first": "e0d465895a2660a654091547853f205f42174128f5f745812b13c6ce2192133e",
+      "final": "ed747f92590038e46a396b74afa80689bc5faae732c087606ea8104290ff3d30"
+    }
+  }
+}
