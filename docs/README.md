@@ -921,3 +921,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Import argument group preservation](compiler/import-argument-groups.md): exact follow-up on accepted origin validation, retaining both IDE discovery paths. Current merged93 core/101 LSP checks, Rustfmt, warnings-denied clippy and fresh tool build pass; [integration receipt](status/import-groups-integration.json). Root public child-workspace protocol replay remains required.
 
 - [WGL public/private lint contexts](status/wgl-lint-public-context.md): complete required-file coverage, prior DLL/consumer checks and four existing fixtures retained. [Adaptation receipt](status/wgl-public-context-integration.json); eleven policy checks pass, actual Windows graphics replay required.
+
+- [Upstream Linux clipboard closure](tools/upstream-linux-clipboard-closure.md): real C helper preparation plus mandatory source/artifact receipts before application links; eight policies pass, actual Linux consumer replay required.

@@ -1,0 +1,5 @@
+# Linux upstream clipboard provider closure
+
+Root833 Linux chessUI reached an actual -lportable_clipboard link failure. A passing dedicated Clipboard job did not prepare that separate upstream consumer. `upstream_native.native_plan` now invokes the real independent `build_portable_clipboard.py` on Linux, in the same native directory already searched by consumers. Both archive/shared outputs are mandatory. The preparer verifies all three producer C/header hashes and both output hashes against the receipt before application compilation. X11/pthread remain actual system dependencies; no aliases, memory-only clipboard or substitute functions were added. Existing crash/audio preparation and error propagation stay required.
+
+Eight preparation policies pass, including explicit Linux-only setup, corrupt source/output rejection and precise retained crash validation. This is orchestration evidence only. Actual Linux build and unchanged chessUI link/runtime remain normal-CI requirements; no Linux execution took place on this Mac host. Original failure remains historical evidence.
