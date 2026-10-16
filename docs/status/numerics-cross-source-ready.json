@@ -1,0 +1,167 @@
+{
+  "status": "two production repairs ready; remaining contracts and genuine ifx join gap open",
+  "accepted_clean_base": "8e81e901866e60122901596117892be77abb631b",
+  "snapshot_seed": "531bdfe51f5fbe5fd11ab017c4a39fd85ab171bd",
+  "commit": "ebbc6131e67c2ace59d60b071478fcc72d248fac",
+  "patches": [
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/context-library-production.patch",
+      "sha256": "b82f46813ae884598b64b7f9371cc3f822ec8ada1796715b6a42bd1231ffceff"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/cross-source-coherent-portable.patch",
+      "sha256": "bf0aed7991fcf8961e182d2e83f982e59befefae0fbaec2c385d809fa2845b27"
+    }
+  ],
+  "files": [
+    {
+      "path": "crates/jaic/src/interp/mod.rs",
+      "sha256": "2fe47e9f8365541dafb21b199a9248023211637f8f550ec0c00f50d357e60601"
+    },
+    {
+      "path": "crates/jaic/src/ir.rs",
+      "sha256": "420d4fa3da9c1b623c1ddcdaf281a319ad372eaa00dbc7999398b343ad4cc303"
+    },
+    {
+      "path": "crates/jaic/src/sema/mod.rs",
+      "sha256": "7dd0a1749c0c830e5f6cd6813095fd2fe595956342ed2c88bc0eb7bfc3180bb9"
+    },
+    {
+      "path": "crates/jaic/src/sema/scope.rs",
+      "sha256": "e50ba09616cc490f4c504da6107df2b0a5e668b4a6a47ce6bbfd0b6df16755f5"
+    },
+    {
+      "path": "crates/jaic/tests/cleanroom_expansion_phases.rs",
+      "sha256": "b42aaa9d8f5a63440550e9210ad4c41140f427e6d9fdcd3fa9243ff0b34a62a2"
+    },
+    {
+      "path": "crates/jaic/tests/cleanroom_library_phases.rs",
+      "sha256": "32ecee0101e475082ed015d141c870728f9ec5995fd6bdfd63816187ed0a8613"
+    },
+    {
+      "path": "docs/compiler/cross-source-phases.md",
+      "sha256": "5a445ca64a5c0a197e0a0a42cd8b073c9752cb6a602fb86561e35eaf4536987f"
+    },
+    {
+      "path": "tests/producer-requests/numerics-cross-source-configuration/main.jai",
+      "sha256": "b3ec747c52b91d596b178b3db056b212d219ba92d7024adbf3e58dd0289d5da6"
+    },
+    {
+      "path": "tests/producer-requests/numerics-cross-source-configuration/modules/Choice/module.jai",
+      "sha256": "7a116dd73af5c8c02e90ba9ee15a47a69a031f102988abf9edcbf3e6372e1bf6"
+    },
+    {
+      "path": "tests/producer-requests/numerics-cross-source-configuration/modules/Configure/module.jai",
+      "sha256": "d8651d6df90535b167d638bed6891c388628d0bfe1d94c1947a198a46c008af7"
+    },
+    {
+      "path": "tests/producer-requests/numerics-ifx-defaults/common-default.jai",
+      "sha256": "2e2831cf4c59a87a3cceb23db1e83f93a66c90609d5d95f87473ebc806e577f7"
+    },
+    {
+      "path": "tests/producer-requests/numerics-ifx-defaults/differing-default.jai",
+      "sha256": "b3a480a5472f793fe6a02c590fe95d2a1413fb8e286e8caa384c648621fad385"
+    },
+    {
+      "path": "tests/producer-requests/numerics-json-host-context.jai",
+      "sha256": "f84c7ab49099aea974774398dc656b67a3fec8e41e62853c798e7c5e63dfe05f"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/baseline-eight.json",
+      "sha256": "381cf4d6f673673180314834ed6cb9f1aba0351dc4eeb0cbc3b4ffabc73816ef"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/after-eight.json",
+      "sha256": "a81e609f410f597639514542323745485533cff1717afb6ab8c0da0e124ba728"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/focused-final-proof.txt",
+      "sha256": "68a50c2cc8969a48d31c81ce626b0e9e921c41d89d852fec512cf67b789fb7b0"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/clippy-final.txt",
+      "sha256": "256a74f57fff2d0ae97168ae6d80b79335fa6bae6b57c742c03c723dc7c3c8b7"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/production-runtime-proof.json",
+      "sha256": "6889ae41b127456a9124749903bb781cf719210d9c8ed77d0dedf84132560237"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/native-library-protocol.txt",
+      "sha256": "678bdadd54742fc647436987fdc1f9800053806f5bc6bb1d83db4383d60bb8c8"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/jaifmt-actual.json",
+      "sha256": "72b9871afb434f82262b2902e3b5590830d0eaaedde1ea57b0ed5682aa8fa5ff"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/jaifmt-relative-driver-cwd-red.json",
+      "sha256": "587182d09f29c5dcf33c0a13414585434e1d0ebf7014c8ebcb208dfe2679a017"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/strictlint-production-contexts.json",
+      "sha256": "6b2db3cbd61c609243ba49b73dea44988e01fa1ecd89b9f1dd91711d5b81bbb0"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/strictlint-used-json-context.json",
+      "sha256": "b51b92e669ea940cdb5fe7e716dcd604ab8a5645066e22a471f3d0469dc881b9"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/ifx-official-controls-red.json",
+      "sha256": "67658f56fc6babbdd9937630cf4835223870dba95316dcc61c785c384ba6ee5e"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/reducers-red.txt",
+      "sha256": "9a7fb057b1efef5ae218679512ec9736e41b03234969cbaae078860fc964f2a5"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/phases-first-proof.txt",
+      "sha256": "ceedad18df0367751574ab22b11abd7d37196233b586f95c0612983ef4d49d2d"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/phases-nonargument-discovery.txt",
+      "sha256": "144aaefdaaf77b568909c3c6433bbf06ec0184d4e0d7de6675463c5592af86d1"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/discovery-no-alias-commit.txt",
+      "sha256": "af5b54224709d1f6a374dae06d94536f83378be446e47df8f4d2c69e6bb9a9a7"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/cross-source-8e81/capture/selection-only-readiness.txt",
+      "sha256": "7c85dd9e021fe0758fa3dd38ec821ffee791618a4574adbf875cb7068c4346f2"
+    }
+  ],
+  "checks": {
+    "core_pass": 71,
+    "native_protocol_tests_pass": 2,
+    "production_interpreter_native_modes_pass": 6,
+    "production_runtime_commands_pass": 10,
+    "actual_jaifmt_pass": 2,
+    "strict_lint_positive_contexts_pass": 5,
+    "rustfmt": true,
+    "clippy_warnings_denied": true,
+    "windows_source_pass": 4,
+    "windows_source_red": 4,
+    "windows_native_executions": 0
+  },
+  "dispositions": {
+    "static_switch": "source fixed x64/ARM64; Mac interpreter/O0/O2 pass",
+    "json_host_library": "source fixed x64/ARM64; Mac used-context interpreter/O0/O2 pass",
+    "original_proc_fixture": "officially rejected earlier overloaded/concrete ifx mismatch; unchanged RED evidence",
+    "independent_ifx": "both non-overloaded official-positive controls RED; precise join-header selection rule requested",
+    "io_configured": "two source REDs retained; precise late program configuration rule requested",
+    "tls": "unchanged source-positive and platform-owned ARM64 SDK link gap"
+  },
+  "limitations": [
+    "No full-suite or native Windows completion claim",
+    "Original Json diagnostic retains unused Tls import strict-lint RED",
+    "Broad early import discovery invalidates official cycle rejection and was removed",
+    "No global structural callable header sharing, alias refresh, guard bypass or peer source changes",
+    "Platform triage receipt exact read denied; own fresh compiler reproduced all eight independently"
+  ],
+  "readme_selective_append": "- [Cross-source compiler phases](compiler/cross-source-phases.md): single-selection context loading, target-library isolation, preserved REDs and pending public contracts.",
+  "questions_append_path": "docs/specs/stdlib/compiler-questions.md",
+  "native_slot": "explicitly RELEASED; all children reaped"
+}

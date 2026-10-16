@@ -1,0 +1,100 @@
+{
+  "producer_commit": "c0c241911fc3a40ac10ef0594764d3edb4bc181d",
+  "manifest_evidence_checkpoint": "ebbc6131e67c2ace59d60b071478fcc72d248fac",
+  "source_patch_sha256": "bf0aed7991fcf8961e182d2e83f982e59befefae0fbaec2c385d809fa2845b27",
+  "manifest_sha256": "e65560fd666fb574bd3c0bca489152f530d8b25887ec15dc45ef9c4a200b9d0c",
+  "merge": {
+    "producer_hash_equivalence": {
+      "crates/jaic/src/interp/mod.rs": {
+        "actual": "318e89ea8f48bb65e05b7fbaf07cf51a831ee10033ee65c2d5a6e77618e36894",
+        "producer": "2fe47e9f8365541dafb21b199a9248023211637f8f550ec0c00f50d357e60601",
+        "identical": false
+      },
+      "crates/jaic/src/ir.rs": {
+        "actual": "420d4fa3da9c1b623c1ddcdaf281a319ad372eaa00dbc7999398b343ad4cc303",
+        "producer": "420d4fa3da9c1b623c1ddcdaf281a319ad372eaa00dbc7999398b343ad4cc303",
+        "identical": true
+      },
+      "crates/jaic/src/sema/mod.rs": {
+        "actual": "7dd0a1749c0c830e5f6cd6813095fd2fe595956342ed2c88bc0eb7bfc3180bb9",
+        "producer": "7dd0a1749c0c830e5f6cd6813095fd2fe595956342ed2c88bc0eb7bfc3180bb9",
+        "identical": true
+      },
+      "crates/jaic/src/sema/scope.rs": {
+        "actual": "e50ba09616cc490f4c504da6107df2b0a5e668b4a6a47ce6bbfd0b6df16755f5",
+        "producer": "e50ba09616cc490f4c504da6107df2b0a5e668b4a6a47ce6bbfd0b6df16755f5",
+        "identical": true
+      },
+      "crates/jaic/tests/cleanroom_expansion_phases.rs": {
+        "actual": "b42aaa9d8f5a63440550e9210ad4c41140f427e6d9fdcd3fa9243ff0b34a62a2",
+        "producer": "b42aaa9d8f5a63440550e9210ad4c41140f427e6d9fdcd3fa9243ff0b34a62a2",
+        "identical": true
+      },
+      "crates/jaic/tests/cleanroom_library_phases.rs": {
+        "actual": "32ecee0101e475082ed015d141c870728f9ec5995fd6bdfd63816187ed0a8613",
+        "producer": "32ecee0101e475082ed015d141c870728f9ec5995fd6bdfd63816187ed0a8613",
+        "identical": true
+      },
+      "docs/compiler/cross-source-phases.md": {
+        "actual": "5a445ca64a5c0a197e0a0a42cd8b073c9752cb6a602fb86561e35eaf4536987f",
+        "producer": "5a445ca64a5c0a197e0a0a42cd8b073c9752cb6a602fb86561e35eaf4536987f",
+        "identical": true
+      },
+      "tests/producer-requests/numerics-cross-source-configuration/main.jai": {
+        "actual": "b3ec747c52b91d596b178b3db056b212d219ba92d7024adbf3e58dd0289d5da6",
+        "producer": "b3ec747c52b91d596b178b3db056b212d219ba92d7024adbf3e58dd0289d5da6",
+        "identical": true
+      },
+      "tests/producer-requests/numerics-cross-source-configuration/modules/Choice/module.jai": {
+        "actual": "7a116dd73af5c8c02e90ba9ee15a47a69a031f102988abf9edcbf3e6372e1bf6",
+        "producer": "7a116dd73af5c8c02e90ba9ee15a47a69a031f102988abf9edcbf3e6372e1bf6",
+        "identical": true
+      },
+      "tests/producer-requests/numerics-cross-source-configuration/modules/Configure/module.jai": {
+        "actual": "d8651d6df90535b167d638bed6891c388628d0bfe1d94c1947a198a46c008af7",
+        "producer": "d8651d6df90535b167d638bed6891c388628d0bfe1d94c1947a198a46c008af7",
+        "identical": true
+      },
+      "tests/producer-requests/numerics-ifx-defaults/common-default.jai": {
+        "actual": "2e2831cf4c59a87a3cceb23db1e83f93a66c90609d5d95f87473ebc806e577f7",
+        "producer": "2e2831cf4c59a87a3cceb23db1e83f93a66c90609d5d95f87473ebc806e577f7",
+        "identical": true
+      },
+      "tests/producer-requests/numerics-ifx-defaults/differing-default.jai": {
+        "actual": "b3a480a5472f793fe6a02c590fe95d2a1413fb8e286e8caa384c648621fad385",
+        "producer": "b3a480a5472f793fe6a02c590fe95d2a1413fb8e286e8caa384c648621fad385",
+        "identical": true
+      },
+      "tests/producer-requests/numerics-json-host-context.jai": {
+        "actual": "f84c7ab49099aea974774398dc656b67a3fec8e41e62853c798e7c5e63dfe05f",
+        "producer": "f84c7ab49099aea974774398dc656b67a3fec8e41e62853c798e7c5e63dfe05f",
+        "identical": true
+      }
+    },
+    "unchanged_guards": {
+      "crates/jaic/src/sema/ide.rs": "135247565253eaaa189ff8329fd5fe24da98ec4f56d95ae1717db8411e5e717d",
+      "crates/jaic/src/sema/ide_sketch.rs": "3c44e14563ba5387e080436e7657668944772e457b264724999e2a18c66687da",
+      "crates/jaic/src/interp/native/windows.rs": "0d5cf410629a8a5a6894525b947707af8a33188f30fcadc5f25edc867431e890",
+      "crates/jaic/src/interp/native/windows_imports.rs": "01865ec74a8ea5102e30f687b673ddf2afab6b5090cba3092d9645b8db35994d",
+      "crates/jaic/src/sema/structs.rs": "6e53172c2398eb1832a894fb8b5a6e94c6d35bb0b9cee3ccc9f208c4e0035031"
+    },
+    "loader": "07bf checked-open/errors retained; exact single guard hunk added"
+  },
+  "focused_tests": {
+    "passed": 295,
+    "failed": 0,
+    "ignored": 0,
+    "command_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/numerics-c0c-merged-1792175957823389000/focused-command.json",
+    "subprocess_control_summaries": "Four child-filtered test summaries are part of171core count, not additional passes"
+  },
+  "local_windows_native_executions": 0,
+  "remaining": [
+    "Io late program configuration contract",
+    "Non-overloaded ifx callable header gap",
+    "LSP original scale still RED",
+    "Actual Windows/Linux platform execution and root full400/runtime/Focus"
+  ],
+  "rejected_prototype": "No early broad import discovery included; official cycle rejection retained",
+  "rustfmt": "PASS six scoped Rust files",
+  "clippy": "PASS exact focused core/LSP targets with -D warnings"
+}
