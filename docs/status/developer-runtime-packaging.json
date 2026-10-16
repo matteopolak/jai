@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "source_parent": "06e8ea965129889f9a24b84d99adb179021f75ff",
+  "production_source_overlay": false,
+  "tooling_source_state": "new integration-owned packaging changes; pending checkpoint",
+  "command": "python3 -B tools/check_developer_runtime_package.py --sdk /opt/homebrew/opt/llvm --binding-helper <candidate>/stdlib/internal/developer-tools/clang-bindings/developer-tools-clang --demangler <candidate>/stdlib/internal/developer-tools/check-native/libdeveloper_tools_check.dylib --output-root <integration>/package-checks",
+  "passed": 9,
+  "failed": 0,
+  "ignored": 0,
+  "checks": [
+    "dependency notices/hash identity",
+    "loader-relative closure after move",
+    "real libclang record generation",
+    "real Itanium demangler",
+    "real Microsoft demangler",
+    "original helper identity",
+    "native code signatures after relocation",
+    "missing notice rejection",
+    "conflicting notice rejection and exact restoration"
+  ],
+  "failure_names": [],
+  "host": "macos-arm64",
+  "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/package-checks/relocated-runtime-7sgm29nb/verification.json",
+  "source_sha256": {
+    "tools/developer_native_runtime.py": "c660a66274cb88b92827ce59cc9474205dc111ba58d10f899c7bb3adc4016c1a",
+    "tools/check_developer_runtime_package.py": "34fc848ba4e9854b81a2858564149dc5ed97dc064f932d5d507880f9db2852a1"
+  },
+  "notice_components": [
+    {
+      "image": "libclang.dylib",
+      "sdk_sha256": "813be91ac66163dc2aeea8bf7020bf24d3de3276c5e1193262f7dded5c735bd9",
+      "notices": [
+        {
+          "sdk_notice": "/opt/homebrew/Cellar/llvm/23.1.2/LICENSE.TXT",
+          "staged_path": "notices/llvm-23.1.2/LICENSE.TXT",
+          "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee"
+        },
+        {
+          "sdk_notice": "/opt/homebrew/Cellar/llvm/23.1.2/LICENSE.txt",
+          "staged_path": "notices/llvm-23.1.2/LICENSE.txt",
+          "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee"
+        }
+      ]
+    },
+    {
+      "image": "libLLVM.23.1.dylib",
+      "sdk_sha256": "c644c75bd471fbd3a0527fd8e3e34f66b5a5570f7f425b61a12d0541e5c52a06",
+      "notices": [
+        {
+          "sdk_notice": "/opt/homebrew/Cellar/llvm/23.1.2/LICENSE.TXT",
+          "staged_path": "notices/llvm-23.1.2/LICENSE.TXT",
+          "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee"
+        },
+        {
+          "sdk_notice": "/opt/homebrew/Cellar/llvm/23.1.2/LICENSE.txt",
+          "staged_path": "notices/llvm-23.1.2/LICENSE.txt",
+          "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee"
+        }
+      ]
+    },
+    {
+      "image": "libzstd.1.dylib",
+      "sdk_sha256": "e2847c4613b386683c234913ae3b7b04299254096caf7616e3b3cd9bb97a39ab",
+      "notices": [
+        {
+          "sdk_notice": "/opt/homebrew/Cellar/zstd/1.5.7_1/LICENSE",
+          "staged_path": "notices/zstd-1.5.7_1/LICENSE",
+          "sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8"
+        },
+        {
+          "sdk_notice": "/opt/homebrew/Cellar/zstd/1.5.7_1/COPYING",
+          "staged_path": "notices/zstd-1.5.7_1/COPYING",
+          "sha256": "f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505"
+        }
+      ]
+    },
+    {
+      "image": "libz3.5.1.dylib",
+      "sdk_sha256": "702f50e139f5c1d03063e675b9d5059983a90e650519401dda40b9accf2f09ba",
+      "notices": [
+        {
+          "sdk_notice": "/opt/homebrew/Cellar/z3/5.1.0/LICENSE.TXT",
+          "staged_path": "notices/z3-5.1.0/LICENSE.TXT",
+          "sha256": "e617cad2ab9347e3129c2b171e87909332174e17961c5c3412d0799469111337"
+        },
+        {
+          "sdk_notice": "/opt/homebrew/Cellar/z3/5.1.0/LICENSE.txt",
+          "staged_path": "notices/z3-5.1.0/LICENSE.txt",
+          "sha256": "e617cad2ab9347e3129c2b171e87909332174e17961c5c3412d0799469111337"
+        }
+      ]
+    }
+  ],
+  "remaining": [
+    "Compiler resource/sysroot closure and all static distribution notices remain separate.",
+    "Native Windows/Linux not executed.",
+    "Existing pinned candidate06e8ea96 is not rewritten with these tooling changes."
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "schema": 1,
+  "candidate_path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/artifacts/shared-integration/frozen-06e8ea96",
+  "snapshot": "06e8ea965129889f9a24b84d99adb179021f75ff",
+  "shared_ref": "codex/stdlib-shared",
+  "status": "current-catalogue-running",
+  "workspace": {
+    "status": "pending serialized run; frozen source deliberately excludes forbidden corpus/vendor bodies; missing fixture setup will remain failures, never pass/skip substitutions",
+    "command": "cargo test --locked --workspace --all-targets --no-fail-fast -- --test-threads=1",
+    "passed": null,
+    "failed": null,
+    "ignored": null
+  },
+  "catalogue": {
+    "command": [
+      "python3",
+      "-B",
+      "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/artifacts/shared-integration/frozen-06e8ea96/tools/stdlib_runtime.py",
+      "--jaic",
+      "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/artifacts/shared-integration/frozen-06e8ea96/bin/jaic",
+      "--jobs",
+      "1",
+      "--timeout",
+      "180",
+      "--modes",
+      "interp,native",
+      "--opt",
+      "O0",
+      "--verbose",
+      "--report",
+      "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/artifacts/shared-integration/catalogue-06e8ea96.json"
+    ],
+    "status": "running",
+    "selected_cases": 420,
+    "completed_records": 732,
+    "counts": {
+      "interp": {
+        "passed": 348,
+        "failed": 12,
+        "platform_unavailable": 1,
+        "compile_time_only": 0,
+        "expected_negative_checks": 5
+      },
+      "native": {
+        "passed": 336,
+        "failed": 12,
+        "platform_unavailable": 1,
+        "compile_time_only": 12,
+        "expected_negative_checks": 5
+      }
+    },
+    "failure_names": [
+      {
+        "name": "contracts/compiler-using-records-preserve-filters",
+        "mode": "interp",
+        "classification": "compiler-owned parameter using serialization loses filter; retained assertions",
+        "timed_out": false,
+        "elapsed_seconds": 0.36950270799570717
+      },
+      {
+        "name": "contracts/compiler-using-records-preserve-filters",
+        "mode": "native",
+        "classification": "compiler-owned parameter using serialization loses filter; retained assertions",
+        "timed_out": false,
+        "elapsed_seconds": 0.3357997919956688
+      },
+      {
+        "name": "compiler/compiler-module-placeholder-insert",
+        "mode": "interp",
+        "classification": "compiler-owned deferred phase scheduling",
+        "timed_out": false,
+        "elapsed_seconds": 0.5835603329906007
+      },
+      {
+        "name": "compiler/compiler-module-placeholder-insert",
+        "mode": "native",
+        "classification": "compiler-owned deferred phase scheduling",
+        "timed_out": false,
+        "elapsed_seconds": 0.5687416659930022
+      },
+      {
+        "name": "compiler/lang-asm",
+        "mode": "interp",
+        "classification": "unconditional x64 instruction fixture on ARM64; preserve ABI/instruction checks",
+        "timed_out": false,
+        "elapsed_seconds": 0.22045154099760111
+      },
+      {
+        "name": "compiler/lang-asm",
+        "mode": "native",
+        "classification": "unconditional x64 instruction fixture on ARM64; preserve ABI/instruction checks",
+        "timed_out": false,
+        "elapsed_seconds": 0.22055583300243597
+      },
+      {
+        "name": "compiler/placeholder-defined-by-metaprogram",
+        "mode": "interp",
+        "classification": "compiler-owned deferred phase scheduling",
+        "timed_out": false,
+        "elapsed_seconds": 0.4332334170030663
+      },
+      {
+        "name": "compiler/placeholder-defined-by-metaprogram",
+        "mode": "native",
+        "classification": "compiler-owned deferred phase scheduling",
+        "timed_out": false,
+        "elapsed_seconds": 0.42311704099120107
+      },
+      {
+        "name": "compiler/rules-simd-asm",
+        "mode": "interp",
+        "classification": "unconditional x64 instruction fixture on ARM64; preserve ABI/instruction checks",
+        "timed_out": false,
+        "elapsed_seconds": 0.27326000000175554
+      },
+      {
+        "name": "compiler/rules-simd-asm",
+        "mode": "native",
+        "classification": "unconditional x64 instruction fixture on ARM64; preserve ABI/instruction checks",
+        "timed_out": false,
+        "elapsed_seconds": 0.26129108399618417
+      },
+      {
+        "name": "graphics/getrect-simp-gl-frame",
+        "mode": "interp",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.4258931669901358
+      },
+      {
+        "name": "graphics/getrect-simp-gl-frame",
+        "mode": "native",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.41897608299041167
+      },
+      {
+        "name": "graphics/getrect-widgets-driven",
+        "mode": "interp",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.45845933401142247
+      },
+      {
+        "name": "graphics/getrect-widgets-driven",
+        "mode": "native",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.37934754199523013
+      },
+      {
+        "name": "graphics/input-multi-window-focus",
+        "mode": "interp",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.21465779200661927
+      },
+      {
+        "name": "graphics/input-multi-window-focus",
+        "mode": "native",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.2077777919912478
+      },
+      {
+        "name": "graphics/input-published-events",
+        "mode": "interp",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.22251758399943355
+      },
+      {
+        "name": "graphics/input-published-events",
+        "mode": "native",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.20783758300240152
+      },
+      {
+        "name": "graphics/input-temporary-allocator",
+        "mode": "interp",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.21805029099050444
+      },
+      {
+        "name": "graphics/input-temporary-allocator",
+        "mode": "native",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.21036883299530018
+      },
+      {
+        "name": "graphics/simp-gl-render-readback",
+        "mode": "interp",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.5120931670098798
+      },
+      {
+        "name": "graphics/simp-gl-render-readback",
+        "mode": "native",
+        "classification": "reviewed API mismatch in legacy fixture; no fixture-only exports or fake graphics",
+        "timed_out": false,
+        "elapsed_seconds": 0.47591354200267233
+      },
+      {
+        "name": "Clipboard/tests/cocoa-operations",
+        "mode": "interp",
+        "classification": "unclassified current failure; investigate exact diagnostic",
+        "timed_out": false,
+        "elapsed_seconds": 0.2695102500001667
+      },
+      {
+        "name": "Clipboard/tests/cocoa-operations",
+        "mode": "native",
+        "classification": "unclassified current failure; investigate exact diagnostic",
+        "timed_out": false,
+        "elapsed_seconds": 0.4140331250091549
+      }
+    ],
+    "ignored": 0
+  },
+  "older_failed_aggregates": "Retained unchanged in shared-integration-baseline.json, snapshot6295584c.",
+  "original_corpus_and_focus": "coordinator-owned; no success claim"
+}
