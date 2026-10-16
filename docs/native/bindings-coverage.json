@@ -102557,7 +102557,7 @@
     },
     "POSIX": {
       "spec": "docs/specs/stdlib/modules/posix.md",
-      "spec_sha256": "66fedef8804852fff84f2a7af77c8a8e64d539f5c8a500b9040f5ceba062a6ef",
+      "spec_sha256": "9027906bddcc3543a1739fbf23c9fbedce325f46060924752617f5fa289fb22f",
       "counts": {
         "declared": 9883,
         "implemented": 99,
@@ -124187,21 +124187,21 @@
         },
         {
           "name": "stdin",
-          "signature": "stdin: *FILE #elsewhere libc",
+          "signature": "stdin: *FILE #elsewhere libc \"__stdinp\"",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 3096,
           "status": "declared"
         },
         {
           "name": "stdout",
-          "signature": "stdout: *FILE #elsewhere libc",
+          "signature": "stdout: *FILE #elsewhere libc \"__stdoutp\"",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 3097,
           "status": "declared"
         },
         {
           "name": "stderr",
-          "signature": "stderr: *FILE #elsewhere libc",
+          "signature": "stderr: *FILE #elsewhere libc \"__stderrp\"",
           "condition": "OS == .MACOS && CPU == .ARM64",
           "spec_line": 3098,
           "status": "declared"
@@ -139916,21 +139916,21 @@
         },
         {
           "name": "stdin",
-          "signature": "stdin: *FILE #elsewhere libc",
+          "signature": "stdin: *FILE #elsewhere libc \"__stdinp\"",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 5343,
           "status": "declared"
         },
         {
           "name": "stdout",
-          "signature": "stdout: *FILE #elsewhere libc",
+          "signature": "stdout: *FILE #elsewhere libc \"__stdoutp\"",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 5344,
           "status": "declared"
         },
         {
           "name": "stderr",
-          "signature": "stderr: *FILE #elsewhere libc",
+          "signature": "stderr: *FILE #elsewhere libc \"__stderrp\"",
           "condition": "OS == .MACOS && CPU == .X64",
           "spec_line": 5345,
           "status": "declared"
