@@ -34,19 +34,22 @@
     },
     "fresh_assets": {
       "libapple_abi_probe.a": "cbcb1eaf3888612f6f0247060e633e053e1487dccf72c448e5374bf5cd55796b",
-      "._libapple_abi_probe.a": "23447a8c3ccbf598d306aa100abf7b7b0669a74a82c698a03a0c5a2cbe4e8107",
       "libapple_abi_probe.dylib": "2503dac4d10da05b4ee3a1506fcb63f007a2605c1082a4d5b67006e81318d39a",
-      "._libapple_abi_probe.dylib": "23447a8c3ccbf598d306aa100abf7b7b0669a74a82c698a03a0c5a2cbe4e8107",
       "libsdl_abi_probe.a": "d7c9cb85dff475341aad33859b73b3b5cfd9e3bf453eee25077e2ffeb6bec2da",
-      "._libsdl_abi_probe.a": "23447a8c3ccbf598d306aa100abf7b7b0669a74a82c698a03a0c5a2cbe4e8107",
       "libsdl_abi_probe.dylib": "ca1245d1e0f141c0acbc9cc6c306a449460edbe8de759485a9212a8cb00c539f",
-      "._libsdl_abi_probe.dylib": "23447a8c3ccbf598d306aa100abf7b7b0669a74a82c698a03a0c5a2cbe4e8107",
       "libsdl_runtime_abi_probe.a": "24ef2ab4ba916e3c964d13f4a158d29b249db50bf4dc94270fb8ea90dde27c51",
+      "libsdl_runtime_abi_probe.dylib": "a9aa4279f500eaf57b67363567f09df1b577210381510c2add7e965383ca30d2"
+    },
+    "native_programs_executed": 0,
+    "metadata_sidecars_not_native_assets": {
+      "._libapple_abi_probe.a": "23447a8c3ccbf598d306aa100abf7b7b0669a74a82c698a03a0c5a2cbe4e8107",
+      "._libapple_abi_probe.dylib": "23447a8c3ccbf598d306aa100abf7b7b0669a74a82c698a03a0c5a2cbe4e8107",
+      "._libsdl_abi_probe.a": "23447a8c3ccbf598d306aa100abf7b7b0669a74a82c698a03a0c5a2cbe4e8107",
+      "._libsdl_abi_probe.dylib": "23447a8c3ccbf598d306aa100abf7b7b0669a74a82c698a03a0c5a2cbe4e8107",
       "._libsdl_runtime_abi_probe.a": "23447a8c3ccbf598d306aa100abf7b7b0669a74a82c698a03a0c5a2cbe4e8107",
-      "libsdl_runtime_abi_probe.dylib": "a9aa4279f500eaf57b67363567f09df1b577210381510c2add7e965383ca30d2",
       "._libsdl_runtime_abi_probe.dylib": "23447a8c3ccbf598d306aa100abf7b7b0669a74a82c698a03a0c5a2cbe4e8107"
     },
-    "native_programs_executed": 0
+    "inventory_correction": "Initial inventory had12 directory entries:6 native artifacts and6 validated AppleDouble sidecars. Native artifact count is6; execution count remains0."
   },
   "deviation": "Header-only script-mode upstream configure_file with verified soleX11default; not fullSDL3/compatimplementationbuild orLinuxruntimeproof",
   "remaining": "CanonicalSDLlayout/RWops/SysWM actualSDKexecution and Linux/WindowsnativeCI required"

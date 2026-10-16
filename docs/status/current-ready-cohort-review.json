@@ -209,5 +209,49 @@
   ],
   "origin_patch_sha256": "a01fbcf8650a8fc526890560e0c6875a2dfc26d5214eb0e1496e86c40b041269",
   "linker_patch_sha256": "e4810a9eebd5fe1f7dd71d20d79d342a9b0bfd5de59ca44aed9665de7a170531",
-  "clippy_repair": "New formatter test helper uses as_chunks::<12>().0 instead of chunks_exact(12); same validated table semantics, no suppression. Recheck in progress."
+  "clippy_repair": "New formatter test helper uses as_chunks::<12>().0 instead of chunks_exact(12); same validated table semantics, no suppression. Recheck in progress.",
+  "merged_recheck_after_formatter_lint_repair": [
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "-p",
+        "jaic",
+        "-p",
+        "jaic-llvm",
+        "-p",
+        "jai-language-server",
+        "-p",
+        "jaic-cli",
+        "-p",
+        "jailint",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/merged-source-repaired-0.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "-p",
+        "jaic-cli",
+        "-p",
+        "jailint",
+        "-p",
+        "jai-language-server"
+      ],
+      "exit": 0,
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/merged-source-repaired-1.log"
+    }
+  ],
+  "audio_windows_patch_sha256": "cb7f631e3a072da576db672eac05d72efcf3d51ff435f97de5db9a6d0ef34056",
+  "audio_postimage_qualification": "6 exact nonREADME postimages, including all3 production/build/test inputs.2 status documents preserve accepted shared text; initial8 exact assertion failed honestly and README corrected. Exact patch applied without wholefile replacement."
 }

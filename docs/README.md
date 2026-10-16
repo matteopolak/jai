@@ -900,4 +900,4 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 
 - [Audio native integration](features/audio-native-integration.md): retained strict runtime receipts, real ALSA CI provider configuration and T7-aware build roots. [Supplied producer evidence](status/audio-ci-provider-evidence.json) is Mac-only; Linux/Windows execution remains required. Windows environment repair transport is pending.
 
-- [Audio Windows environment ownership](status/audio-windows-env-request.md): reviewed `_dupenv_s` copy/free and explicit acquisition errors; all8 nonindex producer hashes verified. Mac/MinGW supplied proof is distinct from required MSVC/Windows CI.
+- [Audio Windows environment ownership](status/audio-windows-env-request.md): reviewed `_dupenv_s` copy/free and explicit acquisition errors; all3 source/test hashes and3 other nonindex postimages verified;2 status documents retain accepted shared context. Mac/MinGW supplied proof is distinct from required MSVC/Windows CI.
