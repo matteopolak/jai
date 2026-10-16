@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "accepted_consumer_base": "ac174e805660ce4d8f4744d2be9f6842b60edc24",
+  "isolated_source_commit": "1af70fe8fcc6b128b0d0a243538a5d598538c72c",
+  "source_root": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/source",
+  "source_patch": {
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/getrect-target-contracts-ac174e80.patch",
+    "sha256": "9af83762fdb294cd90d3f01b1712f84a4c07a5876fff7f4097d3f99c55fb1a80"
+  },
+  "production_patch": {
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/getrect-linux-clipboard-production.patch",
+    "sha256": "46f4cb02db548796d17a568072f10b118e55d00a1b81e52ddda3b7bc278a1441",
+    "shared_file_already_contains_owned_hunk": true,
+    "shared_file": "stdlib/internal/numerics/ui_core.jai",
+    "sha256_shared_file": "dfcc5d8c5e5e2812d30f4b2391ee2586b3a09c706b24274c3bae3583da0c7dc2"
+  },
+  "files": [
+    {
+      "path": "crates/jaic/tests/cleanroom_getrect_clipboard_dependency.rs",
+      "sha256": "8cf632746d5c0e479d1d3999c93a3689bf0994709b8a9fd8a4f3ee7502381e9c"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "709d086653ee9aba81cda3d8fcb3ef3f4f3430c123cca164f1893b6fdd921113"
+    },
+    {
+      "path": "docs/specs/stdlib/numerics-questions.md",
+      "sha256": "d2bcb372a63fe66ca852eaf5040ee9fdbafb2ce19a33cc575f4f796488a4a54d"
+    },
+    {
+      "path": "docs/stdlib/getrect-target-contracts.md",
+      "sha256": "f508144617843861ddd38acbbf555eeb9a0865600d9cf00c0684fa000566c8c8"
+    },
+    {
+      "path": "stdlib/GetRect/tests/clipboard_unavailable.jai",
+      "sha256": "bef960ed724a321ed8c7d092b75eaf216e9498a2129e6fce1fcf1a9a736b8166"
+    },
+    {
+      "path": "stdlib/GetRect/tests/cursors_unavailable.jai",
+      "sha256": "34132c83ba7b2359419f57b955a65da6aa47da7eebf3446b6ee3a2bf58e811d6"
+    },
+    {
+      "path": "stdlib/GetRect/tests/native_clipboard.jai",
+      "sha256": "cb9ec11805676fc3ab9910b737b3e48c0162d015ece736a2b09b144a765d0a7e"
+    },
+    {
+      "path": "stdlib/GetRect/tests/native_cursors.jai",
+      "sha256": "1a08286fade947ce715a9c359055583f7d553152e970932725ec1bce3cf36468"
+    },
+    {
+      "path": "stdlib/internal/numerics/ui_core.jai",
+      "sha256": "dfcc5d8c5e5e2812d30f4b2391ee2586b3a09c706b24274c3bae3583da0c7dc2"
+    },
+    {
+      "path": "tests/numerics/clipboard_text_actions_linux.jai",
+      "sha256": "4a8c96929f777e143cddf59b727181adc578603eb0f57536f2ffc87b26f2061e"
+    },
+    {
+      "path": "tests/numerics/color_policies_portable.jai",
+      "sha256": "40483f69d254363e6cde047120bda428f46695136995e171c76fa92d5fc23358"
+    },
+    {
+      "path": "tests/numerics/cursor_callbacks.jai",
+      "sha256": "92e0abc374add5d826c613f296c36046fba4f7cbc5b104a351be6c13f1d8ea73"
+    },
+    {
+      "path": "tests/numerics/custom_indicator_target_reproducer.jai",
+      "sha256": "fd0a574a7e6170a6d740ff66b871c1982a03b733f934571ea13be4b24f23ce0f"
+    },
+    {
+      "path": "tests/numerics/native_ui_cursors.jai",
+      "sha256": "d2ae8d435bc3a140a54fb9be0befa5d2a55eeafaf51feacc015d0917d8577bf1"
+    },
+    {
+      "path": "tests/numerics/target_contracts.py",
+      "sha256": "7b2d1333862b9532363e3070c685d425066cd0a95244809f2e6b440260cc7e32"
+    },
+    {
+      "path": "tests/numerics/test_target_contracts.py",
+      "sha256": "78bbd29049305f97391fdbf61c2d8a0c87cfc647e2f2f69bb46acdce30d97d2d"
+    },
+    {
+      "path": "tests/numerics/workspace_root_configuration.jai",
+      "sha256": "9227cde86117c0911e2d9c8af7cb8360ebd3de243a36a5ce9e632dd57a1fe7db"
+    }
+  ],
+  "tools": [
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/target/debug/jaic",
+      "sha256": "c9cf0f35dd6683c726503f489bbee04d6231dd0d978d5059eafd0d87901ecc1e"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/target/debug/jailint",
+      "sha256": "f5f4bf0086198ae86a6d3299283e84da44f9a8a3a7e42b04e7dbe775ea453dff"
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/target-intake-source.json",
+      "sha256": "8f3acfb9a9ed7545828c37d9c0aa2791de154237e8cc043eb2688e5428065bfa"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/focused-target-source.json",
+      "sha256": "379ad6d5264b367a46db42e3e805f1700eb27bf27247aa759f9c2a7cb1b1d9ab"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/final-source-dispositions.json",
+      "sha256": "93bfc6c60cc008039bac32c27321ad0a8d8ac7688e5dc81e608560cd5be811fb"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/linux-clipboard-dependency-red.txt",
+      "sha256": "91d243fc5b294302b62cefbd2c0f520cb256ce1c315f15d4cc5f06e626e4aab1"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/linux-clipboard-dependency-final-current.txt",
+      "sha256": "ba7ef6e26db34c30b2b04ca395e80a1cd58551e4619f169ec9fa9f451a8e9fac"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/strictlint-final.json",
+      "sha256": "da4e9e543caef642ab3600a1e97cd3327af1c7efbd478ab9d9f9de1ce6910e58"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/policy-final.txt",
+      "sha256": "75ff54e727b57e4bd7b88956ed0c92c4b9a416e6f0976707e8fb54aa385ac0bd"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/clippy.txt",
+      "sha256": "5896c8894f39b39000f1a4ffb672a5308d4474852646a708e91b8681256d0d34"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/bounded-runtime-proof.json",
+      "sha256": "f413ed719ffb11218edc43a15b6b79965b58d90f84635b2158bdf5e60f471ea5"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/final-current-byte-runtime.json",
+      "sha256": "dbce7109e3f8250e78c81ebe99fe5384f60f619b15e1b74f1adcf8b53a6f03f6"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/protected-source-guard-final.json",
+      "sha256": "a1e29e307afb56411b754f5a0ad7d2616e2172381629f462b9898f6bc7302ac2"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-target-contract-ac174e80/capture/misrouted-native-source-rejections.json",
+      "sha256": "97fe4c904e993bcd62e1d6319af3bfca14e706ecf879c87f9a3d26c9b1e55315"
+    }
+  ],
+  "verified": {
+    "strictlint_contexts": 17,
+    "target_policy_unit_tests": 8,
+    "linux_dependency_source_ir_cpus": [
+      "x64",
+      "arm64"
+    ],
+    "final_command_count": 23,
+    "actual_jaifmt_owned_inputs": 11,
+    "final_mac_native_programs": 8,
+    "final_mac_interpreter_programs": 1,
+    "final_strict_wasi_programs": 2,
+    "earlier_additional_strict_wasi_programs": 6,
+    "linux_native_programs": 0,
+    "windows_native_programs": 0,
+    "serialized_native_slot": "released; children reaped",
+    "original_fixture_bodies": "byte-exact; only three additive target guards",
+    "original_runners": "unchanged"
+  },
+  "dispositions": [
+    {
+      "cases": "13 unique primary GetRect WASM sources plus repeated ui_smoke no_dce (14 CI executions)",
+      "passed": null,
+      "classification": "unavailable target",
+      "reason": "reviewed canonical Input.Event and Window_Type lack WASM native window type; custom four-field Type_Indicator cannot replace Event",
+      "action": "retain native guard; explicit availability records, not PASS"
+    },
+    {
+      "cases": "native_clipboard Linux O0/O2",
+      "passed": null,
+      "classification": "invalid fixture target",
+      "reason": "private named-pasteboard Mac-only shutdown is not the public Linux Clipboard API",
+      "action": "retain complete positive Mac lifecycle; explicit unavailable-provider negatives elsewhere"
+    },
+    {
+      "cases": "native_cursors and native_ui_cursors Linux O0/O2",
+      "passed": null,
+      "classification": "unavailable native provider",
+      "reason": "Linux native cursor resource backend explicitly unavailable",
+      "action": "retain Win/Mac positive bodies; run Linux caller callbacks and unavailable-provider negatives"
+    },
+    {
+      "cases": "public GetRect/GetRect_LeftHanded Linux clipboard text actions",
+      "passed": null,
+      "classification": "production dependency repaired; real Linux runtime proof pending",
+      "reason": "three predicates now use real canonical Clipboard; two CPU lowered foreign call/ownership regression passes",
+      "action": "CI-private Xvfb O0/O2 clipboard_text_actions_linux with --private-x11-display"
+    },
+    {
+      "cases": "workspace remap NO_OUTPUT reducers",
+      "passed": false,
+      "classification": "retired invalid positive premise",
+      "official_sanitized_verdict": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/producer-handoffs/current-repair-batch/io-workspace-official-verdict.json",
+      "official_verdict_sha256": "db64d0bc7f03bb491d0ccea0820616db44ecd2e51a4fb28881131954c2d0aeed",
+      "reason": "Basic program parameters supplied outside child MAIN rejected; original Io fixture not officially replayed",
+      "action": "integration migrate original Io fixture to child MAIN configuration without dropping fiber/args/assertions; independent root-only NO_OUTPUT control source/lint passes"
+    }
+  ],
+  "integration_actions": [
+    "Transport this patch and ready receipt from own T7 to approved producer handoff area.",
+    "Shared ui_core already has exact owned three-predicate hunk: hash/review existing hunk; do not double-apply.",
+    "Review docs README/questions append-only additions against current shared text.",
+    "Adopt target_contracts explicit inventory in integration-owned runners/workflows; unavailable passed:null with counts/reasons, not green success.",
+    "Run pure numerical/half/color WASM and explicit provider negatives; preserve all original mixed numerical assertions on supported native targets.",
+    "Run Linux caller cursor callbacks and real Linux clipboard fixture O0/O2 in private X11 display with explicit argv.",
+    "No core/GPU/Io/Window_Type/Input/private-native-provider changes in this cohort."
+  ],
+  "limitations": [
+    "No actual Linux/Windows native evidence produced locally.",
+    "Custom Type_Indicator portability question recorded without inventing reviewed Event contract.",
+    "No combined current CI, full corpus, GUI, fault or benchmark acceptance claimed.",
+    "Original Io workspace original-case official replay remains unperformed; reducer premise classified independently."
+  ]
+}
