@@ -923,3 +923,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [WGL public/private lint contexts](status/wgl-lint-public-context.md): complete required-file coverage, prior DLL/consumer checks and four existing fixtures retained. [Adaptation receipt](status/wgl-public-context-integration.json); eleven policy checks pass, actual Windows graphics replay required.
 
 - [Upstream Linux clipboard closure](tools/upstream-linux-clipboard-closure.md): real C helper preparation plus mandatory source/artifact receipts before application links; eight policies pass, actual Linux consumer replay required.
+
+- [Storage and native elapsed-clock selection](tools/foundations-storage-clock.md): original mixed fixture remains byte-identical/native-required; identical storage assertions retain separate WASM coverage. Four ready source/doc hashes verified; current catalogue regression passes. Producer runtime proof is separately attributed.

@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "worker": "foundations",
+  "state": "READY narrow storage/clock catalogue target disposition",
+  "timestamp_utc": "2026-10-16T20:52:40.546098+00:00",
+  "diagnosis": "Correct public Basic.seconds_since_init call selected on WASM, where native elapsed/monotonic clock exports are unavailable; not a stale Time API",
+  "change": "Keep original mixed fixture byte-identical and native-required; add portable storage case with exact original storage assertion block",
+  "scope": {
+    "files_sha256": {
+      "tools/foundations_case_capabilities.py": "4183e6cfd418240eb60646b160fe5060ca5682b022faa34be7d5fcdf266bd60d",
+      "tests/stdlib-contract/manifest.json": "121162ce3378b0bccfdd6287f556d46d1956982a08107fb94678bcc0a0c9b029",
+      "tests/stdlib-contract/basic/slice-resize-contracts.jai": "3bd9b93462b5520b50ddd286f4b11b7497c25dcfdef5df7393fc27c7a0e19668",
+      "tools/test_foundations_storage_clock.py": "8e7ca85355fbc3599e8a51b062031999ac65f5e802f052d0335dd23f9dcf2a99",
+      "docs/tools/foundations-storage-clock.md": "f6a1e9829524c2829056ca3ac5f48b3c43a2777d81e92a33824de626b00d6a5c"
+    },
+    "production_stdlib_changes": [],
+    "original_fixture_sha256": "9f00f5c415a22ab6f969d7511026e00000ee88366a5861029bcb33b087e7e632",
+    "original_fixture_unchanged": true,
+    "portable_assertion_block_identical": true,
+    "existing_manifest_entries_unchanged": true,
+    "additional_manifest_entries": 1,
+    "additional_capability_cases": 1
+  },
+  "evidence": {
+    "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/storage-clock-8uu33a85",
+    "files_sha256": {
+      "before-source-checks.json": "b78da23c7f4574ec8608eea9ee01d32a0a25c9931de52c72857d4a97fb5745d2",
+      "source-lint-checks.json": "4ff63b07e9698b12449e332ccbd7b5850afe7450aea3d71ab8a3984e18166648",
+      "wasm-lint-corrected.json": "567d36a84d6d7d20b12b548a6cbe564e4b669f53a4f888cfd070ec487812144d",
+      "runtime-checks.json": "4614773c50a888ae925a5ef5c055e3413f607f9205ec5136d09f346ca7e50090",
+      "runtime-inputs-before.json": "2b52a07a1c46c95354e20ced6d4799accbf0182c92cbe203b4f7b4775457b5c5",
+      "runtime-inputs-after.json": "846a2e2146c76cfd45283205525fe0835a708e746cdfa44c79d57196e9836a13"
+    },
+    "source_built_tool_pin": "docs/status/foundations-catalogue-lint-followup.json",
+    "tool_paths": {
+      "jaic": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/catalogue-lint-wg0c5v67/target/debug/jaic",
+      "jailint": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/catalogue-lint-wg0c5v67/target/debug/jailint"
+    },
+    "tool_sha256": {
+      "jaic": "88419d21611aac3a143f4c7eed730d7d71f0a7593bae40c5721d863a8c1165ca",
+      "jailint": "78dbcf60c86d4954fb88593da2e14fb6eb615e9fd30d09918619668858167c39"
+    },
+    "rebuilt_against_moving_HEAD": false,
+    "source_checks": 9,
+    "strict_lint_contexts": 9,
+    "desktop_source_targets": [
+      "macos-arm64",
+      "linux-arm64",
+      "windows-arm64",
+      "windows-x64"
+    ],
+    "portable_wasm_source_and_lint": true,
+    "actual_runtime_commands": 16,
+    "actual_runtime_commands_all_passed": true,
+    "actual_program_outcomes": 9,
+    "original_mixed_modes": [
+      "interpreter",
+      "MacARM64O0",
+      "MacARM64O2"
+    ],
+    "portable_storage_modes": [
+      "interpreter",
+      "MacARM64O0",
+      "MacARM64O2",
+      "WASM-interpreter",
+      "NodeWASIO0",
+      "NodeWASIO2"
+    ],
+    "runtime_stdout": "ok newline",
+    "runtime_stderr": "empty",
+    "runtime_exit": 0,
+    "source_guard_changed": [],
+    "python_policy_tests": 21,
+    "ruff": "check +format PASS",
+    "real_unchanged_jaifmt": "new storage fixture --check PASS",
+    "native_lease": "RELEASED allchildrenreaped"
+  },
+  "not_counted_passed": [
+    "Original mixed fixture WASM unknown seconds_since_init rejection retained; selected unsupported execution must be unavailable, not passed.",
+    "First WASM linter --target setup error retained; corrected supported -target invocation verified separately."
+  ],
+  "dependencies": [
+    "Integration alone stages/commits; combined catalogue CI still required.",
+    "Linux/Windows native execution pending actual CI, source-only evidence stated explicitly.",
+    "Process/Thread metadata stays platform-owner scope; separate HTTP App hunk remains separate.",
+    "Compiler tour private WASI clock is not a public Basic/Time API contract."
+  ],
+  "integration": {
+    "suggested_subject": "fix(tests): retain portable storage coverage without a WASM clock export",
+    "README_append": "- [Storage and native elapsed-clock contract selection](tools/foundations-storage-clock.md) \u2014 preserve portable storage coverage while reporting the native clock requirement explicitly.",
+    "do_not_stage": "original mixed fixture or any unrelated producer edits; earlier sealed handoff remains qualified at its pin"
+  }
+}
