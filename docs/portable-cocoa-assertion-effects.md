@@ -19,3 +19,19 @@ The final receipt `cocoa-assertions-uvrm8thj/results.json` contains 25 passing c
 Test correction is separate from production: AppKit can already have prohibited activation policy and reject redundantly setting that same policy. The helper now queries the real policy before changing it. Initial setup failures in both configurations are preserved in `cocoa-assertions-z2ebkyy2` and `cocoa-assertions-6uvzke3x`; they are not evidence of the library defect.
 
 Native X64 execution, full window/event delivery, allocation exhaustion, AppKit exception recovery and other platform backends remain unverified by this scope. No entire GUI module completion is claimed. T7 session 44236 remains without a result; the user identified repeated external-drive permission prompts, not a demonstrated hardware or capacity fault. Verification used newly authorized role-local output directories and current shared Rust sources.
+
+AppKit contract migration (2026-10-16): the one create-content-window call now
+uses reviewed full NSWindowStyleMask and NSBackingStoreType member names. The
+old Titled member produced a genuine compile failure after the binding contract
+update. Receipt cocoa-enum-call-bf2fxymw/results.json records successful source
+and strict-lint checks for Mac ARM64 and x64; both manifests are complete. This
+is a caller migration only, with no GUI/native execution or new aliases. The
+earlier assertion-side-effect runtime evidence is preserved separately.
+
+Expanded enum migration: fullscreen query also used obsolete FullScreen and
+Borderless members. Both callers now use full reviewed identifiers. Permanent
+source-only regression cocoa-appkit-enum-callers.jai covers public creation
+and fullscreen; final-results.json in the same T7 receipt records four
+successful Mac ARM64/x64 source checks with -no_dce and strict lint of both
+owned files and the regression. No GUI execution is implied. The earlier
+creation-only source receipt did not cover this second caller.

@@ -3285,22 +3285,2596 @@
       "shader-transpiler-build",
       "forbear-build"
     ],
-    "state": "required_positive_failed_contract_review_pending",
+    "state": "AppKit_implemented_Forbear_source_green_and_native_Cocoa_smoke_green",
     "consumer_sha256": {
       "PixelRifts--Jai-Shader-Transpiler/src/backend.jai": "1ddf03dd8a09bdbed15be736e6e38c21a1232875ae3b694c01c76871bf7ed1a2",
       "gabrielmfern--forbear/forbear.jai": "5654cec1a8d16d892e62c95c602c71138e0c59b1beffd2680cfaa521ffe27586"
     },
     "imports": "Both explicitly import Objective_C and Objective_C/AppKit; no missing lexical import or compiler defect inferred.",
-    "reviewed_oracle": "Current objective-c.md only contextual NSWindow/NSResponder; absent exact class/method/enum contract is requested in own question ledger/inbox.",
-    "cause": "Facade implements only reviewed window subset; missing NSApplication/NSOpenGLContext and broader AppKit needs. GL still has a separate private opaque context identity.",
-    "requested": "Complete canonical class fields/superclass using/method parameters/defaults/enums/availability, exact prefixed enum public names; keep AppKit out of root Objective_C.",
-    "reduction_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metadata-rollback/appkit/reductions.json",
-    "partial_paths": [
-      "tests/native-bindings/pending/objc-appkit-public-classes.jai",
-      "tests/native-bindings/pending/objc-appkit-opengl-class.jai",
-      "docs/specs/stdlib/native-bindings-questions.md"
-    ],
-    "compiler_dependency": null,
+    "reviewed_oracle": "docs/specs/stdlib/modules/appkit.md plus contextual objective-c.md",
+    "cause": "Missing class exports and duplicate NSGL context nominal identity repaired; exact reviewed transitive using/#as directives applied. Forbear checks; shader next frontier is generated fragment string.",
+    "requested": "No AppKit production blocker; shader next generated-fragment frontier assigned compiler-plugin-evaluation by coordinator.",
+    "reduction_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/appkit-m3edf7gw/report.json",
+    "partial_paths": [],
+    "compiler_dependency": "Shader generated-string scheduling frontier; no AppKit-specific compiler exception requested.",
     "waived": false
+  },
+  "appkit_public_api_inventory": [
+    {
+      "api": "NSWindowCollectionBehavior",
+      "kind": "enum_flags",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "Default",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "CanJoinAllSpaces",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "MoveToActiveSpace",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "Managed",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "Transient",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "Stationary",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "ParticipatesInCycle",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "IgnoresCycle",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "FullScreenPrimary",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "FullScreenAuxiliary",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "FullScreenNone",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "FullScreenAllowsTiling",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "FullScreenDisallowsTiling",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSResponder",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSResponder.super",
+      "kind": "field",
+      "declaration": "using #as super: O.NSObject",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSWindow",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSWindow.responder",
+      "kind": "field",
+      "declaration": "using #as responder: NSResponder",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSWindow.initWithContentRect",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "initWithContentRect :: (self: *NSWindow, rect: O.NSRect, styleMask: NSWindowStyleMask, backing: NSBackingStoreType, _defer: O.BOOL) -> *NSWindow"
+    },
+    {
+      "api": "NSWindow.initWithContentRect",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "initWithContentRect :: (self: O.id, rect: O.NSRect, styleMask: NSWindowStyleMask, backing: NSBackingStoreType, _defer: O.BOOL, screen: *NSScreen) -> *NSWindow"
+    },
+    {
+      "api": "NSWindow.setReleasedWhenClosed",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setReleasedWhenClosed :: (self: *NSWindow, value: O.BOOL)"
+    },
+    {
+      "api": "NSWindow.setTitle",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setTitle :: (self: *NSWindow, title: string) -> O.id"
+    },
+    {
+      "api": "NSWindow.setCollectionBehavior",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setCollectionBehavior :: (self: *NSWindow, behavior: NSWindowCollectionBehavior)"
+    },
+    {
+      "api": "NSWindow.makeKeyAndOrderFront",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "makeKeyAndOrderFront :: (self: *NSWindow, sender: O.id)"
+    },
+    {
+      "api": "NSWindow.setDelegate",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setDelegate :: (self: *NSWindow, dg: O.id)"
+    },
+    {
+      "api": "NSWindow.setContentView",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setContentView :: (self: *NSWindow, contentView: O.id)"
+    },
+    {
+      "api": "NSWindow.makeFirstResponder",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "makeFirstResponder :: (self: *NSWindow, view: O.id)"
+    },
+    {
+      "api": "NSWindow.contentView",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "contentView :: (self: *NSWindow) -> *NSView"
+    },
+    {
+      "api": "NSWindow.center",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "center :: (self: *NSWindow)"
+    },
+    {
+      "api": "NSWindow.styleMask",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "styleMask :: (self: *NSWindow) -> NSWindowStyleMask"
+    },
+    {
+      "api": "NSWindow.toggleFullScreen",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "toggleFullScreen :: (self: *NSWindow, sender: O.id)"
+    },
+    {
+      "api": "NSWindow.frame",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "frame :: NSView.frame;"
+    },
+    {
+      "api": "NSApp",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "NSDefaultRunLoopMode",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "NSApplicationMain",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAAllRenderers",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFATripleBuffer",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFADoubleBuffer",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAAuxBuffers",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAColorSize",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAAlphaSize",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFADepthSize",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAStencilSize",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAAccumSize",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAMinimumPolicy",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAMaximumPolicy",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFASampleBuffers",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFASamples",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAAuxDepthStencil",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAColorFloat",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAMultisample",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFASupersample",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFASampleAlpha",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFARendererID",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFANoRecovery",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAAccelerated",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAClosestPolicy",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFABackingStore",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAScreenMask",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAAllowOfflineRenderers",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAAcceleratedCompute",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAOpenGLProfile",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAVirtualScreenCount",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAStereo",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAOffScreen",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAFullScreen",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFASingleRenderer",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFARobust",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAMPSafe",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAWindow",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAMultiScreen",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFACompliant",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFAPixelBuffer",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPFARemotePixelBuffer",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLProfileVersionLegacy",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLProfileVersion3_2Core",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLProfileVersion4_1Core",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLPixelFormatAttribute",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "NSOpenGLContextParameter",
+      "kind": "enum",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSOpenGLContextParameterSwapInterval",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterSurfaceOrder",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterSurfaceOpacity",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterSurfaceBackingSize",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterReclaimResources",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterCurrentRendererID",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterGPUVertexProcessing",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterGPUFragmentProcessing",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterHasDrawable",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterMPSwapsInFlight",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterSwapRectangle",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterSwapRectangleEnable",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterRasterizationEnable",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterStateValidation",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSOpenGLContextParameterSurfaceSurfaceVolatile",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationActivationPolicy",
+      "kind": "enum",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSApplicationActivationPolicyRegular",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationActivationPolicyAccessory",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationActivationPolicyProhibited",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMask",
+      "kind": "enum_flags",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSWindowStyleMaskBorderless",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskTitled",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskClosable",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskMiniaturizable",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskResizable",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskUtilityWindow",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskDocModalWindow",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskNonactivatingPanel",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskTexturedBackground",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskUnifiedTitleAndToolbar",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskHUDWindow",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskFullScreen",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSWindowStyleMaskFullSizeContentView",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventType",
+      "kind": "enum",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSEventTypeLeftMouseDown",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeLeftMouseUp",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeRightMouseDown",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeRightMouseUp",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeMouseMoved",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeLeftMouseDragged",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeRightMouseDragged",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeMouseEntered",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeMouseExited",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeKeyDown",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeKeyUp",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeFlagsChanged",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeAppKitDefined",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeSystemDefined",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeApplicationDefined",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypePeriodic",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeCursorUpdate",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeRotate",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeBeginGesture",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeEndGesture",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeScrollWheel",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeTabletPoint",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeTabletProximity",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeOtherMouseDown",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeOtherMouseUp",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeOtherMouseDragged",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeGesture",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeMagnify",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventTypeSwipe",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSBackingStoreType",
+      "kind": "enum",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSBackingStoreRetained",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSBackingStoreNonretained",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSBackingStoreBuffered",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMask",
+      "kind": "enum",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSEventMaskLeftMouseDown",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskLeftMouseUp",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskRightMouseDown",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskRightMouseUp",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskMouseMoved",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskLeftMouseDragged",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskRightMouseDragged",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskMouseEntered",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskMouseExited",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskKeyDown",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskKeyUp",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskFlagsChanged",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskAppKitDefined",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskSystemDefined",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskApplicationDefined",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskPeriodic",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskCursorUpdate",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskRotate",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskBeginGesture",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskEndGesture",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskScrollWheel",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskTabletPoint",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskTabletProximity",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskOtherMouseDown",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskOtherMouseUp",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskOtherMouseDragged",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskGesture",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskMagnify",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskSwipe",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventMaskAny",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventModifierFlags",
+      "kind": "enum_flags",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSEventModifierFlagCapsLock",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventModifierFlagShift",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventModifierFlagControl",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventModifierFlagOption",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventModifierFlagCommand",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventModifierFlagNumericPad",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventModifierFlagHelp",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventModifierFlagFunction",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSEventModifierFlagDeviceIndependentFlagsMask",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationOptions",
+      "kind": "enum",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSApplicationPresentationDefault",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationAutoHideDock",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationHideDock",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationAutoHideMenuBar",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationHideMenuBar",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationDisableAppleMenu",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationDisableProcessSwitching",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationDisableForceQuit",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationDisableSessionTermination",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationDisableHideApplication",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationDisableMenuBarTransparency",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationFullScreen",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationAutoHideToolbar",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplicationPresentationDisableCursorLocationAssistance",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSRequestUserAttentionType",
+      "kind": "enum",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSCriticalRequest",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSInformationalRequest",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "NSApplication",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSApplication.super",
+      "kind": "field",
+      "declaration": "using #as super: O.NSObject",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSApplication.sharedApplication",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "sharedApplication :: () -> *NSApplication #no_context"
+    },
+    {
+      "api": "NSApplication.run",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "run :: (self: *NSApplication) #no_context"
+    },
+    {
+      "api": "NSApplication.stop",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "stop :: (self: *NSApplication, sender: O.id) #no_context"
+    },
+    {
+      "api": "NSApplication.mainWindow",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "mainWindow :: (self: *NSApplication) -> *NSWindow #no_context"
+    },
+    {
+      "api": "NSApplication.keyWindow",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "keyWindow :: (self: *NSApplication) -> *NSWindow #no_context"
+    },
+    {
+      "api": "NSApplication.sendEvent",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "sendEvent :: (self: *NSApplication, event: *NSEvent) #no_context"
+    },
+    {
+      "api": "NSApplication.updateWindows",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "updateWindows :: (self: *NSApplication) #no_context"
+    },
+    {
+      "api": "NSApplication.activateIgnoringOtherApps",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "activateIgnoringOtherApps :: (self: *NSApplication, value: O.BOOL) #no_context"
+    },
+    {
+      "api": "NSApplication.setActivationPolicy",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setActivationPolicy :: (self: *NSApplication, policy: NSApplicationActivationPolicy) -> O.BOOL #no_context"
+    },
+    {
+      "api": "NSApplication.setDelegate",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-nil-receiver; nonnil-effect-unverified",
+      "signature": "setDelegate :: (self: *NSApplication, del: *NSApplicationDelegate) -> O.id #no_context"
+    },
+    {
+      "api": "NSApplication.finishLaunching",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-nil-receiver; nonnil-effect-unverified",
+      "signature": "finishLaunching :: (self: *NSApplication) -> O.id #no_context"
+    },
+    {
+      "api": "NSApplication.setMainMenu",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-nil-receiver; nonnil-effect-unverified",
+      "signature": "setMainMenu :: (self: *NSApplication, menu: *NSMenu) -> O.id #no_context"
+    },
+    {
+      "api": "NSApplication.nextEventMatchingMask",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "nextEventMatchingMask :: (self: *NSApplication, mask: NSEventMask, untilDate: *O.NSDate, inMode: O.NSRunLoopMode, dequeue: O.BOOL) -> *NSEvent #no_context"
+    },
+    {
+      "api": "NSApplication.presentationOptions",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "presentationOptions :: (self: *NSApplication) -> NSApplicationPresentationOptions #no_context"
+    },
+    {
+      "api": "NSApplication.setPresentationOptions",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setPresentationOptions :: (self: *NSApplication, options: NSApplicationPresentationOptions) #no_context"
+    },
+    {
+      "api": "NSApplication.setAppleMenu",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setAppleMenu :: (self: *NSApplication, menu: *NSMenu) #no_context"
+    },
+    {
+      "api": "NSApplication.terminate",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "terminate :: (self: *NSApplication, sender: O.id) #no_context"
+    },
+    {
+      "api": "NSApplication.requestUserAttention",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "requestUserAttention :: (self: *NSApplication, requestType: NSRequestUserAttentionType) -> O.NSInteger #no_context"
+    },
+    {
+      "api": "NSView",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSView.super",
+      "kind": "field",
+      "declaration": "using #as super: O.NSObject",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSView.pad",
+      "kind": "field",
+      "declaration": "pad: [152 - size_of(O.NSObject)] u8",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSView.addSubView",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "addSubView :: (self: *NSView, view: *NSView)"
+    },
+    {
+      "api": "NSView.setWantsLayer",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setWantsLayer :: (self: O.id, yesno: O.BOOL)"
+    },
+    {
+      "api": "NSView.frame",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "frame :: (self: O.id) -> O.NSRect"
+    },
+    {
+      "api": "NSView.bounds",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "bounds :: (self: O.id) -> O.NSRect"
+    },
+    {
+      "api": "NSView.setFrame",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "setFrame :: (self: O.id, frame: O.NSRect)"
+    },
+    {
+      "api": "NSView.setWantsBestResolutionOpenGLSurface",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setWantsBestResolutionOpenGLSurface :: (self: O.id, val: O.BOOL)"
+    },
+    {
+      "api": "NSView.convertRectToBacking",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "convertRectToBacking :: (self: O.id, rect: O.NSRect) -> O.NSRect"
+    },
+    {
+      "api": "NSView.convertRectFromBacking",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "convertRectFromBacking :: (self: O.id, rect: O.NSRect) -> O.NSRect"
+    },
+    {
+      "api": "NSView.convertPointToBacking",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "convertPointToBacking :: (self: O.id, point: O.NSPoint) -> O.NSPoint"
+    },
+    {
+      "api": "NSView.convertPointFromBacking",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "convertPointFromBacking :: (self: O.id, point: O.NSPoint) -> O.NSPoint"
+    },
+    {
+      "api": "NSView.backingScaleFactor",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "backingScaleFactor :: (self: O.id) -> O.CGFloat"
+    },
+    {
+      "api": "NSView.isInFullScreenMode",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "isInFullScreenMode :: (self: O.id) -> O.BOOL"
+    },
+    {
+      "api": "NSView.enterFullScreenMode",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "enterFullScreenMode :: (self: O.id, screen: *NSScreen, withOptions: *O.NSDictionary) -> O.BOOL"
+    },
+    {
+      "api": "NSView.exitFullScreenModeWithOptions",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "exitFullScreenModeWithOptions :: (self: O.id, options: *O.NSDictionary)"
+    },
+    {
+      "api": "NSView.layer",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "layer :: (self: O.id) -> *O.CALayer"
+    },
+    {
+      "api": "NSView.mouse_inRect",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "mouse_inRect :: (self: O.id, mouse: O.NSPoint, inRect: O.NSRect) -> O.BOOL"
+    },
+    {
+      "api": "NSView.convertPoint",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "reviewed-receiver-boundary; source-only",
+      "signature": "convertPoint :: (self: O.id, point: O.NSPoint, fromView: *NSView) -> O.NSPoint"
+    },
+    {
+      "api": "NSView.drawRect",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "drawRect :: (self: O.id, dirtyRect: O.NSRect)"
+    },
+    {
+      "api": "NSView.registerForDraggedTypes",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "registerForDraggedTypes :: (self: O.id, newTypes: *O.NSArray(O.NSPasteboardType))"
+    },
+    {
+      "api": "NSOpenGLContext",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSOpenGLContext.super",
+      "kind": "field",
+      "declaration": "using #as super: O.NSObject",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSOpenGLContext.currentContext",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "currentContext :: () -> *NSOpenGLContext"
+    },
+    {
+      "api": "NSOpenGLContext.flushBuffer",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "flushBuffer :: (self: O.id)"
+    },
+    {
+      "api": "NSOpenGLContext.update",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-nil-receiver; nonnil-effect-unverified",
+      "signature": "update :: (self: O.id) -> O.id"
+    },
+    {
+      "api": "NSOpenGLContext.setView",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setView :: (self: O.id, view: *NSView)"
+    },
+    {
+      "api": "NSOpenGLContext.view",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "view :: (self: O.id) -> *NSView"
+    },
+    {
+      "api": "NSOpenGLContext.initWithFormat",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "initWithFormat :: (self: O.id, format: *NSOpenGLPixelFormat, shareContext: *NSOpenGLContext) -> *NSOpenGLContext"
+    },
+    {
+      "api": "NSOpenGLContext.makeCurrentContext",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "makeCurrentContext :: (self: O.id)"
+    },
+    {
+      "api": "NSOpenGLContext.setValues",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setValues :: (self: O.id, values: *s32, forParameter: NSOpenGLContextParameter)"
+    },
+    {
+      "api": "NSOpenGLPixelFormat",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSOpenGLPixelFormat.super",
+      "kind": "field",
+      "declaration": "using #as super: O.NSObject",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSOpenGLPixelFormat.initWithAttributes",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "initWithAttributes :: (self: O.id, attrs: *NSOpenGLPixelFormatAttribute) -> *NSOpenGLPixelFormat"
+    },
+    {
+      "api": "NSOpenGLPixelFormat.getValues",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "getValues :: (self: O.id, values: *s32, forAttribute: NSOpenGLPixelFormatAttribute, forVirtualScreen: s32)"
+    },
+    {
+      "api": "NSMenu",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSMenu.super",
+      "kind": "field",
+      "declaration": "using #as super: O.NSObject",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSMenu.addItem",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "addItem :: (self: *NSMenu, item: *NSMenuItem)"
+    },
+    {
+      "api": "NSMenu.addItemWithTitle",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "addItemWithTitle :: (self: *NSMenu, title: *O.NSString, action: O.Selector, keyEquivalent: *O.NSString) -> *NSMenuItem"
+    },
+    {
+      "api": "NSMenuItem",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSMenuItem.super",
+      "kind": "field",
+      "declaration": "using #as super: O.NSObject",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSMenuItem.initWithTitle",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "initWithTitle :: (self: *NSMenuItem, title: *O.NSString, action: O.Selector, keyEquivalent: *O.NSString) -> *NSMenuItem"
+    },
+    {
+      "api": "NSMenuItem.setSubmenu",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setSubmenu :: (self: *NSMenuItem, sub: *NSMenu)"
+    },
+    {
+      "api": "NSMenuItem.setKeyEquivalentModifierMask",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "setKeyEquivalentModifierMask :: (self: *NSMenuItem, value: NSEventModifierFlags)"
+    },
+    {
+      "api": "NSMenuItem.keyEquivalentModifierMask",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "keyEquivalentModifierMask :: (self: *NSMenuItem) -> NSEventModifierFlags"
+    },
+    {
+      "api": "NSScreen",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSScreen.super",
+      "kind": "field",
+      "declaration": "using #as super: O.NSObject",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSScreen.mainScreen",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "mainScreen :: () -> *NSScreen"
+    },
+    {
+      "api": "NSScreen.frame",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "frame :: NSView.frame;"
+    },
+    {
+      "api": "NSScreen.backingScaleFactor",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "backingScaleFactor :: NSView.backingScaleFactor;"
+    },
+    {
+      "api": "NSApplicationDelegate",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSApplicationDelegate.nsobject",
+      "kind": "field",
+      "declaration": "using #as nsobject: O.NSObject",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSEvent",
+      "kind": "struct",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "NSEvent.super",
+      "kind": "field",
+      "declaration": "using #as super: O.NSObject",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "public-source-layout; no full SDK instance size claim"
+    },
+    {
+      "api": "NSEvent.mouseLocation",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "mouseLocation :: () -> O.NSPoint"
+    },
+    {
+      "api": "NSEvent.type",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "type :: (self: *NSEvent) -> NSEventType"
+    },
+    {
+      "api": "NSEvent.characters",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "characters :: (self: *NSEvent) -> *O.NSString"
+    },
+    {
+      "api": "NSEvent.charactersIgnoringModifiers",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "charactersIgnoringModifiers :: (self: *NSEvent) -> *O.NSString"
+    },
+    {
+      "api": "NSEvent.keyCode",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "keyCode :: (self: *NSEvent) -> u16"
+    },
+    {
+      "api": "NSEvent.modifierFlags",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "modifierFlags :: (self: *NSEvent) -> NSEventModifierFlags"
+    },
+    {
+      "api": "NSEvent.isARepeat",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive",
+      "signature": "isARepeat :: (self: *NSEvent) -> O.BOOL"
+    },
+    {
+      "api": "NSEvent.keyRepeatDelay",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "reviewed-receiver-boundary; source-only",
+      "signature": "keyRepeatDelay :: (self: *NSEvent) -> O.NSTimeInterval"
+    },
+    {
+      "api": "NSEvent.keyRepeatInterval",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "reviewed-receiver-boundary; source-only",
+      "signature": "keyRepeatInterval :: (self: *NSEvent) -> O.NSTimeInterval"
+    },
+    {
+      "api": "NSEvent.pressedMouseButtons",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "reviewed-receiver-boundary; source-only",
+      "signature": "pressedMouseButtons :: (self: *NSEvent) -> O.NSUInteger"
+    },
+    {
+      "api": "NSEvent.buttonNumber",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "buttonNumber :: (self: *NSEvent) -> O.NSInteger"
+    },
+    {
+      "api": "NSEvent.clickCount",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "clickCount :: (self: *NSEvent) -> O.NSInteger"
+    },
+    {
+      "api": "NSEvent.associatedEventsMask",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "associatedEventsMask :: (self: *NSEvent) -> NSEventMask"
+    },
+    {
+      "api": "NSEvent.deltaX",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "deltaX :: (self: *NSEvent) -> O.CGFloat"
+    },
+    {
+      "api": "NSEvent.deltaY",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "deltaY :: (self: *NSEvent) -> O.CGFloat"
+    },
+    {
+      "api": "NSEvent.deltaZ",
+      "kind": "method",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only",
+      "signature": "deltaZ :: (self: *NSEvent) -> O.CGFloat"
+    },
+    {
+      "api": "CGWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-only"
+    },
+    {
+      "api": "CGWindowLevelKey",
+      "kind": "enum",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-layout"
+    },
+    {
+      "api": "kCGBaseWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGMinimumWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGDesktopWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGBackstopMenuLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGNormalWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGFloatingWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGTornOffMenuWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGDockWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGMainMenuWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGStatusWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGModalPanelWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGPopUpMenuWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGDraggingWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGScreenSaverWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGMaximumWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGOverlayWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGHelpWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGUtilityWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGDesktopIconWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGCursorWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGAssistiveTechHighWindowLevelKey",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGNumberOfWindowLevelKeys",
+      "kind": "enum-member",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "source-value"
+    },
+    {
+      "api": "kCGBaseWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGMinimumWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGDesktopWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGDesktopIconWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGBackstopMenuLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGNormalWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGFloatingWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGTornOffMenuWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGDockWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGMainMenuWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGStatusWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGModalPanelWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGPopUpMenuWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGDraggingWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGScreenSaverWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGCursorWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGOverlayWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGHelpWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGUtilityWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGAssistiveTechHighWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "kCGMaximumWindowLevel",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "CGWindowLevelForKey",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "init_core_graphics_runtime_constants",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    },
+    {
+      "api": "init_app_kit",
+      "kind": "declaration",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "native-positive"
+    }
+  ],
+  "appkit_focused_verification": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/appkit-m3edf7gw/report.json",
+    "checks": 85,
+    "failed": 0,
+    "runtime": "ARM64 nonUI interpreter/nativeO0/O2/ASan+UBSan and retained ABI assertions (85-check cohort); separate one-process O0 leased Cocoa/GL lifecycle PASS",
+    "source": "MacARM64/x64, SDK ABI compilation, current inheritance and canonical GL identity, complete lint/privacy, UI source only",
+    "compiler_source_snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/compiler-final-inputs/bindings-inputs-7gphgqty",
+    "commercial_telemetry": "ABI unavailable; unchanged",
+    "required_android8": "compiler target/device gates unchanged; not waived"
+  },
+  "ready_appkit_checkpoint": {
+    "subject": "feat(bindings): implement reviewed AppKit surface and canonical NSGL types",
+    "state": "STABLE; integration alone stages/commits; GUI execution does not hold production adoption",
+    "sha256": {
+      "stdlib/Objective_C/AppKit/module.jai": "37bd805fff6eba1e20c692b811c9af869e7de41967f8ccdd9f128e1728c665b1",
+      "stdlib/Objective_C/AppKit/generated.jai": "a8294680612f4620c9708b57ab715d8f6988eb295e85e2ff1f683cd17c670c9c",
+      "stdlib/internal/bindings/nsgl/module.jai": "6e816ca988a8b935caf231c5884a9d5b61cdbc67a62ebd80e357faa04bb7e498",
+      "tools/native_bindings/generate_appkit.py": "9e1e916278662febc802544a557801d1b391ffe88ad97d7a526181f87df1b6c1",
+      "tools/native_bindings/verify_appkit.py": "4954a7e4dc061aae96b83309f4b94fd3c07bd0ea5812d3e75186bab353b80088",
+      "tests/native-bindings/appkit-public.jai": "6fb294c7618c536dc4add727b2377c8e8cb3966aee45a55308d560e4fff9603a",
+      "tests/native-bindings/appkit-gl-identity.jai": "1d7c83b877f5200a4d4d66f87f40f3dcd816cbc5dbb05644ce3a8a4e9e1e5753",
+      "tests/native-bindings/appkit-window-inheritance.jai": "da1ad12cd0ed1caba7684d9e85448f80b8a01b18c31f492853e181cde9912c37",
+      "tests/native-bindings/objc-appkit-public-classes.jai": "1b6810ad1f7b78b8e733249c0993af8945c2a46a051beb5e2e26c4bac2c3641e",
+      "tests/native-bindings/objc-appkit-opengl-class.jai": "f1ff051d48e500306a27fa5e8e975946db36f55bdaf6094086c33c3b3352d8df",
+      "tests/native-bindings/appkit_probe.m": "a55fa60a5d5d39bdfe8d41d4d062f868a5ed96d004797886a62432085a46009e",
+      "tests/native-bindings/appkit.jai": "9f8b59717d07097efe1f610b7c6ac2e00a8531e69372b101d3e40d02064fb575",
+      "tests/native-bindings/appkit-ui.jai": "99c09c367cfce24a9aabab3f72438a551ec20668cb18c218758ed9baaa02499f",
+      "tests/native-bindings/appkit_ui_probe.m": "a87ec808042e6264212edf90853e6dc9b6f60980e4814f38268a28852ec7df5d",
+      "docs/native/appkit-bindings.md": "72b206f80bb7722f48398f58c90b4a2f631b9e3c07b550554df4523e8cbe14d4",
+      "docs/status/bindings-deviations.md": "13339a726c9acd504567177b9c0dbfd83eb98cd3530f1e9dd5acbb8a8f96507d"
+    },
+    "also_stage": "docs/status/bindings-shared-audit.json; question-ledger resolution append may be reviewed separately with reviewer changes preserved",
+    "removed_paths": [
+      "tests/native-bindings/pending/objc-appkit-public-classes.jai",
+      "tests/native-bindings/pending/objc-appkit-opengl-class.jai"
+    ],
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/appkit-m3edf7gw/report.json",
+    "application_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/application-final-frontiers.json",
+    "limits": [
+      "Four exact reviewed native receiver mismatches recorded in selector inventory; no repaired receiver/fake result",
+      "Legacy id slots of four native void methods return reviewed unspecified null, not SDK result",
+      "Bounded ARM64 UI lifecycle/hardware smoke PASS separately; x64 native and interactive fullscreen/event-loop verification remain open",
+      "NSScreen embed field exact spelling/flags confirmation was requested narrowly; no missing method or whole-surface hold",
+      "Other-module Android8/platform/telemetry and allocator174 retained limits unchanged"
+    ],
+    "global_doc_request": "Integration please link docs/native/appkit-bindings.md in docs/README.md and update AppKit completion ledger to per-API source/native scope; no blanket native completion",
+    "gui_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/ui-lifecycle-final/report.json"
+  },
+  "appkit_gui_verification": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/ui-lifecycle-final/report.json",
+    "builds": 2,
+    "native_executions": 1,
+    "native_exit": 0,
+    "target": "MacARM64 O0",
+    "source_snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/bindings-inputs-i31ys85i",
+    "lease": "docs/status/appkit-gui-lease.json; fresh start checked, finished/released",
+    "effects": [
+      "real NSApplication shared object and actual NSApp storage",
+      "actual SDK main-menu setter observed by independent SDK getter; legacy id ignored",
+      "one hidden test-owned NSWindow lifecycle",
+      "real 4.1 pixel format/context initialization and setView/update/makeCurrentContext/flushBuffer",
+      "independent native current-context/view equality",
+      "context cleared before release, own window closed/released, prior focus/context restored"
+    ],
+    "limits": [
+      "No native x64 UI execution",
+      "No interactive fullscreen/event-loop coverage claimed",
+      "Original failed helper compile preserved separately; not native evidence"
+    ]
   }
 }

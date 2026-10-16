@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "files": {
+    "stdlib/Objective_C/AppKit/module.jai": "37bd805fff6eba1e20c692b811c9af869e7de41967f8ccdd9f128e1728c665b1",
+    "stdlib/Objective_C/AppKit/generated.jai": "a8294680612f4620c9708b57ab715d8f6988eb295e85e2ff1f683cd17c670c9c",
+    "stdlib/internal/bindings/nsgl/module.jai": "6e816ca988a8b935caf231c5884a9d5b61cdbc67a62ebd80e357faa04bb7e498",
+    "tools/native_bindings/generate_appkit.py": "9e1e916278662febc802544a557801d1b391ffe88ad97d7a526181f87df1b6c1",
+    "tools/native_bindings/verify_appkit.py": "4954a7e4dc061aae96b83309f4b94fd3c07bd0ea5812d3e75186bab353b80088",
+    "tests/native-bindings/appkit-public.jai": "6fb294c7618c536dc4add727b2377c8e8cb3966aee45a55308d560e4fff9603a",
+    "tests/native-bindings/appkit-gl-identity.jai": "1d7c83b877f5200a4d4d66f87f40f3dcd816cbc5dbb05644ce3a8a4e9e1e5753",
+    "tests/native-bindings/appkit-window-inheritance.jai": "da1ad12cd0ed1caba7684d9e85448f80b8a01b18c31f492853e181cde9912c37",
+    "tests/native-bindings/objc-appkit-public-classes.jai": "1b6810ad1f7b78b8e733249c0993af8945c2a46a051beb5e2e26c4bac2c3641e",
+    "tests/native-bindings/objc-appkit-opengl-class.jai": "f1ff051d48e500306a27fa5e8e975946db36f55bdaf6094086c33c3b3352d8df",
+    "tests/native-bindings/appkit_probe.m": "a55fa60a5d5d39bdfe8d41d4d062f868a5ed96d004797886a62432085a46009e",
+    "tests/native-bindings/appkit.jai": "9f8b59717d07097efe1f610b7c6ac2e00a8531e69372b101d3e40d02064fb575",
+    "tests/native-bindings/appkit-ui.jai": "99c09c367cfce24a9aabab3f72438a551ec20668cb18c218758ed9baaa02499f",
+    "tests/native-bindings/appkit_ui_probe.m": "a87ec808042e6264212edf90853e6dc9b6f60980e4814f38268a28852ec7df5d",
+    "docs/native/appkit-bindings.md": "72b206f80bb7722f48398f58c90b4a2f631b9e3c07b550554df4523e8cbe14d4",
+    "docs/status/bindings-deviations.md": "13339a726c9acd504567177b9c0dbfd83eb98cd3530f1e9dd5acbb8a8f96507d",
+    "stdlib/internal/window/cocoa.jai": "b9efe11250311938e45bd0d5ede4b1e899fee4fe4f042d1ff6bdae68407d3ce3",
+    "stdlib/internal/window/cocoa-queries.jai": "1d2c475bef4ef38e9d214457099299096d78d038875b5e1cb2eaa7cf7b8a5f1d",
+    "tests/portable-stdlib/cocoa-appkit-enum-callers.jai": "30369c1d165a6b47373af22e28a26f43f25ed0a4675d084275488d1d6ab39ab1",
+    "docs/portable-cocoa-assertion-effects.md": "43b07d30159585056e6c90418129bf221506afde93f5378715e3e8b8a6d418f4"
+  },
+  "producer_audit_sha256": "0765235da0732b6efeb99525204323cdbd7987a7f808fb95831b00286f5d058d",
+  "review": "Canonical AppKit classes/NSGL alias; exact prefixed enum caller migration; real typed objc_send ABI including x64 aggregate sret; SDK/native globals and initializer. No root Objective_C AppKit reexports or duplicate opaque context.",
+  "producer_non_ui": {
+    "passed": 85,
+    "failed": 0,
+    "ignored": 0,
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/appkit-m3edf7gw/report.json",
+    "scope": "Fresh source snapshot; MacARM64 native/interp/O0/O2/sanitizer/retainedABI plus sourcex64, privacy/SDK/layout/selector/lint/generation; NOT native x64"
+  },
+  "producer_ui": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/ui-lifecycle-final/report.json",
+    "builds": 2,
+    "native_executions": 1,
+    "native_exit": 0,
+    "target": "MacARM64 O0",
+    "source_snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit/bindings-inputs-i31ys85i",
+    "lease": "docs/status/appkit-gui-lease.json; fresh start checked, finished/released",
+    "effects": [
+      "real NSApplication shared object and actual NSApp storage",
+      "actual SDK main-menu setter observed by independent SDK getter; legacy id ignored",
+      "one hidden test-owned NSWindow lifecycle",
+      "real 4.1 pixel format/context initialization and setView/update/makeCurrentContext/flushBuffer",
+      "independent native current-context/view equality",
+      "context cleared before release, own window closed/released, prior focus/context restored"
+    ],
+    "limits": [
+      "No native x64 UI execution",
+      "No interactive fullscreen/event-loop coverage claimed",
+      "Original failed helper compile preserved separately; not native evidence"
+    ]
+  },
+  "audit_update": "Original handoff audit1216079... changed only as producer appended separately qualified leased UI evidence; current readable status pins both groups without inflating85.",
+  "legacy_void_id": "Actual nativevoid calls, explicitnull under reviewed unspecifiedid slot; callers ignore return. Nil-receiver76-79 tests prove ABI/placeholder only. Leased real application/menu/context state observed separately by nativeSDK getters.",
+  "limits": [
+    "Four exact reviewed native receiver mismatches recorded in selector inventory; no repaired receiver/fake result",
+    "Legacy id slots of four native void methods return reviewed unspecified null, not SDK result",
+    "Bounded ARM64 UI lifecycle/hardware smoke PASS separately; x64 native and interactive fullscreen/event-loop verification remain open",
+    "NSScreen embed field exact spelling/flags confirmation was requested narrowly; no missing method or whole-surface hold",
+    "Other-module Android8/platform/telemetry and allocator174 retained limits unchanged"
+  ],
+  "verification": "Own20exacthashes/Jai/Ruff formatting pass; final combined immutable compiler/native proof follows candidate capture",
+  "opaque_originals": "Forbear positive and shader frontier supplied as producer scoped evidence only; root owns original400/Focus. Shader Matrix2 operator gap separate owner, no speculative event fix."
+}

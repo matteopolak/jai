@@ -4,8 +4,10 @@ ABI8 now supersedes the historical graph/default-thread metadata OOM fail-fast
 entries: typed reservations precede SDK ownership, publication allocates nothing,
 and stack-owned operation scopes permit persistent-slot failure/retry without
 aborting free/read operations. See docs/native/rpmalloc-metadata-reservations.md.
-AppKit application/OpenGL class contracts requested from review remain an actual
-separate blocker; no missing class or root export is invented to claim closure.
+The delivered AppKit surface is implemented with native dispatch and canonical
+NSGL identity. The reviewed NSWindow/NSResponder using/#as conversion path is implemented,
+and unchanged Forbear source now passes. UI/GL smoke and x64 execution remain
+verification gates. Root exports are not expanded.
 
 Current rpmalloc ownership/configuration status supersedes historical entries
 below describing shared-domain EINVAL or pending live-field contracts. Those
@@ -1085,3 +1087,13 @@ positive regression. Factory/slot OOM injection targets private metadata only
 and does not fabricate native allocator outcomes. No optional profile expansion
 or benchmark was added. Commercial telemetry ABI and Android8 required source
 checks/device, native Linux/Windows gates remain open.
+
+## AppKit delivered surface and native boundaries
+
+Replaced private NSView/NSScreen and duplicate NSGL opaque context with exact reviewed public class records and a canonical AppKit alias. Public NSView remains152bytes, SDK allocated objects retain their real native storage; no full native-instance-size equality is claimed. Generated forwarding includes all delivered application/view/context/pixel-format/event/screen/menu methods, full prefixed enums, actual external NSApp/Cocoa storage and mutable CG globals initialized by native CGWindowLevelForKey. No extra root Objective_C export. Reviewed native-void/public-id returns dispatch as void and return unspecified null; public ownership is unchanged. This is a documented source-ABI reconciliation, not fabricated SDK success.
+
+Host runtime selector audit finds exactly four declared receiver boundaries: NSView.convertPoint sends convertPoint:fromView: to NSEvent class, and three NSEvent key-repeat/pressed-buttons members send class-only selectors to an instance. Forwarding retains reviewed receiver behavior; no fake conversion or successful result is supplied. Other emitted selectors exist on the current native receivers. Explicit selector startup cache is separate from native thread-safe registration used by each method; no new concurrent startup guarantee. Long-term changes to these source quirks require reviewed contract changes, not aliases or silent receiver repair.
+
+Final fresh nonUI receipt appkit-m3edf7gw is85/0 with a fresh uniquely built compiler snapshot, SDK x64/ARM64 CABI compilation, native ARM64 interpreter/O0/O2/address+undefined sanitizer, storage/CG guards, complete lint, privacy/unsupported-platform negatives and deterministic regeneration. Exact manifests follow in bindings-shared-audit.json. Actual unchanged Forbear now passes after both exact reviewed using/#as directives; fresh source capture is used for the final application replay. Shader build converts its vertex shader but fails fragment string production; no remaining missing AppKit class is inferred and compiler/generator scheduling belongs to its owner. No UI lease has been granted or smoke executed; native Windows/Linux are inapplicable to AppKit and other-module platform gates remain required. Allocator ABI8 ready251 source remains untouched.
+
+GUI evidence remains separate: the first helper build failed before any UI process on deprecated SDK tokens/property syntax. Corrected helper builds with -Wall -Wextra -Werror and both UI source targets/complete strictlint pass in the final receipt. No warning suppression or SDK success substitution was added. The lease expired before execution; renewal is requested and does not block production adoption. UI source checks do not count as native UI evidence.
