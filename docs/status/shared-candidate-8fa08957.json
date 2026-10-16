@@ -134,5 +134,14 @@
       "exit": 0
     }
   },
-  "clipboard": "Inherited old optional guard environment omitted; no clipboard runtime claim in this candidate."
+  "clipboard": "Inherited old optional guard environment omitted; no clipboard runtime claim in this candidate.",
+  "guarded_memory_verification": {
+    "command": "CARGO_TARGET_DIR=<integration>/targets/frozen-8fa08957 cargo test --locked --offline -p jaic --lib interp::probe::tests -- --test-threads=1",
+    "passed": 8,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 159,
+    "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/pointer-faults-8fa08957.log",
+    "scope": "Original fault-safe memory transfer/mmap/mprotect stale cache tests; parent8 counted, child subprocess summaries not double-counted"
+  }
 }

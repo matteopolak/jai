@@ -11,7 +11,8 @@
     "named_parameters": "5c0482b6;59/0 focused;32 native requests pending candidate",
     "record_defaults": "ec2b8a56;generator check and4/0 CLI graph rounds",
     "hash_math": "afad2987;16/0 focused",
-    "linux_build": "1daa7bb8;33/0 scoped; Windows SDK success not claimed"
+    "linux_build": "1daa7bb8;33/0 scoped; Windows SDK success not claimed",
+    "named_while_roundtrip": "Existing producer-requests/named-while-roundtrip.jai covered by current CLI graph4/0 interpreter/nativeO0/O2, exactstdout assertions retained"
   },
   "ready_pending_dependency": {
     "tools_refinements": "39 source hashes verified;161 producer current checks; wait stable model-default checkpoint before candidate"
@@ -21,7 +22,8 @@
     "appkit_cocoa": "binding facade changing; two portable callers ready but hold coherent pair",
     "compiler": "canonical reflection/anonymous-import/child-build options/default-root changes owner testing; exact stable checkpoint needed",
     "table_layout": "foundations canonical declaration-order repair active",
-    "windows_uri": "not ready"
+    "windows_uri": "not ready",
+    "anonymous_import": "Separate compiler-import-scope owner claims modules.rs general top-level anonymous import placement; named private negatives preserved"
   },
   "blocked_or_excluded": {
     "alias_refresh": "586be99b and c018dd52 not applied; latest oracle explicitly rejects premise",
@@ -72,5 +74,12 @@
     "compiler_sha256": "d2184efcbd9abede66e7f7dc7e3d84da8d38b1d2b9e8e323d0f5acd47772dd44",
     "receipt": "docs/status/shared-candidate-8fa08957.json",
     "classification": "immutable current committed ready bits; known active batch not yet combined; NOT full baseline/corpus green"
-  }
+  },
+  "remaining_acceptance": [
+    "Full relevant workspace/catalogue/unused-code matrix after known batch ready",
+    "Original400/IDE audit coordinator-owned opaque inputs",
+    "Focus GUI launch and user issue1 signed mouse-wheel/event propagation acceptance coordinator-owned",
+    "Windows/Linux native CI later; no unsupported platform green",
+    "Original all-zero PDB/CIE issue not waived"
+  ]
 }
