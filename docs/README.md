@@ -700,3 +700,5 @@ include exact file/line/source hashes and required platform limits.
 - [Pinned ABI7 candidate a97d0f6f](status/shared-candidate-a97d0f6f.json): exact committed production source/tool identity and actual simultaneous-domain interpreter/native proof on assigned T7 storage.
 
 [SIMD byte/lane contracts](portable-simd-audit.md) and [Basic time/calendar audit](portable-time-shared-audit.md) distinguish native host evidence, source-only targets and unresolved semantics. [Original fixture premise migrations](status/shared-portable-premises.json) preserve all assertions while using lexical operators and trusted private-unit placement.
+
+[Canonical generator integration counts](status/shared-generator-checkpoint.json) pin producer manifests, exact focused commands, retained failed helper-identity assertions and the still-blocked Android target. [Reviewed AppKit contract](specs/stdlib/modules/appkit.md) is available to the bindings owner; its new surface is not yet included in the pinned a97 candidate.

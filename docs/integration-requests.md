@@ -787,3 +787,10 @@ owner retains the real table-slot/tombstone/continue/break regression.
 ## Model owner: remove arbitrary dependency cleanup depth limits
 
 Inspection of NEW stdlib/internal/developer-tools/generator-construction-state.jai finds gm_expression_depends_on depth>=128 ->true, gm_type_depends_on path.count>=128 ->true, and gm_declaration_depends_on parent traversal limited to128. Please add independent >128 expression/type/parent nesting tests with a rejected canonical declaration plus an unrelated retained declaration; verify actual rejection closure, retained identity and no dangling ancestry. Replace avoidable caps with cycle-aware iterative traversal or a reviewed explicit diagnostic contract. Do not classify the ordinary finite host model tests as depth-domain proof. Integration scoped checkpoint records this remaining limitation and will adopt the stable followup.
+
+
+## Resolved dependency requests and remaining comparison cap
+
+The named-while condition/caller-control request above is resolved by the general compiler prerequisite included in10d9b3f8 and actual Walk_Table proof c612126d. Canonical rejection dependency cleanup request above is resolved by cb94c097: real320-level graphs/cycles and logger reentry; own interpreter/nativeO0/O2 proof and exact producer237-command receipt retained. These resolutions do not certify unrelated constructors.
+
+Model owner remaining request: stdlib/internal/developer-tools/binding-model-properties.jai model_unalias (around60) and model_has_scalar_flag (around166) still reject at64 despite explicit seen-pointer cycle tracking. Please independently construct an acyclic public CType/Typedef chain longer than64 ending in a scalar and check is_same_type/is_void_type/is_bool_type as applicable, alongside actual cycles. Replace count caps with proper cycle-aware traversal; retain malformed/ABI negatives and canonical identities. Tools emission paths already use cycle-aware traversal and must not gain a second provider or compiler exception. Root no-workaround audit should retain exact limit until a stable verified owner handoff arrives.
