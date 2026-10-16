@@ -44,3 +44,6 @@ matrix. Any new production/compiler/dependency repair must follow those facts.
 Please add the diagnostic module/test to workflow path filters and run the new
 unit test alongside the existing toolchain test; the real runtime/package steps
 need no change. Global docs indexing also belongs to integration.
+
+
+The diagnostic test creates its assigned `TMPDIR` or `CARGO_TARGET_DIR` before allocating captures. CI runs these unit checks before build preparation, so that directory need not exist yet. It never selects an internal-disk fallback.
