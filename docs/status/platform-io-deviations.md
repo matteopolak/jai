@@ -445,3 +445,7 @@ private encoding, original platform I/O fixtures and runner. Updated 2026-10-14.
 No lint suppression, disabled assertion, fake descriptor or module-name compiler
 special case was introduced in the reviewed File scope. Native OS operation
 failures are returned or logged; mapped resource cleanup can be retried on failure.
+
+
+## Remaining target accounting limits (2026-10-16)
+No runtime fallback, fake provider or production change in the accounting/path-oracle batch. Dedicated runner machine-readable rows currently describe requested WASM modes only; native checks keep their existing required/fatal behavior and console reporting. External compiler-build-root/output-dir options preserve checkout defaults and explicitly isolate own source-built tools/captures. Unknown dedicated WASM cases fail review selection. Original File WASI hard-link assertion remains required and RED on own T7: independent host os.link also returns errno45. No alternate filesystem or link-copy substitute; CI must supply genuine hard-link-capable storage. Public FileUtilities.visit_files WASM availability is unresolved, with exact tour dependency/reproducer recorded; no invented exports. Actual changed Windows/Linux native behavior remains pending, separate from positive Mac/WASI fixture execution and prior Windows native evidence. See [details](../native/platform-io-target-accounting.md).

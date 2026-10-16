@@ -875,3 +875,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [AppKit receiver repair](native/appkit-receiver-repair.md): preserved signatures with SDK-correct receivers and scoped runtime evidence.
 
 - [Formatter fixture inputs](tools/formatter-fixture-inputs.md): strict source metadata handling and required CI readonly acceptance.
+
+- [Platform-I/O target accounting and Windows path oracle](native/platform-io-target-accounting.md): explicit per-fixture capabilities and retained native checks.

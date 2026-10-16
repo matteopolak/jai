@@ -481,3 +481,7 @@ passed host interpreter, native O0 and native O2 with exact expected output and 
 stderr. Source-built tools used permitted independent producer staging only; full
 corpus, Focus/window/font dependencies and integrated native CI remain coordinator
 verification. `git diff --check` passed and Extensions has no changes.
+
+
+## Explicit WASM capability accounting and Windows path oracle (2026-10-16)
+Canonical all-case producer and runtime catalogue paths now classify exact native Process/System/Thread contracts as platform unavailable on WASM, passed:null. Native coverage stays required; no production guard/lifecycle change. FileUtilities main53 now expects reviewed Windows separators. Actual Mac interpreter/O0/O2, WASI O0/O2, five-context source/lint and source-built formatter idempotence pass; Windows native changed-oracle proof pending. File WASI hardlink RED retained and independently reduced to T7 host errno45, no skip/fallback. Tour visit_files public WASM export/provider review remains open. See [selection and evidence](../native/platform-io-target-accounting.md) and exact ready manifest.
