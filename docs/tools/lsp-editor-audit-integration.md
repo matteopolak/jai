@@ -1,0 +1,7 @@
+# Editor audit integration
+
+Exact da290445 source patch32ef9346 applies the existing recording-file eligibility rule before effectful implicit header classification, including bodiless procedures. Actual reachable dependency headers still resolve normally. Sketches lower their selected function closure instead of globally retrying unrelated failed bodies with stand-in recovery. No strict CLI scope, timeout, parser, visibility or navigation rule changes.
+
+The four independent causal controls retain errors from independent and loaded recorded files and reachable dependencies; require selected sketches to finish; and keep unrelated invalid bodies uncompiled. Producer99 focused checks passed, with3 causal failures and1 passing control before repair. Those are supplied producer results, not local combined test counts.
+
+Both transported patch hashes are verified. Whole-file producer hashes differ from the integrated tree because existing combined IDE changes must be preserved. Only exact hunks were applied; current resulting source hashes are in [the receipt](../status/lsp-editor-audit-integration.json). Old producer source files, old status pages and temporary instrumentation were not substituted. Scoped Rustfmt and warnings-denied Clippy test compilation passed. Local runtime tests are deferred under root’s original scale timing/native lease; the unchanged60-second original corpus gate and final combined suite remain required.

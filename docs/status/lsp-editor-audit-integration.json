@@ -1,0 +1,26 @@
+{
+  "producer": "da290445d403d01b3cf8bf427fda020762dcdd89",
+  "source_patch_sha256": "32ef93460c4a21645ea406b726df3bfc838587f57bccb2d806ae62ae46eeb181",
+  "full_patch_sha256": "76fbc92d0f2780466f5baf7aeafa2cb065fa831d7a65805793cc8fc8ccacf9a6",
+  "integration": "Only exact production and causal-test hunks; existing shared IDE entry admission/navigation/privacy behavior preserved",
+  "full_file_producer_hash_equivalence": false,
+  "qualification": "Producer whole-file bases differ from integrated current files; no old whole-source replacement. Applied diff matches exact reviewed hunks.",
+  "local_checks": {
+    "rustfmt": "passed",
+    "clippy_warnings_denied": "passed combined Type/IDE test compile",
+    "runtime_tests_run": 0,
+    "reason": "Root original scale timing/native lease held"
+  },
+  "producer_tests": {
+    "focused": 99,
+    "causal_baseline_failed": 3,
+    "causal_control_passed": 1,
+    "causal_repaired_passed": 4
+  },
+  "root_original_scale": "pending, unchanged60s bound; no acceptance inferred",
+  "files": {
+    "crates/jaic/src/sema/ide.rs": "135247565253eaaa189ff8329fd5fe24da98ec4f56d95ae1717db8411e5e717d",
+    "crates/jaic/src/sema/ide_sketch.rs": "3c44e14563ba5387e080436e7657668944772e457b264724999e2a18c66687da",
+    "crates/jai-language-server/tests/editor_audit.rs": "7279ec7783d3f34352edc671ab12285f811fd9eeb44b8a6a2e12dc9e3369bfd4"
+  }
+}
