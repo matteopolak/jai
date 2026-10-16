@@ -1,0 +1,46 @@
+{
+  "accepted_source": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "source_object": "7e549d17811a4be3d28ed65c61efa017c6c0c069",
+  "reported_failure_candidate": "940fc8cf; sanitized user-provided Linux ARM job 117173008021 and Linux x64 job 117173008054",
+  "patch": "patches/sdl-sdk-config-940.patch",
+  "patch_sha256": "2f37b5154dd04bb62ece3003be85f233b5249f343ebe6f8d0cb1aa80468fc347",
+  "files": [
+    {
+      "path": "tools/native_bindings/build_dependencies.py",
+      "base_sha256": "d6de03541e7c4fddf81ee96ef0875d488f98ad62ca244db2a28fbd3306a4ba89",
+      "patched_sha256": "7466f267956a09405ce98a02b67c48b87b8e6086cc8d9743037fb05dcfe4c2ad"
+    },
+    {
+      "path": "tools/native_bindings/sdl_sdk_headers.py",
+      "base_sha256": null,
+      "patched_sha256": "f352ef1c8bb1130cd7bf5d3c5b90c8bde940b660ac576f8f7800648bfcd01145"
+    },
+    {
+      "path": "tools/test_sdl_sdk_headers.py",
+      "base_sha256": null,
+      "patched_sha256": "befb8899a5db901bd0eb25b87706cadbf1ba44362262b6abe43af076107f50f6"
+    }
+  ],
+  "official_inputs": {
+    "repository": "libsdl-org/sdl2-compat",
+    "revision": "release-2.32.70",
+    "files": {},
+    "archive": {
+      "url": "https://codeload.github.com/libsdl-org/sdl2-compat/tar.gz/refs/tags/release-2.32.70",
+      "sha256": "e4a8bd5a7052418b8f9cb031e31927389051c22b81d9069806d70b047d856d12",
+      "root": "sdl2-compat-release-2.32.70"
+    }
+  },
+  "template_sha256": "22299bcd79c5deeddf039feb2baef9e906943d15a4984584a2d9e02d227e0757",
+  "verification": "6 Python tests with real CMake script-mode generation of pinned official header; no native compiler/SDK probe/program execution",
+  "ci_metadata_pending": "Exact CI command/include trace and installed runtime package versions requested from root; source include chain and pinned version established independently",
+  "unchanged_canonical_inputs": {
+    "tools/native_bindings/dependencies.json": "bafb3abe2a024d9d2ee0512715b592a88ecbbdbc21bebbcce449f5608a2f2e7c",
+    "tools/native_bindings/verify.py": "fb374a24aec7097eefa576beeabf8a8e2aa985cdf43f6000c6c796f6c64b4393",
+    "tests/native-bindings/sdl_abi_probe.c": "1ecc25f46dd7b3f2ce8cfa7a85594b05d368a0174a8ccc13f516017b1a0d32b7",
+    "tests/native-bindings/sdl_runtime_abi_probe.c": "1399f5d474cad6d124b1d6a14bbbfe96542d10e39a41c900517f04f530a614db",
+    "stdlib/SDL/tests/sdl-layout.jai": "982715b14a0c755ca0897e11a5de0ac9b8f7e214ae0c921d2c51d1651b094d92",
+    "stdlib/SDL/tests/sdl-rwops.jai": "bb84261478815d261ad860cc25ba4cadcc2ecd1282e6e2a11ed68fb5a3efa100",
+    "stdlib/SDL/tests/sdl-wm.jai": "367ba5ad6c0e5e71788f1212dbcf5a8102104c02b630415b1a86d6080c5607de"
+  }
+}
