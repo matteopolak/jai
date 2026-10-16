@@ -1,5 +1,69 @@
 # LSP progress
 
+2026-10-16 named-parameter feature checkpoint ready for integration review:
+implemented one owned completion source plus narrow merge hook. Direct resolved
+procedures, associated methods, aliases/imports, overload union/dedup, defaults,
+variadics, positional/named filtering before/after cursor and accepted edit syntax
+are covered. Expression/member completion remains effective, including same-label
+expression alternatives. No compiler/bootstrap/stdlib/Extensions file changed.
+Known scalar expression facts now filter incompatible unselected overloads via
+the compiler's conversion API. Missing/operand-sensitive facts stay unknown;
+compiler-owner incomplete-call compatibility API is the proper follow-up.
+Compiler-owner callback-metadata prerequisite below remains explicitly open;
+indirect callback completion is unavailable rather than exposing another signature.
+
+Verified source-built integration-clean dependency snapshot (normalized input
+54e154044d20746ac1d12a98c485bbf966d2a09f7208e3efe6e263591f74ca27), with
+cf7dd80 + 5214e9c applied only in assigned T7 scratch. Final input audit found no
+shared-source drift. 55 focused tests pass: 25 library units, ten new API cases,
+20 existing partial-edit/custom-for cases; binary test target has zero tests.
+Scoped rustfmt, Clippy -D warnings and Python syntax checks pass. Native proof:
+18 document phases, two fresh servers, 32 feature requests (20 completion, six
+hover, six definition), six accepted-edit checks and two UTF-16 callee edits.
+Production Basic and original private-import fixtures included; no Jai program
+or exit call executed. All failures/receipts remain under assigned T7
+`scratch/named-arguments-20261016/`; no active internal target/capture paths.
+
+Handoff details/reproduction/limits: docs/tools/lsp-named-arguments.md, linked
+from docs/README.md. Final merged compiler/stdlib/LSP native/corpus verification
+is mandatory; this is candidate proof. No release/version/push/remote actions.
+Filtered inbox now confirms compiler ownership of the callback metadata repair
+after its current typed-binding work. Stable direct named-completion handoff comes
+first, then the authorized Windows URI/path repair immediately in a separate
+commit. This named-parameter batch does not claim native Windows verification.
+
+Requested compiler API contract: an IDE query at a resolved callee expression
+must return its actual declaration/value-bound parameter names, types (when known),
+default presence, variadic/baked flags and argument placement rule, with provenance
+for the selected entity/field/value. No global structural TypeId name lookup.
+Unknown dynamic targets need no invented names. Reuse that same metadata for strict
+indirect call argument ordering/defaults. Optional operand-aware partial-call
+compatibility should distinguish known rejection from unresolved input, allowing
+LSP to filter candidates without reimplementing quotation/conversion/binder rules.
+
+2026-10-16 compiler-owner prerequisite request: named-completion audit independently
+reproduced procedure-value metadata identity leakage. Minimal original source:
+`Holder :: struct { callback: (public_option := false) -> int; }`
+`Other :: struct { callback: (private_option := false) -> int; }`
+`main :: () { h: Holder; other: Other; h.callback(); }`.
+The candidate's TypeId-keyed `proc_type_params` record for `h.callback` contains
+`private_option`, not its declared name. Red evidence is preserved on T7 at
+`scratch/named-arguments-20261016/metadata-audit.log` under the assigned LSP root.
+Please adopt a declaration/value-bound callable-metadata architecture before
+enabling named completion for indirect procedure values. LSP will not expose the
+unsafe shared record. Direct procedure/method headers are independent and safe.
+No compiler file changes are proposed/applied in this new feature batch; earlier
+navigation prerequisites are applied only to the staged dependency snapshot.
+
+2026-10-16 named argument completion: starting additional narrow owned LSP work.
+Design/sequence: `docs/plans/lsp-named-arguments.md`. Preserve Basic navigation
+handoffs cf7dd80/5214e9c. Current shared candidate still needs those prerequisites;
+use an explicit safe source snapshot plus the owned prerequisite patch for checks,
+and request their adoption via this filtered handoff rather than stale compiler
+dependencies. Do not duplicate the compiler owner's corpus/scanner work.
+All new target/capture/scratch paths are under the assigned T7 lsp namespace;
+there are no active internal builds/captures for this batch.
+
 2026-10-15: resumed isolated ownership for the reported Basic `temp` / `exit(1)`
 resolution issue. Read AGENTS, ownership and filtered worker inbox. Reviewed
 `docs/specs/stdlib/modules/basic.md`: `temp` is an `Allocator` value and `exit`
