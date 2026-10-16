@@ -801,3 +801,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Canonical Basic array declaration context](specs/stdlib/README.md): shared implementation ownership, overload injection, private allocation closure and [remaining questions](specs/stdlib/basic-array-context-questions.md).
 
 - [Windows native provider environment](status/shared-windows-provider-environment.json): matching CPU helper, ordinary DLL loading and file-identity CI checks; native Windows acceptance pending.
+
+- [User-deferred capability accounting](tools/user-deferred-capabilities.md) reports native Windows console-color consumers as unavailable, preserves ANSI/native-required checks and keeps failures separate from deferrals.
