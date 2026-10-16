@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "base_snapshot": "1a981530c4c71aebee0cac02b821de8f2acbe2e9",
+  "patch_sha256": "5e17885848cade3bff71dd3476c6c98c7f7ea21c25cdf5f5c86f2c1e94b6e4b3",
+  "producer_commit": "32d8862b77eae43107471f1c2c00092f57190228",
+  "application": "Exact corrected patch excluding co-owned README/questions; no earlier insertion patch or ancestor adoption. Existing typed-argument, pointer dispatch and LSP changes retained.",
+  "verification": {
+    "command": "cargo test --locked --offline -p jaic --lib --test cleanroom_insert_scope --test cleanroom_struct_argument_bindings --test cleanroom_modules --test cleanroom_nominal_comparisons --test cleanroom_operator_filters --test cleanroom_code_flags --test cleanroom_context --test cleanroom_placeholder_dependencies --test cleanroom_named_while --test cleanroom_reflection --test cleanroom_typed_nodes --test cleanroom_callable_provenance",
+    "passed": 320,
+    "failed": 0,
+    "ignored": 0,
+    "stdlib": "frozen-44963725 unchanged committed library (peer Basic array WIP excluded)",
+    "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/insert-32d-merged/core-corrected.log"
+  },
+  "retained_command_error": "core.log: nonexistent cleanroom_typed_struct_arguments target, exit101, no tests executed; corrected command recorded separately.",
+  "limitations": [
+    "Final combined frozen library replay pending",
+    "Native CLI/browser verification below is producer-pinned only until merged replay",
+    "Explicit Code blocks stay private; no public storage-alias interpretation introduced"
+  ],
+  "files": {
+    "crates/jaic-cli/tests/cleanroom_insert_scope.rs": "8bf0f74e2162a4adec473867b07dcbddc2c127bd94feda21c04427594cda2122",
+    "crates/jaic/src/ast.rs": "02558a970534708e3ba3b23541a6465351ee88afc2c780ac4ce930c949af4863",
+    "crates/jaic/src/parser/directive.rs": "35ecec54d15504f047eb6c86f8a0f43a9f04ecdada39b05d3302bd2f33e1576a",
+    "crates/jaic/src/sema/asm.rs": "f223d53e580557729a2ab92c334e9859e114617c4a5693315df36376b39cb416",
+    "crates/jaic/src/sema/code_export.rs": "2a023ff7d3993624700b91955fa404d732c8bc010cb4168324bb79ebeee76fcc",
+    "crates/jaic/src/sema/consteval.rs": "4bc9a916a2191a8a6b29ad61160d421f848150157fb6435e8bbc0112f4c8dd22",
+    "crates/jaic/src/sema/ide_meta.rs": "b13e8c73d72efada4c8b436990ef2fadb2f15ea52bf7c8e6b8f24410704bbfa0",
+    "crates/jaic/src/sema/mod.rs": "163569b7b7d7bb6a4ced540e9deca6c4acc8a53b71f7eadecb6e1d065cf08985",
+    "crates/jaic/src/sema/procs.rs": "a9c009c3790f39a886943156271353a2fdcb0c4a03a2e2f89ab8d227b8d901df",
+    "crates/jaic/src/sema/scope.rs": "b9c43c899c831de8fff81856659d7106a6115813b09127b682cf6d7f91de88ee",
+    "crates/jaic/src/sema/stmt.rs": "39ec624e1f8cdda3d2654e18b46864b0ceac332e7f8418228fa9d1f9674814b3",
+    "crates/jaic/src/sema/structs.rs": "9f0f59d570723a87567ceb583bfea4ee64cb72a1fb294cbc1a27a18cf462ee2a",
+    "crates/jaic/tests/cleanroom_insert_scope.rs": "0d401279db08f3a9742b3c9be03e8a5a725eee5880a5734b2dfccf18a4e48e98",
+    "crates/jailint/src/syntax.rs": "90485dcb5a745d33f6a0d9804f9cec552e95b1b3f10a40649b0e4e9b6b2cdf40",
+    "docs/compiler/insert-declaration-scope.md": "d6ad54795bdfd397e08b73b9175088d153679a58696d5a1f28fa0095551141ce",
+    "docs/status/insert-declaration-scope.json": "4bb77071e8e1234758d341d3d711378882247067773127ca08601a9eff4a537c",
+    "tests/cleanroom-language/insert-declaration-scope/braced-private.jai": "607eff817f8105dc700e5a03b1a70fd72a5fdc2296d462c5089b7c9221f8d55a",
+    "tests/cleanroom-language/insert-declaration-scope/constant-before-insert.jai": "df70602cf4f299301ea4d2f8f8a2a19a4f66446345298dd4a1a2d25a791e57b5",
+    "tests/cleanroom-language/insert-declaration-scope/double-braced-private.jai": "606ec23bad755de8bd66c38bdd9d1861f8834755d567c7477d155d9342a78c96",
+    "tests/cleanroom-language/insert-declaration-scope/duplicate.jai": "aa987291cc3779932cc7cf3c944e35646f0d7717ab54e29ac549dec25b199547",
+    "tests/cleanroom-language/insert-declaration-scope/main.jai": "9aecdc09ad593a84ce203c0af4924ecfe699ee8fc0327dc8878e548cc7f6d744",
+    "tests/cleanroom-language/insert-declaration-scope/nested-private.jai": "82388d0ae88200911754c0704719a71d884e5de224b62e6e37fbd91d400ce78b",
+    "tests/cleanroom-language/insert-declaration-scope/roundtrip.jai": "0ed7d04d26b85ceb6cab2937e70685844ffbd19867311184333741929a01d82c",
+    "tests/producer-requests/human-insert-declaration-scope/main.jai": "a121d0c846912414af369f29ad49409467e136efe5c3bbb091975eb42dfdb879"
+  },
+  "quality": {
+    "rustfmt": "cargo fmt --all -- --check: exit0",
+    "clippy": "cargo clippy --locked --offline -p jaic -p jaic-cli -p jailint --all-targets -- -D warnings: exit0",
+    "clippy_log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/insert-32d-merged/clippy.log"
+  }
+}
