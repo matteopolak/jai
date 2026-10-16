@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "branch": "codex/stdlib-shared",
+  "source_snapshot_before_report": "1daa7bb8842e966a4483508381e476af48864ca8",
+  "state": "focused committed batch; immutable ABI8 candidate preparation; broad gates deferred until known active batch ready",
+  "ready_committed": {
+    "rpmalloc_metadata": "bdd1ff4e; ABI8 native23 profiles,92 libraries built from exact source",
+    "runtime_hooks": "f3b4b2f4;27/0",
+    "typed_struct_arguments": "d5e8f673;17/0 core and3/0 CLI real interpreter/native/WASI",
+    "named_parameters": "5c0482b6;59/0 focused;32 native requests pending candidate",
+    "record_defaults": "ec2b8a56;generator check and4/0 CLI graph rounds",
+    "hash_math": "afad2987;16/0 focused",
+    "linux_build": "1daa7bb8;33/0 scoped; Windows SDK success not claimed"
+  },
+  "ready_pending_dependency": {
+    "tools_refinements": "39 source hashes verified;161 producer current checks; wait stable model-default checkpoint before candidate"
+  },
+  "active": {
+    "model_defaults": "five production files stable notice; final immutable gate/manifest pending after wide primitive-size fix",
+    "appkit_cocoa": "binding facade changing; two portable callers ready but hold coherent pair",
+    "compiler": "canonical reflection/anonymous-import/child-build options/default-root changes owner testing; exact stable checkpoint needed",
+    "table_layout": "foundations canonical declaration-order repair active",
+    "windows_uri": "not ready"
+  },
+  "blocked_or_excluded": {
+    "alias_refresh": "586be99b and c018dd52 not applied; latest oracle explicitly rejects premise",
+    "minimal": "partial80pass6fail compiler dependencies, not green or staged",
+    "bits76": "no stable manifest supplied",
+    "PDB_CIE": "original all-zero fixture issue remains unresolved; not waived"
+  },
+  "verification_policy": {
+    "baseline": "one native ARM64 baseline/catalogue once known batch ready; no optional profile expansion",
+    "original400_and_focus": "coordinator-owned; opaque originals not accessed",
+    "platforms": "Windows/Linux and other native targets required later; source checks not runtime passes",
+    "release_permitted": false
+  },
+  "current_counts": {
+    "compiler_core": {
+      "passed": 17,
+      "failed": 0,
+      "ignored": 0
+    },
+    "compiler_cli": {
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0
+    },
+    "lsp_focused": {
+      "passed": 59,
+      "failed": 0,
+      "ignored": 0
+    },
+    "hash_math": {
+      "passed": 16,
+      "failed": 0,
+      "ignored": 0
+    },
+    "linux_build": {
+      "passed": 33,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  "superseded_failed_runs": [
+    "typed-generic-integration.log stale reused target13/4, preserved",
+    "linux-build-final.log missing formatter setup, preserved"
+  ]
+}
