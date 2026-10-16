@@ -712,3 +712,5 @@ include exact file/line/source hashes and required platform limits.
 [Canonical generator integration counts](status/shared-generator-checkpoint.json) pin producer manifests, exact focused commands, retained failed helper-identity assertions and the still-blocked Android target. [Reviewed AppKit contract](specs/stdlib/modules/appkit.md) is available to the bindings owner; its new surface is not yet included in the pinned a97 candidate.
 
 [Available frozen553 build identity](status/shared-candidate-553afc98.json) records4439committed inputs,258paired ABI7native assets, actual source-built tools,69focused production checks and9relocated/license checks. Later signed-time/ASCII commits are separate; broad baseline remains deferred until active known fixes are combined.
+
+[Compact current verification report](status/shared-current-verification.json) separates frozen553 checks, later committed fixes, deferred broad commands and unresolved fixture/platform gates.

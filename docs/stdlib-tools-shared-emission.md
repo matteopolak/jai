@@ -91,9 +91,12 @@ inventoried rather than hidden inside the52-name count.
 The new three-library test uses original C shared/static/system providers, live
 configured libclang-version validation and a wrong-version negative. Shared
 directives omit no_dll; static directives add it, and LINK_ALWAYS is honored.
-The system logical-name assertion remains red until the platform owner repairs
-Library_Info.full_path. Driver output consumes that canonical logical name,
-without stripping physical filenames. The earlier absolute-suffixed
+The system logical-name assertion now passes with the platform owner's repaired
+Library_Info.full_path. Final canonical-libraries-x9metbwe verifies all three
+real providers and linked native O0/O2 consumers using a freshly source-built
+shared compiler, plus configured LLVM version/negative and strict checks.
+Driver output consumes that canonical logical name without stripping physical
+filenames. The earlier absolute-suffixed
 #library,shared reduction is an unestablished oracle, not a proven compiler bug
 under the refined contract. Exact byte copies of NEW owned test inputs beside
 their libraries implement the approved relative oracle. Production always comes
@@ -125,3 +128,5 @@ official SDK name plus canonical fix_macos_foreign_name, not a new prefix
 classifier. The original C symbol still returns19 through its library, while
 generated C++ sum/default/aggregate adapters execute. Unsupported assembly-label
 and other ABI categories are not classified by an invented universal policy.
+
+Integration followup: the earlier system logical-name red above is resolved by canonical provider bf0618fe, with the maintained driver from dc95c740. The exact frozen553 multiple-library workflow passes26/0 against normal production assets, including real generated consumers and configured-version rejection. Earlier red receipts remain retained; this focused result does not close the nine other partial domains or distribution resources.
