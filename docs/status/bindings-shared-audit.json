@@ -6311,5 +6311,103 @@
       "source_changes": false,
       "gui": false
     }
+  },
+  "ready_appkit_backing_scale_checkpoint": {
+    "subject": "fix(bindings): expose canonical NSWindow backing scale alias",
+    "state": "READY STABLE20/20 with3nativeprograms completed; boundedslotRELEASED; integration aloneGit/index",
+    "timestamp": "2026-10-16T12:18:38.250385+00:00",
+    "source_manifest": {
+      "stdlib/Objective_C/AppKit/module.jai": "16229afa8d43ad04ac27a7c1379f18b8020d50524ba245d21d0b61b03248b90b",
+      "tools/native_bindings/generate_appkit.py": "84db5ea7acaa92820a9bbadd00a556d6545e9e6e0decac776c51a06fa1de2d96",
+      "tools/native_bindings/test_appkit_aliases.py": "71e5b59caef76b00572a114ad3db4b6639394c729bfbf00f5dda277c2a525a45",
+      "tools/native_bindings/verify_appkit_backing_scale.py": "180e2f1d681da35e55029e645151adf63b6c3e68b321eee7e47ae8d5370ef0b2",
+      "tests/native-bindings/appkit-window-backing-scale.jai": "b95dc870a3ea4478c9b3d0f5cd6dc1814e3f6012c938e11ced2591821fb1b1f2",
+      "tests/native-bindings/appkit_backing_scale_probe.m": "8ea44bb574c32ef411d00da93feded3053badc620403659310048e5833b7f09b",
+      "docs/native/appkit-window-backing-scale.md": "5467831a40056fe5a0974db35b7d217a5175afd7d3e18cf9158ad668edec881b",
+      "docs/status/bindings-deviations.md": "b1a0e41292edd705162be8d45c91fe54fd8900ae430c3110723ddf6827614db8"
+    },
+    "reviewed_spec": {
+      "path": "docs/specs/stdlib/modules/appkit.md",
+      "sha256": "47dae827b89965d13ab232e9e3a92ed8b554fab979ec992038efd851ab10f3ac"
+    },
+    "canonical_target": {
+      "api": "NSView.backingScaleFactor",
+      "signature": "(self: id) -> CGFloat",
+      "receiver": "instance supplied self",
+      "source_path": "stdlib/Objective_C/AppKit/generated.jai",
+      "source_sha256": "a8294680612f4620c9708b57ab715d8f6988eb295e85e2ff1f683cd17c670c9c",
+      "unchanged": true
+    },
+    "production_delta": "Exactlyone alias line in NSWindow; no otherstdlibbody/field/selector changes",
+    "source_receipt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit-backing-scale/backing-scale-6l06lncs/report.json",
+      "sha256": "879c68e8e90e6c57e17bde28bbd5cc803e05d50d1e3a540320ba957cc5e9aecd",
+      "passed": 20,
+      "failed": 0,
+      "inputs_unchanged": true,
+      "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit-backing-scale/bindings-inputs-bngz_pxe",
+      "native_executions": 3,
+      "parser_alias_unit_cases": 5,
+      "units_counted_as_one_command": true
+    },
+    "red_receipt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit-backing-scale/red.json",
+      "sha256": "0f73c532d7d5d11d1b252a45df8d76fbf553312f0df8e9f13aee4dec11c652dd",
+      "failure": "NSWindow has no constant member backingScaleFactor"
+    },
+    "tools": {
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/beec-appkit-metal/compiler-target/debug/jaic": "1a9813969722e6f08d0c8082620c3057b25b1959e65bd410b3e607b979e5fefb",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/beec-appkit-metal/compiler-target/debug/jailint": "a7e852e9d244154ffbeaa90357ce94053f806bc269dcaf7d710f1d99ae39f3ce",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/jaifmt": "a9978ba7340f707f9514d0cbcef6e7543fa372a69afade3e2bf2bbfbc073cbfb"
+    },
+    "official_sdk": {
+      "root": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+      "header_hashes": {
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSWindow.h": "32d8533578a7dfc8edf193775bc3471556ad8da94322bc42ce5942eed9c47549",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSScreen.h": "094f7a09261d24fd6eb934306aa37262634906ec9191c9d8131f781720630479",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSView.h": "af91fb647759eccbc205c2db73a20f7d73cd3850b90ae13d4a211745abeb372c"
+      }
+    },
+    "public_alias_inventory": {
+      "api": "NSWindow.backingScaleFactor",
+      "kind": "alias",
+      "target": "NSView.backingScaleFactor",
+      "signature": "backingScaleFactor :: NSView.backingScaleFactor",
+      "body": "implemented",
+      "contract": "reviewed",
+      "verification": "canonical public target; behavior evidence recorded separately"
+    },
+    "per_api": [
+      {
+        "api": "NSWindow.backingScaleFactor",
+        "body": "truecanonicalalias implemented; exacttarget/signature/selfname/type/context/procedureidentity",
+        "verification": "ARM64 O0/O2/ASan+UBSan pointeridentity and realSDKNSScreen CGFloatcalls; NSWindowinstancegetter metadata, no allocatedwindowproof"
+      },
+      {
+        "api": "NSView.backingScaleFactor",
+        "body": "existingcanonicaltargetunchanged",
+        "verification": "realSDKNSScreen returns +parameteridentity; genericidreceivernotnativeNSViewinstanceclaim"
+      }
+    ],
+    "platforms": {
+      "macos_arm64": "actual3nativeSDKprograms O0/O2/ASan+UBSan PASS, noGUI/window/applicationcreation",
+      "macos_x64": "source/complete strictlint/SDKcompile only; no nativeexecution",
+      "other": "No otherplatformnativeclaim"
+    },
+    "legacy_receiver_boundaries": "NSView.convertPoint and NSEvent threeclassproperties unchanged; coherentforwardingcontract stillpending, no expectedmissrefresh",
+    "remaining": [
+      "RootoriginalUI-builder replayafteradoption usingrootpermitteddependencies; cleanworkerdoesnotreadexcludedbodies",
+      "AllocatedNSWindow runtime proof requiresseparateexplicitGUIlease; noneclaimed",
+      "NativeMacx64/otherplatformchecks remainseparate"
+    ],
+    "integration_requests": [
+      "Stage onlyeightownedpaths plus own audit; preservepeeredits",
+      "Coordinate refreshedappkit.md dependency withrootreviewer",
+      "Update README nativeindex/globalcoverage centrally",
+      "Replay originalUI-builder and send sanitizednextdiagnostic"
+    ],
+    "native_programs_active": 0,
+    "native_slot": "Explicitlyreleased afterexact3sequentialprograms",
+    "gui_executed": false
   }
 }
