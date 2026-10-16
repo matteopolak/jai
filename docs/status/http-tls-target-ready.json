@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "owner": "platform-io",
+  "scope": "Windows TLS temporary allocator API repair; Http WASM contract review held",
+  "ready_production": [
+    "stdlib/Extensions/Tls/trust_windows.jai"
+  ],
+  "held": [
+    "HTTP WASM current_time_consensus availability",
+    "Windows HTTP compile-time required bcrypt host-provider phase"
+  ],
+  "integration": "Integrator sole Git index/commit owner; preserve existing unrelated WIP and README changes. No worker commit or remote action.",
+  "files": {
+    "stdlib/Extensions/Tls/trust_windows.jai": "471d729e0a17ffd1c1d1ff709db57b06f8efbfcbab4f365be47e4870bbe52195",
+    "tests/extensions/tls-windows-target.jai": "0aacf84c81e846163104f5807f211dcc0d34a7798e5c5fc9a02da02c96291c30",
+    "tests/extensions/http-date-target.jai": "c0c7363c67bb03e1ff01beea156dd97433caf960628199d7d2d4ae8caae057a4",
+    "tests/extensions/http-native-date-target.jai": "917f27148e8a47aa418fe7ccf2b894f4a1d93e0e63a0ab564a5d0690732e2fcd",
+    "tests/extensions/json-windows-host-provider-repro.jai": "0584505aad679cbb5ad3895e7a49b26155d8989f3b5696ab807fe07c51e31c66",
+    "tools/check_http_tls_targets.py": "cdc9c605bca288b07ba91fcc069c718bb2b9c3c2ee4caa5e49bbc63f3c7ee4b3",
+    "docs/extensions/http-tls-target-repair.md": "f6043080456b2e6575349f1d290f314b3582fa59263a58bb1f52bd96a08715cc",
+    "docs/specs/stdlib/http-tls-target-questions.md": "50b9b5e7212d391bea8a00cf8de19d1dc6b490347030e0e733423c91139a5a50",
+    "docs/README.md": "a996ecbd612b9f1a78b1049b94ade0fae3fa6f7d9186db10f25681a003f97ca4"
+  },
+  "tools": {
+    "jaic": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/http-targets/build/debug/jaic",
+      "sha256": "5ceac2a30c10c456eefd116fb5600cc71062d330e2a79ee3371a90da8e61a325",
+      "kind": "source-built offline no LLVM"
+    },
+    "jailint": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/http-targets/build/debug/jailint",
+      "sha256": "a9c3f712ae1aadff9942923230458293036d96ccc5c0e264e45d1c83e3365300",
+      "kind": "source-built offline no LLVM"
+    }
+  },
+  "native_evidence": false,
+  "source_matrix": {
+    "commands": 14,
+    "passed": 10,
+    "failed": 4,
+    "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/http-targets/production-final/results.json",
+    "sha256": "8f3c4a585a2e89193145c2f4955d7baa745dd4dc636880cbd9a463ac3e175d11"
+  },
+  "verification": {
+    "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/http-targets/production-verification.json",
+    "sha256": "f7f4d1dddd322f30495f456a7b1053f636f140cbf91ed3dea4ceedf1757abfeb",
+    "jaifmt_idempotence": true,
+    "ruff_check": true,
+    "ruff_format": true,
+    "scoped_whitespace": true
+  },
+  "retained_captures": {
+    "red.json": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/http-targets/red.json",
+      "sha256": "15eb0d18ff68a23febc98615f34fddb38d7a67a45d33fd416355c23eec8b62a1"
+    },
+    "tls-red.json": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/http-targets/tls-red.json",
+      "sha256": "81bdf977f87833ba6c85c4e0ebd0023816e46fe429bca1d538d242e1cc26d0f5"
+    },
+    "provider-red.json": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/http-targets/provider-red.json",
+      "sha256": "6586604460a9a87a232c1135ebe09db1fa2cd6723d1bbf8dbded9987279f65df"
+    },
+    "matrix-final/results.json": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/http-targets/matrix-final/results.json",
+      "sha256": "4647c498e5c52aadf1ef7e07e8896e1a6447882ff8b49882d928284191f95307"
+    },
+    "http-date-native-proposal.patch": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/http-targets/http-date-native-proposal.patch",
+      "sha256": "51bdfd163db1796e68a07b485421f8dfda62647770048391c4b379a69d155635"
+    }
+  },
+  "filtered_review_inputs": {
+    "/Users/matthew/projects/jai/artifacts/cleanroom-workers/producer-handoffs/current-repair-batch/stdlib-target-dispositions.md": "f9438d919388972ec04569e16c204564c2c5d86323961561f924797b6c1acf61",
+    "/Users/matthew/projects/jai/artifacts/cleanroom-workers/producer-handoffs/current-repair-batch/stdlib-target-dispositions.json": "6875a042f1011e613ab395679ee93160b1ed75650729e8e4ca257b36a07d1ead"
+  },
+  "limitations": [
+    "No Windows runtime execution, native codegen or CI result from this worker",
+    "WASM clock proposal reversed; production HTTP files unchanged",
+    "Required bcrypt SDK declaration retained; full Windows HTTP source checks remain failed",
+    "Allocation overflow/null error paths source/lint checked, not injected/native tested",
+    "Initial Cargo invocation touched shared debug target before interrupt; integration notified"
+  ]
+}
