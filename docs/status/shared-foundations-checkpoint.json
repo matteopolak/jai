@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "producer_manifest": "docs/status/foundations-corpus-api.json",
+  "production": [
+    "stdlib/Math/module.jai",
+    "stdlib/internal/hash/module.jai"
+  ],
+  "verification": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/foundations-final-ec2b8a56/results.json",
+    "passed": 16,
+    "failed": 0,
+    "ignored": 0,
+    "scope": "Three original regressions interpreter/native Mac ARM64 O0/O2 plus required struct-variant rejection; assertions enabled"
+  },
+  "contract": "Math dot aliases public dot_product group; recursive scalar variant admissibility preserves nominal type, seed and formula; no wrapper exports",
+  "not_consumed": [
+    "File import-scope tests/runner and narrative pending producer correction to latest reviewed anonymous-import oracle",
+    "canonical Table declaration order active owner"
+  ],
+  "producer_checks": {
+    "passed": 54,
+    "classification": "scoped producer checks; whole family incomplete, old File premise disputed; no overall green claim"
+  },
+  "limitations": [
+    "Distinct-wrapper conversion remains unestablished",
+    "Windows/Linux native unverified",
+    "Original corpus coordinator-owned"
+  ]
+}
