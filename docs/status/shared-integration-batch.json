@@ -3,7 +3,7 @@
   "worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
   "branch": "codex/stdlib-shared",
   "source_snapshot_before_report": "1daa7bb8842e966a4483508381e476af48864ca8",
-  "state": "focused committed batch; immutable ABI8 candidate preparation; broad gates deferred until known active batch ready",
+  "state": "Current known batch selectively committed; accepted8fa native assets retained; final pin waits stable AppKit/projection",
   "ready_committed": {
     "rpmalloc_metadata": "bdd1ff4e; ABI8 native23 profiles,92 libraries built from exact source",
     "runtime_hooks": "f3b4b2f4;27/0",
@@ -12,22 +12,26 @@
     "record_defaults": "ec2b8a56;generator check and4/0 CLI graph rounds",
     "hash_math": "afad2987;16/0 focused",
     "linux_build": "1daa7bb8;33/0 scoped; Windows SDK success not claimed",
-    "named_while_roundtrip": "Existing producer-requests/named-while-roundtrip.jai covered by current CLI graph4/0 interpreter/nativeO0/O2, exactstdout assertions retained"
+    "named_while_roundtrip": "Existing producer-requests/named-while-roundtrip.jai covered by current CLI graph4/0 interpreter/nativeO0/O2, exactstdout assertions retained",
+    "tools_refinements": "f3b98639;39 hashes/format verified;161 producer true-guard proof scoped",
+    "anonymous_import": "9863a7a5;71 own core+3CLI actual tests",
+    "table_order": "624a7d58;30 own combined checks, field offsets preserved",
+    "model_defaults_comparison": "3dde5d4a;22+audit hashes verified,284 producer gate/3 own focused; six partial constructor rows remain",
+    "runtime_meow_audits": "8370ec96;99/60 own checks, serialized",
+    "minimal_partial": "f0d8af86;92/4 actual corrected-premise checks, genuine projection failures retained"
   },
   "ready_pending_dependency": {
-    "tools_refinements": "39 source hashes verified;161 producer current checks; wait stable model-default checkpoint before candidate"
+    "cocoa_enum_callers": "4 exact ready files; hold with AppKit stable facade pair"
   },
   "active": {
-    "model_defaults": "five production files stable notice; final immutable gate/manifest pending after wide primitive-size fix",
-    "appkit_cocoa": "binding facade changing; two portable callers ready but hold coherent pair",
-    "compiler": "canonical reflection/anonymous-import/child-build options/default-root changes owner testing; exact stable checkpoint needed",
-    "table_layout": "foundations canonical declaration-order repair active",
-    "windows_uri": "not ready",
-    "anonymous_import": "Separate compiler-import-scope owner claims modules.rs general top-level anonymous import placement; named private negatives preserved"
+    "appkit_cocoa": "Reviewed inheritance consumed; Forbear producer source pass; final67 immutable handoff pending",
+    "child_workspace_projection": "Isolated compiler-workspace-options owner; four Minimal child settings failures remain genuine; helper path semantics settled, no path rewrite needed",
+    "callable_metadata": "Primary compiler owns; optional include only stable checkpoint, no alias refresh",
+    "windows_uri": "LSP Mac24 requests, broader suite active; native Windows pending"
   },
   "blocked_or_excluded": {
     "alias_refresh": "586be99b and c018dd52 not applied; latest oracle explicitly rejects premise",
-    "minimal": "partial80pass6fail compiler dependencies, not green or staged",
+    "minimal": "PARTIAL committed f0d8af86;92/4, only child projection genuine; original80/6 preserved",
     "bits76": "no stable manifest supplied",
     "PDB_CIE": "original all-zero fixture issue remains unresolved; not waived"
   },
@@ -62,6 +66,36 @@
       "passed": 33,
       "failed": 0,
       "ignored": 0
+    },
+    "import_scope_core": {
+      "passed": 71,
+      "failed": 0,
+      "ignored": 0
+    },
+    "import_scope_cli": {
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0
+    },
+    "table_scope": {
+      "passed": 30,
+      "failed": 0,
+      "ignored": 0
+    },
+    "runtime_core_audit": {
+      "passed": 99,
+      "failed": 0,
+      "ignored": 0
+    },
+    "meow_audit": {
+      "passed": 60,
+      "failed": 0,
+      "ignored": 0
+    },
+    "minimal_corrected_premise": {
+      "passed": 92,
+      "failed": 4,
+      "ignored": 0
     }
   },
   "superseded_failed_runs": [
@@ -81,5 +115,6 @@
     "Focus GUI launch and user issue1 signed mouse-wheel/event propagation acceptance coordinator-owned",
     "Windows/Linux native CI later; no unsupported platform green",
     "Original all-zero PDB/CIE issue not waived"
-  ]
+  ],
+  "source_head_before_report": "f0d8af8633be2cd60fbc3ba6868586ec673c8faa"
 }

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "files": {
+    "stdlib/Bindings_Generator/model-helpers.jai": "fbf8b71dac225384f102599b6a856d8b619e17e8c33ca6955030a9e61ffac3c6",
+    "stdlib/internal/developer-tools/generator-template-defaults.jai": "3290c8ff44a8f1ff7319be58d934b2ac360d83dc34e67ed4670c31cfb067b740",
+    "stdlib/internal/developer-tools/generator-special-construction.jai": "7b9b018ed93d324b4559607a249e0bc35e252d1bf5640de9c839f22307847f1f",
+    "stdlib/internal/developer-tools/generator-canonical-construction.jai": "4168774964fad897cb7f028bbebb57b4686492e2743cb1ac3121497417498d5b",
+    "stdlib/internal/developer-tools/generator-model-helpers.jai": "a732e3b5b60b0424198a9e9460d0618281031e6991fe5f164db7b7640b3003c2",
+    "stdlib/internal/developer-tools/binding-model-properties.jai": "c2af81de40390b7f2b5167217c7fd3d0ccfb8fb79ef20083dfee57fab8e659cf",
+    "tests/developer-tools/generator-model-helpers.jai": "d977e1507631177e00c8746bf1100cd758192878c13f6babf91a703d695d8d50",
+    "tests/developer-tools/generator-model-lifecycle.jai": "2fecd6e324b346dff60c360dec81ad31868486487b59dc1c5633c9a093f3aa12",
+    "tests/developer-tools/generator-model-comparison-depth.jai": "fbb0a57ba369c1ee701b06f842a48d7cb826e0d5a86c5c32c141610c641baba8",
+    "tests/developer-tools/generator-model-defaults.jai": "44ed8f416928be259c6d3ed1a8afe44928ad79c47defa1c51fc44714342ef247",
+    "tests/developer-tools/generator-model-defaults.hpp": "a5a00cb4b6692b854612cecd561b0b45a2e199d7fce3426d9ac6cd0fd79fb336",
+    "tests/developer-tools/generator-model-defaults-repeat.inc": "af92cd3df78576d8bfed6ae34471cac9ca35fd4a67efe76fe4eb8a27258fe03e",
+    "tests/developer-tools/generator-model-defaults-native.cpp": "b49187a7e8930c3be072d0a55b10526e127dc3a4a7374dbc742e35f911a824c0",
+    "tests/developer-tools/generator-model-wide.hpp": "6442dad0afe56e977037550c946822c30fb8df2b5967ae3b0f1c42cdbc04d8ef",
+    "tests/developer-tools/generator-model-default-emission.jai": "f1ea7d345b93cd217a4fe28eb34ad8e771e4a37bb3e15e07a1a5e9ef698ae0e4",
+    "tests/developer-tools/generator-model-default-roundtrip.jai": "a92cc217adcc258b984fdd34540fcf31c5c613aed7cf3b2c84bf721a4b96408a",
+    "tests/developer-tools/rejections/generator-default-query-private.jai": "6ffda807ad10e8aefd7378d92c564f9ec5ec244cc437ddece4404bfcb8993428",
+    "tools/check_generator_model.py": "d9a32d2cd15a705c492e7ae0b2f3a7c2e3b268dbaa2e7ca1c109e0fa70e1836c",
+    "tools/check_generator_model_shared.py": "9f083f2fd496f19027097f38e53a6a19709290b782c5d5b964cc142d12adcf03",
+    "docs/generator-model.md": "c79f22d71b59b68a16b0300eca9faa758e55e2f34a7dcb2554cd9ea98a7f91eb",
+    "docs/generator-session.md": "f1e83c61f46a1a1db3925611bce72729c849a25b327faad9a042fdcb135bca4a",
+    "docs/specs/questions/generator-model.md": "070976439761606b282202ea08dd866d2e59482365f46ed54f3414edd7205948"
+  },
+  "producer_audit_sha256": "f94a77985f49836db6a28750791bd12b27ed15ddef8de5b1fd5fb8fcf0ae7b4c",
+  "review": "Canonical default query preserves exact parse receipt/target/source point, preflights entire SDK shape before canonical construction, never imports temporary nominal cursors. Iterative finite comparison removes64 cap with active-path cycles/malformed byte-extent checks; no public signature/provider change.",
+  "producer_verification": {
+    "passed": 284,
+    "failed": 0,
+    "ignored": 0,
+    "scope": "44 interpreter+88 native+12SDK plus format/lint/target/privacy; exact producer compiler d0b6dc22 qualification retained; not current compiler whole-proof"
+  },
+  "own_focused": {
+    "passed": 3,
+    "failed": 0,
+    "ignored": 0,
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/model-current-import-863c6fc6-r2.json",
+    "scope": "helpers,192-depth comparison,default SDK producer on integrated import-scope compiler; all22 hashes unchanged"
+  },
+  "initial_setup_failure": "model-current-import-863c6fc6.log retained: Python duplicate environment keyword before executing any test; no product result claimed",
+  "remaining_limits": [
+    "Six exact partial constructor rows in producer audit remain partial; no missing-body count equals full functionality",
+    "Native semantic construction/string/macro128 and metadata64 guards remain independent limits, not oracle exclusions",
+    "Graph comparisons use linear active-path scans/quadratic deep-chain cost",
+    "Advanced dependent/default/pack/nominal/template-template and target ABI forms still diagnosed",
+    "Full combined immutable current compiler/model/tools gate pending final candidate"
+  ]
+}
