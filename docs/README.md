@@ -672,3 +672,5 @@ include exact file/line/source hashes and required platform limits.
 - [Canonical public operator facades](compiler/public-operator-facades.md): reviewed overload reexports, preserved identities/visibility and exact compile-time fixture classification.
 
 - [Protected formatter inputs](tools/formatter-protected-inputs.md): real token/idempotence checks on mutable copies while original bytes and permissions stay protected.
+
+- [GL assertion effects](portable-gl-assertion-effects.md) and [Cocoa assertion effects](portable-cocoa-assertion-effects.md): actual SDK operations, failure ownership and [scoped producer/integration verification](status/shared-rendering-cocoa-checkpoint.json).
