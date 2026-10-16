@@ -1,0 +1,53 @@
+{
+  "commits": [
+    "3c6bfe016ed007c408de496d3ca64b5ff810f688",
+    "a411d75cb4f90cc52d096e1c17fbcf1c46170152"
+  ],
+  "source_baseline": "a942f4398434ec6b9eca6307c1ce8078222d84d9",
+  "scope": [
+    "crates/jai-language-server/tests/editor_audit.rs",
+    "crates/jaic/src/sema/ide.rs",
+    "crates/jaic/src/sema/procs.rs",
+    "docs/README.md",
+    "docs/status/lsp-deviations.md",
+    "docs/status/lsp-progress.md",
+    "docs/tools/lsp-scale-responsiveness.md"
+  ],
+  "committed_files": {
+    "crates/jai-language-server/tests/editor_audit.rs": "00098301522353c64a8e7aa7c224630eceaf5cdf42bc57f6edcd4e3fbe634ed5",
+    "crates/jaic/src/sema/ide.rs": "8f776e2ce466aefa9f27c30d7bab7e95ccfb3979c2d19a2bd5555c6920efc9b4",
+    "crates/jaic/src/sema/procs.rs": "9bb1875749f854a449cf518b85a2617a104d2ea67569bace99dfb8de01adf04b",
+    "docs/README.md": "7eb1ed5f8725cb37780f7285c2cc9fbbd63cdca641d95ecb177991a0ecd8abda",
+    "docs/status/lsp-deviations.md": "23d7ccf2ecb01de080e2908baddac3d71505b91df59f981a5ed83837f1343f98",
+    "docs/status/lsp-progress.md": "3d10c861e4255e16eaa4edefcf5aa475b1b65b5b58e6c85152058d5fc2ca43e7",
+    "docs/tools/lsp-scale-responsiveness.md": "c3c08ced318570c037b93158963fb6372f531bf1513133f5eb475685699a7482"
+  },
+  "current_checks": {
+    "core_invalidation_pass": 4,
+    "editor_audit_pass": 5,
+    "rustfmt": "pass",
+    "clippy": "pass compiler/LSP libs/tests -Dwarnings"
+  },
+  "previous_cohort_checks": {
+    "commit": "3c6bfe016ed007c408de496d3ca64b5ff810f688",
+    "lsp_focused_pass": 100,
+    "core_invalidation_pass": 3,
+    "receipt": "../handoff/manifest.json"
+  },
+  "required": "Root original unchanged60s corpus-backed gate and native Windows remain unverified. Latest da290445 corpus115.364s remains RED.",
+  "apply": "Combined narrow source patch supersedes the earlier 1a5996 source patch: apply only once on adopted da290445 source, preserving current compiler changes. Separate test/docs patch. Full isolated commit patches archival; never bulk replace compiler files.",
+  "files": {
+    "editor-audit-preflight-combined-source.patch": "670ee627e0205cfdc68c40d3ce60a7d53f76fa3bfea99f6f43876c2ecccbfc4a",
+    "editor-audit-preflight-combined-tests-docs.patch": "0bcebea413a419d548dd0cf0946459d96bdb7b564d41f9fcfc88f2333d5691c3",
+    "source-guard.json": "3122ac908c50c255b145a9cfc87377195f10fd4e3249a7e9f73e14f14ed3a0c4",
+    "3c6bfe01.patch": "a4ae96fae594f38cf7393dc1076bd3a204b74f44503829bef611a2a572d20063",
+    "a411d75c.patch": "5ba7c286b0185e5e004806232e44c2c79ee21d9f4932df6987d4c981bae87517",
+    "parked-final-core.log": "9ee8bf3858e6f530fa3dab28131eeef45ba5bc88dd3e9cdc59d97d45588236c8",
+    "parked-final-core-result.json": "c03d4657a571fa75aa435dd088d5d9a43fae6d3b79cfde4fdd21b6266b01cd66",
+    "parked-final-editor.log": "473b944fcb90fb805eaf958a7d7cd56027d6e960242f489ea3adb0de5d2ebe3b",
+    "parked-final-editor-result.json": "78c1a4763e14774e133b2bcf5dfb73168b644708830f16b8c3de8fa8bd12f47c",
+    "parked-final-clippy.log": "c68d76768c9d33963b859e510c61f1a762451d64a0da77ab5373189c75b358f6",
+    "parked-final-clippy-result.json": "46354f69398cc255934eedfbc6bb1846612782b4e11ab7dfb3eccee8d0b2906e",
+    "body-cache-parked-red.log": "f61464dbeb71b8e5e3582a78ddb9ba9bb25f9fd704f1786aa17283e490bbc44f"
+  }
+}

@@ -855,3 +855,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Linux Clipboard static dependency closure](clipboard-linux-static-link-closure.md): required private X11/pthread retention, causal link-argv evidence and real Linux runtime gates.
 
 - [Conditional callable joins](compiler/ifx-callable-joins.md): official else-header rule, narrow metadata repair, causal tests and the separate Io workspace configuration reducer.
+
+- [IDE preflight failure reuse](tools/lsp-second-preflight-integration.md): exact second-repair source guards, causal invalidation controls and pending unchanged-bound original timing gate.
