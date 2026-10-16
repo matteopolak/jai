@@ -1,0 +1,41 @@
+{
+  "state": "source-and-metadata-verified-native-ci-pending",
+  "base": "a8e9a92c66f85ccaf29be7518e463555d29abcd6",
+  "scope": "Windows short-import per-symbol provider/export selection",
+  "production_files": [
+    "crates/jaic/src/interp/native/windows_imports.rs",
+    "crates/jaic/src/interp/native/windows.rs",
+    "crates/jaic/src/interp/native.rs",
+    "crates/jaic/src/interp/mod.rs"
+  ],
+  "verification": {
+    "host_metadata_tests": { "passed": 18, "failed": 0, "ignored": 0 },
+    "host_strict_clippy": "pass",
+    "windows_x64_strict_clippy_source_check": "pass",
+    "windows_arm64_strict_clippy_source_check": "pass",
+    "rustfmt": "pass",
+    "public_arm64_sdk": {
+      "archive_sha256": "77c8bdaa5ea9e08e5ea4631ccefec562963a2248cfc8374881042cee199fe307",
+      "compatible_short_imports_verified": 64,
+      "providers": 8,
+      "arm64ec_export_as": "independently selected; never coerced to ARM64",
+      "mode": "metadata only; no DLL execution or SDK binary commit"
+    }
+  },
+  "preserved": [
+    "sealed 6e149cac mixed-CPU patch and a8e9a92c padding patch",
+    "wrong-CPU-only and malformed-record rejection",
+    "same-symbol provider/export ambiguity rejection",
+    "required-library startup loading",
+    "candidate precedence and selected-provider identity",
+    "existing single-provider long-COFF behavior",
+    "non-Windows loading and ABI call implementation"
+  ],
+  "remaining": [
+    "exact x64 CI archive/hash not supplied",
+    "actual native Windows DLL loading/execution requires coordinator CI",
+    "multi-provider long-COFF symbol/relocation routing remains unsupported and diagnosed"
+  ],
+  "deviations": [],
+  "evidence_directory": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/per-symbol-imports"
+}
