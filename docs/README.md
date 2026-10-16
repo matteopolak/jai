@@ -931,3 +931,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - Host provider caches now require source-paired ABI8 receipts; filename-only/ABI7 reuse is rejected. SDK input guards include .inc/patch and callback-context sources. Eleven selection policies pass; real native CI remains required.
 
 - [Canonical runtime allocator alias](runtime-default-allocator-alias.md): exact reviewed Default_Allocator entity, public visibility and default-context identity; obsolete disconnected allocator removed. Seven owned postimages/deletion and three reviewed contracts verified. Producer18 actual ARM/x64 program modes pass; original Windows x64 TOML remains required CI. No native C inputs changed.
+
+- [Input original fixture adoption](tools/input-original-adoption.md): six exact source hashes, persistent production resize storage and signed-wheel/window/payload assertions retained. Four source checks pass; prior nine Mac runtime outcomes are separately pinned, current combined GUI smoke remains root-owned.
