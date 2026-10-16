@@ -1,0 +1,162 @@
+{
+  "status": "verified full required WASM tour; actual hardware browser rendering pending",
+  "baseline": "ac174e805660ce4d8f4744d2be9f6842b60edc24",
+  "build_identity": {
+    "baseline_files_verified": 1839,
+    "unexpected_deltas": [],
+    "extension_files": 596,
+    "extension_changed_paths": [
+      "stdlib/Extensions/WebGPU/module.jai"
+    ],
+    "wasm_sha256": "9501564527dbda4116905b427e6b87daf77e42d1d0afd09186aec7050be17c19",
+    "cli_sha256": "f64ae97f7e0b40cd1ef5adca0bbe18dd229683b116859a0567716900cb07849d"
+  },
+  "owned_overlay": {
+    "crates/jai-wasm/js/webgpu_host.mjs": "a2969c6360446f8d2fa6c77b58b202244e7e8e72e476565b9492bd90581a13f5",
+    "tools/test_webgpu_host.mjs": "3cc81c11bd66ef220128b0240372365bf9672b5aa893dd54ffb745ac8152f8fa",
+    "examples/tour/gpu/raymarch_gpu.jai": "46e6ab2c0c4e222db43fdb71b19d63bd477d3cc5078311a157baf5fbc1b381e1",
+    "examples/tour/files/files.jai": "d5c88b490767659a38e9cd81ecf9c41165447dd2b4bfd7284d73d54532562747",
+    "stdlib/Extensions/WebGPU/module.jai": "bf174ebf371a27d2105f6c5b5da2aa0ee9e8a91b6449a9c5b0460aefe9b2a195",
+    "tools/wasi_run.mjs": "0e85b3a51653d215098084cffeca293cbf9d29f390e414eba0bbe9e09af7523f",
+    "tests/webgpu/bridge.jai": "0bf38f8a26b1beef73731c61cb4be867d744bac0035b759be3eb9273971a2d91",
+    "crates/jaic-cli/tests/wasm_target/mod.rs": "59baa1cbf722d6dc0d1e4c854484b8d14a93d7e6251ff75ac7bc8d60fb8fd02f",
+    "examples/tour/gpu/browser_canvas.jai": "bd57e12114525fe70772c59fe56df4dcb6139a50155d7f833de34c9af9a37c9d",
+    "examples/tour/files/sandbox_files.jai": "419a5c2f856f0677845e69cba25da05fed6967a881de93e0c7d9d8afd2f6bf5b",
+    "tools/check_tour_canvas_wasm.mjs": "6ae1f5a56268dab0d514afbf6999250ef36a5f295778089e9d3167703e88ca8c",
+    "tools/check_tour_files_wasm.mjs": "70777611fab707f4a878a9dc4965715a468337273cd3d8018a68fbb949755429"
+  },
+  "verification": [
+    {
+      "name": "original-scripting-gate",
+      "command": [
+        "node",
+        "--experimental-wasm-jspi",
+        "tools/check_scripting_wasm.mjs",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-required-tour-ac174-full/wasm32-unknown-unknown/debug/jai_wasm.wasm"
+      ],
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/required-tour-ac174/final-original-scripting-gate.log"
+    },
+    {
+      "name": "private-runtime",
+      "command": [
+        "node",
+        "tools/check_playground_runtime_wasm.mjs",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-required-tour-ac174-full/wasm32-unknown-unknown/debug/jai_wasm.wasm"
+      ],
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/required-tour-ac174/final-private-runtime.log"
+    },
+    {
+      "name": "canvas-protocol",
+      "command": [
+        "node",
+        "--experimental-wasm-jspi",
+        "tools/check_tour_canvas_wasm.mjs",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-required-tour-ac174-full/wasm32-unknown-unknown/debug/jai_wasm.wasm"
+      ],
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/required-tour-ac174/final-canvas-protocol.log"
+    },
+    {
+      "name": "private-files",
+      "command": [
+        "node",
+        "tools/check_tour_files_wasm.mjs",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-required-tour-ac174-full/wasm32-unknown-unknown/debug/jai_wasm.wasm"
+      ],
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/required-tour-ac174/final-private-files.log"
+    },
+    {
+      "name": "host-and-jspi-protocol",
+      "command": [
+        "node",
+        "--experimental-wasm-jspi",
+        "--test-name-pattern=headless GPU capability|canvas capability and surface|unavailable WebGPU canvas context|surfaces tell|host procedures|a program waits for the page and other threads keep running",
+        "tools/test_webgpu_host.mjs"
+      ],
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/required-tour-ac174/final-host-and-jspi-protocol.log"
+    },
+    {
+      "name": "required-rust-wasi-tour",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-j",
+        "2",
+        "-p",
+        "jaic-cli",
+        "--test",
+        "native",
+        "wasm_target::wasm_tour_runs_as_a_wasi_command",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/required-tour-ac174/final-required-rust-wasi-tour.log"
+    },
+    {
+      "name": "real-temporary-host-storage",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-j",
+        "2",
+        "-p",
+        "jaic-cli",
+        "--test",
+        "native",
+        "wasm_target::wasm_temporary_directory_maps_real_host_storage",
+        "--",
+        "--exact",
+        "--nocapture"
+      ],
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/required-tour-ac174/final-real-temporary-host-storage.log"
+    },
+    {
+      "name": "format",
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/required-tour-ac174/final-format.log"
+    }
+  ],
+  "additional_proof": {
+    "wasi_O0": "all unchanged stdout_contains and stdout_excludes satisfied; exit0, empty stderr",
+    "wasi_O2": "all unchanged stdout_contains and stdout_excludes satisfied; exit0, empty stderr",
+    "native": "source check only; no GUI/SDK execution",
+    "strict_clippy": "jaic-cli native test target -D warnings passed",
+    "js_syntax": "five edited/new scripts passed Node --check"
+  },
+  "limits": [
+    "WebGPU protocol/JSPI tests use controlled service objects; no hardware GPU rendering claim",
+    "Private directory walker reports symlinks/unknown kinds unsupported; no invented public WASM visit_files",
+    "Arbitrary WASI host symlink behavior remains unaltered; explicit temporary-directory mount uses real configured host storage",
+    "Existing wasm32 inspect_callable dead-code warning retained, not suppressed",
+    "Suspended memory investigation untouched; no full400 repeat"
+  ],
+  "captures": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/required-tour-ac174",
+  "failed_receipts_preserved": [
+    "full-tour-result-1.json",
+    "full-tour-result-2.json",
+    "full-tour-result-3.json",
+    "private-clock-red.log",
+    "private-clock-red-2.log",
+    "required-rust-wasi-tour.log",
+    "file-write-tmp-errno-run.log",
+    "actual-jspi-webgpu-bridge.log",
+    "format-check.log"
+  ]
+}
