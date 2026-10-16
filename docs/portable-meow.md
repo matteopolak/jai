@@ -43,14 +43,14 @@ requires byte-identical reproduction. Other hosts can run the genuine committed
 test data without a native x64 comparison dependency. The Jai vector test passes
 interpreter, native O0 and native O2 execution.
 
-The focused runner stages the fixture and checks the module using the portable
-worker's baseline dependencies. The existing own x64-gated Meow test initially
-needed the specified Basic.exit, missing from that baseline. A separate target
-overlay copies NEW Basic/String/File_Utilities and private basic/string/files,
-basic-interface/native-path from the foundations worker, retaining our prelude,
-Meow and other dependencies. With explicit x86_64-apple-darwin/x64 selection the
-old assertions execute and pass interpreter/native. This staged composition is
-not production integration; peer checkouts remain untouched.
+Current shared verification uses `tools/check_portable_meow_shared.py`, the own
+source-built T7 compiler and actual shared stdlib, with isolated outputs. It
+checks the committed immutable C-derived fixture directly; no staged stdlib,
+peer dependency overlay or supplied executable is used. The old vector test
+pointed to an obsolete generated target directory; that test path was corrected
+to its committed fixtures directory after observing the genuine read failure.
+The data and production algorithm files are unchanged. Historical staging and
+x64-only runner receipts do not establish current shared integration.
 
 Ancillary contracts not established by the reviewed page: raw MeowEnd receives the
 trailing input region and overwrites r1/r3 residual scratch operands; Store128
@@ -64,3 +64,11 @@ of public tables or use of one state requires caller synchronization.
 Implementation performance differs from tuned x64 C: no prefetch strategy is
 claimed, and assembly lowering may use portable software/vector operations. No
 benchmark or cryptographic guarantee is claimed. Public constants remain exact.
+
+Current shared receipt `meow-shared-swcdxzqp/results.json` in the portable T7
+target records **60 passed, zero failed**: nine actual interpreter/native
+executions, six builds, 36 source/lint contexts, eight format checks, and the
+required invalid-lane rejection. All 18 strict-lint manifests are complete;
+the fixture digest is unchanged. Canonical constants are checked explicitly.
+Three ancillary API rows remain contract questions; see
+[the precise questions](specs/stdlib/portable-meow-questions.md).

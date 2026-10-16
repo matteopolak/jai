@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "files": {
+    "tests/portable-stdlib/runtime-core-contracts.jai": "336414b44965bbfbf2fb3c3ab5b0ce382de40f9412af8a9f11ff5f469e483b7b",
+    "tests/portable-stdlib/runtime-number-contracts.jai": "ff14f0ad943d2921c7aea0c236daefe37c54ab2c52152f1a3dd66ea2e1e1d798",
+    "tests/portable-stdlib/runtime-once-threads.jai": "ad824f46a329dc1d9ddb3a9b6d896df4df66c76169ead0793f3dfc1ce510c0b7",
+    "tools/check_portable_runtime_core_shared.py": "1238ec2b45e671d8104fd3ce73d780b4e1c6ca151abcaeb0f697cdbee441ca94",
+    "docs/portable-runtime-core-audit.md": "6d35cd336a23d9fc52948060335f1f6f45e8954322b23fb258896e560a968de0",
+    "docs/specs/stdlib/portable-runtime-core-questions.md": "825723f58afe1faadd94877f44ea4cf35b1c53fe04cbaf57537dd204cdd33125",
+    "tests/portable-stdlib/meow.jai": "d2a63215d95159a88b0f3e253bf9c34b799cb8ef1ecc7673a11cc158dc68d2ee",
+    "tests/portable-stdlib/meow-vectors.jai": "bc5d83c16667b78cd843d7b7312e02809c7011ab6321ad67ac8f48b44da4c174",
+    "tools/check_portable_meow_shared.py": "f9f1df37f3e4a347dc3ab2374c130f1d0f291b5daa48dd2ff9a11bf35933af8b",
+    "docs/portable-meow.md": "b2bba406c2d0f6c18463ca3cf36e97f3b08b30cef3330ee9a4041e9b43e4b9b2",
+    "docs/specs/stdlib/portable-meow-questions.md": "06d33fadb93612fd2f78aef1eb97e3b9327ac25640b4149a9e4fa2dd5a7adbba"
+  },
+  "verification": {
+    "ready_runtime_core_audit_checkpoint": {
+      "passed": 99,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/import-scope-ea7f5673/runtime-core-shared-9u_6iyd_/results.json"
+    },
+    "ready_meow_audit_checkpoint": {
+      "passed": 60,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/import-scope-ea7f5673/meow-shared-xkto4yv1/results.json"
+    }
+  },
+  "commands": [
+    "CARGO_TARGET_DIR=<integration>/import-scope-ea7f5673 python3 -B tools/check_portable_runtime_core_shared.py",
+    "CARGO_TARGET_DIR=<integration>/import-scope-ea7f5673 python3 -B tools/check_portable_meow_shared.py"
+  ],
+  "execution": "Serialized native runs, unique integrationT7 scratch, actual new compiler; unchanged8fa source-built formatter hash-copied to own target; explicit accepted ABI8 native paths, no library fallback",
+  "limits": [
+    "Runtime ordinary behavior and active-context coverage only; fault/debug policies remain open",
+    "Meow real immutable C-derived vectors; unresolved overflow/ancillary policy retained",
+    "Desktop target source checks not native other-OS success",
+    "No production changes or full baseline/corpus claim"
+  ]
+}
