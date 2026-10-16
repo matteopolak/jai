@@ -1,0 +1,89 @@
+{
+  "owner": "network runtime producer / portable-asn1-socket",
+  "scope": "failure-only Linux accept-burst diagnostics; no production runtime repair",
+  "phase": "diagnostic_patch_ready_pending_actual_linux_evidence",
+  "base_head": "8e81e901866e60122901596117892be77abb631b",
+  "root_failure_facts": {
+    "run": "38933357668",
+    "job": "117082609938",
+    "runs": 1188,
+    "failed": 156,
+    "sample": "io_uring pass followed by accept-burst round8 assertion,8/300 not served; other copies7-8; backend and failure-stage pending"
+  },
+  "owned_functions": [
+    "Burst_Job",
+    "Burst_Server",
+    "Burst_Handler",
+    "Burst_Error",
+    "Burst_Diagnostics",
+    "burst_record_error",
+    "burst_handler",
+    "burst_client",
+    "burst_acceptor",
+    "test_accept_bursts"
+  ],
+  "owned_file_sha256": {
+    "stdlib/Extensions/Io/tests/lib/suite.jai": "038ca4bbf490d035b698034827a573a3f8222311f57f7413f7a8a8833d985332",
+    "tests/extensions/io-accept-burst-diagnostics.jai": "1eecde7e22168a7dd8d9558aab9ffbd5f546decb15f3c021ea466adc54b40840",
+    "tools/check_io_burst_diagnostics.py": "55f74870070341cd607932872fa4e7801687d3ee491baa55ada501b6e7a98546",
+    "docs/extensions/io-linux-accept-burst-diagnosis.md": "e8b687169339f4e6aeb9896dfc457d30329605e7b092975c0fc4f23fbe125630"
+  },
+  "source_verification": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-burst-source-20261016-c/receipt.json",
+    "passed": 10,
+    "failed": 0,
+    "source_only_configurations": [
+      "linux/x64",
+      "linux/arm64",
+      "macos/arm64"
+    ],
+    "programs": [
+      "backends",
+      "tcp",
+      "io-accept-burst-diagnostics"
+    ],
+    "strict_lint_contexts": 4,
+    "strict_lint_incomplete": [],
+    "strict_lint_unvisited": [],
+    "source_hashes": 1006,
+    "source_changes": [],
+    "compiler_sha256": "e2c1a7569844675facca7134327b13f21b02521b58d158ddc93244b30a98b29b"
+  },
+  "other_checks": {
+    "jaifmt_interpreter_check": "pass for owned two Jai files, absolute config path",
+    "ruff_check": "pass",
+    "ruff_format": "pass",
+    "darwin_runtime_collection_refusal": "pass;no target execution or report directory created"
+  },
+  "runtime": {
+    "local_io_executions": 0,
+    "local_native_gui_fault_executions": 0,
+    "root_host_lease": "HELD; respected",
+    "linux": "not available locally; remote CI evidence requested",
+    "production_fix": "none; cause unclassified"
+  },
+  "preserved_requirements": {
+    "linux_count": 300,
+    "linux_rounds": 15,
+    "deadline_ms": 30000,
+    "acceptor_yields": 20,
+    "original_failed_counter_and_assertion": "unchanged",
+    "retry_backend_disable_or_bound_change": false,
+    "extensions_history_rewrite": false
+  },
+  "diagnostic_limit": "spawn payloads and timing change; nonreproduction does not clear original failure",
+  "pending": [
+    "root/integration Linux default/O2/ASan same-load diagnostic stderr+kernel/process receipt",
+    "classify connection/provider/readiness/scheduler/compiler versus resource contention from evidence",
+    "production fix and actual native regression only after root cause",
+    "integration CI/profile/wiring/README link/index operations"
+  ],
+  "preserved_failure_evidence": [
+    "io-burst-source-20261016-a: unsupported print_error new diagnostic; existing bench atomic_store lookup failure in overbroad directory lint",
+    "io-burst-source-20261016-b:10/10 before blank-line-only formatter correction"
+  ],
+  "patch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-linux-burst-diagnostics-20261016.patch",
+  "export_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-linux-burst-diagnostics-20261016-receipt.json",
+  "git_index_or_commits": "none",
+  "publication": "held"
+}

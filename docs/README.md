@@ -831,3 +831,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [CI diagnostic companion](tools/ci-diagnostic-companion.md): exact Clipboard adoption, bounded failures and focused verification; [Linux Clipboard diagnostics](clipboard-linux-build-diagnostics.md).
 
 - [Windows cross CI triage](native/windows-cross-ci-triage.md): platform/provider selection, stale fixture contracts and eight retained source failures; [integration review](status/windows-cross-integration-review.json).
+
+- [Io Linux accept-burst diagnosis](extensions/io-linux-accept-burst-diagnosis.md): failure-only stage evidence, unchanged load/assertions and [integration review](status/io-burst-integration-review.json).
