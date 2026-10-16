@@ -108,3 +108,8 @@ There were no allocator benchmarks, GUI/fault programs, publications, Git/index
 operations or remote CI actions. Source/config lint and C fixture formatting
 pass. [Exact ready source/patch/evidence hashes](../status/foundations-linux-native-features.json)
 identify the narrow cohort and pending authoritative Linux verification.
+
+
+Integration adopted the exact ready production files and now guards independent native C/header inputs in build_ci_native_bindings.py. The same Linux feature macros also precede the wrapper's three counter translation units, including the adaptive SDK source consumer. Two command-contract controls verify Linux flag ordering and unchanged Mac policy. This additional wrapper omission was found during integration; it is not a Linux runtime result.
+
+Fresh own Mac build-only construction produced92 SDK/callback artifacts across all23 ABI8 profiles plus four counter artifacts. The first attempt lacked the pinned official native C input and compiled nothing; that setup failure is retained. A native-only, hash-checked fetch supplied exactly the declared rpmalloc files into ownT7, then the retry built successfully. Full23 native flag queries are queued behind the generator's bounded runtime slot. No old aggregate source/asset pair is reused after these header changes; actual Linux link/lifecycle remains CI-required. Header fixture formatting uses explicit LLVM SortIncludes:Never to retain include order; default include sorting alone reports a difference, with no compiler diagnostic waiver.
