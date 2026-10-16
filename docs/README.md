@@ -698,3 +698,5 @@ include exact file/line/source hashes and required platform limits.
 - [Generator native helper relocation](tools/generator-helper-relocation.md): proper install identity and an actual moved-package native consumer.
 
 - [Pinned ABI7 candidate a97d0f6f](status/shared-candidate-a97d0f6f.json): exact committed production source/tool identity and actual simultaneous-domain interpreter/native proof on assigned T7 storage.
+
+[SIMD byte/lane contracts](portable-simd-audit.md) and [Basic time/calendar audit](portable-time-shared-audit.md) distinguish native host evidence, source-only targets and unresolved semantics. [Original fixture premise migrations](status/shared-portable-premises.json) preserve all assertions while using lexical operators and trusted private-unit placement.
