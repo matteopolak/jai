@@ -15,6 +15,8 @@ on:
       - 'tools/*portable_clipboard.py'
       - 'tools/check_clipboard_linux_package.py'
       - 'tools/test_clipboard_linux_toolchain.py'
+      - 'tools/clipboard_linux_diagnostics.py'
+      - 'tools/test_clipboard_linux_diagnostics.py'
       - '.github/workflows/clipboard-linux.yml'
   pull_request:
   workflow_dispatch:
@@ -46,6 +48,7 @@ jobs:
       - name: Install isolated pinned Rust toolchain and required components
         run: |
           python3 -m unittest discover -s tools -p test_clipboard_linux_toolchain.py -v
+          python3 -m unittest discover -s tools -p test_clipboard_linux_diagnostics.py -v
           test ! -e "$RUSTUP_HOME"
           test ! -e "$CARGO_HOME"
           rustup toolchain install nightly-2026-08-29 --profile minimal --component rustfmt --component clippy

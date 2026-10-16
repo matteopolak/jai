@@ -1,0 +1,111 @@
+{
+  "role": "stdlib-tools",
+  "updated_utc": "2026-10-16T17:30:41.825013+00:00",
+  "status": "READY diagnostic-only patch for focused Linux Clipboard CI rerun; actual native Jai error not yet available",
+  "incident": {
+    "run": 38937373866,
+    "job": 117096152467,
+    "source": "root aggregate filtered CI metadata",
+    "provisioning": "prior provisioning failure CLEARED",
+    "actual_real_x11_C": "O0/O2 build+execute PASS (root reported)",
+    "actual_native_jai": "O0/O2 BUILD FAIL, exact error absent from summary",
+    "package": "correctly refused failed runtime proof",
+    "actual_error_known": false
+  },
+  "diagnosis": {
+    "location": "tools/check_portable_clipboard.py::run and linux-jai-build loop",
+    "command": "fresh source-built jaic tests/portable-stdlib/clipboard-linux-roundtrip.jai -O0/-O2 -exe <own-proof>/roundtrip...",
+    "capture": "Full argv/exit/stdout/stderr already persisted in private commands.json; previous CI output only name FAIL.",
+    "environment": "Existing source-built native Clipboard via JAIC_NATIVE_LIBS/LD_LIBRARY_PATH; unchanged."
+  },
+  "change": {
+    "checker": "Write bounded sanitized failure-diagnostics.json and emit headline-only stderr for failures; keep raw capture private and final stdout receipt-path unchanged.",
+    "package": "Same prerequisite expression; print failed Jai headlines first and still reject. Later package-command failure uses bounded headlines rather than raw row JSON.",
+    "limits": "At most12 headlines/280 characters each and4KiB UTF8 body per failure, four prerequisite failures at most. Source-context lines/raw argv/env excluded, terminal controls/credential-like assignments/URLuserinfo stripped; unknown output points to full capture without dumping it.",
+    "tests": "Seven real Python diagnostic/package rejection policy tests; synthetic FAILED metadata only, never fake native success."
+  },
+  "focused_evidence": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/clipboard-build-diagnostics-hovho0b9/focused-checks.json",
+    "receipt_sha256": "a012354bcf92e69fd52c6366e01768e1240740da00233d917d9dcc6520a99de1",
+    "commands": 6,
+    "all_passed": true,
+    "unit_tests": 7,
+    "existing_toolchain_configuration_tests": 9,
+    "format": "Ruffcheck+format/whitespace PASS",
+    "semantic_guards": "AST-equivalent existing passed predicates in both runners and exact prerequisite Boolean; workflow's actual runtime/package steps byte-preserved per existing9tests.",
+    "production_git_diff": "EMPTY for Clipboard/internalClipboard/windowconnection",
+    "local_jai_interpreter_native_gui_fault_x11_executions": 0,
+    "root_native_lease": "HELD, respected"
+  },
+  "initial_test_failure": {
+    "command": "python3 -m unittest discover -s tools -p test_clipboard_linux_diagnostics.py -v",
+    "exit": 1,
+    "classification": "New diagnostic helper module absent before authoring; initial import failure observed, not a compiler/native defect."
+  },
+  "preserved_production": [
+    {
+      "path": "stdlib/Clipboard/module.jai",
+      "sha256": "340363dc073f8f25aa8d3c2d333e4627bd084d7c5111c62dede7529f9ed26aa5"
+    },
+    {
+      "path": "stdlib/internal/clipboard/linux.jai",
+      "sha256": "b3c8efd5342abb94752057d197ac5cf959a301c570931b7a4202d2885d92789c"
+    },
+    {
+      "path": "stdlib/internal/clipboard/native/x11.c",
+      "sha256": "68691a1c9fd224300ab4c21a6092ab33cdab34588de49bde2dc9b5f675d2c50b"
+    },
+    {
+      "path": "stdlib/internal/clipboard/native/data.c",
+      "sha256": "bcc854fbdb8f7c0ab087784bcd32161b88e19edf2c3e95e0ca72d8a95607f6e8"
+    },
+    {
+      "path": "stdlib/internal/clipboard/native/data.h",
+      "sha256": "ddf31f56f5e6299d9dc23d227d34680f6b94b5d87bc65d39a52dbce797e67b94"
+    },
+    {
+      "path": "stdlib/internal/window/connection.jai",
+      "sha256": "0e637aee5a538263a72872c8b94974191755791ad0ddacf715b73ee0496685c3"
+    }
+  ],
+  "open_required_work": [
+    "Root/integration adopt diagnostic patch and rerun existing focused Linux runtime/package job promptly.",
+    "Obtain bounded actual native Jai compiler/linker diagnostic; route any compiler/provider failure to its owner or fix only supported narrow Clipboard defect.",
+    "Actual successful Jai interpreter/nativeO0/O2 plus relocated package proof remain REQUIRED; realX11C success alone does not satisfy them.",
+    "Prior watcher imageguard remains separate queued verification."
+  ],
+  "deviations_and_limits": [
+    "No production/native SDK/header/provider/compiler/workflow change made without actual error.",
+    "Full output stays private; bounded headlines can truncate long errors. failure-diagnostics.json is suitable bounded metadata, raw commands/summary receipts must not be uploaded publicly.",
+    "No local native execution, benchmark, /Users/matthew/projects/jai-reference/quarantine/history/transcript access or remote/publication actions."
+  ],
+  "integration": {
+    "index_owner": "integration only; no Git index/branch mutations by worker",
+    "files": [
+      {
+        "path": "tools/check_portable_clipboard.py",
+        "sha256": "fc21139732c6252d69213d294b77f50e466a1e8aa8000c4faac5f8b71c1bdecd"
+      },
+      {
+        "path": "tools/check_clipboard_linux_package.py",
+        "sha256": "451b15b291062aaf855e20d8ac3aa105619370e46cb5db9d33e30024e4bb7dd7"
+      },
+      {
+        "path": "tools/clipboard_linux_diagnostics.py",
+        "sha256": "a081bbe5d9d01c2d3c239ef13103aa91a8e560a2269df62af59a41591e4a30a4"
+      },
+      {
+        "path": "tools/test_clipboard_linux_diagnostics.py",
+        "sha256": "22fb8ffb9448dd0a1d7198a1342ccfb6e357c91d3921b05bd937b197a1a33e8a"
+      },
+      {
+        "path": "docs/clipboard-linux-build-diagnostics.md",
+        "sha256": "c7a21b9f3e92b208509244893cb18a9649389acf5a0135aebd25013743ddb89c"
+      }
+    ],
+    "include_manifest_path": "docs/status/clipboard-linux-build-diagnostics.json",
+    "global_docs_request": "Index docs/clipboard-linux-build-diagnostics.md centrally.",
+    "workflow_request": "Add tools/clipboard_linux_diagnostics.py and tools/test_clipboard_linux_diagnostics.py to path filters; run new diagnostic unit test beside existing toolchain test. Real runtime/package steps unchanged.",
+    "suggested_commit": "fix(ci): surface bounded Linux Clipboard build diagnostics"
+  }
+}

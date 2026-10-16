@@ -1,0 +1,26 @@
+{
+  "base": "17558400ca23a376f0f7fea050f8888f71704609",
+  "scope": "Clipboard diagnostics only",
+  "checks": [
+    {
+      "command": "python3 -m unittest discover -s tools -p test_clipboard_linux_*.py -v",
+      "passed": 16,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "ruff check and ruff format --check four Clipboard Python files",
+      "exit": 0
+    },
+    {
+      "command": "actionlint .github/workflows/clipboard-linux.yml",
+      "exit": 0
+    }
+  ],
+  "native_executions": 0,
+  "remaining_failures": [
+    "Linux native Jai Clipboard O0/O2 build: diagnostic pending",
+    "Relocated package: correctly blocked by failed prerequisite"
+  ],
+  "producer_manifest_sha256": "ae8eabca897b93375dfa5ff15ceb6f8cd04696a3810fb4f27d94e32e582c3359"
+}

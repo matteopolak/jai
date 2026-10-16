@@ -1,0 +1,5 @@
+# CI diagnostic companion
+
+Clipboard batch: verified the exact producer manifest ae8eabca897b93375dfa5ff15ceb6f8cd04696a3810fb4f27d94e32e582c3359 and its five source hashes against shared files. Workflow changes add only diagnostic helper/test path filters and the diagnostic unit command. Existing real runtime and package shell commands are unchanged. Root owns remote CI operations.
+
+Verification: 16 Clipboard diagnostic/toolchain tests passed (0 failed, 0 ignored), Ruff check and format passed for four Python files, and actionlint passed for the Clipboard workflow. No local native, GUI, fault or X11 execution. Original Linux Jai O0/O2 build failures and package rejection remain unresolved; real C X11 success is separate. Bounded headlines may truncate errors; original private receipts remain authoritative.
