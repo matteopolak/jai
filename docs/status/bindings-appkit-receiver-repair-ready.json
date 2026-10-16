@@ -1,0 +1,91 @@
+{
+  "role": "bindings",
+  "state": "ready for integration; four approved receiver fixes implemented",
+  "production_scope": [
+    "tools/native_bindings/generate_appkit.py",
+    "stdlib/Objective_C/AppKit/generated.jai"
+  ],
+  "source_files": {
+    "tools/native_bindings/generate_appkit.py": "c00a64bff10c0cf98c9e0b495ab1eb59d1d60b84a8c6f7a912e6484aad3a9ed2",
+    "stdlib/Objective_C/AppKit/generated.jai": "fec876dae4833a869405e25ab50933d550acab052b5c3cb60c7f042160ffb688",
+    "tests/native-bindings/appkit-receiver-forwarding.jai": "3500c2ddcec1c1d90fc0b343bce5baba7c4eb6c16eab3c4c65db4611d62bac32",
+    "tests/native-bindings/appkit_receiver_probe.m": "feddf5408b44f7712a0a1b7596b5ceb37d62f2655cb8e5042ffa3d573c5f4747",
+    "tools/native_bindings/test_appkit_receivers.py": "daf8f4121c0fa021f1926defa7a529de3b32cb996b5769ac8c18d96772ad565f",
+    "tools/native_bindings/verify_appkit_receiver_forwarding.py": "81b06b237cd9d63848dac185058ff657181d6a35ddacb15653b04f60fda07011",
+    "docs/native/appkit-receiver-repair.md": "b87039dd17d80381d5781bb69b4c3c7608e5e336d322006317511b8e0177c9af"
+  },
+  "per_api": [
+    {
+      "api": "NSView.convertPoint",
+      "body": "implemented",
+      "contract": "reviewed signature-preserving SDK receiver",
+      "source": "Mac ARM64/x64 pass",
+      "native": "Mac ARM64 O0/O2/ASanUBSan pass"
+    },
+    {
+      "api": "NSEvent.keyRepeatDelay",
+      "body": "implemented",
+      "contract": "reviewed signature-preserving SDK receiver",
+      "source": "Mac ARM64/x64 pass",
+      "native": "Mac ARM64 O0/O2/ASanUBSan pass"
+    },
+    {
+      "api": "NSEvent.keyRepeatInterval",
+      "body": "implemented",
+      "contract": "reviewed signature-preserving SDK receiver",
+      "source": "Mac ARM64/x64 pass",
+      "native": "Mac ARM64 O0/O2/ASanUBSan pass"
+    },
+    {
+      "api": "NSEvent.pressedMouseButtons",
+      "body": "implemented",
+      "contract": "reviewed signature-preserving SDK receiver",
+      "source": "Mac ARM64/x64 pass",
+      "native": "Mac ARM64 O0/O2/ASanUBSan pass"
+    }
+  ],
+  "original_audit": {
+    "selector_uses": 874,
+    "result": "PASS",
+    "expected_missing_unchanged": true,
+    "original_test_body_unchanged": true,
+    "additional_count_guard": true,
+    "complete_harness_tests_pass": 7
+  },
+  "evidence": {
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit-selector-controls/receiver-repair/receiver-forwarding-5atfod82/report.json": "6cb1b4969992ab6626d4eab8fa4714932674bc60dbc234b429c6132ecdee0b44",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit-selector-controls/receiver-repair/receiver-forwarding-4fr78g1l/report.json": "47b9653f4619f96183dd4cb8fe250a7269704f9e0cf859e593e953879bd09d59",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit-selector-controls/receiver-repair/sanitizer-corrected-runtime.json": "af1086c856b26462ede7d958925414f9964b0612bd024478be1892d7b9aa986a",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit-selector-controls/receiver-repair/sdk-declarations-corrected/report.json": "d9b7b7f69d480030d61fd85256228925731610dea0922a9c0921e2c1d62ff8a0",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit-selector-controls/receiver-repair/exact-four-production-diff.json": "ec8ef75cc6b7d5d44d4ab7aaed2f8dbd9ec81964f54debc98b7cd5407e782f14",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit-selector-controls/receiver-repair/generator-red.txt": "6e9ce9adbeb69608565c4cb52127d78543a5f8fbd7299dee6d80b48b161c3cf0",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/appkit-selector-controls/receiver-repair/retry_sanitizer.py": "b00ad13f6c04323b1e6b13b9f7664dda082bf1d6f7174c786fb1f8ff2587c50b"
+  },
+  "initial_receipt_qualification": "23/24 pass; initial sanitizer failed before test body; failure retained",
+  "corrected_source_receipt": {
+    "checks": 20,
+    "passed": 20,
+    "native_executions": 0
+  },
+  "corrected_sanitizer": "one actual SDK execution PASS; guarded source/exe/helper/runtime; matching LLVM23/preload",
+  "public_signatures_layout_and_other_bodies_unchanged": true,
+  "remaining": [
+    "Mac x64 native execution unverified",
+    "No new application/full corpus baseline",
+    "Integration exact final compiler/helper cohort acceptance remains required"
+  ],
+  "platforms": {
+    "macos_arm64": "source and native verified",
+    "macos_x64": "source/SDK compilation only",
+    "windows_linux_android": "AppKit inapplicable"
+  },
+  "sdk_lease": "released; no GUI/window/NSApplication/clipboard/fault/benchmark",
+  "tools": {
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/beec-appkit-metal/compiler-target/debug/jaic": "179ce7a0aa38aeea5eca24c179889f55c82afb22c212d466c9c7282489ad7694",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/beec-appkit-metal/compiler-target/debug/jailint": "6410105673e8a47541d9bad6aed92fffd2c291cf3104ac031bd30b3c07c9111c",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/jaifmt": "a9978ba7340f707f9514d0cbcef6e7543fa372a69afade3e2bf2bbfbc073cbfb",
+    "/opt/homebrew/opt/llvm/bin/clang": "5b3adae66bf3e36a0aa2e90db47e3456d31bf5f992124fd09ae9119b076e00be"
+  },
+  "index_append_request": "Selectively link docs/native/appkit-receiver-repair.md from docs/README.md",
+  "integrator_sole_git_index": true
+}
