@@ -823,3 +823,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - **Current final candidate:** [f1a7e3a8 corrected reviewed-oracle receipt](status/shared-candidate-f1a7e3a8.json), [verified product/source equivalence](status/shared-final-source-equivalence.json), [coordinator workspace request](status/shared-final-workspace-request.json). Supersedes initial0c oracle capture; actual tools/native/product bytes unchanged.
 
 - [Clipboard Linux toolchain provisioning](clipboard-linux-toolchain.md): isolated pinned components,9configuration tests, actualLinuxCI runtime/package rerun still required.
+
+- [Normal CI orchestration closure](tools/ci-orchestration-closure.md): full enabled SDL Linux dependencies, runner ownership and retained failure classifications.
