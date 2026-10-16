@@ -1,5 +1,5 @@
 {
-  "snapshot": "0c0d316e587b4ae86631af10fb027c1acd9a6f4c",
+  "snapshot": "f1a7e3a8293dddbdbfd9c44a630a21a2970ef051",
   "ready_adopted": [
     "typedbf436691",
     "retained621d7a3e",
@@ -8,7 +8,7 @@
     "WGLCI2eba5858 preservinge50closure"
   ],
   "tools_native_ready": true,
-  "receipt": "docs/status/shared-candidate-0c0d316e.json",
+  "receipt": "docs/status/shared-candidate-f1a7e3a8.json",
   "active_not_adopted": [
     "stdlib-tools watcher actual-loaded-image guard tests/docs, production unchanged; await exact stable narrow manifest"
   ],
@@ -21,5 +21,7 @@
   ],
   "watcher_disposition": "root-harness metadataEPERM, no productionrepair; staged startup passes with metadataallowances",
   "publication": "held; coordinator normaltemporaryCI only afterreview; no integrationpush/dispatch/tag/release/comments",
-  "native_slot": "released"
+  "native_slot": "released",
+  "production_build_snapshot": "0c0d316e587b4ae86631af10fb027c1acd9a6f4c",
+  "source_equivalence": "docs/status/shared-final-source-equivalence.json"
 }
