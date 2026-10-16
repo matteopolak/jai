@@ -873,3 +873,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Linux pthread storage](native/thread-linux-pthread-storage.md): ARM64 SDK layout repair with target-native verification still required.
 
 - [AppKit receiver repair](native/appkit-receiver-repair.md): preserved signatures with SDK-correct receivers and scoped runtime evidence.
+
+- [Formatter fixture inputs](tools/formatter-fixture-inputs.md): strict source metadata handling and required CI readonly acceptance.

@@ -1,0 +1,70 @@
+{
+  "owner": "stdlib-tools",
+  "scope": "CLI formatter fixture repairs only",
+  "ready": "source/build verified; actual formatter runtime pending root lease and normal CI readonly acceptance",
+  "scratch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/cli-fixtures-l295zq1s",
+  "checks": {
+    "node_tests": 3,
+    "standalone_rust_tests": 4,
+    "warnings_denied_rust_helper_compile": true,
+    "rustfmt_check": true,
+    "node_syntax_checks": 2,
+    "native_target_build_only": true,
+    "golden_case_coverage": 24,
+    "actual_native_formatter_executed": false,
+    "wasm_formatter_executed": false
+  },
+  "readonly_probe": {
+    "scratch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/cli-fixtures-l295zq1s",
+    "requested_mode": "0o100500",
+    "observed_mode": "0o100700",
+    "readonly_bit_retained": false
+  },
+  "initial_failures": [
+    {
+      "step": "new Node regression",
+      "classification": "authored malformed fixture was valid UTF8 despite truncated payload",
+      "correction": "preserved assertion and added invalid byte to incomplete metadata",
+      "receipt": "initial-check-failures.json"
+    },
+    {
+      "step": "initial rustfmt",
+      "classification": "wrong edition2021 rejected existing edition2024 let chains",
+      "correction": "edition2024 format/check passed",
+      "receipt": "initial-check-failures.json"
+    }
+  ],
+  "required_acceptance": [
+    "jaifmt_is_idempotent_on_the_repository actual source-built runtime",
+    "wasm_target::jaifmt_wasm_formats_the_golden_cases actual WASM runtime",
+    "normal CI actual retained readonly capability"
+  ],
+  "index_append_request": "docs/tools/formatter-fixture-inputs.md",
+  "protected": "Extensions and peer objc_selectors source unchanged by worker",
+  "files": [
+    {
+      "path": "crates/jaic-cli/tests/native.rs",
+      "sha256": "1a8b7df409e5c98edde01fe52b7c293fd8dbf535d6160a1ac5a0100af91d2a76"
+    },
+    {
+      "path": "crates/jaic-cli/tests/formatter_fixtures/mod.rs",
+      "sha256": "1d2a7907b152bbaa6c1bdb9d14c11b971a4a29c67ae475aecbe2828cb03ed5b1"
+    },
+    {
+      "path": "tools/check_jaifmt_wasm.mjs",
+      "sha256": "3c70d3febe62a3d0e24f6879361307602c1ced5f0d4c6bc1b056f923d92e15f6"
+    },
+    {
+      "path": "tools/formatter_fixture_inputs.mjs",
+      "sha256": "b86084aba9ec4a702e8f2eed15cd944756ac6962706427fcde6b7b9cb3d4f895"
+    },
+    {
+      "path": "tools/test_formatter_fixture_inputs.mjs",
+      "sha256": "e76fe7016ea778cc257de8d0a2c5dc7a2b4667d48a9c864d7bbf69e0e1be450c"
+    },
+    {
+      "path": "docs/tools/formatter-fixture-inputs.md",
+      "sha256": "1d22c0f53b264d7b859cc366cfeaa98273441e8f2ac12558ddc705e4184f11a1"
+    }
+  ]
+}
