@@ -1,7 +1,7 @@
 {
   "role": "stdlib-tools",
-  "timestamp_utc": "2026-10-15T22:52:33.385240+00:00",
-  "shared_head": "8dcf542705a59f8afe12a1821a0bb5b706f85480",
+  "timestamp_utc": "2026-10-16T03:59:19.411321+00:00",
+  "shared_head": "72531513b06889afe4585f94433ad28a6c55125f",
   "checkpoint": "98b1581ccdc910fc6c5eecff10a9abd3133bc247",
   "ownership": "Bindings_Generator emission/parser/printing/native tooling and Print_Vars; model/type/context excluded",
   "adoption": [
@@ -123,28 +123,28 @@
           "line": 161
         }
       ],
-      "status": "implemented_verification_pending",
-      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
-      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current canonical/wrapper native69-command receipt plus120-command bridge/helper receipt; historical other helper receipts apply only to their own identities.",
+      "remaining_gap": "No absent supported-domain body. Native non-Mac execution external; exact unestablished eligibility/ABI policies stay in questions."
     },
     {
       "name": "append_cpp_type",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 63
+          "line": 64
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "per-API fresh evidence not yet collected",
-      "remaining_gap": "Standard scalar/pointer/array/function/nominal emission exists; method/template/unsupported flag and declaration workflow integration pending."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current guarded public bridge120, scoped generated emission140/227;80namespace and96-level type/native-long/expression/array paths, cyclic negatives and repeated-DAG native effects as applicable. Exact fixtures/receipts define domain.",
+      "remaining_gap": "Reviewed array decay, INSERTED suppression, reference-return pointer, reference parameters and qualified names now tested with actual C++ aliases. No general method-pointer/declarator ABI claim."
     },
     {
       "name": "append_cpp_type_modifiers",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 69
+          "line": 70
         }
       ],
       "status": "implemented_supported_contract",
@@ -153,22 +153,27 @@
     },
     {
       "name": "append_cpp_wrapper",
-      "declarations": [],
-      "status": "missing_body",
-      "shared_verification": "Missing public body confirmed in current combined owned sources.",
-      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/declaration-emission.jai",
+          "line": 3
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current guarded public bridge120, scoped generated emission140/227;80namespace and96-level type/native-long/expression/array paths, cyclic negatives and repeated-DAG native effects as applicable. Exact fixtures/receipts define domain.",
+      "remaining_gap": "Actual SDK long/longlong incl96-pointer native identity, transformed types, defaults, references, row arrays, aggregate/ctor/dtor/fmt verified. Operator-spelled exports and unsupported native ABI categories remain explicit questions."
     },
     {
       "name": "append_elsewhere",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
-          "line": 15
+          "line": 94
         }
       ],
-      "status": "implemented_verification_pending",
-      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
-      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current canonical/wrapper native69-command receipt plus120-command bridge/helper receipt; historical other helper receipts apply only to their own identities.",
+      "remaining_gap": "No absent supported-domain body. Native non-Mac execution external; exact unestablished eligibility/ABI policies stay in questions."
     },
     {
       "name": "append_integer",
@@ -214,16 +219,16 @@
           "line": 111
         }
       ],
-      "status": "implemented_verification_pending",
-      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
-      "remaining_gap": "Nonempty anonymous containment needs native fixture"
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current canonical/wrapper native69-command receipt plus120-command bridge/helper receipt; historical other helper receipts apply only to their own identities.",
+      "remaining_gap": "No absent supported-domain body. Native non-Mac execution external; exact unestablished eligibility/ABI policies stay in questions."
     },
     {
       "name": "append_parent_path",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
-          "line": 96
+          "line": 177
         }
       ],
       "status": "implemented_supported_contract",
@@ -235,11 +240,11 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 3
+          "line": 4
         }
       ],
       "status": "implemented_supported_contract",
-      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "shared_verification": "Current guarded public bridge120, scoped generated emission140/227;80namespace and96-level type/native-long/expression/array paths, cyclic negatives and repeated-DAG native effects as applicable. Exact fixtures/receipts define domain.",
       "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
@@ -247,11 +252,11 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
-          "line": 54
+          "line": 69
         },
         {
           "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
-          "line": 71
+          "line": 86
         }
       ],
       "status": "implemented_supported_contract",
@@ -260,17 +265,22 @@
     },
     {
       "name": "avoid_name_clash",
-      "declarations": [],
-      "status": "implemented_verification_pending",
-      "shared_verification": "Missing-member red then interpreter green for reserved/suffix/parent/overload/unique insertion behavior.",
-      "remaining_gap": "Native O0/O2 and final edge-policy review."
+      "declarations": [
+        {
+          "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
+          "line": 15
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
+      "remaining_gap": "Reserved names, global record/function repair, equivalent/non-equivalent overloads, parent/numeric repair and insertion tested; type-name normalization edge policy remains question, not absent body."
     },
     {
       "name": "exceeds_signed_int_value",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 105
+          "line": 123
         }
       ],
       "status": "implemented_supported_contract",
@@ -285,21 +295,21 @@
           "line": 1
         }
       ],
-      "status": "implemented_verification_pending",
-      "shared_verification": "Unchanged SDK-derived T[N] fixture now passes interpreter after canonical model-owner repair; native batch pending.",
-      "remaining_gap": "Current full source native O0/O2 and guarded snapshot verification."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current canonical/wrapper native69-command receipt plus120-command bridge/helper receipt; historical other helper receipts apply only to their own identities.",
+      "remaining_gap": "No absent supported-domain body. Native non-Mac execution external; exact unestablished eligibility/ABI policies stay in questions."
     },
     {
       "name": "fill_template_arguments_for_expression",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
-          "line": 12
+          "line": 15
         }
       ],
-      "status": "implemented_verification_pending",
-      "shared_verification": "Unchanged SDK-derived T[N] fixture now passes interpreter after canonical model-owner repair; native batch pending.",
-      "remaining_gap": "Current full source native O0/O2 and guarded snapshot verification."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current canonical/wrapper native69-command receipt plus120-command bridge/helper receipt; historical other helper receipts apply only to their own identities.",
+      "remaining_gap": "No absent supported-domain body. Native non-Mac execution external; exact unestablished eligibility/ABI policies stay in questions."
     },
     {
       "name": "finish_bitfield",
@@ -309,9 +319,9 @@
           "line": 52
         }
       ],
-      "status": "implemented_verification_pending",
-      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
-      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current canonical/wrapper native69-command receipt plus120-command bridge/helper receipt; historical other helper receipts apply only to their own identities.",
+      "remaining_gap": "No absent supported-domain body. Native non-Mac execution external; exact unestablished eligibility/ABI policies stay in questions."
     },
     {
       "name": "get_type_name",
@@ -330,11 +340,11 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
-          "line": 97
+          "line": 112
         },
         {
           "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
-          "line": 109
+          "line": 124
         }
       ],
       "status": "implemented_supported_contract",
@@ -346,11 +356,11 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
-          "line": 103
+          "line": 118
         },
         {
           "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
-          "line": 116
+          "line": 131
         }
       ],
       "status": "implemented_supported_contract",
@@ -365,9 +375,9 @@
           "line": 1
         }
       ],
-      "status": "implemented_verification_pending",
-      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
-      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current canonical/wrapper native69-command receipt plus120-command bridge/helper receipt; historical other helper receipts apply only to their own identities.",
+      "remaining_gap": "No absent supported-domain body. Native non-Mac execution external; exact unestablished eligibility/ABI policies stay in questions."
     },
     {
       "name": "maybe_append_cast",
@@ -386,23 +396,23 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-expression-normalization.jai",
-          "line": 31
+          "line": 39
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "per-API fresh evidence not yet collected",
-      "remaining_gap": "Integer-zero pointer conversion exists; ownership policy documented in existing emission questions, pending reviewer confirmation."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
+      "remaining_gap": "Body preserves nonzero/reference cases and converts represented zero pointer defaults through canonical null literal; current default/native workflows verified."
     },
     {
       "name": "maybe_convert_fixed_array_type",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-expression-normalization.jai",
-          "line": 27
+          "line": 35
         }
       ],
       "status": "implemented_supported_contract",
-      "shared_verification": "Fresh public workflows interpreter and native Mac O0/O2; per-receipt snapshot applies, latest source refresh verification in progress.",
+      "shared_verification": "Current guarded public bridge120, scoped generated emission140/227;80namespace and96-level type/native-long/expression/array paths, cyclic negatives and repeated-DAG native effects as applicable. Exact fixtures/receipts define domain.",
       "remaining_gap": "Native other platforms not executed; supported-domain edge coverage detailed in fixtures."
     },
     {
@@ -413,9 +423,9 @@
           "line": 1
         }
       ],
-      "status": "implemented_verification_pending",
-      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
-      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current canonical/wrapper native69-command receipt plus120-command bridge/helper receipt; historical other helper receipts apply only to their own identities.",
+      "remaining_gap": "No absent supported-domain body. Native non-Mac execution external; exact unestablished eligibility/ABI policies stay in questions."
     },
     {
       "name": "maybe_unwrap_bitfield_declaration",
@@ -425,9 +435,9 @@
           "line": 97
         }
       ],
-      "status": "implemented_verification_pending",
-      "shared_verification": "Actual shared interpreter/SDK-native consumer or pointer-identity effects passed; full Mac O0/O2 batch pending.",
-      "remaining_gap": "Current source native O0/O2 and full-context lint/format closure pending."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current canonical/wrapper native69-command receipt plus120-command bridge/helper receipt; historical other helper receipts apply only to their own identities.",
+      "remaining_gap": "No absent supported-domain body. Native non-Mac execution external; exact unestablished eligibility/ABI policies stay in questions."
     },
     {
       "name": "omit_cpp_functions_visitor",
@@ -446,7 +456,7 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
-          "line": 143
+          "line": 224
         }
       ],
       "status": "implemented_supported_contract",
@@ -455,17 +465,22 @@
     },
     {
       "name": "print_declaration_to_builder",
-      "declarations": [],
-      "status": "missing_body",
-      "shared_verification": "Missing public body confirmed in current combined owned sources.",
-      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/declaration-emission.jai",
+          "line": 26
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
+      "remaining_gap": "Represented dispatch/flags implemented. Actual ordinary/anonymous/bitfield records, enum/typedef/default/storage execute current native workflows; unresolved downstream virtual/ObjC/generic accepted-domain limits remain explicit."
     },
     {
       "name": "print_enum",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 33
+          "line": 34
         }
       ],
       "status": "implemented_supported_contract",
@@ -477,7 +492,7 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 53
+          "line": 54
         }
       ],
       "status": "implemented_supported_contract",
@@ -493,27 +508,32 @@
         }
       ],
       "status": "partial_supported_body",
-      "shared_verification": "aggregate public workflow fresh passed",
-      "remaining_gap": "Aggregate/cycle transaction now verified; general represented expression categories and template instantiation composition audit pending."
+      "shared_verification": "Current guarded public bridge120, scoped generated emission140/227;80namespace and96-level type/native-long/expression/array paths, cyclic negatives and repeated-DAG native effects as applicable. Exact fixtures/receipts define domain.",
+      "remaining_gap": "Canonical literal/macro, template identifier, type reference, unary/binary/parenthesized and aggregate paths implemented with bounded atomic emission. Inherits explicit unresolved raw-token/width policy."
     },
     {
       "name": "print_function",
-      "declarations": [],
-      "status": "missing_body",
-      "shared_verification": "Missing public body confirmed in current combined owned sources.",
-      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/declaration-emission.jai",
+          "line": 36
+        }
+      ],
+      "status": "partial_supported_body",
+      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
+      "remaining_gap": "Real plain foreign, pointer-to-value and formatting wrappers; callback slices copied before reuse. Virtual linkage without library and Objective-C generated call unresolved in reviewed questions."
     },
     {
       "name": "print_function_type_to_builder",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 95
+          "line": 96
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "aggregate public workflow fresh passed",
-      "remaining_gap": "Configured FOREIGN_FUNC_DECLARATION callback and represented directives now honored; new real default/native ABI fixture interpreter green, full native batch pending."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
+      "remaining_gap": "Configured FOREIGN callback, real defaults and directives verified; standalone va_list opaque policy implemented. No argument list/provider substitution."
     },
     {
       "name": "print_literal_to_builder",
@@ -524,48 +544,63 @@
         }
       ],
       "status": "partial_supported_body",
-      "shared_verification": "per-API fresh evidence not yet collected",
-      "remaining_gap": "Standard numeric/string/null/enum expressions exist; all width/category/raw/macro limits require explicit per-domain audit."
+      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
+      "remaining_gap": "Scalar/string/null/enum/identifier plus canonical checked MACRO conversion with target cast, temporary ownership and failure transaction verified. RAW_CPP_TOKENS target/output policy and widths beyond64 need review."
     },
     {
       "name": "print_namespace",
-      "declarations": [],
-      "status": "missing_body",
-      "shared_verification": "Missing public body confirmed in current combined owned sources.",
-      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/declaration-emission.jai",
+          "line": 62
+        }
+      ],
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current guarded public bridge120, scoped generated emission140/227;80namespace and96-level type/native-long/expression/array paths, cyclic negatives and repeated-DAG native effects as applicable. Exact fixtures/receipts define domain.",
+      "remaining_gap": "Canonical namespace-as-struct, omission/empty namespace and global-placement queue bodies present; native ordinary declaration workflow verified."
     },
     {
       "name": "print_struct",
-      "declarations": [],
-      "status": "missing_body",
-      "shared_verification": "Missing public body confirmed in current combined owned sources.",
-      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/declaration-emission.jai",
+          "line": 47
+        }
+      ],
+      "status": "partial_supported_body",
+      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
+      "remaining_gap": "Current ordinary/anonymous/bitfield modified_declarations produce real native-compatible records. Generic dependent record emission and polymorphic vtable/helper placement need clarified canonical metadata/printing contract."
     },
     {
       "name": "print_struct_vtable",
-      "declarations": [],
-      "status": "missing_body",
-      "shared_verification": "Missing public body confirmed in current combined owned sources.",
-      "remaining_gap": "No public body in audited owned emission sources; implement reviewed behavior or request precise observable policy."
+      "declarations": [
+        {
+          "path": "stdlib/Bindings_Generator/declaration-emission.jai",
+          "line": 113
+        }
+      ],
+      "status": "partial_supported_body",
+      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
+      "remaining_gap": "Body prints actual canonical vtable record; required placement/helper relationship to virtual_ call declarations awaits precise reviewed linkage contract."
     },
     {
       "name": "print_type_to_builder",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 79
+          "line": 80
         }
       ],
       "status": "partial_supported_body",
-      "shared_verification": "per-API fresh evidence not yet collected",
-      "remaining_gap": "Plain type emission exists; existing_declarations-dependent generation and broader template/method workflow remain unfinished."
+      "shared_verification": "Current guarded public bridge120, scoped generated emission140/227;80namespace and96-level type/native-long/expression/array paths, cyclic negatives and repeated-DAG native effects as applicable. Exact fixtures/receipts define domain.",
+      "remaining_gap": "Actual supported named/anonymous/function/dimension/incomplete/va_list/type template argument printing verified; cycle-aware deep type/name traversal. Dependent generic record, raw/128 and polymorphic policies inherited explicitly."
     },
     {
       "name": "print_typedef",
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 14
+          "line": 15
         }
       ],
       "status": "implemented_supported_contract",
@@ -577,7 +612,7 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
-          "line": 120
+          "line": 135
         }
       ],
       "status": "partial_supported_body",
@@ -589,7 +624,7 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
-          "line": 74
+          "line": 155
         }
       ],
       "status": "implemented_supported_contract",
@@ -601,11 +636,11 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
-          "line": 55
+          "line": 136
         },
         {
           "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
-          "line": 68
+          "line": 149
         }
       ],
       "status": "implemented_supported_contract",
@@ -629,7 +664,7 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 120
+          "line": 138
         }
       ],
       "status": "implemented_supported_contract",
@@ -641,7 +676,7 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-declaration-visitors.jai",
-          "line": 30
+          "line": 111
         }
       ],
       "status": "implemented_supported_contract",
@@ -653,7 +688,7 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-cursor-source.jai",
-          "line": 77
+          "line": 92
         }
       ],
       "status": "implemented_supported_contract",
@@ -689,15 +724,15 @@
       "declarations": [
         {
           "path": "stdlib/internal/developer-tools/binding-type-emission.jai",
-          "line": 85
+          "line": 86
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "per-API fresh evidence not yet collected",
-      "remaining_gap": "Composes current plain type printer; inherits its declaration/template/method gaps."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current guarded public bridge120, scoped generated emission140/227;80namespace and96-level type/native-long/expression/array paths, cyclic negatives and repeated-DAG native effects as applicable. Exact fixtures/receipts define domain.",
+      "remaining_gap": "Atomic adapter to current canonical type printer; failures return empty with diagnostics, supported shapes verified."
     }
   ],
-  "inventory_limit": "Declaration locations are discovery only, not body completeness or contract correctness. Other canonical model/helper files intentionally excluded.",
+  "inventory_limit": "52-name assigned completion inventory; locations are discovery, not proof. Maintained driver/fragment APIs are separately audited below; canonical model, runner and seven macro names excluded by ownership.",
   "required_failure_triage": [
     {
       "fixture": "bindings-aggregate.jai",
@@ -720,8 +755,8 @@
       "print-vars.jai": "passed",
       "bindings-transaction-storage.jai": "passed before concurrent integration"
     },
-    "native_O0": "compile interrupted by concurrent integration conflict marker in owned binding-value-emission.jai; not a stable-source regression result",
-    "native_O2": "not_run",
+    "native_O0": "Actual scoped Mac effects; current120 bridge/helper +69 canonical/anonymous-bitfield receipts, not complete stdlib/corpus acceptance.",
+    "native_O2": "Actual scoped Mac effects; current120 bridge/helper +69 canonical/anonymous-bitfield receipts, not complete stdlib/corpus acceptance.",
     "aggregate": {
       "passed": true,
       "source_unchanged": true,
@@ -736,17 +771,13 @@
       "cross_target": "not run"
     },
     "Print_Vars": {
-      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/print-vars-verification.json",
-      "commands": 7,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/print-vars-current-vmpmaxj7/verification.json",
+      "commands": 14,
+      "runtime_executions": 6,
+      "passed": true,
       "source_unchanged": true,
-      "passed": [
-        "interpreter",
-        "native Mac O0",
-        "native Mac O2",
-        "format --check",
-        "warnings-denied lint"
-      ],
-      "verification_gap": "Checkpoint compound expression fixture not adopted"
+      "tools_unchanged": true,
+      "domain": "all7 public names through old unchanged assertions plus fields/index/cast/binary/call code and8 control-flag combinations; Mac interpreter/O0/O2"
     },
     "new_batches": {
       "enum": "stdlib-tools/shared-target/enum-printers/verification.json",
@@ -757,12 +788,96 @@
       "macro_probe": "Actual shared generator-macro-shared-state interpreter passes state ok via real model extraction/probe; native rerun pending."
     },
     "guarded_current_helpers": "stdlib-tools/shared-target/current-public-helpers-verification.json:43 commands,24runtime executions, source unchanged, Windows x64/Linux ARM64 source-only checks.",
-    "guarded_emission_workflows": "stdlib-tools/shared-target/emission-workflows-verification.json: all four original C/native or generic workflows pass; current signature-callback addition under verification."
+    "guarded_emission_workflows": "Historical233checks/105runtime seven-workflow guarded receipt emission-workflows-1792109746200046000; new expanded canonical/anonymous69 receipt supersedes its smaller record domain. No overwrite/projection.",
+    "canonical_public_bridge": {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-public-bridge-vy79zrpw/verification.json",
+      "commands": 120,
+      "runtime_executions": 60,
+      "passed": true,
+      "source_unchanged": true,
+      "domain": "Mac interpreter/native O0/O2, configured SDK C++ effects, original fragment/type regressions and both real template helpers; exact snapshot only"
+    },
+    "canonical_and_wrappers": {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/emission-workflows-1792109603151109000.json",
+      "passed": true,
+      "domain": "canonical declaration/default/storage and three-mode reused-slice/formatting wrappers; interpreter/native Mac O0/O2"
+    },
+    "canonical_and_anonymous": {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/emission-workflows-1792111483652013000.json",
+      "commands": 69,
+      "runtime_executions": 30,
+      "passed": true,
+      "source_unchanged": true,
+      "domain": "actual SDK parse-to-print unnamed record native storage/layout and public canonical cache nested bitfield accessors preserving tail"
+    },
+    "latest_public_bridge": {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-public-bridge-pwztdysh/verification.json",
+      "passed": true,
+      "source_unchanged": true,
+      "note": "Current shared compiler, global C++ adapter scope and strict adjusted SDK parameter/array qualifier matching; exact snapshot."
+    },
+    "null_underlying_enum": {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/emission-workflows-1792119394583985000.json",
+      "passed": true,
+      "note": "Reviewed null-underlying enum ordinary syntax, type remains null; original explicit-width/native enum consumers retained."
+    },
+    "shared_canonical_followup": [
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-public-bridge-cgjwhkif/verification.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 120,
+        "boundary": "Exact captured inputs; later driver C-linkage filter has separate final receipt. Target gate is source/object only."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/emission-workflows-1792121986114965000.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 140,
+        "boundary": "Exact captured inputs; later driver C-linkage filter has separate final receipt. Target gate is source/object only."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/emission-workflows-1792122139559002000.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 227,
+        "boundary": "Exact captured inputs; later driver C-linkage filter has separate final receipt. Target gate is source/object only."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/public-bridge-targets-c0q5un02/verification.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 0,
+        "boundary": "Exact captured inputs; later driver C-linkage filter has separate final receipt. Target gate is source/object only."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-bridge-driver-t3kesdoe/verification.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 33,
+        "boundary": "Exact captured inputs; later driver C-linkage filter has separate final receipt. Target gate is source/object only."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-bridge-driver-qh6thvhb/verification.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 33,
+        "boundary": "Final canonical Pool ownership and supported high-level current source. Other native platforms not executed."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/emission-workflows-1792123045525896000.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 72,
+        "boundary": "Final canonical Pool ownership and supported high-level current source. Other native platforms not executed."
+      }
+    ]
   },
   "dependencies": [
-    "Integrator baseline freeze/native slot",
-    "Canonical native SDK libclang configuration requested by model owner",
-    "Dirty reviewer exact helper policies where output text/state policy missing"
+    "Dirty-reviewed virtual/Objective-C/native literal policies",
+    "Canonical model record/template/ABI supported-domain dependencies",
+    "Integrator sole checkpoint/index and broad baseline/corpus execution",
+    "Configured LLVM/libclang resource/sysroot/package closure"
   ],
   "workarounds": [
     {
@@ -780,33 +895,84 @@
     {
       "kind": "fixture setup correction",
       "detail": "Native init does not allocate the long-lived input index; new SDK token tests explicitly create/store their own actual clang_index for deinit ownership. Parse flag argument uses reviewed u32 cast."
+    },
+    {
+      "detail": "New macro test first omitted required exact Parse_Input receipt and attempted private import; corrected fixture via canonical session field type and real physical filename/argv. Failed builder serializer returns empty, so negative transaction checks actual retained length rather than pretending failed serialization succeeded."
+    },
+    {
+      "detail": "First bridge fixture standard C++ headers produced native SDK parse diagnostics; minimal original placement-new plus official stdarg resource input isolates bridge behavior. Broader SDK resource/sysroot C++ header closure remains integration dependency, not claimed fixed."
+    },
+    {
+      "detail": "T7 filesystem AppleDouble ._ metadata matched generated-source glob and formatter rejected it. Runner now names its two actual generated Jai sources exactly; metadata artifacts preserved, no genuine source/test excluded."
+    },
+    {
+      "detail": "Old independently authored type-emission postfix-array expectations conflict with refreshed public array-decay contract. Explicitly replaced static assertions with int** / int*& and equivalent native element mutation; fresh public shapes regression was red before implementation. Fixed old shared ../../target artifact/library assumptions using private scratch and generated module-relative libraries."
+    },
+    {
+      "detail": "Two98-command bridge batches completed every command but were INVALIDATED by actual model construction/state/template source edits. Preserved receipts canonical-public-bridge-gabv7fe8 and earlier invalid runs; latest stable120 receipt is actual accepted source identity."
+    },
+    {
+      "detail": "New anonymous SDK record exposed canonical descriptive-name handling; model owner repaired through reviewed get_name_for_cursor, no printer string-name workaround. Native69 expanded test passes unchanged."
+    },
+    {
+      "detail": "New nested bitfield native ABI fixture found spurious empty-record storage (Jai12/C8). Model owner counts BITFIELD storage/alignment in the SAME metadata cache; native69 fixture now passes unchanged expected sizes/values."
+    },
+    {
+      "detail": "New C++ target tests exposed static_cast-to-array and flattened matrix row types. Bridge now retains SDK array parameter adjustment and native pointer aliases. One-dimensional Jai consumer corrected its draft pointer-to-array call to canonical values.data; matrix uses first-row pointer. Native/target source/object tests keep real effects."
+    },
+    {
+      "detail": "Advanced Print_Vars draft required one side-effect evaluation but observed2; reviewed spec explicitly permits repeated/eager evaluation. Only new draft assertion corrected to>=1; original single-call fixture assertion==1 remains unchanged. No production change."
+    },
+    {
+      "detail": "Old type-emission runner now forwards to the unified actual workflow; ALL its original type/error/roundtrip/C++ fragment effects remain active with private scratch. No old shared target/staging writes. Linux runner path retained in source but not executed."
+    },
+    {
+      "detail": "Initial slow fresh-binary startup also affected --version/empty-main and subsequently completed; no compiler hang defect claimed. First own session interrupted with control-C, no green evidence. OS denied ps; no alternate process inspection attempted."
+    },
+    {
+      "detail": "Fresh shared cargo build --locked --offline completed; actual resolved-library filename reduction remains red, no stale sibling binary basis."
+    },
+    {
+      "kind": "new fixture corrections",
+      "detail": "Deep tests use declared Literal fields, explicit scope_export after generated file support, Jai postfix dereference, and retained byte length for failed builder. Existing exact diagnostic-count and BAD/GOOD assertions unchanged. Before/failed receipts preserved."
+    },
+    {
+      "kind": "test staging ownership",
+      "detail": "Exact byte copies of NEW OWN library fixtures beside original C providers implement reviewed relative logical-name oracle; hashes recorded, actual shared production used, no peer binaries/overlays. All output T7; accidental bare own executable moved from test source folder to own T7 evidence."
     }
   ],
   "unfinished": [
-    "Nine absent driver/function/record/bridge/clash public bodies",
-    "Ten original partial bodies require final contract completion (exact names in per-API table)",
-    "Two template helper bodies blocked by model T[N] conversion; original repro/assertions retained",
-    "Bitfield/linkage/pointer recovery native O0/O2 and nonempty anonymous containment verification",
-    "Canonical run_generator parse-input capture and old independently authored Native_Model path consolidation",
-    "Production generic/native integer128 type mapping remains unsupported; no fabricated extra payload/ABI",
-    "Required other-platform actual native execution not claimed"
+    "print_function: virtual/pure-virtual missing linkage and Objective-C intrinsic call contract questions",
+    "print_struct/print_struct_vtable: generic dependent metadata/emission and supported vtable/helper placement contract",
+    "print_literal_to_builder/print_expression_to_builder, both hex helpers: raw-token conversion and128-bit represented target policy",
+    "raw_tokens_string_from_cursor: promised source whitespace versus token rendering question",
+    "append_cpp_wrapper: operator-spelled export normalization, source-only unknown ABI categories; ordinary core verified",
+    "Other native platforms and SDK distribution resource/sysroot closure remain external; cross target objects/source are not target execution",
+    "generate_bindings mapped-library workflow: canonical provider logical full_path repair and fresh three-library native gate pending",
+    "Retained unused Native_Model load/dependency removal requires integrator extraction of actually used quote/type utilities; not a second public parse route",
+    "Model-owned binding-model-properties scalar/comparison typedef64 caps60/166 routed to model owner, not changed here"
   ],
   "tradeoffs": [
     "No optional performance/profile expansion; scoped host aggregate workflow only.",
-    "Shared source freeze prevents production API work until first combined baseline completes; pending contracts and native provenance audited meanwhile.",
     "Current aggregate runner verifies Mac only; unsupported-host gate fails explicitly, no fabricated platform success.",
     "Bitfield getter/setter source currently unrolls represented bits (<=64 each), increasing source/code size; correctness checked against actual C ABI, no optional performance matrix.",
     "Native evaluation probe name collision scanning is linear per candidate, potentially quadratic for adversarial private-name collisions.",
     "Pointer array recovery preserves already-inserted and pointer-to-array shapes to avoid double normalization; eligibility edge review requested, no broad ABI promise.",
-    "Unsupported template argument placeholder has independently chosen diagnostic spelling and false result; never treated as converted supported argument."
+    "Unsupported template argument placeholder has independently chosen diagnostic spelling and false result; never treated as converted supported argument.",
+    "C++ bridge uses per-function aliases and native SDK cursor spellings to retain exact overload type identity; generated source grows with signatures.",
+    "Three Jai callback argument sequences copied into temporary pointer arrays before subsequent calls; allocation cost proportional to argument count, no model/declaration duplication.",
+    "Inline anonymous-declaration association scans derived members per unnamed tag (quadratic in member count); no duplicate metadata registry.",
+    "Native formatting precision uses C int (s64 count narrowed in generated bridge); arbitrary counts beyond C precision range are not certified.",
+    "Driver still has independent construction/native-helper routes; explicit staged consolidation requirement, not a claimed canonical completed workflow.",
+    "Normalizer clones selected mutable array headers/data and tracks only newly owned text for high-level cleanup; extra allocations linear in configuration size.",
+    "Bridge C-linkage definitions use an independently named private C++ namespace to avoid different-language-linkage global redeclarations; exported C symbol names preserved.",
+    "Canonical bulk lifetime retains intermediate print/SDK-probe allocations until end; result buffers remain caller-owned. Peak-memory cost not benchmarked, no performance claim."
   ],
   "adoption_status": "Checkpoint adopted; public emitters in canonical facade, new bodies consume single canonical model/context. No index/branch mutation by this owner.",
   "remaining_counts": {
-    "implemented_supported_contract": 26,
-    "implemented_verification_pending": 10,
-    "missing_body": 6,
-    "partial_supported_body": 10,
-    "assigned_names": 52
+    "partial_supported_body": 9,
+    "implemented_supported_contract": 43,
+    "missing_body": 0
   },
   "native_dependency_identity": [
     {
@@ -835,43 +1001,43 @@
       "name": "append_indented",
       "body": "implemented",
       "contract": "reviewed signatures/defaults/config and existing workflow audited",
-      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+      "verification": "Current print-vars-current-vmpmaxj7 receipt: actual Mac interpreter/native O0/O2, formatter and warnings-denied lint; compound expressions and8 flag combinations included."
     },
     {
       "name": "print_helper",
       "body": "implemented",
       "contract": "reviewed signatures/defaults/config and existing workflow audited",
-      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+      "verification": "Current print-vars-current-vmpmaxj7 receipt: actual Mac interpreter/native O0/O2, formatter and warnings-denied lint; compound expressions and8 flag combinations included."
     },
     {
       "name": "get_code_name",
       "body": "implemented",
       "contract": "reviewed signatures/defaults/config and existing workflow audited",
-      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+      "verification": "Current print-vars-current-vmpmaxj7 receipt: actual Mac interpreter/native O0/O2, formatter and warnings-denied lint; compound expressions and8 flag combinations included."
     },
     {
       "name": "print_vars_helper",
       "body": "implemented",
       "contract": "reviewed signatures/defaults/config and existing workflow audited",
-      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+      "verification": "Current print-vars-current-vmpmaxj7 receipt: actual Mac interpreter/native O0/O2, formatter and warnings-denied lint; compound expressions and8 flag combinations included."
     },
     {
       "name": "print_vars_to",
       "body": "implemented",
       "contract": "reviewed signatures/defaults/config and existing workflow audited",
-      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+      "verification": "Current print-vars-current-vmpmaxj7 receipt: actual Mac interpreter/native O0/O2, formatter and warnings-denied lint; compound expressions and8 flag combinations included."
     },
     {
       "name": "print_vars",
       "body": "implemented",
       "contract": "reviewed signatures/defaults/config and existing workflow audited",
-      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+      "verification": "Current print-vars-current-vmpmaxj7 receipt: actual Mac interpreter/native O0/O2, formatter and warnings-denied lint; compound expressions and8 flag combinations included."
     },
     {
       "name": "log_vars",
       "body": "implemented",
       "contract": "reviewed signatures/defaults/config and existing workflow audited",
-      "verification": "fresh shared public fixture interpreter and native Mac O0/O2; advanced expression forms still pending coverage"
+      "verification": "Current print-vars-current-vmpmaxj7 receipt: actual Mac interpreter/native O0/O2, formatter and warnings-denied lint; compound expressions and8 flag combinations included."
     }
   ],
   "question_document": "docs/specs/questions/stdlib-tools-shared.md",
@@ -892,18 +1058,8 @@
     "note": "Latest coordinator explicitly assigned canonical run_generator/handle_toplevel_cursors to ASN macro worker; tools retains emission/bindings-driver integration, supplies native evaluation probe."
   },
   "next_batch": {
-    "focus": "Finish verification/checkpoint current real public helper batch; then remaining nine driver/record/function/bridge/clash APIs",
-    "missing": [
-      "append_cpp_wrapper",
-      "avoid_name_clash",
-      "handle_toplevel_cursors",
-      "print_declaration_to_builder",
-      "print_function",
-      "print_namespace",
-      "print_struct",
-      "print_struct_vtable",
-      "run_generator"
-    ]
+    "focus": "Use reviewed refinements to finish virtual/ObjC/generic/raw/driver paths; preserve source-stable interval for peer/integrator receipts",
+    "missing": []
   },
   "native_macro_probe_dependency": {
     "ownership": "Only native parse-input capture/probe boundary belongs tools; seven public macro APIs excluded",
@@ -920,5 +1076,253 @@
     ],
     "failed_attempt": "Nonexistent virtual include rejected; corrected using actual immutable primary filename per official CXUnsavedFile docs."
   },
-  "source_hold": "Released; implementation active. Brief file verification window completed."
+  "source_hold": "Own production currently stable for integrator capture/checkpoint. No index/commit operation by tools. Later implementation will reread append-only inbox and honor explicit capture holds.",
+  "maintained_driver_inventory": [
+    {
+      "name": "normalize_options",
+      "status": "implemented_supported_contract",
+      "public_overloads": 1,
+      "gap": "Supported host defaults now verified with installed SDK paths; other native platform SDK execution/distribution closure remains external."
+    },
+    {
+      "name": "generate_bindings",
+      "status": "partial_supported_body",
+      "public_overloads": 2,
+      "gap": "Canonical both-overload source implemented; supported header/type/record/enum/bitfield/wrapper workflows native verified. Multi-library logical full_path awaits provider repair. Virtual/ObjC/dependent-generic/raw/128 policies remain precise inherited emission questions."
+    },
+    {
+      "name": "generate_bridge",
+      "status": "partial_supported_body",
+      "public_overloads": 1,
+      "gap": "Supported canonical C++ workflow including mapped metadata/filter/native C exclusion/defaults/aggregate/lifetime/file negatives verified. Unsupported assembly-label/native ABI classification and other native execution explicit."
+    },
+    {
+      "name": "_default_get_func_args_for_printing",
+      "status": "implemented_supported_contract",
+      "gap": "Actual borrowed represented argument sequence, explicit modes and null fallback; no stub/provider substitution."
+    }
+  ],
+  "maintained_fragment_inventory": [
+    {
+      "name": "append_cpp_literal",
+      "status": "implemented_supported_contract",
+      "verification": "Current120-command batch retains original native C++ fragment effects and negative storage assertions."
+    },
+    {
+      "name": "append_cpp_expression",
+      "status": "implemented_supported_contract",
+      "verification": "Current120-command batch retains original native C++ fragment effects and unsupported-default/storage diagnostics."
+    }
+  ],
+  "active_driver_batch": {
+    "source_status": "real canonical implementation in progress; no public Native_Model/helper-process route remains",
+    "files": [
+      "stdlib/internal/developer-tools/bindings-driver.jai",
+      "stdlib/internal/developer-tools/binding-options-normalization.jai",
+      "stdlib/internal/developer-tools/binding-canonical-driver.jai"
+    ],
+    "normalization": "Reviewed supported host policy complete and installed Mac default roots/target confirmed in final33-check receipt. Android explicit-root target/suffix semantics tested; native non-Mac SDK/default/distribution execution remains external.",
+    "bridge": "Final canonical-bridge-driver-qh6thvhb:33 guarded checks including actual zero-live counting allocator, canonical Pool input hashes, installed Mac default normalization, original C value19 and actual configured C++ default/aggregate nativeO0/O2 consumers.",
+    "jai_driver": "Final emission-workflows-1792123045525896000 guarded canonical header/deep tests,72 actual commands; unchanged BAD/GOOD, default reports, preserved files/write errors,80native namespace input,96pointer/expression/DAG, cyclic atomic negatives, actual generated Jai/C++ O0/O2 storage writes survive Pool teardown.",
+    "compiler_dependency": "Old absolute suffixed #library,shared RED is an UNESTABLISHED compatibility oracle under delivered logical-name/directive contract, not a proven compiler bug.",
+    "not_claimed": [
+      "driver all-config closure",
+      "vtable/ObjC/generic/raw/128 path completion",
+      "non-Mac execution",
+      "whole stdlib/corpus acceptance"
+    ],
+    "plan": "docs/plans/stdlib-tools-canonical-driver.md",
+    "library_dependency": "canonical-libraries-3zvk1n69 genuine system logical-name assertion RED. Shared/static modifiers already pass. Generator-platform owner must publish logical extensionless full_path while retaining physical loading identity; no driver-side stripping.",
+    "ownership": "Canonical Pool for temporary init/run/printing; result builder retains caller allocator. Native/session disposal before bulk release, no universal native-library/cache unload."
+  },
+  "no_workaround_review": [
+    {
+      "path": "stdlib/internal/developer-tools/binding-canonical-cpp-bridge.jai",
+      "former_behavior": "Raw array matching used check_qualifiers=false; potential semantic fallback hiding caller qualifier changes.",
+      "preserved_evidence": "shared-target/qualification-review-before NEW owned source copies",
+      "proper_fix": "Canonical FUNCTION parameter types expose adjusted arrays; matcher strictly propagates array-level qualifiers into elements. No opt-out remains.",
+      "verified": "Actual one/two-dimensional compile plus guarded public bridge pwztdysh interpreter/nativeO0/O2."
+    },
+    {
+      "path": "stdlib/internal/developer-tools/binding-native-model.jai",
+      "behavior": "Retained legacy private construction source still loaded by module.jai; both public workflows no longer call it.",
+      "review_needed": "Integrator/root should extract shared pure quote/type utilities and reconcile owned module load before removing stale provider source; preserve evidence per human directive."
+    },
+    {
+      "path": "stdlib/internal/developer-tools/binding-expression-normalization.jai",
+      "behavior": "INSERTED/pointer-to-array recovery inputs retained by current early eligibility guard.",
+      "classification": "Unresolved accepted-domain question, not a completed fix; root review requested."
+    },
+    {
+      "path": "tests/developer-tools/bindings-public-cpp-bridge.hpp",
+      "behavior": "Minimal original placement-new declaration avoids unresolved broad C++ SDK header parse setup.",
+      "classification": "Fixture setup boundary; not proof general std C++ include/resource/sysroot closure is fixed. Actual generated high-level <new> output compiles configured Clang."
+    },
+    {
+      "classification": "repaired actual accepted-domain limits",
+      "paths": [
+        "binding-canonical-driver.jai",
+        "binding-declaration-emission.jai",
+        "binding-type-emission.jai",
+        "binding-value-emission.jai",
+        "binding-expression-normalization.jai",
+        "binding-cpp-model.jai",
+        "cpp-fragments.jai"
+      ],
+      "behavior": "Removed active declaration/parent/type/expression/template/array/native matcher64 cutoffs via actual cycle detection. Original80namespace and96pointer/long/expression regressions pass; no increased cutoff or qualifier relaxation."
+    },
+    {
+      "classification": "private traversal performance tradeoff",
+      "path": "stdlib/internal/developer-tools/emission-state/module.jai",
+      "behavior": "Single nonparameterized private protocol; transient generic pointer/phase path. Linear membership scans per entry, quadratic chains; allocator-owned root state freed at completion. Recursive printers still consume native stack."
+    },
+    {
+      "classification": "corrected invalid compiler oracle",
+      "behavior": "Absolute suffixed shared directive RED retained but not supported by reviewed generator oracle; no compiler literal/path exception requested."
+    },
+    {
+      "classification": "C++ native linkage selection root fix",
+      "behavior": "Mixed extern-C/C++ test genuinely red. Official SDK mangling uses canonical fix_macos_foreign_name before native spelling comparison. C++ adapters retain required names, original C symbol remains directly callable. No symbol-specific branch/runtime lookup/export rename."
+    },
+    {
+      "classification": "real ownership defect repaired",
+      "path": "stdlib/internal/developer-tools/binding-canonical-driver.jai",
+      "behavior": "Counting allocator exposed Library_Info outside session ledger; canonical Pool now bulk-owns temporary model/print allocations, explicit result caller allocator preserves output. Native/session deinit precedes pool release. Zero-live assertion unchanged and native verified."
+    }
+  ],
+  "ready_canonical_emission_checkpoint": {
+    "subject": "feat(stdlib): generate bindings through canonical model",
+    "status": "READY stable supported canonical source for integrator selective checkpoint.9 explicit partial helper names/0 missing bodies. Real provider logical-name RED and unsupported spec/native domains retained; not full stdlib/corpus completion.",
+    "integration": "Integrator ONLY stages/commits. Include actual changed/new owned paths from this manifest plus this status JSON; no peer source, generated binary, immutable fixture or inbox wholesale staging. Existing facade loads remain unchanged.",
+    "files": {
+      "docs/plans/stdlib-tools-canonical-driver.md": "2ce7c87723d34d74c89ca8acb8567c0518ce6784c8dd383744f525979ce527e5",
+      "docs/specs/questions/stdlib-tools-shared.md": "f694747517018abd028c46842ee90583e94ec2854e2eac2406d199dd722bf878",
+      "docs/status/developer-tools-deviations.md": "8fd217545ebd63e1e659c28fce6f5a364c937b74c8df384918667f23eadb49b1",
+      "docs/stdlib-tools-shared-emission.md": "ae731fba72bb9756484f5668474b9a953699b984071943b7b525ab402b8c6950",
+      "stdlib/Bindings_Generator/declaration-emission.jai": "4a117fc01dc0ad8f4ac7dab4c5814319c34bab19feb85d2b0805bcdbb43b2fa5",
+      "stdlib/internal/developer-tools/binding-canonical-cpp-bridge.jai": "d88d9873f29bea06f1e4cfe66af8e944613cc7cf8d5bece64c02ef1b9464b9d1",
+      "stdlib/internal/developer-tools/binding-canonical-driver.jai": "7345e7492be2142fc16cf96eaaab27f702ecaf0d1c5d85ff948cd6b4d9632336",
+      "stdlib/internal/developer-tools/binding-cpp-model.jai": "e356ac801e7839cd3511da62c9eb24efc857a327cda4abb1a5fe02c81d72075d",
+      "stdlib/internal/developer-tools/binding-declaration-emission.jai": "80a1da96341e4b9d2701d5bc896feaac7d906f9a8e587425550aa5a5e806d156",
+      "stdlib/internal/developer-tools/binding-expression-normalization.jai": "27f72b70e51b641865b73c9422eaa1b6bfad78de0948921a52e338725aa7130f",
+      "stdlib/internal/developer-tools/binding-options-normalization.jai": "535167a0cd7e890b348b5423170c45d242cc7bc9f903ae06c60309661aa4a0b2",
+      "stdlib/internal/developer-tools/binding-type-emission.jai": "6e0bf6800e87d9bf68e289fd0b4699b8e9123f1812510b9cd470f265a351e748",
+      "stdlib/internal/developer-tools/binding-value-emission.jai": "8baa487b4b1dfea8c798db55f9e723b36aa8263993f27d35b4eeefa4ccdfa3ef",
+      "stdlib/internal/developer-tools/bindings-driver.jai": "7d067479f585cfe9ed2112e4c1556d3356ce925e4fa3c32515bbb19d6c15e7c1",
+      "stdlib/internal/developer-tools/cpp-fragments.jai": "67e17f5b89823297817d8da9f17d59533535ff2106815ded322d305bf7f44047",
+      "stdlib/internal/developer-tools/emission-state/module.jai": "89b2a2a315f8065732eb19c132807b3090a5eb36d9dc00743cbc04b364731f2e",
+      "tests/developer-tools/bindings-anonymous-bitfields-native.c": "e8649d8c267a717789115af88f6b99d940f35209a7c07ad4d88961b1bd14218a",
+      "tests/developer-tools/bindings-anonymous-bitfields-roundtrip.jai": "1e02a62f2dd3ca56438b4aaed0a85f8a891baf886911c45d6a63c54ab5c18e6c",
+      "tests/developer-tools/bindings-anonymous-bitfields.jai": "4ef040818ae21f47325e5b51558452aee98b8590b20dd339956b808e2e133b31",
+      "tests/developer-tools/bindings-canonical-bridge-consumer.cpp": "d23752086d567046bf606147cb61c6a5655a0efb111cb01edf2908a7018a94be",
+      "tests/developer-tools/bindings-canonical-bridge-native.cpp": "77d6966c5783643fff2ce4a68d3ca378f3d8bff990659b11287381e10cd5de9c",
+      "tests/developer-tools/bindings-canonical-bridge.hpp": "163ea9c0e7f5b06ab4e369ce9d1f09dd830a2770711db3f2aae15e629c414e37",
+      "tests/developer-tools/bindings-canonical-bridge.jai": "59b720faef2bf071d043c0022b4363fbe92aa7fdeb8d7d372de42dc7fa6db539",
+      "tests/developer-tools/bindings-canonical-driver-roundtrip.jai": "a7f3576ae3823e5d17680eff3006f17718a0bcd77151933feb175b7391e24688",
+      "tests/developer-tools/bindings-canonical-driver.h": "9fa0db5df526903d282728f8479a487ec03c5c1a408ee2bdb471baaaebdde893",
+      "tests/developer-tools/bindings-canonical-driver.jai": "93b7efacdbb05eae5828b94521337aa2d948b69d97f05752ba22f48f7398fc55",
+      "tests/developer-tools/bindings-canonical-libraries-native.c": "a867f5c615d443372d41d7f0332e86a1308aea3b8c3547c2e1515be0bc34b8d5",
+      "tests/developer-tools/bindings-canonical-libraries-roundtrip.jai": "f1c7ae07e8e0521f6a9bb942d16197047d5069fc9476384977fc1bd4b959c2ee",
+      "tests/developer-tools/bindings-canonical-libraries.h": "0ebbdb7e3ae7057156dbfe8e919804acd4d1a76a64d4b99be68d31a70d779c44",
+      "tests/developer-tools/bindings-canonical-libraries.jai": "af0516de07834f8bcaf6bc4e613067f28fd51ed7a739d9772f8b468cf3ff68d6",
+      "tests/developer-tools/bindings-canonical-printing-native.c": "7cd11abb739c97e0980b683f82b6f64b7049b8bc56e47223602fb227b3183793",
+      "tests/developer-tools/bindings-canonical-printing-roundtrip.jai": "d6de68a29d06176131e240c3fc13260f13604f83aaf3e01c6c3af725368bab89",
+      "tests/developer-tools/bindings-canonical-printing.h": "8f8b85abe295053b05ebb562c78c7f3700ce1c53b557fd9aacf12ff3fe9de83d",
+      "tests/developer-tools/bindings-canonical-printing.jai": "b9a8d378304f61c7c81e1ec30b25f59e5d481237c31f19b6da6d97bfd7be85d0",
+      "tests/developer-tools/bindings-configured-sdk-version.jai": "57ad2baccde2b983dbff764d3c8da254be0eb7c67245bb87ed6465d6cc0b10cb",
+      "tests/developer-tools/bindings-cpp-fragments.jai": "3337c63e38f7f52cb4170b26afd77e717ab0b5fc8bb3b0002d3965beb350d051",
+      "tests/developer-tools/bindings-deep-emission.jai": "15f578b4f8eab14e078946d2d7b396afc5b93e7ae64cdfcb5efd19f9241ccbc0",
+      "tests/developer-tools/bindings-enum-printers-native.c": "1a8543c4551c9ca563d4f358205ea62bb507a811e56e1bb5679a5abf18e5cc12",
+      "tests/developer-tools/bindings-enum-printers-roundtrip.jai": "cfe11d4c9bde6b4a460df80a004ee0a54cd914aeecb7feaac9c002a0f7d2a0da",
+      "tests/developer-tools/bindings-enum-printers.jai": "1a8a4cac99c5dee4eaddd1735777d20de24b52574d85a7eb3a7a393e2e2d882c",
+      "tests/developer-tools/bindings-function-wrappers-native.c": "59515223ac48372b9635d51de6defa86c4e144122ebe9694319e1ec8f588fed1",
+      "tests/developer-tools/bindings-function-wrappers-roundtrip.jai": "e74585a713588d0b022c71e1c442341f13373ef8a26c116dfc56392ebe3c72ff",
+      "tests/developer-tools/bindings-function-wrappers.h": "a7710462976b3615595b889b163aa5c21f2a49738f641a667795b9a614f17f76",
+      "tests/developer-tools/bindings-function-wrappers.jai": "7e79862490b5ae53df14bec7e09b7ae574848f655c6e40d01b417fe7f28ce4db",
+      "tests/developer-tools/bindings-inline-type-printing-roundtrip.jai": "9f9cc7ceb5a3a8e26643a5da91453ecd73addb01064fa5debbb437c09798b0c7",
+      "tests/developer-tools/bindings-inline-type-printing.jai": "1e141ff861230249490729840fb99081ecf4cc5bf90ec292f2abaaf910933073",
+      "tests/developer-tools/bindings-macro-value-printing.h": "36cdeba3ab25b4b34983df0b79dd8e917f7c35c361cead1311213d15ea20781a",
+      "tests/developer-tools/bindings-macro-value-printing.jai": "076e2f038246b48b18cce1c6646dec05b800356922cf13782b3cc31b870129cd",
+      "tests/developer-tools/bindings-name-clashes.jai": "834f78ca11e7258e1e3115d611a970175a4b824399582cd1a10d3b3a86c8ee2f",
+      "tests/developer-tools/bindings-options-normalization.jai": "c0454e88342c559b966ce3250bef5389c0caeec640236ba9787bb4a50e55b598",
+      "tests/developer-tools/bindings-public-cpp-bridge-consumer.cpp": "38fe1dabcca0a232d12ef02cb50bd3b55823ac9a508c872cb93ec639c5eb84f0",
+      "tests/developer-tools/bindings-public-cpp-bridge-roundtrip.jai": "982963d6c400324d65f4b163f70e8371358839784a34ad0955bd6207cd43e15d",
+      "tests/developer-tools/bindings-public-cpp-bridge.hpp": "4fc1c304955ba1f3fafcf45bf050a5e15d718184ba08daf1a78c30bb6efc4c62",
+      "tests/developer-tools/bindings-public-cpp-bridge.jai": "6f62eb2cf4b64c67edacfc22ada0fe1bd9a3f8d3745749fecc4c47189498a927",
+      "tests/developer-tools/bindings-public-type-shapes.jai": "c8ef56a76ace8a1d2818705992ad55f1ed0ba5bc6d09143fa759d3ec37892889",
+      "tests/developer-tools/bindings-type-emission-errors.jai": "a5ef3859d83f2291b816ffb16d5cb9384c2c3202c59a0fdcf57720e861a8be14",
+      "tests/developer-tools/bindings-type-emission-roundtrip.jai": "98b8ed99d30586d8746a58f8340c0c50a31ab602cac26031b60bd04de79862cd",
+      "tests/developer-tools/bindings-type-emission.jai": "b58a80e4b100c3539020b9c750b0f242e90c46bc22284ee4d1c60efdc8de046b",
+      "tests/developer-tools/print-vars-expressions.jai": "87ecff4b237c6004946cf965eb9be4d33f15a6bbf286200ac8ff2b1e822c393a",
+      "tools/check_developer_bridge_targets.py": "851f9beb3d7016fc0ce27a61e246ff5d5e8357f9babaccff92fdaf8bbaa3f2de",
+      "tools/check_developer_canonical_bridge.py": "eb6cb610b4da26fdf17f506f51e071742bf33a5271a5a113ccf8dfc5fd069b8b",
+      "tools/check_developer_canonical_libraries.py": "b48ed9898b65cb11d051911bd305d1d232eff4d7d5c81f56609ccc0d53667d28",
+      "tools/check_developer_emission_workflows.py": "ad08f4c4f16b074384db320efc036ebb180b639e485cb2be291905135f6a866d",
+      "tools/check_developer_public_bridge.py": "b0ef4ad9f4755d6825c1eeb20443ef625ecbb2910d3dee3070abef523939bf0d",
+      "tools/check_developer_resolved_library.py": "8e9e06cf95ee2e3e8e84e23120336e1e58f876bb9db54787f74f962b9a86dd16",
+      "tools/check_developer_type_emission.py": "e77aa8afd7abf8562b396823bc10c68d3f8ee837ab330807319aacd87d02a44e"
+    },
+    "remaining_counts": {
+      "partial_supported_body": 9,
+      "implemented_supported_contract": 43,
+      "missing_body": 0
+    },
+    "verification_units": [
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-public-bridge-cgjwhkif/verification.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 120,
+        "boundary": "Exact captured inputs; later driver C-linkage filter has separate final receipt. Target gate is source/object only."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/emission-workflows-1792121986114965000.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 140,
+        "boundary": "Exact captured inputs; later driver C-linkage filter has separate final receipt. Target gate is source/object only."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/emission-workflows-1792122139559002000.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 227,
+        "boundary": "Exact captured inputs; later driver C-linkage filter has separate final receipt. Target gate is source/object only."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/public-bridge-targets-c0q5un02/verification.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 0,
+        "boundary": "Exact captured inputs; later driver C-linkage filter has separate final receipt. Target gate is source/object only."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-bridge-driver-t3kesdoe/verification.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 33,
+        "boundary": "Exact captured inputs; later driver C-linkage filter has separate final receipt. Target gate is source/object only."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-bridge-driver-qh6thvhb/verification.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 33,
+        "boundary": "Final canonical Pool ownership and supported high-level current source. Other native platforms not executed."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/emission-workflows-1792123045525896000.json",
+        "passed": true,
+        "source_unchanged": true,
+        "commands": 72,
+        "boundary": "Final canonical Pool ownership and supported high-level current source. Other native platforms not executed."
+      }
+    ],
+    "shared_dependency": "Model/run sources are read-only dependencies in every receipt; generator-platform logical-name fix must integrate separately and rerun three-library gate.",
+    "global_docs_request": "Link docs/stdlib-tools-shared-emission.md and updated questions from global README/index.",
+    "read_only_dependencies": {
+      "stdlib/Pool/module.jai": "012a172bed5542f6c6706d0748011c62e5fb4165f182206cdf93b1490de23d88",
+      "stdlib/internal/allocation/pool.jai": "c3c8d499520aedf83057f3d730f4299621446470ec8929fd4fb8a51fc3f75f9a"
+    }
+  }
 }

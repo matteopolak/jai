@@ -171,3 +171,68 @@
 
 - **Resolved required eh_frame behavior:** reviewed frame questions1–4 are resolved. Version1/id0 CIEs and FDE backward distances now produce resolved cie_offset, encoding0 absolute8 or encoding0x1b signed4 PC-relative addresses/unsigned4 ranges, with absentR defaulting to absolute8. CIE extended-length markers are read but full DWARF64/segmented forms remain unsupported. Simple z/R/S augmentation forms are parsed; other augmentation letters and encodings return failure rather than guessing payload layout. FDE augmentation views borrow input; decoded instructions are caller-owned. Sixteen linked/native-format original fixtures cover x86/x64/arm64 O0/O2 relative signs and original C inline-assembly absolute/default records, with SDK ranges/opcode sequence oracles and all-prefix/bounds failures. The first negative-placement test accidentally overlaid eh_frame at the32-bit ELF image base, replacing its ELF header; filtered header bytes and default section addresses identified a test-layout defect. Explicit disjoint image/text/frame bases fixed it without production changes. The required extended-CIE test failed before the length-reader production fix, then passed. The extra independently designed debug_frame subset remains supported and separately documented.
 - **Inventory heading correction:** refreshed Debug_Info prose inserted a new level2 frame-behavior heading before further aggregate blocks. The inventory initially misclassified42 later aggregate fields as declarations. Aggregate headings now restore member classification, and contextual dependencies are recorded without adding exports. The corrected declaration total remains the reviewed inventory count; no facade symbol was added/removed for this metadata fix.
+
+## Shared canonical followup (2026-10-16)
+
+Earlier isolated/staged notes above are historical. Current implementations build
+against actual shared stdlib, with own tools/scratch entirely on T7. No peer
+binaries, production overlay, alternate clean-room inputs or Git/index changes.
+
+- Canonical normalize/init/run/deinit replaced the public high-level second
+  Native_Model/helper parser path. Old unused source remains loaded because pure
+  quote/type helpers require extraction and integrator-owned facade cleanup.
+  Its64 guards are retained evidence, not a supported second public workflow.
+- Delivered full_path/directive refinement supersedes the earlier absolute,
+  suffixed #library,shared reduction as compatibility oracle. That RED evidence
+  is retained and explicitly unestablished. The driver emits canonical logical
+  spellings, no_dll for static, and no shared token; platform provider physical/
+  logical identity repair remains external. No caller stripping/compiler hack.
+- Three-library fixture placement initially confused interpreter source-directory
+  cwd with native launch cwd. Exact byte copies of NEW own test inputs beside
+  the original C libraries now implement the reviewed relative-name oracle.
+  Production remains shared; copied inputs and actual compiler hashes recorded.
+- Original80-namespace and96-pointer/expression tests exposed real own count
+  limits. Replaced active emission/normalization/matcher limits with cycle-aware
+  path tracking and iterative collectors. Qualified temporary C++ array views
+  retain source identity so a copied cyclic node cannot evade detection.
+  Actual long96-pointer native regression exposed long-long fallback and now
+  passes strict matching with no qualifier opt-out.
+- Shared private traversal state records pointer/phase identity only, not model
+  records. Active membership scans take linear work per entry; long chains can
+  cost quadratic work, with native recursion still requiring stack. Temporary
+  arrays and root descriptor are allocator-owned and freed at completion.
+- Existing exact errors==4 regression caught duplicate diagnostics from private
+  guard plus public failure reporting. Private detection returns failure;
+  existing public printers emit diagnostics. Original assertion unchanged.
+  Array normalization has its own explicit cycle diagnostic.
+- NEW test drafts corrected nonexistent integer constructor to declared Literal
+  fields, private file-scope additions to explicit scope_export, and C++ prefix
+  dereference to Jai postfix dereference. Failed builder serialization returns
+  empty by contract, so transaction negatives inspect retained byte length.
+  No genuine test/assertion was silently dropped.
+- ASN fixed enum preparation ordering; unchanged BAD/GOOD consumer now passes.
+  Current header driver verifies default report logging, output lifetime, exact
+  filenames, failed generation preserving files, failed output returning false,
+  caller option arrays and absence of bridge will-print callbacks.
+- Virtual/vtable/Objective-C, dependent generic layout, raw-token/128-bit output
+  policy and unsupported native ABI remain precise question domains. Model-owned
+  scalar/comparison typedef guards remain external; Windows/Linux source/object
+  gates are not native target execution. No full module/corpus green claim.
+
+- High-level ownership had a real metadata leak: platform Library_Info allocations
+  were outside the model ledger. Actual counting-allocator bridge regression was
+  RED before canonical Pool integration and is now GREEN in interpreter/native
+  O0/O2. Result builder captures caller allocator before temporary Pool activation,
+  so returned buffers survive bulk cleanup. Native/session deinit precedes Pool
+  release; libraries/caches are not universally unloaded. Intermediate buffers
+  can increase peak memory because individual pool frees are no-ops.
+- Initial reviewed C++-linkage requirement already resolves ordinary unmangled C
+  selection. Mixed C/C++ test caught same-symbol C wrapper; native SDK name must
+  first use canonical fix_macos_foreign_name before comparison with native cursor
+  spelling. Two RED attempts retained, final original-C value19 plus real C++
+  adapter defaults/aggregate and zero-live-allocations pass. Unsupported assembly
+  labels/other ABI categories retain explicit boundary, no prefix guessing.
+
+- Public C++ fixture exact existing-declaration count changed13 to14 only because
+  the original header now contains one additional deep96-pointer native function.
+  The assertion remains exact and all previous functions/consumers stay active.

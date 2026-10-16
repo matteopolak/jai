@@ -1,5 +1,9 @@
 # Developer documentation
 
+- [Canonical bindings and bridge generation](stdlib-tools-shared-emission.md):
+  one model/run lifecycle, returned-buffer ownership, strict native type matching,
+  declaration emission and remaining unsupported domains.
+
 - [Portable collection checkpoint](status/shared-portable-collections-checkpoint.json):
   physical-slot [Bucket_Array removal](portable-bucket-array-removal.md),
   canonical [Soa/Xar operators](portable-soa-xar-audit.md),
