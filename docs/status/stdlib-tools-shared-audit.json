@@ -1624,5 +1624,234 @@
       "Link current own audit and protobuf disposition; do not project focused results onto combined full400"
     ],
     "commit_owner": "integration only"
+  },
+  "file_watcher": {
+    "updated_utc": "2026-10-16T12:16:57.308385+00:00",
+    "status": "source-verified Linux/Windows implementation; native platform acceptance pending",
+    "ownership": "File_Watcher facade, independent portable model/lifecycle, inotify/windows backends, private decoder, assigned tests/tool/docs; Mac bytes preserved",
+    "public_api_inventory": [
+      {
+        "name": "init",
+        "body": "implemented with actual backend",
+        "source": "linux/windows x64/arm64 PASS",
+        "platform_runtime": "PENDING actual Linux/Windows CI"
+      },
+      {
+        "name": "add_directories",
+        "body": "implemented with actual backend",
+        "source": "linux/windows x64/arm64 PASS",
+        "platform_runtime": "PENDING actual Linux/Windows CI"
+      },
+      {
+        "name": "process_changes",
+        "body": "implemented with actual backend",
+        "source": "linux/windows x64/arm64 PASS",
+        "platform_runtime": "PENDING actual Linux/Windows CI"
+      },
+      {
+        "name": "deinit",
+        "body": "implemented with actual backend",
+        "source": "linux/windows x64/arm64 PASS",
+        "platform_runtime": "PENDING actual Linux/Windows CI"
+      }
+    ],
+    "records": {
+      "File_Change_Event": [
+        "ADDED",
+        "MODIFIED",
+        "MOVED",
+        "MOVED_FROM",
+        "MOVED_TO",
+        "ATTRIBUTES_CHANGED",
+        "REMOVED",
+        "SCAN_CHILDREN",
+        "ALL_EVENTS = ADDED | MODIFIED | MOVED | ATTRIBUTES_CHANGED | REMOVED"
+      ],
+      "File_Change": [
+        "full_path:string",
+        "events:File_Change_Event",
+        "time_of_last_change:=0.0"
+      ],
+      "File_Watcher": [
+        "User_Data:Type=void",
+        "File_Watcher_Callback",
+        "callback",
+        "user_data",
+        "events_to_watch",
+        "merge_window_seconds",
+        "watch_recursively",
+        "verbose",
+        "buffer_size",
+        "pool:*Pool.Pool",
+        "changes:[..]File_Change"
+      ],
+      "windows_fields": [
+        "directories:[..]*Directory_Info (private actual record)"
+      ],
+      "linux_fields": [
+        "inotify_instance:s32=-1",
+        "inotify_data:*void",
+        "inotify_bytes_read:s64",
+        "inotify_cursor:s32",
+        "path_pool:*Pool.Pool",
+        "watch_paths:Hash_Table.Table(s32,string)"
+      ],
+      "DEFAULT_BUFFER_SIZE": 8000,
+      "signature_defaults": "Exact reviewed signatures/defaults in portable.jai; canonical Pool/Hash_Table/Windows/POSIX/Linux storage."
+    },
+    "evidence": {
+      "final_focused_source_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/file-watcher-proof-omvq8hp0/summary.json",
+      "final_command_count": 30,
+      "final_command_pass_count": 30,
+      "source_drift": [],
+      "tool_hashes": {
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/debug/jaic": "4f67f0c59400284f0da198f38cbb25232012474175ad8371c9602effd331ef6d",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/debug/jailint": "a9c3f712ae1aadff9942923230458293036d96ccc5c0e264e45d1c83e3365300",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/jaifmt": "6fe948b197a4365917bada14388e93a0b523ca1d50880aa18ec83d3b8edba33e"
+      },
+      "native_decoder_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/file-watcher-proof-rc1js9_0/summary.json",
+      "native_decoder_rows": [
+        {
+          "name": "bounded-records-interpreter",
+          "passed": true
+        },
+        {
+          "name": "bounded-records-strict-lint",
+          "passed": true
+        },
+        {
+          "name": "bounded-records-build:-O0",
+          "passed": true
+        },
+        {
+          "name": "bounded-records-native:-O0",
+          "passed": true
+        },
+        {
+          "name": "bounded-records-build:-O2",
+          "passed": true
+        },
+        {
+          "name": "bounded-records-native:-O2",
+          "passed": true
+        }
+      ],
+      "native_decoder_qualification": "Mac O0/O2 actual execution of bounded record units only; aggregate receipt retains four test lint failures, subsequently corrected without native repetition. Decoder source bytes unchanged.",
+      "retained_failed_receipts": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/file-watcher-proof-bwvq591o/summary.json",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/file-watcher-proof-rc1js9_0/summary.json"
+      ],
+      "actual_linux_windows_runtime_executions": 0,
+      "normal_linux_windows_ci": "REQUIRED",
+      "mac_fsevents_runtime": "Not run; unchanged source cross-checked only",
+      "mac_unchanged_sha256": {
+        "stdlib/internal/watching/mac.jai": "e6a91ac9d77436b40bc2758ce94486a3ae1c76523a867bff7f9dce7f6a0b5077",
+        "stdlib/internal/watching/native/watch.c": "93992e0c9f3de8f07498660691460fadbd0ac31139a3bd7d72c0fd25d3b8e937"
+      },
+      "python_checks": "ruff check and format --check PASS",
+      "mac_preservation": "git diff --exit-code -- mac.jai native/watch.c PASS"
+    },
+    "regressions": [
+      "Mac-only facade rejected Linux/Windows baseline; actual new backends source PASS.",
+      "Bounded header parsers exclude flexible trailing member sizeof padding.",
+      "Explicit u32 widening before shifts fixes narrow byte-intermediate decoding.",
+      "Malformed lengths, cursor, termination, UTF-16/alignment/next offsets rejected.",
+      "Native Linux input pointer/capacity/path-pool identity and public extent validation prevent out-of-bounds reads.",
+      "Windows registration publishes ownership before acquisition and retains incomplete cancellation for safe retry.",
+      "Failed Windows buffer/path acquisition recycles metadata and frees captured real ownership.",
+      "Native tests reset freed observation arrays via canonical array_reset; independent modification clears earlier creation observations."
+    ],
+    "deviations_and_tradeoffs": [
+      "Private system CancelIoEx binding uses canonical Windows HANDLE/OVERLAPPED/BOOL; no public SDK export added.",
+      "Private libc free releases POSIX.realpath native malloc result; no invented POSIX facade API.",
+      "Library-owned decoder unit resides inside File_Watcher/tests to respect implementation privacy; external contract fixture requires no Directory_Info export.",
+      "Linux cached historical path bytes retained in Pool until deinit; linear state/coalescing searches and synchronous recursive enumeration/draining.",
+      "Unpaired Linux directory moves expire after 0.1 seconds.",
+      "Changed currently means callback delivery; precise public predicate unavailable.",
+      "Partial multi-root registration retains real earlier ownership and returns false.",
+      "Deinit consumes by-value watcher without caller reset; failed Windows cancellation/close retains ownership for retry.",
+      "Tiny positive event buffers can produce native errors; no undocumented clamp. Dynamic arrays follow canonical Basic OOM assertion semantics.",
+      "OS_HAS_INOTIFY beyond Linux and empty console declarations remain unavailable.",
+      "Overflow recovery and configured-root movement semantics unresolved; original-name paths can be stale after unpaired root rename.",
+      "Preserved Mac native monotonic timestamp may use different origin from refreshed Basic.seconds_since_init contract.",
+      "No staged peer overlays/binaries, C helper assets, compiler cases, polling substitutes or global lint suppressions."
+    ],
+    "remaining": [
+      "Actual Linux/Windows SDK link, interpreter and native O0/O2 filesystem/ownership fixtures under normal coordinator CI.",
+      "Reviewed answer for exact OS_HAS_INOTIFY/console public targets.",
+      "Reviewed predicate for changed, overflow recovery, whole-root rename, by-value reuse/cancellation failure and preserved Mac timestamp."
+    ],
+    "questions": "docs/specs/stdlib/file-watcher-questions.md",
+    "native_dependencies": {
+      "linux": "Existing libc/inotify public APIs; no new native asset.",
+      "windows": "Existing kernel32 ReadDirectoryChangesW/GetOverlappedResult/CreateFileW/CreateEventW/CloseHandle plus private CancelIoEx.",
+      "test_only_windows": "Private official GetProcessHandleCount observer plus canonical GetCurrentProcess.",
+      "mac": "Existing portable_watch asset unchanged."
+    },
+    "integration": {
+      "files": [
+        {
+          "path": "stdlib/File_Watcher/module.jai",
+          "sha256": "147a179263c0116fdfe7f6b1edd3c83a931b1c5f053546b4043fb32b3098349e"
+        },
+        {
+          "path": "stdlib/internal/watching/portable-model.jai",
+          "sha256": "ed42dcd51d57bf96152a51dcff70d869ba007551515a1d7b811c4e75c1a4927c"
+        },
+        {
+          "path": "stdlib/internal/watching/portable.jai",
+          "sha256": "0f8e51b2a9f8c63e5dcd9e7bf536743df221bce3fbe5524d3d046c68ddbc4b1e"
+        },
+        {
+          "path": "stdlib/internal/watching/inotify.jai",
+          "sha256": "69e465fef6f83b287a4567014d416b99df7b857531a08fa8dddc9f70378021c9"
+        },
+        {
+          "path": "stdlib/internal/watching/windows.jai",
+          "sha256": "10b4c5b5415b06ea2852f75bab5ae15c7bbd06db0b2fa3e9908c949169363877"
+        },
+        {
+          "path": "stdlib/internal/watching/event-records/module.jai",
+          "sha256": "c7f0d97fd5cc09cc691a4e7339a076f4f3d7267b315e8d4d99f7d0f230056c6c"
+        },
+        {
+          "path": "stdlib/File_Watcher/tests/event-records.jai",
+          "sha256": "96f742a9f8b3017107ba7ff64d7ae8375ed5c82c6d7fcf0644b42cfd61e53efc"
+        },
+        {
+          "path": "tests/portable-stdlib/file-watcher/platform-contracts.jai",
+          "sha256": "e8ac31ff9328ca5b99cb1233f592b3c484bd8e27ab993338ba79530f8e5acd28"
+        },
+        {
+          "path": "tests/portable-stdlib/file-watcher/platform-effects.jai",
+          "sha256": "101c2bcf92c1d2b7ad11f4db4234bb687c2ffdd149e8e9908ff84079562f3f71"
+        },
+        {
+          "path": "tests/portable-stdlib/file-watcher/platform-edges.jai",
+          "sha256": "746539d8d829824dc8381e6f9bd9bdcbde54c1bef3e37a7bbb1d8bc0627b5fe2"
+        },
+        {
+          "path": "tools/check_file_watcher_platforms.py",
+          "sha256": "84cdee2bb57b879664518604c93a178db8de1589bfabef97bb9c7e503f50b3ce"
+        },
+        {
+          "path": "docs/file-watcher-platforms.md",
+          "sha256": "dc45d1c8b5934468de1bae48772c29b1c73c15997eb39d427ec8cfeb0b83f2cf"
+        },
+        {
+          "path": "docs/specs/stdlib/file-watcher-questions.md",
+          "sha256": "93c127e336c7e04804bd0102109e9c221d660f73941ebf00f2de4d2c47dbfbf1"
+        }
+      ],
+      "include_audit_path": "docs/status/stdlib-tools-shared-audit.json",
+      "contract_input": {
+        "path": "docs/specs/stdlib/modules/file-watcher.md",
+        "sha256": "172376dcddb480b581ad7509a1c92dfc9994ce79ac3df3e546dec056993ba6be",
+        "owner": "spec reviewer; not owned source"
+      },
+      "index_owner": "integration only; no index/branch/commit mutation by worker",
+      "global_doc_request": "Add docs/file-watcher-platforms.md to docs/README.md",
+      "platform_ci_command": "CARGO_TARGET_DIR=<assigned-target> python3 tools/check_file_watcher_platforms.py --native-runtime (actual Linux/Windows host; prebuilt source jaifmt required)"
+    }
   }
 }

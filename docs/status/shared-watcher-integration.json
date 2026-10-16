@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "producer_manifest": "docs/status/stdlib-tools-shared-audit.json#file_watcher.integration",
+  "producer_paths": 13,
+  "verified_unchanged_paths": 12,
+  "adaptation": "Runner accepts allthreeexplicit source-built toolpaths; originalproducerhash retained in audit, adaptedrunnerhash below. Authored featuredoc has integration CI boundary append.",
+  "runner_sha256": "66c303dbb26128922f868178ad1bff9c138680d3c02a82053cf6ea79b242e98f",
+  "workflow_lint": {
+    "before_exit": 1,
+    "after_exit": 1,
+    "inherited_shellcheck_diagnostics": 7,
+    "introduced": 0,
+    "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/post309-known/workflow-review/comparison.json"
+  },
+  "quality": "Ruff check/format PASS; missingtoolargument negative rejects before source/build access",
+  "actual_linux_windows_runtime": false,
+  "ci": "Linux existing compiler jobs; Windows existingMSVCx64/ARM64 jobs, realfilesystem tests and existingfailureenforcement preserved",
+  "remaining": [
+    "NativeLinux/Windows runs",
+    "Unresolvedplatform predicates, overflow/rootrename/cancellation policy in questions",
+    "InheritedworkflowShellcheck diagnostics remainred"
+  ]
+}
