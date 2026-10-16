@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "source_parent": "04cb08e3",
+  "scope": "generic immutable capture transport; no compiler/library behavior change",
+  "command": "python3 -B -m unittest discover -s tools/native_bindings -p test_shared_snapshot.py",
+  "passed": 4,
+  "failed": 0,
+  "ignored": 0,
+  "failure_names": [],
+  "red_before_fix": [
+    "ordinary local output rejected by role-specific whitelist",
+    "executable helper bits lost to blanket0444 mode"
+  ],
+  "checks": [
+    "actual selected-source capture and mutation detection",
+    "selected input/root output overlap rejection",
+    "recursive selected ancestor rejection",
+    "actual copied helper execution with preserved execution/read-only modes"
+  ],
+  "ruff_check": "passed",
+  "ruff_format": "passed",
+  "native_platform_functionality_claim": false
+}

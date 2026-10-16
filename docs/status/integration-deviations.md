@@ -2089,3 +2089,8 @@ Reviewed Objective-C52 immutable checks are separate MacARM64SDK evidence, with 
 
 
 SDK patch validation note: git diff --check flags embedded unified-diff CONTEXT prefixes before preserved SDK tabs/blank lines in the four new .patch data files. Context bytes must remain exact for pinned zero-fuzz application. Actual added C source lines independently pass whitespace validation, ordinary changed code passes Git whitespace check, and producer independent SDK preparation/regeneration hashes are retained. No repository whitespace/lint suppression added and no native patch pin altered merely to silence the data-format observation. New integration asset build will repeat actual pinned preparation.
+
+
+## Removed role-specific snapshot path workaround
+
+tools/native_bindings/shared_snapshot.py introduced bindings-only ROOT/artifacts/local-verification-bindings exception during T7 permission prompts. Exact predecessor remains04cb08e3 and ordinary local-output red is retained. Generic selected-input-directory overlap validation replaces it; no role/name/path whitelist remains, recursive captures reject before copying. Copied executable modes now preserve original execution bits while removing writes; the old0444 blanket caused consumer-specific executable restoration. Actual copied-helper/mutation/overlap tests4/0 and Ruff pass. Utility evidence is not native library functionality. All source/hash/read-only protections remain; SDK/body semantics unchanged. No forbidden source path or alternate-access mechanism added.
