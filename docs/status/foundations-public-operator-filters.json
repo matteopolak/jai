@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "worker": "foundations",
+  "timestamp_utc": "2026-10-16T08:19:36.827381+00:00",
+  "state": "six literal-only consumer files stable; numerics paired compiler verification pending",
+  "ready_for_integrator": {
+    "production_files": {
+      "stdlib/Basic/module.jai": "c0997e87cb5db134b45f1ebeb82b8dff32a724a59fb7a71f6fa549e5b2150de7",
+      "stdlib/Math/module.jai": "342ecc5b5c80fe7439102e2de7d85e0fdc52f01a3d84a92cc9ae82b6f9fffc12",
+      "stdlib/RadixSort/module.jai": "8616797b859facc3b422ab83155bd04ed3661ef7dd0990714164f096ebb75776",
+      "stdlib/Bit_Array/module.jai": "290a9496228e40bb82e51ba9597e38870bfd0ec39841eba1ea2bd1cd510d570a",
+      "stdlib/Soa/module.jai": "4718672253bb78c692e76c3806facf564aa63f3a455b7d8f9bfb7de75f43eed0",
+      "stdlib/Xar/module.jai": "99c80e565f50749edd2468b0738bd7b842d6cd39b992b6b3d4493d112148223f"
+    },
+    "test_and_doc_files_sha256": {
+      "tests/portable-stdlib/public-filter-facades/basic.jai": "192a24795f49066810441ec921dda26f2b5671acd59614a8b0e0bd95e2b5e2ee",
+      "tests/portable-stdlib/public-filter-facades/bit-array.jai": "22f2d83b4870ef890a210e5ed2d4414a3059b604852bd1e3b1098d0bd1a7f875",
+      "tests/portable-stdlib/public-filter-facades/internal-name-negative.jai": "f9eb9051725251e2d645c9dde4dddc2bbc09f2a4d6e6cd114eb6bc02660a7cb4",
+      "tests/portable-stdlib/public-filter-facades/math.jai": "6d47c948cf80e40e7ff81b2a733088cb06239acd5d874ee6937920493dd2ee1e",
+      "tests/portable-stdlib/public-filter-facades/radixsort.jai": "a163d67e21aa08792752f128dfde33eda996d7817cf587f1411fa7946a62ad24",
+      "tests/portable-stdlib/public-filter-facades/soa.jai": "62aee02166e8098d1b56f184362d88556642acd1b8c19adb766adda04fde2196",
+      "tests/portable-stdlib/public-filter-facades/symbol-positive.jai": "d24b2bdbf0dcb812130474bf89f9317960fb10ed72a5764b407c8f1dd531eea3",
+      "tests/portable-stdlib/public-filter-facades/xar.jai": "c04a2cc8f74865ee78f5cf88ddeaee342642faa19551377be34a82a44eebeab5",
+      "tests/portable-stdlib/public-filter-facades/verify.py": "4974e129ac5b7e9bbb7cc4593119bd2dc177b76a917a2ae1a09514ccf385241b",
+      "docs/foundations-public-operator-filters.md": "7dfbbd3196c5cfef19994b807df66b01c6460964de6388297075548f74c189bb"
+    },
+    "append_only_docs": [
+      "docs/README.md own public operator filter link",
+      "docs/worker-inbox.md own sections"
+    ],
+    "paired_adoption_required": true,
+    "do_not_stage_unrelated_shared_edits": true
+  },
+  "literal_only_proof": {
+    "ledger": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/public-filter-facades-rgq9w5ef/substitutions.json",
+    "ledger_sha256": "53c5f367d1e8e7c7d74cb37f59300a81109785802a780d300ab193d147b931f4",
+    "format_byte_proof": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/public-filter-facades-rgq9w5ef/format-and-literal-identity.json",
+    "format_byte_proof_sha256": "25d094518c5c2c9af81928558504a6ff78e29fc8fd4fdc2ccfa230fc7cf0176d",
+    "all_six_verified_exact_replacements_only": true,
+    "changes": {
+      "stdlib/Basic/module.jai": {
+        "before_sha256": "1c18c3904480d82069abdda7484e9785b74adac85738c84e5698f40cbe566e8a",
+        "after_sha256": "c0997e87cb5db134b45f1ebeb82b8dff32a724a59fb7a71f6fa549e5b2150de7",
+        "literal_substitutions": {
+          "operator+": "+",
+          "operator-": "-"
+        }
+      },
+      "stdlib/Math/module.jai": {
+        "before_sha256": "e7d3524b572ad6a66581731bbab5a7d946fdf2606324f21bdf310853597e4f14",
+        "after_sha256": "342ecc5b5c80fe7439102e2de7d85e0fdc52f01a3d84a92cc9ae82b6f9fffc12",
+        "literal_substitutions": {
+          "operator+": "+",
+          "operator-": "-",
+          "operator*": "*",
+          "operator/": "/"
+        }
+      },
+      "stdlib/RadixSort/module.jai": {
+        "before_sha256": "4fc26aa9644a72c44392ffb27133e4e709b55fc85fab576a9b94611abd40d6b3",
+        "after_sha256": "8616797b859facc3b422ab83155bd04ed3661ef7dd0990714164f096ebb75776",
+        "literal_substitutions": {
+          "operator[]": "[]"
+        }
+      },
+      "stdlib/Bit_Array/module.jai": {
+        "before_sha256": "16de0c7b4e131365f6d57816d46ff50b54ff9468d91a6c5febc447b4459d11d3",
+        "after_sha256": "290a9496228e40bb82e51ba9597e38870bfd0ec39841eba1ea2bd1cd510d570a",
+        "literal_substitutions": {
+          "operator[]": "[]",
+          "operator[]=": "[]="
+        }
+      },
+      "stdlib/Soa/module.jai": {
+        "before_sha256": "d19c6e3586e4019b712ecb23f870178e679ba722ecc5ae8f418ff87c7093ea05",
+        "after_sha256": "4718672253bb78c692e76c3806facf564aa63f3a455b7d8f9bfb7de75f43eed0",
+        "literal_substitutions": {
+          "operator[]": "[]",
+          "operator[]=": "[]="
+        }
+      },
+      "stdlib/Xar/module.jai": {
+        "before_sha256": "cd30a9f6e59f9c4308c0195905113d3f833561ede03f14c43e682a8aec5a5896",
+        "after_sha256": "99c80e565f50749edd2468b0738bd7b842d6cd39b992b6b3d4493d112148223f",
+        "literal_substitutions": {
+          "operator*[]": "*[]"
+        }
+      }
+    }
+  },
+  "official_facts": {
+    "path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/producer-handoffs/current-repair-batch/operator-filter-official-observations.json",
+    "sha256": "fb6f3b00f3f2a940f1dc731d09f8a243d2753a42bc144c582f6f77f24bcf8d87",
+    "executed_filter_form": "minus only; glyph positive/internal operator- negative"
+  },
+  "old_compiler_dependency_receipt": {
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/public-filter-proof-d02i7ps6/results.json",
+    "sha256": "41ebd93ef999be32efe560530c11f9c6d6398d48ff7debb8384c918a41774655",
+    "complete": false,
+    "commands": 9,
+    "required_failures": 8,
+    "tools": {
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/apollo-operators-target/debug/jaic": "9368c61d889769e24362b2ae0d39af72d5d40855f944a2a01f8a954c037b9024",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/apollo-operators-target/debug/jailint": "455d625bf2ceca771725ef03ab94259de31f1efefe839e98acb84c67d41c57bb"
+    },
+    "source_guards_match": true,
+    "first_capture_preserved": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/public-filter-facades-rgq9w5ef/old-compiler-dependency-red.json"
+  },
+  "paired_compiler_dependency": {
+    "owner": "numerics",
+    "checkpoint": "b21c8c05",
+    "files": [
+      "crates/jaic/src/sema/using.rs",
+      "crates/jaic/src/sema/scope.rs"
+    ],
+    "safe_producer_manifest_requested": true,
+    "paired_source_runtime_evidence": "pending",
+    "native": "deferred until integrator serialized native gate completes"
+  },
+  "validation": {
+    "production_and_fixture_jaifmt": "pass using own unchanged repository source-built formatter",
+    "runner_ruff": "check/format pass",
+    "strict_jai_lint": "old compiler expected RED; paired compiler proof pending",
+    "interpreter_native": "not claimed passing on old compiler"
+  },
+  "constraints": {
+    "only_six_literal_production_edits": true,
+    "no_added_overloads": true,
+    "identities_imports_parameters_unchanged": true,
+    "no_oldname_fallback": true,
+    "no_compiler_or_peer_edits": true,
+    "no_git_index_remote_actions": true
+  }
+}
