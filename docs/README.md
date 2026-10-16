@@ -959,3 +959,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [POSIX crash provider executable lifetime and setup](native/portable-crash-executable-lifetime.md): real main-image/DSO lifetime handling; Linux replay required.
 
 - [Workspace provider disposition](compiler/workspace-matrix-provider-disposition.md): unchanged child/grandchild tests and the required real crash-provider bootstrap.
+
+- [Debug report mode](tools/debug-report-mode.md): unconditional canonical state setter; Windows native policy remains unresolved.

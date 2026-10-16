@@ -1,0 +1,40 @@
+{
+  "owner": "stdlib-tools",
+  "state": "READY unconditional publicsetter+genuinecanonicalflag effect; Windowsnativeerror-mode refinement pending",
+  "accepted": "d83256849262f9415c3e55f960d4a070741de934",
+  "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/debug-report-mode-g9y5cn7x",
+  "public_api": "Debug.set_report_mode(interactive: bool)",
+  "production_paths": [
+    "stdlib/Debug/module.jai",
+    "stdlib/internal/developer-tools/debug-lifecycle.jai",
+    "stdlib/internal/developer-tools/debug-report-mode.jai"
+  ],
+  "baseline": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/debug-report-mode-g9y5cn7x/baseline-api-receipt.json",
+  "source_checks": {
+    "passed": 40,
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/debug-report-mode-g9y5cn7x/source-receipt.json",
+    "source_drift": [],
+    "tool_drift": []
+  },
+  "runtime": {
+    "unique_program_modes": 6,
+    "native_builds": 4,
+    "format_checks": 1,
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/debug-report-mode-g9y5cn7x/runtime-receipt.json",
+    "artifacts_valid_and_unchanged": 4,
+    "source_drift": [],
+    "tool_drift": false,
+    "scope": "MacARM64 and WASM only; no desktopnativeprovider/ownership acceptance inferred"
+  },
+  "native_claim": false,
+  "prior_debug7_sealed": true,
+  "toml_formatter_sealed": true,
+  "remaining": [
+    "reviewedWindowsSetErrorMode mapping/preservation/failure policy requested",
+    "integrationbuild realnativeDebugprovider+run unchangeddesktopownership interp/nativeO0/O2",
+    "combined integrated/nativeWindowsLinux CI remains required"
+  ],
+  "questions": "docs/specs/questions/debug-report-mode-windows.md",
+  "handoff_patch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/debug-report-mode-g9y5cn7x/debug-unconditional-report-mode-new.patch",
+  "handoff_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/debug-report-mode-g9y5cn7x/ready-receipt.json"
+}
