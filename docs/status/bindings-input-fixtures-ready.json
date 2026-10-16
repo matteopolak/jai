@@ -1,0 +1,58 @@
+{
+  "state": "READY_INPUT_FIXTURES_FREETYPE_MAC_VERIFIED_OBJC_FOUR_REVIEWED_RECEIVERS_STILL_RED",
+  "subject": "test(bindings): accept caller fonts and filter AppleDouble metadata",
+  "files": {
+    "tests/native-bindings/freetype.jai": "5715c68e6ae94a26e68f39d14263e6dfdcbcbd27747624ff8fbc4887d0b6e548",
+    "crates/jaic-cli/tests/objc_selectors.rs": "2de9b795798cdb715e5c0e685c1341b45f90089d3d3b8edc793a0c5830603fc8",
+    "tests/native-bindings/freetype_input_probe.c": "2f8ceb2b7cdb0943d8629e1e26ec6d3b71fb8b7200b479baf6b00d4d60d0f7f0",
+    "tools/native_bindings/verify_font_selector_inputs.py": "c17d88d0287ea5840e74d3c822ff89a00298159483b7b5e99edee98f06042e36",
+    "tools/native_bindings/test_font_selector_inputs.py": "803b925076336f6775d4817dbe017b06d9c5f1adc5fe3a4ed85529cdf6e24551",
+    "docs/native/font-selector-input-fixtures.md": "b059a943dd1b453fbe2ce7edcdfd6b9f68bc487c27695fae62b19b9b9bc3c702"
+  },
+  "source": {
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/font-selector-inputs/font-selector-xvdqzp5u/report.json",
+    "sha256": "37ba31b5cfc2b24098d6fbb9ff43b6ee6433ce34d57bbfb204b6eb173d6cfd6b",
+    "checks": 13,
+    "all_pass": true,
+    "qualification": "Own current source-built tools and guarded shared-library capture; no claimed exact718/futurecombinedpin equivalence"
+  },
+  "native": {
+    "initial": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/font-selector-inputs/sdk-verification.json",
+      "sha256": "4e1e3c5b7c10e02fbf4ac147af0734b322463df3683b53ee950d8761f8c51fdb"
+    },
+    "corrected": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/font-selector-inputs/sdk-verification-corrected.json",
+      "sha256": "39f441b3bd16ed69a02649ca4cac3da009cb4194045939cb6c9c19f36ccc405a"
+    },
+    "freetype": "interpreter/O0/O2/ASanUBSan PASS real callerArial, ABI/layout/glyph/lifetime assertions unchanged",
+    "objc": "original runtime test RED exactly4of874, transport decode now succeeds; no expected-miss refresh",
+    "actual_sdk_programs": 5,
+    "freetype_pass_modes": 4,
+    "objc_failed_audits": 1,
+    "setup_failure": "Initial ObjC harness failed before SDK child; not countedSDKexecution. Initial Homebrewstatic FT links lack transitiveclosure; not fixed/waived.",
+    "profile": "Real FreeType2.14.3 sharedSDKprovider undercanonicalbasename; staticCIclosure/otherplatformnative separate",
+    "lease_released": true,
+    "inputs_font_guards_match": true
+  },
+  "discovery": {
+    "rust_regressions": 3,
+    "argument_source_audit": "PASS actualowncopy1004sources+1004AppleDouble files",
+    "metadata_python_tests": 4,
+    "root_confirmed_cause": "f1failedmirror1003untrackedAppleDoublebinarysidecars, headermatchesown4096byteactualreproduction",
+    "retained_failures": "ordinaryinvalidUTF8, valid._source, truncated/malformedmetadata; no lossydecode",
+    "receipts": {
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/font-selector-inputs/inventory-before.json": "fd48858bcc9c0cebca87edc0ca967b42d9211a817b1b38b7b4895947f004a9ae",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/font-selector-inputs/discovery-verification.json": "9176a782656ab922554c7d036924693b89302edc4f4e4672e09109925bf3dc20",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/font-selector-inputs/actual-copy-discovery-verification.json": "e9ce2acec420003ec77b4a9bd3e63a140d657b3874376c41aa722cfd8c13817e",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/font-selector-inputs/actual-sidecar-inventory-a2c164m_/inventory.json": "a06d48a13ad4d5e061474b55e8b8734039c154ace549b9cca441f417a1181a70"
+    }
+  },
+  "remaining": [
+    "Integration-owned verify.py JAIC_TEST_FONT_PATH->actualargv wiring and normalCI replay",
+    "Four reviewedNSEventreceiver mismatches need coherentforwarding contract; no productionguess",
+    "ActualMacx64/Linux/Windows native and finalcombinedpin/fullworkspace reruns",
+    "RootLSP6860RED125s separate, no timingwaiver"
+  ],
+  "integration": "Soleindex/commit owner. Sixsource/test/tool/doc files +thismanifest; ownauditkey/questions append selectively. Link docfromREADME centrally."
+}

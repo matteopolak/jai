@@ -2411,3 +2411,15 @@ FreeTypefixture Macfontliteral remainsgenuineLinuxconstructiongap, NOTskipped; s
 | tools/io_stress.py, check_io_burst_diagnostics.py | One existing child is observed; sampler can affect scheduling.180cap affects sampling only. Original timeout still kills timed-out child; no retries. | Actual Linux12-load CI replay required; observer absence of failure is not prior-failure clearance. |
 | tools/stdlib_test_catalog.py and runtime/sweep/cross runners | Exact official-rejected ifx fixture keyed by ID+SHA, null pass and separate count; stale CPUID remains different category. | Preserve original diagnostics and independent positives; never count expected rejection as supported runtime. |
 | candidate2a29b054 |173 unchanged-source-paired ABI8 assets reused/rehashed. Pending native header/build repair excluded. Valid sidecars removed only from capture. | Rebuild matching assets after adopting native recipe/header changes; original fullworkspace/root corpus and actual native CI remain required. |
+
+
+## CI input/helper companion audit
+
+| Path/scope | Effect/risk | Proper verification/remaining fix |
+| --- | --- | --- |
+| tools/build_portable_runtime.py | Real static/shared artifacts split from one target-validated C object. Recipe changed, so older sealed crash asset receipt does not qualify new output. | Actual Mac ARM64 compile/archive/link PASS with source/hash receipt; no native fault execution. Next capture includes fresh pair. |
+| tools/upstream_native.py | Prepares actual host providers and verifies receipts/hashes. Audio default runtimeFalse is explicit behavior; no SDK/device harness claimed. | Required native audio/application gates retained; other targets CI pending. |
+| tools/native_bindings/verify.py | Caller-font input mandatory and identical across interpreter/native; records failed input rather than skip/default font. | Actual integrated static-provider CI and other-platform font execution still required; prior static closure RED retained. |
+| crates/jaic-cli/tests/objc_selectors.rs | Valid named AppleDouble metadata is excluded from source discovery; original selectors/misses remain unchanged. | Three filesystem controls pass; invalid/truncated/plain named sources still decoded strictly. Original SDK gate separate. |
+| tools/build_windows_resource_fixture.py | Real SDK outputs published through byte-copy/fsync plus hashes/PE reinspection after earlier data zeroing. Extra I/O; root filesystem/transport cause unknown. | Five controls/three actual cross builds pass, no DLL execution. Original corruption retained; actual Windows resource effects remain required. |
+| .github/workflows/windows-native.yml | Enabled SDL/X11/Wayland/XTEST/audio closure now installed on both Linux cross hosts; resource fixtures packaged/verified; six shell findings repaired without suppression. | Actionlint PASS; apt/CMake and actual Windows/Linux runtime need normal CI. Signed wheel/public rendering checks preserved. |

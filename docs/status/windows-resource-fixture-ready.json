@@ -1,0 +1,290 @@
+{
+  "schema": 1,
+  "scope": "real Windows resource fixture producer; no production/test-oracle changes",
+  "status": "ready verified durable x64/ARM64 SDK cross builds; native Windows API proof pending",
+  "accepted_production_context": "7187647b; helper independent of compiler/library changes",
+  "files": [
+    {
+      "path": "tools/build_windows_resource_fixture.py",
+      "sha256": "f3273463a5c2c40ce48783b96f9b24b065352999e34545bc5eb5670b41db5ce6"
+    },
+    {
+      "path": "tools/test_windows_resource_fixture.py",
+      "sha256": "5d7102e21ae95827c8b53de029759cadc4e8eca6a1f9db2e4aa0a00dc3aae283"
+    },
+    {
+      "path": "docs/native/windows-resource-fixture.md",
+      "sha256": "d8e17219f5dd6be2eba18a6370d0ea3e28b93bd8593c831ba85a6d100aca317f"
+    }
+  ],
+  "verified": {
+    "focused_tests": 5,
+    "unit_actual_sdk_builds": [
+      "x64",
+      "arm64",
+      "x64 repeat with equal ICO/RES/DLL hashes"
+    ],
+    "final_cli_builds": [
+      "x64",
+      "arm64"
+    ],
+    "cpu_headers": {
+      "x64": "0x8664",
+      "arm64": "0xaa64"
+    },
+    "resources": "RT_GROUP_ICON101 language1033 exactly76bytes; RT_ICON IDs1..5 byte-exact source DIB payloads",
+    "all_ten_published_artifact_hashes": "match in separate tool-call audits",
+    "native_verified": false,
+    "host_sdk_runtime_gui_fault_benchmark_executions": 0,
+    "ruff_lint_format_whitespace": "PASS"
+  },
+  "fixtures": [
+    {
+      "cpu": "x64",
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/durable/x64 \u5b57 space",
+      "receipt_sha256": "f2c659a6f49dc9036b05a40e6f1dea76dc76238a6028acabc9f4bbe2db41491d",
+      "artifacts": {
+        "resource.ico": {
+          "sha256": "5f2cfc8b890781e371bd4bccf351b157206db90abceac5f5949abc94911bd77f",
+          "bytes": 360414
+        },
+        "resource.rc": {
+          "sha256": "64e3d3ed6f7c0556b448a93ed62f341fc91329a01ae2a9c6d95403cf57ce72ab",
+          "bytes": 38
+        },
+        "resource.res": {
+          "sha256": "74da0b3ec394764b6666c40d5ed67f4a4a69024768e7cec712c3bb444a9826b1",
+          "bytes": 360628
+        },
+        "resource-only.dll": {
+          "sha256": "b2924f2ae26c8e7f4402d8f71d36f65adb63f490d5de82e1f0595a2bcfc4e8da",
+          "bytes": 361472
+        },
+        "inspection.txt": {
+          "sha256": "becd07a491283efd69c3eaa0b04c3ad6b028fe8b19833960e1f63a6f11295540",
+          "bytes": 1693785
+        }
+      },
+      "pe": {
+        "machine": 34404,
+        "entry_point": 0,
+        "resource_count": 6,
+        "group_bytes": 76,
+        "resources": [
+          {
+            "type": 3,
+            "id": 1,
+            "language": 1033,
+            "bytes": 270376,
+            "sha256": "02590f0ad4c7ea1ef6ad811bbfdc48dda7ebd49929ddfe4847ceee4f81574bd0"
+          },
+          {
+            "type": 3,
+            "id": 2,
+            "language": 1033,
+            "bytes": 67624,
+            "sha256": "fc0fa1f7c43f9028298ad1e79784e2e2ebd8a5e420981b353bef4ae177ebb40b"
+          },
+          {
+            "type": 3,
+            "id": 3,
+            "language": 1033,
+            "bytes": 16936,
+            "sha256": "5904ef4f96d2bdcc9807be38c1ea36b63498154da3cd5169d17167b798b6345c"
+          },
+          {
+            "type": 3,
+            "id": 4,
+            "language": 1033,
+            "bytes": 4264,
+            "sha256": "c58e18d5edcbf73e8a631a3d59318ed9755205fcc22c9b295da9fcc85e16166c"
+          },
+          {
+            "type": 3,
+            "id": 5,
+            "language": 1033,
+            "bytes": 1128,
+            "sha256": "cdc104e684f4c7ef705b51a76fcaef670ccc9e940dd05564b653722340c0b127"
+          },
+          {
+            "type": 14,
+            "id": 101,
+            "language": 1033,
+            "bytes": 76,
+            "sha256": "5c4ab3da317e8840dab62632485ffbf31248926af2fab9499ed656530554449f"
+          }
+        ]
+      }
+    },
+    {
+      "cpu": "arm64",
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/durable/arm64 \u5b57 space",
+      "receipt_sha256": "5fc40453692338106cb3eb6ee9ea36dadf9bcd7facc6c59916bb6b17de680896",
+      "artifacts": {
+        "resource.ico": {
+          "sha256": "5f2cfc8b890781e371bd4bccf351b157206db90abceac5f5949abc94911bd77f",
+          "bytes": 360414
+        },
+        "resource.rc": {
+          "sha256": "64e3d3ed6f7c0556b448a93ed62f341fc91329a01ae2a9c6d95403cf57ce72ab",
+          "bytes": 38
+        },
+        "resource.res": {
+          "sha256": "74da0b3ec394764b6666c40d5ed67f4a4a69024768e7cec712c3bb444a9826b1",
+          "bytes": 360628
+        },
+        "resource-only.dll": {
+          "sha256": "8313fa452c0fd5d9e36d3c1a33191ee67ed633d9d081593e00fe6e6b7fc33d0b",
+          "bytes": 361472
+        },
+        "inspection.txt": {
+          "sha256": "a5e9275e93abda174e45d5a0e31084990920da67ba75f533b3153597a3d707fb",
+          "bytes": 1693785
+        }
+      },
+      "pe": {
+        "machine": 43620,
+        "entry_point": 0,
+        "resource_count": 6,
+        "group_bytes": 76,
+        "resources": [
+          {
+            "type": 3,
+            "id": 1,
+            "language": 1033,
+            "bytes": 270376,
+            "sha256": "02590f0ad4c7ea1ef6ad811bbfdc48dda7ebd49929ddfe4847ceee4f81574bd0"
+          },
+          {
+            "type": 3,
+            "id": 2,
+            "language": 1033,
+            "bytes": 67624,
+            "sha256": "fc0fa1f7c43f9028298ad1e79784e2e2ebd8a5e420981b353bef4ae177ebb40b"
+          },
+          {
+            "type": 3,
+            "id": 3,
+            "language": 1033,
+            "bytes": 16936,
+            "sha256": "5904ef4f96d2bdcc9807be38c1ea36b63498154da3cd5169d17167b798b6345c"
+          },
+          {
+            "type": 3,
+            "id": 4,
+            "language": 1033,
+            "bytes": 4264,
+            "sha256": "c58e18d5edcbf73e8a631a3d59318ed9755205fcc22c9b295da9fcc85e16166c"
+          },
+          {
+            "type": 3,
+            "id": 5,
+            "language": 1033,
+            "bytes": 1128,
+            "sha256": "cdc104e684f4c7ef705b51a76fcaef670ccc9e940dd05564b653722340c0b127"
+          },
+          {
+            "type": 14,
+            "id": 101,
+            "language": 1033,
+            "bytes": 76,
+            "sha256": "5c4ab3da317e8840dab62632485ffbf31248926af2fab9499ed656530554449f"
+          }
+        ]
+      }
+    }
+  ],
+  "protected_sources": {
+    "stdlib/tests/portable-data-resource-windows.jai": "dbddc5165e59d3a2d85a4e70fea995c48636a9202902b8d684d4454aeedf6229",
+    "stdlib/tests/portable-data-discovery-windows.jai": "02805574c7a26c01588e82fb958739f90a10b9755e63fba15a580e21f5220f38",
+    "stdlib/tests/portable-data-console-windows.jai": "bd479e4134d3264c2bd6b886999dcf3ec98255fe5253652de17015b635ce56df",
+    "docs/specs/stdlib/modules/windows-resources.md": "6f267ef9257c4d90634d8a2a87b95ded9edc58de4156667706550cad2b2225ca",
+    "tests/portable-data/sdk_resources.py": "22b6dc8e7ca0d5afd501abebadd6e6bdf539205e4bc26db5bf37d740a2298f08",
+    "tests/portable-data/build_windows_images.py": "d355fc06b507d2fda2298e9d6f9bb43283e1f18e3c110aa995c33c521ca31b1d"
+  },
+  "drift": [],
+  "evidence": [
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/initial-red.txt",
+      "sha256": "10cd4ed885681c1a2959cbb46f871fbaa63041648dcb2292e2e2325e204864d2"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/first-sdk-results.txt",
+      "sha256": "61f1b250a34b8af0864c8b07bc1a6f14100e835d02372869883a8e6efadcb121"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/publication-red.json",
+      "sha256": "806fab5a2b2c1514c086f2ecf9a7895d8bf4f6748d374827b367a128bea715bb"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/durability_repro.py",
+      "sha256": "bbdf07025bc23acf4d0d61c20186459cc11b0020bf49cb261beb697c9570bf51"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/durability-repro/before.json",
+      "sha256": "7ff9400425060fdc2e7954fc370922270b20af4b7b57dde0c522324090036b61"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/durability-repro/after.json",
+      "sha256": "b9febb36e43fd09e5a1352668d89aac66a3acc3b205eaa954b4e5a7a7ceae5cc"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/durability-repro/later.json",
+      "sha256": "c3c3fb2909e6b64d95bf911f9ed4ec4254c9c513b2d900fe32ecdb1e5b1aa34e"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/durability_repro_pair.py",
+      "sha256": "97774f8137ef559487fdf46bc6e43ba39ee7163b228e9b44570763383b7eb618"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/durability-pair/before.json",
+      "sha256": "a85cc51b00c6eda4a7ab47d0f2b8d3e23422003c0888744b3218c5e084af08af"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/durability-pair/after.json",
+      "sha256": "b4254b0481614a0a2498545d9ea9a0460eb496231f9f44134944794a356efafc"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/durable/cross-boundary-audit.json",
+      "sha256": "ca37cd342f1fc645314119c0420de8e6ce24bdb3c474406fa7fe075883a55205"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/verification.json",
+      "sha256": "555f848d4fecb5ef3c4ed845ed78cc747abc1c0f0604fbfedf057be4cec3ae48"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/verify.py",
+      "sha256": "157762574a1d1436733a0121a6988ea9df4d837e0811bc5ca3af843aa2c855f3"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/console_driver_repro.py",
+      "sha256": "c33851faf16a08bee5a23a910b61f87041d8f678b96750d595e4e843da87c724"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/console-driver/repro-results-before-publication.json",
+      "sha256": "d3b343a109a9d7bb7b02da6175f3b1d3b732552203ccbdbdba4de1c01c20c6e7"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/console-driver/repro-results.json",
+      "sha256": "7ab5e84b9a16e0591b1d1687f4101b1c2167e57ee4cb1fbc3de5bedb23a94b69"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-resource-fixture/console-driver/published-audit.json",
+      "sha256": "e33d753d5e889ca1bfa10b804ab0b3611ed815bba50fabab90efda2dbc545ccd"
+    }
+  ],
+  "integration_command": "python tools/build_windows_resource_fixture.py --cpu <actual x64|arm64> --out <fresh caller-owned directory> [--rc <SDK RC>] [--linker <SDK linker>] [--readobj <LLVM inspector>]",
+  "publish_environment": "JAIC_TEST_WINDOWS_RESOURCE_DIR=<directory> only after exit0, verified_cross_build receipt CPU match and actual artifact SHA checks; native consumers receive same directory argv[1]",
+  "limitations": [
+    "LLVM RC/LLD/readobj source-build proof only on macOS; Microsoft RC/link and Windows native readback/update/discovery/decoding need actual CI",
+    "initial direct-rename SDK DLL publication lost file data later despite valid build-time inspection; original RED retained and initial verified/ directories excluded",
+    "exact SDK/filesystem/transport cause unknown; direct fsynced SDK file later zeroed but ordinary byte-written copies retained original SDK SHA",
+    "sole current publication path durably copies actual verified SDK bytes, fsyncs outputs/receipts, then checks final hashes and PE after cleanup; extra copy/sync I/O and full SDK inspection logs retained",
+    "console literal Windows linker options still require general compiler driver forwarding repair; no fixture waiver",
+    "File_Utilities main:53 native assertion and ARM64 TLS inet_pton native link gate remain required"
+  ],
+  "console_reducer": "both target CPUs raw /SUBSYSTEM and /ENTRY fail as Clang filenames; identical options through -Xlinker produce correct GUI-subsystem PE; compile/link only, standalone diagnostic C object without CRT, not a production runtime recipe",
+  "index_append_request": "- [Real Windows resource fixture](native/windows-resource-fixture.md): actual x64/ARM64 SDK RC/PE producer, durable publication hashes and native readback still required.",
+  "integration": "sole integrator stages/commits FOUR exact NEW paths; owns workflow/env/argv and README selective index append; no peer or partial prototype files",
+  "publication_permitted": false
+}

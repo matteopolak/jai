@@ -861,3 +861,7 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Four-ready combined receipt](status/shared-candidate-2a29b054.json): exact source/tool/ABI8 identity, focused counts and remaining native/original gates.
 
 - [Third-party native preparation](native/sdl-upstream-native-preparation.md): real source-built helper closure, strict XML result parsing and pending native acceptance.
+
+- [Caller font and selector source fixtures](native/font-selector-input-fixtures.md): strict real inputs and metadata discovery; native SDK gates remain separate.
+
+- [Real Windows resource fixture](native/windows-resource-fixture.md): target RC/PE construction, durable source hashes and actual Windows runtime still required.
