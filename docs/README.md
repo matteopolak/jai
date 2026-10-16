@@ -967,3 +967,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [HTTP termination accounting](extensions/io-http-833-evidence.md): exact status/stdout/stderr protocols; Linux connection failures remain unresolved.
 
 - [Integration deviations](status/integration-deviations.md): remaining semantic bounds, staging substitutes and skipped platform verification for the combined ready cohort.
+
+- [Immutable combined candidate213fa751](status/shared-candidate-213fa751.json) and [ready/active/blocker ledger](status/current-ready-cohort-baseline.json): exact tools/assets, scoped counts and root gate commands.

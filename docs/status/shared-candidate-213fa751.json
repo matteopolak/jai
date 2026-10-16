@@ -1,0 +1,237 @@
+{
+  "schema": 2,
+  "status": "READY immutable combined candidate for root gates; not full acceptance",
+  "snapshot": "213fa75158f43dd829c2405440c6392636a6381e",
+  "ref": "codex/stdlib-shared",
+  "shared_worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete",
+  "stdlib_tree": "78cf3368314f959b987434d9565ac7c394436ad2",
+  "compiler_source_tree": "b286cf403efd734c7add740f09eef5b7653b5bc9",
+  "source_files": 3471,
+  "source_identity_sha256": "eb7486eab4020ea81ef7188f723fb96882f36c2ad5f53de47a359ee6feccdc08",
+  "source_overlay": "NONE; committed independent blobs only; no peer WIP",
+  "native_packaging": {
+    "files": 178,
+    "binary_files": 170,
+    "license_metadata_files": 8,
+    "identity_sha256": "aef4b1dd390d05776b25a130e05b7ab063ab1e4f86a2b9ac22d2bb12ac4dd949",
+    "abi": 8,
+    "fresh_binary_files": 116,
+    "unchanged_rehashed_packaging_files": 62,
+    "qualification": "106 SDK/context/counter/probe/Apple +4 SDL +4 audio +2 crash binaries refreshed. Remaining inputs unchanged; no ABI7. Header inspection all170 PASS; no all-platform runtime claim."
+  },
+  "fixture_assets": {
+    "identity_sha256": "9584ede749a6923e9798d4eb313911f7fc316fd6bf33df83403a06ae5e986907",
+    "files": {
+      "target/libdeveloper_tools_opaque.dylib": "71784540ef9adc9a701d1d3c68efe54611e2228dec6f60e89c13d0edaa5e1c87",
+      "target/generator-opaque-generated.jai": "9d1c712b525751c1463430a6c4d302b44ce013a7bbbcc17c4fbc1b95c2ed1007"
+    },
+    "qualification": "Real own C opaque DSO + schema emitted by current production generator and formatted by unchanged actual formatter; separate from178 production packaging files."
+  },
+  "binaries": {
+    "jaic": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/bin/jaic",
+      "sha256": "7a68569bd64a08c409b5b17835254ed52b2539295b5986542dc9b86ddd9cb037"
+    },
+    "jailint": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/bin/jailint",
+      "sha256": "748a8fd39f105031cae3abf26ece856afa1e9e91a31c5298e2b9daf15ef073d5"
+    },
+    "jailsp": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/bin/jailsp",
+      "sha256": "25fcde823df3170b766a647a8019ec05a6df7d9b5d1a6bb3b6b6a5c217584301"
+    },
+    "jaifmt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/bin/jaifmt",
+      "sha256": "af8937a8873b7733a772417039fa4573c0acbe3840ede1336733c13e0bf1e834"
+    }
+  },
+  "environment": {
+    "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/stdlib",
+    "JAIC_NATIVE_LIBS": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/catalogue-probes:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/rpmalloc:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/rpmalloc-probes:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/cache-0:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/cache-1:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/cache-2:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/cache-3:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/sdl:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/audio",
+    "LLVM_SYS_231_PREFIX": "/opt/homebrew/opt/llvm",
+    "RUSTC_WRAPPER": "",
+    "TMPDIR": "root-assigned unique T7 scratch",
+    "CARGO_TARGET_DIR": "root-assigned unique T7 target"
+  },
+  "verification": {
+    "rust": [
+      {
+        "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/committed-core-213fa751.log",
+        "passed": 93,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/committed-lsp-213fa751.log",
+        "passed": 101,
+        "failed": 0,
+        "ignored": 0
+      }
+    ],
+    "numeric_rust_units": {
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0,
+      "filter": "c_numeric",
+      "source_equivalence": "Exact numeric Rust postimages unchanged through snapshot"
+    },
+    "python_policy": {
+      "passed": 105,
+      "failed": 0,
+      "ignored": 0,
+      "scope": "60SDL+15capability+12runtime+5HTTP+5crash+2provider-order+6native-provisioning"
+    },
+    "node_policy": {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0
+    },
+    "source_checks_passed": 6,
+    "strict_lints_passed": 2,
+    "opaque_current_interpreter": {
+      "passed": 1,
+      "failed": 0,
+      "stdout": "ok\n",
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/opaque-current-complete-setup.json"
+    },
+    "numeric_wasm_interpreter": {
+      "passed": 1,
+      "failed": 0,
+      "stdout": "ok\n"
+    },
+    "formatter": {
+      "build_exit": 0,
+      "source_equivalence_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/formatter-source-equivalence.json",
+      "changed_jai_check_exit": 0
+    },
+    "rustfmt_exit": 0,
+    "clippy_all_targets_five_packages_deny_warnings_exit": 0,
+    "normal_three_tool_build_exit": 0,
+    "actionlint_exit": 0,
+    "native_headers": {
+      "exit": 0,
+      "binary_files": 170
+    },
+    "full_workspace": null,
+    "root_original400": null,
+    "focus": null
+  },
+  "catalogue": {
+    "interp": {
+      "selected": 450,
+      "explicitly_unavailable": 13,
+      "required_precise_negatives": 1,
+      "executed": null,
+      "classification": "policy inventory only; root runtime required"
+    },
+    "native": {
+      "selected": 450,
+      "explicitly_unavailable": 13,
+      "required_precise_negatives": 1,
+      "executed": null,
+      "classification": "policy inventory only; root runtime required"
+    },
+    "wasm-interp": {
+      "selected": 450,
+      "explicitly_unavailable": 151,
+      "required_precise_negatives": 2,
+      "executed": null,
+      "classification": "policy inventory only; root runtime required"
+    },
+    "wasm-native": {
+      "selected": 450,
+      "explicitly_unavailable": 151,
+      "required_precise_negatives": 2,
+      "executed": null,
+      "classification": "policy inventory only; root runtime required"
+    }
+  },
+  "retained_failure_reports": [
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/final-candidate-checks.json",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/corrected-candidate-checks.json",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/complete-candidate-checks.json",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/http-accounting-before.log",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/opaque-current-setup.json"
+  ],
+  "failure_dispositions": {
+    "capture_missing_fixtures_attributes": "Fixed by adding committed independent contract and catalogue-family inputs plus.gitattributes; rerun105policiesPASS",
+    "two_io_fixture_format_failures": "Fixed whitespace only in213fa751; assertions preserved",
+    "numeric_run_flag": "Wrong verification argv corrected to-interp; actual wasm-target interpreterPASS",
+    "opaque_missing_generated_import": "Real own C DSO built, current printer emitted schema; same roundtrip check with-I passes. Initial failure retained."
+  },
+  "ready": [
+    "Thread/pthread",
+    "AppKit receiver",
+    "tools/platform/audio",
+    "WASM tour/LSP discovery",
+    "enum/origin/import groups",
+    "Runtime canonical allocator alias/TOML",
+    "Windows callback/provider/LLVM tooling",
+    "Input/GetRect/IO child MAIN/HTTP lifetime",
+    "opaque printer",
+    "SDL setup",
+    "POSIX crash lifetime",
+    "Debug portable report state",
+    "C numeric WASI",
+    "HTTP exact termination accounting"
+  ],
+  "active_or_blocked": [
+    "Bindings private-fixture placement/profile import readiness not yet captured",
+    "Three original C-model contract failures still required",
+    "Canonical LLVM/LLD emitted-WASM durability remains required RED",
+    "Windows Debug native error-mode contract unresolved",
+    "Linux crash/Clipboard/HTTP and full Windows/native CI remain required",
+    "Root fullworkspace/original400/runtime/Focus and manual signed-wheel acceptance pending"
+  ],
+  "root_fullworkspace_request": {
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--workspace",
+      "--all-targets",
+      "--",
+      "--test-threads=1"
+    ],
+    "environment": {
+      "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/stdlib",
+      "JAIC_NATIVE_LIBS": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/catalogue-probes:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/rpmalloc:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/rpmalloc-probes:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/cache-0:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/cache-1:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/cache-2:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/cache-3:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/sdl:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/native-inputs/audio",
+      "LLVM_SYS_231_PREFIX": "/opt/homebrew/opt/llvm",
+      "RUSTC_WRAPPER": "",
+      "TMPDIR": "root-assigned unique T7 scratch",
+      "CARGO_TARGET_DIR": "root-assigned unique T7 target"
+    },
+    "inputs": "Root-owned writable exact-source mirror with178 source-relative native packaging files plus opaque original corpus attached externally; original inputs never exposed to clean workers; no exclusion/skip acceptance."
+  },
+  "root_catalogue_request": {
+    "command": [
+      "python3",
+      "tools/stdlib_runtime.py",
+      "--jaic",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete/bin/jaic",
+      "--modes",
+      "interp,native,wasm-interp,wasm-native",
+      "--platform",
+      "macos-arm64",
+      "--jobs",
+      "1",
+      "--timeout",
+      "180",
+      "--report",
+      "ROOT_T7/catalogue-213fa751.json"
+    ],
+    "cwd": "Root-owned writable exact-source mirror",
+    "required_fixture_environment": [
+      "JAIC_TEST_FONT_PATH real caller-owned font",
+      "JAIC_TEST_WINDOWS_RESOURCE_DIR on Windows actual resource fixtures",
+      "actual display/clipboard restoration guard for GUI cases; serialize root GUI phase"
+    ],
+    "original400": "Use the root-owned existing400 selector with --receipt pointing at this JSON; no original inputs or root runner read here."
+  },
+  "workflow_trigger_review": "Normal temporary branch push does not match release.yml v* tag trigger; browser release and benchmarks are manual only. No tag/dispatch/publication authorized. Packaging latest-release consumer is path-filtered, untouched by this cohort. Root owns normal CI push.",
+  "module_functionality_completion": null,
+  "module_completion_note": "No declaration/export count is represented as completed behavior; actual platform/full-corpus gates remain required.",
+  "benchmarks": "SKIPPED by user direction",
+  "publication": "HELD; no remote operations performed"
+}

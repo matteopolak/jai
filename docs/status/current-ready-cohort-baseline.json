@@ -1,0 +1,134 @@
+{
+  "schema": 1,
+  "snapshot": "213fa75158f43dd829c2405440c6392636a6381e",
+  "candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/candidate-213fa751-complete",
+  "receipt": "docs/status/shared-candidate-213fa751.json",
+  "receipt_sha256": "e444dc74e6f49375bdd7554e5a60aa97fc87857d040a1f89208d16b3678d3898",
+  "ready": [
+    "Thread/pthread",
+    "AppKit receiver",
+    "tools/platform/audio",
+    "WASM tour/LSP discovery",
+    "enum/origin/import groups",
+    "Runtime canonical allocator alias/TOML",
+    "Windows callback/provider/LLVM tooling",
+    "Input/GetRect/IO child MAIN/HTTP lifetime",
+    "opaque printer",
+    "SDL setup",
+    "POSIX crash lifetime",
+    "Debug portable report state",
+    "C numeric WASI",
+    "HTTP exact termination accounting"
+  ],
+  "active_or_blocked": [
+    "Bindings private-fixture placement/profile import readiness not yet captured",
+    "Three original C-model contract failures still required",
+    "Canonical LLVM/LLD emitted-WASM durability remains required RED",
+    "Windows Debug native error-mode contract unresolved",
+    "Linux crash/Clipboard/HTTP and full Windows/native CI remain required",
+    "Root fullworkspace/original400/runtime/Focus and manual signed-wheel acceptance pending"
+  ],
+  "counts": {
+    "rust": [
+      {
+        "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/committed-core-213fa751.log",
+        "passed": 93,
+        "failed": 0,
+        "ignored": 0
+      },
+      {
+        "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/committed-lsp-213fa751.log",
+        "passed": 101,
+        "failed": 0,
+        "ignored": 0
+      }
+    ],
+    "numeric_rust_units": {
+      "passed": 8,
+      "failed": 0,
+      "ignored": 0,
+      "filter": "c_numeric",
+      "source_equivalence": "Exact numeric Rust postimages unchanged through snapshot"
+    },
+    "python_policy": {
+      "passed": 105,
+      "failed": 0,
+      "ignored": 0,
+      "scope": "60SDL+15capability+12runtime+5HTTP+5crash+2provider-order+6native-provisioning"
+    },
+    "node_policy": {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0
+    },
+    "source_checks_passed": 6,
+    "strict_lints_passed": 2,
+    "opaque_current_interpreter": {
+      "passed": 1,
+      "failed": 0,
+      "stdout": "ok\n",
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/opaque-current-complete-setup.json"
+    },
+    "numeric_wasm_interpreter": {
+      "passed": 1,
+      "failed": 0,
+      "stdout": "ok\n"
+    },
+    "formatter": {
+      "build_exit": 0,
+      "source_equivalence_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/formatter-source-equivalence.json",
+      "changed_jai_check_exit": 0
+    },
+    "rustfmt_exit": 0,
+    "clippy_all_targets_five_packages_deny_warnings_exit": 0,
+    "normal_three_tool_build_exit": 0,
+    "actionlint_exit": 0,
+    "native_headers": {
+      "exit": 0,
+      "binary_files": 170
+    },
+    "full_workspace": null,
+    "root_original400": null,
+    "focus": null
+  },
+  "catalogue": {
+    "interp": {
+      "selected": 450,
+      "explicitly_unavailable": 13,
+      "required_precise_negatives": 1,
+      "executed": null,
+      "classification": "policy inventory only; root runtime required"
+    },
+    "native": {
+      "selected": 450,
+      "explicitly_unavailable": 13,
+      "required_precise_negatives": 1,
+      "executed": null,
+      "classification": "policy inventory only; root runtime required"
+    },
+    "wasm-interp": {
+      "selected": 450,
+      "explicitly_unavailable": 151,
+      "required_precise_negatives": 2,
+      "executed": null,
+      "classification": "policy inventory only; root runtime required"
+    },
+    "wasm-native": {
+      "selected": 450,
+      "explicitly_unavailable": 151,
+      "required_precise_negatives": 2,
+      "executed": null,
+      "classification": "policy inventory only; root runtime required"
+    }
+  },
+  "full_acceptance": false,
+  "root_owned": [
+    "fullworkspace with opaque corpus",
+    "original400",
+    "runtime catalogue",
+    "Focus and signed-wheel manual acceptance",
+    "normal temporary CI push"
+  ],
+  "source_overlay": "NONE",
+  "publication": "held"
+}
