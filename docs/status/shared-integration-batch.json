@@ -65,5 +65,12 @@
   "superseded_failed_runs": [
     "typed-generic-integration.log stale reused target13/4, preserved",
     "linux-build-final.log missing formatter setup, preserved"
-  ]
+  ],
+  "available_candidate": {
+    "snapshot": "8fa08957d3cd783eb8490424af00cc8a4fa2377b",
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-8fa08957",
+    "compiler_sha256": "d2184efcbd9abede66e7f7dc7e3d84da8d38b1d2b9e8e323d0f5acd47772dd44",
+    "receipt": "docs/status/shared-candidate-8fa08957.json",
+    "classification": "immutable current committed ready bits; known active batch not yet combined; NOT full baseline/corpus green"
+  }
 }

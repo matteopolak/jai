@@ -725,3 +725,5 @@ include exact file/line/source hashes and required platform limits.
 [Compact current verification report](status/shared-current-verification.json) separates frozen553 checks, later committed fixes, deferred broad commands and unresolved fixture/platform gates.
 
 Shared integration checkpoints: [typed struct arguments](status/shared-typed-generic-checkpoint.json), [named parameter completion](tools/lsp-named-arguments.md), [reviewed record defaults](compiler/derived-record-defaults.md), [Hash/Math scoped proof](status/shared-foundations-checkpoint.json), and [Linux link plugin](portable-linux-build.md). The [current batch ledger](status/shared-integration-batch.json) separates committed checks from active dependencies and coordinator-owned gates.
+
+Latest available immutable ABI8 compiler/library/native [candidate receipt](status/shared-candidate-8fa08957.json) and [integration commands/limits](tools/cleanroom-integration.md#immutable-abi8-shared-candidate-8fa08957). This current committed checkpoint excludes active producer repairs; whole baseline/corpus gates remain pending.
