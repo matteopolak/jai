@@ -807,3 +807,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Frozen e0e287ea candidate](status/shared-candidate-e0e287ea.json) and [Mac focused results](status/mac-e0e287ea-focused.json): exact source/tool/native identity, corrected construction checks and retained genuine compatibility/platform failures.
 
 - [Windows WGL consumer review](tools/windows-wgl-consumer-review.md) and [exact handoff status](status/shared-wgl-consumer-review.json): validated proposed DLL/lint/wheel scope, adoption held for matching producer receipt; no new native Windows proof.
+
+- [Integrated Windows WGL consumer companion](status/shared-wgl-consumer-adoption.json): exact Mesa app-local deployment and explicit lint roots, 13 setup/provider tests, preserved issue1 gates; actual Windows replay pending.

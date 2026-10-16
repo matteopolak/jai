@@ -284,7 +284,7 @@ jobs:
         if: success() || failure()
         run: |
           mkdir -p artifacts/native-libs/windows-x64
-          python -u tools/window_render_wgl_ci.py --jaic target/x86_64-pc-windows-msvc/debug/jaic.exe --jailint target/x86_64-pc-windows-msvc/debug/jailint.exe --stdlib stdlib --native-libs artifacts/native-libs/windows-x64 --driver-dir "$RUNNER_TEMP/mesa"
+          python -u tools/window_render_wgl_ci.py --jaic target/x86_64-pc-windows-msvc/debug/jaic.exe --jailint target/x86_64-pc-windows-msvc/debug/jailint.exe --stdlib stdlib --native-libs artifacts/native-libs/windows-x64 --driver-dir "$RUNNER_TEMP/mesa" --consumer-dir native-exes
       - name: Signed mouse wheel event propagation (issue 1)
         if: success() || failure()
         run: |
@@ -560,7 +560,7 @@ jobs:
         if: success() || failure()
         run: |
           mkdir -p artifacts/native-libs/windows-arm64
-          python -u tools/window_render_wgl_ci.py --jaic target/aarch64-pc-windows-msvc/debug/jaic.exe --jailint target/aarch64-pc-windows-msvc/debug/jailint.exe --stdlib stdlib --native-libs artifacts/native-libs/windows-arm64 --driver-dir target/window-mesa-arm64/driver
+          python -u tools/window_render_wgl_ci.py --jaic target/aarch64-pc-windows-msvc/debug/jaic.exe --jailint target/aarch64-pc-windows-msvc/debug/jailint.exe --stdlib stdlib --native-libs artifacts/native-libs/windows-arm64 --driver-dir target/window-mesa-arm64/driver --consumer-dir native-exes
       - name: Stdlib runtime tests (interpreter and native) and coverage
         # Reviewed contracts and retained regressions; no legacy expected-failure baseline.
         if: success() || failure()

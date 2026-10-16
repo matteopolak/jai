@@ -1,15 +1,15 @@
 # Windows WGL consumer companion review
 
-Integration reviewed the user-supplied new-only patch
-`windows-wgl-consumer-449.patch`, SHA256
-`14642ec676c37616468117a7324625ec66fb10331527eb0441110ee4f2cad372`,
-against shared `d36e7005`. Adoption is held until its producer ready receipt
-matches the transported patch and exact source/test hashes. The first receipt
-named `55cde940...`; a later producer update names `5af35db7...`. Neither
-matches the authorized transported patch. No shared WGL tool/workflow source
-change has been made on the strength of these inconsistent receipts.
+Integration adopted root-approved committed producer 2eba5858, transported as
+windows-wgl-consumer-2eba5858-final.patch, SHA256
+5af35db7af6a741cc270f845441448f183f08b3f99ccfd3048690c55a5767119.
+Its matching ready receipt and exact production-tool hash were verified.
+The earlier146 transport/55c receipt mismatch was held unstaged and remains
+in the [historical review](../status/shared-wgl-consumer-review.json).
+The [adoption receipt](../status/shared-wgl-consumer-adoption.json) records
+actual integrated hashes, commands, tests and remaining runtime gates.
 
-The two proposed workflow changes add `--consumer-dir native-exes` to the
+The two workflow changes add `--consumer-dir native-exes` to the
 existing x64 and ARM64 WGL commands. Exact hunks pass `git apply --check` over
 the current workflow. They preserve the e50 provider helper builds, source and
 artifact hashes, normal DLL PATH setup and real loader/export/file-identity
@@ -26,8 +26,10 @@ PE headers and copy hashes establish configuration/integrity, not runnable
 driver validity or complete transitive dependency discovery. Real Windows
 loader/WGL tests remain required.
 
-The proposed lint inputs select the eight owned public module entry files,
-existing private implementation entries and all four WGL/render fixture roots.
+The lint inputs select nine owned public module entry files (including
+Gamepad/SDL_Input_Map),
+existing private implementation entries, four existing Windows/portable Input
+and Simp tests, and all four WGL/render fixture roots.
 Loaded implementation lint remains in its target module context, with
 `-D warnings` unchanged. Recursive discovery of unrelated Cocoa test programs
 does not constitute Windows product-root coverage. The broader test suites and
@@ -55,3 +57,11 @@ The immutable product stays `e0e287ea`. No compiler, library, native asset or
 tool rebuild is required for this CI-only change. The main constant/runtime
 repair and typed-module-contract/scheduler repair need separate stable coherent
 handoffs and combined replay before the next product candidate.
+
+Nine WGL setup/negative closure tests and four existing provider tests pass on
+the actual shared tool/workflow pair. Ruff check passes both Python files;
+new test formatting is idempotent and its AST matches the original producer
+test. Actionlint stays red with the same six inherited diagnostics and zero
+introduced. Protected signed-wheel/public-event sources and provider C/tests
+are byte unchanged. The production WGL tool remains exactly source-pinned;
+there was no compiler/native asset build or actual Windows execution.

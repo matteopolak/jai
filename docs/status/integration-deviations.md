@@ -2297,3 +2297,32 @@ Frozen309 has5024source inputs and173 real matched ABI8 assets; exact CLI/lint/L
   checks and display-free units do not certify those platforms. Prior relocated
   SDK proof is qualified by unchanged native input/asset hashes; complete
   release resource/static-notice/provider closure is not declared finished.
+## WGL consumer CI companion 2eba5858
+
+The exact committed producer patch deploys the same curated Mesa DLL closure
+beside the compiler, diagnostic executables and separate native-exes wheel
+consumers. Whole-file PE CPU and copy hashes are integrity/configuration checks,
+not a generalized transitive dependency resolver or runnable-driver proof.
+Repeated DLL copies/hash reads add I/O; a fatal copy failure may leave partial
+output files. No version override, fallback driver, renderer guard removal or
+wheel assertion waiver was introduced. Actual Windows x64/ARM64 replay remains
+required; historical CI449 driver/render passes and separate wheel-context/
+Cocoa-lint failures are retained without relabelling.
+
+The lint command now selects nine explicit owned module entries, existing
+private entries, four Windows/portable Input/Simp tests and all four real WGL
+fixture roots. Current-platform loaded implementation coverage and -D warnings
+remain; unrelated Cocoa/Linux programs are not recursively promoted to Windows
+roots. Nine new setup/negative-closure tests plus four provider tests pass, but
+their synthetic COFF headers/process mocks are never native driver evidence.
+Protected issue1 sources/provider checks are byte unchanged. Full actionlint
+still has six inherited diagnostics and zero introduced; no suppression.
+
+Earlier transported146 and producer55c/5af receipt identities disagreed.
+Integration held source/index changes until root supplied committed2eba5858
+with matching5af patch/receipt/source hashes. The historical hold receipt stays
+unchanged. Only the wholly new test file was Ruff-formatted, with identical AST;
+the production WGL tool exactly matches its producer hash. No compiler/library/
+native asset or identical tool rebuild occurred. Exact current proof is in
+shared-wgl-consumer-adoption.json; normal temporary CI is coordinator-owned and
+publication remains held.
