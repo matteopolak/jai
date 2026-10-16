@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "producer_commit": "0b73960bbb1e0451ac1875409b9b769c1888c489",
+  "source_before": "f3b4b2f4fa1594dcc515107391e6a662553a6006",
+  "files": {
+    "crates/jaic/src/sema/structs.rs": "a7ee832db5aa327e94b35b5b0dfb60af334c1de02b0866724536143a649dd2fe",
+    "crates/jaic/tests/cleanroom_context.rs": "117a0cff695cfa7ad08157a103bcf46c8c9f5e0aa23aab074de76f48feb5db59",
+    "crates/jaic/tests/cleanroom_struct_argument_conversion.rs": "711b2fda8e62214107712829acc92dd13aefcfb22052e15a0b468a859b4b6e29",
+    "crates/jaic-cli/tests/cleanroom_struct_argument_conversion.rs": "165232e215692a3f70c7857d6105b90991ff75f50aa8c5ae6a816f13ec238bd3",
+    "tests/producer-requests/typed-generic-procedure-parameter.jai": "86ad2079ac424e86ed6147b21cad69d16a0986668aa92754c62b376b701a436a",
+    "docs/compiler/struct-argument-binding.md": "0aacb83fe6b5972fb3da412b1700f51fb6c9b781378923056d3cc7a288cd07b2"
+  },
+  "verification": {
+    "command": "CARGO_TARGET_DIR=<integration>/batch-final-f3b4b2f4 cargo test --locked --offline -p jaic --test cleanroom_struct_argument_conversion --test cleanroom_context -- --test-threads=1",
+    "passed": 17,
+    "failed": 0,
+    "ignored": 0,
+    "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/typed-generic-final.log"
+  },
+  "cache_discrepancy": {
+    "old_log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/typed-generic-integration.log",
+    "old_passed": 13,
+    "old_failed": 4,
+    "classification": "stale reused build artifacts; Cargo Fresh after diagnostic source edit, no diagnostic emitted; unique rebuild executed diagnostic then clean unique rebuild passed",
+    "old_receipt_preserved": true
+  },
+  "pending": [
+    "CLI interpreter/native/WASI execution against immutable committed candidate"
+  ],
+  "excluded": "586be99b alias refresh and c018dd52 unsupported semantics not applied"
+}
