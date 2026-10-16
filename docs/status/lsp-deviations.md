@@ -31,3 +31,6 @@ No /Users/matthew/projects/jai-reference/original/quarantine/transcript inputs, 
 test suppressions, fabricated defaults or deliberately discarded failures are
 authorized. Any new deviation or reproduced defect must be recorded here before
 handoff. Existing failure evidence remains intact.
+
+## Current ready consumer integration
+Exact new archive boundary/canonical-path source patches integrated. Browser request prerequisite retains16MiB; canonical mode projection and request/crash failures are distinct. Result helper delegates to existing strict HTTP exit/stdout/stderr accounting. Unit fixture now copies that real helper dependency. Python49 compact-style findings corrected by formatting owned package/policy files;11archive+4canonicalpolicy+15Node controls pass. Actual merged browser/native Windows/fullLSPgate remains required. No archival prerequisites/Cargo workspace narrowing applied.
