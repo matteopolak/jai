@@ -18915,5 +18915,38 @@
     "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/target/minimal-guarded-pznqwyxg/summary.json",
     "compiler_adoption": "f8c7bde301cea94124693623e279d87394f3699c",
     "suggested_subject": "test(stdlib): verify Minimal options and caller-location contracts"
+  },
+  "ready_clipboard_linux_checkpoint": {
+    "status": "clock_error_correction_verified_frozen_source_replay_and_linux_native_pending",
+    "manifest": "docs/status/stdlib-clipboard-linux.json",
+    "files": {
+      "docs/portable-clipboard-linux.md": "d850aa413eeabec998a0e294d3093568b4a23a06caebd7e7613ef09b59965e10",
+      "docs/specs/stdlib/portable-clipboard-questions.md": "4641200b0aecb8068134a4cff2f8ec0d1acabeeaa23e45626be75bcea839dc12",
+      "stdlib/Clipboard/module.jai": "340363dc073f8f25aa8d3c2d333e4627bd084d7c5111c62dede7529f9ed26aa5",
+      "stdlib/internal/clipboard/linux.jai": "b3c8efd5342abb94752057d197ac5cf959a301c570931b7a4202d2885d92789c",
+      "stdlib/internal/clipboard/native/data.c": "bcc854fbdb8f7c0ab087784bcd32161b88e19edf2c3e95e0ca72d8a95607f6e8",
+      "stdlib/internal/clipboard/native/data.h": "ddf31f56f5e6299d9dc23d227d34680f6b94b5d87bc65d39a52dbce797e67b94",
+      "stdlib/internal/clipboard/native/x11.c": "68691a1c9fd224300ab4c21a6092ab33cdab34588de49bde2dc9b5f675d2c50b",
+      "stdlib/internal/window/connection.jai": "0e637aee5a538263a72872c8b94974191755791ad0ddacf715b73ee0496685c3",
+      "tests/portable-stdlib/clipboard-linux-api.jai": "f5b4bb3cf5ae84df21f2cd9285c63bb0e4bb9aaccfc436a42ee01742fb327cc2",
+      "tests/portable-stdlib/clipboard-linux-no-empty.jai": "69c2f8c9cb90c9838505906995c9e96b3f7e42a672492efb6f3f841e2d74d3e6",
+      "tests/portable-stdlib/clipboard-linux-private.jai": "e6c858682ded5632284007766092870a1f04780d5a32f84b1a8c38f32e2332f9",
+      "tests/portable-stdlib/clipboard-linux-roundtrip.jai": "ad9b554129e3653d4a4268d94bc5a776508ec44709ab8116930d887af5497bd3",
+      "tests/portable-stdlib/clipboard-linux-window-source.jai": "db4a7a23ddf5c2812951ced174646a3442a8f54634e45751088296f4260b7519",
+      "tests/portable-stdlib/clipboard-platform-api.jai": "663cf0c89e5fc53f33ed3fa0bac4721e4dec0ffc0b0830524ca7f8ed407f3626",
+      "tests/portable-stdlib/native/clipboard-clock-failure.c": "3d0b7caed86ea22174a1f9f91b483ea7c1ee77a43b4bcd0abab2eb64312cd135",
+      "tests/portable-stdlib/native/clipboard-data.c": "002ab9dd623e423fc1c610c0425c8b94992a2f09ad69a472ebc8d4504bc391db",
+      "tests/portable-stdlib/native/clipboard-x11.c": "a75670c1f82de80a0a6874ff34d5f2b8f03e51103288e8f90fef73323ff2bf65",
+      "tools/build_portable_clipboard.py": "831a7b460491d2a7f8c19382c7fc269c38c0031cd38db1c3247308017ab76b7d",
+      "tools/check_portable_clipboard.py": "33b59e06a57a0df482d93d206a7d8ccaa3e6af869ef48cf486ebf7980141b407",
+      "tools/check_portable_clipboard_clock.py": "137b53bb082d9ec4d6c8bdbed3333df4afa8ef0accd2ca1f1580dd74f427be5d"
+    },
+    "remaining": [
+      "Integration frozen accepted309 + exact owned files replay of previous35 source checks; snapshot directory access denied to this worker",
+      "Actual Linux SDK linking/interpreter/native O0/O2 and normal CI",
+      "Reviewed Window parenting/returned allocator/bitmap MIME/timeout/persistence policies need narrower oracle if required",
+      "TIMESTAMP/MULTIPLE/SAVE_TARGETS not implemented; only advertised targets are served",
+      "Provider coordination: process-global Xlib error handler forwards other Displays; later handler replacement interferes"
+    ]
   }
 }
