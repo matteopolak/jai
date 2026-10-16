@@ -6064,7 +6064,7 @@
   },
   "ready_metal_attachment_checkpoint": {
     "subject": "fix(bindings): expose reviewed Metal color attachment base",
-    "state": "SOURCE/LINK READY STABLE; native3pending fresh serialized grant; integration aloneGit/index",
+    "state": "READY STABLE with actual25/25proof; exactly3nativeprograms completed and leaseRELEASED; integration aloneGit/index",
     "timestamp": "2026-10-16T10:50:28.609353+00:00",
     "source_manifest": {
       "stdlib/Metal/declarations.jai": "adc019230017684849caa9167fd499f1e4ddb24664c69f7012b214364ff3ab5b",
@@ -6101,147 +6101,152 @@
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.mtlrenderpassattachmentdescriptor",
         "implementation": "exact reviewed using #as first field",
-        "verification": "MacARM64/x64 offset/size/type/promotion sourcechecks; native pointeridentity execution pending"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.texture",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setTexture",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.level",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setLevel",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.slice",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setSlice",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.depthPlane",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setDepthPlane",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.resolveTexture",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setResolveTexture",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.resolveLevel",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setResolveLevel",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.resolveSlice",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setResolveSlice",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.resolveDepthPlane",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setResolveDepthPlane",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.loadAction",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setLoadAction",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.storeAction",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setStoreAction",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.storeActionOptions",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassColorAttachmentDescriptor.setStoreActionOptions",
         "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
-        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassDepthAttachmentDescriptor.mtlrenderpassattachmentdescriptor",
         "implementation": "exact ordinary first field already present; no using/#as invented",
-        "verification": "MacARM64/x64 fixed-offset and explicitaccess positives, directlookup/implicitconversion negativesPASS"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       },
       {
         "api": "MTLRenderPassStencilAttachmentDescriptor.mtlrenderpassattachmentdescriptor",
         "implementation": "exact ordinary first field already present; no using/#as invented",
-        "verification": "MacARM64/x64 fixed-offset and explicitaccess positives, directlookup/implicitconversion negativesPASS"
+        "verification": "MacARM64 actualO0/O2/ASan+UBSan SDK behavior and identity PASS; Macx64 source/SDKcompile only"
       }
     ],
     "native_evidence": {
-      "executed": false,
-      "programs_pending": [
+      "executed": true,
+      "programs": [
         "O0",
         "O2",
         "ASan+UBSan"
       ],
-      "gate": "Fresh root/integration serialized lease requested; Json finished but releasedslotrootfullworkspacepriority",
-      "implemented_probe": "real SDK offscreen mip1 clear/store/readback, all64pixelbytes and buffer canaries, pointer/storage identity and SDKfailures"
+      "exit_statuses": [
+        0,
+        0,
+        0
+      ],
+      "gate": "Explicit user3program lease consumed/released; no nativeprogramsactive",
+      "probe": "Actual SDK mip1clear/store/readback, all64pixelbytes+canaries, all22Coloroperations/texturedetach/identity and ordinaryDepthStencilaccess"
     },
     "platforms": {
-      "macos_arm64": "source/strictlint/SDKcompile/hostlinksO0O2sanitizerPASS; nativeexecutionPENDING",
+      "macos_arm64": "Actual source/strictlint/SDKcompile/O0/O2/ASan+UBSan nativeprograms PASS25/25; noGUI",
       "macos_x64": "source/strictlint/SDKcompilePASS; x64nativeNOTRUN",
       "other": "No otherplatformnativeclaim"
     },
     "remaining_required": [
-      "Root grants native3slot or integration executes verifier --native",
-      "Root configuredUI-builder replay afteradoption with its permitted excludeddependencies; bindings willnotread/stageexcludedbodies"
+      "Root configuredUI-builder replay afteradoption with its permitted excludeddependencies; no cleanworkerbodyaccess",
+      "Macx64native and otherplatformnative gates remain separate/unavailable"
     ],
     "integration_requests": [
       "Stage sixlistedownedpaths plus own audit only",
@@ -6259,6 +6264,52 @@
         "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLCommandBuffer.h": "d84dda866f07ffc37ce68e3c635177373cdefa419fc1f64c766442ed81966895",
         "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLDevice.h": "bb4222866870a4a703cd1581fe55cf4fee4769fbee5efc795af51fbff95f2989"
       }
+    },
+    "native_proof": {
+      "timestamp": "2026-10-16T11:26:59.581860+00:00",
+      "lease": "Released after exactly3granted sequentialprograms completed",
+      "receipt": {
+        "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-attachments/metal-attachments-6q3c8sxf/report.json",
+        "sha256": "cc5a5c54f7e9b76362bc2deb96d066fd21eb234e27608130a77c64489a697a5b",
+        "passed": 25,
+        "failed": 0,
+        "inputs_unchanged": true
+      },
+      "executions": [
+        {
+          "label": "host execution O0",
+          "exit": 0,
+          "command": [
+            "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-attachments/metal-attachments-6q3c8sxf/O0"
+          ]
+        },
+        {
+          "label": "host execution O2",
+          "exit": 0,
+          "command": [
+            "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-attachments/metal-attachments-6q3c8sxf/O2"
+          ]
+        },
+        {
+          "label": "host execution sanitized",
+          "exit": 0,
+          "command": [
+            "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-attachments/metal-attachments-6q3c8sxf/sanitized"
+          ]
+        }
+      ],
+      "source_manifest": {
+        "stdlib/Metal/declarations.jai": "adc019230017684849caa9167fd499f1e4ddb24664c69f7012b214364ff3ab5b",
+        "tests/native-bindings/metal-render-pass-attachments.jai": "daa12a16cea193b73e87a87f930daa05bcb5772579e4389554693f365eced201",
+        "tests/native-bindings/metal_attachment_probe.m": "21f06df130e1e335be9a024508acaa26335f0c5f617080471d93debfe92d9c5f",
+        "tools/native_bindings/verify_metal_attachments.py": "d05b14bef9acb3eff858216008486d2cba1742ced94edfc58c6de7f82c45f4a6",
+        "docs/native/metal-render-pass-attachments.md": "db79b5eeb912d7d91293e5ed833a507d0d64a2391bf8c26dfb26132b77070b92",
+        "docs/status/bindings-deviations.md": "01bc68ad323f934338c5df7e83c911578ca187b29930c684ea75232b33e217c5"
+      },
+      "source_manifest_sha256": "85864a39ea54455134e0cd300f0a5ea6bfd43959c2cc19c9c08ebfebba0172e9",
+      "native_programs_active": 0,
+      "source_changes": false,
+      "gui": false
     }
   }
 }
