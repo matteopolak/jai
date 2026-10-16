@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "problem": "Annotated runtime-shaped procedure casts escaped normal constant thunk evaluation; constant extraction then rejected metadata wrapper",
+  "files": {
+    "crates/jaic/src/sema/decls.rs": "9587fa8cc2441e84b31bed3181cbaeadc50febde3430bdf1b8be669400bc0b8f",
+    "crates/jaic/tests/cleanroom_callable_provenance.rs": "efcf842004bb3dca2297e7245e4018f369bda87c8220d6eef401ef9ad2bdc75c"
+  },
+  "repair": "Inspect underlying operand for eval_const/eval_const_all runtime/thunk decision while passing original annotated operand through normal thunk; strip annotation only at Resolved constant Value boundary. No module/name exception, sentinel special case, memory read bypass, alias refresh or new header inference.",
+  "verification": {
+    "passed": 43,
+    "failed": 0,
+    "ignored": 0,
+    "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/callable-sentinel-final.log"
+  },
+  "native_verification": "pending after serialized catalogue",
+  "test_construction": [
+    "Initial proposed explicit-cast constant-alias renamed/default header assertion was not established by reviewed contracts; failed receipt retained, excluded from supported regression claim. Canonical alias original ProcId/name behavior unchanged. Question recorded."
+  ],
+  "prior_failures": [
+    "callable-sentinel-red.log",
+    "callable-sentinel-green.log",
+    "callable-sentinel-green-r2.log"
+  ],
+  "original400": "Root old015 replay remains independently useful; source delta requires next pinned compiler for affected failures"
+}
