@@ -2399,3 +2399,15 @@ FreeTypefixture Macfontliteral remainsgenuineLinuxconstructiongap, NOTskipped; s
 | Basic Any contract / earlier boxing hypothesis | Latest root official boundary facts contradict earlier typed-null-payload formatter expectation; eagerbox_any grant withdrawn. No boxing prototype integrated. | Basic owner final reviewed renderer/spec/test repair required; preserve ignored/address-only/zero-sized/alias positives. Prior receipts remain historical. |
 | LSP original scale | Current original audit still around110s, not60s accepted; accepted first IDE repair preserved. Focused4 causal+36unit passes do not establish corpus responsiveness. | Owner later causal repair and root unchanged-bound original replay. |
 | .gitignore /TODO.md | Root-local ignore rule present; local file preserved and remains tracked until coordinator history rewrite. No deletion/history operation here. | Root final reviewed history filter after gates; not an integration-source workaround. |
+
+
+## Four-ready2a29b054 audit
+
+| Path/scope | Effect/risk | Proper verification/remaining fix |
+| --- | --- | --- |
+| stdlib/internal/basic/format.jai | Both-null alone is empty; missing metadata/nonzero payload storage invokes unconditional context failure before any read. No boxing change. | Stronger checker requires exact stdout/stderr and nonzero; matching runtime replay still needed, producer15 modes attributed separately. |
+| crates/jaic/src/sema/expr.rs | Runtime ifx retains converted lexical ELSE callable metadata; actual selected callee unchanged. |12 causal tests pass; independent rejected overloaded fixture separately classified, no blanket skip. |
+| crates/jaic/src/sema/ide.rs, procs.rs | IDE-final failed body memo uses same AST identity, epoch/source/progress controls. Epoch scans namespace counts, a performance tradeoff. Strict compiler unmodified. | Root original second scale remains RED125s; focused tests are not timing acceptance. |
+| tools/io_stress.py, check_io_burst_diagnostics.py | One existing child is observed; sampler can affect scheduling.180cap affects sampling only. Original timeout still kills timed-out child; no retries. | Actual Linux12-load CI replay required; observer absence of failure is not prior-failure clearance. |
+| tools/stdlib_test_catalog.py and runtime/sweep/cross runners | Exact official-rejected ifx fixture keyed by ID+SHA, null pass and separate count; stale CPUID remains different category. | Preserve original diagnostics and independent positives; never count expected rejection as supported runtime. |
+| candidate2a29b054 |173 unchanged-source-paired ABI8 assets reused/rehashed. Pending native header/build repair excluded. Valid sidecars removed only from capture. | Rebuild matching assets after adopting native recipe/header changes; original fullworkspace/root corpus and actual native CI remain required. |
