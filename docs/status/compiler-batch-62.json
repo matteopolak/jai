@@ -1,0 +1,788 @@
+{
+  "source_checkpoint": "0b73960b",
+  "own_head_at_start": "28346029",
+  "baseline_source_identity": "df2f690c7c1c52db5e3a22a74d5cff4d1b44c4e3f8ac8a755964cf33edfe6e1c",
+  "scope": "Per-case dispositions for all62; focused own replays only; no broad sweep",
+  "reference_counts": {
+    "Compiled with official Jai": 14,
+    "Also failed official Jai build": 42,
+    "Reference comparison inconclusive": 6
+  },
+  "cases": [
+    {
+      "id": "sgpu-build",
+      "diagnostic": "no overload of `get_hash` matches these arguments",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "stdlib",
+      "disposition": "assigned hash overload/nominal variant contract repair",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "focus-build",
+      "diagnostic": "unknown identifier `set_working_directory`",
+      "prior_reference_status": "reference_build_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "compiler",
+      "disposition": "own child now reaches honest version guard; original unknown not reproduced; integration/source-context comparison requested",
+      "evidence": [
+        "late-import-conditional-procedure.jai",
+        "T7/focus-red.log"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-11-11.5-get-time",
+      "diagnostic": "unknown identifier `get_time`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-21-21.3-allocators-check",
+      "diagnostic": "in call to `alloc`: no parameter named `allocator`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-24-24.3-poke-name",
+      "diagnostic": "no overload of `dot_product` matches these arguments",
+      "prior_reference_status": "reference_behavior_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "stdlib",
+      "disposition": "public alias/export graph repair; independent local-group alias control passes",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-25-25.1-context",
+      "diagnostic": "unknown identifier `Context`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "needs independent source/contract reduction; reference result does not settle validity",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-26-26.33-measure-performance",
+      "diagnostic": "unknown identifier `get_time`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-28-28.5-get-cpu-info-feature-flags",
+      "diagnostic": "#assert failed: `CPU == .X64` is false",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "target/register operand contract; independent target setup required before validity judgment",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-28-28.7-asm-and-macros",
+      "diagnostic": "in call to `add_regs`: expected a SIMD register operand, not a scalar or memory value",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "target/register operand contract; independent target setup required before validity judgment",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-29-29.3-c-call",
+      "diagnostic": "unknown identifier `Context`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "needs independent source/contract reduction; reference result does not settle validity",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-30-30.11-using-notes",
+      "diagnostic": "unknown identifier `bubble_sort`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-30-jai-raylib-build",
+      "diagnostic": "this compiler has no alternate X64 backend",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "explicit backend/debugger capability limit; preserve diagnostic, no fake support",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-31-31.4-thread-group-response",
+      "diagnostic": "unknown identifier `get_time`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-33-33.11-colored-triangle",
+      "diagnostic": "no overload of `make_vector3` matches these arguments",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "stdlib/contract-review",
+      "disposition": "constructor call/signature contract review; reference build failure is inconclusive",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-33-33.12-drawing-circle.jai",
+      "diagnostic": "in call to `make_vector2`: too many arguments: it takes at most 1",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "stdlib/contract-review",
+      "disposition": "constructor call/signature contract review; reference build failure is inconclusive",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-33-33.14-moving-shape",
+      "diagnostic": "unknown identifier `get_time`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-33-33.2b-bouncing-square",
+      "diagnostic": "no overload of `make_vector4` matches these arguments",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "stdlib/contract-review",
+      "disposition": "constructor call/signature contract review; reference build failure is inconclusive",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-33-33.3-getrect-buttons",
+      "diagnostic": "unknown identifier `get_time`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-34-34.1-sorting",
+      "diagnostic": "unknown identifier `bubble_sort`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-34-34.4-struct-pool",
+      "diagnostic": "in call to `New`: no parameter named `allocator`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-34-34.6-flat-pool",
+      "diagnostic": "in call to `New`: no parameter named `allocator`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-34-34.7-mailing",
+      "diagnostic": "type mismatch: expected `s64`, found `string`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "needs independent source/contract reduction; reference result does not settle validity",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-35-raylib-raymath",
+      "diagnostic": "in call to `make_vector2`: too many arguments: it takes at most 1",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "stdlib/contract-review",
+      "disposition": "constructor call/signature contract review; reference build failure is inconclusive",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-52-raylib-raymath",
+      "diagnostic": "in call to `make_vector2`: too many arguments: it takes at most 1",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "stdlib/contract-review",
+      "disposition": "constructor call/signature contract review; reference build failure is inconclusive",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-exercises-22-reverse-string",
+      "diagnostic": "unknown identifier `Swap`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-exercises-22-swap-persons",
+      "diagnostic": "in call to `swap`: expected a pointer, found Person",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "needs independent source/contract reduction; reference result does not settle validity",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ttwj-exercises-22-swap-vectors",
+      "diagnostic": "unknown identifier `Swap`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "mismatch with reviewed current Basic API; preserve diagnostic; application-version/setup disposition still required",
+      "evidence": [
+        "docs/specs/stdlib/modules/basic.md:575"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "focus-native-build",
+      "diagnostic": "unknown identifier `set_working_directory`",
+      "prior_reference_status": "reference_build_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "compiler",
+      "disposition": "own child now reaches honest version guard; original unknown not reproduced; integration/source-context comparison requested",
+      "evidence": [
+        "late-import-conditional-procedure.jai",
+        "T7/focus-red.log"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jails-native-build",
+      "diagnostic": "writing .[path]: library 'crash-native[path] not found: looked for portable_crash.a, libportable_crash.a, portable_crash.dylib, libportable_crash.dylib in [path]",
+      "prior_reference_status": "not_run",
+      "classification": "Reference comparison inconclusive",
+      "owner": "integration",
+      "disposition": "matching source-built native helper prerequisite; not classified as semantic invalidity",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ast-utils-build",
+      "diagnostic": "interactive bytecode debugging is unavailable",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "explicit backend/debugger capability limit; preserve diagnostic, no fake support",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "shader-transpiler-build",
+      "diagnostic": "unknown identifier `NSOpenGLContext`",
+      "prior_reference_status": "reference_build_pass_no_default_executable",
+      "classification": "Compiled with official Jai",
+      "owner": "bindings",
+      "disposition": "reviewed native binding export/inheritance gap; target prerequisites also need confirmation",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "reflector-tests",
+      "diagnostic": "unknown identifier `compiler_get_struct_location`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "needs independent source/contract reduction; reference result does not settle validity",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "uniform-tests",
+      "diagnostic": "unknown identifier `get_absolute_path`",
+      "prior_reference_status": "reference_build_pass_no_default_executable",
+      "classification": "Compiled with official Jai",
+      "owner": "stdlib",
+      "disposition": "assigned public File export/visibility reduction",
+      "evidence": [
+        "docs/specs/stdlib/modules/file.md"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "stubborn-module",
+      "diagnostic": "unknown identifier `push_allocator`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "stdlib/bindings",
+      "disposition": "reviewed allocator API exists; reduce facade/lexical binding rather than invent export",
+      "evidence": [
+        "docs/specs/stdlib/modules/pool.md",
+        "docs/specs/stdlib/modules/basic.md"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-date-module",
+      "diagnostic": "unknown identifier `pool_allocator_proc`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "stdlib/bindings",
+      "disposition": "reviewed allocator API exists; reduce facade/lexical binding rather than invent export",
+      "evidence": [
+        "docs/specs/stdlib/modules/pool.md",
+        "docs/specs/stdlib/modules/basic.md"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "wait-group-example",
+      "diagnostic": "no overload of `get_hash` matches these arguments",
+      "prior_reference_status": "reference_behavior_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "stdlib",
+      "disposition": "assigned hash overload/nominal variant contract repair",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "cluster-build",
+      "diagnostic": "no overload of `get_hash` matches these arguments",
+      "prior_reference_status": "reference_build_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "stdlib",
+      "disposition": "assigned hash overload/nominal variant contract repair",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "hyperserve-example-build",
+      "diagnostic": "no overload of `get_hash` matches these arguments",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "stdlib",
+      "disposition": "assigned hash overload/nominal variant contract repair",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "hyperserve-datastar-build",
+      "diagnostic": "no overload of `get_hash` matches these arguments",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "stdlib",
+      "disposition": "assigned hash overload/nominal variant contract repair",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-tracy-plugin-build",
+      "diagnostic": "writing test: library 'crash-native[path] not found: looked for portable_crash.a, libportable_crash.a, portable_crash.dylib, libportable_crash.dylib in [path]",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "integration",
+      "disposition": "matching source-built native helper prerequisite; not classified as semantic invalidity",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "chess-jai-ui-check",
+      "diagnostic": "cpuid requires an x86-64 target",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "target/register operand contract; independent target setup required before validity judgment",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "chess-jai-engine-check",
+      "diagnostic": "cpuid requires an x86-64 target",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "target/register operand contract; independent target setup required before validity judgment",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "forbear-build",
+      "diagnostic": "unknown identifier `NSApplication`",
+      "prior_reference_status": "reference_build_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "bindings",
+      "disposition": "reviewed native binding export/inheritance gap; target prerequisites also need confirmation",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "ui-builder-demo-check",
+      "diagnostic": "type `MTLRenderCommandEncoder` has no member `endEncoding`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "bindings",
+      "disposition": "reviewed native binding export/inheritance gap; target prerequisites also need confirmation",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "vk-engine-core-check",
+      "diagnostic": "operator Sub is not defined for Apollo_Time",
+      "prior_reference_status": "unmapped_cross_target_cli",
+      "classification": "Reference comparison inconclusive",
+      "owner": "integration/stdlib",
+      "disposition": "operator reexports plus exact target context; namespace-only import must not expose operators",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "vk-engine-renderer-check",
+      "diagnostic": "operator Sub is not defined for Apollo_Time",
+      "prior_reference_status": "unmapped_cross_target_cli",
+      "classification": "Reference comparison inconclusive",
+      "owner": "integration/stdlib",
+      "disposition": "operator reexports plus exact target context; namespace-only import must not expose operators",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "vk-engine-game-check",
+      "diagnostic": "operator Sub is not defined for Apollo_Time",
+      "prior_reference_status": "unmapped_cross_target_cli",
+      "classification": "Reference comparison inconclusive",
+      "owner": "integration/stdlib",
+      "disposition": "operator reexports plus exact target context; namespace-only import must not expose operators",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "vk-engine-editor-check",
+      "diagnostic": "operator Sub is not defined for Apollo_Time",
+      "prior_reference_status": "unmapped_cross_target_cli",
+      "classification": "Reference comparison inconclusive",
+      "owner": "integration/stdlib",
+      "disposition": "operator reexports plus exact target context; namespace-only import must not expose operators",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-xml-tests",
+      "diagnostic": "unknown identifier `contains`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "actual caller import/macro scope reduction required; public API presence alone does not establish lexical visibility",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-xml-continue-iter",
+      "diagnostic": "unknown identifier `New`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "actual caller import/macro scope reduction required; public API presence alone does not establish lexical visibility",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-xml-traverse-check",
+      "diagnostic": "unknown identifier `free`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "actual caller import/macro scope reduction required; public API presence alone does not establish lexical visibility",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-xml-traverse-bf-with-callbacks-check",
+      "diagnostic": "unknown identifier `free`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "actual caller import/macro scope reduction required; public API presence alone does not establish lexical visibility",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-xml-traverse-df-with-callbacks-check",
+      "diagnostic": "unknown identifier `free`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "actual caller import/macro scope reduction required; public API presence alone does not establish lexical visibility",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-xml-traverse-from-child-check",
+      "diagnostic": "unknown identifier `free`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "actual caller import/macro scope reduction required; public API presence alone does not establish lexical visibility",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-xml-traverse-with-breaks-check",
+      "diagnostic": "unknown identifier `free`",
+      "prior_reference_status": "reference_build_failed",
+      "classification": "Also failed official Jai build",
+      "owner": "compiler",
+      "disposition": "actual caller import/macro scope reduction required; public API presence alone does not establish lexical visibility",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "no-api-module-windows-check",
+      "diagnostic": "unknown identifier `write_entire_file`",
+      "prior_reference_status": "unmapped_cross_target_cli",
+      "classification": "Reference comparison inconclusive",
+      "owner": "compiler",
+      "disposition": "Windows target/file API visibility reduction; exact target configuration needed",
+      "evidence": [
+        "docs/specs/stdlib/modules/file.md"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "toml-jai-custom-handlers",
+      "diagnostic": "polymorphic procedure `lambda` needs arguments to determine its types",
+      "prior_reference_status": "reference_behavior_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "compiler",
+      "disposition": "compiler root fixed in worktree: typed generic callbacks now specialize before reflection; original check passes; separate runtime assertion remains open",
+      "evidence": [
+        "generic-procedure-parameter-reflection.jai",
+        "T7/toml-red.log"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false,
+      "compiler_first_error_fixed": true,
+      "compile_check_passed": true,
+      "runtime_status": "red at first/default serialization underscore-key assertion; pending stdlib predicate"
+    },
+    {
+      "id": "jai-protobuf-tests",
+      "diagnostic": "expected expression, found `:`",
+      "prior_reference_status": "reference_behavior_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "compiler",
+      "disposition": "public Basic is_alnum underscore contract confirmed; canonical correction assigned stdlib owner; admitted schema assets staged for focused replay",
+      "evidence": [
+        "T7/protobuf-independent-output.log"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-protobuf-01-compiletime",
+      "diagnostic": "expected expression, found `:`",
+      "prior_reference_status": "reference_behavior_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "compiler",
+      "disposition": "public Basic is_alnum underscore contract confirmed; canonical correction assigned stdlib owner; admitted schema assets staged for focused replay",
+      "evidence": [
+        "T7/protobuf-independent-output.log"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-protobuf-03-imports",
+      "diagnostic": "expected expression, found `:`",
+      "prior_reference_status": "reference_behavior_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "compiler",
+      "disposition": "public Basic is_alnum underscore contract confirmed; canonical correction assigned stdlib owner; admitted schema assets staged for focused replay",
+      "evidence": [
+        "T7/protobuf-independent-output.log"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-protobuf-04-memory-allocation",
+      "diagnostic": "expected expression, found",
+      "prior_reference_status": "reference_behavior_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "compiler",
+      "disposition": "public Basic is_alnum underscore contract confirmed; canonical correction assigned stdlib owner; admitted schema assets staged for focused replay",
+      "evidence": [
+        "T7/protobuf-independent-output.log"
+      ],
+      "resolved": false,
+      "invalid_program_proven": false
+    },
+    {
+      "id": "jai-format-build",
+      "diagnostic": "writing build[path]: library 'crash-native[path] not found: looked for portable_crash.a, libportable_crash.a, portable_crash.dylib, libportable_crash.dylib in [path]",
+      "prior_reference_status": "reference_build_pass",
+      "classification": "Compiled with official Jai",
+      "owner": "integration",
+      "disposition": "matching source-built native helper prerequisite; not classified as semantic invalidity",
+      "evidence": [],
+      "resolved": false,
+      "invalid_program_proven": false
+    }
+  ],
+  "current_work": [
+    "typed generic struct argument conversion tests/native/WASI validation",
+    "reviewed inherited syntax-record defaults regeneration",
+    "protobuf replay after stdlib classifier adoption",
+    "62-case dispositions and explicit downstream runtime reduction"
+  ],
+  "dependency_requests": [
+    "Adopt586be99b and operator regressions; return exact Focus context if unknown persists",
+    "Complete reviewed syntax-record initializer table",
+    "Canonical stdlib is_alnum underscore fix commit for own adoption/replay"
+  ],
+  "last_focused_results": {
+    "Focus": "version guard; no unknown set_working_directory on own child",
+    "Focus_independent_lookup": "passes check without directory change",
+    "TOML": "source check passes after typed binding; native ARM64 O0/O2 builds succeed, both abort at default serialization underscore-key assertion; interpreter also red",
+    "protobuf": "inline plain identifier valid output; underscore identifier corrupt output; parser rejection retained",
+    "typed_callback_regression": "six core tests pass; interpreter/native ARM64 O0/O2/actual WASI callback and metadata/address behavior pass",
+    "record_defaults": "11 record defaults and constructed binary/loop graph check pass; regeneration --check passes from configured T7 target",
+    "context_controls": "ordinary plus Any/aggregate-result callbacks with nested allocator override pass; no context bug established",
+    "full_library_suite": "222 passed, 0 failed",
+    "quality": "Rust format/clippy warnings-denied; host/WASI strict lint; generator idempotence and ruff pass"
+  },
+  "storage": {
+    "target": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target",
+    "scratch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-10d9"
+  },
+  "memory_investigation": "suspended",
+  "remaining_contract_questions": [
+    "Untyped generic procedure parameter runtime reflection remains separate/unestablished",
+    "Complete remaining record initializer audit beyond six confirmed inherited defaults"
+  ],
+  "schema_defaults": {
+    "reviewed_inherited_initializers": 6,
+    "production_missing_initializers_restored": 3,
+    "explicit_record_defaults_exercised": 11,
+    "registry_changed": false,
+    "regeneration_check": "passes"
+  },
+  "baseline_compiler_checkpoint": "586be99b"
+}
