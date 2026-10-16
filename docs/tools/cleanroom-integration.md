@@ -1,5 +1,41 @@
 # Clean-room integration verification
 
+## Available committed candidate553afc98 and later shared checkpoints
+
+The [exact receipt](../status/shared-candidate-553afc98.json) pins product
+`553afc98d1d30975b5d63b3e23ff73b4d2413a55` at
+`/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-553afc98`.
+Compiler SHA256 is `65970ba222ca952d6031c604fafa420e7dc0e51cd8f100d8d5719e8fc4fd6cc8`.
+All four tools are source-built, including unchanged jaifmt against production
+stdlib. Its4439 committed inputs and258 native/package assets remain hash-unchanged.
+Seven helpers/packages were rebuilt normally; unchanged ABI7 allocator/cache
+assets are hash-reused from a97, with no new SDK/profile execution credit.
+
+Exact frozen production checks pass69/0: independent allocator domains5,
+canonical model dependencies5, real C++ bridge33 and multiple-library generation26.
+The real relocated LLVM/native-consumer/license suite passes9/0. Rustfmt and
+workspace/all-target Clippy with warnings denied pass. Capture initially omitted
+the committed rustfmt configuration; the exact same-snapshot file and root
+license/build inputs were restored before pinning, with the failed check retained.
+A separate harness initially expected output from the silent domain fixture;
+its exit0/empty output is retained and the unchanged fixture is correctly checked.
+
+Later shared commits a7117964 (Apollo signed fractions) and e7cac032 (reviewed
+underscore classification) have their own14/0 and19/0 focused receipts; they
+are **not** silently included in553. Active ABI8 metadata/AppKit/other known
+producer fixes remain excluded until stable handoff and paired native assets.
+Latest coordinator steering defers the next broad workspace/catalogue/original400
+pass until known fixes are combined. The full10d9 baseline944/7/1 and catalogue
+785 positive passes/25 failed mode records remain unchanged. No current whole-green,
+native Windows/Linux/Android, original corpus or Focus success is claimed.
+
+Coordinator temporary branch push review: release.yml triggers automatically only
+for v* tags, so an ordinary codex/cleanroom-integration branch push does not trigger
+that workflow. **Do not dispatch release.yml**: untagged manual conditions in its
+homebrew/neovim jobs can update external package/plugin repositories. Historical
+release-dispatch guidance in that workflow is incompatible with the publication
+hold. No workflow/remote/release operation was performed here.
+
 ## Latest committed ABI7 candidate a97d0f6f
 
 Shared branch `codex/stdlib-shared` product snapshot
@@ -35,7 +71,7 @@ a whole current green aggregate. Native Windows/Linux/Android/iOS, graph metadat
 OOM rollback, final resource/sysroot packaging, opaque corpus and Focus remain
 open. Coordinator owns full original application and publication acceptance.
 
-## Active shared candidate10d9b3f8
+## Historical shared candidate10d9b3f8
 
 Active worktree: `/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared`,
 branch `codex/stdlib-shared`. Product snapshot
