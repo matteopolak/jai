@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "worker": "foundations",
+  "state": "READY scoped source patch; selector adoption, exact CI records and durable emitted-WASM proof remain required",
+  "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/catalogue-128-oh1xlsq2",
+  "reported_job": "117201496943",
+  "reported_failures": {
+    "interp": 19,
+    "native": 16,
+    "wasm-interp": 46,
+    "wasm-native": 47
+  },
+  "reported_failure_records_admitted": false,
+  "catalogue_count_at_capture": 449,
+  "selection_inventory": {
+    "cases": 42,
+    "rows": 504,
+    "kind": "explicit policy only; passed=null"
+  },
+  "owned_sha256": {
+    "tools/foundations_case_capabilities.py": "ffb26085de6c33ee96e479088626060218bcc85df8bde896916d7363e035adf6",
+    "tools/test_foundations_case_capabilities.py": "b1f9108cb8bb5e5e5eed865834f46c8aef88a2d16f86770d72355bc03f11b67c",
+    "tools/stdlib_test_catalog.py": "83297b94393a6171ba58893f38ad0d490a2ee15a8bad0ccd5654299f4f3f27cb",
+    "stdlib/tests/portable-data-resource-wire.jai": "3cb7f35462735043597c2f83928513a3537871d3f4fbc3a82c6be4db6519212a",
+    "tests/compiler-regressions/foundations-portable-compile-time.jai": "0d8e3cd8fc3dd7cf71fdf119202b09dab22254ac3f25d6182f1ce0bb649cfcea",
+    "docs/tools/foundations-catalogue-mode-contracts.md": "a4a9730ee36667d6c516bad0aac1fab37ac610c250f6a135350c5316a1d9f849"
+  },
+  "unchanged_original_resource_sha256": "171484980cb929e41d3790693dac6fbbf3d09ede4b145ee6fae9b4f4cdea6552",
+  "evidence_sha256": {
+    "final-source-lint.json": "e4635fe3ccb64f8c2a489fbeabfd77ee8a2b596a9812fdacc1e11c769313e593",
+    "python-verification.json": "a6312a9ae20b0bfadf2cf77d6a4cc38cd2b4cc2e27841a87c1ad2f1a6508c5f8",
+    "native-module-guards-corrected-evaluation.json": "8f3baf0a2a2bfe6fdee2504876aa5116f824a9c7c48bb8b6e426e5b229159eb0",
+    "source-lint-receipt.json": "5b5e95edd75047884fc6182e19e744a9dc83b4472525dfbf8bcdeb8f192a3b35",
+    "mode-dispatch-proposal-proof.json": "528504398ce7cb67beb0401dac05c7f4226b65c6155b4f7059252ff1673d35fe",
+    "case-mode-policy.json": "d3092b8dcf7a0143503aff7c54a2ecf848c609b50b26a1bfb2b06f1597a2b1b7",
+    "catalogue-source-inventory.json": "7d347a9613ce4d9df71d794bd638287e2117be330c509e2219964349b7ba1ccd",
+    "final-controls-runtime.json": "397655da196d9db197ca6ea2ead06c3202c0c47c0f1a8ce2a819d10dd4916471",
+    "corrected-final-runtime.json": "9c02520e065757f9d76fd683723f7e7a6983fc754057253ef9cda93c92668aa5",
+    "wasm-artifact-guard.json": "bbb8af9b2a514ff01434f75130b8e99bbac4ba3f6db27d3237f47a60350a7b37",
+    "native-artifact-guard.json": "23dd275092991e48533342d930318a92c05d7cf2a91ed1f11230d7893cd63347",
+    "export-base-guards.json": "67af237742f6441fb782687d5212d0c5183cfeafc68516aa8cfa27c3e425ff18"
+  },
+  "verification": {
+    "python_tests": 34,
+    "python_tests_kind": "policy/mocked runner accounting, not platform runtime proof",
+    "source_and_strict_lint_commands": 42,
+    "source_and_lint_profiles": 7,
+    "module_guard_commands": 8,
+    "http_wasm_required_rejection": "nonzero with exact missing http_date_now member diagnostic",
+    "http_explicit_seconds_wasm_check": "passed",
+    "desktop_unique_program_modes": 12,
+    "wasm_interpreter_unique_program_modes": 2,
+    "emitted_wasm_unique_program_modes": {
+      "historical_node_runs": 4,
+      "durable_proof": "WITHDRAWN: generated artifacts later zero-filled; raw runs and files retained"
+    },
+    "native_artifact_magic_guard": "10 existing outputs valid Mach-O",
+    "format": "owned three files formatted; check passed"
+  },
+  "runtime_overlay_patch": {
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/catalogue-128-oh1xlsq2/integration-runtime-mode-overlay.patch",
+    "sha256": "9f42ae8827e9a9f571ebd82f4a55d7567c9a260887e14728f2a843cf938a8ff0",
+    "shared_wrapper_modified": false,
+    "mock_candidate": "2 required WASM compile negatives, one native interpreter positive; current wrapper dependency RED retained"
+  },
+  "remaining_dependencies": [
+    "Integration runtime overlay adoption before negative dispatch/accounting is correct",
+    "Browser/LSP exact mode policy consumption; remove diagnostic-driven unavailable promotion",
+    "Safe GetRect4 numerics packet admission; OS-denied T7 export not retried",
+    "Root sanitized 128 exact case/source/mode/command/diagnostic records",
+    "Linux x64 lang-asm/rules-simd-asm exact diagnostics; no new deferral",
+    "Integration original native resource argv and real stb resize provider; original assertions unchanged",
+    "Native Thread/System/Process/Socket/Io/Tls/GL/rpmalloc SDK/provider checks remain required",
+    "General emitted WASM artifact durability failure investigation and fresh exact-artifact execution proof"
+  ],
+  "retained_reds": [
+    "Initial unit tests lacked map/overlay/control/Windows metadata",
+    "Wrong initial jailint -target OS-only spelling",
+    "New control unused binding diagnosed and removed",
+    "Module guard evaluator expected wrong diagnostic wording; raw results retained and exact #assert guard re-evaluated",
+    "x64 native -cpu alone rejected; missing-output invocation exception retained; explicit triple later passed",
+    "Final emitted WASM artifact audit zero-filled modules"
+  ],
+  "separate_allocator_fixture": {
+    "path": "tests/portable-stdlib/allocator-caps.jai",
+    "sha256": "e1595e7f579a57e519014944d4ccdd45074b71b86f9d5f367c21ae8b16d4f326",
+    "scope": "exact reviewed target CAPS branch; no production allocator changes",
+    "native_mac_arm64": "interp/O0/O2 passed",
+    "native_mac_x64": "interp/explicit-target O0/O2 passed; Mach-O CPU verified",
+    "patch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/catalogue-128-oh1xlsq2/allocator-caps-targets-new.patch"
+  },
+  "readme_append_request": "docs/tools/foundations-catalogue-mode-contracts.md",
+  "no_extensions_production_changes": true
+}
