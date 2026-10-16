@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "scope": "four handed-off portable collection cohorts",
+  "snapshot_before_checkpoint": "5a7b37ffeaee9878df61c9c2856dd7e49657f1dc",
+  "compiler_sha256": "c17e0d3574b225fde3f06bd42da6ad37756bf8eaf93bf9be0c8c3cc41556328d",
+  "source_manifest": {
+    "cohorts": [
+      "ready_bucket_checkpoint",
+      "ready_sorting_checkpoint",
+      "ready_soa_xar_checkpoint",
+      "ready_relative_pointers_checkpoint"
+    ],
+    "files": {
+      "stdlib/internal/collections/bucket-array.jai": "ad89b3ae02551df9b5d491a95aaca07012550799b9448d1c93e6b9fc990f5852",
+      "tests/portable-stdlib/bucket-array-remove.jai": "ddcdbd8a6c08673e6ef5be7df34e8a1a25e8f6a19089c6f6b64b3c6e559d52a0",
+      "tools/check_portable_bucket_remove_shared.py": "cc7a71eadd9a5822212d5d2d5742d7ca300c2ff2e8c634d2ec5bf5c29a131b5e",
+      "docs/portable-bucket-array-removal.md": "cd88ec8f6b06d2599f43aa977138f6071fe0fcd76d3acc603e57bdc7f1f969a5",
+      "stdlib/RadixSort/module.jai": "4fc26aa9644a72c44392ffb27133e4e709b55fc85fab576a9b94611abd40d6b3",
+      "tests/portable-stdlib/sort-contracts.jai": "e086083ec29c9b40562256780035189783910a3efe0c35b66c5028f6dc70578e",
+      "tests/portable-stdlib/radix-contracts.jai": "cf16afb1302ec8aef07ad25ea4749dca9218cc31e76a1c5e77e8fc7ca73b33bb",
+      "tests/portable-stdlib/negative/radix-signed-input.jai": "41a89c763876aa798538b82b02d008f66055681b4e71200983f85714ded4f2dd",
+      "tools/check_portable_sorting_shared.py": "c5f3cf95cf34a5a901a75585bc0d12cc52a11abe462202d35aa0a44042df81c2",
+      "docs/portable-sorting-audit.md": "77ea132829a36e2f2f0b1c0edf201e068d158109e7f8521488ecd5798a99fb06",
+      "stdlib/Soa/module.jai": "d19c6e3586e4019b712ecb23f870178e679ba722ecc5ae8f418ff87c7093ea05",
+      "stdlib/Xar/module.jai": "cd30a9f6e59f9c4308c0195905113d3f833561ede03f14c43e682a8aec5a5896",
+      "tests/portable-stdlib/soa-contracts.jai": "eacc6a1a81d69bdc8fd917f4637d0aa954c3d12c45a062530ebd817b84452bc8",
+      "tests/portable-stdlib/xar-contracts.jai": "445e00157226bf90fd5b54be4b03a2ef87826d8e46d19335dfb21fe2cfdd2565",
+      "tests/portable-stdlib/pending/soa-contextual-index-store.jai": "b7c3f00c7d1a092b4ec91cdc805231ab25cd55d783484bd8b481bffe5950e454",
+      "tests/portable-stdlib/pending/xar-index-operator-value.jai": "6712fe1ccef3b3ef1a29f08d2005432fbe7b01cedd9ca20a6c6ce23aaf352e53",
+      "tools/check_portable_soa_xar_shared.py": "32e81a4045099ce724e345485f08931aacfc5f5e4cd1074b5f8b08f0aabc62b9",
+      "docs/portable-soa-xar-audit.md": "32cbbf3f820b266d8dfc7e4678fc7c0017e5e9ad6a29f225c430cd64d5f124ad",
+      "docs/specs/stdlib/portable-collection-compiler-questions.md": "17f087baf74e70771a8d18dc8b8fc22607c3aff7a051aebb0692d4780f319a85",
+      "stdlib/internal/memory/relative-pointers.jai": "78fe8dec6aff8029c4a34392001778fe2ed010fea7de9cb817ac1b05f66457d6",
+      "tests/portable-stdlib/relative-pointer-contracts.jai": "adae6466b75b1a464923498eaea400970e78ea9ff918b537e0d33fbb33a47ce4",
+      "tools/check_portable_relative_pointers_shared.py": "3261e2c4b256b6a84cad2f1e2f342b2982add0bb4265ef414e08780a18714361",
+      "docs/portable-relative-pointer-audit.md": "1264e9b21a9adc6360b4a384647bfc275201cab7b632862175280eed2afe6a6c"
+    },
+    "integration_format_only": {
+      "tests/portable-stdlib/pending/soa-contextual-index-store.jai": {
+        "producer_sha256": "283f2ed18022d9becfecf0be1ee26c108c6c5c876c4ac10b645d016f71792434",
+        "formatted_sha256": "b7c3f00c7d1a092b4ec91cdc805231ab25cd55d783484bd8b481bffe5950e454"
+      },
+      "tests/portable-stdlib/pending/xar-index-operator-value.jai": {
+        "producer_sha256": "13109cfdfba08869371d19b665be9be62034ae481920f7dd88bc20ecc2ed0309",
+        "formatted_sha256": "6712fe1ccef3b3ef1a29f08d2005432fbe7b01cedd9ca20a6c6ce23aaf352e53"
+      }
+    }
+  },
+  "commands": [
+    {
+      "runner": "tools/check_portable_bucket_remove_shared.py",
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target/bucket-remove-shared-fhz946d0",
+      "passed": 20,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "runner": "tools/check_portable_sorting_shared.py",
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target/sorting-shared-agvq477n",
+      "passed": 43,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "runner": "tools/check_portable_soa_xar_shared.py",
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target/soa-xar-shared-qr61msgi",
+      "passed": 40,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "runner": "tools/check_portable_relative_pointers_shared.py",
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target/relative-pointers-shared-g4li1zl6",
+      "passed": 20,
+      "failed": 0,
+      "ignored": 0
+    }
+  ],
+  "passed": 123,
+  "failed": 0,
+  "ignored": 0,
+  "failure_names": [],
+  "format_and_python_checks": {
+    "passed": 16,
+    "failed": 0
+  },
+  "native_scope": "Mac ARM64 only; desktop target checks are source checks",
+  "unpassed_reducers": [
+    "soa-contextual-index-store",
+    "xar-index-operator-value"
+  ],
+  "full_baseline": "not rerun; historical aggregates retained",
+  "original_corpus_and_focus": "coordinator-owned"
+}

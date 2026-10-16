@@ -1,5 +1,11 @@
 # Developer documentation
 
+- [Portable collection checkpoint](status/shared-portable-collections-checkpoint.json):
+  physical-slot [Bucket_Array removal](portable-bucket-array-removal.md),
+  canonical [Soa/Xar operators](portable-soa-xar-audit.md),
+  [sorting contracts](portable-sorting-audit.md) and
+  [relative pointers](portable-relative-pointer-audit.md), with focused Mac evidence.
+
 - [Canonical provider logical library spelling](generator-platform-logical.md):
   physical image identity versus generated Jai names, SDK/native consumers and
   current shared immutable verification.
