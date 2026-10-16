@@ -935,3 +935,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Input original fixture adoption](tools/input-original-adoption.md): six exact source hashes, persistent production resize storage and signed-wheel/window/payload assertions retained. Four source checks pass; prior nine Mac runtime outcomes are separately pinned, current combined GUI smoke remains root-owned.
 
 - [Complete Windows target provider receipt](status/windows-target-binding-providers-complete.json):52 real archives including retained SDK/storage probes, all-object PE link and target-machine verification; no Windows runtime claim.
+
+- [Allocator capability fixture qualification](status/allocator-caps-integration.json): exact reviewed optimized/fallback target bits; all allocation/identity checks retained. Independent of the broader catalogue batch and its withdrawn emitted-WASM artifact evidence.
