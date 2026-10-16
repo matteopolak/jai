@@ -16,7 +16,8 @@ The Rust drivers refresh configuration again immediately before execution or
 emission. Thus an unintercepted child changing the selected root workspace after
 the root front end finishes still configures the actual root allocation.
 
-Nondefault initialized target runtimes must read this configuration from their
+Nondefault initialized target runtimes must consume this configuration through the
+private getter or the reviewed public compiler constant TEMPORARY_STORAGE_SIZE in their
 exported target graph. Calls, procedure addresses, globals and relocations participate
 in that graph. Merely inspecting it at compile time or checking an unused getter
 does not remove the diagnostic for an older runtime. This establishes that the
@@ -54,12 +55,45 @@ native and bare WASM at O0/O2. Canonical approved e0 runtime allocation of 10485
 bytes additionally passes interpreter/native O0/O2 checks of size/original_size,
 data/original_data identity and the last valid byte.
 
-These controls establish the retained-image defect and its repair. They do not
-establish the cause or resolution of the separate Focus failure. Focus's private
-excluded Runtime body remains unread; root owns its matching-current replay and
-returns filtered diagnostic facts. Own runtime_config/driver/procs sources match
-the three approved e0 inputs, but the rest of the own compiler is not claimed to
-be the complete e0 source. See [checkpoint](../status/runtime-config-startup.json).
+## Public compiler constant startup transport (2026-10-16)
+
+Custom runtime providers may use the reviewed immutable compiler constant
+\`TEMPORARY_STORAGE_SIZE\` to size target static storage. This retains the canonical
+s64 constant and ordinary type/storage identity; no public parameter or new API
+is introduced. The private getter remains available for dynamically allocated
+runtime storage.
+
+The compiler records dependencies when the actual builtin binding resolves.
+Dependencies survive cached constant aliases, array type aliases and record
+layouts. They attach to resolved declarations and emitted procedure bodies,
+rather than structurally interned array TypeIds. Reachability then follows the
+same exported target graph used for the private getter. An unrelated hardcoded
+array of the same type, a shadowing ordinary constant, compile-time assertions,
+and unused declarations cannot opt a runtime in.
+
+Static target storage cannot silently change extent after binding. If a reached
+constant dependency captured a different size from the final workspace setting,
+finalization diagnoses both values, including changes back to the default.
+A private dynamic reader cannot mask a stale static extent. Set the workspace
+option before resolving static target declarations. General provenance through
+arbitrary compile-time procedure results is not established by this checkpoint;
+those cases retain conservative rejection rather than fabricating a dependency.
+
+Independent controls cover direct/aliased extents, cached record layouts,
+scalar target reads, compile-time-only/unused/shadowed negatives, late conflicts
+and mixed static/dynamic consumers. Native C and bare WASM controls execute O0/O2
+startup and inspect the actual first and last bytes of 1048576-byte storage.
+The canonical e0 private runtime separately allocates real 1MB root and child
+storage under interpreter and native O0/O2 execution.
+
+Root's matching e0+owned-patches Focus replay now passes \`-check\` with only the
+two authorized version-rejection calls bypassed. This is qualified application
+evidence; it does not claim unmodified Focus or the combined integration candidate
+passes. Build/execution and the separate custom Basic replacement-interface
+dependency remain root-owned gates. The excluded Focus Runtime body was never
+read; root supplied only its public-constant/static-extent contract and diagnostic
+facts. Source pins and retained failure receipts are in the
+[checkpoint](../status/runtime-config-startup.json).
 
 ## Producer integration
 

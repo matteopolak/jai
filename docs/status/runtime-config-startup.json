@@ -1,5 +1,5 @@
 {
-  "status": "retained_startup_dependency_fixed_focus_public_constant_path_pending",
+  "status": "public_constant_and_private_getter_startup_supported_qualified_focus_check_pass",
   "parent_commit": "f5f8481b8a01a3cd6fb886db6ee53e23f988f60d",
   "matching_e0_source_guard": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/runtime-config-startup/e0-retained-source-guard.json",
   "matching_e0_source_guard_sha256": "d090faefdeb3f7605955ec7e7d57a1bf482b5de16deb6d2bc94e21e40afce2a3",
@@ -26,7 +26,15 @@
     "e0-one-megabyte-cli.log",
     "e0-retained-clippy.log",
     "e0-retained-fmt.log",
-    "retained-core-regressions.log"
+    "retained-core-regressions.log",
+    "e0-constant-core-scoped-library.log",
+    "e0-constant-final-core.log",
+    "e0-constant-backends-ready.log",
+    "e0-constant-cli-one-megabyte.log",
+    "e0-constant-clippy.log",
+    "e0-constant-format.log",
+    "e0-constant-clippy-final.log",
+    "e0-constant-strict-lint.log"
   ],
   "focus": {
     "matching_diagnostic_cli": {
@@ -53,20 +61,42 @@
       "target_exports": 4,
       "private_reader_lowered": false
     },
-    "cause": "Custom runtime consumes reviewed public compiler TEMPORARY_STORAGE_SIZE constant as static array extent; current guard recognizes only private getter. Excluded runtime source unread. Public constant support next task."
+    "cause": "Custom runtime uses reviewed public compiler constant as static storage extent; guard previously recognized only private getter. Canonical binding provenance now supports reached public constant consumers.",
+    "public_constant_replay": {
+      "check": "pass exit0 9.304s root-reported",
+      "build": "pending root result",
+      "qualification": "Only two authorized version-rejection calls bypassed; exact e0 library/ABI8; candidate verification only, lacks separately integrated typedbf repair"
+    }
   },
   "preserved_failures": [
     "runtime-config-startup-red.log",
     "runtime-config-startup-negative-red.log",
     "e0-read-denied.txt",
-    "e0-retained-initial-guard-metadata.json"
+    "e0-retained-initial-guard-metadata.json",
+    "e0-constant-core-scoped-complete.log",
+    "e0-constant-core-scoped-ready.log",
+    "e0-constant-thunk-negative.log"
   ],
   "limitations": [
-    "Retained fix is not the Focus causal fix.",
+    "Arbitrary compile-time procedure-result provenance is not established; no blanket opt-in.",
     "No default substitution, guard removal, public parameter or module exception.",
     "Initial e0 direct source read denied; root supplied explicit approved independent own-T7 inputs. No alternate denied-source route.",
     "Old own-core diagnostic Focus Apollo Sub failure preserved as stale source mismatch, not new regression.",
     "Verified AppleDouble metadata that interrupted source guard preserved outside controlled source; no source/fixture assertion change.",
     "No /Users/matthew/projects/jai-reference/old stdlib/quarantine/Extensions body or suspended memory investigation access; no release/remote operations."
-  ]
+  ],
+  "public_constant_parent_commit": "621d7a3e50b80962f1b7ccac7ed3cbb6209959ec",
+  "public_constant_verification": {
+    "source_snapshot": "e0e287eab27745746f4848eaa0bad3a552081815",
+    "cli_sha256": "e8646602620254d0ea6d48443a849f977a21c0c8d69e1ba84141cee51e08aab1",
+    "core_library_tests": 169,
+    "runtime_config_tests": 15,
+    "backend_tests": 3,
+    "actual_native_bare_wasm": "O0/O2 pass; actual first/last storage bytes checked",
+    "canonical_private_runtime": "1MB root/child interpreter/native O0/O2 pass",
+    "clippy": "warnings denied pass",
+    "rustfmt": "pass",
+    "scoped_integration_tests_excluding_runtime_config": 103,
+    "strict_jailint": "pass; one-megabyte fixture, warnings denied, no incomplete checking"
+  }
 }

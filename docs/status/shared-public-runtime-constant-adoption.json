@@ -1,0 +1,109 @@
+{
+  "status": "reviewed_source_checkpoint_matching_tool_build_next",
+  "parent": "b09be106d0080d7f521225b1329220dd257c5173",
+  "producer_commit": "98dd58afdc1c60d48345a3e851364f0ea2519967",
+  "patch_sha256": "347403bcb04b6dd3aff916c80086b1db38c7b3245f49eeadd80c346dcf4a1469",
+  "files": {
+    "crates/jaic-llvm/tests/cleanroom_runtime_config.rs": "557558dba711d9c7bed0ca1f724894a99c22f4c4e215b12ab1b777ccb7f7575b",
+    "crates/jaic/src/sema/decls.rs": "eab691a3ef12c3229992300802257cfc4644ac2f47929eb7499324c0b37dc4ff",
+    "crates/jaic/src/sema/expr.rs": "6f7a299909fa21ad2f3125045fc18a4501981679fce107ed6abe70b7f3797e42",
+    "crates/jaic/src/sema/lower.rs": "71e299abbbbb4e1b95de21b4cee7aa379a72d8eea5bb64a9fb7cea2adb6da1f5",
+    "crates/jaic/src/sema/mod.rs": "962d389a450dd109036e9f8eec61b7c936f455e78f154692bc2e51049440abf3",
+    "crates/jaic/src/sema/procs.rs": "98ca71e125e4b3f3e8437b93605844726200873b64219f1d480ffaa09d2ce65f",
+    "crates/jaic/src/sema/runtime_config.rs": "bdf5adab409e2483068b38b9f2266fed804147903daf0d5d6348aeed05723b2e",
+    "crates/jaic/src/sema/structs.rs": "70e5fbc11d50470f0b4146c2ea56862c7873d5f87e77dc35b151d994ba1ffbc1",
+    "crates/jaic/tests/cleanroom_runtime_config.rs": "d55e4bbd385c2792057c2db932a39a4832d34dfe9227f0397c5c684ecfdb4e5f",
+    "docs/compiler/runtime-configuration.md": "868fcb0b512bf97dc186a5b2f6776957a58b5dcc0dc289c79312193e42179a59",
+    "docs/specs/stdlib/compiler-questions.md": "8ab33ff5a739d69d5f4750d9fc239757640980d75a54c04a1d98837ab9d3ae3d",
+    "docs/status/runtime-config-startup.json": "419f602128288ea61b474d84de1b847fa246bacc8f7318966818528cc4e1b902"
+  },
+  "verification": [
+    {
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "jaic",
+        "--lib",
+        "--test",
+        "cleanroom_typed_program_config",
+        "--test",
+        "cleanroom_runtime_config",
+        "--test",
+        "cleanroom_modules",
+        "--test",
+        "cleanroom_interfaces",
+        "--test",
+        "cleanroom_runtime_contract",
+        "--test",
+        "cleanroom_nominal_comparisons",
+        "--test",
+        "cleanroom_insert_scope",
+        "--test",
+        "cleanroom_loaded_import_scope"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/public-constant-gl-b09/tmp",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/targets/post-beec-focus",
+        "CARGO_BUILD_JOBS": "1",
+        "RUSTC_WRAPPER": "",
+        "LLVM_SYS_231_PREFIX": "/opt/homebrew/opt/llvm",
+        "JAIC_STDLIB": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/stdlib"
+      },
+      "passed": 292,
+      "failed": 0,
+      "ignored": 0,
+      "suites": 12,
+      "failure_names": [],
+      "exit_code": 0,
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/public-constant-gl-b09/core.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/public-constant-gl-b09/fmt.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "-p",
+        "jaic",
+        "-p",
+        "jaic-cli",
+        "-p",
+        "jaic-llvm",
+        "-p",
+        "jailint",
+        "-p",
+        "jai-language-server",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/public-constant-gl-b09/clippy.log"
+    }
+  ],
+  "review": [
+    "Only exact new98dd hunks; retained621 already present, typedbf Module parameter field/driver fixed point byte-preserved.",
+    "Canonical builtin binding carries external provenance, not reflected type/value or structural array identity.",
+    "Cached entity/layout captures propagate to declarations; emitted-body usage separately tracked; compiletime-only scratch body assertions excluded.",
+    "Reachable dynamic/private and static/public consumers validated; actual stale captured size rejects even if dynamic getter also reachable.",
+    "No module-specific exceptions, alias semantics change, artificial defaults or guard removal."
+  ],
+  "limitations": [
+    "Arbitrary compiletime procedure-result provenance remains unsupported/conservatively rejected.",
+    "Captures/maps and linear deduplication add memory/work at entity and layout resolution; no performance benchmark claim.",
+    "Root reports Focus staged check/build exit0 with binary247e2ac6; this is separate historical root evidence, not final combined acceptance.",
+    "Watcher real Focus registration failure unresolved; no source fix or waiver invented.",
+    "Matching CLI/lint/LSP/fmt/native capture next; no new full400/Focus/platform green claim."
+  ]
+}
