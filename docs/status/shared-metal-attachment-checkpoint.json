@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "base": "11f4ddbaf6e47b476ed91e4103ba828860401e42",
+  "source_manifest": {
+    "stdlib/Metal/declarations.jai": "adc019230017684849caa9167fd499f1e4ddb24664c69f7012b214364ff3ab5b",
+    "tests/native-bindings/metal-render-pass-attachments.jai": "daa12a16cea193b73e87a87f930daa05bcb5772579e4389554693f365eced201",
+    "tests/native-bindings/metal_attachment_probe.m": "21f06df130e1e335be9a024508acaa26335f0c5f617080471d93debfe92d9c5f",
+    "tools/native_bindings/verify_metal_attachments.py": "d05b14bef9acb3eff858216008486d2cba1742ced94edfc58c6de7f82c45f4a6",
+    "docs/native/metal-render-pass-attachments.md": "db79b5eeb912d7d91293e5ed833a507d0d64a2391bf8c26dfb26132b77070b92",
+    "docs/status/bindings-deviations.md": "01bc68ad323f934338c5df7e83c911578ca187b29930c684ea75232b33e217c5",
+    "docs/specs/stdlib/modules/metal.md": "d13ecf9284bc23abd101a30cd40ce8f7a9c68fb193f20d7605543e9888ffaf33"
+  },
+  "producer_receipt": {
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-attachments/metal-attachments-k6_xfol2/report.json",
+    "sha256": "c4f356de06ae0620bfa323b3eb152206364ac278e232ac6ef6b7023f7ea19a62",
+    "passed": 22,
+    "failed": 0,
+    "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-attachments/bindings-inputs-a7rsd74z",
+    "inputs_unchanged": true
+  },
+  "own_source_link_receipt": {
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/post-60d-pointer/metal-source/metal-attachments-z3lxfre8/report.json",
+    "sha256": "865cf0e2c221765e4663aa44f2017c2892f2fa3ed573172e611c86d137f7ecb9",
+    "passed": 22,
+    "failed": 0,
+    "ignored": 0,
+    "actual_native_programs_executed": 0
+  },
+  "review": "Exactly one Color first using #as field. Canonical base API/body/storage unchanged; Depth/Stencil ordinary fields and nonpromotion retained. Real SDK mip1 readback/canary probe fails absent device or SDK errors, no fabricated pixel output.",
+  "runtime_pending": [
+    "Three sequential O0/O2/ASan+UBSan programs under coordinator native lease",
+    "Configured original UI-builder replay with coordinator-only dependencies"
+  ],
+  "native_windows_or_x64_pass_claimed": false
+}

@@ -6061,5 +6061,204 @@
     ],
     "native_processes_remaining": 0,
     "gui_executed": false
+  },
+  "ready_metal_attachment_checkpoint": {
+    "subject": "fix(bindings): expose reviewed Metal color attachment base",
+    "state": "SOURCE/LINK READY STABLE; native3pending fresh serialized grant; integration aloneGit/index",
+    "timestamp": "2026-10-16T10:50:28.609353+00:00",
+    "source_manifest": {
+      "stdlib/Metal/declarations.jai": "adc019230017684849caa9167fd499f1e4ddb24664c69f7012b214364ff3ab5b",
+      "tests/native-bindings/metal-render-pass-attachments.jai": "daa12a16cea193b73e87a87f930daa05bcb5772579e4389554693f365eced201",
+      "tests/native-bindings/metal_attachment_probe.m": "21f06df130e1e335be9a024508acaa26335f0c5f617080471d93debfe92d9c5f",
+      "tools/native_bindings/verify_metal_attachments.py": "d05b14bef9acb3eff858216008486d2cba1742ced94edfc58c6de7f82c45f4a6",
+      "docs/native/metal-render-pass-attachments.md": "db79b5eeb912d7d91293e5ed833a507d0d64a2391bf8c26dfb26132b77070b92",
+      "docs/status/bindings-deviations.md": "01bc68ad323f934338c5df7e83c911578ca187b29930c684ea75232b33e217c5"
+    },
+    "reviewed_contract": {
+      "path": "docs/specs/stdlib/modules/metal.md",
+      "sha256": "d13ecf9284bc23abd101a30cd40ce8f7a9c68fb193f20d7605543e9888ffaf33"
+    },
+    "production_delta": "Exactly one added first using #as field on Color; ordinary Depth/Stencil fields already exact and unchanged",
+    "source_receipt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-attachments/metal-attachments-k6_xfol2/report.json",
+      "sha256": "c4f356de06ae0620bfa323b3eb152206364ac278e232ac6ef6b7023f7ea19a62",
+      "passed": 22,
+      "failed": 0,
+      "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-attachments/bindings-inputs-a7rsd74z",
+      "inputs_unchanged": true
+    },
+    "red_receipt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metal-attachments/red.json",
+      "sha256": "df3419ed6ef90c28076a56105436387d8e0bcc96690e1ba15207779047d38d4a",
+      "failure": "Color lacks fixed-offset reviewed first field"
+    },
+    "compiler": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/beec-appkit-metal/compiler-target/debug/jaic",
+      "sha256": "1a9813969722e6f08d0c8082620c3057b25b1959e65bd410b3e607b979e5fefb",
+      "source_snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/beec-appkit-metal/bindings-inputs-epo_fm4a"
+    },
+    "per_api": [
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.mtlrenderpassattachmentdescriptor",
+        "implementation": "exact reviewed using #as first field",
+        "verification": "MacARM64/x64 offset/size/type/promotion sourcechecks; native pointeridentity execution pending"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.texture",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setTexture",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.level",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setLevel",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.slice",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setSlice",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.depthPlane",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setDepthPlane",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.resolveTexture",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setResolveTexture",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.resolveLevel",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setResolveLevel",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.resolveSlice",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setResolveSlice",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.resolveDepthPlane",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setResolveDepthPlane",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.loadAction",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setLoadAction",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.storeAction",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setStoreAction",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.storeActionOptions",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassColorAttachmentDescriptor.setStoreActionOptions",
+        "implementation": "existing canonical base accessor promoted generally, original signatures unchanged",
+        "verification": "sourcechecks PASS; native route in focused fixture awaiting lease"
+      },
+      {
+        "api": "MTLRenderPassDepthAttachmentDescriptor.mtlrenderpassattachmentdescriptor",
+        "implementation": "exact ordinary first field already present; no using/#as invented",
+        "verification": "MacARM64/x64 fixed-offset and explicitaccess positives, directlookup/implicitconversion negativesPASS"
+      },
+      {
+        "api": "MTLRenderPassStencilAttachmentDescriptor.mtlrenderpassattachmentdescriptor",
+        "implementation": "exact ordinary first field already present; no using/#as invented",
+        "verification": "MacARM64/x64 fixed-offset and explicitaccess positives, directlookup/implicitconversion negativesPASS"
+      }
+    ],
+    "native_evidence": {
+      "executed": false,
+      "programs_pending": [
+        "O0",
+        "O2",
+        "ASan+UBSan"
+      ],
+      "gate": "Fresh root/integration serialized lease requested; Json finished but releasedslotrootfullworkspacepriority",
+      "implemented_probe": "real SDK offscreen mip1 clear/store/readback, all64pixelbytes and buffer canaries, pointer/storage identity and SDKfailures"
+    },
+    "platforms": {
+      "macos_arm64": "source/strictlint/SDKcompile/hostlinksO0O2sanitizerPASS; nativeexecutionPENDING",
+      "macos_x64": "source/strictlint/SDKcompilePASS; x64nativeNOTRUN",
+      "other": "No otherplatformnativeclaim"
+    },
+    "remaining_required": [
+      "Root grants native3slot or integration executes verifier --native",
+      "Root configuredUI-builder replay afteradoption with its permitted excludeddependencies; bindings willnotread/stageexcludedbodies"
+    ],
+    "integration_requests": [
+      "Stage sixlistedownedpaths plus own audit only",
+      "Coordinate refreshedmetal.md spec hash with reviewer/root",
+      "Update README native docs index/globalcoverage centrally",
+      "Do not count source/link as actualSDKruntimePASS"
+    ],
+    "no_compiler_changes": true,
+    "no_gui_execution": true,
+    "official_sdk": {
+      "root": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+      "header_hashes": {
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLRenderPass.h": "fd017d86feff941db68c2067f26656e9b366ec598800d66cfeb765a9b1b2085c",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLTexture.h": "a9faf566a48f85aeec7ccea55086436729a3a7f74e4fd61e932636e89a309a8b",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLCommandBuffer.h": "d84dda866f07ffc37ce68e3c635177373cdefa419fc1f64c766442ed81966895",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLDevice.h": "bb4222866870a4a703cd1581fe55cf4fee4769fbee5efc795af51fbff95f2989"
+      }
+    }
   }
 }
