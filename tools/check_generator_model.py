@@ -86,14 +86,14 @@ FIXTURES = [
 evidence = []
 
 
-def run(command, expected=None, expected_exit=0, diagnostic=None):
+def run(command, expected=None, expected_exit=0, diagnostic=None, timeout=60):
     result = subprocess.run(
         [str(x) for x in command],
         cwd=ROOT,
         env=ENV,
         capture_output=True,
         text=True,
-        timeout=60,
+        timeout=timeout,
     )
     evidence.append(
         dict(
@@ -266,7 +266,10 @@ def main():
                 "-I",
                 TARGET,
                 *OWNED,
-            ]
+            ],
+            # This is 43 complete roots in one process, rather than one fixture.
+            # Combined native ARM64 lint measured 69.5s; retain every root/check.
+            timeout=180,
         )
         for os_name in ["windows", "linux"]:
             run(
