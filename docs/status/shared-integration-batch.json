@@ -3,7 +3,7 @@
   "worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
   "branch": "codex/stdlib-shared",
   "source_snapshot_before_report": "1daa7bb8842e966a4483508381e476af48864ca8",
-  "state": "Known critical cohort committed; final immutable candidate capture ready; URI withheld pending correction",
+  "state": "Paired known critical source cohort56903fd1 committed, fresh final capture pending;603 focused gates green, full acceptance unclaimed",
   "ready_committed": {
     "rpmalloc_metadata": "bdd1ff4e; ABI8 native23 profiles,92 libraries built from exact source",
     "runtime_hooks": "f3b4b2f4;27/0",
@@ -23,18 +23,22 @@
     "minimal_verified": "5e407a4c;12 exact hashes;96/0 producer fresh fullsourceguard after f8, old80/6+92/4 preserved",
     "appkit_cocoa": "aec0145f;20 exact source hashes;85 producer nonUI + separatelyqualified leasedUI1native execution",
     "callable_metadata": "ba0d992c;42 owncore+16CLI+59LSP and general constant-wrapper regression fix",
-    "matrix_operators": "5c9ed415;14 reviewed forms,31 own full checks, original2oracle byte fixtures local"
+    "matrix_operators": "5c9ed415;14 reviewed forms,31 own full checks, original2oracle byte fixtures local",
+    "callable_constants": "60321c1d;43core/5unchanged actualinterpreter-native sentinel checks; full603gates pass",
+    "public_operator_filters": "56903fd1; b21twofunctions +6literal-onlyfacades,60core/44actualpaired checks; no duplicates"
   },
   "ready_pending_dependency": {},
   "active": {
-    "windows_uri": "HOLD: root reviewer stored-document key mismatch;886/fc5 exports NOT adopted, followup required; native Windows pending",
-    "original400_focus": "Root starts after final source/compiler/native pin; no new unrelated audit"
+    "final_pin": "Current committed569cohort+latest reviewed spec docs; freshcompiler finalcapture next",
+    "basic_filesystem_predicate": "Owner coordination: source usesOS_IS_UNIX vs reviewed directOS availability; valid independent RED/normal target proof required; excluded localRuntime body neverread",
+    "lsp_followup": "839callback and correctedURI reviewed/prereq603all18pass; outsidecurrentcutoff, ready for independent followup; Windowsnativeunverified",
+    "original400_focus": "Root next exactpin; source015357/43 historical only, not projected current"
   },
   "blocked_or_excluded": {
     "alias_refresh": "586be99b and c018dd52 not applied; latest oracle explicitly rejects premise",
     "bits76": "no stable manifest supplied",
     "PDB_CIE": "original all-zero fixture issue remains unresolved; not waived",
-    "uri886_fc5": "Unadopted; source-confirmed alias request key inconsistency; owner corrective patch pending"
+    "uri886_fc5": "StandaloneoldURI patches unadopted; corrected6162/5a source-reviewed followup nowavailable, nativeWindowsunverified"
   },
   "verification_policy": {
     "baseline": "one native ARM64 baseline/catalogue once known batch ready; no optional profile expansion",
@@ -135,11 +139,11 @@
     "linux-build-final.log missing formatter setup, preserved"
   ],
   "available_candidate": {
-    "snapshot": "8fa08957d3cd783eb8490424af00cc8a4fa2377b",
-    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-8fa08957",
-    "compiler_sha256": "d2184efcbd9abede66e7f7dc7e3d84da8d38b1d2b9e8e323d0f5acd47772dd44",
-    "receipt": "docs/status/shared-candidate-8fa08957.json",
-    "classification": "immutable current committed ready bits; known active batch not yet combined; NOT full baseline/corpus green"
+    "snapshot": "60321c1de653dfb416f64ed000d38b657e7bbc9a",
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d",
+    "compiler_sha256": "da8e478dd8ccd6f5692788fd25155f0a99f391123b82a8b7f9056b352e5f2bda",
+    "receipt": "docs/status/shared-candidate-60321c1d.json",
+    "classification": "All focused combined gates pass on603;569paired filter tests pass separately, finalcombinedpinpending"
   },
   "remaining_acceptance": [
     "Full relevant workspace/catalogue/unused-code matrix after known batch ready",
@@ -148,10 +152,16 @@
     "Windows/Linux native CI later; no unsupported platform green",
     "Original all-zero PDB/CIE issue not waived"
   ],
-  "source_head_before_report": "5c9ed415da02ce19374396635bb317b75718b697",
+  "source_head_before_report": "56903fd1a0b909f6c205020f9d5ee6ef26bfac22",
   "historical_minimal": {
     "original": "80/6;two invalid path-positive premises",
     "corrected_pre_projection": "92/4;genuine child options failure",
     "files": "docs/status/shared-minimal-partial-checkpoint.json retained unchanged"
-  }
+  },
+  "known_not_complete": [
+    "Full reviewed signed128 operator family beyond current publicfilter +/- reexports requires owner inventory; latest oracle preserved, no complete Basic claim",
+    "Six model constructor rows partial; tools52helpers scoped, no allstdlibcompletion claim",
+    "Catalogue legacy APIs/nativefixture construction/180sJSONinterp timeout remain notgreen; rawreceipts preserved",
+    "OriginalallzeroPDB/CIE notwaived; rootoriginal400/Focus/nativeWindowsLinux pending"
+  ]
 }

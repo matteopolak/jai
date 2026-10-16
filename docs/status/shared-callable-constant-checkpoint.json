@@ -12,7 +12,13 @@
     "ignored": 0,
     "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/callable-sentinel-final.log"
   },
-  "native_verification": "pending after serialized catalogue",
+  "native_verification": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0,
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/callable-sentinel-native/results.json",
+    "scope": "UNCHANGED original independent proc-sentinel-constant fixture, real POSIX dispositions, interpreter/nativeMacARM64O0/O2"
+  },
   "test_construction": [
     "Initial proposed explicit-cast constant-alias renamed/default header assertion was not established by reviewed contracts; failed receipt retained, excluded from supported regression claim. Canonical alias original ProcId/name behavior unchanged. Question recorded."
   ],
@@ -21,5 +27,6 @@
     "callable-sentinel-green.log",
     "callable-sentinel-green-r2.log"
   ],
-  "original400": "Root old015 replay remains independently useful; source delta requires next pinned compiler for affected failures"
+  "original400": "Root old015 replay remains independently useful; source delta requires next pinned compiler for affected failures",
+  "clippy_workspace_lib_bins_warnings_denied": true
 }

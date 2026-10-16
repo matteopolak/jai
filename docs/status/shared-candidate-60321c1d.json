@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "snapshot": "60321c1de653dfb416f64ed000d38b657e7bbc9a",
+  "ref": "codex/stdlib-shared",
+  "shared_worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d",
+  "stdlib": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/stdlib",
+  "stdlib_tree": "6b79ae82568702c3361ea46ed17af3f54972eb00",
+  "compiler_source_tree": "7bdb0f1c9ac69052681f5c593e1992afd00cf358",
+  "source_files": 4756,
+  "source_identity_sha256": "c8751d802e02aa073f1b409f1e252636fbe3fd34ad81309a28e0e88d7f01e917",
+  "native_asset_identity_sha256": "c0444e7a0da0f41e81fc868dc6d9da0458a4a34b8e65060ed512bc1f8bb029c3",
+  "native_artifacts": 166,
+  "environment": {
+    "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/stdlib",
+    "JAIC_NATIVE_LIBS": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/native-inputs/rpmalloc:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/native-inputs/cache-0:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/native-inputs/cache-1:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/native-inputs/cache-2:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/native-inputs/cache-3",
+    "JAIC_TEST_FONT_PATH": "/System/Library/Fonts/Supplemental/Arial.ttf"
+  },
+  "source_overlay": false,
+  "native_sources": "Seven normal source-built production helpers/packages. ABI8 SDK/callback assets freshly built from exact bdd1ff4e; all 68 pinned native/build inputs hash-equal to candidate.23 Mac ARM64 profiles, full build_flags queries verified;92 library files installed. ALL ABI7 allocator files omitted across native layers.",
+  "verification": "Actual source-built compiler/lint/LSP and unchanged formatter, all source/native hash guards; immutable focused production checks pending",
+  "release_permitted": false,
+  "original_corpus_and_focus_owner": "coordinator",
+  "limitations": [
+    "Only exact committed known-batch handoffs included; no working-tree implementation overlay",
+    "Full current baseline/catalogue deferred by latest combine-known-fixes-before-broad directive",
+    "Android unknown OS remains blocked; other native platforms unverified",
+    "Remaining metadata OS/pool/native constructor/target ABI limits and distribution resource/sysroot closure remain open"
+  ],
+  "source_changes_since_r2": [
+    "crates/jaic/src/sema/decls.rs",
+    "crates/jaic/tests/cleanroom_callable_provenance.rs",
+    "docs/specs/stdlib/compiler-questions.md",
+    "docs/status/integration-deviations.md",
+    "tools/check_generator_model.py",
+    "tools/stdlib_test_catalog.py",
+    "tools/test_stdlib_runtime.py"
+  ],
+  "native_reuse": "Every stdlib byte and every native builder source unchanged from r2; all166nativeassets copied with SHA guards, including23ABI8profiles92libraries. No redundant native rebuild or ABI7.",
+  "binaries": {
+    "jaic": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/bin/jaic",
+      "sha256": "da8e478dd8ccd6f5692788fd25155f0a99f391123b82a8b7f9056b352e5f2bda"
+    },
+    "jailint": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/bin/jailint",
+      "sha256": "318e0a9a66d114202ffa3726ca482f046e54e76b5ae154582488ee7c366475a9"
+    },
+    "jailsp": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/bin/jailsp",
+      "sha256": "09a5a8f0b2b0f8e888eb33c32a19daf2f72c9cbe2f64caf14ab4b7ab6119868f"
+    },
+    "jaifmt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/bin/jaifmt",
+      "sha256": "1174a3eb362cf05a8c2ad3b598510db38f09f34b4de4dc706b9adc1bf16294d7"
+    }
+  },
+  "build_command": [
+    "cargo",
+    "build",
+    "--locked",
+    "--offline",
+    "--manifest-path",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/Cargo.toml",
+    "-p",
+    "jaic-cli",
+    "-p",
+    "jailint",
+    "-p",
+    "jai-language-server"
+  ],
+  "formatter_build_command": [
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/bin/jaic",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/jaifmt/main.jai",
+    "-exe",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60321c1d/bin/jaifmt"
+  ],
+  "compiler_version": "jaic 0.17.0",
+  "rust_toolchain": "rustc 1.100.0-nightly (17fd5b8a3 2026-08-28)\nbinary: rustc\ncommit-hash: 17fd5b8a37b6667b6cc137f3cc35f09759768a3b\ncommit-date: 2026-08-28\nhost: aarch64-apple-darwin\nrelease: 1.100.0-nightly\nLLVM version: 23.1.0\n",
+  "llvm_version": "23.1.2",
+  "verification_state": "Focused production gates passed; full workspace/original400/Focus not claimed",
+  "report": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-60321c1d/report.json",
+  "counts": {
+    "workspace_libraries": {
+      "passed": 257,
+      "failed": 0,
+      "ignored": 0
+    },
+    "compiler_core": {
+      "passed": 43,
+      "failed": 0,
+      "ignored": 0
+    },
+    "compiler_cli": {
+      "passed": 16,
+      "failed": 0,
+      "ignored": 0
+    },
+    "lsp_regressions": {
+      "passed": 35,
+      "failed": 0,
+      "ignored": 0
+    },
+    "tools": {
+      "passed": 161,
+      "failed": 0,
+      "ignored": 0
+    },
+    "model": {
+      "passed": 284,
+      "failed": 0,
+      "ignored": 0
+    },
+    "minimal": {
+      "passed": 96,
+      "failed": 0,
+      "ignored": 0
+    },
+    "appkit": {
+      "passed": 85,
+      "failed": 0,
+      "ignored": 0
+    },
+    "lsp_native_requests": {
+      "passed": 38,
+      "failed": 0,
+      "ignored": 0
+    },
+    "relocated_native_package": {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0
+    },
+    "allocator": {
+      "passed": 13,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  "proof_report": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-60321c1d/report.json",
+  "scope": "Safe workspace library tests only, not entire workspace integration/corpus. Model count281effect commands+3real Chelper builds. Parent test counts only."
+}
