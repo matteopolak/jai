@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "status": "READY bounded reviewed comparison/zero-test repair",
+  "owner": "numerics T7",
+  "shared_files": {
+    "stdlib/Basic/module.jai": "2b654bb73e13e8d533c19c5ad8f34a9f8cdf56ba85bcccb27353be9dd913e3c2",
+    "stdlib/internal/basic/integer128.jai": "0bf3e266d00aaf98ca9cddf616565ed0d67f4175303c8c4e87bfcb2e3feaf901",
+    "tests/portable-stdlib/apollo-comparisons/negative-except-lt.jai": "1b62bbef6ba0d6ad99a3f692215a9a0b939ce6ce9f78e39a287ab5c32130f2e0",
+    "tests/portable-stdlib/apollo-comparisons/negative-no-using.jai": "52fde20bdab5e0df057a2ca269dd1477af530ad6e66d4e5f9142100722df3702",
+    "tests/portable-stdlib/apollo-comparisons/negative-only-equality.jai": "510e462cebea4c3b74bd7b739cc96d9e629593747fd55a54d5d8ad936ff3a0e6",
+    "tests/portable-stdlib/apollo-comparisons/plain-distinct-oracle-request.jai": "0eaa2977c9f82f154aa752b4fef958dae4968127e07fdcde33dc478ed68465e1",
+    "tests/portable-stdlib/apollo-comparisons/public.jai": "91c321b710cc3fb62853f9157440104e4a0f8a576d6b3703938c7640ff834491",
+    "tests/portable-stdlib/apollo-comparisons/word-boundary-oracle.jai": "189a5eb8f244d0c1da6b0b2baa8945c19183cf344d2c7583bb4d9198a4e3e027",
+    "tools/generate_apollo_comparison_oracle.py": "ae931193b74269fb5a0808544bfaaec6a56e7812c6fd8fff1a3c9b907aec0f63",
+    "docs/stdlib/s128-comparisons.md": "e06856b607bccc176eb9b9ced8529f08bbb903a8c53bc9648db48e2b6bc37c8d",
+    "docs/specs/stdlib/s128-comparison-questions.md": "de0267434c0acd4b0fb3c5285c601ec54d5c34025483ea3161683bfd94a69f0a"
+  },
+  "production_files": [
+    "stdlib/Basic/module.jai",
+    "stdlib/internal/basic/integer128.jai"
+  ],
+  "unchanged_internal_basic_module": "82d3a619984e5317ba1f5b60cff2d33c6bea7bf204f5ecc318b0e5db47e22a7d",
+  "compiler_patch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/apollo-comparisons/apollo-nominal-unary-309.patch",
+  "compiler_patch_sha256": "d19f96a95a59450b786ce141cb3ccca6c906b25fd85afbe26a5531f3286aec3d",
+  "source_guard": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/apollo-comparisons/final-source-copy-guard.json",
+  "source_guard_sha256": "9aad051a3584042dcc71129482ff051f39b7048d27a884ca9b717f38c11c2a33",
+  "approved_base": "3090183092a9652a6d131a666bba6f43d9e562f6",
+  "isolated_compiler_files": [
+    "crates/jaic/src/sema/calls.rs",
+    "crates/jaic/src/sema/using.rs",
+    "crates/jaic/tests/cleanroom_nominal_comparisons.rs"
+  ],
+  "compiler_regressions": 16,
+  "compiler_regression_base": "safe015+b21 isolated producer; actual shared checks use guarded309 child",
+  "checks": {
+    "source_and_interpreter": 4,
+    "expected_visibility_rejections": 3,
+    "strictlint_positive_contexts": 1,
+    "actual_jaifmt_check": 1,
+    "generator_and_ruff": 3,
+    "native_builds_and_actual_runs": 8,
+    "native_platform": "Mac ARM64",
+    "native_slot": "RELEASED"
+  },
+  "evidence": {
+    "final-checks.json": "ba0081f7ca94ae8e8b33c2aa3bf4f0d178b377b4fe3a58234dbdb7c7767ad2b6",
+    "core-final-tests.txt": "6ca8240cdb58b43527a82f397ce838e084b815349754ed1b4beef31292fabeef",
+    "clippy-final.txt": "dd04b9dd9750524614c913fdfc6359510cddb870ea3ac48fe7f5cd18eacd2825",
+    "rustfmt-final.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "compiler-final-build.txt": "e2eb2d96776a48bb539fa22a7e162d31befb2d51971a279a92a28d04777f34b0",
+    "s128-comparison-production.patch": "6a20820e8e3de4a374136099a8b271bd17f266e8519e5a7385669387f4d08e29",
+    "core-309-final-tests.txt": "440524a6e111bc027950a69b34fe43e40f809b8c68324addc53364d330dba881"
+  },
+  "red_evidence": {
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/focus-version-diagnostic/logical-not-filter-red.txt": "243d26b857b3c2b250546b5c5a8522a17a2055bfb61ced8579d9763e0d2d0e43",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/focus-version-diagnostic/nominal-comparisons.txt": "4126a38d27fe5496aa43fe8f3c6b9effb78d3e82bf391707bfb2cd8d3c1f752e",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/focus-version-diagnostic/apollo-comparisons-red.txt": "c3815a89ac145fefa508bb3adcd006604be9ef2f9ad5e9baa4c111ae0c88c5a1",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/apollo-comparisons/core-tests.txt": "4b6293442f67fb0eb167af3da367d54a68afd5fc3f74890300f758eef1618ed9",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/apollo-comparisons/public-after.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "readme_append": "- [S128 comparisons and inherited Apollo operators](stdlib/s128-comparisons.md): signed word-boundary semantics, generic unary repair, exact proof and limits; [questions](specs/stdlib/s128-comparison-questions.md).",
+  "limitations": [
+    "Full shared snapshot adoption and broad CI/corpus are integration/root owned.",
+    "Plain #type Base no-isa conversion remains an independent source-only oracle question; no guessed negative enforced.",
+    "Reviewed unary minus/shifts/signed division/multiply outside this exclusive comparison/! grant are not supplied.",
+    "Original Focus remains version blocked; frozen diagnostic patch/source preserved; no original app/GUI execution or unchanged Focus pass.",
+    "No blocked586, peer compiler/scaffolding or Extensions changes."
+  ],
+  "compiler_regressions_guarded_309": 8,
+  "isolated_commit": "c6f625351dda17ede84cf898d5df8ef5e7c95380",
+  "isolated_commit_scope": "two granted compiler functions, independent regression test, new explanatory doc; prior unrelated WIP excluded",
+  "supersedes": {
+    "export_manifest": "878b0f71f8eb0ac50bf79b0a0ffb07ec4c5c9439f79aabe81e7f132b05f7d035",
+    "reason": "removed unintended formatter-only changes outside granted functions; rebuilt and repeated actual20checks+8guarded309tests",
+    "preserved_receipts_prefix": "superseded-format-"
+  },
+  "compiler_tool_hashes": {
+    "jaic": "18dd36ddede183038a9665c2503ad33ee9cfc1d6e4d098768adbb5c98c65a96d",
+    "jailint": "a13c8cc5776d47f55f1342ef03b2e63e30fb651b7f5baa83a60aa1e707b35ef1"
+  },
+  "outside_function_byte_guard": "BYTE IDENTICAL to approved309"
+}

@@ -775,3 +775,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 [NSWindow backing-scale alias](native/appkit-window-backing-scale.md) retains the canonical getter signature and procedure identity; real non-window SDK proof is distinct from pending GUI acceptance.
 
 [File_Watcher platform backends](file-watcher-platforms.md) implement inotify and overlapped Windows ownership; actual platform CI is wired, source/decoder proof remains distinct from native notification acceptance.
+
+- [S128 comparisons and inherited Apollo operators](specs/stdlib/README.md): signed word-boundary semantics, generic unary repair, exact proof and limits; [questions](specs/stdlib/s128-comparison-questions.md).

@@ -4156,7 +4156,10 @@ impl Compiler {
         operand: &Operand,
         span: Span,
     ) -> Result<Option<Operand>> {
-        if !matches!(self.types.kind(operand.ty()), TypeKind::Struct(_)) {
+        if !matches!(
+            self.types.kind(self.types.repr_struct(operand.ty())),
+            TypeKind::Struct(_)
+        ) {
             return Ok(None);
         }
         let text = match op {

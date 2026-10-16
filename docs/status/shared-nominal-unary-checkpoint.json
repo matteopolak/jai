@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "isolated_commit": "c6f625351dda17ede84cf898d5df8ef5e7c95380",
+  "transport": "Exact named new c6 commit present in sanitized Git; extracted only two granted production-function diffs plus independent8tests; foreignT7patch not accessed",
+  "before": {
+    "passed": 6,
+    "failed": 2,
+    "ignored": 0,
+    "failure_names": [
+      "reviewed_logical_not_uses_a_public_symbol_filter",
+      "visible_base_logical_not_dispatches_for_nested_nominal_records"
+    ]
+  },
+  "after": {
+    "passed": 91,
+    "failed": 0,
+    "ignored": 0,
+    "suites": [
+      "modules52",
+      "nominal8",
+      "filters6",
+      "visibility2",
+      "pointer15",
+      "readiness8"
+    ]
+  },
+  "quality": "Rustfmt andClippy-DwarningsPASS",
+  "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/post309-known/nominal-combined.log",
+  "remaining": [
+    "Full shared snapshot adoption and broad CI/corpus are integration/root owned.",
+    "Plain #type Base no-isa conversion remains an independent source-only oracle question; no guessed negative enforced.",
+    "Reviewed unary minus/shifts/signed division/multiply outside this exclusive comparison/! grant are not supplied.",
+    "Original Focus remains version blocked; frozen diagnostic patch/source preserved; no original app/GUI execution or unchanged Focus pass.",
+    "No blocked586, peer compiler/scaffolding or Extensions changes."
+  ],
+  "native_combined": false
+}
