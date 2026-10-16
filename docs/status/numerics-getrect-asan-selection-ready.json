@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "accepted_source_base": "beb066d49b52c5d0df4e9f6e942d965718051015",
+  "source_root": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/source",
+  "git_ownership": "integration sole Git/index; no own/shared Git writes this task",
+  "reported_jobs": {
+    "macos": "117201496945",
+    "linux": "117201497199"
+  },
+  "root_cause": "ASan modules discovery already uses common catalogue but four GetRect fixtures lacked canonical target contract annotations",
+  "owned_regions": [
+    "tools/stdlib_test_catalog.py imports and validated_entries numerics annotation hook",
+    "tools/stdlib_test_catalog.py::unavailable_reason numerics contract hook",
+    "tests/numerics/target_contracts.py::MODULE_CASES inventory (existing decisions unchanged)",
+    "new tools/numerics_case_capabilities.py and regression/docs"
+  ],
+  "patch": {
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/getrect-asan-selection-beb066d4.patch",
+    "sha256": "1711ec259494df5c5f6f3497571884b589dd85403e08bc5aa96bd8a6f85f2eed",
+    "shared_apply_check": "PASS excluding append-only docs/README.md; no shared writes"
+  },
+  "files": [
+    {
+      "path": "tests/numerics/target_contracts.py",
+      "before_sha256": "7b2d1333862b9532363e3070c685d425066cd0a95244809f2e6b440260cc7e32",
+      "after_sha256": "f7405ef709d7b645e8a7784e0bcdeb9b84f31fc9ed08abd4969a6aa09fc50588"
+    },
+    {
+      "path": "tools/numerics_case_capabilities.py",
+      "before_sha256": null,
+      "after_sha256": "97cc89e5dbb820e5724461d247bc73faf7cb79ec7caa88fd9bf0d4e37371e022"
+    },
+    {
+      "path": "tools/test_numerics_case_capabilities.py",
+      "before_sha256": null,
+      "after_sha256": "5acb969a2f0b5bef313e8bc6c3ddeff792b13b914813d704bd8cc516da2276f8"
+    },
+    {
+      "path": "tools/stdlib_test_catalog.py",
+      "before_sha256": "e541dfeee6ce025e5370bca4fd83b338da01c46db9489adefa82161246e3161f",
+      "after_sha256": "571178e046d0be1f3d4c17096a566aff2f4b975e58ca8956513f51f0ffd5b77b"
+    },
+    {
+      "path": "docs/stdlib/getrect-asan-selection.md",
+      "before_sha256": null,
+      "after_sha256": "041c366bc3c92a53a2144ea66a574d48ba4708a5513e600409821a1522eca38f"
+    },
+    {
+      "path": "docs/README.md",
+      "before_sha256": "f6814860cd9375043774055352467c2e7e859f07cd14329aadb5855243d514e1",
+      "after_sha256": "6eaa8dcc41147913a147251e42ffb7f321e4a59daf229de6d82ab29c800dfa6e"
+    }
+  ],
+  "verification": {
+    "new_policy_tests": 6,
+    "existing_numerics_policy_tests": 8,
+    "adjacent_focused_tests": 34,
+    "distinct_passing_python_tests": 48,
+    "actual_source_checks": 16,
+    "source_positive": 8,
+    "required_compile_time_target_rejections": 8,
+    "ruff_check": "PASS four touched Python files",
+    "ruff_format": "PASS three owned inventory/new helper/test files",
+    "catalogue_entries_preserved": 444,
+    "metadata_changed_cases": [
+      {
+        "id": "GetRect/tests/clipboard_unavailable",
+        "numerics_target_source": "stdlib/GetRect/tests/clipboard_unavailable.jai"
+      },
+      {
+        "id": "GetRect/tests/cursors_unavailable",
+        "numerics_target_source": "stdlib/GetRect/tests/cursors_unavailable.jai"
+      },
+      {
+        "id": "GetRect/tests/native_clipboard",
+        "numerics_target_source": "stdlib/GetRect/tests/native_clipboard.jai"
+      },
+      {
+        "id": "GetRect/tests/native_cursors",
+        "numerics_target_source": "stdlib/GetRect/tests/native_cursors.jai"
+      }
+    ],
+    "actual_native_or_sanitizer_programs": 0,
+    "native_lease": "not needed/not claimed",
+    "compiler_rebuild": "none; pinned previously source-built ac174e80 CLI SHA in source receipt"
+  },
+  "qualification": {
+    "mocked_asan_dispatch": "actual sweep.main dispatch path exercised O0/O2; selection/accounting only, never native execution evidence",
+    "provider_failures": "clang and developer_tools_debug on supported cases remain failed/status1, not unavailable",
+    "malformed_configuration": "unknown/missing native target, unknown mode and unreviewed marker raise ValueError",
+    "inapplicable_fixtures": "existing platform-unavailable outcome, not passing count",
+    "fixture_assertions": "all original Jai bodies/native platform guards unchanged; exact hashes preserved",
+    "production_and_workflows": "no Jai/compiler/native provider/sanitizer runner/workflow changes"
+  },
+  "retained_reds": [
+    {
+      "receipt": "policy-red.txt",
+      "classification": "initial missing metadata reproduction plus incorrect unrelated test ID setup error"
+    },
+    {
+      "receipt": "policy-red-corrected-fixture-name.txt",
+      "classification": "45 genuine failed selection/configuration assertions before repair"
+    },
+    {
+      "receipt": "source-target-guards.json",
+      "classification": "misspelled JAI_STDLIB harness variable; corrected JAIC_STDLIB in final receipt, private import restrictions preserved"
+    },
+    {
+      "receipt": "adjacent-regressions.txt",
+      "classification": "42-test broader check: 41 pass, one unrelated preexisting Windows simulation versus actual Mac host requirement setup failure; no peer edit/waiver"
+    }
+  ],
+  "receipts": [
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/policy-red.txt",
+      "sha256": "5990cfbc651b855a667fbc187e7d4947231b014697a75480e24272e475f404a6"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/policy-red-corrected-fixture-name.txt",
+      "sha256": "8853047d15f3b676d7d0755edcf5ad54c18b5179d978021c1f18a7d97a9bf339"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/policy-green.txt",
+      "sha256": "6362cefa1a3073267d1ebec97f9842ae24bde0516d99ae4c7d777648fe918091"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/policy-final.txt",
+      "sha256": "93742021157360bce8a30c1cabaa0660840e05da9b0f4095402be1a5cc6087ed"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/numerics-policy-final.txt",
+      "sha256": "b15cf5d3310f5ea3108aebaba532ca7d0e632394eb562d85516b4d6c6757c666"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/adjacent-regressions.txt",
+      "sha256": "ad6d3583f3c207bb113cd281f8756c38b6d22751d22eb1d46aa962f873bdea19"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/adjacent-focused-final.txt",
+      "sha256": "2c1522deba5ff8c3d96732b26c58f791f333ef8b8283f5cad285388098a3a12f"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/source-target-guards.json",
+      "sha256": "5321c881de890153569181b21e929a9a3911f31dd68657097d1c7c74b17f484b"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/source-target-guards-final.json",
+      "sha256": "430e5d288dfb373de9805a76c0551d5e18562979e8a8e7a31fc262e3ab9d2624"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/catalogue-and-source-preservation.json",
+      "sha256": "20c4d5b4e3c58ac0cc2a1110c406851fa2da5f143f2ca5498546495363ffdecc"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/ruff-check.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/numerics/getrect-asan-selector-beb066d4/capture/ruff-format.txt",
+      "sha256": "eee76f865de5a9f2456950f710ae5d5f9b5bd0ea02aa54f614c5eed6642a0bfd"
+    }
+  ],
+  "integration_actions": [
+    "Root transport exact new patch and this ready manifest from own T7 to approved producer-handoffs.",
+    "Integration alone applies/stages Git, merges docs README append and commits normal scoped cohort.",
+    "Rerun ASan O0/O2 Mac/Linux jobs with real clang and developer_tools_debug providers; provider setup remains separate obligation.",
+    "Preserve supported native positives and applicable unavailable-provider runtime checks; no source guard relaxation.",
+    "No moving HEAD/full corpus/compiler rebuild or redundant native evidence required for this selection-only producer change."
+  ]
+}
