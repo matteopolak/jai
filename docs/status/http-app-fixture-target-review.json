@@ -1,0 +1,79 @@
+{
+  "owner": "Linux Io/Http producer",
+  "phase": "fixture lint correction verified; foundation metadata proposal and root selected-mode evidence pending",
+  "public_contract": "App/client/server surface OS!=WASM; portable codec onWASM",
+  "fixtures": {
+    "extensions/http-client-overload-lint-repro": {
+      "intent": "native runnable positive plus lint regression, not compile-only or generic negative",
+      "change": "unused Basic import removed only",
+      "wasm": "explicit unavailable capability needed"
+    },
+    "extensions/http-dependency-consumer": {
+      "intent": "native runnable App/Client positive;all original header/route/cleanup assertions unchanged",
+      "change": "none",
+      "wasm": "already native-only in currentfoundation metadata;CI selection still needs identity"
+    }
+  },
+  "source_verification": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/http-app-target-review-_pdpduno/final-source-receipt.json",
+    "head": "7e549d17811a4be3d28ed65c61efa017c6c0c069",
+    "compiler_sha256": "88419d21611aac3a143f4c7eed730d7d71f0a7593bae40c5721d863a8c1165ca",
+    "checks_passed": 10,
+    "checks_failed": 0,
+    "native_positive_source_checks": 6,
+    "wasm_app_boundary_negative_controls": 2,
+    "required_wasm_codec_positive_source_checks": 1,
+    "strict_lint_checks": 1,
+    "lint_complete_contexts": 2,
+    "lint_incomplete": [],
+    "lint_unvisited": [],
+    "source_hashes": 1009,
+    "source_changes": [],
+    "application_runtime_executions": 0
+  },
+  "metadata_proposal": {
+    "owner": "foundation apply_foundations_capabilities; shared file unedited",
+    "patch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/http-app-target-review-_pdpduno/foundation-http-target-proposed.patch",
+    "patch_sha256": "4c73aff499680ee08a925999afd7102f28680c04f42293f7bad1833609e9356f",
+    "input_helper_sha256": "4183e6cfd418240eb60646b160fe5060ca5682b022faa34be7d5fcdf266bd60d",
+    "candidate_sha256": "4309a49c9ba000e7efbf557ecd5c4d79b0551576af533c818c6966ed2829343d",
+    "shared_default_test": "RED for absent overload repro entry;two other test methods pass",
+    "isolated_candidate_test_methods_passed": 3,
+    "candidate_is_production": false,
+    "root_adoption_test": "python3 tests/tools/test_http_app_target_metadata.py mustpass against actual shared helper afterfoundation adopts"
+  },
+  "format_lint": {
+    "jaifmt_interpreter_tool": "pass both exactJai files;no application/network run",
+    "ruff_check": "pass",
+    "ruff_format": "pass"
+  },
+  "owned_changes": [
+    "tests/extensions/http-client-overload-lint-repro.jai",
+    "tests/tools/test_http_app_target_metadata.py",
+    "docs/extensions/http-app-fixture-target-review.md",
+    "docs/status/http-app-fixture-target-review.json"
+  ],
+  "source_file_sha256": {
+    "tests/extensions/http-client-overload-lint-repro.jai": "9d1ec9b3eb34b4789c399cc7d99eee1ebbbaa139ccd212e52c6eaa0eff1f9a55",
+    "tests/extensions/http-dependency-consumer.jai": "8281a04a61da2d63185708249a826638c6367300f6f5b498bb2899a534e9b656",
+    "tests/tools/test_http_app_target_metadata.py": "a303608d568bc833964fa575d10fb3927228d4f1424b25f78590320abfc6660e",
+    "tools/foundations_case_capabilities.py": "4183e6cfd418240eb60646b160fe5060ca5682b022faa34be7d5fcdf266bd60d",
+    "stdlib/Extensions/Http/module.jai": "03addeec1ac828e4fedb14fb1207d8a788f47dafb4ed6b5511e8e88e52f73d2f",
+    "stdlib/Extensions/Http/app.jai": "9931c6a215f6570cb33e0436d2756427f0a384791e439b98ac6f53e2ffafe0f2",
+    "docs/extensions/http-app-fixture-target-review.md": "803c6237334104f34ace5bbeb8d0bde2ee2a601e11f9afebcdf3590cea5f05c1"
+  },
+  "pending": [
+    "foundation/integration reconcile exact2-ID capability hunk;no parallel global edit",
+    "root admit exact failing argv/OS/CPU/mode+capability selection/helper identity forboth940records",
+    "any genuine selected-native failure remains required",
+    "separate Linuxconnect retained kernelreport stillrequired"
+  ],
+  "preserved_failures": [
+    "initial unusedBasic import strictlint red",
+    "invalid -cpu wasm64 harness command NOTnegative proof",
+    "current missing overload metadata RED"
+  ],
+  "extensions_production_changes": false,
+  "global_catalogue_edits": false,
+  "git_index_commits_remote_publication": false
+}
