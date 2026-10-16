@@ -1,0 +1,34 @@
+{
+  "status": "reviewed integration adaptation",
+  "producer_patch_sha256": "31fb7dcd21acbe2b5972af0e38d9fd69608fd206394ccd740eb71ed0e30effc3",
+  "source_snapshot": "a85bc4770ad977d9d0396af0a28dd24191790dd2",
+  "review": "source-only normalCI preparation; no application fetch/run; preserve enabledSDL/audio/display providers",
+  "native_execution": false,
+  "files": {
+    "tools/upstream_smoke.py": "631951572e2f60566ede41ea545b2915e3e38f997bb74e38938cfa06e338456e",
+    "tools/upstream-smoke.json": "c9fea67061f049873be9573655a6802272777b5a87b8ce5132e04ffa2512774f",
+    "tools/build_portable_runtime.py": "2c675128c58be795bd6f8a69d92f298e9631b7647156a6f76aaf5c67c2834f77",
+    "tools/upstream_native.py": "157416e98f3cfa8142202f948b3e25595966802387b1fb1d5ffa16885521a454",
+    "tools/test_upstream_acceptance_closure.py": "3d7718996c6b9dbb0849b2dd35702dd38d31de3eaa2a1a63498d561cb77a1ab5",
+    "tools/test_upstream_native_preparation.py": "ac75c65f405cb6993440a3f90f8b16cd6eca8375a43a36b1e301963ae8bd1b67",
+    "tools/test_portable_crash_build.py": "cd9b276bae88b76c99b53a946da875f2ddb5fd4c2424efaee2c813cc370687a9"
+  },
+  "adaptations": [
+    "Current disposition/report/accepted Focus guard policies retained; host guard and normal native preparation inserted only.",
+    "Accepted Linux shared SONAME and macOS install_name retained in split-object/static/shared recipe.",
+    "Inherited lambda converted to equivalent named framing function; Ruff format across touched files.",
+    "Windows enabled-backend host dependency closure in8afd329e; existing Mesa runtime and consumer search retained.",
+    "Six inherited Windows shell diagnostics corrected without lint suppression; command errors now propagate before read-array/export."
+  ],
+  "verification": {
+    "policy_tests": 14,
+    "ruff": "PASS seven helper/test files",
+    "actionlint_windows": "PASS",
+    "runtime_audio": "Default audio_build_native is runtime=False; helper does not pass --test-runtime. Existing required audio native gates unchanged.",
+    "native_execution": false
+  },
+  "remaining": [
+    "Actual SDK builds after committed capture, actual application/Windows/Linux native acceptance and original corpus remain required.",
+    "Four-ready sealedcandidate keeps prior matched native recipe/assets; this CI-helper companion is not retroactively paired with old asset receipt."
+  ]
+}

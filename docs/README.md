@@ -859,3 +859,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [IDE preflight failure reuse](tools/lsp-second-preflight-integration.md): exact second-repair source guards, causal invalidation controls and pending unchanged-bound original timing gate.
 
 - [Four-ready combined receipt](status/shared-candidate-2a29b054.json): exact source/tool/ABI8 identity, focused counts and remaining native/original gates.
+
+- [Third-party native preparation](native/sdl-upstream-native-preparation.md): real source-built helper closure, strict XML result parsing and pending native acceptance.
