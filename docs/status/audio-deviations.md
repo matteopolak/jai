@@ -1,5 +1,15 @@
 # Audio deviations, remaining work and evidence limits
 
+CI21667104 job117168189015: Windows environment acquisition is platform-specific
+through documented _dupenv_s, with a short-lived allocation per query and no
+stored borrowed CRT pointer. This is an SDK correction, not a warning waiver or
+fake-provider workaround. No concurrent environment-mutation guarantee or
+real-time performance claim. Mac runtime/sanitizer and MinGW cross-link checks
+passed; actual MSVC warning verdict and Windows injected allocation-error runtime
+remain CI dependencies. No Linux rerun or overall-audio completion is inferred.
+See audio-windows-env-request.md for exact functions, tests, evidence and separate
+patch. No peer/workflow/index changes; integration owns application/commit.
+
 Job117139967666 follow-up: no original SDK stderr/runtime receipt is surfaced in
 this worker, so its exit-zero diagnostic is still unclassified. No stderr
 allowlist/suppression or fake provider was added. The helper now preserves full

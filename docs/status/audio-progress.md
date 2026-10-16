@@ -1,5 +1,16 @@
 # Audio worker progress
 
+2026-10-16 — CI21667104 job117168189015 Windows CRT follow-up: replaced the
+deprecated Windows getenv call with owned _dupenv_s acquisition and explicit
+error propagation/freeing in audio_output_preferred_channels. Native builder
+adds a no-device environment contract test/strict receipt. Mac SDK/routing/
+close-fault and POSIX environment ASan/UBSan execution passed; Windows x64
+MinGW warnings-denied compile/link passed, not MSVC proof. Six receipt unit
+checks still pass. Actual Windows clang/MSVC compile/runtime and Windows
+allocation-error injection execution remain pending. Exact separate patch and
+handoff: audio-windows-env-request.md. Earlier receipt/T7 patch preserved; no
+index/workflow/peer edits. Assigned T7 only; SDK/fault slot released.
+
 2026-10-16 — focused job117139967666 provider triage. Read refreshed ownership,
 inbox and reviewed platform contract. Original helper stderr/audio-runtime.json
 is not surfaced; root's supplied verdict is exit0 plus stderr, followed by a

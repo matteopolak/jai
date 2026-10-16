@@ -1,0 +1,151 @@
+{
+  "recorded_utc": "2026-10-16T20:10:43.929011+00:00",
+  "supplied_failure": {
+    "ci": 21667104,
+    "job": 117168189015,
+    "verdict": "actual Windows clang/MSVC -Werror deprecated getenv"
+  },
+  "source_sha256": {
+    "stdlib/internal/audio/native/output.c": "3ee8037ce73f5929577ad625d016350e9341c5f251526f7abe7fd70a1bf9c706",
+    "tools/audio_build_native.py": "91b7b2dbeb0424f1a39d3e7431c108f514307752401cd38f34163d734bcd7ef3",
+    "tests/audio/native-environment.c": "6c5c6fe2528d27114cfa648e851d0fa3584354f4deb5a0af2fc2e1cccc579893"
+  },
+  "local_receipts": {
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-windows-env-proof/macos-arm64/audio-build.json": {
+      "sha256": "9218980ef52d836a54e2dce8697ee34edb86fca4ae48cc3e26dce28361bfee8d",
+      "receipt": {
+        "platform": "macos-arm64",
+        "native_execution": false,
+        "linkage": "static native executable; shared interpreter",
+        "compiler": [
+          "clang"
+        ],
+        "libraries": [
+          "AudioToolbox",
+          "CoreAudio",
+          "CoreFoundation",
+          "AppKit",
+          "CoreGraphics"
+        ],
+        "temporary_directory": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-native/tmp",
+        "artifacts": {
+          "libjai_audio_output.a": "92f6699a86b0863cde030d3d49c4527db3286455ad47df12de97a315d76a30d2",
+          "libjai_audio_output.dylib": "dadba41452c724cb2b30bc4e04b00a8473bb5057f345d18d557042530496b842",
+          "libstb_vorbis.a": "7680dcc3060aec90065eadccba5b11392dc82bbd6b598928a46b7379acc0942b",
+          "libstb_vorbis.dylib": "1b135d1b3bf36b4d70416d7dddb52b1fc87cfbe69a45846852bd53eadf94e160"
+        }
+      }
+    },
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-windows-env-proof/macos-arm64/audio-environment-runtime.json": {
+      "sha256": "988ace7b109aca0b1b4404c0f9a6a690fd17d7aa02556fe335333b1f2686c2f4",
+      "receipt": {
+        "platform": "macos-arm64",
+        "kind": "real environment configuration (no device opened)",
+        "exit_code": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "runtime_passed": true,
+        "failure_reasons": []
+      }
+    },
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-windows-env-proof/macos-arm64/audio-routing-runtime.json": {
+      "sha256": "2c5c896910f7d7a2b004fc469e2e51cbc109d0b1b12cc7d61ac3f7d01d30b008",
+      "receipt": {
+        "platform": "macos-arm64",
+        "kind": "controlled channel-byte routing (no device)",
+        "exit_code": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "runtime_passed": true,
+        "failure_reasons": []
+      }
+    },
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-windows-env-proof/macos-arm64/audio-runtime.json": {
+      "sha256": "f51b390f6d0a32552ec12a23e7d8d7c5ed6029dcb7190b0ca8c2072e53688490",
+      "receipt": {
+        "platform": "macos-arm64",
+        "kind": "exact-host SDK harness execution",
+        "exit_code": 0,
+        "stdout": "native-device-acquired\nnative-device-acquired\nnative-device-opened: SDK pause/resume, fresh discovery and controlled reopen passed\n",
+        "stderr": "",
+        "device_opened": true,
+        "device_open_count": 2,
+        "sdk_protocol_completed": true,
+        "runtime_passed": true,
+        "outcome": "passed",
+        "failure_reasons": [],
+        "require_device": true,
+        "diagnostic_lines": 0,
+        "temporary_directory": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-native/tmp",
+        "manual_pause_unsupported": false,
+        "physical_focus_hotplug_sleep": "not tested"
+      }
+    },
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-windows-env-proof/macos-arm64/audio-close-runtime.json": {
+      "sha256": "72b896b3f8e46457f618b1ee01828ffebef9c50b0e158ab2e2db8495c519aee7",
+      "receipt": {
+        "platform": "macos-arm64",
+        "kind": "real SDK device; controlled close error injection",
+        "exit_code": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "runtime_passed": true,
+        "failure_reasons": [],
+        "NDEBUG": true,
+        "physical_or_SDK_generated_failure": false
+      }
+    },
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-windows-env-proof/macos-arm64/audio-environment-sanitized-runtime.json": {
+      "sha256": "89473c524358d9a9ade04c50fbf5f071ae025faeddf8159ba97a014da1f282f7",
+      "receipt": {
+        "platform": "macos-arm64",
+        "kind": "real POSIX environment; ASan/UBSan; no device opened",
+        "exit_code": 0,
+        "stdout": "ok\n",
+        "stderr": "",
+        "runtime_passed": true,
+        "failure_reasons": []
+      }
+    },
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-native/windows-x64-mingw/audio-build.json": {
+      "sha256": "e2f7ecad0aaedcba3cecaecddd20329fb8712cb25136d5d5d1988f6ae6fc20ac",
+      "receipt": {
+        "platform": "windows-x64",
+        "native_execution": false,
+        "linkage": "static native executable; shared interpreter",
+        "compiler": [
+          "/opt/homebrew/bin/x86_64-w64-mingw32-gcc"
+        ],
+        "libraries": [
+          "winmm",
+          "user32"
+        ],
+        "temporary_directory": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-native/tmp",
+        "artifacts": {
+          "libjai_audio_output.a": "655bd457eefba79f11b200321720670359496ccfee127f32d9227d28b0f8947c",
+          "jai_audio_output.dll": "7bb172d9a7905c5a29d3c1a35daf3c4d0c12b00b3e66b02c3c31764b150574d0",
+          "libstb_vorbis.a": "d1b909971a867a21aec2f279cbb77dc570c8a5dfaee3fd5ee282cb5406216907",
+          "stb_vorbis.dll": "dfecbc9393e3791bb2d4947bde37b019973f085fb6ec261e2dd7848f8ce060a1"
+        }
+      }
+    },
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/audio/target/audio-native/windows-x64-mingw/audio-sdk-abi.json": {
+      "sha256": "365314d46cb498905e95ddb33027a0a7bc6530e1acbe5156e6febd41fdab5b5e",
+      "receipt": {
+        "platform": "windows-x64",
+        "kind": "official SDK header layout/interface-prefix assertions",
+        "native_execution": false,
+        "object_sha256": "3ec8bc2954b90a9b702d7de8c0484c72b665de8938c9a7024362385b0c785e36"
+      }
+    }
+  },
+  "receipt_unit_tests": {
+    "passed": 6,
+    "native_evidence": false
+  },
+  "windows_msvc_verified": false,
+  "windows_runtime_verified": false,
+  "linux_rerun_verified": false,
+  "slot": "released; LSP priority",
+  "integration_owns_index": true
+}

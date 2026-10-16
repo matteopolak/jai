@@ -137,3 +137,13 @@ vtable is an eleven-slot prefix; this test deliberately compares its method
 offsets rather than claiming it models every SDK method. The buffer vtable's
 twenty-four slots are checked in full. No DirectSound interface is instantiated,
 and no Windows runtime is claimed by successful header or native package links.
+
+## Windows CRT environment regression
+
+`tests/audio/native-environment.c` checks backend override parsing using real
+CRT/POSIX APIs, with NDEBUG checks and an explicitly injected Windows ENOMEM
+case. It opens no device. `audio_build_native.py --test-runtime` runs it on the
+exact host and records a strict `audio-environment-runtime.json`; cross builds
+only compile/link it. Actual MSVC CI is required to close the deprecation build
+failure; Mac or MinGW results cannot establish that verdict. See the
+[focused handoff](../status/audio-windows-env-request.md) for evidence and limits.
