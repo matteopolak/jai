@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "snapshot": "a97d0f6f26449c6a27ad493ccde9d60545d41eb1",
+  "ref": "codex/stdlib-shared",
+  "shared_worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f",
+  "stdlib": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/stdlib",
+  "stdlib_tree": "72b67cb0bc192bce671d41a8e3072db47aebfb94",
+  "compiler_source_tree": "1b78e518756af9549d8023bc0e9cd80809550b5d",
+  "source_files": 4348,
+  "source_identity_sha256": "f2328f3ba052697beaa9ed5cd383de195d85e92f73c04533dd96c0ca28ec685a",
+  "native_asset_identity_sha256": "5274dfa773d5709a0841f8dd60962b1090b8931f4e8a71588cfb9e09be6d93f2",
+  "native_artifacts": 258,
+  "environment": {
+    "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/stdlib",
+    "JAIC_NATIVE_LIBS": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/native-inputs/rpmalloc:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/native-inputs/cache-0:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/native-inputs/cache-1:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/native-inputs/cache-2:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/native-inputs/cache-3",
+    "JAIC_TEST_FONT_PATH": "/System/Library/Fonts/Supplemental/Arial.ttf",
+    "JAIC_CLIPBOARD_GUARD": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/artifacts/shared-integration/clipboard-guard-bin"
+  },
+  "source_overlay": false,
+  "native_sources": "ABI7:23 actual source-built SDK/callback profiles from three exact official C source pins and five zero-fuzz patches; seven fresh helpers, platform helper proper @rpath identity; remaining own SDK caches hash-reused.",
+  "verification": "Source4348/native assets hash-checked; actual immutable ABI7 simultaneous-domain interp/nativeO0/O2 five commands pass; complete10d9baseline remains recorded separately, no projected whole-green claim",
+  "release_permitted": false,
+  "original_corpus_and_focus_owner": "coordinator",
+  "limitations": [
+    "Graph/later-thread metadata OOM remains fail-fast",
+    "Uncommitted generator/portable producer work excluded",
+    "Native Windows/Linux/Android/iOS and full distribution resources remain unverified"
+  ],
+  "binaries": {
+    "jaic": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/bin/jaic",
+      "sha256": "c17e0d3574b225fde3f06bd42da6ad37756bf8eaf93bf9be0c8c3cc41556328d"
+    },
+    "jailint": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/bin/jailint",
+      "sha256": "73edc601db20dc40435af42d7d25f5e8b37229f050f1296567eeed29822916ca"
+    },
+    "jailsp": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/bin/jailsp",
+      "sha256": "7b803afa39c61e4051e04476f893e910c7d5cc019ddf605458598bdd2c01b549"
+    },
+    "jaifmt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f/bin/jaifmt",
+      "sha256": "33bddd82b970e9296351a05c34e2a56c00547cecef27d51442656c7da495f0e8"
+    }
+  },
+  "compiler_version": "jaic 0.17.0",
+  "rust_toolchain": "rustc 1.100.0-nightly (17fd5b8a3 2026-08-28)\nbinary: rustc\ncommit-hash: 17fd5b8a37b6667b6cc137f3cc35f09759768a3b\ncommit-date: 2026-08-28\nhost: aarch64-apple-darwin\nrelease: 1.100.0-nightly\nLLVM version: 23.1.0\n",
+  "llvm_version": "23.1.2",
+  "build_command": "LLVM_SYS_231_PREFIX=/opt/homebrew/opt/llvm RUSTC_WRAPPER= CARGO_BUILD_JOBS=2 CARGO_TARGET_DIR=/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target JAIC_STDLIB=<candidate>/stdlib cargo build --locked --offline --manifest-path <candidate>/Cargo.toml -p jaic-cli -p jailint -p jai-language-server",
+  "formatter_build_command": "JAIC_STDLIB=<candidate>/stdlib <candidate>/bin/jaic <candidate>/jaifmt/main.jai -exe <candidate>/bin/jaifmt",
+  "abi7_production_followup": {
+    "passed": 5,
+    "failed": 0,
+    "ignored": 0,
+    "runtime_executions": 3,
+    "native_builds": 2,
+    "scope": "unchanged committed independent-domains fixture, actual final candidate and complete layered environment"
+  },
+  "staging_failure": "First narrow domain invocation omitted existing callback-context cache path; foreign procedure unavailable. Complete receipt env rerun passes; initial failure retained.",
+  "filesystem_metadata_entries_excluded": 257
+}

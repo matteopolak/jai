@@ -686,3 +686,5 @@ include exact file/line/source hashes and required platform limits.
 - [Immutable local captures](tools/immutable-local-captures.md): general input/output overlap checks replace a role-specific path exception.
 
 - [Generator native helper relocation](tools/generator-helper-relocation.md): proper install identity and an actual moved-package native consumer.
+
+- [Pinned ABI7 candidate a97d0f6f](status/shared-candidate-a97d0f6f.json): exact committed production source/tool identity and actual simultaneous-domain interpreter/native proof on assigned T7 storage.

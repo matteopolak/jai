@@ -1,5 +1,40 @@
 # Clean-room integration verification
 
+## Latest committed ABI7 candidate a97d0f6f
+
+Shared branch `codex/stdlib-shared` product snapshot
+`a97d0f6f26449c6a27ad493ccde9d60545d41eb1` is frozen at
+`/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-a97d0f6f`.
+The [receipt](../status/shared-candidate-a97d0f6f.json) pins4348 committed allowed
+source inputs and all four actually source-built tools. Compiler SHA256:
+`c17e0d3574b225fde3f06bd42da6ad37756bf8eaf93bf9be0c8c3cc41556328d`.
+This includes canonical public operators, reviewed Code_Ident test migration,
+proper protected formatter-copy checks, GL/Cocoa required-operation repair,
+Walk_Table, reviewed Objective-C helpers and real independent rpmalloc Domains.
+
+ABI7 native assets are built from the three exact official C SDK source pins,
+five zero-fuzz patches and23 selected native ABI profiles. Build profiles are
+not execution counts. The unchanged committed independent-domain fixture passes
+actual interpreter/native O0/O2 (five commands, three executions) against these
+exact assets. Its initial invocation omitted the existing callback-context cache
+layer and failed; complete pinned environment passes, with the failure retained.
+The unchanged jaifmt is newly source-built against this combined library. A real
+relocated C consumer also verifies the repaired helper install identity.
+
+All new targets/native outputs/captures are on assigned T7 storage per the latest
+disk directive. Prior local authorization was revoked; a local Cargo lock EPERM
+is retained, not bypassed or counted as a semantic failure. Original10d9 replay
+paths stay preserved while coordinator uses them. No uncommitted generator/other
+producer source is silently included. Further ready producer checkpoints require
+their own stable source and verification; this receipt is immutable product input.
+
+The completed full10d9 workspace remains944 passed/7 failed/1 inherited ignore
+in351.489s; its422-case catalogue remains785 positive runtime passes/25 failed
+mode records. Focused later repairs are recorded separately, never projected as
+a whole current green aggregate. Native Windows/Linux/Android/iOS, graph metadata
+OOM rollback, final resource/sysroot packaging, opaque corpus and Focus remain
+open. Coordinator owns full original application and publication acceptance.
+
 ## Active shared candidate10d9b3f8
 
 Active worktree: `/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared`,
