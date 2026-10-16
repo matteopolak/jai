@@ -1,0 +1,63 @@
+{
+  "snapshot": "76fc7ef61231bc3212fd0aeb9e1ed73d7fa0d1e5",
+  "branch": "codex/stdlib-shared",
+  "worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "crates_tree": "1c6abfa0fa10bea1089acc6c07ec4ab56320c37b",
+  "stdlib_tree": "1e3965b7acea8bee1d2316e07add637f3382f5d0",
+  "command": [
+    "cargo",
+    "test",
+    "-p",
+    "jaic-llvm",
+    "--test",
+    "cleanroom_runtime_config",
+    "retained_startup_configuration_executes_on_native_and_wasm",
+    "--",
+    "--exact",
+    "--test-threads=1"
+  ],
+  "environment": {
+    "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/typed-retained-batch-a51/tmp",
+    "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/targets/post-beec-focus",
+    "CARGO_BUILD_JOBS": "1",
+    "RUSTC_WRAPPER": "",
+    "LLVM_SYS_231_PREFIX": "/opt/homebrew/opt/llvm",
+    "JAIC_STDLIB": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/stdlib"
+  },
+  "path_adjustment": "/opt/homebrew/opt/llvm/bin prepended to inherited PATH",
+  "passed": 1,
+  "failed": 0,
+  "ignored": 0,
+  "filtered_out": 1,
+  "failure_names": [],
+  "actual_executions": {
+    "macOS_ARM64_native_O0": 1,
+    "macOS_ARM64_native_O2": 1,
+    "bare_wasm64_Node_O0": 1,
+    "bare_wasm64_Node_O2": 1
+  },
+  "required_tools": [
+    "source-built LLVM backend",
+    "clang",
+    "wasm-ld",
+    "node"
+  ],
+  "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/typed-retained-batch-a51/retained-native-wasm-corrected.log",
+  "log_sha256": "929534f4b0cf19016cd020ee1c24b89bb9530d71217edc9bf20306cec24bbd34",
+  "preserved_attempt": {
+    "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/typed-retained-batch-a51/retained-native-wasm.log",
+    "exit_code": 127,
+    "classification": "test invocation environment: explicit PATH omitted Cargo; no test/source execution",
+    "corrected_by": "Inherited PATH with LLVM prefix; no source/assertion changes"
+  },
+  "guards": {
+    "tracked_crates_and_stdlib_diff": [],
+    "native_lease": "released; all own subprocesses returned"
+  },
+  "limitations": [
+    "One scoped backend test only; not whole suite or platform runtime proof beyond listed targets.",
+    "Bare WASM with no imports is not WASI/browser/graphics proof.",
+    "No matched new CLI/lint/LSP/fmt yet; frozen e0 binary receipts remain historical.",
+    "Public size-constant repair still main-owner-active; no Focus or original corpus success."
+  ]
+}
