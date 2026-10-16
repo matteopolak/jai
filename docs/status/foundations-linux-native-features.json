@@ -1,0 +1,179 @@
+{
+  "schema": 1,
+  "worker": "foundations",
+  "timestamp_utc": "2026-10-16T19:36:33.239984+00:00",
+  "state": "narrow Linux C11 feature/header repair ready; actual Linux CI remains authoritative/pending",
+  "ci_failure": {
+    "run": "718",
+    "job": "117139967856",
+    "target": "Linux ARM64",
+    "scope": "normal CI native provider construction; all23 ABI8 profiles preserved"
+  },
+  "ready_for_integrator": {
+    "suggested_subject": "fix(native): expose Linux allocator SDK declarations under C11",
+    "production_files_sha256": {
+      "tools/native_bindings/build_rpmalloc.py": "fdfdb5dbad0d0ba1551a2352d38b9fb28bb2f6efb5e6653077c56bf0e3bef869",
+      "stdlib/internal/bindings/rpmalloc-heaps/runtime-domain-post.h": "0232c96b66996a5e0dd575681e9ba684a9597015da9119e5b8bc4e32ae5b2608",
+      "stdlib/internal/bindings/rpmalloc-heaps/runtime-live.h": "f31d06358df293e4cb1f1bad74bcf611a48ffd58d270925efcc8724bcd735ddc",
+      "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "299fbc429ef0a42b65051ceb1cd858736ad808b84b8a4f16270d67f6289df72e"
+    },
+    "tests_docs_sha256": {
+      "tests/native-bindings/linux-feature-headers.c": "427ea9b22831d6edc044689b80828808a8bb276113f8e2c3cdd1e0f8d751de1d",
+      "tools/native_bindings/verify_linux_rpmalloc_features.py": "3ffb099557eba9aa39f86ea29868c6b175199d27552e18104b663b85c152ab96",
+      "docs/native/linux-rpmalloc-feature-headers.md": "96df1bfc8b64baab58a517dbea29b461da3e8814bf6e00bcb50406e54c1b3ba4"
+    },
+    "append_only_docs": [
+      "docs/README.md own Linux native feature link",
+      "docs/worker-inbox.md own sections"
+    ],
+    "export_patch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/linux-native-features-6x01s95s/linux-native-features-production-and-tests.patch",
+    "do_not_stage_unrelated_shared_edits": true
+  },
+  "fix": {
+    "Linux_compile_flags": [
+      "-D_DEFAULT_SOURCE=1",
+      "-D_POSIX_C_SOURCE=200809L"
+    ],
+    "feature_flags_precede_first_system_header": true,
+    "nonLinux_feature_flags_unchanged": true,
+    "pthread_header": "explicit non-Windows dependency independent of ENABLE_THREAD_CACHE",
+    "madvise_header": "explicit sys/mman.h in both direct clean producer users",
+    "no_policy_profile_ABI_reduction_or_warning_waiver": true
+  },
+  "profile_inventory": {
+    "path": "tools/native_bindings/ci-rpmalloc-profiles.json",
+    "sha256": "8d46d4b534af9db8de3997a1322e6ac6f3aab1bc66ef68c4ecd2869f0e265712",
+    "native_abi": 8,
+    "sdk_profiles": [
+      "binding_rpmalloc_sdk",
+      "binding_rpmalloc_sdk_no_validate_args",
+      "binding_rpmalloc_sdk_no_asserts",
+      "binding_rpmalloc_sdk_no_asserts_no_validate_args",
+      "binding_rpmalloc_sdk_no_global_cache",
+      "binding_rpmalloc_sdk_no_global_cache_no_thread_cache",
+      "binding_rpmalloc_sdk_nostats_adaptive",
+      "binding_rpmalloc_sdk_nostats",
+      "binding_rpmalloc_sdk_nostats_no_global_cache",
+      "binding_rpmalloc_sdk_nostats_no_global_cache_no_thread_cache",
+      "binding_rpmalloc_sdk_raw_base",
+      "binding_rpmalloc_sdk_raw_base_no_global_cache",
+      "binding_rpmalloc_sdk_raw_base_no_global_cache_no_thread_cache",
+      "binding_rpmalloc_sdk_raw_base_nostats_adaptive",
+      "binding_rpmalloc_sdk_raw_base_nostats",
+      "binding_rpmalloc_sdk_raw_base_nostats_no_global_cache",
+      "binding_rpmalloc_sdk_raw_base_nostats_no_global_cache_no_thread_cache",
+      "binding_rpmalloc_sdk_raw",
+      "binding_rpmalloc_sdk_raw_no_global_cache",
+      "binding_rpmalloc_sdk_raw_no_global_cache_no_thread_cache",
+      "binding_rpmalloc_sdk_raw_nostats",
+      "binding_rpmalloc_sdk_raw_nostats_no_global_cache",
+      "binding_rpmalloc_sdk_raw_nostats_no_global_cache_no_thread_cache"
+    ],
+    "SDK_count": 23,
+    "callback_count": 23,
+    "thread_cache_off_count": 6,
+    "file_unchanged": true
+  },
+  "Linux_compilation": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/linux-native-features-6x01s95s/linux-arm64-final23/report.json",
+    "sha256": "ab25fd02d11d7d2f77e034e6539abd0377f782ad1e6ac85ccfe7ca25e8f6c12e",
+    "complete": true,
+    "real_ELF64_AArch64_objects": 47,
+    "SDK_profiles": 23,
+    "callback_profiles": 23,
+    "header_regression_objects": 1,
+    "strict_flags": [
+      "-std=c11",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "all_compiler_stderr_empty": true,
+    "source_before_after_match": true,
+    "Linux_linking_verified": false,
+    "Linux_runtime_verified": false,
+    "native_ABI_queries_executed_onLinux": 0,
+    "qualification": "real Linux SDK header/target-object compilation on Mac host, not Mac metadata projected to Linux"
+  },
+  "official_Linux_SDK": {
+    "provenance": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/linux-native-features-6x01s95s/linux-sdk-provenance.json",
+    "sha256": "1f12744cc69297ddc3a6b9e220a6c934a266fad21734c0576a9ed1f1ca9f5192",
+    "packages": [
+      {
+        "Package": "libc6-dev",
+        "Version": "2.36-9+deb12u14",
+        "Architecture": "arm64",
+        "Filename": "pool/main/g/glibc/libc6-dev_2.36-9+deb12u14_arm64.deb",
+        "SHA256": "8bc395bf2ee9939f1a6ae395f974cffdcf541d98f99adfe89ce7e4bef36d159e"
+      },
+      {
+        "Package": "linux-libc-dev",
+        "Version": "6.1.176-1",
+        "Architecture": "arm64",
+        "Filename": "pool/main/l/linux/linux-libc-dev_6.1.176-1_arm64.deb",
+        "SHA256": "eeca5ec13bed7206f8171fab9a48e84119dcc20cc79557f104628447a524ad10"
+      }
+    ],
+    "integrity": "official HTTPS Release SHA256 -> ARM64 Packages.xz -> package SHA256; headers extracted only in ownT7",
+    "same_as_CI_sysroot_claimed": false
+  },
+  "fresh_Mac_assets": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/linux-native-features-6x01s95s/fresh-mac-abi8-result.json",
+    "sha256": "a5507468a7935533a8a2d9cf123b8197e91479848795b2381a2940d66cd278f6",
+    "fresh_artifacts": 92,
+    "actual_full_ABI8_queries": 23,
+    "normal_compile_archive_link_commands": 138,
+    "every_flag_value_matches": true,
+    "source_pairing": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/linux-native-features-6x01s95s/fresh-mac-source-pairing.json",
+    "source_pairing_sha256": "74ae2d3d757fc68b7605e65d61df0cacdc22ba8278c2168249c1b807bac01844",
+    "source_pairing_scope": "explicit actual source inventory hash-matched after immutable owned snapshot build",
+    "final_durable_hash_format_audit": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/linux-native-features-6x01s95s/final-asset-hash-format-audit.json",
+    "final_durable_hash_format_audit_sha256": "45c028476bf3ddad9fbeff11c47c4519492f42933b9de755a7b35747455e25f8",
+    "Linux_proof": false,
+    "global_asset_cache_or_manifests_modified": false
+  },
+  "preserved_RED_receipts": [
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/linux-native-features-6x01s95s/linux-arm64-before.json",
+      "sha256": "2e73992214e242789d2e9292811c1936c97507e0186d430bb50b47b5bd3aa9cb",
+      "purpose": "actual original Linux ARM64 default/cacheoff failures"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/linux-native-features-6x01s95s/independent-repair-components-red.json",
+      "sha256": "823595638c230eef425e96b7b0ad3e2473ff37ad81dda3401d57489c113bc6d3",
+      "purpose": "flags alone still missing pthread declarations; headers alone still missing memory advice"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/linux-native-features-6x01s95s/fresh-mac-pairing-first-failure.json",
+      "sha256": "6d40ccaed8f83dee6f4ddee06692a3598093883fc680ec2d2dc0fa6cdbc34f04",
+      "purpose": "extra OS-generated non-input metadata failed initial directory-wide post-build audit"
+    }
+  ],
+  "quality": {
+    "Ruff": "changed builder and new verifier check pass; new verifier format pass",
+    "C_fixture": "clang-format dry-run/Werror with include order preserved pass",
+    "compiler_warnings": "none accepted",
+    "native_slot": "released; no children remain"
+  },
+  "integration_requests": [
+    "Adopt only four production files plus exact new regression/tool/docs; wrapper remains integration-owned.",
+    "Extend build_ci_native_bindings.py source guard/receipt to actual producer bridge/header closure in addition to Python builder.",
+    "Rerun actual Linux ARM64 normal CI provider build/link and all23 full ABI8 queries on new source.",
+    "Fresh-build affected SDK/callback artifacts and issue new source/asset receipts; do not silently reuse old173 aggregate source pins.",
+    "Any reuse of unrelated assets requires explicit unchanged-source verification; fresh92Mac artifact evidence is separate, not a global overwrite."
+  ],
+  "limitations": [
+    "Actual Linux CI job rerun/linking/runtime not performed here.",
+    "Mac build_flags queries qualify only Mac native artifacts, not Linux allocator lifecycle.",
+    "No thirdparty implementation body was inspected/edited; normal preparer/compiler consumed existing hash-pinned official native SDK inputs."
+  ],
+  "constraints": {
+    "four_owned_production_paths_only": true,
+    "integration_wrapper_untouched": true,
+    "FreeType_fixture_untouched": true,
+    "compiler_stdlib_others_untouched": true,
+    "Extensions_untouched": true,
+    "no_profile_policy_disable_fake_constants_warning_waivers": true,
+    "no_git_index_remote_credentials_release_comments": true
+  }
+}
