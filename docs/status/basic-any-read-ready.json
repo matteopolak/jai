@@ -1,0 +1,75 @@
+{
+  "owner": "stdlib-portable Basic formatting",
+  "status": "READY_VERIFIED_MAC_NATIVE_AND_SOURCE_WINDOWS_RUNTIME_PENDING",
+  "base": "4c1f8220ba8693c9743e121009210854767d8c4d",
+  "production_scope": "stdlib/internal/basic/format.jai::render_item early Any guards only",
+  "files": {
+    "stdlib/internal/basic/format.jai": "64031d03c7667be3d15fa19e78df71b0c2e5a5e1b8696b2224a1a25ccb238058",
+    "docs/specs/stdlib/modules/basic.md": "85c5fc65241c4e28728d25217392fdc1da0b60e29ed031b0ecc856f7ba72d2ca",
+    "tests/portable-stdlib/format-null-any-contract.jai": "445583236dd64ac6cd1ad480d89c96bb97bf83f8d4974353b41f3565b1112b05",
+    "tests/portable-stdlib/format-null-type-probe.jai": "9e5aacfb7265ac689956586f48aa51a510bc9d9116ecefeaeee4f223018df850",
+    "tests/portable-stdlib/format-null-descriptor-probe.jai": "8694eed7ab88fb6bbe0d56bb4dc99e823998875ac0d93e11308e8758154d7e9d",
+    "tests/portable-stdlib/format-default-type-identity.jai": "5d1f046565c90ff49a95ccccd464df823528815f25816fed14e529b8929b87ba",
+    "tests/portable-stdlib/format-null-lvalue-any-probe.jai": "20f6ce814d54f631bc390109f1f6201d897648e60224cea7c18525f1c0e1048f",
+    "tests/portable-stdlib/format-any-missing-value.jai": "2238ad289323906f616be2b092819f6c18336b1c524403a7d584aaf78e05003c",
+    "tests/portable-stdlib/format-any-missing-type.jai": "f3c9297ecfddeb0ae7cf64d2de20ed223a4ac246aeffd5e83ed4e80861182ec8",
+    "tests/portable-stdlib/format-any-missing-value-no-assert.jai": "887a26019dc0034d8eaffffa70cf7fe2a2eee89a6ae882f88a90ca15894eea1c",
+    "tools/check_basic_null_format.py": "5f0f4168b03e44c55b55ac6148c629f894a5d518613c1a1d3054b11db59c682f",
+    "tools/check_basic_any_read.py": "e9fd9f6c87893af6932d8450907096296399536651344e106d25f40ac5d1507b",
+    "docs/basic-null-format.md": "1e586d8c4cf61f4f49d55b3c0e6fa766f88b8da7a7d1036de9e14dc8eeac6b4d",
+    "docs/specs/stdlib/portable-null-format-questions.md": "f7ece3fd67d66f4c145b0845558409cbd8c2b90aa0ba87505034f42abe9de783",
+    "docs/status/basic-null-format-ready.json": "f266b24012482b52c993f04712c99e7622d9e5705cd3e3cee40d14b354ee3c71"
+  },
+  "withdrawn": "All eager box_any grants and prior typed-null diagnostic oracle; do not adopt previous null-format probe patches",
+  "production_behavior": "Only both-null Any is empty; missing metadata or nonzero-sized missing storage reports context failure before formatter dispatch; no optional assert, boxing copy or eager read",
+  "official_evidence": "Root sanitized authored public input/native verdicts only. Empty Any succeeds; named partially-null Any faults; unused/ignored/zero-sized boxing continues; borrowedalias sees11",
+  "source_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/target/null-format-source-ic262cd9/summary.json",
+  "source_commands_passed": 59,
+  "source_drift": [],
+  "native_receipts": [
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/null-format/corrected-any/validated/summary.json",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/null-format/corrected-any/no-assert-formatted/summary.json"
+  ],
+  "current_runtime_modes_passed": 15,
+  "modes": [
+    "interpreter",
+    "Mac native O0",
+    "Mac native O2"
+  ],
+  "negative_case_acceptance": "Required nonzero execution status and exact preceding stdout; no unreachable continuation",
+  "red_receipts": [
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/null-format/corrected-any/red/summary.json",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/null-format/corrected-any/green/summary.json"
+  ],
+  "wrong_oracle_receipt_retention": [
+    "Prior focused-native manual typedAny PASS is WRONGORACLE, retained as historical evidence",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/null-format/corrected-any/wrong-oracle-format-null-any-contract.jai"
+  ],
+  "protected": {
+    "crates/jaic/src/sema/convert.rs": "54b19831a1a2e10337476fcec4b2f642516a3e5ca6f61b14310796186b3dd016",
+    "stdlib/internal/basic/format-type-names.jai": "eb1e5de4e37555a4fc71dbc761d5f48130b8d5057b430b47df54595c9fc47de9"
+  },
+  "compiler_production_edits": 0,
+  "legacy_corpus_edits": 0,
+  "native_slot": "RELEASED; all children finished",
+  "remaining": [
+    "Actual Windows replay after integrated Type default fix, this Any guard repair and integration-owned stale Type golden correction",
+    "No broader direct-zero-sized-format output claim from ignored-boxing oracle"
+  ],
+  "integration": "Soleindex/commit. Previous probe batch now present in HEAD; this is NEW delta only against current shared HEAD. Three unchanged Type probe fixtures are source companions, not duplicated patch hunks. Update README link to docs/basic-null-format.md.",
+  "patch_paths": [
+    "stdlib/internal/basic/format.jai",
+    "docs/specs/stdlib/modules/basic.md",
+    "tests/portable-stdlib/format-null-any-contract.jai",
+    "tests/portable-stdlib/format-null-lvalue-any-probe.jai",
+    "tests/portable-stdlib/format-any-missing-value.jai",
+    "tests/portable-stdlib/format-any-missing-type.jai",
+    "tests/portable-stdlib/format-any-missing-value-no-assert.jai",
+    "tools/check_basic_null_format.py",
+    "tools/check_basic_any_read.py",
+    "docs/basic-null-format.md",
+    "docs/specs/stdlib/portable-null-format-questions.md",
+    "docs/status/basic-null-format-ready.json",
+    "docs/status/basic-any-read-ready.json"
+  ]
+}

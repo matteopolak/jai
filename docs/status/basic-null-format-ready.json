@@ -1,6 +1,6 @@
 {
   "owner": "stdlib-portable",
-  "status": "SOURCE_VERIFIED_DEFAULT_TYPE_AND_NULL_LVALUE_COMPILER_DEPENDENCIES",
+  "status": "SUPERSEDED_WRONG_TYPED_NULL_ORACLE_DO_NOT_ADOPT",
   "files": {
     "tests/portable-stdlib/format-null-any-contract.jai": "32f85d91a827046f37b828393fa7532d3eaf9db858be58d3eda1325efe857b2b",
     "tests/portable-stdlib/format-null-type-probe.jai": "9e5aacfb7265ac689956586f48aa51a510bc9d9116ecefeaeee4f223018df850",
@@ -72,7 +72,7 @@
       "file": "crates/jaic/src/sema/convert.rs",
       "function": "box_any",
       "finding": "Place branch retains address without read; required null-lvalue consumption fault is lost through reviewed typed-Any fallback",
-      "request": "Separate compiler function ownership grant/general consumption repair; preserve manual typed-Any fallback"
+      "request": "WITHDRAWN: official unused/ignored Any boxing continues; formatter defect instead"
     }
   },
   "preserved": {
@@ -83,10 +83,8 @@
   "production_changes": 0,
   "existing_test_oracle_changes": 0,
   "remaining": [
-    "Compiler-owned default Type initialization repair",
-    "Integration-owned stale Type golden correction to official void after proper compiler repair",
-    "Compiler-owned general null-lvalue value-consumption/boxing repair; official fault confirmed",
-    "Actual Windows follow-up verification"
+    "Do not adopt this old patch; use corrected Basic Any read manifest"
   ],
-  "integration": "Nine NEW paths only; supersedes unadopted prior seven-path probe patch, do not apply both. Integration sole Git index/commit; global README link requested."
+  "integration": "Nine NEW paths only; supersedes unadopted prior seven-path probe patch, do not apply both. Integration sole Git index/commit; global README link requested.",
+  "superseded_by": "docs/status/basic-any-read-ready.json"
 }
