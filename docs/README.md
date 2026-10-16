@@ -684,3 +684,5 @@ include exact file/line/source hashes and required platform limits.
 - [Allocator runtime domains](native/rpmalloc-runtime-policies.md) and [reviewed Objective-C helpers](native/objc-runtime-helpers.md): canonical ownership/live callbacks, actual ABI boundaries and [scoped native checkpoint review](status/shared-native-domain-checkpoint.json).
 
 - [Immutable local captures](tools/immutable-local-captures.md): general input/output overlap checks replace a role-specific path exception.
+
+- [Generator native helper relocation](tools/generator-helper-relocation.md): proper install identity and an actual moved-package native consumer.

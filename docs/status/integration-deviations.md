@@ -2094,3 +2094,8 @@ SDK patch validation note: git diff --check flags embedded unified-diff CONTEXT 
 ## Removed role-specific snapshot path workaround
 
 tools/native_bindings/shared_snapshot.py introduced bindings-only ROOT/artifacts/local-verification-bindings exception during T7 permission prompts. Exact predecessor remains04cb08e3 and ordinary local-output red is retained. Generic selected-input-directory overlap validation replaces it; no role/name/path whitelist remains, recursive captures reject before copying. Copied executable modes now preserve original execution bits while removing writes; the old0444 blanket caused consumer-specific executable restoration. Actual copied-helper/mutation/overlap tests4/0 and Ruff pass. Utility evidence is not native library functionality. All source/hash/read-only protections remain; SDK/body semantics unchanged. No forbidden source path or alternate-access mechanism added.
+
+
+## Generator native helper absolute install identity repaired
+
+tools/build_generator_platform.py previously emitted an absolute Mach-O install ID. Actual candidate relocation reproduced dyld failure at removed old build path (exit-6), not source semantics. Normal builder now sets @rpath/libgenerator_platform.dylib and accepts generic --output-dir; native functions/source unchanged, no loader fallback/body overlay. Actual linked C consumer passes after complete package rename and real temporary-file byte verification on T7. Other native targets and configured compiler/nm/resource/sysroot distribution closure remain open. Prior failed725localCargo lock attempt EPERM is retained, not bypassed or countedfunctional; disk directive now places all new outputs on assignedT7, old10d9root-replay candidate remains in place until coordinator releases.

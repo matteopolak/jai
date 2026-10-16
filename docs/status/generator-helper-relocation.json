@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "source_parent": "72531513",
+  "scope": "proper native helper install identity and explicit generic output directory",
+  "red_before_fix": {
+    "exit": -6,
+    "effect": "moved actual linked consumer tried removed absolute build location"
+  },
+  "green_after_fix": {
+    "command": [
+      "/opt/homebrew/opt/llvm/bin/clang",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/generator-relocation-proof/consumer.c",
+      "-L",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/generator-relocation-proof/after/lib",
+      "-lgenerator_platform",
+      "-Wl,-rpath,@executable_path/../lib",
+      "-o",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/generator-relocation-proof/after/bin/consumer"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "",
+    "install_id": "@rpath/libgenerator_platform.dylib",
+    "library_sha256": "c0d7218695970d25bd2d68d0244f8d093e48a4c87266a0a61ea3b4d25e8bcd02",
+    "scope": "Actual linked relocated C consumer invokes unchanged independent native helper and verifies real temporary-file bytes"
+  },
+  "passed": 1,
+  "failed": 0,
+  "ignored": 0,
+  "ruff": "passed",
+  "limitations": [
+    "MacARM64 actual relocatedCconsumer only",
+    "Othernative platforms/resource/sysroot/distributionclosure remains open",
+    "No compiler/Jai library body repair or fake SDK result"
+  ]
+}
