@@ -1,0 +1,27 @@
+{
+  "baseline": "8fa08957d3cd783eb8490424af00cc8a4fa2377b",
+  "branch": "codex/compiler-callable-provenance",
+  "phase": "verified_checkpoint",
+  "target_dir": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-callable-8fa",
+  "evidence_dir": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-10d9",
+  "blocked_alias_refresh_included": false,
+  "source_changes": "declaration/field/procedure metadata and operand annotations, preserving structural identity",
+  "focused_core": {"passed": 16, "failed": 0},
+  "earlier_backend_run": {"passed": 20, "failed": 0, "scope": "callbacks, typed generic bindings, AST roundtrips and exact-once deferred calls"},
+  "full_core_backend_lsp_jailint": {"passed": 769, "failed": 0, "ignored": 1, "cargo_executables": 93, "note": "pre-existing ignored corpus sweep is not coverage; excludes nested child-test output from totals"},
+  "final_cli_backend_regressions": {"passed": 20, "failed": 0, "scope": "actual ARM64 O0/O2, interpreter, WASI, exact-once scheduling, typed generic callbacks and AST roundtrips"},
+  "strictlint": {"host": "passed", "wasm": "passed"},
+  "format": "passed",
+  "clippy": "all targets, jaic/jaic-cli/jailint/jai-language-server/jaic-llvm, warnings denied, passed",
+  "focus_fresh_source_check": {"exit_code": 1, "first_diagnostic": "compiler version jaic 0.17.0 below required 0.2.29", "old_working_directory_lookup_error": "not reproduced", "evidence": "focus-8fa-callable-check.log"},
+  "lsp_source_changes": false,
+  "remaining": [
+    "LSP owner must adopt declaration/member metadata API before claiming indirect named completion",
+    "computed/generic structural type erasure and pointer/array callable provenance not fully implemented",
+    "TOML canonical Hash_Table declaration order assigned foundations",
+    "Focus compiler version-guard policy still needs disposition",
+    "protobuf test miss-value zero assertion exceeds reviewed uninitialized-value contract"
+  ],
+  "broad_400_replay": "deferred until owner batches combined",
+  "suspended_memory_investigation": "unchanged; not resumed"
+}
