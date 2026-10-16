@@ -1,0 +1,200 @@
+{
+  "status": "source/build/cross-link verified; actual Windows runtime CI pending",
+  "baseline": "ac174e805660ce4d8f4744d2be9f6842b60edc24",
+  "source_guard": {
+    "baseline": "ac174e805660ce4d8f4744d2be9f6842b60edc24",
+    "verified_accepted_files": 1828,
+    "unexpected_deltas": [],
+    "overlay": {
+      "crates/jaic-llvm/src/lib.rs": "758509ad17ec1898b59f17c17fbf34aff2e6ae8d69ee2a0f2144bf1d12a246ff",
+      "crates/jaic-llvm/src/link_options.rs": "9df7bc3293828b7acb4bdab1591c3e0e0de3c1166a587faad916b752a7c0fec0",
+      "tests/cleanroom-language/windows-link-options/main.jai": "e6f42856ce5325d3effdd2be1fc9a8dbdba0bdd44ff38a48db9bd568919e65f3",
+      "tests/cleanroom-language/windows-link-options/entry.c": "48b5eb45d6f4bb07cba98d79197d0d0e528068aef94d553bac1bb3db62cbe85c",
+      "tests/cleanroom-language/windows-link-options/helper.c": "46ac580b286a9af866aeaae6f7aa1be3dfd5a7c4631910715dfc15a4afa2a946"
+    },
+    "cli_sha256": "306eba53644da847fd448fd189411ab8014464cf1a509ddd0a81a1cb78dfc326",
+    "source": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/source",
+    "target": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-windows-link-options-ac174-pinned",
+    "toolchain": "rustc 1.100.0-nightly (17fd5b8a3 2026-08-28)",
+    "extension_changes": [],
+    "provider54a5_changed": false
+  },
+  "backend_library_tests": {
+    "passed": 25,
+    "failed": 0,
+    "ignored": 0,
+    "new_option_regressions": 8,
+    "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/backend-pinned-final.log"
+  },
+  "clippy": {
+    "scope": "jaic-llvm --all-targets -D warnings",
+    "passed": true,
+    "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/clippy-all-inputs-final.log"
+  },
+  "format": {
+    "scope": "cargo fmt --all --check, accepted pinned configuration",
+    "passed": true,
+    "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/format-verified.log"
+  },
+  "jai_public_build_options_cross_links": [
+    {
+      "driver": "mingw-gcc",
+      "optimization": "O0",
+      "command": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-windows-link-options-ac174-pinned/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/source/tests/cleanroom-language/windows-link-options/main.jai",
+        "-os",
+        "windows",
+        "-cpu",
+        "x64",
+        "-O0",
+        "-exe",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/mingw-gcc O0 GUI executable.exe"
+      ],
+      "linker": "/opt/homebrew/bin/x86_64-w64-mingw32-gcc",
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/mingw-gcc-O0-final.log",
+      "pe_sha256": "b307d8eab1f80fdce3846d80be9908455b69ca7436fc575297a6a2a27f48d707",
+      "gui_subsystem": true,
+      "nonzero_entry": true
+    },
+    {
+      "driver": "mingw-gcc",
+      "optimization": "O2",
+      "command": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-windows-link-options-ac174-pinned/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/source/tests/cleanroom-language/windows-link-options/main.jai",
+        "-os",
+        "windows",
+        "-cpu",
+        "x64",
+        "-O2",
+        "-exe",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/mingw-gcc O2 GUI executable.exe"
+      ],
+      "linker": "/opt/homebrew/bin/x86_64-w64-mingw32-gcc",
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/mingw-gcc-O2-final.log",
+      "pe_sha256": "ec3f55fb3d90452a0124f55e1033882f82adb4a27ad455f0d278a2745e696106",
+      "gui_subsystem": true,
+      "nonzero_entry": true
+    },
+    {
+      "driver": "clang-gnu",
+      "optimization": "O0",
+      "command": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-windows-link-options-ac174-pinned/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/main-clang-sdk.jai",
+        "-os",
+        "windows",
+        "-cpu",
+        "x64",
+        "-O0",
+        "-exe",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/clang-gnu O0 GUI executable.exe"
+      ],
+      "linker": "/opt/homebrew/opt/llvm/bin/clang",
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/clang-gnu-O0-final.log",
+      "pe_sha256": "1af0c33ba8ccdd866efc2e0682534d6d2a20b0e40402c0f477895a28b7f16c55",
+      "gui_subsystem": true,
+      "nonzero_entry": true
+    },
+    {
+      "driver": "clang-gnu",
+      "optimization": "O2",
+      "command": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-windows-link-options-ac174-pinned/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/main-clang-sdk.jai",
+        "-os",
+        "windows",
+        "-cpu",
+        "x64",
+        "-O2",
+        "-exe",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/clang-gnu O2 GUI executable.exe"
+      ],
+      "linker": "/opt/homebrew/opt/llvm/bin/clang",
+      "exit": 0,
+      "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-link-options-ac174/clang-gnu-O2-final.log",
+      "pe_sha256": "0dff4c9bb96ff311d2ed01d9af37f23c7392cfa9a73351b801c799f9d1b4740f",
+      "gui_subsystem": true,
+      "nonzero_entry": true
+    }
+  ],
+  "independent_c_controls": {
+    "fixture_hashes": {
+      "entry.c": "48b5eb45d6f4bb07cba98d79197d0d0e528068aef94d553bac1bb3db62cbe85c",
+      "helper.c": "46ac580b286a9af866aeaae6f7aa1be3dfd5a7c4631910715dfc15a4afa2a946"
+    },
+    "links": [
+      {
+        "target": "x86_64-pc-windows-gnu",
+        "driver": "clang",
+        "pe_sha256": "e87619dc3c4f318aace126f0bd1e56733b13c9a3dfb27aa34ba7337a7bf2f487",
+        "gui_subsystem": true,
+        "nonzero_entry": true
+      },
+      {
+        "target": "x86_64-pc-windows-msvc",
+        "driver": "clang",
+        "pe_sha256": "20577af38dcc75f8e9354ad124cf2096b21cec5b9b10d41d12f7a4604c4e5f26",
+        "gui_subsystem": true,
+        "nonzero_entry": true
+      },
+      {
+        "target": "x86_64-pc-windows-msvc",
+        "driver": "clang-cl",
+        "pe_sha256": "20577af38dcc75f8e9354ad124cf2096b21cec5b9b10d41d12f7a4604c4e5f26",
+        "gui_subsystem": true,
+        "nonzero_entry": true
+      },
+      {
+        "target": "aarch64-pc-windows-gnu",
+        "driver": "clang",
+        "pe_sha256": "936c67a1d6796241d6b2dcda5d48e457522f9073ab72b24b502589dc4ca88bb2",
+        "gui_subsystem": true,
+        "nonzero_entry": true
+      },
+      {
+        "target": "aarch64-pc-windows-msvc",
+        "driver": "clang",
+        "pe_sha256": "9b96f614849e23f2bfceaca0b5c29373f3c4dd0ecf1d742bc0000725ec684691",
+        "gui_subsystem": true,
+        "nonzero_entry": true
+      },
+      {
+        "target": "aarch64-pc-windows-msvc",
+        "driver": "clang-cl",
+        "pe_sha256": "82ea4be46bdef7e66d52a434c1a0e1278821633ddc32c2c57401a36ef37bf780",
+        "gui_subsystem": true,
+        "nonzero_entry": true
+      }
+    ],
+    "windows_execution": false
+  },
+  "qualification": {
+    "Windows_execution": false,
+    "MSVC_SDK_CRT_execution": false,
+    "ARM64_CRT_available": false,
+    "Mac_GUI_or_SDK_program_execution": false,
+    "physical_DLL_provider_54a5": "unchanged",
+    "generated_path_hex_escape": "root bounded independent reproducer requested; no printer edits",
+    "compiler_flags_order_quoting_multiple_inputs": "covered by original renderer regressions and real cross-link controls",
+    "full400": "not rerun"
+  },
+  "remaining": [
+    "Root Windows x64/ARM64 CI must replay unchanged portable-data-console-windows with native target toolchains/runtime",
+    "Unsupported raw MSVC-to-GNU options are explicit errors; explicit target-native linker arguments remain available",
+    "Generated path-string failure awaits independent source kind, input and first diagnostic"
+  ],
+  "preserved_failures": [
+    "public-build-options-red.log",
+    "link-options-red.log in prior owned capture directory",
+    "cross-driver-controls/results.json (initial absolute -fuse-ld failure)",
+    "clippy.log",
+    "clippy-pinned-toolchain.log",
+    "clippy-final.log",
+    "format.log"
+  ]
+}

@@ -100,5 +100,114 @@
     }
   ],
   "full_original_corpus_Focus": "rootrequired; notrunhere",
-  "native_classes": "940SDK/callback/counter/crashactualinputs unchanged sofar; audio nativechanges pending source receipt/rebuild"
+  "native_classes": "940SDK/callback/counter/crashactualinputs unchanged sofar; audio nativechanges pending source receipt/rebuild",
+  "origin_linker_getrect_merged_checks": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--check"
+      ],
+      "exit": 0,
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/merged-final-source-0.log",
+      "counts": []
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "jaic",
+        "--test",
+        "cleanroom_program_parameter_origin"
+      ],
+      "exit": 0,
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/merged-final-source-1.log",
+      "counts": [
+        {
+          "passed": 7,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        }
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "jaic-llvm",
+        "--lib"
+      ],
+      "exit": 0,
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/merged-final-source-2.log",
+      "counts": [
+        {
+          "passed": 25,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        }
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "jaic",
+        "--test",
+        "cleanroom_getrect_clipboard_dependency"
+      ],
+      "exit": 0,
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/merged-final-source-3.log",
+      "counts": [
+        {
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0,
+          "measured": 0,
+          "filtered": 0
+        }
+      ]
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "-p",
+        "jaic",
+        "-p",
+        "jaic-llvm",
+        "-p",
+        "jai-language-server",
+        "-p",
+        "jaic-cli",
+        "-p",
+        "jailint",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 101,
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/ready-cohort-1792181926436362000/merged-final-source-4.log",
+      "counts": []
+    }
+  ],
+  "origin_patch_sha256": "a01fbcf8650a8fc526890560e0c6875a2dfc26d5214eb0e1496e86c40b041269",
+  "linker_patch_sha256": "e4810a9eebd5fe1f7dd71d20d79d342a9b0bfd5de59ca44aed9665de7a170531",
+  "clippy_repair": "New formatter test helper uses as_chunks::<12>().0 instead of chunks_exact(12); same validated table semantics, no suppression. Recheck in progress."
 }
