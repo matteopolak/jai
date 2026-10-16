@@ -1,0 +1,254 @@
+{
+  "status": "opaque printer scope implemented and verified; three original contract dependencies remain required RED",
+  "proposed_commit": "fix(bindings): print proven incomplete records as opaque pointees",
+  "git_actor": "integration sole Git/index actor; no worker Git mutations",
+  "scope": [
+    "stdlib/internal/developer-tools/binding-declaration-emission.jai",
+    "stdlib/internal/developer-tools/binding-type-emission.jai",
+    "tests/developer-tools/generator-opaque-printer.h",
+    "tests/developer-tools/generator-opaque-printer.c",
+    "tests/developer-tools/generator-opaque-printer.jai",
+    "tests/developer-tools/generator-opaque-roundtrip.jai",
+    "tests/developer-tools/generator-opaque-sdk-control.c",
+    "tests/developer-tools/generator-opaque-by-value.h",
+    "tools/check_generator_opaque_printer.py",
+    "docs/generator-opaque-printer.md",
+    "docs/specs/questions/generator-c-model-remaining.md",
+    "docs/README.md"
+  ],
+  "source_identity": {
+    "stdlib/internal/developer-tools/binding-declaration-emission.jai": {
+      "before_sha256": "7ae88f44633c28e6a48fa45abdbe5caa0d56a6146dde7c6a1f7946f7654a70e0",
+      "after_sha256": "8e0331070be96ef02d981cd719cf635ff076f9a8c612b4be92a57db074193805"
+    },
+    "stdlib/internal/developer-tools/binding-type-emission.jai": {
+      "before_sha256": "3c20158328074ecabd14fe1175ccfc5e1f95d691628f6877f725ad4e76111ca0",
+      "after_sha256": "53c677987df5db2cb0be25c5a00ec24e4c93e7bfb2306ebcd0d6d5618ea0407d"
+    },
+    "tests/developer-tools/generator-opaque-printer.h": {
+      "before_sha256": null,
+      "after_sha256": "aaf6b6c794d83c07dc00512c7516641808339ecfc26c91dcf2a1b34e4dad4a00"
+    },
+    "tests/developer-tools/generator-opaque-printer.c": {
+      "before_sha256": null,
+      "after_sha256": "9b54f5ecd109f44d2e31b5f4fb9a3a6ab0a984a2645a3612b66bbb3b30977092"
+    },
+    "tests/developer-tools/generator-opaque-printer.jai": {
+      "before_sha256": null,
+      "after_sha256": "7bcc94815810f5b1edf37085da585964c0677e3a7a384e8e6fabbba13a2129e6"
+    },
+    "tests/developer-tools/generator-opaque-roundtrip.jai": {
+      "before_sha256": null,
+      "after_sha256": "aed1ea89b6655fa82f5ce1ef720257bb459138d75818256465054c6ee0701674"
+    },
+    "tests/developer-tools/generator-opaque-sdk-control.c": {
+      "before_sha256": null,
+      "after_sha256": "f0ddab17109d0a9e91e0ed686560f27a97d1e07637a456b94e3dd828f9a99e6d"
+    },
+    "tests/developer-tools/generator-opaque-by-value.h": {
+      "before_sha256": null,
+      "after_sha256": "9c2ac2a30bcb65e90d889ba7d5703b814d416347ae1c82efc9d662f638e8c775"
+    },
+    "tools/check_generator_opaque_printer.py": {
+      "before_sha256": null,
+      "after_sha256": "02098f9dd48ee7653f812bba957fa28e013ca1afba53159cf18c2b0e46c10bfe"
+    },
+    "docs/generator-opaque-printer.md": {
+      "before_sha256": null,
+      "after_sha256": "42b0fdd6ad57b0e38603995c7d28c183bcad7ef4ef973e716e7e5cce47c56938"
+    },
+    "docs/specs/questions/generator-c-model-remaining.md": {
+      "before_sha256": null,
+      "after_sha256": "1361cae9681f73bc701702b2bf3254855a260969be20f58fbad6decf3298dbcd"
+    },
+    "docs/README.md": {
+      "before_sha256": "660cfba68411d6564459ff8eda72f7b120bab7191c0e7ce2f98a49f60ca99e13",
+      "after_sha256": "9b9bdccaea8c284478be970e2d308e75f054a1d5fef88ab87eec005779f96575"
+    }
+  },
+  "public_behavior": [
+    "print_struct: proven native incomplete struct/union pointer marker without layout fabrication",
+    "existing type-info directives/precedence retained",
+    "ordinary declaration and function signature value rejection through aliases/arrays and forged views",
+    "ambiguous/malformed metadata, absent/overflowed cursor association and layout overrides diagnosed"
+  ],
+  "production_functions": {
+    "binding-declaration-emission.jai": [
+      "binding_struct_body",
+      "binding_ordinary_declaration",
+      "new private binding_native_incomplete_record",
+      "new private binding_value_type_supported"
+    ],
+    "binding-type-emission.jai": [
+      "jai_model_function"
+    ]
+  },
+  "canonical_model_changes": null,
+  "public_facade_or_load_changes": null,
+  "compiler_changes": null,
+  "canonical_native_signal": "existing public Generator.declarations_by_cursor + live matching canonical Session/TU + official clang definition/kind/layout queries; same cursor identity required across matching entries",
+  "native_layout_policy": "Opaque values/cache sentinel remain native -2/-2 and unknown; Forward retains actual 4/4/real member; no new records/state/cache/guessed native size/alignment/padding",
+  "reviewed_dependencies": {
+    "docs/specs/stdlib/modules/bindings-generator.md": "f6b00a5221ed352be995b90cc7d10b9cdd007f8b673fc331cadc452b88d12949",
+    "docs/specs/questions/generator-incomplete-record.md": "2887023ab187bb415b18f411dab41daebee0387ccc5c04cad0b82c5382505459",
+    "tests/developer-tools/generator-model-forward-scope.jai": "b776bf9e901f7eb2b098f9de007783ce9c2d750b7fd16af186fd8da5dedd102e",
+    "stdlib/internal/developer-tools/generator-model-lookup.jai": "27790cf7fea9d3d59f646ee61e76604269c354218a6c1fd903470f32b3c2347c",
+    "stdlib/internal/developer-tools/generator-record-metadata.jai": "b1420a47280e691bd2288d21dd67512e6cb3301e884fc87615fe0c1397fc29af",
+    "stdlib/internal/developer-tools/generator-session/module.jai": "8f273bdfd2f47e2e3675f87cc6f81e228f68bbe89b330177ede568d3cefd6bbc"
+  },
+  "native_evidence": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-platform/opaque-printer-833/capture-kl0y91m9/verification.json",
+    "sha256": "8d61dd31f02e27bd6e849b6596e3e19b6f8f54ed7acb47ee772d70bd6bfb3464",
+    "compiler_sha256": "3ec2ef4f0b5665759c5453e03e0fcc1aefebe70a1b6f579e7d682aed457a59b8",
+    "source_drift": [],
+    "command_rows": 70,
+    "passing_controls": 61,
+    "required_failure_rows": 9,
+    "classification": "Passing rows include builds/source checks; no whole-suite pass",
+    "producer_modes": [
+      "interpreter",
+      "native O0",
+      "native O2"
+    ],
+    "sdk_controls": [
+      "O0",
+      "O2"
+    ],
+    "actual_opaque_consumers": 6,
+    "semantics": [
+      "native opaque pointer identity/value73",
+      "native opaque union pointer/value91",
+      "defined Forward 4/4/value29",
+      "actual native internal-by-value control73; no Jai opaque value call"
+    ],
+    "direct_value_rejection_cases_per_emitter": 12,
+    "override_and_cursor_bound_cases_per_emitter": 7,
+    "malformed_and_unproved_model_cases_per_emitter": 2,
+    "type_info_variants_per_emitter": 3,
+    "real_export_by_value_destination_rejections_per_emitter": 2,
+    "qualification": "Actual Mac ARM64 only; no native Linux/Windows or full CI acceptance"
+  },
+  "source_evidence": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-platform/opaque-printer-833/final-source-checks/verification.json",
+    "sha256": "e2b3e813ed42738ea94d30caab2b1ce818d40a00f8fd75c830db7187c21b3631",
+    "complete_private_production_strict_lint": true,
+    "checks": 13,
+    "targets": [
+      "macos-x64",
+      "macos-arm64",
+      "linux-x64",
+      "linux-arm64",
+      "windows-x64",
+      "windows-arm64"
+    ],
+    "live_owned_matches_capture": true,
+    "format": "PASS",
+    "python_ruff_and_format": "PASS"
+  },
+  "original_fixtures_unchanged": {
+    "tests/developer-tools/bindings-custom.jai": "4b6535707dbf9b74254879aeaf1492610fea500c71ecf591c0a5136065c7f814",
+    "tests/developer-tools/bindings-model-properties.jai": "2992a52ab87e091a7c239ed3961d2ad1df4830eae202e7e2215f62645046f542",
+    "tests/developer-tools/bindings-macro-custom.jai": "1eeb53193282a5b0fbd2e32280470f38019c92d3671ac4977dc96d6f6b97403c",
+    "tests/developer-tools/bindings-macro-enums.jai": "48cf9144e2c2561c1c4d66e8ab108f179e5acccc6243cf761f820f619c82bbcc",
+    "tests/developer-tools/bindings-macro-merge.jai": "afd229569e56d12b8dab8b9717c1d3ccfa567b9d297a635ae7331362c8789d58"
+  },
+  "required_original_modes": {
+    "bindings-custom": {
+      "interpreter": false,
+      "O0": false,
+      "O2": false,
+      "failure": "original line98 opaque succeeds; later line112 injected VARIADIC negative unexpectedly succeeds",
+      "owner": "printer reviewer/native-flag authority contract; no binding_function edit made"
+    },
+    "bindings-model-properties": {
+      "interpreter": true,
+      "O0": true,
+      "O2": true
+    },
+    "bindings-macro-custom": {
+      "interpreter": false,
+      "O0": false,
+      "O2": false,
+      "failure": "line12 accepted macro type/expression readiness assertion",
+      "owner": "model/run + reviewed accepted raw-token macro type contract"
+    },
+    "bindings-macro-enums": {
+      "interpreter": false,
+      "O0": false,
+      "O2": false,
+      "failure": "line75 mixed width/sign group rejection unexpectedly succeeds",
+      "owner": "model/run + reviewer; current reviewed group contract promises no width/sign join validation"
+    },
+    "bindings-macro-merge": {
+      "interpreter": true,
+      "O0": true,
+      "O2": true
+    }
+  },
+  "remaining_opaque_scope": [],
+  "remaining_required_contracts": "docs/specs/questions/generator-c-model-remaining.md",
+  "combined_gate": "all five original cases/all fifteen modes remain required; any failure forces nonzero; no golden/expected-output/fixture changes",
+  "native_artifact_post_run_pins": {
+    "target/debug/jaic": {
+      "sha256": "3ec2ef4f0b5665759c5453e03e0fcc1aefebe70a1b6f579e7d682aed457a59b8",
+      "magic": "cffaedfe",
+      "bytes": 20684912
+    },
+    "target/debug/jailint": {
+      "sha256": "49a90af724bade95a98a47a27acbcb47b91eec5cac7527c893dd4c53d3cbc0a2",
+      "magic": "cffaedfe",
+      "bytes": 20025216
+    },
+    "target/generator-opaque-printer-o0": {
+      "sha256": "a5e633fecd206e36f9c5873dab43646b4b7bfda737f009eb71a1253b2729f512",
+      "magic": "cffaedfe",
+      "bytes": 1690664
+    },
+    "target/generator-opaque-printer-o2": {
+      "sha256": "f29717a1e2749e016e2d88bc96d65deaccb5c28c8f1db5e61336052bb56491ee",
+      "magic": "cffaedfe",
+      "bytes": 1272232
+    },
+    "target/generator-opaque-roundtrip-o0": {
+      "sha256": "a8586e31e2dfdb6c6d3e9494f5438f48ca72d9704153a82b912ec134624a9447",
+      "magic": "cffaedfe",
+      "bytes": 277040
+    },
+    "target/generator-opaque-roundtrip-o2": {
+      "sha256": "0b610018601025d7f4ad612efe1a0d0ee8820d8a569a1044b2296276b532ebb2",
+      "magic": "cffaedfe",
+      "bytes": 196848
+    },
+    "target/opaque-sdk-control-o0": {
+      "sha256": "6ffd86f086842d66be34111ab8413b1a1d5f045baec72f42aa7512939a556c61",
+      "magic": "cffaedfe",
+      "bytes": 50552
+    },
+    "target/opaque-sdk-control-o2": {
+      "sha256": "0a007d93f52e2cd82034d121d13e9dffa6b24432c56829080040f4cfbfaa14ad",
+      "magic": "cffaedfe",
+      "bytes": 50552
+    },
+    "target/libdeveloper_tools_opaque.dylib": {
+      "sha256": "5fcea0cd2146e7883c1fc823dad4c50a44f204a5ffc0234c5e8be3d4e703fbc3",
+      "magic": "cffaedfe",
+      "bytes": 33856
+    }
+  },
+  "capture_scope": "current compiler/stdlib dependencies excluding unrelated Input and Extensions/Http; formatter Jai_Format/Args retained; actual checked paths all under immutable source",
+  "historical_failures_retained": [
+    "capture-sw6vm0mk: metadata reducer omission diagnostic absent from initial harness expectation",
+    "capture-qslogsdt: failed-builder string extraction expectation corrected via Basic contract",
+    "cursor-proof-r8o9h4n3: independent native completeness proved then exact original printer failure",
+    "capture-z65493ik/capture-input-failure.json: concurrent unrelated Input edit, rejected before tests",
+    "capture-zb_pj8ed/capture-input-failure.json: concurrent unrelated Http edit, rejected before tests",
+    "capture-m0cfdmxu: opaque actual functionality pass; nine required original failures retained"
+  ],
+  "native_lease": "released; all own children reaped",
+  "integration_qualifications": [
+    "Adopt reviewed incomplete-record docs independently; their authoritative bytes are dependency hashes, not overwritten in this patch.",
+    "Generator-model enum lookup prerequisite already integrated; unchanged by this lane.",
+    "No Basic formatter, macro grouping/evaluation, enum constructor/lookup or general loader edit.",
+    "Root must route/resolve three original contract questions and rerun combined required C-model gate; no CI green claim."
+  ]
+}
