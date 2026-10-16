@@ -779,3 +779,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [S128 comparisons and inherited Apollo operators](specs/stdlib/README.md): signed word-boundary semantics, generic unary repair, exact proof and limits; [questions](specs/stdlib/s128-comparison-questions.md).
 
 - [Typed polymorphic struct argument inference](compiler/typed-struct-arguments.md): parameter identity, preserved declared types, independent RED/green checks and [oracle questions](specs/typed-struct-argument-questions.md).
+
+[HTTP WASM termination controls](extensions/http-wasm-test-termination.md) retain failure counters/nonzero exits through real WASI/browser hosts; portable codec assertions remain unconditional and live-clock checks remain native.
