@@ -1,5 +1,9 @@
 # Developer documentation
 
+- [Basic underscore classification repair](portable-ascii-predicate-fix.md):
+  exhaustive reviewed ASCII byte-domain assertions and
+  [focused verification](status/shared-ascii-checkpoint.json).
+
 - [Signed Apollo fractional conversion repair](status/shared-time-float-checkpoint.json):
   nonzero positive/negative femtoseconds, checked whole-second range and
   retained time/calendar assertions; final combined snapshot follows active fixes.
