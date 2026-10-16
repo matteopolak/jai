@@ -1,0 +1,330 @@
+{
+  "status": "READY_NARROW_INTERPRETER_PATCH_LINUX_NATIVE_REPLAY_REQUIRED",
+  "approved_base": "ac174e805660ce4d8f4744d2be9f6842b60edc24",
+  "production_files": {
+    "crates/jaic/src/interp/threads.rs": "bd94b1e3d595f15ad054dbc513d3b3f4cce9f89942089656fbed435e80b02fb0",
+    "crates/jaic/src/interp/threads_inline.rs": "3f6aa1445b21cb6b916055bb381c82ac841a8e716042d0f61d84870eb21563b7",
+    "crates/jaic/src/interp/threads/pthread.rs": "71d1ad33fc13124cbbf421f2e2e9a37c6dc66f7f1ffcb3513889358be10fcce6"
+  },
+  "test_files": {
+    "crates/jaic/tests/cleanroom_pthread_names.rs": "379521f7d277656c624d04a318f3883c0bfa70662acf11d566a5f304bc2e4e75",
+    "tests/compiler-semantics/pthread-names.jai": "65edfff27e250437af4840b759eec599f6b4f78095608db27464b8d69ba77942"
+  },
+  "tools": {
+    "jaic": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jaic",
+      "sha256": "32ed0bd76ffbb07b72212be4386c869be8e9fc6c44becbfa179173ca792aad79"
+    },
+    "jailint": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jailint",
+      "sha256": "a7adc4e39574e55b16dcc6bae880e88bb5e1fb44b9de385ee0fe55cc10e47044"
+    }
+  },
+  "unchanged_guards": {
+    "scope_diff_empty": [
+      "crates/jaic/src/sema",
+      "crates/jaic/src/ir.rs",
+      "crates/jaic/src/interp/mod.rs",
+      "crates/jaic/src/interp/native.rs",
+      "stdlib"
+    ],
+    "convert_sha256": "54b19831a1a2e10337476fcec4b2f642516a3e5ca6f61b14310796186b3dd016",
+    "default_type_structs_sha256": "6e53172c2398eb1832a894fb8b5a6e94c6d35bb0b9cee3ccc9f208c4e0035031",
+    "withdrawn_any_prototype_absent": true
+  },
+  "results": {
+    "baseline_dispatch_tests": "2 failed: missing routes, no native invalid call executed",
+    "pure_dispatch_tests": "5 passed",
+    "source_and_strict_lint_contexts": [
+      {
+        "kind": "check",
+        "os": "macos",
+        "cpu": "x64",
+        "command": [
+          "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jaic",
+          "-check",
+          "-os",
+          "macos",
+          "-cpu",
+          "x64",
+          "-add",
+          "DARWIN :: true;",
+          "-add",
+          "#program_export \"probe\" probe :: () -> s64 #c_call { return check(); }",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/tests/compiler-semantics/pthread-names.jai"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "kind": "lint",
+        "os": "macos",
+        "cpu": "x64",
+        "command": [
+          "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jailint",
+          "-D",
+          "warnings",
+          "-os",
+          "macos",
+          "-cpu",
+          "x64",
+          "--add",
+          "DARWIN :: true;",
+          "--add",
+          "#program_export \"probe\" probe :: () -> s64 #c_call { return check(); }",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/tests/compiler-semantics/pthread-names.jai"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "kind": "check",
+        "os": "macos",
+        "cpu": "arm64",
+        "command": [
+          "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jaic",
+          "-check",
+          "-os",
+          "macos",
+          "-cpu",
+          "arm64",
+          "-add",
+          "DARWIN :: true;",
+          "-add",
+          "#program_export \"probe\" probe :: () -> s64 #c_call { return check(); }",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/tests/compiler-semantics/pthread-names.jai"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "kind": "lint",
+        "os": "macos",
+        "cpu": "arm64",
+        "command": [
+          "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jailint",
+          "-D",
+          "warnings",
+          "-os",
+          "macos",
+          "-cpu",
+          "arm64",
+          "--add",
+          "DARWIN :: true;",
+          "--add",
+          "#program_export \"probe\" probe :: () -> s64 #c_call { return check(); }",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/tests/compiler-semantics/pthread-names.jai"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "kind": "check",
+        "os": "linux",
+        "cpu": "x64",
+        "command": [
+          "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jaic",
+          "-check",
+          "-os",
+          "linux",
+          "-cpu",
+          "x64",
+          "-add",
+          "DARWIN :: false;",
+          "-add",
+          "#program_export \"probe\" probe :: () -> s64 #c_call { return check(); }",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/tests/compiler-semantics/pthread-names.jai"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "kind": "lint",
+        "os": "linux",
+        "cpu": "x64",
+        "command": [
+          "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jailint",
+          "-D",
+          "warnings",
+          "-os",
+          "linux",
+          "-cpu",
+          "x64",
+          "--add",
+          "DARWIN :: false;",
+          "--add",
+          "#program_export \"probe\" probe :: () -> s64 #c_call { return check(); }",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/tests/compiler-semantics/pthread-names.jai"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "kind": "check",
+        "os": "linux",
+        "cpu": "arm64",
+        "command": [
+          "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jaic",
+          "-check",
+          "-os",
+          "linux",
+          "-cpu",
+          "arm64",
+          "-add",
+          "DARWIN :: false;",
+          "-add",
+          "#program_export \"probe\" probe :: () -> s64 #c_call { return check(); }",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/tests/compiler-semantics/pthread-names.jai"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "kind": "lint",
+        "os": "linux",
+        "cpu": "arm64",
+        "command": [
+          "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jailint",
+          "-D",
+          "warnings",
+          "-os",
+          "linux",
+          "-cpu",
+          "arm64",
+          "--add",
+          "DARWIN :: false;",
+          "--add",
+          "#program_export \"probe\" probe :: () -> s64 #c_call { return check(); }",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/tests/compiler-semantics/pthread-names.jai"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "bounded_formatter_and_sdk_test": [
+      {
+        "command": [
+          "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jaic",
+          "-interp",
+          "-no_workspace_output",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/jaifmt/main.jai",
+          "--",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/tests/compiler-semantics/pthread-names.jai"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/jaic",
+          "-interp",
+          "-no_workspace_output",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/jaifmt/main.jai",
+          "--",
+          "--check",
+          "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/tests/compiler-semantics/pthread-names.jai"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "-p",
+          "jaic",
+          "--test",
+          "cleanroom_pthread_names",
+          "--",
+          "--test-threads=1"
+        ],
+        "exit": 0,
+        "stdout": "\nrunning 1 test\ntest current_and_managed_worker_names_round_trip_through_the_sdk ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+        "stderr": "   Compiling jaic v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-pthread-names-ac174/crates/jaic)\n    Finished `test` profile [unoptimized] target(s) in 1.99s\n     Running tests/cleanroom_pthread_names.rs (/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/target/debug/build/jaic/b700d4e9435f2a31/out/cleanroom_pthread_names-b700d4e9435f2a31)\n"
+      }
+    ],
+    "rustfmt": "scoped check passed",
+    "clippy": "-D warnings passed"
+  },
+  "captures": {
+    "core-red.txt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/core-red.txt",
+      "sha256": "2c64fac0cec064ce312da09b523abd32f1f8f5ed61fa5b723115408e946a8231"
+    },
+    "core-green.txt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/core-green.txt",
+      "sha256": "d2e665ab87cc6919dd03fb24f6af87747c57809820486985ed98f6d56fbc822e"
+    },
+    "core-final.txt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/core-final.txt",
+      "sha256": "73ec808141b882b84940b6b2b1082f5b5ac36be843bf644dd34889737f25720f"
+    },
+    "clippy.txt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/clippy.txt",
+      "sha256": "f1d5151cded0e8c2dac1e46def5d2756c71bbf029ec2f31c57d75d496d159cdf"
+    },
+    "clippy-final.txt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/clippy-final.txt",
+      "sha256": "9950d4864b8dcc1aa84a05acb64d2ca8217afa2eac3446caed3c6a6773a2cd06"
+    },
+    "native-sdk-test.txt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/native-sdk-test.txt",
+      "sha256": "956f25f1102f1dd8302178624dc74da382a473c337b64a4bb4cb69e6ebd25198"
+    },
+    "native-sdk-staged.txt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/native-sdk-staged.txt",
+      "sha256": "e0ea0cb9eb81bc42a778c86d9c35ab30e4b1d999e2d6af564dcb8b08d349e31b"
+    },
+    "native-sdk-corrected.txt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/native-sdk-corrected.txt",
+      "sha256": "d9f43c4c2303b43fd37126eb9c7994e9c3a7e8fa703a4b6e648444594f79dfb5"
+    },
+    "bounded-native-proof.json": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/bounded-native-proof.json",
+      "sha256": "6aceea8ebd2658cbab0fc8ce606dc330284f513cfda47f90c2f0cbf4b1b90bd6"
+    },
+    "source-lint-proof.json": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/source-lint-proof.json",
+      "sha256": "ea414f621787ba812cf040b6c50240362fbc749b9455079d8e56c113e3039873"
+    },
+    "build-final.txt": {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/pthread-names-ac174/capture/build-final.txt",
+      "sha256": "a727e6e3d61b3d7bfb0a36216a81c30cab978bfd376f8e00d573cba12bcd7691"
+    }
+  },
+  "sdk_contracts": {
+    "linux": "https://man7.org/linux/man-pages/man3/pthread_setname_np.3.html",
+    "mac_headers": {
+      "pthread/pthread.h": "9d621c730d1d96b600893b0e3e4c45822a24d565e7b6b166973c41a6a2eb02e7",
+      "sys/proc_info.h": "e427fa96b348537b21552b9de71e01039410bcad2cedee5584c5e5fddafd70fc"
+    }
+  },
+  "deviations": [
+    "Initial Clippy redundant usize cast rejected and corrected without lint suppression.",
+    "Initial SDK test incorrectly required Linux small-buffer errors on macOS; stage4 failure isolated and corrected to actual SDK empty terminated result.",
+    "No compiler semantic change to return values was needed for that test correction."
+  ],
+  "unsupported": [
+    "Inline scheduler pthread naming: explicit diagnostic, no OS identity.",
+    "Cross-target interpreter pthread naming: explicit diagnostic.",
+    "Other host platforms: explicit diagnostic."
+  ],
+  "proof_limits": [
+    "Actual runtime proof is macOS host only. Linux ARM CI must replay the original thread/audio failures after this and the separate stdlib ABI repair.",
+    "Android and adopted-callback names have no direct runtime proof in this receipt.",
+    "No native fault site inferred for separate native SIGSEGV.",
+    "No deliberate fault/GUI/network/broad corpus/benchmark/reference executable executed."
+  ]
+}
