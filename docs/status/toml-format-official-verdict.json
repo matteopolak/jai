@@ -1,0 +1,75 @@
+{
+  "reference": "official Jai0.2.030 native MacARM64",
+  "inputs": {
+    "numeric-variants.jai": "2a4f79e9839cfa2df62e2a3bbe463360354d28f71c2ae18616976e1e06c79b1d",
+    "union-format.jai": "5e1cd34106879bbcadb2d5ab592ba5295adfd70a1b3adbf6b9f906a6435ecffe",
+    "tagged-choice-types.jai": "1f307c6b3e1a7873de5370de8822688ed01cf5dea43f00ac97adfb4b245bf39f"
+  },
+  "cases": {
+    "numeric-variants": {
+      "compile": {
+        "exit_code": 0,
+        "timeout": false,
+        "seconds": 0.704
+      },
+      "runs": {
+        "base": {
+          "execution": {
+            "exit_code": 0,
+            "timeout": false,
+            "seconds": 0.143
+          },
+          "assertion_reported": false,
+          "output": "base numeric formatting ok\n"
+        },
+        "metadata": {
+          "execution": {
+            "exit_code": 0,
+            "timeout": false,
+            "seconds": 0.01
+          },
+          "assertion_reported": false,
+          "output": "numeric variant metadata/storage ok\n"
+        },
+        "float": {
+          "execution": {
+            "exit_code": 0,
+            "timeout": false,
+            "seconds": 0.01
+          },
+          "assertion_reported": false,
+          "output": "variant float: 8.50\n"
+        },
+        "int": {
+          "execution": {
+            "exit_code": 0,
+            "timeout": false,
+            "seconds": 0.011
+          },
+          "assertion_reported": false,
+          "output": "variant integer: 29\n"
+        }
+      }
+    },
+    "union-format": {
+      "compile": {
+        "exit_code": 0,
+        "timeout": false,
+        "seconds": 0.297
+      },
+      "runs": {
+        "default": {
+          "execution": {
+            "exit_code": 0,
+            "timeout": false,
+            "seconds": 0.071
+          },
+          "assertion_reported": false,
+          "output": "count short: {COUNT, 37}\ntext short: {TEXT, chosen}\ncount long: {COUNT, 37}\ntext long: {TEXT, chosen}\n"
+        }
+      }
+    }
+  },
+  "evidence": "root isolated official native execution; raw logs and SDK excluded from clean workers",
+  "scope_limit": "Valid tagged COUNT/TEXT only; no malformed tag policy inferred. MacARM64 native only."
+}
