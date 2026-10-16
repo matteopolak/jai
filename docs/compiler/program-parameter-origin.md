@@ -48,11 +48,13 @@ root/numerics integration check; root's official child-root acceptance supplies
 the reviewed contract, not a claim that this worker executed that protocol.
 No native executable, GUI, deliberate fault or benchmark program was run.
 
-The flat argument binding representation remains unchanged. This repair
+At the initial checkpoint, the flat argument binding representation remained unchanged. That repair
 validates second-list origin and preserves existing duplicate/mixed-binding
 rejections; it does not claim a complete new argument-list category checker.
 Code export/source printing belongs to another owner. That owner has been
 notified to preserve the new boundary marker during its round-trip work; no
-exporter or printer functions are modified here. IDE discovery memoization,
+exporter or printer functions were modified at that checkpoint. The
+[import argument-group follow-up](import-argument-groups.md) now supplies the
+owned export/printing propagation and declared-slot checks. IDE discovery memoization,
 linker options, pthread routing, default-Type initialization and Any boxing are
 unchanged from the accepted base.
