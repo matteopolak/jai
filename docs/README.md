@@ -1,5 +1,9 @@
 # Developer documentation
 
+- [Reviewed runtime instrumentation defaults](portable-runtime-instrumentation.md):
+  real system-entry calls, no-entry configurations and
+  [27 scoped checks](status/shared-runtime-hooks-checkpoint.json).
+
 - [ABI8 allocator metadata reservation](native/rpmalloc-metadata-reservations.md):
   transactional SDK ownership, allocation-free operation scopes and
   [scoped verification](status/shared-rpmalloc-metadata-checkpoint.json).

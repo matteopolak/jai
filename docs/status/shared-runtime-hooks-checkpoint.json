@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "source_files": {
+    "stdlib/Runtime_Support/module.jai": "502e7452432bc948298925ef39c0b132b4ab96a5de55dd97c9459860906a2318",
+    "tests/portable-stdlib/runtime-instrumentation-contracts.jai": "722181f67f23b3d92903e73d966c3317e777aa61f6ac2b17c7de4b59d6dd55b0",
+    "tests/portable-stdlib/runtime-instrumentation-no-entry.jai": "7e4e084a57b8390b271870518abd5410fc372283532401cf961ae425332d2305",
+    "tools/check_portable_runtime_hooks_shared.py": "33171108b5e7ff0c93841f75ff3d5373a07e8995c23a8429112306b0750d8b72",
+    "docs/portable-runtime-instrumentation.md": "052fcf75d372848c3c5c2027d2940d3b8e645e1adce32688666549e5a6ad27c1"
+  },
+  "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/proof-553afc98/target/runtime-hooks-shared-emugv0_v/results.json",
+  "passed": 27,
+  "failed": 0,
+  "ignored": 0,
+  "scope": "actual MacARM64 default entry and no-entry object configurations, O0IR order, six desktop source checks",
+  "contract": "reviewed empty public defaults called first then second in initialized entry; no fabricated insertion API",
+  "remaining": [
+    "nativeWindows/Linux entry execution",
+    "crash-enabled startup native ordering",
+    "compiler hook-body insertion mechanism unspecified"
+  ]
+}
