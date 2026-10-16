@@ -837,3 +837,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Windows interpreter import providers](compiler/windows-import-providers.md): COFF metadata and shared SDK discovery; [integration review](status/windows-import-integration-review.json).
 
 - [Windows D3DCompiler provider diagnosis](native/windows-d3dcompiler-provider.md): actual SDK selection and required native probes; [integration review](status/windows-d3dcompiler-integration-review.json).
+
+- [LLVM-free WASM CI triage](compiler/wasm-ci-triage.md): real C-bridge I/O fixtures, native-only guards and required graphical tour gap; [integration review](status/wasm-ci-integration-review.json).

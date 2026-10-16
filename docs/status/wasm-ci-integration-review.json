@@ -1,0 +1,11 @@
+{
+  "producer_commit": "7e7ab392",
+  "exact_export_sha256": "470131ae016725c4e252729376646ca6c7b0a9f38194e2ba2716598686efb243",
+  "local_checks": {
+    "node_syntax": 4,
+    "failed": 0
+  },
+  "actual_wasm_replay_local": false,
+  "producer_actual_wasm_evidence": "Supplied docs/status/wasm-ci-triage.json; scoped build excluded Extensions, not full product acceptance",
+  "preserved_required_failure": "Full graphical tour remains RED; no native-only public API fabricated"
+}
