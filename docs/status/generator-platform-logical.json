@@ -1,0 +1,56 @@
+{
+  "owner": "canonical-platform-provider",
+  "status": "ready_for_integration",
+  "receipt": "artifacts/local-verification-generator-platform/logical-immutable-cj40h45_/verification.json",
+  "commands_passed": 43,
+  "commands_failed": 0,
+  "immutable_inputs": 1780,
+  "source_unchanged": true,
+  "compiler_sha256": "a8daa981604883e8ac570d116bc92fec38b94dfba0516873f58f700533e0e65c",
+  "production_names": [
+    "os_load_library"
+  ],
+  "production_path": "stdlib/internal/developer-tools/generator-platform.jai",
+  "ready_files": {
+    "stdlib/internal/developer-tools/generator-platform.jai": "e8174f1b94d027bb24dd9250895ee6d7149caf1d27f6b2af657d8490e0cc97ae",
+    "tools/check_generator_platform_logical.py": "5ed3eafe9cae25c7f8842da1544a2055a129cd5f0892c72d7518b1ba413b349a",
+    "docs/generator-platform-logical.md": "d4465ca25ea778ba8f01b058ace5fa48020889662e52d338e6c57d2f7e5521bf",
+    "tests/developer-tools/generator-platform-logical-consumer.jai": "36e0e132d55a780d5ee82471be06a5f44ae2a7dda817327946cc731eef6bdbe7",
+    "tests/developer-tools/generator-platform-logical-oracle.c": "89c94b224c8d4cedeb1c966668de4d56486ffae4fd95c1c7e94461617a430a51",
+    "tests/developer-tools/generator-platform-logical-output.jai": "f54ca4161e54a5ab0be2930bd60786ec299774cd4962dc7e5d13d92990b6520b",
+    "tests/developer-tools/generator-platform-logical-roundtrip.jai": "b759e3cbdeeffc4f5166ac871c9111a3bf117d5b9eaa1c1930e4596b7d4d66dd",
+    "tests/developer-tools/generator-platform-logical-target.jai": "4e64a93d9ebc985b1883fbbe10d128837c8307c60fa387be69357709da3991ad",
+    "tests/developer-tools/generator-platform-logical.c": "def65f8fd4b36373002d0f396559714891b9881acdfa688111b3343b80a12d41",
+    "tests/developer-tools/generator-platform-logical.h": "135b66e686d0fe5be5a6c8bd0b87995e16680d063f38fd2eff9ca7ac6deb6c68",
+    "tests/developer-tools/generator-platform-logical.jai": "dda266c8b19f52e67e8ba5844ced428d50bb1a2595c9e4367c379b0f16d955a6"
+  },
+  "coordinated_docs": [
+    "docs/README.md",
+    "docs/worker-inbox.md"
+  ],
+  "dependencies": {
+    "driver": "tooling-owned binding-canonical-driver.jai modifier/prefix fix; no provider workaround",
+    "session": "existing model/run-owned canonical Session/Library_Info; unchanged"
+  },
+  "native_execution": [
+    "macOS ARM64 interpreter/native O0/O2",
+    "official SDK C O0/O2"
+  ],
+  "source_checked_only": [
+    "macos x64/arm64",
+    "linux x64/arm64",
+    "windows x64/arm64"
+  ],
+  "unverified": [
+    "other native platforms",
+    "absolute Jai logical/suffixed literals",
+    "arbitrary working/source-directory relocation",
+    "nonnumeric version grammar",
+    "canonical Session-driven provider native-handle retirement; separate model/run ownership observation"
+  ],
+  "git_actor": "integration_only",
+  "release": "held",
+  "unsupported": [
+    "Apple .tbd text-stub loading is not implemented by the canonical provider"
+  ]
+}
