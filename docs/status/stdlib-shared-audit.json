@@ -1,6 +1,6 @@
 {
   "worker": "portable-stdlib",
-  "updated_utc": "2026-10-16T00:27:09.458113+00:00",
+  "updated_utc": "2026-10-16T00:37:10.173963+00:00",
   "shared_head_at_report": "a4d28b63648ebe4365a717e5f24a411c09df829e",
   "checkpoint_adoption": "Production adoption observed; facade differs and transition tool/reproducer reconciliation requested via inbox. No cherry-pick/index changes by this owner.",
   "historical_checkpoint": "feae909e201564e69d7218e324dd9c6bed88df85",
@@ -12225,13 +12225,14 @@
       "limits": "Native Mac only; Windows/Linux six source gates are not native SDK validation."
     },
     "shared_memory_channel": {
-      "receipt": "stdlib/shared-target/channel-lifecycle-qg348z45",
+      "receipt": "stdlib/shared-target/channel-lifecycle-z1yaa70_",
       "runtime_passed": 18,
       "native_builds_passed": 4,
       "source_targets_passed": 6,
       "full_owned_lint_contexts_passed": 6,
       "scope": "Zero/small packets, wrap, actual separate-process IPC, successful release, both default assertion configurations verified by explicit side-effect control.",
-      "limits": "Native Mac only; failure-retention and duplicate/reconnect policy remain precise gaps; no production channel fix claimed."
+      "limits": "Native Mac only; failure-retention and duplicate/reconnect policy remain precise gaps; no production channel fix claimed.",
+      "cleanup": "All six actual native shm_unlink outcomes recorded -1/ENOENT; every other errno fails run; previous program rows retained."
     },
     "default_current_dependency": {
       "receipt": "stdlib/shared-target/default-shared-1__m10vx",
@@ -12244,12 +12245,12 @@
       "source_build": "cargo build --locked --manifest-path ../compiler/Cargo.toml --bin jaic completed in assigned own target before test."
     },
     "codec_contracts": {
-      "receipt": "stdlib/shared-target/codecs-shared-ln556uns",
+      "receipt": "stdlib/shared-target/codecs-shared-6qmubxuk",
       "runtime_passed": 9,
       "native_builds_passed": 6,
       "source_targets_passed": 6,
       "full_owned_lint_contexts_passed": 6,
-      "constant_mutation_negative": "Rejected because exported decoder table constant.",
+      "constant_mutation_negative": "Exact single cannot-assign-into-constant B.BASE64_DECODER_TABLE diagnostic and failing status required; broad keyword acceptance removed. All positive baseline runs retained and rerun.",
       "scope": "Reviewed full table mapping/tails/custom tables and alphabets/CRC vectors/PCG state+global/all overloads. No production change; native Mac only."
     },
     "python_owned_runners": "ruff check and ruff format --check pass for unmapping/channel/default/codecs runners; formatter preserved all four Python ASTs exactly.",
@@ -12364,6 +12365,14 @@
     {
       "location": "tests/portable-stdlib/codec-contracts.jai",
       "change": "Draft CRC oracle omitted parentheses around cast before shift; parenthesizing resolves exit7 without production change. Final removes mirrored Jai algorithm in favor of independent Python polynomial-derived bytes0..255 vector."
+    },
+    {
+      "location": "tools/check_portable_channel_shared.py",
+      "change": "Integration review found ignored final native shm_unlink status. Now exact result/errno are recorded, only success/ENOENT accepted; full real IPC rerun passes, no production cleanup gap waived."
+    },
+    {
+      "location": "tools/check_portable_codecs_shared.py",
+      "change": "Integration review found broad constant-keyword negative predicate. Now exact sole immutable-table assignment diagnostic required; full corrected nine-execution suite passes unchanged positive source."
     }
   ],
   "deviations": [

@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "source_parent": "8d9ff408d6e922112986d21347f49c20aeb50d6a",
+  "production_changes": false,
+  "source_overlay": false,
+  "other_native_platforms": "unverified; source/lint only",
+  "batches": {
+    "channel": {
+      "passed": 47,
+      "failed": 0,
+      "ignored": 0,
+      "runtime_passed": 18,
+      "native_build_passed": 4,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target/channel-lifecycle-x7z_sslw",
+      "compiler_sha256": "db3622229f85aff10ba3da78fad5b0d16f0d13e944c07bb30439e1b74180c514",
+      "source_and_fixture_guards": "unchanged",
+      "cleanup": [
+        {
+          "name": "enabled:interp:cleanup",
+          "sdk_result": -1,
+          "errno": 2,
+          "passed": true
+        },
+        {
+          "name": "enabled:O0:cleanup",
+          "sdk_result": -1,
+          "errno": 2,
+          "passed": true
+        },
+        {
+          "name": "enabled:O2:cleanup",
+          "sdk_result": -1,
+          "errno": 2,
+          "passed": true
+        },
+        {
+          "name": "disabled:interp:cleanup",
+          "sdk_result": -1,
+          "errno": 2,
+          "passed": true
+        },
+        {
+          "name": "disabled:O0:cleanup",
+          "sdk_result": -1,
+          "errno": 2,
+          "passed": true
+        },
+        {
+          "name": "disabled:O2:cleanup",
+          "sdk_result": -1,
+          "errno": 2,
+          "passed": true
+        }
+      ],
+      "negative_diagnostic": null
+    },
+    "codecs": {
+      "passed": 39,
+      "failed": 0,
+      "ignored": 0,
+      "runtime_passed": 9,
+      "native_build_passed": 6,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/target/codecs-shared-zxw_d11i",
+      "compiler_sha256": "db3622229f85aff10ba3da78fad5b0d16f0d13e944c07bb30439e1b74180c514",
+      "source_and_fixture_guards": "unchanged",
+      "cleanup": null,
+      "negative_diagnostic": "cannot assign into the constant B.BASE64_DECODER_TABLE; one exact error/nonzero status/empty stdout"
+    }
+  },
+  "source_sha256": {
+    "tests/portable-stdlib/channel-lifecycle.jai": "779df35e2ccd9a4855fe62da14c31aab2e228b0382e41e07dd34ba9d8969f460",
+    "tests/portable-stdlib/codec-contracts.jai": "d10f9b16698976502480cca4a95bbf675d95e31299beba4780e442017be49f90",
+    "tests/portable-stdlib/negative/base64-decoder-store.jai": "5385651ad0054def84fcd3776b8cb8981374015f75574193b518e468d36f205c",
+    "tools/check_portable_channel_shared.py": "a67fb4b8b6e3371402e556db74a7cc6457b77287e0de5e49818fb4f1c059c535",
+    "tools/check_portable_codecs_shared.py": "ddf1544ebfc06104237827a0381cfce31eed286d3ee098c19c410102d1c87b0c",
+    "docs/portable-shared-channel.md": "c6de0b4fa5aaf589d447cbf3129b8fd16b7d1ab0c57a69def14bc2f6c961794a",
+    "docs/portable-codec-contracts.md": "b0c5a9f3b1b449a831252ff1cb99c068a0b53e941580c58dafd69ba4660f9e3b",
+    "docs/status/stdlib-shared-audit.json": "2ec9b2a9bb29695a9c74bd8456df54dbd98c62a0fd392fb57650bb4f880cb2df"
+  },
+  "remaining": [
+    "Five real production channel cleanup/retry gaps remain; ordinary IPC success does not close them.",
+    "Seven Windows channel rows await native verification.",
+    "Earlier IPC runner ignored cleanup status and codec matcher accepted generic constant errors; final corrected runs supersede those limited receipts without altering production."
+  ]
+}
