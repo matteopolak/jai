@@ -1,5 +1,36 @@
 # Clean-room integration verification
 
+## Active shared candidate10d9b3f8
+
+Active worktree: `/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared`,
+branch `codex/stdlib-shared`. Product snapshot
+`10d9b3f82e99a95f8fa2398d6b3bd0add636e980` is frozen under
+`artifacts/shared-integration/frozen-10d9b3f8`. Its exact compiler SHA256 is
+`b04d710a6736c9d1feeea6dd6b9bc07be41c5f84bd6f2c4e26fc04a94a6b7759`.
+The [candidate receipt](../status/shared-candidate-10d9b3f8.json) records all
+four tools, source trees,4281 committed allowed inputs,242 native assets,
+SDK build commands and native search order. It includes the stable canonical
+generator model/run, live GL projection, full authorized compiler chain and
+missing named-while prerequisite. Active allocator/driver edits are excluded.
+Existing Extensions remain byte-identical to candidate06.
+
+The actual unchanged jaifmt is newly source-built against the combined production
+library. Seven real SDK/native helper builds pass. Native caches/rpmalloc ABI1
+are reused only after source/hash identity checks. Complete workspace verification
+starts with the unchanged command:
+
+```
+cargo test --locked --workspace --all-targets --no-fail-fast -- --test-threads=1
+```
+
+It runs from the immutable candidate with a unique local filesystem Cargo/output
+directory. Current T7 debugger launch stalls are retained as failures, including
+the identical actual C control. This storage change is reported, with no test
+assertion edits. The [fresh machine report](../status/shared-baseline-10d9b3f8.json)
+tracks running/completed counts; the current catalogue follows serially.
+Original400 corpus and Focus remain coordinator-owned, and no success is inferred.
+Older failed aggregate measurements below and their receipts remain unchanged.
+
 ## Shared tree, 2026-10-15
 
 Completed native ARM64 source snapshot `6295584c`: workspace **877 passed,

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "snapshot": "10d9b3f82e99a95f8fa2398d6b3bd0add636e980",
+  "candidate_path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/artifacts/shared-integration/frozen-10d9b3f8",
+  "ref": "codex/stdlib-shared",
+  "status": "workspace-running-catalogue-pending",
+  "workspace": {
+    "command": "cargo test --locked --workspace --all-targets --no-fail-fast -- --test-threads=1",
+    "passed": null,
+    "failed": null,
+    "ignored": null,
+    "failure_names": [],
+    "counts_status": "not yet complete",
+    "target": "macos-arm64",
+    "build_directory": "artifacts/shared-integration/mac-baseline-target",
+    "report": "artifacts/shared-integration/workspace-10d9b3f8.json"
+  },
+  "catalogue": {
+    "status": "pending serialized workspace completion"
+  },
+  "older_failed_aggregates": "06e8ea96 and6295584c reports preserved unchanged",
+  "original_corpus_and_focus": "coordinator-owned; no success claimed"
+}

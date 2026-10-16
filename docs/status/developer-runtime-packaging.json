@@ -100,7 +100,11 @@
     "source_parent": "209c2bca",
     "interpreter": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
     "version": "3.9",
-    "passed": [
+    "passed": 9,
+    "failed": 0,
+    "fix": "stream SHA256 in bounded chunks; no Python3.11-only hashlib.file_digest dependency",
+    "command": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3 -B tools/check_developer_runtime_package.py --sdk /opt/homebrew/opt/llvm --binding-helper <candidate06>/stdlib/internal/developer-tools/clang-bindings/developer-tools-clang --demangler <candidate06>/stdlib/internal/developer-tools/check-native/libdeveloper_tools_check.dylib --output-root <integration>/package-checks",
+    "check_names": [
       "dependency notices/hash identity",
       "loader-relative closure after move",
       "real libclang record generation",
@@ -110,9 +114,6 @@
       "native code signatures after relocation",
       "missing notice rejection",
       "conflicting notice rejection and exact restoration"
-    ],
-    "failed": [],
-    "fix": "stream SHA256 in bounded chunks; no Python3.11-only hashlib.file_digest dependency",
-    "command": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3 -B tools/check_developer_runtime_package.py --sdk /opt/homebrew/opt/llvm --binding-helper <candidate06>/stdlib/internal/developer-tools/clang-bindings/developer-tools-clang --demangler <candidate06>/stdlib/internal/developer-tools/check-native/libdeveloper_tools_check.dylib --output-root <integration>/package-checks"
+    ]
   }
 }

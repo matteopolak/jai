@@ -666,3 +666,5 @@ include exact file/line/source hashes and required platform limits.
 - [Canonical generator runner](generator-run-shared.md), [model](generator-model.md) and [session](generator-session.md): coherent canonical ownership, semantic rejection and dependency cleanup, with [proposed-commit integration verification](status/shared-generator-run-model-verification.json).
 
 - [Combined compiler checkpoint](compiler/shared-mac-checkpoint.md): independent producer-chain adoption, host-clock object proof, code-record defaults and current native debugger limitation.
+
+- [Pinned combined candidate10d9b3f8](status/shared-candidate-10d9b3f8.json) and [fresh baseline status](status/shared-baseline-10d9b3f8.json): committed compiler/library identity, complete development native assets and serialized native ARM64 verification.
