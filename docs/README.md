@@ -839,3 +839,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Windows D3DCompiler provider diagnosis](native/windows-d3dcompiler-provider.md): actual SDK selection and required native probes; [integration review](status/windows-d3dcompiler-integration-review.json).
 
 - [LLVM-free WASM CI triage](compiler/wasm-ci-triage.md): real C-bridge I/O fixtures, native-only guards and required graphical tour gap; [integration review](status/wasm-ci-integration-review.json).
+
+- [Basic null-format triage](basic-null-format.md): confirmed public-input controls and separate compiler default-Type/boxing defects; production formatter and invalid-descriptor assertions remain unchanged.

@@ -1,0 +1,92 @@
+{
+  "owner": "stdlib-portable",
+  "status": "SOURCE_VERIFIED_DEFAULT_TYPE_AND_NULL_LVALUE_COMPILER_DEPENDENCIES",
+  "files": {
+    "tests/portable-stdlib/format-null-any-contract.jai": "32f85d91a827046f37b828393fa7532d3eaf9db858be58d3eda1325efe857b2b",
+    "tests/portable-stdlib/format-null-type-probe.jai": "9e5aacfb7265ac689956586f48aa51a510bc9d9116ecefeaeee4f223018df850",
+    "tests/portable-stdlib/format-null-descriptor-probe.jai": "8694eed7ab88fb6bbe0d56bb4dc99e823998875ac0d93e11308e8758154d7e9d",
+    "tests/portable-stdlib/format-default-type-identity.jai": "5d1f046565c90ff49a95ccccd464df823528815f25816fed14e529b8929b87ba",
+    "tests/portable-stdlib/format-null-lvalue-any-probe.jai": "be470eed703d3e0d4ed472c049ec674263a0526eca87fa3e58f229cebc166b82",
+    "tools/check_basic_null_format.py": "224d645024a2559cc3909c05e1072b350c2cbf76a168101a5c429f49be03b237",
+    "docs/specs/stdlib/portable-null-format-questions.md": "32d61c027fd76952d273d47901ec15a07adfeac74dfde84df9c3dcac75799c36",
+    "docs/basic-null-format.md": "be0ef8441d51f58e9b6c22bf41f794933787aa1bc887fcffe119d9c41affc2b5"
+  },
+  "protected_unchanged": {
+    "stdlib/internal/basic/format.jai": "f90dfbddfa7f385f0483c4bbb19f93fe5b96c84034473e2bea11ec9ab069ce3a",
+    "stdlib/internal/basic/format-type-names.jai": "eb1e5de4e37555a4fc71dbc761d5f48130b8d5057b430b47df54595c9fc47de9",
+    "crates/jaic/src/sema/structs.rs": "70e5fbc11d50470f0b4146c2ea56862c7873d5f87e77dc35b151d994ba1ffbc1",
+    "crates/jaic/src/sema/convert.rs": "54b19831a1a2e10337476fcec4b2f642516a3e5ca6f61b14310796186b3dd016",
+    "stdlib/Basic/module.jai": "9196e3a311487215a1382f4b048def65dc267ecbaaf9d3c50c3c382870d4e6b2",
+    "docs/specs/stdlib/modules/basic.md": "8812491cc768febba6158ce3113ae740ef5a8491819f7f1a7441fd7d03705c70"
+  },
+  "source_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/target/null-format-source-th83sgwt/summary.json",
+  "source_checks": 41,
+  "source_drift": [],
+  "compiler_sha256": "e2c1a7569844675facca7134327b13f21b02521b58d158ddc93244b30a98b29b",
+  "official_facts": {
+    "default_Type_format": {
+      "compiler": "official Jai0.2.030",
+      "build_exit": 0,
+      "native_exit": 0,
+      "stdout": "void\n{void, 0}\n",
+      "identity_comparison_official": "Independent void-main scalar/record/array and explicit controls: compile0 run0, true true true true true true newline"
+    },
+    "null_descriptor": {
+      "build_exit": 0,
+      "native": "SEGV at first null descriptor call; retain invalid-input assertion; second function not independently reached"
+    },
+    "null_lvalue_Any": "Compile0, native nonzero/null fault after 7 newline true newline; unreachable absent; root-sanitized official verdict"
+  },
+  "current_native_evidence": {
+    "identity": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/null-format/identity-formatted/summary.json",
+    "identity_modes": [
+      "interpreter",
+      "native O0",
+      "native O2"
+    ],
+    "identity_exit": 1,
+    "identity_stdout": "false false false false true true\n",
+    "identity_is_required_RED": true,
+    "manual_Any": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/null-format/focused-native/summary.json",
+    "manual_Any_modes": [
+      "interpreter",
+      "native O0",
+      "native O2"
+    ],
+    "manual_Any_exit": 0,
+    "manual_Any_stdout": "ok\n",
+    "current_fixture_program_modes": 6,
+    "historical_preformat_identity_modes": 3,
+    "total_program_executions_this_turn": 9,
+    "GUI_or_deliberate_null_faults": 0,
+    "native_slot": "released; all processes finished"
+  },
+  "compiler_handoff": {
+    "file": "crates/jaic/src/sema/structs.rs",
+    "function": "default_initializer",
+    "finding": "No TypeKind::Type branch; init_default(None) zeroes Type values",
+    "direction": "General void-valued Type default image using existing canonical relocation writer; official identity confirmed",
+    "Rust_modified": false,
+    "Windows_loader_overlap": false,
+    "boxing": {
+      "file": "crates/jaic/src/sema/convert.rs",
+      "function": "box_any",
+      "finding": "Place branch retains address without read; required null-lvalue consumption fault is lost through reviewed typed-Any fallback",
+      "request": "Separate compiler function ownership grant/general consumption repair; preserve manual typed-Any fallback"
+    }
+  },
+  "preserved": {
+    "runtime_failure": "Original Windows117082710709 61/63 remains unresolved",
+    "source_29": "null-format-source-sm96bjck/summary.json",
+    "historical_patch_sha256": "a9fcffefdc4f7cf1c914e2f70d5022b03f6d3c947e016bf305d6f3ce0bcdc69c"
+  },
+  "production_changes": 0,
+  "existing_test_oracle_changes": 0,
+  "remaining": [
+    "Compiler-owned default Type initialization repair",
+    "Integration-owned stale Type golden correction to official void after proper compiler repair",
+    "Compiler-owned general null-lvalue value-consumption/boxing repair; official fault confirmed",
+    "Actual Windows follow-up verification"
+  ],
+  "integration": "Nine NEW paths only; supersedes unadopted prior seven-path probe patch, do not apply both. Integration sole Git index/commit; global README link requested."
+}
