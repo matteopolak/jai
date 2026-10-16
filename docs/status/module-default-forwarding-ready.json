@@ -1,0 +1,56 @@
+{
+  "base": "fa81afd01c17f5fe7605df2a20bb7df4edd3d9e1",
+  "classification": "No established compiler defect under existing reviewed written-list identity contract",
+  "production_paths": [],
+  "production_changes": 0,
+  "source_postimages": {
+    "crates/jaic/tests/cleanroom_module_written_defaults.rs": "6602b279e7212505a81f68626b66fdee32d1b187a03250a81d5efca4794f01b1",
+    "tests/producer-requests/module-written-default-identity/main.jai": "1c379a79c3adec962631693a504b2f76c5eccd92ad7fbf7d092fe3b06ceb003c",
+    "tests/producer-requests/module-written-default-identity/modules/Leaf/module.jai": "5ec797095f1b4a875aee52ac8e866d57ec79fc107ace4d7196b05ae48c80d91b",
+    "tests/producer-requests/module-written-default-identity/modules/Bridge/module.jai": "78020c9ba42cf2c11441b6f921a23482de32486371bc0eb24eed4eddd679ef3f",
+    "docs/compiler/module-default-forwarding-boundary.md": "df81a53046918c314baaeb2239cfac7b0353302a726e7ef0e9608f7e0e3f748c",
+    "docs/specs/questions/module-default-forwarding.md": "76edb718bcbbadd8f71a2ce9b99dc5bb443c6fc9c0d6e9d4272df693fbf5e1d9",
+    "docs/README.md": "533f0bcd88a3487205072dafe0ed9d674ea47c4a1a5041b4f15c25d9990e07dc"
+  },
+  "reviewed_dependencies_sha256": {
+    "docs/specs/jai/modules-workspaces-and-examples.md": "5b55787d2a487d6505c13990c48b393fa6d668ea5cc90b06a838be029493659c",
+    "docs/specs/stdlib/native-bindings-questions.md": "88e53ae5556d4cf6adcf953af865014c2ceb0ebca3e7940bc98852722b3c23da",
+    "docs/compiler/module-instance-identity.md": "3f7472248f80f5576733921bd39686f0f6781ac04ae22f49a229b7c005d482a0"
+  },
+  "guards": {
+    "guarded_files": 1390,
+    "source_drift": [],
+    "module_loader_sha256": "b22f197209c4d3541b329678ddbbce1f02f0caea654552487b20912acd7b1459",
+    "tools": {
+      "jaic": "f068f4927311551c047684b278d323d2413e3ba46782a7574a153a262f08753d",
+      "jailint": "6f55a701d22210553fc1f440baca3b8fd701f6ef6d4ea76005b52186f5108942"
+    }
+  },
+  "checks": {
+    "source_controls": 18,
+    "source_profiles": [
+      "host",
+      "linux-x64",
+      "wasm"
+    ],
+    "new_virtualfs_regressions": 3,
+    "existing_identity_regressions": 2,
+    "rustfmt": "PASS",
+    "rust_item_spacing": "PASS",
+    "clippy_deny_warnings": "PASS",
+    "three_positive_jai_format_and_strict_lint": "PASS"
+  },
+  "admitted_bindings_receipt_sha256": "351225dcac0a1e2ce8842c3e61d46f59432422a434b7408ce77eb39a432eee66",
+  "receipts": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/module-default-identity-fa81/capture",
+  "qualification": [
+    "No new official Jai0.2.030 verdict supplied; root-only build confirmation requested if needed",
+    "Compiler checker built from accepted isolated fa81 source with LLVM disabled; no native or SDK program execution",
+    "Bindings owns selecting complete8 private SDK profile while retaining all12 assertions; no peer fixture edits in this packet",
+    "Current full CI remains integration-owned and is not blocked on this evidence-only packet",
+    "Sealed fa81 numeric packet, main atomic/x86 and LLVM output durability files unchanged"
+  ],
+  "deviations": [
+    "The proposed effective-default normalization was not adopted because it contradicts existing reviewed language contract",
+    "Negative programs live inline in Rust VFS tests and own T7 captures to preserve positive lint-root completeness; initial source-path receipts retained"
+  ]
+}
