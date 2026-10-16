@@ -1,0 +1,37 @@
+{
+  "owner": "portable-asn1-socket / network fixtures",
+  "qualification": "source plus focused non-network interpreter; no native/server/network/fault execution",
+  "ready": "Io child MAIN migration verified; HTTP direct controls verified, historical catalogue failure unresolved",
+  "receipt_directory": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/http-io-program-config-3vj51tb_",
+  "checks": {
+    "source_outcomes": 11,
+    "interpreter_outcomes": 8,
+    "strict_lint_complete_commands": 9,
+    "formatter_check": 1,
+    "app_metadata_regressions": 3
+  },
+  "compiler_source_guard": "stable fresh offline build; frozen binary hashes match rebuild",
+  "frozen_input_hash_mismatches": [],
+  "production_changes": [],
+  "preserved_http_sha256": {
+    "tests/extensions/http-wasm-termination-status.jai": "bf7c3b824e8cb88a40ecbb9b5e20f773fc70df1a494eab18bb5d458a3b8bf11e",
+    "tests/extensions/http-wasm-termination-failure.jai": "aefd99f9b2ac73d96be5c88349dca5a52dc488ea95dd1ab32271df34603506be"
+  },
+  "owned_source_sha256": {
+    "tests/extensions/io-configured-production.jai": "ad149c1a4e5ad09424e8c7799ecd996ce9794bc55aa6cfcf62ffd7d7ddc83d53",
+    "tests/extensions/io-configured-workers.jai": "37d31bdbeafd9905fe313db0238591b5685ea1bd94f58465c0db56625c4393bf",
+    "tests/extensions/io-configuration-protocol/child.jai": "06cab585be6ccf3ce4a0f5e9845e67e215b43d297f114c221b7b10926469273d",
+    "tests/extensions/io-configuration-protocol/main.jai": "93ac633c0afab89aac2e00b5b6d024c36676a9fd6fa1a275c4147166f2b8a7da",
+    "tests/extensions/io-configuration-protocol/modules/Observed_Basic/module.jai": "3c0d0e78d8977dd5f23dc027793ce0a779b5eb9bed882dde5b1d72948b1fc2ef"
+  },
+  "runner_sha256": "4543fffd637d76f417ecb63af41e0ed2b363a70e5579cab5cb635d4bb2de2576",
+  "remaining": [
+    "Root exact sanitized833 HTTP failing argv/source/target/diagnostic records for helper attribution",
+    "Stdlib common Thread helper/parent owner migration, separately routed",
+    "Original Io native workload replay on required targets and profiles",
+    "Original HTTP native/WASI runtime CI replay",
+    "Hyperserve original runtime gate unresolved; no rejected execution retry",
+    "Linux connect retained kernel metadata still required"
+  ],
+  "preserved_target_policy": "App native-only; HTTP codec and termination WASM required; Io native fiber guard unchanged"
+}

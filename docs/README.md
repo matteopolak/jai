@@ -939,3 +939,7 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Allocator capability fixture qualification](status/allocator-caps-integration.json): exact reviewed optimized/fallback target bits; all allocation/identity checks retained. Independent of the broader catalogue batch and its withdrawn emitted-WASM artifact evidence.
 
 - [GetRect sanitizer selection](specs/stdlib/README.md): four reviewed module fixtures share the canonical target policy; six indexed-cohort dispatch controls pass. Scoped index contains only numerics hooks; foundation/Debug peer work remains unstaged. This is selection proof, not sanitizer/native execution.
+
+- [IO child MAIN configuration](extensions/io-http-child-main-configuration.md): exact eight ready postimages verified against admitted packet; original workload/assertions retained. Supplied focused proof is distinct from current full native/HTTP/LSan replay.
+
+- [HTTP route/App ownership](extensions/http-router-ownership.md): exact eight ready postimages verified against admitted packet; original workload/assertions retained. Supplied focused proof is distinct from current full native/HTTP/LSan replay.
