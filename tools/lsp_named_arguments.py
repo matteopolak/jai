@@ -41,7 +41,7 @@ def run(binary, stdlib, output):
     module = output / "modules" / "NamedFixture"
     module.mkdir(parents=True)
     (module / "module.jai").write_text(
-        "visible :: (public_option := false) {}\n#scope_file\nhidden :: (private_option := false) {}\n"
+        "visible :: (public_option := false) {}\nvisible_callback: (public_callback_option := false) -> int;\n#scope_file\nhidden :: (private_option := false) {}\nhidden_callback: (private_callback_option := false) -> int;\n"
     )
     document = output / "main.jai"
     decl = "f :: (first: int, second := 2, third := 3) {}\n"
@@ -117,16 +117,17 @@ def run(binary, stdlib, output):
             "Tools :: struct { emit :: (option := false) {} }\nmain :: () { Tools.emit(op|); }",
             ["option"],
         ),
-        (
-            "callback-no-fabrication",
-            "Holder :: struct { callback: (value: int, option := false) -> int; }\nmain :: () { holder: Holder; holder.callback(op|); }",
-            [],
-        ),
-        (
-            "callback-no-leak",
-            "Holder :: struct { callback: (public_option := false) -> int; }\nOther :: struct { callback: (private_option := false) -> int; }\nmain :: () { h: Holder; other: Other; h.callback(|); }",
-            [],
-        ),
+        ('callback-selected-header', 'Holder :: struct { callback: (value: int, option := false) -> int; }\nmain :: () { holder: Holder; holder.callback(op|); }', ['option']),
+        ('callback-no-leak', 'Holder :: struct { callback: (public_option := false) -> int; }\nOther :: struct { callback: (private_option := false) -> int; }\nmain :: () { marker := "😀é"; h: Holder; other: Other; h.callback(|); }', ['public_option']),
+        ('callback-declared', 'implementation :: (implementation_name: bool) -> int { return 1; }\nmain :: () { cb: (declared_name: bool) -> int = implementation; alias := cb; alias(dec|); }', ['declared_name']),
+        ('callback-grouped', 'Holder :: struct { callback: (value: int, option := false) -> int; }\nmain :: () { holder: Holder; (holder.callback)(1, op|); }', ['option']),
+        ('callback-unclosed', 'Holder :: struct { callback: (value: int, option := false) -> int; }\nmain :: () { holder: Holder; holder.callback(holder.callback(1, op|', ['option']),
+        ('callback-factory', 'implementation :: (implementation_name: bool) -> int { return 1; }\nCallback :: (returned_name: bool) -> int;\nfactory :: () -> Callback { return implementation; }\nmain :: () { factory()(ret|); }', ['returned_name']),
+        ('callback-promoted', 'Holder :: struct { callback: (selected_option := false) -> int; }\nOuter :: struct { using inner: Holder; }\nmain :: () { p: *Outer; p.callback(sel|); }', ['selected_option']),
+        ('callback-generic', 'Holder :: struct (T: Type) { callback: (value: T, selected_option := false) -> T; }\nmain :: () { h: Holder(int); h.callback(1, sel|); }', ['selected_option']),
+        ('callback-import', 'M :: #import "NamedFixture";\nmain :: () { M.visible_callback(pub|); }', ['public_callback_option']),
+        ('callback-private', 'M :: #import "NamedFixture";\nmain :: () { M.hidden_callback(pri|); }', []),
+        ('callback-accepted', 'implementation :: (implementation_name: bool) -> int { return 1; }\nmain :: () { cb: (selected_option := false) -> int = implementation; cb(sel|); }', ['selected_option']),
         (
             "import",
             'M :: #import "NamedFixture";\nmain :: () { M.visible(pub|); }',
@@ -158,7 +159,7 @@ def run(binary, stdlib, output):
     servers = []
     # Reopening each original fixture exercises shared-server cache invalidation. Basic is
     # repeated on a fresh server so a preceding fixture cannot accidentally supply facts.
-    for round_cases in [cases, [cases[0]]]:
+    for round_cases in [cases, [cases[0], next(c for c in cases if c[0] == "callback-no-leak")]]:
         server = Server(binary, stdlib, document)
         servers.append(server)
         try:
@@ -234,6 +235,31 @@ def run(binary, stdlib, output):
                         "textDocument/definition", params
                     )
                     assert phase["hover"] and phase["definition"], phase
+                if label == "callback-accepted":
+                    edit = named[0]["textEdit"]
+                    start, end = offset(text, edit["range"]["start"]), offset(text, edit["range"]["end"])
+                    insertion = edit["newText"] + "true"
+                    repaired = text[:start] + insertion + text[end:]
+                    version += 1
+                    server.send("textDocument/didChange", dict(textDocument=dict(uri=uri, version=version), contentChanges=[dict(range=edit["range"], text=insertion)]))
+                    phase["acceptedDiagnostics"] = server.diagnostics(version)
+                    assert not any(d.get("severity") == 1 for d in phase["acceptedDiagnostics"]), phase
+                    params["position"] = position(repaired, repaired.rindex("cb(") + 1)
+                    phase["hover"] = server.request("textDocument/hover", params)
+                    phase["definition"] = server.request("textDocument/definition", params)
+                    assert phase["hover"] and phase["definition"], phase
+                if label == "callback-no-leak":
+                    start = text.index("h.callback(")
+                    for old, replacement, wanted in [("h", "other", ["private_option"]), ("other", "h", ["public_option"])]:
+                        change = dict(range=dict(start=position(text, start), end=position(text, start + len(old))), text=replacement)
+                        version += 1
+                        server.send("textDocument/didChange", dict(textDocument=dict(uri=uri, version=version), contentChanges=[change]))
+                        text = text[:start] + replacement + text[start + len(old):]
+                        cursor += len(replacement) - len(old)
+                        server.diagnostics(version)
+                        params["position"] = position(text, cursor)
+                        result = server.request("textDocument/completion", params)
+                        assert sorted(i["label"] for i in parameters(result["items"])) == wanted, result
                 if label == "incomplete-utf16":
                     # Ranged edits on the same line after a non-BMP character; reuse an open
                     # server but change the real callee, then restore it and its parameter set.
