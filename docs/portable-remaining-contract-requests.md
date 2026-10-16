@@ -24,9 +24,10 @@ Metaprogram_Plugins/Default pass the latest current-shared-compiler workflow
 checks, including actual O0/O2 default/plugin builds. The earlier sibling-compiler
 Generated_Initialization failures are retired evidence, not current shared
 failures. Pinned06 still retains two separate deferred-phase catalogue failures.
-The valid isolated #run,host primitive-result child-workspace clock reduction is
-also compiler-owned and remains red; ordinary target foreign calls do not promise
-host ABI translation. The parser prefix edge when starting_index>0/plugins occur
+The valid isolated #run,host block and primitive-result child-workspace clock
+reductions now pass the source-built current shared compiler, including a real
+Linux x64 object output; ordinary target foreign calls still do not promise host
+ABI translation. The parser prefix edge when starting_index>0/plugins occur
 remains documented in the dependency doc.
 Default_Allocator exact upper-limit span byte size remains unprovided (independent
 64KiB validation margin/performance policies documented). Mail's numeric alphabet
@@ -42,9 +43,11 @@ Resolved contracts and current implementation boundaries:
   contracts and real tested bodies, committed36cc8f5e. PUT_PIXEL uses raw-byte
   luma and specified integer offsets; convert_function retains its own transform.
   See status/shared-mpeg-macros-verification.json.
-- Walk_Table's ambient contract is reviewed. Its real body/test remains blocked
-  at general exported named-while condition-value visibility. Do not request that
-  contract again or invent a helper export; see integration-requests.md.
+- Walk_Table's reviewed ambient contract and real body now pass the full public
+  fixture in the current shared compiler: interpreter/native Mac O0/O2, six
+  source targets and complete strict owned lint. Its earlier named-while blocker
+  is retired; no helper export or caller workaround was introduced. See
+  portable-hash-table-audit.md.
 - JKS parsing/decryption, canonical EVP crypto/native packaging and APK signing
   have committed independent implementations and scoped host evidence. Unsupported
   formats/algorithms and permissive APK mismatch behavior remain documented. See

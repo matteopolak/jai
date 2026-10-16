@@ -1,41 +1,117 @@
 #!/usr/bin/env python3
-"""Actual duplicate/tombstone/growth/iteration contract across configured tables."""
+"""Reviewed table/Walk_Table behavior against the actual shared stdlib."""
+
+import hashlib
+import json
 import os
 from pathlib import Path
-import shutil
 import subprocess
-import check_portable_time_foundation as foundation
+import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
-    foundation.compose()
-    library = foundation.LIBRARY
-    for relative in ["Hash_Table", "internal/collections"]:
-        shutil.copytree(ROOT / "stdlib" / relative, library / relative, dirs_exist_ok=True)
-    for relative in ["Hash", "internal/hash"]:
-        shutil.copytree(ROOT.parent / "foundations/stdlib" / relative, library / relative, dirs_exist_ok=True)
-    env = dict(os.environ, JAIC_STDLIB=str(library))
-    binaries = Path(os.environ["CARGO_TARGET_DIR"]) / "debug"
-    source = ROOT / "tests/portable-stdlib/hash-table-contract/main.jai"
-    output = ROOT / "target/portable-hash-table-contract"
-    output.mkdir(parents=True, exist_ok=True)
-    commands = [[str(binaries / "jaic"), "-interp", str(source)]]
-    for mode in ["-O0", "-O2"]:
-        executable = output / ("table" + mode)
-        subprocess.run([str(binaries / "jaic"), str(source), mode, "-exe", str(executable)], env=env, check=True)
-        commands.append([str(executable)])
-    for command in commands:
-        result = subprocess.run(command, env=env, capture_output=True, text=True, timeout=90)
-        if result.returncode or result.stdout != "ok\n" or result.stderr:
-            raise RuntimeError(f"{command!r}: exit={result.returncode} {result.stdout}{result.stderr}")
-    for target in ["linux", "windows"]:
-        for cpu in ["x64", "arm64"]:
-            subprocess.run([str(binaries / "jaic"), "-check", "-os", target, "-cpu", cpu, str(source)], env=env, check=True)
-    subprocess.run([str(binaries / "jailint"), "-D", "warnings", str(library / "Hash_Table"),
-                    str(library / "internal/collections/hash-table.jai"), str(source)], env=env, check=True)
-    print("Hash_Table public duplicates/tombstones/growth/reset/iteration/collision contracts pass default and configured true/false-refill tables interpreter/native Mac O0/O2 and whole owned strict lint")
+    target = Path(os.environ["CARGO_TARGET_DIR"]).resolve()
+    work = Path(tempfile.mkdtemp(prefix="hash-table-shared-", dir=target))
+    compiler = target / "debug/jaic"
+    fixtures = [
+        ROOT / "tests/portable-stdlib/hash-table-contract/main.jai",
+        ROOT / "tests/portable-stdlib/table-walk.jai",
+    ]
+    owned = [
+        ROOT / "stdlib/Hash_Table/module.jai",
+        ROOT / "stdlib/internal/collections/hash-table.jai",
+    ]
+    captured = {
+        str(path): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in [*fixtures, *owned]
+    }
+    (work / "identity.json").write_text(
+        json.dumps(
+            {
+                "compiler_sha256": hashlib.sha256(compiler.read_bytes()).hexdigest(),
+                "source_hashes": captured,
+                "stdlib": str(ROOT / "stdlib"),
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    env = dict(os.environ, JAIC_STDLIB=str(ROOT / "stdlib"))
+    rows = []
+
+    def run(name, command, expected=""):
+        result = subprocess.run(
+            list(map(str, command)),
+            cwd=ROOT,
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        passed = (
+            result.returncode == 0 and result.stdout == expected and not result.stderr
+        )
+        rows.append(
+            dict(
+                name=name,
+                command=list(map(str, command)),
+                exit=result.returncode,
+                stdout=result.stdout,
+                stderr=result.stderr,
+                passed=passed,
+            )
+        )
+        (work / "results.json").write_text(json.dumps(rows, indent=2) + "\n")
+        print(name, "PASS" if passed else "FAIL", flush=True)
+        return passed
+
+    for index, source in enumerate(fixtures):
+        run(f"fixture{index}:interp", [compiler, source, "-interp"], "ok\n")
+        for mode in ["O0", "O2"]:
+            executable = work / f"fixture{index}-{mode}"
+            if run(
+                f"fixture{index}:{mode}:build",
+                [compiler, source, "-" + mode, "-exe", executable],
+            ):
+                run(f"fixture{index}:{mode}:run", [executable], "ok\n")
+        for platform in ["macos", "linux", "windows"]:
+            for cpu in ["x64", "arm64"]:
+                name = f"fixture{index}:{platform}:{cpu}"
+                run(
+                    name + ":source",
+                    [compiler, source, "-check", "-os", platform, "-cpu", cpu],
+                )
+                run(
+                    name + ":lint",
+                    [
+                        target / "debug/jailint",
+                        "-D",
+                        "warnings",
+                        "-os",
+                        platform,
+                        "-cpu",
+                        cpu,
+                        "--context",
+                        source,
+                        "--manifest",
+                        work / (name.replace(":", "-") + ".json"),
+                        *owned,
+                        source,
+                    ],
+                )
+    for path in [*fixtures, *owned]:
+        run(
+            "format:" + str(path.relative_to(ROOT)),
+            [target / "jaifmt", "--check", path],
+        )
+    assert all(
+        hashlib.sha256(Path(path).read_bytes()).hexdigest() == digest
+        for path, digest in captured.items()
+    ), "owned source changed during verification"
+    print("receipt:", work, flush=True)
+    raise SystemExit(0 if all(row["passed"] for row in rows) else 1)
 
 
 if __name__ == "__main__":
