@@ -943,3 +943,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [IO child MAIN configuration](extensions/io-http-child-main-configuration.md): exact eight ready postimages verified against admitted packet; original workload/assertions retained. Supplied focused proof is distinct from current full native/HTTP/LSan replay.
 
 - [HTTP route/App ownership](extensions/http-router-ownership.md): exact eight ready postimages verified against admitted packet; original workload/assertions retained. Supplied focused proof is distinct from current full native/HTTP/LSan replay.
+
+- [Debug fixture target contracts](tools/debug-fixture-targets.md): six ready source/doc hashes verified; exact ownership fixture native provider stays required. Portable WASM controls retained; unconditional set_report_mode API repair remains separately active, never inferred absent.
