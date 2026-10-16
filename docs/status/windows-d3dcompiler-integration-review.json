@@ -1,0 +1,17 @@
+{
+  "producer_manifest_sha256": "66a42b9382c5ae70d82b624a83e5e9b29f9f0a7484412e7ce6ab169619312ad0",
+  "source_hashes_verified": 6,
+  "python_tests": {
+    "passed": 12,
+    "failed": 0,
+    "ignored": 0
+  },
+  "actual_windows_executions": 0,
+  "workflow": "Both native CPUs select actual d3dcompiler.lib from developer-shell LIB order, require archive and interpreter/build/native controls, retain WebGPU adapter and120frames gates; no DLL rename/copy",
+  "actionlint": {
+    "passed": false,
+    "inherited_issues": 6,
+    "introduced_issues": 0,
+    "classification": "Existing ShellCheck SC2005,SC2046,SC2028,SC2155 remain RED, exact before/after comparison retained"
+  }
+}
