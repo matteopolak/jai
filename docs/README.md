@@ -670,3 +670,5 @@ include exact file/line/source hashes and required platform limits.
 - [Pinned combined candidate10d9b3f8](status/shared-candidate-10d9b3f8.json) and [fresh baseline status](status/shared-baseline-10d9b3f8.json): committed compiler/library identity, complete development native assets and serialized native ARM64 verification.
 
 - [Canonical public operator facades](compiler/public-operator-facades.md): reviewed overload reexports, preserved identities/visibility and exact compile-time fixture classification.
+
+- [Protected formatter inputs](tools/formatter-protected-inputs.md): real token/idempotence checks on mutable copies while original bytes and permissions stay protected.
