@@ -3,14 +3,80 @@
   "candidate_path": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/artifacts/shared-integration/frozen-06e8ea96",
   "snapshot": "06e8ea965129889f9a24b84d99adb179021f75ff",
   "shared_ref": "codex/stdlib-shared",
-  "status": "catalogue-finished-red-workspace-running",
+  "status": "complete-current-measurement-red",
   "workspace": {
-    "status": "running; fixture omissions and inherited inactive project gate explicitly tracked",
+    "status": "finished-red",
     "command": "cargo test --locked --workspace --all-targets --no-fail-fast -- --test-threads=1",
-    "passed": null,
-    "failed": null,
-    "ignored": null,
-    "report": "artifacts/shared-integration/workspace-06e8ea96.json"
+    "passed": 898,
+    "failed": 7,
+    "ignored": 1,
+    "report": "artifacts/shared-integration/workspace-06e8ea96.json",
+    "exit_code": 101,
+    "elapsed_seconds": 636.8002751660097,
+    "completed_test_binaries": 108,
+    "failure_names": [
+      {
+        "name": "lldb_breakpoints_backtraces_and_variables",
+        "classification": "external debugger stalled; exact owned process timeout180.36092816700693s; not passed"
+      },
+      {
+        "name": "corpus_runs_natively_like_the_interpreter",
+        "classification": "opaque corpus manifest unavailable in sanitized snapshot; root full-fixture rerun required"
+      },
+      {
+        "name": "optimized_sub_recurrence_matches_the_interpreter",
+        "classification": "opaque corpus manifest unavailable; no artificial substitute or passing optimizer claim"
+      },
+      {
+        "name": "wasm_target::corpus_runs_as_wasm_like_the_interpreter",
+        "classification": "opaque corpus manifest unavailable; root full-fixture rerun required"
+      },
+      {
+        "name": "wasm_target::wasm_tour_runs_as_a_wasi_command",
+        "classification": "initial own examples manifest setup omission fixed; exact followup still fails native-only Thread import on WASM"
+      },
+      {
+        "name": "every_stdlib_module_checks_for_every_target",
+        "classification": "183 retained strict target ledger differences; unsupported platform assertions not accepted as native success"
+      },
+      {
+        "name": "every_rule_is_documented",
+        "classification": "scoped snapshot omitted own committed lint doc; restored exact blob, unchanged test passes in focused followup"
+      }
+    ],
+    "timeout": {
+      "name": "lldb_breakpoints_backtraces_and_variables",
+      "policy_seconds": 180,
+      "observed_seconds": 180.36092816700693,
+      "exact_owned_pattern": "(^|/)lldb --batch .*/Volumes/T7/codex\\-builds/jai\\-cleanroom\\-01a137eb/integration/target/tmp/debug\\-info\\-lldb/prog$",
+      "terminated_owned_pids": [
+        79918,
+        79915
+      ],
+      "classification": "stalled external debugger; not passed"
+    },
+    "source_changes": [],
+    "count_kind": "raw Cargo harness summaries; not all-platform/functionality certification",
+    "known_unexecuted_input_gate": [
+      "project_with_an_unresolvable_import_still_answers"
+    ],
+    "fixture_omissions": [
+      "tests/corpus",
+      "original application corpus"
+    ],
+    "setup_followup": {
+      "every_rule_is_documented": {
+        "passed": 1,
+        "failed": 0,
+        "source_patch": false
+      },
+      "wasm_tour": {
+        "passed": 0,
+        "failed": 1,
+        "genuine_failure": "native-only Thread on WASM"
+      },
+      "original_aggregate_rewritten": false
+    }
   },
   "catalogue": {
     "command": [

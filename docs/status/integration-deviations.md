@@ -1,5 +1,41 @@
 # Independent integration deviations audit
 
+## Current verification and package closure: 06e8ea96 / a4d28b63
+
+Committed candidate06e8ea96 has an exact compiler SHA, stdlib tree and235 native
+asset hashes in shared-candidate-06e8ea96.json. Native caches with duplicate
+basenames retain their original search-order layers; an initial flat copy failed
+at differing libapple_abi_probe.a bytes and its partial directory is unused.
+The canonical generator-platform helper was source-built from the committed C
+body after a development asset omission was identified. Correct current rpmalloc
+domains were rebuilt;21 selected asset profiles are not21 runtime passes.
+
+The new a4d28b63 packaging tool retains installed LLVM/Zstandard/Z3 dynamic
+dependency notices with hashes and rejects missing/conflicting notice files.
+Actual source-built consumers work after moving the package, with loader-relative
+dependencies and verified signatures. Earlier statements below about no notice
+copying are historical; pinned06 keeps its original tool source/limits. Compiler
+resources, sysroots, other static notices and native Windows/Linux packaging
+remain open. No self-contained distribution or publication claim follows.
+
+Fresh06 catalogue420 cases finished with781 positive runtime passes and25 failed
+mode records. Two failures are a new Cocoa unit's missing assertion-mode argument;
+the exact unchanged frozen library passes interpreter/native when given enabled.
+The catalogue metadata is corrected in656ed202, with13 runner tests passing.
+Original totals remain unchanged; no source repair or clipboard substitute was
+used. Json numbers timed out at180.00631441699807s only in the interpreter and
+later cases continued. Other failures retain compiler/legacy-API classifications.
+
+The current complete workspace command uses permitted hash-pinned own fixtures
+and excludes corpus/vendor bodies and the suspended invalid-memory fixture.
+Missing corpus-backed setup failures remain failures; inherited fixture-gated
+early returns are recorded as unexecuted input, not functionality. Initial
+fixture extraction refused an already-pinned read-only ABI input; it was verified
+unchanged and skipped rather than unprotected/overwritten. The first Clippy
+invocation raced incomplete fixture staging and failed at a missing include;
+the complete-input rerun and Rustfmt pass. Root must perform full-fixture corpus
+and Focus acceptance externally. No assertions or CI coverage were weakened.
+
 ## Current shared source reconciliation: fad75f23
 
 The active tree is `stdlib-shared`, branch `codex/stdlib-shared`, production
