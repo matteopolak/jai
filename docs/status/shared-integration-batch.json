@@ -176,7 +176,7 @@
     "product_snapshot": "60d2ff190ca3fc695a2a26454f0f733aaa04e08a",
     "candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19",
     "receipt": "docs/status/shared-candidate-60d2ff19.json",
-    "state": "all requested ready patches committed; final focused native checks running",
+    "state": "Final focused gate finished;468Rust tests and all nativeABI/LSP/package controls pass; originalJson interpreter timeout and unsupported widget fixture remainRED",
     "ready": [
       "IR822 check-only lifecycle",
       "AppKit13canonical flags +Metal Render-only embedding",
@@ -204,6 +204,7 @@
       "Normal native macOSx64/Windows/Linux CI temporarybranch afterreview"
     ],
     "remaining_known": [
+      "Exact60d originalJson interpreter timeout180.0077377500129s persists; nativepassed. Compiler owner/perf+isolatedCPU investigation requested; no green baseline claim",
       "CurrentcatalogueRED; originalbeec failures remain preserved",
       "GetRect widgetfixture unsupported GR.Font private contextual alias",
       "CoreBucket_Array pointer-subscript mismatch newlyassignedcompilerowner",
@@ -212,6 +213,8 @@
       "Nativepackagingresources/sysroot/static/otherplatform closure incomplete"
     ],
     "source_inputs_count": 4959,
-    "source_count_is_completion_count": false
+    "source_count_is_completion_count": false,
+    "baseline": "docs/status/mac-60d2ff19-baseline.json",
+    "native_slot": "released"
   }
 }

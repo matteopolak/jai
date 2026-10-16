@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "snapshot": "60d2ff190ca3fc695a2a26454f0f733aaa04e08a",
+  "kind": "Source manifest top-level bookkeeping correction only",
+  "original_manifest": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19/source-identity.json",
+  "original_manifest_sha256": "6a91ec0099f51de4d74624d2353b8bb2c0675ff41b9fc67fb09d99d181c794b1",
+  "original_stdlib_tree": "6b79ae82568702c3361ea46ed17af3f54972eb00",
+  "correct_stdlib_tree": "3cf8487bf7192e40548c42ed7b43d5ca1797dd85",
+  "source_hash_entries_changed": 0,
+  "production_inputs_changed": false,
+  "frozen_original_preserved": true,
+  "candidate_receipt_stdlib_tree": "3cf8487bf7192e40548c42ed7b43d5ca1797dd85",
+  "effect": "An inherited old stdlib_tree label survived source-identity construction. All4959 file hashes and actual receipt/tree identities remain valid. Do not use stale label as a source identity.",
+  "proper_fix": "Fresh capture builder now sets stdlib_tree from the actual captured commit. Corrected manifest is separate; original frozen files/receipt hashes remain preserved.",
+  "corrected_manifest": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-60d2ff19/source-identity-corrected.json",
+  "corrected_manifest_sha256": "492774ff8af12d9a678cb507a114b0bb5142928e0f7032fef61525ecba464eba"
+}
