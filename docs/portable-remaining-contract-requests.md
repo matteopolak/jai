@@ -20,12 +20,14 @@ Priority Mac surface requests, with no /Users/matthew/projects/jai-reference/sou
 - Reflection.range_check_and_store: low/high representation when input T cannot
   represent destination bounds, including store-before-bound-conversion failure.
 
-Metaprogram_Plugins/Default have historical scoped successful rollout evidence,
-while a newer producer compiler reports placeholder scheduling failures. Pinned06
-also retains two deferred-phase catalogue failures. A stable compiler checkpoint
-and unchanged actual workflow reruns are required; old successes do not certify
-the newer compiler or complete loader. The parser prefix edge when
-starting_index>0/plugins occur remains documented in the dependency doc.
+Metaprogram_Plugins/Default pass the latest current-shared-compiler workflow
+checks, including actual O0/O2 default/plugin builds. The earlier sibling-compiler
+Generated_Initialization failures are retired evidence, not current shared
+failures. Pinned06 still retains two separate deferred-phase catalogue failures.
+The valid isolated #run,host primitive-result child-workspace clock reduction is
+also compiler-owned and remains red; ordinary target foreign calls do not promise
+host ABI translation. The parser prefix edge when starting_index>0/plugins occur
+remains documented in the dependency doc.
 Default_Allocator exact upper-limit span byte size remains unprovided (independent
 64KiB validation margin/performance policies documented). Mail's numeric alphabet
 index ordering needs explicit confirmation/vector, not its now-defined transform.
