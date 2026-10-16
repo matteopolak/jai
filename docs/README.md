@@ -789,3 +789,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [HTTP CI case coverage](tools/http-ci-case-coverage.md): exact twelve-case dispatch; seven native Io cases remain unavailable on WASM, never passed.
 
 - [Code insertion lexical scopes](compiler/insert-declaration-scope.md): corrected unbraced declaration publication and explicit-block privacy; [merged checks](status/shared-insert-scope-checkpoint.json).
+
+- [Windows cross-build stream accounting](status/shared-windows-cross-streams.json): exact status/stdout/stderr contract and timeout controls; actual Windows execution pending.

@@ -2,7 +2,7 @@
   "schema": 1,
   "producer_manifest": "docs/status/stdlib-tools-shared-audit.json#file_watcher.integration",
   "producer_paths": 13,
-  "verified_unchanged_paths": 12,
+  "verified_unchanged_paths": 11,
   "adaptation": "Runner accepts allthreeexplicit source-built toolpaths; originalproducerhash retained in audit, adaptedrunnerhash below. Authored featuredoc has integration CI boundary append.",
   "runner_sha256": "66c303dbb26128922f868178ad1bff9c138680d3c02a82053cf6ea79b242e98f",
   "workflow_lint": {
@@ -19,5 +19,6 @@
     "NativeLinux/Windows runs",
     "Unresolvedplatform predicates, overflow/rootrename/cancellation policy in questions",
     "InheritedworkflowShellcheck diagnostics remainred"
-  ]
+  ],
+  "feature_doc_sha256": "998cbfbb0635db983438b6e848c735da6304e25313832f8a11541d26538b623f"
 }
