@@ -1,0 +1,72 @@
+{
+  "status": "retained_startup_dependency_fixed_focus_public_constant_path_pending",
+  "parent_commit": "f5f8481b8a01a3cd6fb886db6ee53e23f988f60d",
+  "matching_e0_source_guard": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/runtime-config-startup/e0-retained-source-guard.json",
+  "matching_e0_source_guard_sha256": "d090faefdeb3f7605955ec7e7d57a1bf482b5de16deb6d2bc94e21e40afce2a3",
+  "source_overlay": [
+    "crates/jaic/src/sema/runtime_config.rs",
+    "crates/jaic/tests/cleanroom_runtime_config.rs",
+    "crates/jaic-cli/tests/cleanroom_runtime_config.rs",
+    "crates/jaic-llvm/tests/cleanroom_runtime_config.rs",
+    "tests/compiler-semantics/runtime-configuration/one-megabyte.jai"
+  ],
+  "evidence_root": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/runtime-config-startup",
+  "verified": {
+    "e0_core_tests": 169,
+    "e0_runtime_config_tests": 9,
+    "e0_backend_native_o0_o2_and_bare_wasm_o0_o2": "pass",
+    "e0_cli_root_child_actual_one_megabyte_allocations": "pass",
+    "e0_selected_clippy_warnings_denied": "pass",
+    "e0_rustfmt": "pass",
+    "own_scoped_insert_and_runtime_contract_tests": "pass"
+  },
+  "logs": [
+    "e0-retained-core.log",
+    "e0-retained-native-wasm.log",
+    "e0-one-megabyte-cli.log",
+    "e0-retained-clippy.log",
+    "e0-retained-fmt.log",
+    "retained-core-regressions.log"
+  ],
+  "focus": {
+    "matching_diagnostic_cli": {
+      "source_snapshot": "e0e287eab27745746f4848eaa0bad3a552081815",
+      "cli": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/target-runtime-config-e0-diagnostic/debug/jaic",
+      "cli_sha256": "2e9bea464cd1764061541cdac01501dd2e04dcd5f2adb46c8d22ca47a918809e",
+      "source": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/runtime-config-startup/e0-diagnostic-source",
+      "source_guard": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/runtime-config-startup/e0-diagnostic-source-guard.json",
+      "source_guard_sha256": "3b46e529b69ab664821e175eba1b69275fb09be8ce1f4f1a5916aba422777485",
+      "only_overlay": [
+        "crates/jaic/src/sema/runtime_config.rs"
+      ],
+      "diagnostic_patch_sha256": "1af35b74e80dad01dece879fb8f6a824a9549252061fb2fc03c55bea0df29bc0",
+      "build_log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/runtime-config-startup/e0-diagnostic-build.log",
+      "contains_retained_fix": false
+    },
+    "root_filtered_result": {
+      "check": "fail",
+      "build": "fail",
+      "workspace": 3,
+      "size": 1048576,
+      "system_entry": true,
+      "initialization": true,
+      "target_exports": 4,
+      "private_reader_lowered": false
+    },
+    "cause": "Custom runtime consumes reviewed public compiler TEMPORARY_STORAGE_SIZE constant as static array extent; current guard recognizes only private getter. Excluded runtime source unread. Public constant support next task."
+  },
+  "preserved_failures": [
+    "runtime-config-startup-red.log",
+    "runtime-config-startup-negative-red.log",
+    "e0-read-denied.txt",
+    "e0-retained-initial-guard-metadata.json"
+  ],
+  "limitations": [
+    "Retained fix is not the Focus causal fix.",
+    "No default substitution, guard removal, public parameter or module exception.",
+    "Initial e0 direct source read denied; root supplied explicit approved independent own-T7 inputs. No alternate denied-source route.",
+    "Old own-core diagnostic Focus Apollo Sub failure preserved as stale source mismatch, not new regression.",
+    "Verified AppleDouble metadata that interrupted source guard preserved outside controlled source; no source/fixture assertion change.",
+    "No /Users/matthew/projects/jai-reference/old stdlib/quarantine/Extensions body or suspended memory investigation access; no release/remote operations."
+  ]
+}

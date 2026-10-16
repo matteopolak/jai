@@ -1223,3 +1223,9 @@ unotest check and jai-format test step as user-deferred on Windows; ANSI
 release/format and real ABI/WGL checks remain required. Its 53 accounting tests
 pass, with no mocked execution counted as native functionality. Normal temporary
 CI remains coordinator-owned; release/push/dispatch/tag/publication is held.
+
+## Typed and retained configuration source checkpoint (2026-10-16)
+
+Reviewed bf436691 exact841ba987 and621d7a3e exact8f48 packages integrate over a51e85a5. Actual shared source passes114core tests in8suites, zero failed/ignored, plus rustfmt and jaic/CLI/LLVM all-targets Clippy with warnings denied. Exact commands, source hashes and review boundaries are in [the adoption receipt](../status/shared-typed-retained-adoption.json). Existing statement-code span and IDE entry metadata remain intact; latest reviewed questions preserved rather than replaced with stale producer docs.
+
+This is a source checkpoint. No new native runtime execution or matched compiler/tool build is claimed; frozen e0 tools remain immutable historical artifacts. Public size-constant transport still awaits its stable owner handoff. Full workspace/original corpus/Focus and platform execution remain coordinator gates, and all historical red aggregates remain unchanged.

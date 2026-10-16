@@ -25,6 +25,42 @@ using the value consistently for allocation and size metadata. Actual allocation
 accepts nonnegative values fitting the reviewed s32 option. NO_OUTPUT workspaces
 retain metadata and do not allocate target runtime storage.
 
+## Retained startup dependencies (2026-10-16)
+
+Configuration validation follows the effective target image of reachable
+`#no_reset` globals, rather than their declaration-time relocations.
+A private startup callback installed during compile-time execution must count
+as a real target reader. Conversely, replacing an initially configured callback
+with a non-reader must remove the old dependency. Unreachable retained globals
+and globals reset before target execution cannot authorize the protocol.
+
+The validator indexes retained globals and uses the existing canonical
+aggregate-to-target serializer for each reached materialized global. This can
+materialize pointed-to IR data just as emission does; it introduces no new
+pointer-reading mechanism. Current-image edges replace initializer edges.
+The original retained global initializer and registration are not prematurely
+baked or consumed, so later settlement/validation still observes updated state.
+Serializer failures propagate. Visited function/global sets bound cyclic graphs.
+
+The rejection retains its original message and adds actual workspace, size,
+entry/initialization, exported-target count and lowered-reader facts to distinguish
+missing startup lowering from an unreachable reader. It adds no public API.
+
+Independent tests retain old-runtime/compile-time-only rejection, invalid ABI and
+range checks. They cover direct startup, retained callbacks, overwritten callbacks,
+reset/unreachable callbacks, nested aggregate/array callbacks and cycles.
+A true runtime-support fixture executes its private retained startup reader on
+native and bare WASM at O0/O2. Canonical approved e0 runtime allocation of 1048576
+bytes additionally passes interpreter/native O0/O2 checks of size/original_size,
+data/original_data identity and the last valid byte.
+
+These controls establish the retained-image defect and its repair. They do not
+establish the cause or resolution of the separate Focus failure. Focus's private
+excluded Runtime body remains unread; root owns its matching-current replay and
+returns filtered diagnostic facts. Own runtime_config/driver/procs sources match
+the three approved e0 inputs, but the rest of the own compiler is not claimed to
+be the complete e0 source. See [checkpoint](../status/runtime-config-startup.json).
+
 ## Producer integration
 
 The portable producer owns Runtime_Support and its private startup/allocator.

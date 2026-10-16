@@ -2326,3 +2326,11 @@ the production WGL tool exactly matches its producer hash. No compiler/library/
 native asset or identical tool rebuild occurred. Exact current proof is in
 shared-wgl-consumer-adoption.json; normal temporary CI is coordinator-owned and
 publication remains held.
+
+## Typed/retained configuration integration checkpoint
+
+modules.rs retains delayed header contracts plus Checked/Failed state; driver.rs closes normal settle/check_unreferenced work after body-only imports. This adds scheduling passes and contract-state storage; genuine cycles/conflicts, retained errors, late top-level failures and exactly-once execution are tested, with no module bypass or swallowed error. The fixed point remains after existing fill_runtime_info; broader runtime-info/reachability verification must cover late imports.
+
+runtime_config.rs now snapshots reachable materialized no-reset globals with the canonical serializer, replacing old initializer relocations. This can allocate/materialize IR and costs repeated traversal; errors propagate and cycles use visited sets. No global registry bake/consumption or unchecked pointer backend added. Proper future performance work would require invalidation-aware snapshots, retaining current-state correctness.
+
+Actual combined proof:114focused core tests, rustfmt, Clippy warnings denied. Native/backend/CLI runtime replay and matching tools are still pending, not inferred from producer overlays. Producer manifests list AppleDouble evidence sidecars; those are neither opened nor counted as tests. Full11real typed files verified; mod.rs/driver.rs differ only by already-integrated statement-span/IDE metadata. Stale questions/README hunks were skipped; exact new questions appended to latest docs. Main public constant transport remains independent and unresolved, so retained callback repair does not claim Focus acceptance. Original aggregate failures remain immutable. See shared-typed-retained-adoption.json.
