@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import subprocess
 import tempfile
 
@@ -19,6 +20,7 @@ PROGRAMS = [
     "record-intake",
     "view",
     "model-diagnostic",
+    "enum-names",
 ]
 OWNED = [
     ROOT / "stdlib/Bindings_Generator/generator-run.jai",
@@ -46,6 +48,15 @@ FIXTURES = [
         "generator-run-view.h",
         "generator-run-namespace-sdk.cpp",
         "generator-run-model-diagnostic.hpp",
+        "generator-run-enum-names.hpp",
+    ]
+]
+PUBLIC_CONSUMER_INPUTS = [
+    ROOT / "tests/developer-tools" / name
+    for name in [
+        "bindings-canonical-driver.h",
+        "bindings-canonical-driver.jai",
+        "bindings-canonical-driver-roundtrip.jai",
     ]
 ]
 
@@ -53,7 +64,11 @@ FIXTURES = [
 def native_hashes():
     folder = ROOT / "stdlib/internal/developer-tools/clang-bindings"
     provenance = folder / "runtime-sdk.json"
-    paths = [provenance]
+    paths = [
+        provenance,
+        ROOT / "stdlib/internal/developer-tools/libgenerator_platform.dylib",
+        ROOT / "stdlib/internal/developer-tools/generator-platform-nm.txt",
+    ]
     receipt = json.loads(provenance.read_text())
     for filename, entry in receipt.items():
         original = Path(entry["sdk_image"])
@@ -85,7 +100,7 @@ def hashes():
             and not p.name.startswith(".")
             and p.suffix in [".jai", ".rs", ".toml", ".c", ".h"]
         )
-    paths.extend(OWNED + FIXTURES + [Path(__file__)])
+    paths.extend(OWNED + FIXTURES + PUBLIC_CONSUMER_INPUTS + [Path(__file__)])
     return {
         str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
         for p in sorted(set(paths))
@@ -98,11 +113,7 @@ def main():
             "Actual Mac host required; other native platforms remain separate gates"
         )
     assigned = Path(os.environ["CARGO_TARGET_DIR"]).resolve()
-    if (
-        not assigned.is_relative_to(Path("/Volumes/T7"))
-        or "portable-asn1-socket" not in assigned.parts
-    ):
-        raise SystemExit("Use this worker's assigned T7 target")
+    assigned.mkdir(parents=True, exist_ok=True)
     output = Path(tempfile.mkdtemp(prefix="generator-run-verify-", dir=assigned))
     environment = dict(
         os.environ,
@@ -206,40 +217,13 @@ def main():
         raise SystemExit("Source build failed; evidence: " + str(output))
     compiler = compiler_dir / "debug/jaic"
     lint = compiler_dir / "debug/jailint"
-    # Source-build the canonical shared native dependency directly, without
-    # peer staging helpers or changes to installed distribution assets. This
-    # existing compiler override is verification input, not a new stdlib knob.
+    # Consume the production helper installed by the normal package builder.
+    # A temporary override does not establish the image selected by native
+    # linking, which can resolve a library next to its declaring source first.
     native = output / "native"
     native.mkdir()
-    if not run(
-        [
-            "cc",
-            "-Wall",
-            "-Wextra",
-            "-Werror",
-            "-O2",
-            "-dynamiclib",
-            ROOT / "stdlib/internal/developer-tools/generator-platform-native.c",
-            "-o",
-            native / "libgenerator_platform.dylib",
-        ],
-        "canonical-native-helper-build",
-    ):
-        raise SystemExit(
-            "Canonical native helper build failed; evidence: " + str(output)
-        )
-    previous = environment.get(
-        "JAIC_NATIVE_LIBS", str(ROOT / "artifacts/native-libs/macos-arm64")
-    )
-    environment["JAIC_NATIVE_LIBS"] = str(native) + (
-        os.pathsep + previous if previous else ""
-    )
-    previous_link = environment.get("LIBRARY_PATH", "")
-    environment["LIBRARY_PATH"] = str(native) + (
-        os.pathsep + previous_link if previous_link else ""
-    )
-    receipt["verification_native_override"] = environment["JAIC_NATIVE_LIBS"]
-    receipt["verification_link_library_path"] = environment["LIBRARY_PATH"]
+    helper = ROOT / "stdlib/internal/developer-tools/libgenerator_platform.dylib"
+    receipt["production_native_helper"] = str(helper)
     for level in ["O0", "O2"]:
         if not run(
             [
@@ -272,24 +256,88 @@ def main():
                 [compiler, source, optimization, "-exe", program],
                 name + optimization + "-build",
             ):
-                if name == "libraries":
-                    label = name + optimization + "-dependency-identity"
-                    if run(["otool", "-L", program], label):
-                        actual = (output / (label + ".stdout")).read_text()
-                        if str(native / "libgenerator_platform.dylib") not in actual:
-                            failures.append(label + "-wrong-helper")
-                            receipt["native_helper_identity_failure"] = label
-                            save()
                 arguments = (
                     [native / ("library" + optimization + ".dylib")]
                     if name == "libraries"
                     else []
                 )
+                if name == "libraries":
+                    label = name + optimization + "-dependency-identity"
+                    command = list(map(str, [program, *arguments]))
+                    result = subprocess.run(
+                        command,
+                        cwd=output,
+                        env=dict(environment, DYLD_PRINT_LIBRARIES="1"),
+                        capture_output=True,
+                        text=True,
+                        timeout=180,
+                    )
+                    (output / (label + ".stdout")).write_text(result.stdout)
+                    (output / (label + ".stderr")).write_text(result.stderr)
+                    images = []
+                    diagnostics = []
+                    for line in result.stderr.splitlines():
+                        match = re.fullmatch(r"dyld\[\d+\]: <[0-9A-Fa-f-]+> (.+)", line)
+                        if not match:
+                            diagnostics.append(line)
+                        elif Path(match[1]).name == helper.name:
+                            images.append(str(Path(match[1]).resolve()))
+                    passed = (
+                        result.returncode == 0
+                        and result.stdout == name + " ok\n"
+                        and not diagnostics
+                        and images == [str(helper.resolve())]
+                        and hashlib.sha256(helper.read_bytes()).hexdigest()
+                        == receipt["native_sha256"][str(helper)]
+                    )
+                    receipt["commands"].append(
+                        {
+                            "label": label,
+                            "argv": command,
+                            "returncode": result.returncode,
+                            "status": "pass" if passed else "fail",
+                            "loaded_helper_images": images,
+                            "diagnostics": diagnostics,
+                        }
+                    )
+                    if not passed:
+                        failures.append(label)
+                    save()
+                    print(label + (": PASS" if passed else ": FAIL"), flush=True)
                 run(
                     [program, *arguments],
                     name + optimization + "-native",
                     name + " ok\n",
                 )
+    # The unchanged tools-owned public workflow is an independent consumer of
+    # runner naming stages. Its generated output belongs only to this scratch.
+    producer = ROOT / "tests/developer-tools/bindings-canonical-driver.jai"
+    consumer = ROOT / "tests/developer-tools/bindings-canonical-driver-roundtrip.jai"
+    if run([compiler, "-interp", producer, "--", output], "public-producer", "ok\n"):
+        run([compiler, "-check", "-I", output, consumer], "public-consumer-check")
+        run(
+            [compiler, "-interp", "-I", output, consumer],
+            "public-consumer-interp",
+            "ok\n",
+        )
+        for optimization in ["-O0", "-O2"]:
+            program = output / ("public-consumer" + optimization)
+            if run(
+                [compiler, "-I", output, consumer, optimization, "-exe", program],
+                "public-consumer" + optimization + "-build",
+            ):
+                run([program], "public-consumer" + optimization + "-native", "ok\n")
+        run(
+            [
+                lint,
+                "-D",
+                "warnings",
+                "--manifest",
+                output / "generated-lint.json",
+                output / "developer-tools-driver-generated.jai",
+            ],
+            "public-generated-strict-lint",
+        )
     run(
         [
             lint,

@@ -67,6 +67,14 @@ flag; the final view respects that edit. That view has stable, independent
 storage in the same ledger, so a later printing/tooling queue reallocation does
 not retire it.
 
+Enum names are finalized in a separate traversal after generic declaration
+preparation and macro grouping, before either user visitor. Generic preparation
+walks parents before children; computing names at the parent in that walk
+allowed later child preparation to restore original spellings. Finalizing after
+grouping also includes newly converted members of an existing native enum.
+Nested enums follow the same stage order. No naming pass runs after visitors,
+so caller edits remain visible to later visitors and the final model.
+
 Direct run consumes only canonical library/path collections. Deprecated
 library/path collections are left untranslated; callers needing them use the
 tools-owned normalizer before running. A fresh macro enum has no inferred
@@ -155,3 +163,14 @@ Approved configuration reconciliation now passes fresh immutable receipt `genera
 Expanded pipeline regressions execute all three existing input modes. They verify ignored nonexistent legacy library/path collections; null underlying CType for fresh callback-selected/equal-width/prefix/mixed-width groups; canonical enum-typed converted members; preserved existing enum CType identity; retained source-expression/location/comment identity and member counts. The runner no longer selects the first native scalar type or repeats scalar-only evaluation when grouping accepted expressions. Existing canonical `gm_enum_identifier_type` supplies member types in the same Session. No legacy adapter or numeric join was added.
 
 Earlier stable 105 (`at3zz138`) and 59 (`uw9o66ne`) remain historical evidence. Reconciliation red `r2ckppkw` preserves genuine interpreter/O0/O2 scalar-member failures, with its full receipt invalidated by unrelated source drift. Snapshot `dbsnfzks` passed functional/lint/format/source gates but failed exact helper identity because a copied generated image retained its shared-tree install name; that failed receipt is preserved. Recapture corrected verification inputs, without changing production loading or compiler behavior. The two former configuration questions are resolved; scoped inventory now has 9 verified-host APIs and 0 missing/partial APIs. Android source selection remains blocked; device, native Linux/Windows/translated Mac and installed-distribution helper closure remain unverified. Integration alone owns README/index and Git operations.
+
+
+Enum-name stage-order followup supersedes the preceding runner receipt with immutable `generator-run-verify-s8dr3jq9`: **124 passes, zero failures, one Android block** (exit 2). Snapshot `generator-run-current-snapshot-vi1vsds8` captured 1,798 current shared inputs at HEAD c612126d52e2f4ee58d364092e7246a8327bf1e0; before/copy/after hashes match, with the previously documented generated-helper exclusion. All 1,375 checked source hashes, 22 SDK/header/receipt hashes and 6 generated native images remained unchanged during verification. Post-verification comparison finds no shared source drift, and every owned input matches the snapshot.
+
+The expanded gate includes 31 actual Jai executions (nine direct runner programs in interpreter/native Mac O0/O2, plus the unchanged tools producer in the interpreter and its generated consumer in interpreter/native O0/O2), 20 native builds, four SDK/C++ executions, 54 desktop source gates, formatting, and 12 complete strict-lint contexts (11 production/owned fixture roots plus one generated module). The unchanged tools consumer also typechecks independently. No incomplete/unvisited lint files. Source checks do not establish native Windows/Linux/translated Mac/device behavior; Android CLI selection remains blocked.
+
+Independent `generator-run-enum-names.{jai,hpp}` proves common-prefix naming for native and nested enums, names finalized after adding a macro to an existing enum, names visible before the data visitor, and visitor edits retained by the plain visitor and final model. Exact tools-owned `bindings-canonical-driver{.h,.jai,-roundtrip.jai}` inputs are recorded as consumer dependencies, not claimed as owned edits. The high-level consumer retains its original BAD/GOOD assertions and now compiles/runs. The fix is a general runner stage-order correction, with no alternate provider, driver/emitter/caller patch or symbol-specific mapping.
+
+Fast current-source loop before final verification was 6/6 green. Genuine pre-fix independent assertion and unchanged generated-consumer missing-member diagnostics remain under `generator-run-enum-fast-f_s92fcv`; its first consumer command used unsupported -module-path and is retained separately from the corrected public -I genuine red. Historical 105/59 evidence and earlier failed/invalidated receipts remain preserved. Integration owns all Git/index and README/global inventory actions.
+
+Integration followup uses explicit caller CARGO_TARGET_DIR without a producer namespace restriction. The runner consumes the normally installed production helper, hashes it before/after, and verifies the exact loaded image using dyld runtime traces from unchanged library consumers; it no longer builds an unused temporary substitute and assumes that native linking selected it. Initial wrong-helper assertions remain in generator-run-verify-sa5nen_7. Current generator-run-verify-m3uilmqp measures123 passes/0 failures/1 blocked Android source check, with no source/native drift. Android is still rejected as an unknown OS and is not counted green. This shared-tree measurement precedes the immutable final candidate receipt.

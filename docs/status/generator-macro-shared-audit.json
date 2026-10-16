@@ -1,7 +1,7 @@
 {
   "worker": "portable-asn1-socket",
   "scope": "seven host-verified macro/expression names plus transferred canonical runner/top-level pair",
-  "phase": "nine assigned APIs verified_host in reviewed contract; Android source blocked and other native platforms unverified",
+  "phase": "nine assigned reviewed APIs verified_host; enum-ordering root fix plus unchanged generation consumer green",
   "production_files": [
     "stdlib/Bindings_Generator/macro-expressions.jai",
     "stdlib/internal/developer-tools/generator-macro-expressions.jai"
@@ -54,7 +54,7 @@
       "name": "run_generator",
       "status": "verified_host",
       "required": "actual Android/device and other native platform gates; broader representation/emission limits remain explicit",
-      "verification": "105 supported commands,24 actual Jai runs; ignored legacy collections, fresh null underlying enum type, canonical enum-typed members, preserved existing type and expression metadata; previous ordinary stages retained",
+      "verification": "124 supported commands,31 actual Jai runs; final enum naming after generic child preparation/grouping before visitors; unchanged public generation consumer interpreter/native O0/O2; all previous reviewed runner configuration/lifecycle domains retained",
       "remaining_effort": "platform verification only within reviewed domain"
     },
     {
@@ -161,7 +161,7 @@
   "tool": "tools/check_generator_macro_shared.py",
   "source_mode": "immutable copy of current shared inputs; no old overlays; capture before/copy/after hashes equal; generated native helper excluded and rebuilt",
   "run_batch": {
-    "phase": "approved configuration reconciliation verified on immutable current-shared snapshot",
+    "phase": "enum name stage-order root fix and unchanged public generation consumer verified on immutable current-shared snapshot",
     "production_files": [
       "stdlib/Bindings_Generator/generator-run.jai",
       "stdlib/internal/developer-tools/generator-run.jai"
@@ -171,27 +171,29 @@
     "configuration_questions": "resolved: docs/specs/questions/generator-run.md",
     "remaining_effort": "platform verification only within reviewed run contract; noninteger/overflow/ABI emission limits remain explicit",
     "verification": {
-      "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-run-verify-v676gxqb",
-      "head": "77562165ed0f25642df5c44c704f9946bd4b9911",
-      "commands_passed": 105,
+      "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-run-verify-s8dr3jq9",
+      "head": "c612126d52e2f4ee58d364092e7246a8327bf1e0",
+      "commands_passed": 124,
       "commands_failed": 0,
       "commands_blocked": 1,
-      "jai_runtime_executions": 24,
-      "jai_native_builds": 16,
+      "jai_runtime_executions": 31,
+      "jai_native_builds": 20,
       "sdk_cpp_runtime_executions": 4,
-      "desktop_source_checks": 48,
-      "strict_lint_complete_contexts": 10,
+      "desktop_source_checks": 54,
+      "strict_lint_complete_contexts": 12,
       "strict_lint_incomplete": [],
       "strict_lint_unvisited": [],
-      "source_hashes": 1349,
+      "source_hashes": 1375,
       "native_sdk_header_receipt_hashes": 22,
       "generated_native_hashes": 6,
       "source_changes": [],
       "native_changes": [],
       "generated_native_changes": [],
       "runner_python": "ruff check and format pass before immutable capture",
-      "source_capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-run-current-snapshot-ewue56zm",
-      "source_capture_files": 1766
+      "source_capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-run-current-snapshot-vi1vsds8",
+      "source_capture_files": 1798,
+      "production_fixture_lint_contexts": 11,
+      "generated_module_lint_contexts": 1
     },
     "retained_evidence": {
       "genuine_dependency_red": "generator-run-verify-vsdzgp2f:85pass/9fail/1blocked",
@@ -202,7 +204,8 @@
       "historical_before_final_cpp_case": "generator-run-verify-5kwupi87:105pass/0fail/1blocked",
       "independent_red_green": "generator-run-red-r5r7cmnd: SDK parent premise, context-before-log, checked macro print, record intake, model diagnostic, moving view, native namespace source-parent and CPP aggregate language reducers",
       "reconciliation_red": "generator-run-verify-r2ckppkw: interpreter/O0/O2 wrong scalar member type; full receipt invalidated by unrelated rpmalloc drift; formatter red also retained",
-      "snapshot_native_identity_red": "generator-run-verify-dbsnfzks: functional/lint/format/source gates passed; failed native helper image identity twice due copied generated helper; corrected capture excludes generated image, no production loading change"
+      "snapshot_native_identity_red": "generator-run-verify-dbsnfzks: functional/lint/format/source gates passed; failed native helper image identity twice due copied generated helper; corrected capture excludes generated image, no production loading change",
+      "enum_name_ordering_red": "generator-run-enum-fast-f_s92fcv: independent previsitor assertion and tools unchanged generated-consumer missing DriveStatus.BAD; initial invalid -module-path harness command separately retained, corrected public -I reproduces genuine red"
     },
     "native_dependency": "fresh source-build current generator-platform-native.c; existing JAIC_NATIVE_LIBS and standard LIBRARY_PATH verification inputs, exact linked-image identity checked; installed distribution not certified",
     "owned_current_sha256": {
@@ -210,7 +213,9 @@
       "stdlib/Bindings_Generator/tests/generator-run-macro-print.jai": "16ec3eb2fcebd88f782739c6978a5265d4426d8b2d683e1dfb0a06d382001dad",
       "stdlib/Bindings_Generator/tests/generator-run-toplevel.jai": "de27b6419e7b7e4c183b9665b9d4c62ff351bdb443bce9dce9a97ba175d0946e",
       "stdlib/internal/developer-tools/generator-macro-expressions.jai": "1870f608cae88e8917054c54cdc0c9bfc5a942e1887850374744a7db05dc4ed4",
-      "stdlib/internal/developer-tools/generator-run.jai": "0c8dd3e1ae025fa1a4fde17b85774d049cd71f410e88e2b059e81f79a5e09031",
+      "stdlib/internal/developer-tools/generator-run.jai": "41b74454ce3fd21c24b877ca465f92c595411a0a9c117108a13d26989831a960",
+      "tests/developer-tools/generator-run-enum-names.hpp": "b21300a1f7f10e224c241d485b151fa9f2f574b97169923b05dd6b07025d648f",
+      "tests/developer-tools/generator-run-enum-names.jai": "447f9b6f044846777bc90d4501674ee05d767166e0d001637eeb9ab99a85596e",
       "tests/developer-tools/generator-run-error.h": "f8c14b0140aa06c25ff04443d85c97e5384e91ce8f418753132057b064cc787b",
       "tests/developer-tools/generator-run-failures.jai": "1db77852c355422b0ec7d1f7865dd0163f1365f98bb8c382215e8b4025074985",
       "tests/developer-tools/generator-run-libraries.jai": "ab131f72f79fc5e569ce3e94fa4c13b4ee41caa9a3a3687d547d27bb39d66891",
@@ -232,7 +237,7 @@
       "tests/developer-tools/generator-run-view.h": "a34c49e945fab928ad277f123853315d64be93745d7aa41f21f83eee4ec4f327",
       "tests/developer-tools/generator-run-view.jai": "28dd9cb1c456566b41b318af02c0e266cdc38b6abade4b7291bfc74c60128742",
       "tests/developer-tools/generator-run-warning.h": "fbc8313f801f1e482ddd0337807696f4e89678785170bc9f2e4aaa63a09a2d72",
-      "tools/check_generator_run_shared.py": "529be57445e68a4b97c0fbf63146977c85048edd43c0b05cfd94889f4eeb4811"
+      "tools/check_generator_run_shared.py": "29178939aaf5ff3cbe6c8a2f0c5bf985e07ba9ceee7c11eb0225f513a070fd5b"
     },
     "seven_helper_regression": {
       "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-macro-verify-uw9o66ne",
@@ -268,7 +273,53 @@
     "resolved_configuration_domains": {
       "direct_legacy": "ignored by direct run; tools-owned normalize_options performs translation",
       "fresh_macro_enum": "no inferred underlying CType even equal-width groups; canonical enum-typed members; existing underlying CType preserved; no mixed numeric join"
-    }
+    },
+    "active_followup": {
+      "issue": "native enum preparation overwritten by preorder child assignment",
+      "root_fix": "finalize all enums after generic preparation and macro grouping, before visitors",
+      "focused_pass": 6,
+      "focused_fail": 0,
+      "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-run-verify-s8dr3jq9",
+      "immutable_final_verification": "124 pass/0 fail/1 Android block",
+      "historical_receipts": "preserved; do not project onto changed body",
+      "blocker": "Android CLI unknown OS; other native platforms still unverified"
+    },
+    "historical_configuration_reconciliation_verification": {
+      "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-run-verify-v676gxqb",
+      "head": "77562165ed0f25642df5c44c704f9946bd4b9911",
+      "commands_passed": 105,
+      "commands_failed": 0,
+      "commands_blocked": 1,
+      "jai_runtime_executions": 24,
+      "jai_native_builds": 16,
+      "sdk_cpp_runtime_executions": 4,
+      "desktop_source_checks": 48,
+      "strict_lint_complete_contexts": 10,
+      "strict_lint_incomplete": [],
+      "strict_lint_unvisited": [],
+      "source_hashes": 1349,
+      "native_sdk_header_receipt_hashes": 22,
+      "generated_native_hashes": 6,
+      "source_changes": [],
+      "native_changes": [],
+      "generated_native_changes": [],
+      "runner_python": "ruff check and format pass before immutable capture",
+      "source_capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-run-current-snapshot-ewue56zm",
+      "source_capture_files": 1766
+    },
+    "public_consumer_dependency_sha256": {
+      "tests/developer-tools/bindings-canonical-driver-roundtrip.jai": "a7f3576ae3823e5d17680eff3006f17718a0bcd77151933feb175b7391e24688",
+      "tests/developer-tools/bindings-canonical-driver.h": "9fa0db5df526903d282728f8479a487ec03c5c1a408ee2bdb471baaaebdde893",
+      "tests/developer-tools/bindings-canonical-driver.jai": "5683239442218f16a5db04527b3562bb0c20189c6984619a7acdc44a90210066"
+    },
+    "enum_stage_order": "generic declaration preparation, macro validation/grouping, canonical all-enum naming, namespace merge, data visitors, plain visitors, omission/final view; no postvisitor renaming",
+    "enum_regression": [
+      "native enum automatic common-prefix names visible before visitors",
+      "nested enum naming",
+      "macro appended to existing native enum included before name finalization",
+      "visitor rename retained by plain visitor and final model",
+      "unchanged tools high-level producer and generated Jai consumer interpreter/native O0/O2/rooted lint"
+    ]
   },
   "previous_seven_helper_verification": {
     "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-macro-verify-fmxjw5z3",
