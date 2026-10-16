@@ -2228,3 +2228,31 @@ Bucket_Array9c53667c supplies the actual canonical operator body and public glyp
 The first frozen formatter command used a filesystem glob and accidentally admitted generated T7 AppleDouble metadata as Jai input, failing at those files. Its24/1 aggregate stays unchanged. A separate replay selects all21 committed Jai source paths from the hash manifest and passes with the unchanged actual formatter. No source or metadata was deleted from the snapshot; selecting committed inputs is a runner construction correction, not a formatter/product repair. Future file enumeration must use the committed input manifest for this source-only gate. Root's existing all-target formatter/transport failures remain separate unresolved results.
 
 Frozen309 has5024source inputs and173 real matched ABI8 assets; exact CLI/lint/LSP/formatter hashes and environment are recorded in shared-candidate-30901830.json. Compiler tools were source-built once in the warmed integration target, then every compiled Rust/Cargo input was checked against the immutable candidate and unchanged Git crates tree; the actual unchanged formatter was built against that frozen production library. No staged library repair was used. The verified HTTP fetch-only builder exception and rpmalloc parsed-spec equivalence accompany native asset reuse; no ABI7 pairing occurs. Source counts are not functionality completion counts. Full original corpus, Focus, native HTTP/platform CI and package resource/static-notice closure remain pending.
+## Current corrected insertion and harness cohort
+
+- `crates/jaic/src/ast.rs`, `parser/directive.rs`, `sema/stmt.rs`,
+  `sema/scope.rs`, `sema/procs.rs` and Code exporter consumers now retain
+  structural unbraced statements and their receiving declaration namespace.
+  Explicit blocks remain private; publication validates all collisions before
+  transferring canonical entity bindings. No source-text heuristic, blanket
+  alias refresh or implicit comparison fallback was adopted. Earlier producer
+  root-brace transparency tests were wrong and are explicitly superseded in
+  `docs/status/insert-declaration-scope.json`, not current evidence.
+- `tools/stdlib_test_catalog.py` marks exactly seven HTTP Io/fiber programs
+  unavailable in WASM modes. Five portable HTTP programs remain eligible.
+  Unavailable rows retain `passed:null`; native execution remains required.
+  `tools/test_http_conformance_coverage.py` dispatch tests are policy mocks and
+  cannot establish native SDK, network or HTTPS correctness.
+- `tools/windows_cross.py` now consumes the existing three-result command helper
+  and keeps timeout failures distinct. Six caller checks are mocked build-policy
+  controls; actual Windows native CI remains unverified locally.
+- `artifacts/shared-integration/finalize_post309_*_tools.py` previously reused
+  `post309-known/tools-build.log` across interim builds. This loses immutable
+  historical log provenance for those interim receipts, although frozen source,
+  tool and native hash identities remain. Proper fix: unique snapshot-named
+  build logs for all further captures; do not fabricate a replacement old log.
+- `integration/insert-32d-merged/core.log` records a nonexistent Cargo target
+  command error with zero execution. `core-corrected.log` records the corrected
+  merged 320-test pass. A first Windows caller test construction omitted required
+  test metadata (one pass/five errors); only fixture metadata was corrected,
+  preserving production status/stream/timeout assertions.

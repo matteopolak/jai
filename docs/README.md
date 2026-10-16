@@ -791,3 +791,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Code insertion lexical scopes](compiler/insert-declaration-scope.md): corrected unbraced declaration publication and explicit-block privacy; [merged checks](status/shared-insert-scope-checkpoint.json).
 
 - [Windows cross-build stream accounting](status/shared-windows-cross-streams.json): exact status/stdout/stderr contract and timeout controls; actual Windows execution pending.
+
+- [Current merged repair ledger](status/shared-known-cohort-progress.json): exact scoped counts, remaining canonical Basic array closure and platform/runtime gates.

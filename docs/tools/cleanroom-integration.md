@@ -1149,3 +1149,31 @@ Product3090183092a9652a6d131a666bba6f43d9e562f6 includes the coherent known batc
 Focused97Rust tests pass. Bucket source/core/lint passes24outcomes including8expected negatives; the first formatter glob wrongly included generated AppleDouble files and its failed aggregate remains intact. Separate exact committed-file formatting passes. All12actualBucket O0/O2 programs pass, covering allocation/three-bucket growth, holes, address/read/write identity, removal/reuse/reset; compile12+execute12+format1 yields25passed commands. No GUI/native fault process ran. Native slot is released for root's original diffcases/full400/runtime and Focus acceptance. Producer's [Metal25/3actualSDK handoff](../status/shared-metal-native-followup.json) is qualified against unchanged sources, not represented as a combined native rerun.
 
 Normal [HTTP CI trigger review](../status/post60d-ci-trigger-review.json) has no publishing steps. Coordinator reviews the exact temporary branch before pushing; no remote action occurred here. Full60d workspace1054/8/1, Json180timeout, target188differences, protected Runtime circular dependency and Focus remain red/pending. Linux Clipboard and Windows/Linux FileWatcher owners continue independently and do not delay this ready pin. No full Mac/all-platform or original-corpus success is inferred from these focused passes.
+## Current merged repair cohort (2026-10-16)
+
+The shared branch now includes the corrected `32d8862b` insertion patch,
+reviewed HTTP twelve-case capability/coverage harness, and Windows cross-build
+stream-contract correction. [Insertion evidence](../status/shared-insert-scope-checkpoint.json)
+records the exact applied patch and merged 320/0/0 core run; 37 focused LSP tests
+also pass in `integration/insert-32d-merged/lsp.log`. These commands use the
+unchanged committed `frozen-44963725` library while the canonical public Basic
+array-owner dependency closure is actively being completed. They are compiler
+regression evidence, not the final combined-library baseline.
+
+`cargo fmt --all -- --check` and warnings-denied clippy for jaic/CLI/jailint
+all-targets pass. Actual CLI/lint/LSP build completed with the current committed
+crates tree; the unchanged formatter and final immutable native-paired capture
+follow the ready array-family handoff. HTTP policy tests pass 18 setup/coverage
+and 12 runtime-accounting checks; six independent Windows caller checks preserve
+separate stdout/stderr, status and timeout failures. Mocked dispatch is not
+Windows/native functionality. No unavailable WASM Io case is counted as passed.
+
+Build outputs and fresh logs are exclusively under integration T7. Earlier
+interim `post309-known/tools-build.log` was inadvertently reused for two builds;
+its receipts must not be treated as immutable historical build logs. Existing
+source/tool/native hashes and the earlier failed aggregates remain intact. New
+logs use `insert-32d-merged`, and final capture logs must name their snapshot.
+An initial command named a nonexistent Cargo test target and executed zero
+tests; `core.log` retains that command error, with the corrected run separately
+recorded in `core-corrected.log`. Original corpus, Focus, native platform CI and
+GUI/manual acceptance remain coordinator gates.
