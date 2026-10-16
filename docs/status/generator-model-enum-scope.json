@@ -1,0 +1,84 @@
+{
+  "timestamp_utc": "2026-10-16T21:30:05.198333+00:00",
+  "accepted_head_at_export": "403424fc0600e2d60d7a14b288ddeeff01238e10",
+  "proposed_commit": "fix(stdlib): search canonical global scope for enum conversions",
+  "owner": "generator-model; integration alone stages/commits",
+  "production_functions": [
+    "binding-tree.jai::find_parent_enum"
+  ],
+  "production_before_sha256": "99725c429723f210743ad85797e96ebd33f1d6e83b2e5bb208e36cad476d68d3",
+  "production_after_sha256": "7cf99265a5a8520c84920db1bbe3ebf2d52c07b681553dda802a7af2dad65fd7",
+  "enum_failure_resolved": true,
+  "required_combined_gate_passed": false,
+  "cause": "Correct canonical parameter->Function->null parent chain stopped before active Generator.global_scope Block. No enum width/signedness/payload or compiler defect.",
+  "verified_jai_runtime_outcomes": {
+    "canonical_enum_diagnostic_and_requirement": {
+      "interpreter": 2,
+      "native_O0_O2": 2
+    },
+    "actual_original_custom_generated_enum_C_consumer": {
+      "interpreter": 1,
+      "native_O0_O2": 2
+    },
+    "existing_bindings_tree": {
+      "interpreter": 1,
+      "native_O0_O2": 2
+    },
+    "corrected_forward_incomplete_metadata": {
+      "interpreter": 1,
+      "native_O0_O2": 2
+    }
+  },
+  "sdk_oracle_outcomes": 4,
+  "source_checks": {
+    "commands": 4,
+    "complete_lint_contexts": 4,
+    "incomplete": [],
+    "unvisited_files": [],
+    "all_passed": true
+  },
+  "source_and_tool_pins": {
+    "compiler_sha256": "81bdba5ed3bed27ac9290ad29ee0a65b3677a99f032da9e76d0b1864b0772d5d",
+    "capture_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/enum-scope/capture-4kg88fb5/verification.json",
+    "captured_inputs_unchanged": true,
+    "capture_live_drift": [
+      "tests/developer-tools/generator-model-forward-scope.jai"
+    ],
+    "qualification": "Only NEW forward diagnostic draft changed after capture; corrected immutable two-input forward proof below uses identical producer and own compiler. No overlay or peer binary.",
+    "corrected_forward_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/enum-scope/forward-proof-1snbrdpw/verification.json",
+    "strict_source_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/enum-scope/capture-4kg88fb5/source-checks/results.json",
+    "lint_manifest": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/enum-scope/capture-4kg88fb5/source-checks/lint.json",
+    "red_lookup_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/enum-scope/capture-qeu4xnvn/verification.json"
+  },
+  "remaining_required_dependency": {
+    "owner": "generator-platform/tools printer; root explicitly routed",
+    "fixture": "tests/developer-tools/bindings-custom.jai:98 unchanged required assertion",
+    "source": "tests/developer-tools/bindings-model-input.h",
+    "printer": "binding-declaration-emission.jai::binding_struct_body",
+    "failure": "Unknown metadata sentinel rejected for genuine incomplete Opaque record.",
+    "sdk": "Forward defined size4/alignment4; Opaque incomplete size-2/alignment-2.",
+    "canonical": "Correct backlink, no Opaque members, find_or_create_extra_info==unknown/null, no cache insertion/fatal state. Forward retains real field metadata/canonical record return.",
+    "required": "Resolve reviewed incomplete opaque emission without fake layout. All five original C-model fixtures/default combined gate remain required; no waivers. C++ independent repair unchanged."
+  },
+  "policy_limits": [
+    "Detached/manual declarations use a valid active global context; exact reviewed membership clause remains requested, not claimed equivalent.",
+    "Actual Mac ARM64 SDK23 execution; SDK21/Linux/Windows native not certified."
+  ],
+  "review": {
+    "agent": "model_review",
+    "result": "No concrete defect; lexical/cycle/owner/bounds/canonical identity preserved."
+  },
+  "runner_policy": "Default retains required C-model nonzero while finishing independent scoped controls; diagnostic mode remains nonzero. Final harness additionally requires positive Jai markers and unchanged source/tool guards; that policy-only final edit has Ruff/source review, not a claimed new native full replay.",
+  "ready_files": {
+    "stdlib/internal/developer-tools/binding-tree.jai": "7cf99265a5a8520c84920db1bbe3ebf2d52c07b681553dda802a7af2dad65fd7",
+    "tests/developer-tools/generator-model-enum-scope.jai": "a7d1d4dd2b09b3e8f25561b209c10696bdf1cad48e08d790969440dd29f1b3b9",
+    "tests/developer-tools/generator-model-enum-scope-sdk.c": "8d13dfe57134018099821153b71a7bf2cdd447c92725f8aee6cd4666a4e9cc57",
+    "tests/developer-tools/generator-model-enum-roundtrip.jai": "b26dcb25b6e6e793ee81aab611d5b64ec30a718cf656c2acefb1f575ec2225a6",
+    "tests/developer-tools/generator-model-forward-scope.jai": "b776bf9e901f7eb2b098f9de007783ce9c2d750b7fd16af186fd8da5dedd102e",
+    "tools/check_generator_enum_scope.py": "80e8ed1b965c3ecf299e243dfc2a4f4658e43cf39dd3b59fec9b4731bf3eb3e8",
+    "docs/generator-model-enum-scope.md": "1455b3a1058e54d0c5e6b03dce52f5323c5e9549829974bf5cfc933080543e5a",
+    "docs/specs/questions/generator-model.md": "4f727417c6abd865bae92dc8d6378f27420ab0fce1b4386492fca5c307144bfb"
+  },
+  "native_slot": "released; no active model runtime",
+  "global_docs_request": "Integrator add generator-model-enum-scope.md link to docs/README.md; retain separate required opaque printing RED."
+}
