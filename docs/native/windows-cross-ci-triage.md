@@ -104,3 +104,6 @@ benchmarks, publication, workflow dispatch, history edits or remote operations.
 ## Latest ifx fixture classification
 
 The exact original overloaded proc-type-defaults-ifx source (SHAe2aaa5f6...) has a root-supplied official rejection verdict and is excluded as an invalid positive fixture. Windows-cross, the runtime catalogue and sweep report it separately as reference_rejected with null pass; raw local acceptance cannot make it a reference-positive success. Changed fixture bytes and independently authored supported ifx controls remain required. The architectural CPUID case retains its separate stale_fixture_contract classification and has no official rejection claim. One accounting test verifies zero compiler dispatch, no positive/platform count and a distinct rejection count; existing42 cross/runtime/runner policy checks pass.
+
+
+The two Linux-host Windows cross jobs now run the shared enabled-backend dependency installer before any host SDL/native preparation. This includes X11, Wayland, XTEST, ALSA, PulseAudio, PipeWire and OpenGL development packages; no SDL/audio backend is disabled. The Windows target libraries are still built with their existing x64/ARM64 toolchains. Local bash syntax and package-list checks qualify configuration only; actual Ubuntu apt/CMake/build acceptance remains CI-owned.

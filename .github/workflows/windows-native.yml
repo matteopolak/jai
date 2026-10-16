@@ -15,6 +15,7 @@ on:
       - 'stdlib/**'
       - 'tests/**'
       - 'tools/windows_cross.py'
+      - 'tools/install_ci_native_linux.sh'
       - 'tools/check_windows_d3dcompiler_provider.py'
       - 'tools/test_windows_d3dcompiler_provider.py'
       - 'tools/test_windows_d3dcompiler_ci.py'
@@ -106,6 +107,7 @@ jobs:
         timeout-minutes: 15
         run: |
           bash tools/install_ci_llvm_linux.sh
+          bash tools/install_ci_native_linux.sh
           echo "LLVM_SYS_231_PREFIX=/usr/lib/llvm-23" >> "$GITHUB_ENV"
           sudo apt-get install -y gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64
           x86_64-w64-mingw32-gcc --version
@@ -411,6 +413,7 @@ jobs:
         timeout-minutes: 15
         run: |
           bash tools/install_ci_llvm_linux.sh
+          bash tools/install_ci_native_linux.sh
           echo "LLVM_SYS_231_PREFIX=/usr/lib/llvm-23" >> "$GITHUB_ENV"
           name="llvm-mingw-$LLVM_MINGW_VERSION-ucrt-ubuntu-22.04-x86_64"
           curl -fsSL -o llvm-mingw.tar.xz "https://github.com/mstorsjo/llvm-mingw/releases/download/$LLVM_MINGW_VERSION/$name.tar.xz"
