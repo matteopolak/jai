@@ -1,0 +1,33 @@
+{
+  "snapshot": "0c0d316e587b4ae86631af10fb027c1acd9a6f4c",
+  "matching_source_crates_tree": "f3cd2afa0486a55476eab9f563973b1001cac976",
+  "matching_source_stdlib_tree": "99bf7a75a194e7f0341f77483d3cd20f6e8a764b",
+  "receipt": "docs/status/shared-candidate-0c0d316e.json",
+  "owner": "coordinator",
+  "reason": "OS isolation excludes opaque original corpus bodies/inputs; do not supply raw corpus/vendor/reference implementation to worker",
+  "cwd": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
+  "command": [
+    "cargo",
+    "test",
+    "--workspace",
+    "--all-targets",
+    "--locked",
+    "--offline",
+    "--",
+    "--test-threads=1"
+  ],
+  "environment": {
+    "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-0c0d316e/stdlib",
+    "JAIC_NATIVE_LIBS": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-0c0d316e/native-inputs/catalogue-probes:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-0c0d316e/native-inputs/rpmalloc:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-0c0d316e/native-inputs/cache-0:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-0c0d316e/native-inputs/cache-1:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-0c0d316e/native-inputs/cache-2:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-0c0d316e/native-inputs/cache-3",
+    "JAIC_TEST_FONT_PATH": "/System/Library/Fonts/Supplemental/Arial.ttf",
+    "LLVM_SYS_231_PREFIX": "/opt/homebrew/opt/llvm",
+    "CARGO_BUILD_JOBS": "1",
+    "RUSTC_WRAPPER": ""
+  },
+  "target_tmp_policy": "Set CARGO_TARGET_DIR/TMPDIR to unique coordinator-owned T7 paths; no internal fallback. Include unchanged opaque corpus inputs in coordinator context.",
+  "remaining": [
+    "original400 with current --receipt selector",
+    "Focus approved two-call versionadjustment flag via coordinator only"
+  ],
+  "publication": "normaltemporaryCI codex/cleanroom-integration coordinator-reviewed only; no release operations"
+}

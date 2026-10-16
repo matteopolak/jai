@@ -817,3 +817,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Public runtime constant integration](status/shared-public-runtime-constant-adoption.json): canonical provenance, preserved negative contracts and292combined compiler tests.
 
 - [Reviewed GL debug policy](native/gl-debug-output-policy.md): exact core/ARB/unsupported behavior and [integration proof boundaries](status/shared-gl-policy-adoption.json).
+
+- [Final combined0c0d316e candidate](status/shared-candidate-0c0d316e.json), [focused verification](status/mac-0c0d316e-focused.json), [ready/active/gate ledger](status/shared-final-cohort-ledger.json) and [coordinator full-workspace request](status/shared-0c0d316e-workspace-request.json).
