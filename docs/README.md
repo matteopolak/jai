@@ -883,3 +883,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Required WASM tour providers](compiler/wasm-tour-providers.md): real private canvas/filesystem protocols and unchanged required tour assertions.
 
 - [IDE import discovery](tools/lsp-import-discovery.md): guarded filesystem miss reuse, functional assertions and opt-in unchanged60s budget.
+
+- [Linux observer capture retention](tools/io-observer-retention.md): exact three-file failed-run evidence, with workload and failure gates unchanged.
