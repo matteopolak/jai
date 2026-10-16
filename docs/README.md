@@ -919,3 +919,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Nonheap numeric and tagged-union formatting](tools/toml-nonheap-formatting.md): all14 exact ready source/test/doc hashes verified against admitted patch; ten receipt-policy checks pass. Producer proof preserves all four original nonheap cases and reports33 actual Mac interpreter/native executions; combined platform replay remains required. Root-reviewed Basic refinement and sanitized oracle retained.
 
 - [Import argument group preservation](compiler/import-argument-groups.md): exact follow-up on accepted origin validation, retaining both IDE discovery paths. Current merged93 core/101 LSP checks, Rustfmt, warnings-denied clippy and fresh tool build pass; [integration receipt](status/import-groups-integration.json). Root public child-workspace protocol replay remains required.
+
+- [WGL public/private lint contexts](status/wgl-lint-public-context.md): complete required-file coverage, prior DLL/consumer checks and four existing fixtures retained. [Adaptation receipt](status/wgl-public-context-integration.json); eleven policy checks pass, actual Windows graphics replay required.
