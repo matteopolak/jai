@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "producer_commit": "669eb87939a6c310a01117eb8674f6c229af4b3a",
+  "transport": "Explicit new independentGitcommit selectedcalls branch patch only; no foreignpathaccess orproducerfileoverwrite",
+  "scope": "match_pattern_value E::Call extraction/binding only; existing S128 unary/filter hunks preserved",
+  "before": {
+    "passed": 2,
+    "failed": 8,
+    "ignored": 0
+  },
+  "after": {
+    "passed": 115,
+    "failed": 0,
+    "ignored": 0
+  },
+  "quality": "Rustfmt andClippy-DwarningsPASS",
+  "oracle_boundary": {
+    "provider": "root-supplied sanitized shared inbox facts, actual offline Jai0.2.030",
+    "unchanged_application": "BUILD_ACCEPT root reported",
+    "independent_3line_typed_capacity": "BUILD_PASS exit0 root reported13:07UTC",
+    "broader_named_pattern_input": "SYNTAX_REJECT, not a semantic verdict; root keeps exact original input/rawlog",
+    "corrected_broad_controls": "root source-only verdict requested; no reference conformance claimed"
+  },
+  "limitations": [
+    "No original application read/modified/executed; root owns unchanged channels and other application replay.",
+    "Named-pattern syntax is labeled an existing compiler extension, not reference-compatible behavior.",
+    "Variadic generic packs/arbitrary type-producing callable patterns not newly claimed by these bounded tests.",
+    "No check_call/LSP/insertion/publication/runtimepending/std API or per-type exceptions; no blocked586 source.",
+    "No shared Git/index mutation or remote/release operation."
+  ],
+  "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/post309-known/typed-args-combined.log",
+  "integrated_calls_sha256": "d8a5cd2a879c26af7226ca5b8a7685159c641bdea471a982619d859813dc8e01"
+}

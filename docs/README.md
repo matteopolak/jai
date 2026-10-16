@@ -777,3 +777,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 [File_Watcher platform backends](file-watcher-platforms.md) implement inotify and overlapped Windows ownership; actual platform CI is wired, source/decoder proof remains distinct from native notification acceptance.
 
 - [S128 comparisons and inherited Apollo operators](specs/stdlib/README.md): signed word-boundary semantics, generic unary repair, exact proof and limits; [questions](specs/stdlib/s128-comparison-questions.md).
+
+- [Typed polymorphic struct argument inference](compiler/typed-struct-arguments.md): parameter identity, preserved declared types, independent RED/green checks and [oracle questions](specs/typed-struct-argument-questions.md).
