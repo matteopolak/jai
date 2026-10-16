@@ -1,0 +1,966 @@
+{
+  "schema": 1,
+  "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+  "suggested_commit": "fix(stdlib): select Basic filesystem APIs by target OS",
+  "integration_owns_index": true,
+  "exact_two_production_line_replacements": true,
+  "production_patch_sha256": "9ec9f7a5e2a45a9fd90bf9262efa53dc16b4c85a5abe5358f6de8306c7a69c56",
+  "owned_file_sha256": {
+    "stdlib/Basic/module.jai": "b2284e8f1252349da8d73b957cf0f294aeea12546840d7e2f8c2b1d2a7d0fc9c",
+    "stdlib/internal/basic/module.jai": "82d3a619984e5317ba1f5b60cff2d33c6bea7bf204f5ecc318b0e5db47e22a7d",
+    "docs/basic-filesystem-platform-guards.md": "ec944edfe90863556b720b97f0baa55ab2efacb771dde28f8c7c65536701fe9c",
+    "tests/portable-stdlib/basic-filesystem-platform/check.py": "d3696474becb5107bffdb83cdb26eab710c03de70c047e773659d7a5dd4f9b3e",
+    "tests/portable-stdlib/basic-filesystem-platform/main.jai": "d85804cd7c7bf73776d38e0b033c70f156d483918a38abf2c3154f4255752ed7",
+    "tests/portable-stdlib/basic-filesystem-platform/provider.jai.in": "7e946e6e5ea9757e91e58f5adf0e6a2bd91ad8a8b363f5782d23d316cbe0def7",
+    "tests/portable-stdlib/basic-filesystem-platform/static.jai": "05feca6c310c0a6aa997f5465a4d28feeb9469a334fbbad3e575d06d279651e9",
+    "tests/portable-stdlib/basic-filesystem-platform/true-cycle/config.jai": "34bc7a5221a0585fc259dcc8881698ad5d78320b2cf93610c42db58e400ca84a",
+    "tests/portable-stdlib/basic-filesystem-platform/true-cycle/consumer.jai": "63c7f5e759731519a493b04b02490d9040d90074f3ae23dfb6266ef10182161e",
+    "tests/portable-stdlib/basic-filesystem-platform/true-cycle/main.jai": "9799ca16c66159b532ba339653a98bdf1fca294f8c1d82c5d9bc7f644d39ae13"
+  },
+  "readme_selective_entry": "Basic filesystem platform guards",
+  "compiler_path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+  "compiler_sha256": "b98284ab24717b5419a627a7520a9ab7aaa7e5d0951672b69222d6534ca4ed34",
+  "own_compiler_ancestry": "approved603 + cfad8496; no diagnostic observer",
+  "library_verification_context": "Own accepted603 library snapshot with ONLY the two reviewed shared module files; no peer compiler or pending library sources.",
+  "source_guard_match": true,
+  "shared_production_hashes": {
+    "Basic/module.jai": "b2284e8f1252349da8d73b957cf0f294aeea12546840d7e2f8c2b1d2a7d0fc9c",
+    "internal/basic/module.jai": "82d3a619984e5317ba1f5b60cff2d33c6bea7bf204f5ecc318b0e5db47e22a7d"
+  },
+  "snapshot_changed_files": {
+    "Basic/module.jai": "b2284e8f1252349da8d73b957cf0f294aeea12546840d7e2f8c2b1d2a7d0fc9c",
+    "internal/basic/module.jai": "82d3a619984e5317ba1f5b60cff2d33c6bea7bf204f5ecc318b0e5db47e22a7d"
+  },
+  "unchanged_other_snapshot_sources": 1426,
+  "before_shared_hashes": {
+    "Basic/module.jai": "c0997e87cb5db134b45f1ebeb82b8dff32a724a59fb7a71f6fa549e5b2150de7",
+    "internal/basic/module.jai": "30ead3d619bdcd6ff8a984c0f1dc58a555253c7db79c724bf8c90d18e21bb59e"
+  },
+  "own_required_source_outcomes": 32,
+  "own_required_source_outcomes_pass": true,
+  "reusable_driver_checks": 12,
+  "reusable_driver_pass": true,
+  "forwarder_probe_combinations": 35,
+  "actual_native_programs": 0,
+  "actual_reference_executables": 0,
+  "protected_body_access": false,
+  "positive_source_targets": [
+    "macos",
+    "linux",
+    "windows"
+  ],
+  "android": "Reviewed static all-four API contract only; own TargetOs/CLI does not support Android. Unsupported attempt exit2 retained; not a positive target check.",
+  "ios": "No reviewed Basic platform branch; no native/source execution claimed.",
+  "ps5_switch": "Declaration surfaces unresolved; no native/source execution claimed.",
+  "official_observations": {
+    "final_corrected_main": "No explicit Runtime_Support import; public four-API calls.",
+    "unaltered_official_provider": "BUILD PASS; no generated binary executed",
+    "public_constant_dependent_official_provider": "BUILD PASS after changing ONLY public OS_IS_UNIX expression; body private to root",
+    "earlier_three_forwarding_templates": "TIMEOUT; not positives or valid rejections",
+    "earlier_parameterless_runtime_import_main": "REJECT missing three module parameters; not final oracle"
+  },
+  "root_controlled_replay": {
+    "pin": "30901830 + ONLY the two reviewed guards",
+    "protected_and_shipped_static_build_classification_constant": "PASS",
+    "protected_and_shipped_guard": "Truthful compiler 0.17 version assertion",
+    "unchanged_original_focus": "Reaches line228 requiring compiler>=0.2.29 instead of OS_IS_UNIX cycle",
+    "full_focus_acceptance": false,
+    "private_source_shared": false
+  },
+  "initial_records": [
+    {
+      "label": "before-dependent-main.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/before-dependent/main.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-before",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "before-dependent-static.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/before-dependent/static.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-before",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 1,
+      "exit": 1,
+      "passed": true,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/before-dependent/modules/Runtime_Support/module.jai:3:1: error: circular dependency while resolving `OS_IS_UNIX`\n    OS_IS_UNIX :: (Basic.STRING_BUILDER_BUFFER_SIZE > 0) && (OS == .MACOS || OS == .LINUX || OS == .PS5 || OS == .IOS || OS == .ANDROID);\n    ^^^^^^^^^^\n\n"
+    },
+    {
+      "label": "before-direct-main.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/before-direct/main.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-before",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "before-direct-static.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/before-direct/static.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-before",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "before-shipped-main.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/before-shipped/main.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-before",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "before-shipped-static.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/before-shipped/static.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-before",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "after-dependent-main.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/main.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "after-dependent-static.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/static.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "after-direct-main.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-direct/main.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "after-direct-static.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-direct/static.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "after-shipped-main.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-shipped/main.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "after-shipped-static.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-shipped/static.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "target-macos",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-shipped/static.jai",
+        "-check",
+        "-os",
+        "macos"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "target-linux",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-shipped/static.jai",
+        "-check",
+        "-os",
+        "linux"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "target-windows",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-shipped/static.jai",
+        "-check",
+        "-os",
+        "windows"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "target-android-unsupported",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-shipped/static.jai",
+        "-check",
+        "-os",
+        "android"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 2,
+      "exit": 2,
+      "passed": true,
+      "stdout": "",
+      "stderr": "error: unknown OS `android` for `-os`\nhelp: the OS names are linux, windows, macos and wasm\n"
+    },
+    {
+      "label": "wasm-reject-get_working_directory",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/wasm-get_working_directory.jai",
+        "-check",
+        "-os",
+        "wasm"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 1,
+      "exit": 1,
+      "passed": true,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/wasm-get_working_directory.jai:1:53: error: module `Basic` has no exported member `get_working_directory`\n    Basic :: #import \"Basic\"; #assert is_constant(Basic.get_working_directory); main :: () {}\n                                                        ^^^^^^^^^^^^^^^^^^^^^\n\n"
+    },
+    {
+      "label": "wasm-reject-set_working_directory",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/wasm-set_working_directory.jai",
+        "-check",
+        "-os",
+        "wasm"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 1,
+      "exit": 1,
+      "passed": true,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/wasm-set_working_directory.jai:1:53: error: module `Basic` has no exported member `set_working_directory`\n    Basic :: #import \"Basic\"; #assert is_constant(Basic.set_working_directory); main :: () {}\n                                                        ^^^^^^^^^^^^^^^^^^^^^\n\n"
+    },
+    {
+      "label": "wasm-reject-sleep_milliseconds",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/wasm-sleep_milliseconds.jai",
+        "-check",
+        "-os",
+        "wasm"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 1,
+      "exit": 1,
+      "passed": true,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/wasm-sleep_milliseconds.jai:1:53: error: module `Basic` has no exported member `sleep_milliseconds`\n    Basic :: #import \"Basic\"; #assert is_constant(Basic.sleep_milliseconds); main :: () {}\n                                                        ^^^^^^^^^^^^^^^^^^\n\n"
+    },
+    {
+      "label": "wasm-reject-exit",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/wasm-exit.jai",
+        "-check",
+        "-os",
+        "wasm"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 1,
+      "exit": 1,
+      "passed": true,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/wasm-exit.jai:1:53: error: module `Basic` has no exported member `exit`\n    Basic :: #import \"Basic\"; #assert is_constant(Basic.exit); main :: () {}\n                                                        ^^^^\n\n"
+    },
+    {
+      "label": "reject-absent_filesystem_api",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/absent_filesystem_api.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 1,
+      "exit": 1,
+      "passed": true,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/absent_filesystem_api.jai:1:53: error: module `Basic` has no exported member `absent_filesystem_api`\n    Basic :: #import \"Basic\"; #assert is_constant(Basic.absent_filesystem_api); main :: () {}\n                                                        ^^^^^^^^^^^^^^^^^^^^^\n\n"
+    },
+    {
+      "label": "reject-Impl",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/Impl.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 1,
+      "exit": 1,
+      "passed": true,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/Impl.jai:1:53: error: module `Basic` has no exported member `Impl`\n    Basic :: #import \"Basic\"; #assert is_constant(Basic.Impl); main :: () {}\n                                                        ^^^^\n\n"
+    },
+    {
+      "label": "true-cycle-rejected",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/true-cycle/main.jai",
+        "-check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 1,
+      "exit": 1,
+      "passed": true,
+      "stdout": "",
+      "stderr": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/true-cycle/config.jai:5:10: error: module `consumer.jai` has no exported member `api`\n    #if Peer.api(41) == 42 {\n             ^^^\n\n"
+    },
+    {
+      "label": "Jai-format",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/target/debug/jaifmt",
+        "--check",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/stdlib/Basic/module.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/stdlib/internal/basic/module.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/main.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/provider.jai.in",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/static.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/true-cycle/config.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/true-cycle/consumer.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/true-cycle/main.jai"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 1,
+      "passed": false,
+      "stdout": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/main.jai:6\n",
+      "stderr": ""
+    },
+    {
+      "label": "strict-lint-main.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jailint",
+        "-D",
+        "warnings",
+        "--context",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/main.jai",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/main.jai",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/modules/Runtime_Support/module.jai"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "strict-lint-static.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jailint",
+        "-D",
+        "warnings",
+        "--context",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/static.jai",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/static.jai",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/modules/Runtime_Support/module.jai"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "forwarder-35",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic-cli",
+        "--test",
+        "cleanroom_runtime_lookup"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "\nrunning 1 test\ntest full_build_body_and_static_classification_survive_public_runtime_forwarding ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.70s\n\n",
+      "stderr": "    Finished `test` profile [unoptimized] target(s) in 0.80s\n     Running tests/cleanroom_runtime_lookup.rs (/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/build/jaic-cli/5798d8e0573c2aad/out/cleanroom_runtime_lookup-5798d8e0573c2aad)\n"
+    },
+    {
+      "label": "clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic-cli",
+        "--test",
+        "cleanroom_runtime_lookup",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": "    Finished `dev` profile [unoptimized] target(s) in 0.27s\n"
+    },
+    {
+      "label": "Rustfmt",
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "environment": {
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7",
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+        "CARGO_BUILD_JOBS": "2"
+      },
+      "expected_exit": 0,
+      "exit": 0,
+      "passed": true,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "final_records": [
+    {
+      "label": "Jai-format",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/target/debug/jaifmt",
+        "--check",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/stdlib/Basic/module.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/stdlib/internal/basic/module.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/main.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/provider.jai.in",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/static.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/true-cycle/config.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/true-cycle/consumer.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/true-cycle/main.jai"
+      ],
+      "environment": {
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7"
+      },
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "public-call-macos",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/main-formatted.jai",
+        "-check",
+        "-os",
+        "macos"
+      ],
+      "environment": {
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7"
+      },
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "public-call-linux",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/main-formatted.jai",
+        "-check",
+        "-os",
+        "linux"
+      ],
+      "environment": {
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7"
+      },
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "public-call-windows",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/main-formatted.jai",
+        "-check",
+        "-os",
+        "windows"
+      ],
+      "environment": {
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7"
+      },
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "final-strict-lint",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jailint",
+        "-D",
+        "warnings",
+        "--context",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/main-formatted.jai",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/main-formatted.jai",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/after-dependent/modules/Runtime_Support/module.jai"
+      ],
+      "environment": {
+        "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/stdlib-after",
+        "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7"
+      },
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "reusable_driver_records": [
+    {
+      "label": "shipped-main.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/shipped/main.jai",
+        "-check"
+      ],
+      "expected_exit": 0,
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "expected_diagnostics": [],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "shipped-static.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/shipped/static.jai",
+        "-check"
+      ],
+      "expected_exit": 0,
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "expected_diagnostics": [],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "dependent-main.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/dependent/main.jai",
+        "-check"
+      ],
+      "expected_exit": 0,
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "expected_diagnostics": [],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "dependent-static.jai",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/dependent/static.jai",
+        "-check"
+      ],
+      "expected_exit": 0,
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "expected_diagnostics": [],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "target-macos",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/shipped/static.jai",
+        "-check",
+        "-os",
+        "macos"
+      ],
+      "expected_exit": 0,
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "expected_diagnostics": [],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "target-linux",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/shipped/static.jai",
+        "-check",
+        "-os",
+        "linux"
+      ],
+      "expected_exit": 0,
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "expected_diagnostics": [],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "target-windows",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/shipped/static.jai",
+        "-check",
+        "-os",
+        "windows"
+      ],
+      "expected_exit": 0,
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "expected_diagnostics": [],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "wasm-get_working_directory",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/wasm-get_working_directory.jai",
+        "-check",
+        "-os",
+        "wasm"
+      ],
+      "expected_exit": 1,
+      "exit": 1,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/wasm-get_working_directory.jai:1:53: error: module `Basic` has no exported member `get_working_directory`\n    Basic :: #import \"Basic\"; #assert is_constant(Basic.get_working_directory); main :: () {}\n                                                        ^^^^^^^^^^^^^^^^^^^^^\n\n",
+      "expected_diagnostics": [
+        "has no exported member `get_working_directory`"
+      ],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "wasm-set_working_directory",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/wasm-set_working_directory.jai",
+        "-check",
+        "-os",
+        "wasm"
+      ],
+      "expected_exit": 1,
+      "exit": 1,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/wasm-set_working_directory.jai:1:53: error: module `Basic` has no exported member `set_working_directory`\n    Basic :: #import \"Basic\"; #assert is_constant(Basic.set_working_directory); main :: () {}\n                                                        ^^^^^^^^^^^^^^^^^^^^^\n\n",
+      "expected_diagnostics": [
+        "has no exported member `set_working_directory`"
+      ],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "wasm-sleep_milliseconds",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/wasm-sleep_milliseconds.jai",
+        "-check",
+        "-os",
+        "wasm"
+      ],
+      "expected_exit": 1,
+      "exit": 1,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/wasm-sleep_milliseconds.jai:1:53: error: module `Basic` has no exported member `sleep_milliseconds`\n    Basic :: #import \"Basic\"; #assert is_constant(Basic.sleep_milliseconds); main :: () {}\n                                                        ^^^^^^^^^^^^^^^^^^\n\n",
+      "expected_diagnostics": [
+        "has no exported member `sleep_milliseconds`"
+      ],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "wasm-exit",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/wasm-exit.jai",
+        "-check",
+        "-os",
+        "wasm"
+      ],
+      "expected_exit": 1,
+      "exit": 1,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/shared-os-guards-vu5h9kn7/reusable-driver-final/wasm-exit.jai:1:53: error: module `Basic` has no exported member `exit`\n    Basic :: #import \"Basic\"; #assert is_constant(Basic.exit); main :: () {}\n                                                        ^^^^\n\n",
+      "expected_diagnostics": [
+        "has no exported member `exit`"
+      ],
+      "diagnostic_matches": true
+    },
+    {
+      "label": "true-cycle",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/true-cycle/main.jai",
+        "-check"
+      ],
+      "expected_exit": 1,
+      "exit": 1,
+      "stdout": "",
+      "stderr": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared/tests/portable-stdlib/basic-filesystem-platform/true-cycle/config.jai:5:10: error: module `consumer.jai` has no exported member `api`\n    #if Peer.api(41) == 42 {\n             ^^^\n\n",
+      "expected_diagnostics": [
+        "circular dependency",
+        "has no exported member `api`"
+      ],
+      "diagnostic_matches": true
+    }
+  ],
+  "deviations": [
+    "Initial new main Jai formatting failed; only new fixture whitespace aligned, original source/failed receipt retained.",
+    "Initial Python module ruff invocation unavailable; installed standalone ruff0.14.14 used successfully.",
+    "Initial new driver formatting failed; formatter applied to owned test driver only, Ruff final checks pass.",
+    "Android -os attempt unsupported: preserved separately and excluded from supported-platform success counts."
+  ]
+}
