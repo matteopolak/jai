@@ -1,7 +1,7 @@
 {
   "role": "stdlib-tools",
-  "timestamp_utc": "2026-10-16T03:59:19.411321+00:00",
-  "shared_head": "72531513b06889afe4585f94433ad28a6c55125f",
+  "timestamp_utc": "2026-10-16T05:28:42.193338+00:00",
+  "shared_head": "bdd1ff4e116911fda097ee0c5d9850f4dbe20975",
   "checkpoint": "98b1581ccdc910fc6c5eecff10a9abd3133bc247",
   "ownership": "Bindings_Generator emission/parser/printing/native tooling and Print_Vars; model/type/context excluded",
   "adoption": [
@@ -99,9 +99,9 @@
           "line": 29
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "per-API fresh evidence not yet collected",
-      "remaining_gap": "Supports 8/16/32/64-bit target widths; wider target contract and default formatting audit pending."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current refined88/0, ObjC19/0, vtable54/0 receipts with exact per-source snapshots; see current_refinement_batch.",
+      "remaining_gap": "Reviewed1/2/4/8-byte signed hex verified;16-byte target intentionally asserts, now native/interpreter negative proven."
     },
     {
       "name": "append_as_unsigned_integer_hex",
@@ -111,9 +111,9 @@
           "line": 24
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "per-API fresh evidence not yet collected",
-      "remaining_gap": "Supports 8/16/32/64-bit target widths; wider target contract audit pending."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current refined88/0, ObjC19/0, vtable54/0 receipts with exact per-source snapshots; see current_refinement_batch.",
+      "remaining_gap": "Reviewed1/2/4/8-byte unsigned hex verified;16-byte target intentionally asserts, now native/interpreter negative proven."
     },
     {
       "name": "append_bitfield_helpers",
@@ -507,9 +507,9 @@
           "line": 57
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "Current guarded public bridge120, scoped generated emission140/227;80namespace and96-level type/native-long/expression/array paths, cyclic negatives and repeated-DAG native effects as applicable. Exact fixtures/receipts define domain.",
-      "remaining_gap": "Canonical literal/macro, template identifier, type reference, unary/binary/parenthesized and aggregate paths implemented with bounded atomic emission. Inherits explicit unresolved raw-token/width policy."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Reviewed plain64payload decimal path +raw passthrough/atomic negative; accepted refined88/0 with true sourceguard, actual generated I/nativeMacO0/O2.",
+      "remaining_gap": "Wide payload remains64bits; no scalar cast/limb construction. Acceptance in every target128 context/by-value nativeABI is explicitly unestablished, not a missing printer body."
     },
     {
       "name": "print_function",
@@ -519,9 +519,9 @@
           "line": 36
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
-      "remaining_gap": "Real plain foreign, pointer-to-value and formatting wrappers; callback slices copied before reuse. Virtual linkage without library and Objective-C generated call unresolved in reviewed questions."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current refined88/0, ObjC19/0, vtable54/0 receipts with exact per-source snapshots; see current_refinement_batch.",
+      "remaining_gap": "Real scalar Objective-C instance/class wrappers, selector storage, local-name collisions and empty-receiver/automatic-variadic negatives verified. Floating/struct runtime selection is source-check only; canonical missing-receiver and universal Apple ABI are outside established correct behavior."
     },
     {
       "name": "print_function_type_to_builder",
@@ -543,9 +543,9 @@
           "line": 45
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
-      "remaining_gap": "Scalar/string/null/enum/identifier plus canonical checked MACRO conversion with target cast, temporary ownership and failure transaction verified. RAW_CPP_TOKENS target/output policy and widths beyond64 need review."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Reviewed plain64payload decimal path +raw passthrough/atomic negative; accepted refined88/0 with true sourceguard, actual generated I/nativeMacO0/O2.",
+      "remaining_gap": "Wide payload remains64bits; no scalar cast/limb construction. Acceptance in every target128 context/by-value nativeABI is explicitly unestablished, not a missing printer body."
     },
     {
       "name": "print_namespace",
@@ -567,9 +567,9 @@
           "line": 47
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
-      "remaining_gap": "Current ordinary/anonymous/bitfield modified_declarations produce real native-compatible records. Generic dependent record emission and polymorphic vtable/helper placement need clarified canonical metadata/printing contract."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current refined88/0, ObjC19/0, vtable54/0 receipts with exact per-source snapshots; see current_refinement_batch.",
+      "remaining_gap": "Ordered generic defaults and actual canonical C++ input/native specialization consumers verified. Wide field SDK alignment16 preserved; real C limb/byte exchange. General template raw/inheritance layout construction remains model/ABI limit, not absent printer body."
     },
     {
       "name": "print_struct_vtable",
@@ -579,9 +579,9 @@
           "line": 113
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "Current source bridge batch98 commands/48runtime and canonical/wrapper generated workflow; exact receipts below, each snapshot applies.",
-      "remaining_gap": "Body prints actual canonical vtable record; required placement/helper relationship to virtual_ call declarations awaits precise reviewed linkage contract."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current refined88/0, ObjC19/0, vtable54/0 receipts with exact per-source snapshots; see current_refinement_batch.",
+      "remaining_gap": "Canonical nested typed table; allfour independent helper option combinations execute native slots/accessor; omitted slot storage preserved and variadic wrapper diagnosed/skipped. Mac64 scalar ABI only."
     },
     {
       "name": "print_type_to_builder",
@@ -591,9 +591,9 @@
           "line": 80
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "Current guarded public bridge120, scoped generated emission140/227;80namespace and96-level type/native-long/expression/array paths, cyclic negatives and repeated-DAG native effects as applicable. Exact fixtures/receipts define domain.",
-      "remaining_gap": "Actual supported named/anonymous/function/dimension/incomplete/va_list/type template argument printing verified; cycle-aware deep type/name traversal. Dependent generic record, raw/128 and polymorphic policies inherited explicitly."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current refined88/0, ObjC19/0, vtable54/0 receipts with exact per-source snapshots; see current_refinement_batch.",
+      "remaining_gap": "S128/U128 names, canonical generic/default/array and typed vtable consumers verified.128-value by-value ABI and unsupported model layouts not certified."
     },
     {
       "name": "print_typedef",
@@ -615,9 +615,9 @@
           "line": 135
         }
       ],
-      "status": "partial_supported_body",
-      "shared_verification": "per-API fresh evidence not yet collected",
-      "remaining_gap": "Copies libclang spellings and separates tokens; exact whitespace/comment compatibility question remains."
+      "status": "implemented_supported_contract",
+      "shared_verification": "Current refined88/0, ObjC19/0, vtable54/0 receipts with exact per-source snapshots; see current_refinement_batch.",
+      "remaining_gap": "Reviewed concatenated spellings, comment omission, single-token fallback and independent copied lifetime implemented. Token text deliberately not reconstructable source; obsolete compile-C++ premise retired explicitly."
     },
     {
       "name": "should_be_omitted",
@@ -871,6 +871,58 @@
         "commands": 72,
         "boundary": "Final canonical Pool ownership and supported high-level current source. Other native platforms not executed."
       }
+    ],
+    "three_library_final": {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-libraries-x9metbwe/verification.json",
+      "commands": 26,
+      "passed": true,
+      "source_unchanged": true,
+      "compiler_sha256": "15d511830886903668dd0b764d875bccc06ab584971f419953f2920bbbbb2b9b",
+      "native_execution": "Mac O0/O2 consumers, all3generator modes; other platform execution not claimed"
+    },
+    "current_reviewed_refinements": [
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/refined-emission-qtkd9u7k/verification.json",
+        "passed": true,
+        "commands": 88,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/objc-workflow-hjpf_b_o/verification.json",
+        "passed": true,
+        "commands": 19,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/vtable-workflow-m5of37o5/verification.json",
+        "passed": true,
+        "commands": 54,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-public-bridge-3cetpr2p/verification.json",
+        "passed": true,
+        "commands": 120,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-libraries-ujag3814/verification.json",
+        "passed": true,
+        "commands": 26,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/protobuf-producer-xic__s84/verification.json",
+        "passed": true,
+        "commands": 29,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      }
     ]
   },
   "dependencies": [
@@ -942,15 +994,10 @@
     }
   ],
   "unfinished": [
-    "print_function: virtual/pure-virtual missing linkage and Objective-C intrinsic call contract questions",
-    "print_struct/print_struct_vtable: generic dependent metadata/emission and supported vtable/helper placement contract",
-    "print_literal_to_builder/print_expression_to_builder, both hex helpers: raw-token conversion and128-bit represented target policy",
-    "raw_tokens_string_from_cursor: promised source whitespace versus token rendering question",
-    "append_cpp_wrapper: operator-spelled export normalization, source-only unknown ABI categories; ordinary core verified",
-    "Other native platforms and SDK distribution resource/sysroot closure remain external; cross target objects/source are not target execution",
-    "generate_bindings mapped-library workflow: canonical provider logical full_path repair and fresh three-library native gate pending",
-    "Retained unused Native_Model load/dependency removal requires integrator extraction of actually used quote/type utilities; not a second public parse route",
-    "Model-owned binding-model-properties scalar/comparison typedef64 caps60/166 routed to model owner, not changed here"
+    "Combined current shared-source/nativeABI8 build and400-case pass belong integration/coordinator; individual receipt snapshots are not the full baseline",
+    "Native128 by-value argument/return ABI, every wide-decimal target context, ObjC fpret/stret native return ABI and implicit receiver are not established by scalar/record-pointer tests",
+    "General template/raw/inheritance construction and other native OS execution/SDKdistribution resource closure remain model/native limits",
+    "Unused Native_Model dependency/load cleanup remains integrator-owned; canonical public workflows do not call that parser"
   ],
   "tradeoffs": [
     "No optional performance/profile expansion; scoped host aggregate workflow only.",
@@ -970,8 +1017,8 @@
   ],
   "adoption_status": "Checkpoint adopted; public emitters in canonical facade, new bodies consume single canonical model/context. No index/branch mutation by this owner.",
   "remaining_counts": {
-    "partial_supported_body": 9,
-    "implemented_supported_contract": 43,
+    "implemented_supported_contract": 52,
+    "partial_supported_body": 0,
     "missing_body": 0
   },
   "native_dependency_identity": [
@@ -1058,7 +1105,7 @@
     "note": "Latest coordinator explicitly assigned canonical run_generator/handle_toplevel_cursors to ASN macro worker; tools retains emission/bindings-driver integration, supplies native evaluation probe."
   },
   "next_batch": {
-    "focus": "Use reviewed refinements to finish virtual/ObjC/generic/raw/driver paths; preserve source-stable interval for peer/integrator receipts",
+    "focus": "Integration checkpoint and combined current build/corpus; consume any new concrete owned producer failures with regressions. No unanswered ordinary output question remains.",
     "missing": []
   },
   "native_macro_probe_dependency": {
@@ -1076,7 +1123,7 @@
     ],
     "failed_attempt": "Nonexistent virtual include rejected; corrected using actual immutable primary filename per official CXUnsavedFile docs."
   },
-  "source_hold": "Own production currently stable for integrator capture/checkpoint. No index/commit operation by tools. Later implementation will reread append-only inbox and honor explicit capture holds.",
+  "source_hold": "Owned production stable for integration capture. Sole integrator stages/commits. No peer files or index mutations by tools.",
   "maintained_driver_inventory": [
     {
       "name": "normalize_options",
@@ -1086,15 +1133,15 @@
     },
     {
       "name": "generate_bindings",
-      "status": "partial_supported_body",
+      "status": "implemented_supported_contract",
       "public_overloads": 2,
-      "gap": "Canonical both-overload source implemented; supported header/type/record/enum/bitfield/wrapper workflows native verified. Multi-library logical full_path awaits provider repair. Virtual/ObjC/dependent-generic/raw/128 policies remain precise inherited emission questions."
+      "gap": "Supported canonical workflow implemented/verified. Explicit native/model accepted-domain limits and final combined current-source verification remain separate; no unanswered helper spelling/body gap."
     },
     {
       "name": "generate_bridge",
-      "status": "partial_supported_body",
+      "status": "implemented_supported_contract",
       "public_overloads": 1,
-      "gap": "Supported canonical C++ workflow including mapped metadata/filter/native C exclusion/defaults/aggregate/lifetime/file negatives verified. Unsupported assembly-label/native ABI classification and other native execution explicit."
+      "gap": "Supported canonical workflow implemented/verified. Explicit native/model accepted-domain limits and final combined current-source verification remain separate; no unanswered helper spelling/body gap."
     },
     {
       "name": "_default_get_func_args_for_printing",
@@ -1132,7 +1179,7 @@
       "whole stdlib/corpus acceptance"
     ],
     "plan": "docs/plans/stdlib-tools-canonical-driver.md",
-    "library_dependency": "canonical-libraries-3zvk1n69 genuine system logical-name assertion RED. Shared/static modifiers already pass. Generator-platform owner must publish logical extensionless full_path while retaining physical loading identity; no driver-side stripping.",
+    "library_dependency": "RESOLVED provider logical full_path integrated bf0618fe; own fresh source-built compiler canonical-libraries-x9metbwe26/0, actual shared/static/system native providers and linked O0/O2 consumers, SDK version positive/negative, strong generated-root strict lint/format. No caller stripping.",
     "ownership": "Canonical Pool for temporary init/run/printing; result builder retains caller allocator. Native/session disposal before bulk release, no universal native-library/cache unload."
   },
   "no_workaround_review": [
@@ -1324,5 +1371,258 @@
       "stdlib/Pool/module.jai": "012a172bed5542f6c6706d0748011c62e5fb4165f182206cdf93b1490de23d88",
       "stdlib/internal/allocation/pool.jai": "c3c8d499520aedf83057f3d730f4299621446470ec8929fd4fb8a51fc3f75f9a"
     }
+  },
+  "active_targeted_work": {
+    "request": "Fix known issues as batch before combined broad corpus; no broad sweep by tools",
+    "status": "Known owned supported body defects repaired;52enumerated helper contracts implemented,0partial/0missing. Four unchanged originalprotobuf compilechecks pass. Whole stdlib/corpus/native ABI completion not claimed.",
+    "compiler_build": "OWN actual shared Cargo --locked --offline jaic-cli+jailint completed10.12s; outputs assignedT7 only",
+    "latest_protobuf_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/protobuf-producer-xic__s84/verification.json",
+    "known_required_red": [],
+    "focused_passes": 17,
+    "source_application_guards": true,
+    "boundary": "App protobuf producer uses Basic/String/File, NO Bindings_Generator dependency. Current application lexer loses underscores through incorrect canonical is_alnum95. Plain #run/runtime generated output and actual serializer/deserializer roundtrip pass interpreter/nativeMacO0/O2. Malformed Jai remains rejected.",
+    "resolved_requests": [
+      "canonical Basic underscore predicate fix consumed without peer edits",
+      "three original schemas admitted/hashverified; four original compile cases exit0",
+      "provider logical names resolved; three libraries26/0",
+      "canonical generic builtin default repair consumed; real C++ specialization consumers",
+      "canonical128slot names now present from model owner",
+      "vtable independent option matrix/slot names and ObjC receiver policy delivered and implemented",
+      "Wide target signed decimal output exact rule delivered and implemented; obsolete scalar-cast reduction retired as a current producerblock"
+    ],
+    "next_tasks": [
+      "Combined current shared-source/nativeABI8 build and400-case pass belong integration/coordinator; individual receipt snapshots are not the full baseline",
+      "Native128 by-value argument/return ABI, every wide-decimal target context, ObjC fpret/stret native return ABI and implicit receiver are not established by scalar/record-pointer tests",
+      "General template/raw/inheritance construction and other native OS execution/SDKdistribution resource closure remain model/native limits",
+      "Unused Native_Model dependency/load cleanup remains integrator-owned; canonical public workflows do not call that parser"
+    ],
+    "independent_reducers": [
+      "tests/developer-tools/compiler-requests/protobuf-format-field.jai",
+      "tests/developer-tools/compiler-requests/protobuf-identifier-classification.jai",
+      "tests/developer-tools/compiler-requests/empty-generated-field.jai"
+    ],
+    "tool": "tools/check_developer_protobuf_producer.py",
+    "questions": "docs/specs/questions/stdlib-tools-protobuf.md",
+    "no_changes_to": [
+      "application corpus",
+      "compiler source",
+      "Basic source",
+      "model/run/provider source",
+      "Extensions"
+    ]
+  },
+  "additional_targeted_handoff": {
+    "status": "Superseded by ready_reviewed_refinement_checkpoint; exact four protobuf compile failures resolved, fulloriginal runtime/setup still separately classified",
+    "files": {
+      "tests/developer-tools/compiler-requests/protobuf-format-field.jai": "b58d9888ca7e22bdaa6f6c5b62d8b299d47b23cc1f1738b9ab36e6297549c018",
+      "tests/developer-tools/compiler-requests/protobuf-identifier-classification.jai": "a2e8772438df95afcef2bc1c33b3c4876c3ca804fdef4141259a7717c13bcd28",
+      "tests/developer-tools/compiler-requests/empty-generated-field.jai": "82c70e340945504970ba5709b0d8ba41d7df4bc615c532db6841a036d73ae52f",
+      "tools/check_developer_protobuf_producer.py": "4d6847f19d90cf64ab615d9fdb54f6ad0590964668848ab1f4658784b6a88b7b",
+      "docs/specs/questions/stdlib-tools-protobuf.md": "a85ded690a31bfa02f0419e73c3dded753fb04c38cd15e28a37364d102426201",
+      "docs/stdlib-tools-shared-emission.md": "7e7b8c52a12bf9a51d012cbbe7830cdfe6affc2168554c1124bd342271d73f1f"
+    }
+  },
+  "current_refinement_batch": {
+    "status": "READY owned source stable.52implemented/0partial/0missing in assigned52helper inventory; verification/platform/accepted-domain limits retained separately. Not full stdlib/corpus completion.",
+    "receipts": [
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/refined-emission-qtkd9u7k/verification.json",
+        "passed": true,
+        "commands": 88,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/objc-workflow-hjpf_b_o/verification.json",
+        "passed": true,
+        "commands": 19,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/vtable-workflow-m5of37o5/verification.json",
+        "passed": true,
+        "commands": 54,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-public-bridge-3cetpr2p/verification.json",
+        "passed": true,
+        "commands": 120,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/canonical-libraries-ujag3814/verification.json",
+        "passed": true,
+        "commands": 26,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      },
+      {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/protobuf-producer-xic__s84/verification.json",
+        "passed": true,
+        "commands": 29,
+        "source_unchanged": true,
+        "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+      }
+    ],
+    "remaining_checklist": [
+      "Combined current shared-source/nativeABI8 build and400-case pass belong integration/coordinator; individual receipt snapshots are not the full baseline",
+      "Native128 by-value argument/return ABI, every wide-decimal target context, ObjC fpret/stret native return ABI and implicit receiver are not established by scalar/record-pointer tests",
+      "General template/raw/inheritance construction and other native OS execution/SDKdistribution resource closure remain model/native limits",
+      "Unused Native_Model dependency/load cleanup remains integrator-owned; canonical public workflows do not call that parser"
+    ],
+    "no_peer_edits": true,
+    "no_git_mutations": true,
+    "native_boundaries": {
+      "executed": "Mac I/nativeO0/O2 generated Jai; actual C128record exchange; C++ default/explicit generic specialization exchange; C++ vtable dispatch; ObjC scalar class+instance/libobjc initialize",
+      "source_only": "ObjC fpret/stret branch output; cross-target evidence remains previous source/objects only",
+      "not_claimed": "128-value native call/return ABI, all Apple ObjC ABI, other native OS execution, full400"
+    },
+    "workarounds_and_tradeoffs": [
+      "Cursor old source-reconstruction oracle retired per reviewed token concatenation; maintained runner replaced, no genuine negatives removed",
+      "Error fixture RAW token rejection premise retired; genuine invalid MACRO default retains exact4diagnostics and prior-byte/failure checks",
+      "Protobuf stale malformed-underscore and empty-stdout expectations retired explicitly; malformed colon negative retained, real imports supplied to generated consumers",
+      "Generic no-single-layout path prints declared fields and skips generic layout checks per reviewed policy; raw/inheritance unsupported specializations not fabricated",
+      "Wide fields receive explicit SDK alignment when limb representation natural alignment differs; no Basic record edits",
+      "Original ObjC rootclass fixture required observable +initialize method; initial OS abort retained, fixture repaired without fake SDK",
+      "Generated consumer scope_export added after canonical scope_file; prior source-only/no-entry draft not counted as runtime",
+      "Private ObjC names are allocated/freed after emission; canonical model/type pointers remain shared. Existing Pool peak-memory/linear active-path scan tradeoffs remain documented"
+    ],
+    "verification_correction": {
+      "invalid_receipts": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/refined-emission-bnn8llkm/verification.json",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/refined-emission-zkp1krlb/verification.json",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/objc-workflow-07ih01r9/verification.json"
+      ],
+      "reason": "All commands passed but model generator-template-defaults.jai changed during capture. These are NOT accepted green snapshot evidence. Initial runner printedPASS despite falseguard; allthree newrunners now raise/nonzero on falseguard.",
+      "accepted_replacement": [
+        {
+          "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/refined-emission-qtkd9u7k/verification.json",
+          "passed": true,
+          "commands": 88,
+          "source_unchanged": true,
+          "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+        },
+        {
+          "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/objc-workflow-hjpf_b_o/verification.json",
+          "passed": true,
+          "commands": 19,
+          "source_unchanged": true,
+          "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+        },
+        {
+          "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib-tools/shared-target/vtable-workflow-m5of37o5/verification.json",
+          "passed": true,
+          "commands": 54,
+          "source_unchanged": true,
+          "scope": "Only exact captured inputs. Current owned production hash membership independently verified across accepted receipts; later peer changes need combined capture."
+        }
+      ]
+    }
+  },
+  "ready_reviewed_refinement_checkpoint": {
+    "status": "READY for sole integrator selective checkpoint; no Git mutation by tools.39owned/mixed-doc files plus this auditJSON. No binary/generated/PDB/CIE/peer paths.",
+    "production": [
+      "stdlib/Bindings_Generator/declaration-emission.jai",
+      "stdlib/internal/developer-tools/binding-canonical-driver.jai",
+      "stdlib/internal/developer-tools/binding-cursor-source.jai",
+      "stdlib/internal/developer-tools/binding-declaration-emission.jai",
+      "stdlib/internal/developer-tools/binding-expression-normalization.jai",
+      "stdlib/internal/developer-tools/binding-type-emission.jai",
+      "stdlib/internal/developer-tools/binding-value-emission.jai",
+      "stdlib/internal/developer-tools/cpp-fragments.jai"
+    ],
+    "tests": [
+      "tests/developer-tools/bindings-cursor-source.jai",
+      "tests/developer-tools/bindings-type-emission-errors.jai",
+      "tests/developer-tools/bindings-refined-values.jai",
+      "tests/developer-tools/bindings-hex128-negative.jai",
+      "tests/developer-tools/bindings-generic-record.jai",
+      "tests/developer-tools/bindings-generic-record.hpp",
+      "tests/developer-tools/bindings-generic-driver.jai",
+      "tests/developer-tools/bindings-generic-native.cpp",
+      "tests/developer-tools/bindings-pointer-recovery.jai",
+      "tests/developer-tools/bindings-vtable-workflow.hpp",
+      "tests/developer-tools/bindings-vtable-workflow.cpp",
+      "tests/developer-tools/bindings-vtable-workflow.jai",
+      "tests/developer-tools/bindings-vtable-roundtrip.jai",
+      "tests/developer-tools/bindings-objc-wrapper.jai",
+      "tests/developer-tools/bindings-objc-native.c",
+      "tests/developer-tools/bindings-objc-roundtrip.jai",
+      "tests/developer-tools/bindings-wide-layout.h",
+      "tests/developer-tools/bindings-wide-layout.c",
+      "tests/developer-tools/bindings-wide-layout.jai",
+      "tests/developer-tools/compiler-requests/protobuf-format-field.jai",
+      "tests/developer-tools/compiler-requests/protobuf-identifier-classification.jai",
+      "tests/developer-tools/compiler-requests/empty-generated-field.jai",
+      "tests/developer-tools/compiler-requests/wide-literal-target.jai"
+    ],
+    "tools": [
+      "tools/check_developer_cursor_source.py",
+      "tools/check_developer_refined_emission.py",
+      "tools/check_developer_protobuf_producer.py",
+      "tools/check_developer_vtable_workflow.py",
+      "tools/check_developer_objc_workflow.py"
+    ],
+    "docs": [
+      "docs/stdlib-tools-shared-emission.md",
+      "docs/specs/questions/stdlib-tools-protobuf.md",
+      "docs/specs/questions/stdlib-tools-shared.md"
+    ],
+    "files": {
+      "stdlib/Bindings_Generator/declaration-emission.jai": "6a0378ff5c4871b9e2b27063317d8454cbbdbe0f28796ab89f56c246fa510a93",
+      "stdlib/internal/developer-tools/binding-canonical-driver.jai": "3832d4e3a05f15425c84de0beef51ad04e087cc8121a188fe6729c53c40c6b0c",
+      "stdlib/internal/developer-tools/binding-cursor-source.jai": "708dd6cc07a3e41de8135567e56738b86c455d2a9760404c759c5261b38a87c7",
+      "stdlib/internal/developer-tools/binding-declaration-emission.jai": "7ae88f44633c28e6a48fa45abdbe5caa0d56a6146dde7c6a1f7946f7654a70e0",
+      "stdlib/internal/developer-tools/binding-expression-normalization.jai": "d821b90e20a0c935f3979165a6ae5830b07b0875fa82c233d3031413c348d402",
+      "stdlib/internal/developer-tools/binding-type-emission.jai": "3c20158328074ecabd14fe1175ccfc5e1f95d691628f6877f725ad4e76111ca0",
+      "stdlib/internal/developer-tools/binding-value-emission.jai": "d9f37ab68f4901a080b55ba53300b658ad219c40c7663da668bcd7be5b27d077",
+      "stdlib/internal/developer-tools/cpp-fragments.jai": "70a7ae028ee82d6b0b22bd84d12cb6bd04fccc09e894a838c1325cafd233e1b1",
+      "tests/developer-tools/bindings-cursor-source.jai": "129cf2943588753d48d61f30a837aa9536ee1806bbdb598797ae84634d024d08",
+      "tests/developer-tools/bindings-type-emission-errors.jai": "33721c2b56bd9a816f26963d2aceb7005c2ccc2a26f7562758fd2a6df1f006b1",
+      "tests/developer-tools/bindings-refined-values.jai": "e5ddb301b96f167754bb395f491adb16a2722d4744f0a5c75664f92be7e2d120",
+      "tests/developer-tools/bindings-hex128-negative.jai": "073408d5057bfd134ab9d9f29d45171ad24a007a0e8080216382743c6e92a234",
+      "tests/developer-tools/bindings-generic-record.jai": "215a4e0b7fd0d8153a5d9d477a0835894e39993201cd7d98f453e7caa1e24b6e",
+      "tests/developer-tools/bindings-generic-record.hpp": "2308fa15565ed49fa36610d6d06a1a2746a2ab396afefc7f59fd94a7a16e0fa6",
+      "tests/developer-tools/bindings-generic-driver.jai": "a3406ca61f4653ffdbbc201e6368373d8c32169ee01ebebcb00b9d1871b456ab",
+      "tests/developer-tools/bindings-generic-native.cpp": "2724818107a111b6281686796afef57d015fe4e3cf45ea05143f6b70495dfa65",
+      "tests/developer-tools/bindings-pointer-recovery.jai": "9379c009baec97996b8830b43b5d0a1472ebe14a8cf228a51812a280ce143f3a",
+      "tests/developer-tools/bindings-vtable-workflow.hpp": "09119a148b5e6f4dff9d4df19f68c37cf61f657756eefb74cad498aca37278f9",
+      "tests/developer-tools/bindings-vtable-workflow.cpp": "255e63963cc6b78f606a9f296e9f2bf233661c4181c5470a32c000259fd581a4",
+      "tests/developer-tools/bindings-vtable-workflow.jai": "b38b61bdc016d9ed125f7fa195216411c689f23c5a132476c8a6d698f508f188",
+      "tests/developer-tools/bindings-vtable-roundtrip.jai": "5cacd91ea10e7368faab826a011a89cdc3452d9b5863dbab86f0c0faa4cd8c77",
+      "tests/developer-tools/bindings-objc-wrapper.jai": "aabee16d3f9bed6170fb41520d9d0e369942a7f33a7a8f4ae44bdb78e58304de",
+      "tests/developer-tools/bindings-objc-native.c": "912a535cddd5804d0523a0055e908d3754ca800d54af19e0123df336aceb03be",
+      "tests/developer-tools/bindings-objc-roundtrip.jai": "ade0a9cb8cd112dfda1d4320c466c5956a1899177b5987d07acd16da0462772e",
+      "tests/developer-tools/bindings-wide-layout.h": "26ec55e66239258256fa554522a363508a73801a083f4fea982a572b643433da",
+      "tests/developer-tools/bindings-wide-layout.c": "68945bd1998738cd9843dd3d76d764cf266d37edbceab75d840a6b1b6aa1ef6b",
+      "tests/developer-tools/bindings-wide-layout.jai": "10d011c8f4902b6a030c7c3c18f0e564348c97282d856c1015b094fb40424ecb",
+      "tests/developer-tools/compiler-requests/protobuf-format-field.jai": "b58d9888ca7e22bdaa6f6c5b62d8b299d47b23cc1f1738b9ab36e6297549c018",
+      "tests/developer-tools/compiler-requests/protobuf-identifier-classification.jai": "a2e8772438df95afcef2bc1c33b3c4876c3ca804fdef4141259a7717c13bcd28",
+      "tests/developer-tools/compiler-requests/empty-generated-field.jai": "82c70e340945504970ba5709b0d8ba41d7df4bc615c532db6841a036d73ae52f",
+      "tests/developer-tools/compiler-requests/wide-literal-target.jai": "b5011f3be4c380ee17e667029bc0c9e5e2f02abdb24ca5069071949b90fa1838",
+      "tools/check_developer_cursor_source.py": "75456669528a200b01fd5ef349ac263cc93ef0b07d6436c456cb2c87858fba80",
+      "tools/check_developer_refined_emission.py": "f188e746c88041278bf6df2a63c63c2c9deb4fc7c1b27af781190d25dda675df",
+      "tools/check_developer_protobuf_producer.py": "c5a6c556e3d8076c6412dd168685a05a1ff3f2cfd68509267908d3e485046ad4",
+      "tools/check_developer_vtable_workflow.py": "d423d555219aa1c8856e33ec4a282c5d77156c874ed91cf1be4b26beb98080e8",
+      "tools/check_developer_objc_workflow.py": "e92e6fcf833aed0e330ec8a7e88f167d05ff3680506a143f0c59fe706d191769",
+      "docs/stdlib-tools-shared-emission.md": "651019a50ace2dcb118e5dd4365a55e761fd5f0a693bdf77da087942154cb766",
+      "docs/specs/questions/stdlib-tools-protobuf.md": "0a7e497c4c03858fdbc5aa8f15966344b47a048f1b5edb5ba7129bb0a9fac2ff",
+      "docs/specs/questions/stdlib-tools-shared.md": "c5ab7cd3a0c4fd9c8f8c3281d3146ce5bc7302b60939875b0e98a06c5c548a5f"
+    },
+    "shared_doc_note": "questions/stdlib-tools-shared.md includes reviewer refinements and append-only tools dispositions; preserve all merged reviewed content.",
+    "test_classification": {
+      "empty-generated-field.jai": "Required compile-negative, must reject expected expression",
+      "bindings-hex128-negative.jai": "Required interpreter/native assertion-negative for16-byte hex",
+      "wide-literal-target.jai": "Retained obsolete-cast diagnosis, not current producerfailure or positive fixture; reviewed producer now emits decimal only"
+    },
+    "global_doc_requests": [
+      "Update docs/README.md existingtools feature link summary to current scope/evidence",
+      "Link current own audit and protobuf disposition; do not project focused results onto combined full400"
+    ],
+    "commit_owner": "integration only"
   }
 }
