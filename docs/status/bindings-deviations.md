@@ -1,5 +1,12 @@
 # Bindings implementation deviations
 
+ABI8 now supersedes the historical graph/default-thread metadata OOM fail-fast
+entries: typed reservations precede SDK ownership, publication allocates nothing,
+and stack-owned operation scopes permit persistent-slot failure/retry without
+aborting free/read operations. See docs/native/rpmalloc-metadata-reservations.md.
+AppKit application/OpenGL class contracts requested from review remain an actual
+separate blocker; no missing class or root export is invented to claim closure.
+
 Current rpmalloc ownership/configuration status supersedes historical entries
 below describing shared-domain EINVAL or pending live-field contracts. Those
 were real compatibility defects, not accepted policies. The typed-domain

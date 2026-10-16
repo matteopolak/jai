@@ -1,5 +1,10 @@
 # Developer documentation
 
+- [ABI8 allocator metadata reservation](native/rpmalloc-metadata-reservations.md):
+  transactional SDK ownership, allocation-free operation scopes and
+  [scoped verification](status/shared-rpmalloc-metadata-checkpoint.json).
+  ABI8 source requires rebuilt ABI8 SDK/callback assets; ABI7 candidates remain historical.
+
 - [Basic underscore classification repair](portable-ascii-predicate-fix.md):
   exhaustive reviewed ASCII byte-domain assertions and
   [focused verification](status/shared-ascii-checkpoint.json).

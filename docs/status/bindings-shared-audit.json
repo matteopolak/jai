@@ -1,6 +1,6 @@
 {
   "role": "bindings",
-  "timestamp": "2026-10-16T02:59:42.989546+00:00",
+  "timestamp": "2026-10-16T04:58:27.715235+00:00",
   "shared_head": "d3547c8855a719b3d42822c2dff5126e1f51cce7",
   "named_checkpoint": "0d57d88597c934d822ed3c208fccc1fad672673c",
   "adoption": [
@@ -75,7 +75,7 @@
     "Enabled telemetry matching proprietary SDK ABI unavailable.",
     "rpmalloc graph metadata OOM transactionality, explicit native-domain sharing/resource policies, and native Linux/Windows verification; reviewed option bodies now present."
   ],
-  "worker_scratch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-bindings-66813",
+  "worker_scratch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metadata-rollback",
   "tools": {
     "jaic": {
       "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/debug/jaic",
@@ -243,16 +243,16 @@
         }
       ],
       "implemented_behavior": "Generic allocator mode dispatch through canonical prelude types and HeapBridge ownership",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent.",
       "retirement_behavior": "Retire independent owner; outer lease reference protects nested shutdown until leave; other domain remains usable."
     },
@@ -276,16 +276,16 @@
         }
       ],
       "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -308,16 +308,16 @@
         }
       ],
       "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -340,16 +340,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent.",
       "retirement_behavior": "Retire independent owner; outer lease reference protects nested shutdown until leave; other domain remains usable."
     },
@@ -373,16 +373,16 @@
         }
       ],
       "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "remaining_contract": "Exact default public callback field values and supported post-init edits under review; current init-copy/lifetime/selection behavior tested.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
@@ -406,16 +406,16 @@
         }
       ],
       "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "remaining_contract": "Exact default public callback field values and supported post-init edits under review; current init-copy/lifetime/selection behavior tested.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
@@ -439,16 +439,17 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
+      "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit."
     },
     {
       "module": "rpmalloc",
@@ -470,16 +471,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -502,16 +503,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -534,16 +535,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -566,16 +567,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -598,16 +599,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -630,16 +631,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -662,17 +663,18 @@
         }
       ],
       "implemented_behavior": "Mutable canonical copied config; callable default pair, null error/failure, empty names; live callbacks/name bytes; sizing edits do not reconfigure.",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
       "remaining_contract": "Exact default public callback field values and supported post-init edits under review; current init-copy/lifetime/selection behavior tested.",
-      "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
+      "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit."
     },
     {
       "module": "rpmalloc",
@@ -694,16 +696,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -726,16 +728,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -758,16 +760,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -790,16 +792,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -822,16 +824,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -854,16 +856,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -886,16 +888,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -918,16 +920,16 @@
         }
       ],
       "implemented_behavior": "Native statistics copied field-by-field to exact conditional public records",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -950,16 +952,16 @@
         }
       ],
       "implemented_behavior": "Native statistics copied field-by-field to exact conditional public records",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -987,16 +989,16 @@
         }
       ],
       "implemented_behavior": "Rewrite immutable native counter capture appended to canonical Basic builder; raw FILE route conditional on private PRETTY_PRINT",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1024,16 +1026,16 @@
         }
       ],
       "implemented_behavior": "Rewrite immutable native counter capture appended to canonical Basic builder; raw FILE route conditional on private PRETTY_PRINT",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1061,16 +1063,16 @@
         }
       ],
       "implemented_behavior": "Rewrite immutable native counter capture appended to canonical Basic builder; raw FILE route conditional on private PRETTY_PRINT",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1093,16 +1095,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1125,16 +1127,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1157,16 +1159,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1189,16 +1191,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1216,16 +1218,16 @@
         }
       ],
       "implemented_behavior": "Live quiescent ownership-range queries through HeapBridge.contains",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1243,16 +1245,16 @@
         }
       ],
       "implemented_behavior": "Live quiescent ownership-range queries through HeapBridge.contains",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1275,16 +1277,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1307,16 +1309,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1339,16 +1341,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1371,16 +1373,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1403,16 +1405,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1435,16 +1437,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1467,16 +1469,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1499,16 +1501,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1531,16 +1533,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1563,16 +1565,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1595,16 +1597,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1627,16 +1629,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1659,16 +1661,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1691,16 +1693,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1718,16 +1720,16 @@
         }
       ],
       "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1745,16 +1747,17 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
+      "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit."
     },
     {
       "module": "rpmalloc",
@@ -1771,16 +1774,16 @@
         }
       ],
       "implemented_behavior": "Public configuration copy, paired callbacks and caller-context bridge with native initialization rollback",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "remaining_contract": "Exact default public callback field values and supported post-init edits under review; current init-copy/lifetime/selection behavior tested.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
@@ -1799,16 +1802,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent.",
       "retirement_behavior": "Retire independent owner; outer lease reference protects nested shutdown until leave; other domain remains usable."
     },
@@ -1827,16 +1830,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1859,16 +1862,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1886,16 +1889,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1913,17 +1916,18 @@
         }
       ],
       "implemented_behavior": "Mutable canonical copied config; callable default pair, null error/failure, empty names; live callbacks/name bytes; sizing edits do not reconfigure.",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
       "remaining_contract": "Exact default public callback field values and supported post-init edits under review; current init-copy/lifetime/selection behavior tested.",
-      "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
+      "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit."
     },
     {
       "module": "rpmalloc",
@@ -1945,16 +1949,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -1972,16 +1976,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2004,16 +2008,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2036,16 +2040,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2068,16 +2072,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2095,16 +2099,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2122,16 +2126,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2149,16 +2153,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2176,16 +2180,16 @@
         }
       ],
       "implemented_behavior": "Real pinned SDK allocation/free/resize with checked sizes and private facade publication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2203,16 +2207,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2230,16 +2234,16 @@
         }
       ],
       "implemented_behavior": "Native statistics copied field-by-field to exact conditional public records",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2257,16 +2261,16 @@
         }
       ],
       "implemented_behavior": "Native statistics copied field-by-field to exact conditional public records",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2284,16 +2288,16 @@
         }
       ],
       "implemented_behavior": "Rewrite immutable native counter capture appended to canonical Basic builder; raw FILE route conditional on private PRETTY_PRINT",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2311,16 +2315,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2338,16 +2342,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2365,16 +2369,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2392,16 +2396,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2419,16 +2423,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2446,16 +2450,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2473,16 +2477,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2500,16 +2504,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2527,16 +2531,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2554,16 +2558,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2581,16 +2585,16 @@
         }
       ],
       "implemented_behavior": "Typed public heap/span facade using private native ownership handles; raw public aliases retain identity",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2608,16 +2612,17 @@
         }
       ],
       "implemented_behavior": "Direct pinned SDK linker-retention call; no allocation or statistics fabrication",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
+      "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit."
     },
     {
       "module": "rpmalloc",
@@ -2639,16 +2644,16 @@
         }
       ],
       "implemented_behavior": "Native allocator/thread lifecycle serialized through private facade lease",
-      "configuration_dependency": "Private ABI7, canonical typed Domain and reviewed SDK option flags; obsolete Native_Profile_Matches removed.",
+      "configuration_dependency": "Matching private ABI8 helper/profile; canonical nominal-owner Domain and stack operation scopes.",
       "remaining_behavior": [
-        "Graph/default-thread mirror metadata exhaustion still reports and aborts; heap-acquire handle reservation is transactional.",
-        "Serialized facade publication copies observable native metadata; no coherent concurrent snapshot promise."
+        "Live/quiescent observable metadata; no coherent concurrent snapshot promise.",
+        "Native other-platform execution and OS-specific error paths remain unverified."
       ],
-      "verification": "Latest scoped allocator142/0 plus domains/live73/0; exact per-fixture native/source/ABI/privacy scope in rpmalloc_live_contract_completion.",
+      "verification": "ABI8 allocator251/0 scoped checks; exact public/native/source/ABI/OOM/privacy limits in rpmalloc_metadata_completion.",
       "diagnostic_options": "Both assertion and argument-validation compile flags now implemented; immutable four-setting Mac/runtime/source evidence at rpmalloc_diagnostic_option_completion.",
       "remaining": "Native Linux/Windows/Android execution remains required; tested host/configuration scope is recorded separately.",
       "configuration_gap": null,
-      "behavior_limit": "Canonical graph/default-thread metadata allocation remains fail-fast on OOM; acquired-handle and runtime-table reservations are transactional. Native allocation failure is independently handled.",
+      "behavior_limit": "Valid-lifecycle graph/TLS metadata allocation failures now recover; peak typed capacity and serialization/copy costs retained. Other native-platform gates explicit.",
       "instance_ownership": "Module-owned typed native Domain, repeated exact imports canonical; distinct lists independent."
     },
     {
@@ -2851,7 +2856,7 @@
     "six_android_required_checks": "Retained and freshly attempted, none waived.",
     "shared_audit_files": "Named historical docs/status/bindings-integrated-target-audit.json/.md absent from shared source; integrator should reconcile exact clean checkpoint files. No recreated expected ledger or guessed rows."
   },
-  "last_observed_shared_head": "6295584c42cf004999267d28835dfa8e1b00e95f",
+  "last_observed_shared_head": "288a932268bfa85240cee5455e0ef45bd3068592",
   "rpmalloc_diagnostic_option_completion": {
     "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/rpmalloc-option-completion/immutable-runs/rpmalloc-diagnostics-p1_p7zko/verification.json",
     "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/rpmalloc-option-completion/immutable-runs/bindings-inputs-tw5qga4t",
@@ -2874,7 +2879,7 @@
     "native_scope": "Mac ARM64 12 public executions, six real active failure assertions, independent SDK type/ivar/method probes; Mac x64 source only. iOS target/native remains unverified.",
     "failed_attempts": "500b9rwm had three genuine test failures from assumed inherited isa encoding. Canonical using-member elision requires q^{JaiBindingRuntimeObject=Cq}:q; no production special case."
   },
-  "next_owned_behavior": "Integration checkpoint of verified canonical domains/live config; native target SDK execution and proper transactional graph-publication capacity design remain explicit follow-up, no profile expansion.",
+  "next_owned_behavior": "Consume full reviewed AppKit surface; implement canonical classes/GL context identity and all reviewed members, then focused positive/privacy/native regressions before root combined400.",
   "rpmalloc_retained_advice_completion": {
     "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/rpmalloc-advice/advice-le_lze7v/verification.json",
     "passed": 14,
@@ -2930,11 +2935,11 @@
   },
   "current_tool_build_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/shared-current-tool-build.json",
   "remaining_implementation_limits": [
-    "Canonical graph/default-thread publication and later required-thread-slot OOM remain explicit fail-fast; transactional full-graph reservation is not implemented.",
-    "Per-use name copying, graph serialization/copy and metadata allocation costs have no performance claim.",
-    "Enabled telemetry14 has no matching commercial SDK ABI; missing functionality is not invented.",
-    "Android8 compiler source failures remain required; actual Android and Linux/Windows/device native gates remain open.",
-    "Windows FLS and Linux live kernel naming have source implementation but no native target evidence."
+    "Native Windows/Linux/Android/iOS and Linux kernel naming/Windows FLS behavior unverified.",
+    "Commercial telemetry14 ABI unavailable, Android8 required source checks remain open.",
+    "Live-name C copy allocation failure policy remains source-only; graph/thread OOM tests do not establish Linux naming OOM behavior.",
+    "AppKit class/method/enum contracts missing from reviewed tree; consumer-positive reductions fail both required exports; no guessed API.",
+    "Peak metadata and snapshot/name-copy costs retained; no performance or full-corpus claim."
   ],
   "android_current_required_source": {
     "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/target/android-current-source/required-7t49s7f0/verification.json",
@@ -3058,9 +3063,84 @@
       "no-thread-ptr1g23h": "Same private native-heap lookup context issue; all63 counter assertions retained.",
       "domains-ud7p7oaw": "Reserve assertion ran before data-span mapping; now allocate actual data span before checking surplus.",
       "domains-07jg0w_o": "Verifier omitted generated fixture directory from immutable capture; complete regeneration restored."
-    }
+    },
+    "superseded_by": "rpmalloc_metadata_completion ABI8; prior receipts remain historical."
   },
-  "ready_rpmalloc_domain_checkpoint": {
+  "rpmalloc_metadata_completion": {
+    "private_abi": 8,
+    "checks": 251,
+    "evidence": {
+      "domains_metadata": {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metadata-rollback/domains-tv1po5wl/verification.json",
+        "sha256": "126a438d9066ffce63813e86edca5a13df1d9d338c3b3ebfe1a2a312c5f3af25",
+        "passed": 109,
+        "failed": 0
+      },
+      "retention_numeric": {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metadata-rollback/dimensions-yvq2bx6z/verification.json",
+        "sha256": "689daebdb31c223340ec5429b0411b2845b56fac777b23a6e5a6e453755ee8e2",
+        "passed": 71,
+        "failed": 0
+      },
+      "both_cache_off": {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metadata-rollback/no-thread-vtvpfdy7/verification.json",
+        "sha256": "8e7caa4652e24b02c219a0e83c98ba66885d1d16fab40662b35ffd8d6249b903",
+        "passed": 20,
+        "failed": 0
+      },
+      "adaptive": {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metadata-rollback/no-thread-ghni39lq/verification.json",
+        "sha256": "9d2de822bf2ccf98defc6d62f43b66870b23394013e8854ddbdcac7dcf4725d8",
+        "passed": 26,
+        "failed": 0
+      },
+      "diagnostics": {
+        "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metadata-rollback/rpmalloc-diagnostics-no8ecvnj/verification.json",
+        "sha256": "b3d45a305267793db5bb85ef3b6ef8fcc40a0878022664a4310f84a4ea9a3267",
+        "passed": 25,
+        "failed": 0
+      }
+    },
+    "implementation": "Typed capacity reserved before actual SDK heap creation/all4mapping paths; real ENOMEM/null failure and retry; allocation-free publication.",
+    "thread_boundary": "Stack-owned private operation scopes; transactional persistent slot promotion, real free/read after slot OOM, retry and owner-reference retirement.",
+    "diagnostics": "Correct Domain scope release before immutable snapshot formatting; capture failure preserves builder.failed/stored bytes; recursive allocator-backed formatting verified.",
+    "native": "Mac ARM64 actual O0/O2 public OOM/diagnostic behavior; C address/undefined sanitizer metadata failures; ordinary interpreter/native regressions active.",
+    "source": "Six desktop Jai configurations; complete strict lint/format; full Macx64 C source/ABI; native SDK header ABI6targets; nine exact privacy negatives.",
+    "fault_observer": "Native-only Darwin interposer asks actual libc calloc overflow/ENOMEM; interpreter fault injection is not claimed; separate C sanitizer controls remain active.",
+    "sdk_pin": "Existing three official C source hashes plus sixth zero-fuzz pinned/generated metadata hook patch; no original Jai input.",
+    "required_helper_action": "Rebuild ABI8 helpers from stable shared source. ABI7 a97/553 assets deliberately rejected before mutation; no mixed runtime claim.",
+    "retained_costs": [
+      "Peak typed metadata capacity retained until finalization; early heap-pool capacity increases startup memory pressure.",
+      "Graph serialization/copy and live-name per-use C copies have no performance claim."
+    ],
+    "remaining": [
+      "Native Windows/Linux/Android/iOS and Linux kernel naming/Windows FLS behavior unverified.",
+      "Commercial telemetry14 ABI unavailable, Android8 required source checks remain open.",
+      "Live-name C copy allocation failure policy remains source-only; graph/thread OOM tests do not establish Linux naming OOM behavior."
+    ],
+    "additional_checks": [
+      {
+        "command": "generate_rpmalloc_metadata.py --check (final hook audit)",
+        "exit": 0
+      },
+      {
+        "command": "ruff check modified Python tools; ruff format",
+        "exit": 0
+      },
+      {
+        "command": "git diff --check assigned sources",
+        "exit": 0
+      }
+    ],
+    "superseded_reds": [
+      "before/red.json: genuine graph metadata abort",
+      "rpmalloc-diagnostics-f_0ggvw5: missing explicit assert.h with SDK assertions off, repaired",
+      "domains-8pjp3q5t: new diagnostic fixture assumed failed-builder conversion preserved text; now checks actual stored bytes/length",
+      "manual public fault probe: immediate foreign-free mapped decrease was unsupported; owner lifecycle drain retains mapped decrease assertion",
+      "sanitized-current initial setup: ASAN overflow requires allocator_may_return_null=1, existing failure-control policy; real failure retained"
+    ]
+  },
+  "historical_rpmalloc_domain_checkpoint": {
     "subject": "fix(stdlib): own rpmalloc domains and honor live configuration",
     "source_state": "Stable for integration; only integrator may stage/commit. No release or all-platform completion claim.",
     "sha256": {
@@ -3166,5 +3246,61 @@
     ],
     "inventory": "80 existing public procedure rows retain precise metadata/native-platform limits; no absent body masked by whole-module partial.",
     "historical_receipts": "Prior174 retained including unchanged GL32; current allocator142 rerun + new domain/live73. No projection to other platforms."
+  },
+  "ready_rpmalloc_metadata_checkpoint": {
+    "subject": "fix(stdlib): reserve rpmalloc metadata before SDK ownership",
+    "source_state": "Stable source for selective integration checkpoint; integration alone stages/commits.",
+    "sha256": {
+      "docs/native/rpmalloc-metadata-reservations.md": "368330f12dec4c2b5df2d81565ee6627423afe4caf335594efef738789edc4e7",
+      "docs/native/rpmalloc-runtime-policies.md": "6e0c049a8f182f14b478ed8a1c305d7274fff0b2fbdf2f1558731b14fafeea93",
+      "docs/status/bindings-deviations.md": "b49396abcefc1222da33b1d9a99810f9ad661203b6fd453846a62ff448f48e4f",
+      "stdlib/internal/bindings/rpmalloc-domain/module.jai": "a13c0bdfe20c37a72e91d7f4208900d38406a1b416bdf901adb32b1f710c0a8d",
+      "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "f3c0c26bf967a4e680a29d35d46efcd1526669dfe85c48a514b6380022d52fa7",
+      "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "9dd04023ae8a48f331a0e37879d9853325b3099d16be366add82bd400be33a48",
+      "stdlib/internal/bindings/rpmalloc-heaps/runtime-dimensions.h": "4689e54385410989a6c366e7828288baacb28331f63654375cda99bb8c529cec",
+      "stdlib/internal/bindings/rpmalloc-heaps/runtime-domain-post.h": "c17dd5c607a2ae647d2bdd425b509ba976c4ed8865a20baa968b2efd1b7f3c75",
+      "stdlib/internal/bindings/rpmalloc-heaps/runtime-domain.inc": "f21d7929db422a335bcfa940dbe27e3d97208347bd99857a45277b4a6fa04f3e",
+      "stdlib/internal/bindings/rpmalloc-heaps/runtime-metadata.h": "27e4c96b998acdf7b561ea368fd24fb09d153531a495f5ada391d0644e419a76",
+      "stdlib/internal/bindings/rpmalloc-heaps/sdk-metadata.patch": "3e83a44c76f33c079df075dc357d50607a8a1068056195c23f0e35e1d6ff0a74",
+      "stdlib/internal/bindings/rpmalloc-sdk/provenance.json": "d958095918d03672fcc3c46ab83120319ba0d9c9109a85e2a912b90057e10936",
+      "stdlib/rpmalloc/allocator.jai": "94ba36fee4fe49cb3cc97c6b0e942fcc47dbdaf8e5a9532d76eccbde37de9575",
+      "stdlib/rpmalloc/statistics.jai": "3e632f3b5834c09c278ee59328ce375019656b9359ce661321d34064e57f7f6d",
+      "stdlib/rpmalloc/wrappers.jai": "e0604e976aae13ed764970c74c05a096d577f1aa6757da4f5fe25f2d4f585747",
+      "tests/native-bindings/rpmalloc-metadata-diagnostics.jai": "487fcffae21d2c654fc3752fa815b15a728689954d48b59e699a2401a00d9e9d",
+      "tests/native-bindings/rpmalloc-metadata-failure.jai": "865999d038f637c9587c75954d3e7907201314b8e93e85e118d66b091470742c",
+      "tests/native-bindings/rpmalloc_domains_probe.c": "c1982347a3a3ffd6799d51d881df5dce507e3cbc6911a1d294e18e0ff1ac99e5",
+      "tests/native-bindings/rpmalloc_metadata_fault.c": "f8afbf273e6faaba10b6b4337e610d487322eb73af8685ef2451a8b64d4e62c4",
+      "tests/native-bindings/rpmalloc_metadata_probe.c": "56c1115eab604148a49f59846efd0ae26638ff5403a12d6ec3331537d68e984e",
+      "tools/native_bindings/generate_rpmalloc_metadata.py": "ba086fed433c566c4a4dfb1855a696ee739497b7ff6526ddc1e3ba3e51971a72",
+      "tools/native_bindings/prepare_rpmalloc.py": "372dc1d1560b970600414520d8ce667dc2ff12f24eef332b13b7325c10c3ded4",
+      "tools/native_bindings/rpmalloc_profiles.py": "7d51441c24b9c7fd7da3e9cd5d804470d1a23f8c3675ca86892418953654819c",
+      "tools/native_bindings/verify_rpmalloc_domains.py": "b877389e06ae845958a108f657766498c7fc5c7bd7749d6c88e7fb2c3ee5736a"
+    },
+    "own_status": "docs/status/bindings-shared-audit.json",
+    "global_doc_request": "README/index link docs/native/rpmalloc-metadata-reservations.md; update stale global metadata-OOM ledger only to exact scope.",
+    "batch_gate": "Matching ABI8 native rebuild plus AppKit reviewed implementation before combined full400; no broad sweep by bindings."
+  },
+  "appkit_corpus_disposition": {
+    "case_ids": [
+      "shader-transpiler-build",
+      "forbear-build"
+    ],
+    "state": "required_positive_failed_contract_review_pending",
+    "consumer_sha256": {
+      "PixelRifts--Jai-Shader-Transpiler/src/backend.jai": "1ddf03dd8a09bdbed15be736e6e38c21a1232875ae3b694c01c76871bf7ed1a2",
+      "gabrielmfern--forbear/forbear.jai": "5654cec1a8d16d892e62c95c602c71138e0c59b1beffd2680cfaa521ffe27586"
+    },
+    "imports": "Both explicitly import Objective_C and Objective_C/AppKit; no missing lexical import or compiler defect inferred.",
+    "reviewed_oracle": "Current objective-c.md only contextual NSWindow/NSResponder; absent exact class/method/enum contract is requested in own question ledger/inbox.",
+    "cause": "Facade implements only reviewed window subset; missing NSApplication/NSOpenGLContext and broader AppKit needs. GL still has a separate private opaque context identity.",
+    "requested": "Complete canonical class fields/superclass using/method parameters/defaults/enums/availability, exact prefixed enum public names; keep AppKit out of root Objective_C.",
+    "reduction_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/metadata-rollback/appkit/reductions.json",
+    "partial_paths": [
+      "tests/native-bindings/pending/objc-appkit-public-classes.jai",
+      "tests/native-bindings/pending/objc-appkit-opengl-class.jai",
+      "docs/specs/stdlib/native-bindings-questions.md"
+    ],
+    "compiler_dependency": null,
+    "waived": false
   }
 }

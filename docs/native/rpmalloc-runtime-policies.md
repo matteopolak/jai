@@ -1,5 +1,9 @@
 # Private rpmalloc runtime policy boundary
 
+Current ABI8 metadata reservation supersedes the historical graph/thread OOM
+fail-fast limits below. See [metadata reservations](rpmalloc-metadata-reservations.md)
+for the implemented failure paths, retained costs and native verification limits.
+
 The reviewed public records retain their exact field order and conditional
 layout. The facade owns public Heap/Span objects; SDK calls use private native
 objects. Neither equal record sizes nor a public pointer is an ABI identity.

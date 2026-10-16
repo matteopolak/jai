@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "scope": "ABI8 transactional metadata source checkpoint",
+  "snapshot_before_checkpoint": "288a932268bfa85240cee5455e0ef45bd3068592",
+  "producer_files": {
+    "docs/native/rpmalloc-metadata-reservations.md": "368330f12dec4c2b5df2d81565ee6627423afe4caf335594efef738789edc4e7",
+    "docs/native/rpmalloc-runtime-policies.md": "6e0c049a8f182f14b478ed8a1c305d7274fff0b2fbdf2f1558731b14fafeea93",
+    "docs/status/bindings-deviations.md": "b49396abcefc1222da33b1d9a99810f9ad661203b6fd453846a62ff448f48e4f",
+    "stdlib/internal/bindings/rpmalloc-domain/module.jai": "a13c0bdfe20c37a72e91d7f4208900d38406a1b416bdf901adb32b1f710c0a8d",
+    "stdlib/internal/bindings/rpmalloc-heaps/bridge.c": "f3c0c26bf967a4e680a29d35d46efcd1526669dfe85c48a514b6380022d52fa7",
+    "stdlib/internal/bindings/rpmalloc-heaps/module.jai": "9dd04023ae8a48f331a0e37879d9853325b3099d16be366add82bd400be33a48",
+    "stdlib/internal/bindings/rpmalloc-heaps/runtime-dimensions.h": "4689e54385410989a6c366e7828288baacb28331f63654375cda99bb8c529cec",
+    "stdlib/internal/bindings/rpmalloc-heaps/runtime-domain-post.h": "c17dd5c607a2ae647d2bdd425b509ba976c4ed8865a20baa968b2efd1b7f3c75",
+    "stdlib/internal/bindings/rpmalloc-heaps/runtime-domain.inc": "f21d7929db422a335bcfa940dbe27e3d97208347bd99857a45277b4a6fa04f3e",
+    "stdlib/internal/bindings/rpmalloc-heaps/runtime-metadata.h": "27e4c96b998acdf7b561ea368fd24fb09d153531a495f5ada391d0644e419a76",
+    "stdlib/internal/bindings/rpmalloc-heaps/sdk-metadata.patch": "3e83a44c76f33c079df075dc357d50607a8a1068056195c23f0e35e1d6ff0a74",
+    "stdlib/internal/bindings/rpmalloc-sdk/provenance.json": "d958095918d03672fcc3c46ab83120319ba0d9c9109a85e2a912b90057e10936",
+    "stdlib/rpmalloc/allocator.jai": "94ba36fee4fe49cb3cc97c6b0e942fcc47dbdaf8e5a9532d76eccbde37de9575",
+    "stdlib/rpmalloc/statistics.jai": "3e632f3b5834c09c278ee59328ce375019656b9359ce661321d34064e57f7f6d",
+    "stdlib/rpmalloc/wrappers.jai": "e0604e976aae13ed764970c74c05a096d577f1aa6757da4f5fe25f2d4f585747",
+    "tests/native-bindings/rpmalloc-metadata-diagnostics.jai": "487fcffae21d2c654fc3752fa815b15a728689954d48b59e699a2401a00d9e9d",
+    "tests/native-bindings/rpmalloc-metadata-failure.jai": "865999d038f637c9587c75954d3e7907201314b8e93e85e118d66b091470742c",
+    "tests/native-bindings/rpmalloc_domains_probe.c": "c1982347a3a3ffd6799d51d881df5dce507e3cbc6911a1d294e18e0ff1ac99e5",
+    "tests/native-bindings/rpmalloc_metadata_fault.c": "f8afbf273e6faaba10b6b4337e610d487322eb73af8685ef2451a8b64d4e62c4",
+    "tests/native-bindings/rpmalloc_metadata_probe.c": "56c1115eab604148a49f59846efd0ae26638ff5403a12d6ec3331537d68e984e",
+    "tools/native_bindings/generate_rpmalloc_metadata.py": "ba086fed433c566c4a4dfb1855a696ee739497b7ff6526ddc1e3ba3e51971a72",
+    "tools/native_bindings/prepare_rpmalloc.py": "372dc1d1560b970600414520d8ce667dc2ff12f24eef332b13b7325c10c3ded4",
+    "tools/native_bindings/rpmalloc_profiles.py": "7d51441c24b9c7fd7da3e9cd5d804470d1a23f8c3675ca86892418953654819c",
+    "tools/native_bindings/verify_rpmalloc_domains.py": "b877389e06ae845958a108f657766498c7fc5c7bd7749d6c88e7fb2c3ee5736a"
+  },
+  "integration_format_only": {
+    "tests/native-bindings/rpmalloc_metadata_probe.c": {
+      "producer_sha256": "56c1115eab604148a49f59846efd0ae26638ff5403a12d6ec3331537d68e984e",
+      "integration_sha256": "f5c8b71d86704b295c18008e46c8532f0722541e0b14a2682eca28c7d03102a9"
+    },
+    "tools/native_bindings/prepare_rpmalloc.py": {
+      "producer_sha256": "372dc1d1560b970600414520d8ce667dc2ff12f24eef332b13b7325c10c3ded4",
+      "integration_sha256": "9da9f0f6192598199e1f2bcaf7c63364549b1da80ffdc6824f705474cb9b793c"
+    },
+    "tools/native_bindings/rpmalloc_profiles.py": {
+      "producer_sha256": "7d51441c24b9c7fd7da3e9cd5d804470d1a23f8c3675ca86892418953654819c",
+      "integration_sha256": "80acfb3e04c6bd86c4e7c2a9490d60e08349c02d390cb0e5c3dad53da44ef133"
+    }
+  },
+  "producer_checks": {
+    "passed": 251,
+    "failed": 0,
+    "scope": "109domains+71dimensions+20cacheoff+26adaptive+25diagnostics; nativeMacARM64/sourceothers separate"
+  },
+  "own_native_review": {
+    "command": "independent C metadata probe normal and ASAN/UBSan builds/executions",
+    "passed": 4,
+    "failed": 0,
+    "ignored": 0,
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/abi8-metadata-native-review/review.json"
+  },
+  "sdk_patch_regeneration": {
+    "command": "python3 -B tools/native_bindings/generate_rpmalloc_metadata.py --vendor <integration>/native-inputs/rpmalloc-original-current --work <integration>/abi8-metadata-patch-review --check",
+    "exit": 0
+  },
+  "format": {
+    "jai_files": 7,
+    "python_ast_preserved": true,
+    "ruff_check": 0,
+    "ruff_format": 0,
+    "native_c_format": 0
+  },
+  "private_abi": 8,
+  "native_assets": "Matching committed ABI8 rebuild pending; ABI7assets deliberately rejected",
+  "remaining": [
+    "Peak metadata chunks retained until finalization; no performance claim",
+    "Native Windows/Linux/Android/iOS and live Linux-name C-copy OOM not executed",
+    "Internal pool capacity/in-scope assertions still abort on invariant breach",
+    "No public API/type/layout changes; private Scope80byte Jai/C protocol",
+    "AppKit/printer/model/compiler WIP excluded",
+    "Broadfull400/baseline still deferred until known batch ready"
+  ],
+  "release_permitted": false
+}
