@@ -664,3 +664,5 @@ include exact file/line/source hashes and required platform limits.
 - [Live GL projection verification](status/shared-gl-projection-verification.json): public unqualified procedures retain the canonical mutable table's storage and loader updates.
 
 - [Canonical generator runner](generator-run-shared.md), [model](generator-model.md) and [session](generator-session.md): coherent canonical ownership, semantic rejection and dependency cleanup, with [proposed-commit integration verification](status/shared-generator-run-model-verification.json).
+
+- [Combined compiler checkpoint](compiler/shared-mac-checkpoint.md): independent producer-chain adoption, host-clock object proof, code-record defaults and current native debugger limitation.
