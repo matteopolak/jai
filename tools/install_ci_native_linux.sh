@@ -12,6 +12,7 @@ packages=(
   libdrm-dev
   libegl-dev
   libfontconfig1-dev
+  libffi-dev
   libfreetype-dev
   libgbm-dev
   libgl-dev

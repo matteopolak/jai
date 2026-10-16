@@ -825,3 +825,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Clipboard Linux toolchain provisioning](clipboard-linux-toolchain.md): isolated pinned components,9configuration tests, actualLinuxCI runtime/package rerun still required.
 
 - [Normal CI orchestration closure](tools/ci-orchestration-closure.md): full enabled SDL Linux dependencies, runner ownership and retained failure classifications.
+
+- [CI runner/provider readiness](status/ci-orchestration-ready.json): production-library checks, exact fixture platforms/inputs, actual ABI8 provider wiring and outstanding native/source verification.

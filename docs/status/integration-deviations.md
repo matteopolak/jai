@@ -2356,3 +2356,15 @@ Watcher actual registration warning is now root-harness realpath metadata EPERM,
 ## Final reviewed-oracle capture correction
 
 Explicit final GLspec hash comparison failed: live root-reviewed page6ad750 was working-tree-only while initial0c frozen page was olderc6aa400. This was a capture/integration defect, not a product behavior change. Exact two-line root-reviewed paragraph committed; correctedf1a7e3a8 candidate freezes authoritative latest page. No stale spec replacement or inferred contract. Original0c receipt and failure/hold narrative retained; corrected shared-candidate-f1a7e3a8.json supersedes finaloracle claim. All production/compiler/library/buildinput/fourtool/173nativeasset hashes identical, so completed functional proof reused by explicit byte equivalence with no duplicate builds or new test counts. Final capture contains5500 committedsource inputs and173native assets. Full400/Focus/nativeCI remain independent coordinator gates.
+
+## CI orchestration source-ready qualifications
+
+Alllocalverification isPython/shellconfigurationpolicy only underROOTnativelease:41policytests,63bashsyntaxblocks,9Pythonparses; nativeproviderbuild/query/run countZERO. Actualproducer0/9 andprior sanitizer failures not rewritten. Actionlint ci.yml sameinheritedSC2046RED/0introduced, notsuppressed.
+
+Bindings production route eliminatesproducerrefresh forpublicchecks; privateunits remainbyte-copiedfixture views andareseparatelylabelled, no publicstorage/identity proof projected fromcopies. Only actualsource/native paths used, no fakeprovider. Nativeartifact/field/lifecycle failures remainfatal. Mac-only SDKrecipes onLinux areexplicitunavailable/nonpassed; actualMac andcrosssource checks stillrequired.
+
+Sanitizer headless success isBUILDONLY notruntimepass; exactwronghost fixtures areUNAVAILABLE notpassed, callerfont/probe/resourceinputs arerealrequiredproviders. GL_PROBE scaffold onlybindsrealChelper/loadsunchangedfixture; nobodyrewrite/GLstub. Macclipboard tests requireactualrestoreguard; childdeadlines andcleanup serializerealglobalstate. Missingguard/probe/font isfailure.
+
+ABI8profileinventory isexplicit23sameacceptedf1profiles toboundbuildwork; otherprofiles remainunverified. Csource/buildpins retained, actualnativeflagqueries required; live/adaptivecounterSDKprobes compiled fromacceptedsource. Thisneworchestration isnotactualCI/nativeproof untilrerun. NativeChelpersarenotsanitizedbythiscompanion; Jainative ASan/UBSan coverage separate. SDKFreeTypeprobe usesactualhostofficialheaders, so version/ABI discrepancies mustfail ratherthanfabricate dimensions.
+
+FreeTypefixture Macfontliteral remainsgenuineLinuxconstructiongap, NOTskipped; sourceownerrequestopen. Windowsresourceprovider requiresrealDLL+icon initialresources, noemptyscratchsuccess. Coverageinitializeslegitimatezerohitfile withoutfabricatedhits; informationalheuristicnotAPI/behaviorcompletion. Sourceproductf1 andpublicsignatures/storage unchanged; peerWIP excluded.
