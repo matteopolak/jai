@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "scope": "Windows cross-runner exact fixture/provider/accounting CI repair",
+  "status": "ready harness and independent SDK control; genuine compiler/provider REDs retained",
+  "files": [
+    {
+      "path": "tools/windows_cross.py",
+      "sha256": "dc26f5b5fd71a5d3beb767a4e15f49d11656552aed5399aebeb35162bb53e9ba"
+    },
+    {
+      "path": "tools/test_windows_cross_selection.py",
+      "sha256": "231fc0422221941ff4f5de94da37cb7d3bb149a2e975974c265c14296a5d16ab"
+    },
+    {
+      "path": "tests/native/windows/inet-pton-sdk.c",
+      "sha256": "8ec29fea2d90682805a7c00cdd153c8ec9eccc0a2ed3a2e0e76ba08f150296e5"
+    },
+    {
+      "path": "docs/native/windows-cross-ci-triage.md",
+      "sha256": "905ac39f4229939542d7ab24f3f77193e3fce2b2ef2db39f80cf3f51e42f711c"
+    }
+  ],
+  "source_compiler": {
+    "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/http-wasm-termination/build/debug/jaic",
+    "sha256": "e2c1a7569844675facca7134327b13f21b02521b58d158ddc93244b30a98b29b",
+    "provenance": "fresh locked offline build of accepted current shared crates; no crate diff; not the denied f1 binary"
+  },
+  "checks": {
+    "helper_tests_passed": 35,
+    "verification_commands_passed": 11,
+    "real_target_source_positive": 2,
+    "real_target_source_failed": 8,
+    "x64_sdk_compile_and_link": true,
+    "arm64_sdk_link_verified": false,
+    "native_program_executions": 0,
+    "gui_fault_benchmark_executions": 0
+  },
+  "retained_required_failures": [
+    "proc-type-defaults-ifx inferred omitted argument",
+    "static-switch-add-context late context layout",
+    "io-configured-production ENABLE_ASSERT already used",
+    "JSON/TLS eager bcrypt during unrelated allocator call",
+    "ARM64 TLS inet_pton link unresolved, actual linker/provider evidence requested"
+  ],
+  "dispositions": {
+    "existing_catalogue_os": "consumed, not rewritten",
+    "target_foreign_compile_time_windows_build_host": [
+      "contracts/program-print-plugin-file-output",
+      "compiler/rules-compile-time-execution"
+    ],
+    "mingw_imgui": "only exact native/imgui-headless-frames; consumes native-libs.json existing imgui except profiles",
+    "arm64_x86": "only exact compiler/lang-asm architecture case",
+    "x64_reference_invalid": "only exact compiler/lang-asm SHA e64cb05b false CPUID-zero oracle; null pass and separate count; changed fixture required"
+  },
+  "evidence": [
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/verification.json",
+      "sha256": "6dee5d66f93edf588520dae1c8ce20501f71db2869641c5f333a32a9ace7e952"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/selection-inventory.json",
+      "sha256": "8dbfc018cdf68df3c4f4626b285e3f7b7145041ae3b333c80500b70e5c9d14ff"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/selection-red.txt",
+      "sha256": "028697e851c4cd35d3e84423934bf63b5fc156a74c75791f8403ab6313ab8b13"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/stderr-crlf-red.txt",
+      "sha256": "d178a3fd419477b585c9a5eccb614df62bb9cf08455e560d8a4d708b5cc33f00"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/source-build.log",
+      "sha256": "9242f32a1e8eebecf4902f4ab8596cbf8505a6cdf285eef164a59915850f868c"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/source-triage.json",
+      "sha256": "f5325a336a070a65174a11fcf3c760b874a525ab36a7bf59541bba6f58ff569b"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/source_triage.py",
+      "sha256": "f29b516c43be66bb8a4f738b69da4d34f935f3f859c5df66063320c6e28e8cd3"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/verify.py",
+      "sha256": "73576488e9f6f9dc4b34b9b72f528a4268b62340842dc9091a9c870ead8a5d2b"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/inet-pton-sdk.o",
+      "sha256": "6767675ab32a609f2ad7fd69bca898eaf2599c5ae8ee5b159573c130c2ca4307"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/inet-pton-sdk.exe",
+      "sha256": "c91351b87eabbe7d7091bd406dd2f184ab413a2aaf307dc10a34a41df66e98eb"
+    },
+    {
+      "path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/platform-io/target/windows-cross-ci/preserved-manifests.json",
+      "sha256": "dee09309f82bc278670808855d3a6f643e354c59b6c891db38f001d52fa1d72e"
+    }
+  ],
+  "readme_selective_append": "- [Windows cross-runner CI triage](native/windows-cross-ci-triage.md): exact target/build-host/profile requirements, separate invalid/unavailable accounting, real SDK control and retained compiler/provider failures.",
+  "integration": "Sole integrator stages/commits five patch files plus selective own README paragraph; no peer material or partial Print_Color prototype",
+  "excluded": [
+    "all compiler/stdlib production",
+    "SDL third-party runner",
+    "native provider builder and workflows",
+    "opaque original corpus/source bodies",
+    "root remote logs/auth/actions"
+  ],
+  "isolation": "Denied f1 tool read stopped before execution; fresh accepted-source offline own compiler build independently matches e2c1a756 receipt. Broad filename discovery encountered denied negative/modules, no body read/retry. Native root lease respected.",
+  "publication_permitted": false
+}
