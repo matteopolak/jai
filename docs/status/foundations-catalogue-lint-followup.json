@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "worker": "foundations",
+  "state": "READY follow-up evidence for unchanged seven-path patch after compiler adoption",
+  "timestamp_utc": "2026-10-16T20:29:32.675485+00:00",
+  "primary_handoff": "docs/status/foundations-catalogue-lint.json",
+  "primary_handoff_sha256": "ece22e760308cde3218368f188a4dda650ffadf9bcaacce0270b0fa14260cbaa",
+  "primary_patch_sha256": "357970ec4021a1bde4f5d1d5028743eabb3f31135ad9f9efd54555aa85c071fa",
+  "primary_source_patch_unchanged": true,
+  "reason": "Integration adopted general pthread/module/IDE compiler updates after primary evidence sealing; no old-pinned result projected to new tools",
+  "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/catalogue-lint-wg0c5v67",
+  "current_tool_paths": {
+    "jaic": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/catalogue-lint-wg0c5v67/target/debug/jaic",
+    "jailint": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/catalogue-lint-wg0c5v67/target/debug/jailint"
+  },
+  "current_tool_sha256": {
+    "jaic": "88419d21611aac3a143f4c7eed730d7d71f0a7593bae40c5721d863a8c1165ca",
+    "jailint": "78dbcf60c86d4954fb88593da2e14fb6eb615e9fd30d09918619668858167c39"
+  },
+  "historical_tool_paths": {
+    "jaic": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/catalogue-lint-wg0c5v67/previous-tools/jaic",
+    "jailint": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/foundations/catalogue-lint-wg0c5v67/previous-tools/jailint"
+  },
+  "historical_tool_sha256": {
+    "jaic": "179ce7a0aa38aeea5eca24c179889f55c82afb22c212d466c9c7282489ad7694",
+    "jailint": "6410105673e8a47541d9bad6aed92fffd2c291cf3104ac031bd30b3c07c9111c"
+  },
+  "compiler_whole_inventory_guard": {
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  "evidence_sha256": {
+    "compiler-followup-inputs.json": "79cb501d23af24f59acd7fe72c28557c5c52f907a85de381f5940419e8d51c78",
+    "compiler-followup-final-guard.json": "6f04451488628029b96d38b37c5c395676c89c9e6ea3b576d6fcb18d64b7b9a7",
+    "followup-lint/lint/results.json": "ec2e8ab5e13acc42662f76176c8c37941b09f4e028cc4ec50e38517344a471d6",
+    "followup-runtime/focused-runtime.json": "0a01177c1ef735811a878d862e1548c7b814c5d00e99c36fbc7514254ba1d078",
+    "followup-runtime/runtime-inputs-before.json": "ac3d0f387ce8649b70d9de7750ff5da7c5ffa80abffdc4d30c6c6d8b5ccbb388",
+    "followup-runtime/runtime-inputs-after.json": "a344b81ddcd45bb29b2c5ed37771d663056ccfb0ec62caaf4e3b51471d4d7acc",
+    "followup-artifact-hashes.json": "294647175ca1f71a2a33d4ee6e866f2b6fb4fe5cc258a3471b351d4867f8cae7",
+    "followup-source-rejections.json": "2adc1f63eb7c2e48a8649ca5de324b87e30823247ce763d5113d85f97923242b"
+  },
+  "strict_lint": {
+    "profiles": 4,
+    "positive_owned_sources": 126,
+    "complete_commands": 8,
+    "required_negative_commands": 60,
+    "all_commands_passed": true,
+    "missing": []
+  },
+  "runtime": {
+    "commands": 24,
+    "all_commands_passed": true,
+    "program_modes": "three interpreter +six nativeMacARM64 O0/O2 +fourNodeWASI O0/O2 +exactexit37",
+    "source_guard_changed": [],
+    "all_four_WASM_artifacts_final_magic": "0061736d01000000",
+    "native_slots": "released; children reaped"
+  },
+  "required_current_source_rejections": "four explicit contract negatives: Basic.exit on WASM, Io stack switching, SDL native platform, architectural x64 instruction; all PASS, not selection inferred from diagnostics",
+  "separate_required_red": "stdlib owner new non-MAIN PROGRAM config helper acceptance; compiler-owned, NOT counted as a passing binding-negative or positive",
+  "remaining": "platform-io/Input/numerics explicit metadata/fixture dependencies and combined Linux/Windows/native CI as primary handoff; no full catalogue400 replay or Thread fault waiver",
+  "integration": {
+    "README_append": "- [Foundations current compiler follow-up](status/foundations-catalogue-lint-followup.json) \u2014 source-matched four-profile lint and focused native/WASI checks after compiler adoption.",
+    "only_integration_Git_index": true
+  }
+}

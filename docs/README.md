@@ -887,3 +887,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Linux observer capture retention](tools/io-observer-retention.md): exact three-file failed-run evidence, with workload and failure gates unchanged.
 
 - [Isolated foundation configuration fixtures](foundation-fixture-configuration.md): valid single-program positives and separately retained origin-negative failures.
+
+- [Foundation target capabilities](tools/foundations-target-capabilities.md): complete public lint contexts, per-case required targets and retained runtime evidence.
