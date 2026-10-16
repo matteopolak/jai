@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "base_product": "60d2ff190ca3fc695a2a26454f0f733aaa04e08a",
+  "producer_commit": "fb7f892ca79ead4bc28b01ac8f5122f0a25ce38b",
+  "patch_sha256": "f2bab4f33f0dbef2fa35006446a8b4b61d40e3788475ea52ab381c0c0aca1d39",
+  "review": "Only exact new pointer receiver/result normalization and receiver applicability hunks. Existing operator_candidates, using/private/type-only visibility, metadata/canonical types and previous569 public symbol translation retained. No type-home-scope operator lookup, module exceptions or swallowed arbitrary call errors.",
+  "checks": [
+    {
+      "name": "before-patch",
+      "passed": 8,
+      "failed": 7,
+      "ignored": 0,
+      "failure_names": [
+        "builtin_address_fallback_evaluates_operands_once",
+        "by_value_receiver_accepts_temporary_structs_and_evaluates_once",
+        "explicit_address_rejects_nonpointer_pointer_getter_result",
+        "filtered_module_reexports_preserve_operator_visibility",
+        "pointer_held_in_local_is_loaded_instead_of_addressed_again",
+        "pointer_receiver_and_result_type_queries_follow_normal_calls",
+        "receiver_filter_recognizes_implicit_generic_setters"
+      ],
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/post-60d-pointer/before-patch.log",
+      "sha256": "60da4bde543e3b0d57cc9710584e1bec4d77035c25b8e93b3fa6b22e2285133a"
+    },
+    {
+      "name": "exact-patch",
+      "passed": 14,
+      "failed": 1,
+      "ignored": 0,
+      "failure_names": [
+        "filtered_module_reexports_preserve_operator_visibility"
+      ],
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/post-60d-pointer/exact-patch.log",
+      "sha256": "1597d805756285fb597c112e8c120b69f1b55bb4f172d4b9b5c6eb36b015732c"
+    },
+    {
+      "name": "focused",
+      "passed": 82,
+      "failed": 0,
+      "ignored": 0,
+      "failure_names": [],
+      "log": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/post-60d-pointer/focused.log",
+      "sha256": "16989e2640dcdd55413d403ff399e7a83a4bb5823ed3bf083d7beac7a7966bc3"
+    }
+  ],
+  "fixture_reconciliation": {
+    "producer_filter": "operator*[]",
+    "reviewed_current_filter": "*[]",
+    "effect": "One string literal migrated to existing canonical public filter spelling; same positive and type-only negative assertions retained",
+    "standalone_jai_format": "Seven new fixture files normalized by actual unchanged formatter; original formatting failure receipt retained"
+  },
+  "native_interpreter_cli_wasi_current_execution": false,
+  "producer_execution": "15 focused tests and 3cases interpreter/nativeARM64O0O2/wasm64WASI on producer603 qualified; not projected onto current merged source",
+  "separate_bucket_array_gap": "Current60d missing both internal pointer operator body and public facade export; owner requested coherent implementation from latest reviewed spec before capture",
+  "root_native_lease": "15347 active; no nativeJai/GUI/fault/broad reruns performed",
+  "rustfmt": "PASS",
+  "clippy": "jaic library + focused pointer test, -D warnings PASS",
+  "source_hashes": {
+    "crates/jaic/src/sema/calls.rs": "64262950211720bb54aa2f22e3590a357c285fc2194b5e9e17a3b47013f89773",
+    "crates/jaic/src/sema/expr.rs": "6b24bffd46c7c0f0bf5973c67ecabee68c34e9351fd20767eb627b5b015d62dc",
+    "crates/jaic/src/sema/stmt.rs": "dae06894f02313ea5c2e85cd5719c826826d5d1ed3bfbeacdfb98d2b7613112a",
+    "crates/jaic/tests/cleanroom_pointer_subscript.rs": "4da590b54005315e5d35346db7d455319d2811daf39ef719938bbbb97429a4bb",
+    "tests/cleanroom-language/pointer-subscript/extra-generics/main.jai": "e5fbbf716d439b0b8e051c06de03c4acc3455805ff7e3a69c794c20eafa97453",
+    "tests/cleanroom-language/pointer-subscript/main.jai": "0afd89ef1a1bced271ce3bcad916de06f385bf7b0b238cea2afabde99e3ade29",
+    "tests/cleanroom-language/pointer-subscript/module-boundary/main.jai": "37806c8752baeef7816f3d2250f55a9c40fefa34786f6cb202e33a620251c4c8",
+    "tests/cleanroom-language/pointer-subscript/module-boundary/modules/Store/module.jai": "66ceb40e3f5c18e54c7b9800ff56e42f7545cde12c490f9d1140c56a6319ea55",
+    "tests/cleanroom-language/pointer-subscript/pointer-read/main.jai": "69146b423c8e49496daf6184e478c4fa7b882799abd8f5efa7bcf0ab3fd54e57",
+    "tests/cleanroom-language/pointer-subscript/pointer-receiver/main.jai": "46a8eb4c69bfc71ce679c77e20e1ba5e1f25fd2bcb8404478ff28f047cce9703",
+    "tests/cleanroom-language/pointer-subscript/rvalue-receiver/main.jai": "b6a25eb9320d0d7252794e9cb52311e44f972d16d8c7e1fefc2f85ec80300d0e"
+  }
+}
