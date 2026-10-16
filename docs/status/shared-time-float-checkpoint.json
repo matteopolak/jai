@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "source_snapshot_before_checkpoint": "553afc98d1d30975b5d63b3e23ff73b4d2413a55",
+  "files": {
+    "stdlib/internal/basic/apollo.jai": "57274b9bbe4bd932df2f5eed637fcd6bba6072d08230551a4e2b330d5f3c2f43",
+    "tests/portable-stdlib/time-float-contracts.jai": "82522d12c0fff1733a593b0f4c966eb5906892bf6c4c21dbe5ab7a903c8b3a0c",
+    "tests/portable-stdlib/pending/apollo-negative-femtosecond-float.jai": "b4faf15ba7cdba7c76b818a65f0a4c9ab36df21f95696d16a399544cea072809",
+    "stdlib/Basic/tests/portable-filetime-kernel.jai": "cdbbb038500a84316ceef97d7577ca610f5e35d464df4caf262db55bfdd425c4",
+    "tools/check_portable_time_shared.py": "d2e526c02880b6daeeb1f7c39ec6ef1598f7696d7fe45ea6d1c3488b8abd6a9d",
+    "docs/portable-time-shared-audit.md": "c116b0127107888fab4440604418e4d1b4864669e2016f2cbd709d41e0d3969c",
+    "docs/specs/stdlib/portable-time-float-questions.md": "dcb075a8b9253cc3f07e10f73038ed2bc2ec2e19f081d80f789a6a66a058b5e6"
+  },
+  "command": "python3 -B artifacts/shared-integration/check_time_float_ready.py",
+  "passed": 14,
+  "failed": 0,
+  "ignored": 0,
+  "failure_names": [],
+  "native_executions": 6,
+  "native_builds": 4,
+  "format_checks": 4,
+  "source_guard": "unchanged",
+  "producer": {
+    "receipt": "time-shared-7vqj9xrj",
+    "passed": 80,
+    "failed": 0,
+    "scope": "retained time/calendar plus reviewed precision; source/native/context limits unchanged"
+  },
+  "compiler_sha256": "65970ba222ca952d6031c604fafa420e7dc0e51cd8f100d8d5719e8fc4fd6cc8",
+  "scope": "shared stable7path handoff, not frozen553library or wholebaseline",
+  "limitations": [
+    "Mac ARM64 execution only",
+    "no arbitrary rounding/ULP promise",
+    "fresh final combined candidate pending remaining active known fixes"
+  ]
+}

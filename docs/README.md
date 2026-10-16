@@ -1,5 +1,9 @@
 # Developer documentation
 
+- [Signed Apollo fractional conversion repair](status/shared-time-float-checkpoint.json):
+  nonzero positive/negative femtoseconds, checked whole-second range and
+  retained time/calendar assertions; final combined snapshot follows active fixes.
+
 - [Canonical bindings and bridge generation](stdlib-tools-shared-emission.md):
   one model/run lifecycle, returned-buffer ownership, strict native type matching,
   declaration emission and remaining unsupported domains.

@@ -29,6 +29,10 @@ def main():
         ]
     ]
     fixtures[7] = ROOT / "stdlib/Basic/tests/portable-filetime-kernel.jai"
+    fixtures.append(ROOT / "tests/portable-stdlib/time-float-contracts.jai")
+    former_reduction = (
+        ROOT / "tests/portable-stdlib/pending/apollo-negative-femtosecond-float.jai"
+    )
     common = [
         ROOT / ("stdlib/internal/basic/" + name + ".jai")
         for name in ["apollo", "time-errors", "elapsed-time", "calendar-text"]
@@ -42,7 +46,7 @@ def main():
     owned = [*common, *unix, *windows, kernel]
     captured = {
         str(path): hashlib.sha256(path.read_bytes()).hexdigest()
-        for path in [*fixtures, *owned]
+        for path in [*fixtures, *owned, former_reduction]
     }
     (work / "identity.json").write_text(
         json.dumps(
@@ -133,7 +137,12 @@ def main():
         ],
     )
     run("caller-return-lint", [target / "debug/jailint", "-D", "warnings", fixtures[4]])
-    for path in [*fixtures, *owned]:
+    run("former-negative-femtosecond:interp", [compiler, former_reduction, "-interp"])
+    run(
+        "former-negative-femtosecond:lint",
+        [target / "debug/jailint", "-D", "warnings", former_reduction],
+    )
+    for path in [*fixtures, *owned, former_reduction]:
         run(
             "format:" + str(path.relative_to(ROOT)),
             [target / "jaifmt", "--check", path],
