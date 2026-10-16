@@ -50,3 +50,6 @@ The diagnostic test creates its assigned `TMPDIR` or `CARGO_TARGET_DIR` before a
 
 
 Configuration tests share an explicit scratch selector: caller CARGO_TARGET_DIR; on CI, assigned RUNNER_TEMP or GITHUB_WORKSPACE/target/test-scratch; otherwise caller TMPDIR. The chosen directory is created before TemporaryDirectory. Local runs with no assignment fail clearly rather than selecting an internal-disk default. The actual-CI regression unsets both Cargo and TMPDIR and supplies a fresh assigned runner path; all diagnostic assertions remain active. The mocked accounting runner's scratch is assigned inside its test fixture too. This setup repair does not establish Clipboard/HTTP native runtime success.
+
+
+The focused Clipboard workflow also watches the shared scratch selector/control files and runs the scratch controls before native preparation. Package/runtime predicates, Xvfb client checks and source-built helper steps remain unchanged. HTTP, Clipboard and Windows workflow actionlint are clean.
