@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "source_parent": "77562165ed0f25642df5c44c704f9946bd4b9911",
+  "scope": "general CLI backend workspace target routing",
+  "stdlib_snapshot": "06e8ea965129889f9a24b84d99adb179021f75ff",
+  "command": "cargo test --locked --offline -p jaic-cli --bin jaic --test cleanroom_workspace_targets -- --test-threads=1",
+  "passed": 11,
+  "failed": 0,
+  "ignored": 0,
+  "object_target_pairs": 7,
+  "host": "macos-arm64",
+  "negative_before_fix": "Linux x64 child produced Mach-O instead of required ELF64 ET_REL machine62",
+  "failure_names": [],
+  "rustfmt": "passed",
+  "clippy_warnings_denied": "passed",
+  "limitations": [
+    "Cross-object generation is not native Windows/Linux execution",
+    "Frontend custom-triple and mixed CLI/workspace ABI coherence remain compiler-owned",
+    "No projected full-workspace or public-corpus success"
+  ]
+}

@@ -2044,3 +2044,8 @@ The full catalogue exposed a stale static-using expected-failure assertion after
 ## rpmalloc generated-domain build cost
 
 tools/native_bindings/rpmalloc_profiles.py currently defines96 combinations, each with SDK/callback libraries and static/dynamic outputs. This expands native build cost and does not mean96 configurations were tested. The integration runner builds only the four required diagnostic combinations using selected profiles. Retain actual supported-configuration selection for application/baseline builds; do not run the full optional cross-product before the primary Mac baseline or label generated declarations as verified behavior. Existing rpmalloc-no-thread-cache.jai contains now-reviewed invalid global=true/thread=false positive imports; owner reconciliation must preserve valid both-off ownership/layout assertions and precise rejection checks.
+
+
+## Workspace native object routing
+
+General LlvmBackend target selection now uses workspace OS/CPU or explicit LLVM triple instead of host-only native output. Actual seven-target object headers and explicit override/invalid CPU unit checks pass; no module-specific bypass. Native Windows/Linux runtime remains unexecuted. Frontend build::new_compiler does not independently derive ABI settings from a custom workspace triple; mixed CLI/workspace precedence and long-double ABI coherence remain compiler-owned verification gaps, not established by integer-return object headers. See compiler/workspace-object-targets.md and status/workspace-object-targets.json.
