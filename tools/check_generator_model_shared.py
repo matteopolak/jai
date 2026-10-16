@@ -288,6 +288,92 @@ def main():
                 consumer,
             ]
         )
+        # Exact generic RED producer plus an independently organized generated
+        # 128-bit/native-layout consumer share this immutable source identity.
+        for name, producer_name, emitted_name, consumer_name, fixture, library in [
+            (
+                "generic-original",
+                "bindings-generic-driver",
+                "generic-original-consumer",
+                None,
+                "bindings-generic-native.cpp",
+                "generic_fixture",
+            ),
+            (
+                "model-defaults",
+                "generator-model-default-emission",
+                "generator-model-defaults-generated",
+                "generator-model-default-roundtrip",
+                "generator-model-defaults-native.cpp",
+                "model_defaults",
+            ),
+        ]:
+            producer = snapshot / f"tests/developer-tools/{producer_name}.jai"
+            emitted = outputs / f"{emitted_name}.jai"
+            argument = emitted if consumer_name is None else outputs
+            checks.run([checks.JAIC, producer, "-check"])
+            checks.run([checks.JAIC, producer, "-interp", "--", argument], "ok\n")
+            expected = digest(emitted)
+            for optimization in [0, 2]:
+                exe = outputs / f"{name}-producer-O{optimization}"
+                checks.run([checks.JAIC, producer, f"-O{optimization}", "-exe", exe])
+                checks.run([exe, argument], "ok\n")
+                if digest(emitted) != expected:
+                    raise RuntimeError("Generic producer modes emitted different text")
+            consumer = (
+                emitted
+                if consumer_name is None
+                else snapshot / f"tests/developer-tools/{consumer_name}.jai"
+            )
+            checks.run(
+                [TARGET / "jaifmt", "--config", snapshot / "jaifmt.toml", emitted]
+            )
+            checks.run(
+                [
+                    TARGET / "debug/jailint",
+                    "-D",
+                    "warnings",
+                    "-I",
+                    outputs,
+                    emitted,
+                    consumer,
+                    producer,
+                ]
+            )
+            checks.run([checks.JAIC, consumer, "-check", "-I", outputs])
+            for optimization in [0, 2]:
+                checks.run(
+                    [
+                        "/opt/homebrew/opt/llvm/bin/clang++",
+                        "-std=c++17",
+                        "-Wall",
+                        "-Wextra",
+                        "-Werror",
+                        f"-O{optimization}",
+                        "-DMODEL_DEFAULT_LIBRARY",
+                        "-dynamiclib",
+                        snapshot / f"tests/developer-tools/{fixture}",
+                        "-o",
+                        native / f"lib{library}.dylib",
+                    ]
+                )
+                if optimization == 0:
+                    checks.run(
+                        [checks.JAIC, consumer, "-interp", "-I", outputs], "ok\n"
+                    )
+                exe = outputs / f"{name}-consumer-O{optimization}"
+                checks.run(
+                    [
+                        checks.JAIC,
+                        consumer,
+                        f"-O{optimization}",
+                        "-I",
+                        outputs,
+                        "-exe",
+                        exe,
+                    ]
+                )
+                checks.run([exe], "ok\n")
         receipt["inputs_unchanged"] = unchanged(snapshot, identity)
         receipt["generated_native_sha256"] = {
             str(path): digest(path) for path in native.glob("*.dylib")

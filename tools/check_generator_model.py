@@ -31,8 +31,10 @@ OWNED = [
     "stdlib/internal/developer-tools/generator-special-construction.jai",
     "stdlib/internal/developer-tools/generator-aggregate-construction.jai",
     "stdlib/internal/developer-tools/generator-template-construction.jai",
+    "stdlib/internal/developer-tools/generator-template-defaults.jai",
     "stdlib/internal/developer-tools/generator-native-string.jai",
     "stdlib/internal/developer-tools/binding-native-model.jai",
+    "stdlib/internal/developer-tools/binding-model-properties.jai",
     "tests/developer-tools/generator-model-helpers.jai",
     "tests/developer-tools/generator-model-native.jai",
     "tests/developer-tools/generator-model-session.jai",
@@ -52,6 +54,9 @@ OWNED = [
     "tests/developer-tools/generator-model-arrays.jai",
     "tests/developer-tools/generator-model-boundaries.jai",
     "tests/developer-tools/generator-model-dependencies.jai",
+    "tests/developer-tools/generator-model-defaults.jai",
+    "tests/developer-tools/generator-model-default-emission.jai",
+    "tests/developer-tools/generator-model-comparison-depth.jai",
 ]
 FIXTURES = [
     "generator-model-helpers",
@@ -75,11 +80,13 @@ FIXTURES = [
     "generator-model-arrays",
     "generator-model-boundaries",
     "generator-model-dependencies",
+    "generator-model-defaults",
+    "generator-model-comparison-depth",
 ]
 evidence = []
 
 
-def run(command, expected=None):
+def run(command, expected=None, expected_exit=0, diagnostic=None):
     result = subprocess.run(
         [str(x) for x in command],
         cwd=ROOT,
@@ -94,12 +101,14 @@ def run(command, expected=None):
             exit=result.returncode,
             stdout=result.stdout,
             stderr=result.stderr,
+            expected_exit=expected_exit,
         )
     )
     if (
-        result.returncode
-        or result.stderr
+        result.returncode != expected_exit
+        or (expected_exit == 0 and result.stderr)
         or (expected is not None and result.stdout != expected)
+        or (diagnostic is not None and diagnostic not in result.stderr)
     ):
         raise RuntimeError(json.dumps(evidence[-1], indent=2))
     return result.stdout
@@ -216,6 +225,32 @@ def main():
                 ]
             )
             run([probe], "ok\n")
+        for optimization in [0, 2]:
+            probe = TARGET / f"generator-model-defaults-sdk-O{optimization}"
+            run(
+                [
+                    prefix / "bin/clang++",
+                    "-std=c++17",
+                    "-Wall",
+                    "-Wextra",
+                    "-Werror",
+                    f"-O{optimization}",
+                    ROOT / "tests/developer-tools/generator-model-defaults-native.cpp",
+                    "-o",
+                    probe,
+                ]
+            )
+            run([probe], "")
+        run(
+            [
+                JAIC,
+                ROOT
+                / "tests/developer-tools/rejections/generator-default-query-private.jai",
+                "-check",
+            ],
+            expected_exit=1,
+            diagnostic="has no exported member `gm_template_default_type`",
+        )
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", vtable_oracle])
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", vtable_oracle])
         run([TARGET / "jaifmt", "--config", "jaifmt.toml", "--check", *OWNED])

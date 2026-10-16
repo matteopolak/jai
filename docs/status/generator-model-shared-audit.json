@@ -1,5 +1,5 @@
 {
-  "timestamp_utc": "2026-10-16T03:18:08.272012+00:00",
+  "timestamp_utc": "2026-10-16T06:03:55.607976+00:00",
   "shared_head": "540cadd3c1abf499b661d9b57d0f2f08e9f46a10",
   "checkpoint": "refs/remotes/coordinator/transition-generator-model",
   "checkpoint_counts": {
@@ -152,33 +152,56 @@
       "adopted": true
     }
   ],
-  "source_edits": "Adoption confirmed before owned changes. Real lifecycle, exact-receipt macro conversion, widened-enum rejection and source-associated dependent array bounds implemented; no Git index/branch actions by owner.",
-  "verification": "Immutable237-command full producer/run/emission/header-only consumer gate GREEN:38 interpreter,76 native O0/O2 and10 SDK oracle executions; formatter, complete-context and generated-root strict lint,2 cross-target source checks.2214 captured inputs and own tools unchanged.",
+  "source_edits": "Canonical SDK formal type-default query; owned S128/U128 slot spellings and primitive mapping; cycle-aware finite structural comparison and overload gates. No peer printer/parser/registry or Git mutations.",
+  "verification": "284-command immutable model/default/comparison/run/emission/generated-consumer gate passed:44 interpreter,88 native Mac O0/O2,12 SDK executions, one expected privacy rejection and zero unexpected exits. Formatter, complete-context/generated-root strict lint and2 target source checks pass. Exact tools/source identity qualification in immutable_verification.",
   "remaining_batches": [
     {
       "names": [
-        "create_declaration",
-        "create_declaration_inner",
-        "create_struct",
-        "create_type",
+        "create_declaration"
+      ],
+      "dependencies": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established.",
+      "effort": "Exact accepted-domain/SDK evidence for unresolved template forms; transitive native constructor guard repair."
+    },
+    {
+      "names": [
+        "create_declaration_inner"
+      ],
+      "dependencies": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established.",
+      "effort": "Same constructor/SDK dependencies as create_declaration; no missing dispatcher body."
+    },
+    {
+      "names": [
+        "create_struct"
+      ],
+      "dependencies": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established. Unverified virtual-base/multiple-adjustment ABI remains separate.",
+      "effort": "Reviewed advanced template obligations and independent native ABI evidence; native construction depth repair."
+    },
+    {
+      "names": [
+        "create_type"
+      ],
+      "dependencies": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established. Ambiguous macro-bound extent association and native construction depth guards.",
+      "effort": "SDK/accepted-domain clarification for unresolved forms; cycle-aware native construction repair. Reviewed half/member-pointer/extended-float/VariableArray null domains already satisfied."
+    },
+    {
+      "names": [
         "create_type_inner"
       ],
-      "effort": "native SDK representation/evidence dependency",
-      "dependencies": "Ordinary typed/value templates and resolved integral/Boolean/null defaults now work through official SDK specialization getters. Remaining limits: formal builtin/composite type defaults unavailable through public C API, unsupported dependent/expression/template-template argument kinds and pack expansion. Failed defaults diagnose and are not cached. Virtual bases and unsupported specializations remain explicit native ABI/accepted-domain boundaries. Ordinary dependent arrays and callback-bound domains are now implemented/verified; do not retain T[N] as pending.",
-      "delegatable": "No other public implementation names reassigned; exact supported-domain/schema questions documented in docs/specs/questions/generator-model.md."
+      "dependencies": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established. Same ambiguous bound and depth limitations as create_type.",
+      "effort": "Same canonical construction dependencies; no separate missing body."
     },
     {
       "names": [
         "find_or_create_extra_info"
       ],
-      "effort": "additional target ABI evidence and shared emission integration",
-      "dependencies": "Actual verified Mac64 leaf/single-primary producer is implemented, including native overrides, typed slots, omitted placeholders, field gaps and cache parent-link repair. Remaining genuine limits: Windows overload ordering, virtual bases, multiple adjustments, destructor pairs, covariance, aggregate/extended/variadic slot calling ABIs and packed/bitfield polymorphic layouts. Tools emission must consume this SINGLE producer's modified_declarations/generated typed records, not prepopulate a second cache. Ordinary dependent arrays and callback-bound domains are now implemented/verified; do not retain T[N] as pending."
+      "dependencies": "Windows overload ordering; virtual bases/multiple adjustments; destructor pairs; covariance; aggregate/extended/variadic slot ABI; packed/grouped-bitfield polymorphic or inherited layout; metadata depth64.",
+      "effort": "Independent per-target ABI evidence and cycle-aware metadata traversal. Ordinary shared emission/lifetime/identity is already implemented and verified."
     }
   ],
   "required_followup": [
-    "Root no-workaround review of explicitly reported remaining semantic constructor depth guards; these are independent limitations, not missing bodies or proven historical unsupported domains.",
-    "Independent additional ABI evidence or reviewed accepted-domain clarification for six precise partial rows; grouped polymorphic/inherited bitfields remain diagnosed.",
-    "Integrator owns narrow Conventional Commit and global README/index; no worker index/branch/remote action."
+    "Native semantic construction/string/macro guards at128 and metadata guards at64 remain independent implementation limits, not historical equivalence or accepted-domain proof; see remaining_constructor_guards.",
+    "Independent SDK/accepted-domain answers and target ABI evidence for the exact six rows; Android platform gate remains external.",
+    "Integration alone stages/commits and updates global README/index. No release/publication actions."
   ],
   "current_surface_audit": {
     "names": 58,
@@ -193,7 +216,7 @@
       "name": "_create_declaration",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-native.jai",
         "tests/developer-tools/generator-model-helpers.jai"
@@ -204,7 +227,7 @@
       "name": "can_omit_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-construction.jai"
       ],
@@ -214,17 +237,19 @@
       "name": "contains_equivalent_function",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
-        "tests/developer-tools/generator-model-helpers.jai"
+        "tests/developer-tools/generator-model-helpers.jai",
+        "tests/developer-tools/generator-model-comparison-depth.jai"
       ],
-      "current_state": "complete"
+      "current_state": "complete",
+      "implemented": "Reviewed public equivalence/overload rules; finite alias/pointer/function graphs use temporary cycle-aware traversal without64-node caps. Malformed extents reject before iteration; unsupported category/qualifier and true cycles remain diagnosed."
     },
     {
       "name": "count_asterisks",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-tokens.jai"
       ],
@@ -234,7 +259,7 @@
       "name": "count_namespace_refs",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -244,7 +269,7 @@
       "name": "create_elaborated_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-arrays.jai",
         "tests/developer-tools/generator-model-construction.jai",
@@ -256,7 +281,7 @@
       "name": "create_empty_struct_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -266,7 +291,7 @@
       "name": "create_enum",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-boundaries.jai",
         "tests/developer-tools/generator-model-construction.jai",
@@ -280,7 +305,7 @@
       "name": "create_expression_from_cursor",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-boundaries.jai",
         "tests/developer-tools/generator-model-construction.jai",
@@ -292,7 +317,7 @@
       "name": "create_function",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-cpp.jai",
@@ -305,7 +330,7 @@
       "name": "create_function_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-arrays.jai",
         "tests/developer-tools/generator-model-boundaries.jai",
@@ -318,7 +343,7 @@
       "name": "create_literal",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-boundaries.jai",
         "tests/developer-tools/generator-model-construction.jai",
@@ -330,7 +355,7 @@
       "name": "create_macro_definition",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-macros.jai"
       ],
@@ -340,7 +365,7 @@
       "name": "create_namespace",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-cpp.jai",
@@ -352,7 +377,7 @@
       "name": "create_objc_interface",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-objc.jai"
       ],
@@ -362,7 +387,7 @@
       "name": "create_objc_type_param",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-objc.jai"
       ],
@@ -372,7 +397,7 @@
       "name": "create_omit_cpp_functions_visitor",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -382,7 +407,7 @@
       "name": "create_reference_expression",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-native.jai"
       ],
@@ -392,7 +417,7 @@
       "name": "create_typedef",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-typedefs.jai",
         "tests/developer-tools/generator-model-construction.jai"
@@ -403,7 +428,7 @@
       "name": "create_variable_declaration",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-arrays.jai",
         "tests/developer-tools/generator-model-construction.jai"
@@ -414,7 +439,7 @@
       "name": "find_closing_paren_token_index",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-macros.jai",
         "tests/developer-tools/generator-model-tokens.jai"
@@ -425,7 +450,7 @@
       "name": "find_first_member_offset",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-construction.jai"
       ],
@@ -435,18 +460,20 @@
       "name": "find_name_clash",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
-        "tests/developer-tools/generator-model-helpers.jai"
+        "tests/developer-tools/generator-model-helpers.jai",
+        "tests/developer-tools/generator-model-comparison-depth.jai"
       ],
-      "current_state": "complete"
+      "current_state": "complete",
+      "implemented": "Reviewed public equivalence/overload rules; finite alias/pointer/function graphs use temporary cycle-aware traversal without64-node caps. Malformed extents reject before iteration; unsupported category/qualifier and true cycles remain diagnosed."
     },
     {
       "name": "find_or_create_enum_for_macro",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-construction.jai"
       ],
@@ -456,7 +483,7 @@
       "name": "find_referenced_declaration",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-native.jai"
       ],
@@ -466,7 +493,7 @@
       "name": "find_underlying_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -476,18 +503,20 @@
       "name": "functions_are_equivalent",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-templates.jai",
-        "tests/developer-tools/generator-model-helpers.jai"
+        "tests/developer-tools/generator-model-helpers.jai",
+        "tests/developer-tools/generator-model-comparison-depth.jai"
       ],
-      "current_state": "complete"
+      "current_state": "complete",
+      "implemented": "Reviewed public equivalence/overload rules; finite alias/pointer/function graphs use temporary cycle-aware traversal without64-node caps. Malformed extents reject before iteration; unsupported category/qualifier and true cycles remain diagnosed."
     },
     {
       "name": "get_primitive_or_array_primitive_type_size",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai"
@@ -498,7 +527,7 @@
       "name": "get_type_alignment",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -508,7 +537,7 @@
       "name": "is_16byte_integer_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai"
@@ -519,7 +548,7 @@
       "name": "is_assignment_operator",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -529,7 +558,7 @@
       "name": "is_char_pointer_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai"
@@ -540,7 +569,7 @@
       "name": "is_extern_declaration",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -550,7 +579,7 @@
       "name": "is_function_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -560,7 +589,7 @@
       "name": "is_incomplete_array",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -570,7 +599,7 @@
       "name": "is_operator",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -580,7 +609,7 @@
       "name": "is_operator_name",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -590,7 +619,7 @@
       "name": "is_pointer_type",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -600,7 +629,7 @@
       "name": "is_prefix_comment",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-native.jai",
         "tests/developer-tools/generator-model-helpers.jai",
@@ -612,7 +641,7 @@
       "name": "is_struct_field",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -622,7 +651,7 @@
       "name": "is_target_type_signed",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai",
@@ -634,7 +663,7 @@
       "name": "is_target_type_unsigned",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai",
         "tests/developer-tools/generator-model-construction.jai",
@@ -646,7 +675,7 @@
       "name": "is_targeting_apple_os",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -656,7 +685,7 @@
       "name": "is_token",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-macros.jai",
         "tests/developer-tools/generator-model-tokens.jai"
@@ -667,7 +696,7 @@
       "name": "is_va_list",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -677,7 +706,7 @@
       "name": "is_valid_identifier_start",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -687,7 +716,7 @@
       "name": "is_zero_int_expression",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-helpers.jai"
       ],
@@ -697,7 +726,7 @@
       "name": "macro_literals_are_equal",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-tokens.jai"
       ],
@@ -707,7 +736,7 @@
       "name": "macro_values_are_equal",
       "body_present": true,
       "checkpoint_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-tokens.jai"
       ],
@@ -717,7 +746,7 @@
       "name": "create_declaration",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt. Exact six-row accepted-domain/SDK/ABI limits retained.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-aggregates.jai",
         "tests/developer-tools/generator-model-arrays.jai",
@@ -728,31 +757,33 @@
         "tests/developer-tools/generator-model-native.jai",
         "tests/developer-tools/generator-model-record-edges.jai",
         "tests/developer-tools/generator-model-templates.jai",
-        "tests/developer-tools/generator-model-typedefs.jai"
+        "tests/developer-tools/generator-model-typedefs.jai",
+        "tests/developer-tools/generator-model-defaults.jai"
       ],
-      "implemented": "Canonical cursor dispatch, reviewed unsupported-category null results, access flags, non-struct filter, all supported formal categories. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers.",
-      "remaining": "Transitive native SDK/template representation domain: dependent/value/template-template arguments, packs, specialization bodies and some formal defaults; no missing facade body.",
+      "implemented": "Canonical cursor dispatch, reviewed unsupported-category null results, access flags, non-struct filter, all supported formal categories. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers. Builtin/composite nonnominal defaults now use original-context official SDK queries with exact receipts, or isolated context-independent SDK queries without a receipt. Original nominal TypeRef identities are retained. Canonical numeric128 spellings and qualified storage are owned independently.",
+      "remaining": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established.",
       "current_state": "partial"
     },
     {
       "name": "create_declaration_inner",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt. Exact six-row accepted-domain/SDK/ABI limits retained.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-arrays.jai",
         "tests/developer-tools/generator-model-boundaries.jai",
-        "tests/developer-tools/generator-model-construction.jai"
+        "tests/developer-tools/generator-model-construction.jai",
+        "tests/developer-tools/generator-model-defaults.jai"
       ],
-      "implemented": "Same canonical dispatch as create_declaration without final access decoration; supported formal category dispatch adopted. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers.",
-      "remaining": "Same transitive constructor/template domain as create_declaration; no separate parser or guessed fallback.",
+      "implemented": "Same canonical dispatch as create_declaration without final access decoration; supported formal category dispatch adopted. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers. Builtin/composite nonnominal defaults now use original-context official SDK queries with exact receipts, or isolated context-independent SDK queries without a receipt. Original nominal TypeRef identities are retained. Canonical numeric128 spellings and qualified storage are owned independently.",
+      "remaining": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established.",
       "current_state": "partial"
     },
     {
       "name": "create_struct",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt. Exact six-row accepted-domain/SDK/ABI limits retained.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-arrays.jai",
         "tests/developer-tools/generator-model-boundaries.jai",
@@ -762,49 +793,52 @@
         "tests/developer-tools/generator-model-templates.jai",
         "tests/developer-tools/generator-model-typedefs.jai",
         "tests/developer-tools/generator-model-virtual-conversion.jai",
-        "tests/developer-tools/generator-model-vtables.jai"
+        "tests/developer-tools/generator-model-vtables.jai",
+        "tests/developer-tools/generator-model-defaults.jai"
       ],
-      "implemented": "Canonical record shells/full population, recursive fields, base identities, ordinary generic/formal/value construction, layout/category metadata. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers.",
-      "remaining": "Unsupported explicit/partial bodies, pack/dependent/default representation and unverified virtual-base ABI; emission consumer integration separate.",
+      "implemented": "Canonical record shells/full population, recursive fields, base identities, ordinary generic/formal/value construction, layout/category metadata. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers. Builtin/composite nonnominal defaults now use original-context official SDK queries with exact receipts, or isolated context-independent SDK queries without a receipt. Original nominal TypeRef identities are retained. Canonical numeric128 spellings and qualified storage are owned independently.",
+      "remaining": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established. Unverified virtual-base/multiple-adjustment ABI remains separate.",
       "current_state": "partial"
     },
     {
       "name": "create_type",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt. Exact six-row accepted-domain/SDK/ABI limits retained.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-arrays.jai",
         "tests/developer-tools/generator-model-boundaries.jai",
         "tests/developer-tools/generator-model-construction.jai",
         "tests/developer-tools/generator-model-record-edges.jai",
-        "tests/developer-tools/generator-model-typedefs.jai"
+        "tests/developer-tools/generator-model-typedefs.jai",
+        "tests/developer-tools/generator-model-defaults.jai"
       ],
-      "implemented": "Canonical primitive/qualifier/pointer/reference/array/callback/record/enum/ObjC and supported template construction; reviewed WChar/extended-float/Block mappings. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers.",
-      "remaining": "Advanced dependent/template-template/pack/default forms lacking exact SDK/accepted-domain evidence; ambiguous macro bound extents; explicit reported semantic construction depth policy. Reviewed half/member-pointer/sixteen-byte floating null mappings and runtime VariableArray null/diagnostic behavior are satisfied, not missing representations.",
+      "implemented": "Canonical primitive/qualifier/pointer/reference/array/callback/record/enum/ObjC and supported template construction; reviewed WChar/extended-float/Block mappings. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers. Builtin/composite nonnominal defaults now use original-context official SDK queries with exact receipts, or isolated context-independent SDK queries without a receipt. Original nominal TypeRef identities are retained. Canonical numeric128 spellings and qualified storage are owned independently.",
+      "remaining": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established. Ambiguous macro-bound extent association and native construction depth guards.",
       "current_state": "partial"
     },
     {
       "name": "create_type_inner",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt. Exact six-row accepted-domain/SDK/ABI limits retained.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-arrays.jai",
         "tests/developer-tools/generator-model-boundaries.jai",
         "tests/developer-tools/generator-model-construction.jai",
         "tests/developer-tools/generator-model-literals.jai",
-        "tests/developer-tools/generator-model-templates.jai"
+        "tests/developer-tools/generator-model-templates.jai",
+        "tests/developer-tools/generator-model-defaults.jai"
       ],
-      "implemented": "Core native-kind conversion for the same supported type domain, preserving canonical slots/storage and supplied child views. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers.",
-      "remaining": "Same native schema/SDK limits as create_type; no separate missing body.",
+      "implemented": "Core native-kind conversion for the same supported type domain, preserving canonical slots/storage and supplied child views. Dependent arrays now preserve exact native bound expressions and canonical references through multidimensional/constant/pointer/function-return nesting; bounds are separate from field initializers. Builtin/composite nonnominal defaults now use original-context official SDK queries with exact receipts, or isolated context-independent SDK queries without a receipt. Original nominal TypeRef identities are retained. Canonical numeric128 spellings and qualified storage are owned independently.",
+      "remaining": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established. Same ambiguous bound and depth limitations as create_type.",
       "current_state": "partial"
     },
     {
       "name": "find_and_check_macro_identifier",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-boundaries.jai",
         "tests/developer-tools/generator-model-construction.jai",
@@ -818,7 +852,7 @@
       "name": "find_or_create_extra_info",
       "body_present": true,
       "checkpoint_state": "partial",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt. Exact six-row accepted-domain/SDK/ABI limits retained.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-boundaries.jai",
         "tests/developer-tools/generator-model-construction.jai",
@@ -828,7 +862,7 @@
         "tests/developer-tools/generator-model-vtables.jai"
       ],
       "implemented": "Canonical cache, unknown sentinel, actual typed Mac64 single-primary vtables, omitted placeholders, native overrides, on-demand base population, field gaps, empty record storage, definition-based native virtual-member validation. Nonpolymorphic grouped bitfield storage/has-field/alignment and rejection-aware cache invalidation are verified by actual C ABI consumers; grouped polymorphic/inherited layouts explicitly diagnose.",
-      "remaining": "Windows overload order, virtual bases/multiple adjustments, destructor pairs, covariance, aggregate/extended/variadic ABI and packed/bitfield layouts remain diagnosed. Ordinary shared emission consumer/lifetime integration is implemented and verified, not an outstanding blocker.",
+      "remaining": "Windows overload ordering; virtual bases/multiple adjustments; destructor pairs; covariance; aggregate/extended/variadic slot ABI; packed/grouped-bitfield polymorphic or inherited layout; metadata depth64.",
       "current_state": "partial"
     },
     {
@@ -836,7 +870,7 @@
       "body_present": true,
       "checkpoint_state": "redistributed after checkpoint",
       "current_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-lifecycle.jai",
         "tests/developer-tools/generator-model-session.jai"
@@ -849,7 +883,7 @@
       "body_present": true,
       "checkpoint_state": "redistributed after checkpoint",
       "current_state": "complete",
-      "shared_state": "Reviewed supported host domain passes current immutable38 interpreter/76 native runtime, SDK oracles and strict producer lint/format. Strict generated-root lint also passes in the immutable combined receipt.",
+      "shared_state": "Reviewed supported host domain verified by current284-command immutable gate; direct fixtures listed per name. Exact tool/source qualification and six precise partial inventories retained.",
       "direct_test_files": [
         "tests/developer-tools/generator-model-lifecycle.jai",
         "tests/developer-tools/generator-model-session.jai"
@@ -919,8 +953,8 @@
   },
   "review": {
     "reviewer": "model_review",
-    "result": "All concrete findings resolved with independent regressions: failed fields always reject, enum-default and ObjC parent dependency edges invalidate correctly, unsupported grouped polymorphic/inherited bitfields diagnose before recursive cache publication. No further concrete findings.",
-    "limits": "Read-only source review; actual execution evidence from immutable own gate."
+    "result": "Read-only comparison review found unnamed-U128 compatibility; independently reproduced and repaired. Reviewed alias/cycle/DAG/qualifier/empty-multiargument/bounds traversal and final correction; no further concrete findings.",
+    "limits": "Read-only review; actual execution evidence is the284-command immutable own gate."
   },
   "current_owned_totals": {
     "original_names": 56,
@@ -943,9 +977,9 @@
     "qualification": "Completeness counts cover reviewed supported domains on host; external target/SDK compatibility and explicit representation/ABI limits remain separately recorded."
   },
   "next_atomic_batch": {
-    "ownership": "Integration alone stages/commits ten exact owned source/test/tool/doc paths; three assigned production files, no facade/peer mutation.",
-    "suggested_subject": "fix(stdlib): traverse canonical dependencies and guard fatal callbacks",
-    "status": "237-command final SAME-capture immutable gate GREEN; ready for narrow checkpoint."
+    "ownership": "Integration alone stages/commits these22 exact owned paths plus this audit; source stable.",
+    "suggested_subject": "fix(stdlib): construct canonical template defaults and compare finite type graphs",
+    "status": "284-command final immutable gate passed; exact compiler source qualification recorded. Root combined fresh candidate remains required."
   },
   "lifecycle_design": {
     "public_requirement": "init_generator must make public constructors usable without requiring callers to import the private session module; current constructors require the one ledger.",
@@ -962,8 +996,103 @@
     "policy": "Match actual SDK expression extents to declarator bracket ranges in source order; propagate dimension through pointer/array/function return recursion. Unsupported/ambiguous extent shapes diagnose; no source parsing substitute for SDK types.",
     "sdk": "Installed23 public C SDK probe proves reversed child order. Independent C++ O0/O2 static assertions prove eight field types/dimensions, pointer initialization, native offsets, size280/alignment8."
   },
-  "shared_head_at_report": "c612126d52e2f4ee58d364092e7246a8327bf1e0",
+  "shared_head_at_report": "863c6fc64a7138f43425ad4c659068a39feb734c",
   "immutable_verification": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/model-outputs-rlr64cx4/verification.json",
+    "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/immutable-runs/bindings-inputs-_p2_pxxr",
+    "outputs": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/model-outputs-rlr64cx4",
+    "input_files": 2267,
+    "passed": true,
+    "commands": 284,
+    "failed_commands": 0,
+    "interpreter_executions": 44,
+    "native_executions": 88,
+    "sdk_oracle_executions": 12,
+    "expected_privacy_rejections": 1,
+    "source_target_checks": 2,
+    "inputs_unchanged": true,
+    "own_tools_unchanged": true,
+    "binary_sha256": {
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/debug/jaic": "d0b6dc223d2812c6fc0fc0ee9d265aea63d7ec2fe342854856e16c0055df56f5",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/debug/jailint": "8005db6ee6c94a004a041f405d3375900c57b1670b3f546aa98786ccdb0bf2d5",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/jaifmt": "af97eab9df690d59fcaeabdc69f60788babb6c03f37f80a44c6b237aaefcc89d"
+    },
+    "rust_build_inputs_match_capture": false,
+    "rust_build_capture_differences": [
+      "crates/jaic/src/sema/modules.rs",
+      "crates/jaic/tests/cleanroom_modules.rs"
+    ],
+    "build_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build.json",
+    "qualification": "Exact own source-built compiler d0b6dc22 and immutable shared stdlib/fixtures, real Mac ARM64 O0/O2 and generated consumers. Separately integrated anonymous-import change differs in two captured Rust files; receipt does not certify that newer compiler. Integration owns fresh combined candidate and broad400. No SDK21/Android/by-value128 ABI claim.",
+    "exact_failures": []
+  },
+  "remaining_inventory": [
+    {
+      "names": [
+        "create_declaration"
+      ],
+      "variants": "Reviewed cursor dispatch including ignore_non_structs and final access flags.",
+      "kind": "Body present; precise representation/ABI/implementation limits, not whole-module missing functionality",
+      "remaining": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established.",
+      "dependency": "Exact accepted-domain/SDK evidence for unresolved template forms; transitive native constructor guard repair."
+    },
+    {
+      "names": [
+        "create_declaration_inner"
+      ],
+      "variants": "Same reviewed dispatcher without final access decoration.",
+      "kind": "Body present; precise representation/ABI/implementation limits, not whole-module missing functionality",
+      "remaining": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established.",
+      "dependency": "Same constructor/SDK dependencies as create_declaration; no missing dispatcher body."
+    },
+    {
+      "names": [
+        "create_struct"
+      ],
+      "variants": "Full and resolving_type_only canonical record paths.",
+      "kind": "Body present; precise representation/ABI/implementation limits, not whole-module missing functionality",
+      "remaining": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established. Unverified virtual-base/multiple-adjustment ABI remains separate.",
+      "dependency": "Reviewed advanced template obligations and independent native ABI evidence; native construction depth repair."
+    },
+    {
+      "names": [
+        "create_type"
+      ],
+      "variants": "Both reviewed accurate/supplied-child paths and ObjC type_arg_index.",
+      "kind": "Body present; precise representation/ABI/implementation limits, not whole-module missing functionality",
+      "remaining": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established. Ambiguous macro-bound extent association and native construction depth guards.",
+      "dependency": "SDK/accepted-domain clarification for unresolved forms; cycle-aware native construction repair. Reviewed half/member-pointer/extended-float/VariableArray null domains already satisfied."
+    },
+    {
+      "names": [
+        "create_type_inner"
+      ],
+      "variants": "Core native-kind conversion for all reviewed caller variants.",
+      "kind": "Body present; precise representation/ABI/implementation limits, not whole-module missing functionality",
+      "remaining": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established. Same ambiguous bound and depth limitations as create_type.",
+      "dependency": "Same canonical construction dependencies; no separate missing body."
+    },
+    {
+      "names": [
+        "find_or_create_extra_info"
+      ],
+      "variants": "One canonical extra_infos cache; ordinary and native Mac64 single-primary polymorphic records.",
+      "kind": "Body present; precise representation/ABI/implementation limits, not whole-module missing functionality",
+      "remaining": "Windows overload ordering; virtual bases/multiple adjustments; destructor pairs; covariance; aggregate/extended/variadic slot ABI; packed/grouped-bitfield polymorphic or inherited layout; metadata depth64.",
+      "dependency": "Independent per-target ABI evidence and cycle-aware metadata traversal. Ordinary shared emission/lifetime/identity is already implemented and verified."
+    }
+  ],
+  "verified_owned_current_match": {
+    "matched": true,
+    "source_test_tool_files": 19,
+    "drift": [],
+    "note": "All22 ready production/test/tool/doc hashes below checked;19 captured source/test/tool inputs match final immutable receipt. Docs are not captured inputs."
+  },
+  "handoff": {
+    "final_ready": "22 exact hashes in ready_template_comparison_checkpoint plus this audit; integration alone stages/commits. Production six hashes unchanged since stable inbox notice. No whole-tree/peer/binary adoption.",
+    "global_docs_request": "Update docs/README.md and global index with canonical template defaults, S128/U128 metadata and iterative comparison; retain six precise partial domains and remaining native constructor/metadata guards."
+  },
+  "previous_immutable_verification": {
     "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/model-outputs-jdv95qa3/verification.json",
     "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/immutable-runs/bindings-inputs-m2c8_5ia",
     "outputs": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/model-outputs-jdv95qa3",
@@ -985,107 +1114,6 @@
     "rust_build_inputs_match_capture": true,
     "rust_build_capture_differences": [],
     "qualification": "Complete immutable shared producer/run/emission/header-only consumer gate after final review fixes; own source-built tools and private source-built native helper. Mac ARM64 native only; cross-target source checks do not certify execution. No full corpus/installed package/SDK21/Android green claim.",
-    "exact_failures": []
-  },
-  "remaining_inventory": [
-    {
-      "names": [
-        "create_declaration",
-        "create_declaration_inner"
-      ],
-      "variants": "All reviewed dispatcher signatures, including ignore_non_structs; native target-independent constructor paths.",
-      "kind": "transitive diagnosed accepted-domain limit; zero missing dispatcher bodies",
-      "remaining": "Pack expansion; explicit/partial specialization bodies; SDK-unavailable formal builtin/composite defaults; general template-template argument identity/arity and non-integral dependent argument recovery.",
-      "dependency": "Exact public SDK metadata/accepted-domain clarification, shared typed instantiation-name emission. Unsupported native expressions follow reviewed null/skip=false semantics.",
-      "effort": "Separate advanced template/SDK investigation after accepted-domain answers; ordinary template/value/default/array dispatch already implemented and verified."
-    },
-    {
-      "names": [
-        "create_struct"
-      ],
-      "variants": "Full and resolving_type_only reviewed paths on supported native record cursors.",
-      "kind": "advanced native template/ABI domain; zero missing record body",
-      "remaining": "Same exact template/default forms above; virtual-base/multiple-adjustment ABI evidence. Unknown native virtual entries diagnose before extra-info cache publication.",
-      "dependency": "Reviewed accepted-domain rules, independent target ABI oracle and shared metadata consumer; no guessed base offsets/vtable slots.",
-      "effort": "Native ABI evidence per target and advanced template producer work, not routine missing facade implementation."
-    },
-    {
-      "names": [
-        "create_type",
-        "create_type_inner"
-      ],
-      "variants": "Both signatures, accurate/supplied-child views, Objective-C type_arg_index; corresponding elaborated overloads tested.",
-      "kind": "diagnosed SDK/representation/accepted-domain limits; zero missing type bodies",
-      "remaining": "Same advanced template forms; ambiguous macro-expanded bound extents where SDK cannot prove bound association. Half/member-pointer/sixteen-byte floating null mapping and runtime VariableArray rejection satisfy reviewed contract and are not remaining bodies or representation obligations.",
-      "dependency": "Exact accepted-domain rules or SDK evidence for unresolved dependent/template forms. Reviewed null/diagnostic domains already implemented; dependent T[N], multidimensional expressions, pointer/callback parameter/return bounds implemented.",
-      "effort": "Contract/native-model investigation per unsupported domain; ordinary array/template producer gap is closed."
-    },
-    {
-      "names": [
-        "find_or_create_extra_info"
-      ],
-      "variants": "Shared canonical cache, uncached ordinary and supported native Mac64 single-primary polymorphic records.",
-      "kind": "additional native ABI verification and emission consumer dependency; zero missing cache/producer body",
-      "remaining": "Windows overload ordering; virtual bases/multiple adjustments; destructor pairs; covariance; aggregate/extended/variadic slot ABI; packed/grouped-bitfield polymorphic/inherited layout. Ordinary canonical metadata emission/lifetime and C ABI consumers now verified.",
-      "dependency": "Independent target ABI evidence/accepted-domain clarification; current unsupported forms diagnose. No remaining ordinary producer/consumer coupling blocker.",
-      "effort": "Per-ABI evidence plus tools consumer integration; not a second cache or metadata producer."
-    }
-  ],
-  "verified_owned_current_match": {
-    "stdlib/Bindings_Generator/model-helpers.jai": true,
-    "stdlib/internal/developer-tools/generator-session/module.jai": true,
-    "stdlib/internal/developer-tools/generator-canonical-construction.jai": true,
-    "stdlib/internal/developer-tools/generator-construction-state.jai": true,
-    "stdlib/internal/developer-tools/generator-lifecycle.jai": true,
-    "stdlib/internal/developer-tools/generator-special-construction.jai": true,
-    "stdlib/internal/developer-tools/generator-template-construction.jai": true,
-    "stdlib/internal/developer-tools/generator-model-lookup.jai": true,
-    "stdlib/internal/developer-tools/generator-record-metadata.jai": true,
-    "tests/developer-tools/generator-model-boundaries.hpp": true,
-    "tests/developer-tools/generator-model-boundaries.jai": true,
-    "tests/developer-tools/generator-model-boundaries-sdk.cpp": true,
-    "tools/check_generator_model.py": true,
-    "tools/check_generator_model_shared.py": true,
-    "tests/developer-tools/generator-model-construction.jai": true,
-    "tests/developer-tools/generator-model-literals.jai": true,
-    "tests/developer-tools/generator-model-macros.jai": true,
-    "tests/developer-tools/generator-model-record-edges.jai": true,
-    "tests/developer-tools/generator-model-templates.jai": true,
-    "tests/developer-tools/generator-model-virtual-conversion.jai": true,
-    "tests/developer-tools/generator-model-vtables.jai": true,
-    "tests/developer-tools/generator-model-dependencies.jai": true
-  },
-  "handoff": {
-    "commit_ownership": "Integration only; source-only narrow checkpoint requested in append-only worker inbox. No worker staging/commit/branch/remote action.",
-    "suggested_subject": "fix(stdlib): traverse canonical dependencies and guard fatal callbacks",
-    "global_docs_request": "Link docs/generator-model.md, docs/generator-session.md, docs/status/generator-model-shared-audit.json and tools/check_generator_model_shared.py in integrator-owned README/index.",
-    "driver_owner": "ASN/run owner",
-    "emission_owner": "stdlib-tools",
-    "model_owner": "generator-model",
-    "current_run_owner_receipt": "ASN reports generator-run-verify-s8dr3jq9:124 pass/0fail/1Android source block; independent unchanged tools producer/consumer all-mode gate agrees. No outstanding enum preparation model dependency.",
-    "final_ready": "237/0 SAME-capture gate; exact10 owned paths and nine file hashes recorded in ready_dependency_checkpoint plus audit itself. Integration alone stages/commits; global links and root workaround-audit updates requested in inbox."
-  },
-  "previous_immutable_verification": {
-    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/model-outputs-bxqsh94a/verification.json",
-    "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/immutable-runs/bindings-inputs-3e9ez22u",
-    "outputs": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/model-outputs-bxqsh94a",
-    "input_files": 2195,
-    "passed": true,
-    "commands": 223,
-    "failed_commands": 0,
-    "interpreter_executions": 36,
-    "native_executions": 72,
-    "sdk_oracle_executions": 10,
-    "source_target_checks": 2,
-    "inputs_unchanged": true,
-    "own_tools_unchanged": true,
-    "binary_sha256": {
-      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/debug/jaic": "15d511830886903668dd0b764d875bccc06ab584971f419953f2920bbbbb2b9b",
-      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/debug/jailint": "13be9e0e89c91f2088f9df9b6cc70168d7f30e8076f6f40fe7003a789ac5224e",
-      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/jaifmt": "1ff4177872a260ab522bef86a6b60665610198fbee11733d7e30bf858f3b58ad"
-    },
-    "rust_build_inputs_match_capture": true,
-    "qualification": "Complete immutable shared producer/run/emission consumer gate; own shared-source-built tools and private source-built native helpers. Mac ARM64 native only; cross-target source checks do not certify execution. No full corpus/installed package/SDK21/Android green claim.",
     "exact_failures": []
   },
   "failure_taxonomy_batch": {
@@ -1146,15 +1174,33 @@
     ]
   },
   "current_public_consumer_verification": {
-    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/model-driver-nmx5sd7a/verification.json",
-    "commands": 15,
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/model-outputs-rlr64cx4/verification.json",
+    "snapshot": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/immutable-runs/bindings-inputs-_p2_pxxr",
+    "outputs": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/model-outputs-rlr64cx4",
+    "input_files": 2267,
     "passed": true,
-    "interpreter_executions": 2,
-    "native_executions": 4,
+    "commands": 284,
+    "failed_commands": 0,
+    "interpreter_executions": 44,
+    "native_executions": 88,
+    "sdk_oracle_executions": 12,
+    "expected_privacy_rejections": 1,
+    "source_target_checks": 2,
     "inputs_unchanged": true,
-    "binaries_unchanged": true,
-    "scope": "Unchanged tools header-only canonical public driver + generated Jai roundtrip. Typecheck, strict generated root/producer/consumer lint; current ASN enum preparation dependency consumed without model/peer edits.",
-    "native_dependency": "Current captured generator-platform-native.c source-built privately with existing development library overrides; not an installed package certificate."
+    "own_tools_unchanged": true,
+    "binary_sha256": {
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/debug/jaic": "d0b6dc223d2812c6fc0fc0ee9d265aea63d7ec2fe342854856e16c0055df56f5",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/debug/jailint": "8005db6ee6c94a004a041f405d3375900c57b1670b3f546aa98786ccdb0bf2d5",
+      "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/jaifmt": "af97eab9df690d59fcaeabdc69f60788babb6c03f37f80a44c6b237aaefcc89d"
+    },
+    "rust_build_inputs_match_capture": false,
+    "rust_build_capture_differences": [
+      "crates/jaic/src/sema/modules.rs",
+      "crates/jaic/tests/cleanroom_modules.rs"
+    ],
+    "build_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build.json",
+    "qualification": "Exact own source-built compiler d0b6dc22 and immutable shared stdlib/fixtures, real Mac ARM64 O0/O2 and generated consumers. Separately integrated anonymous-import change differs in two captured Rust files; receipt does not certify that newer compiler. Integration owns fresh combined candidate and broad400. No SDK21/Android/by-value128 ABI claim.",
+    "exact_failures": []
   },
   "reviewed_limits_reconciliation": {
     "source": "Approved bindings-generator.md reviewed model integration + VariableArray clarification",
@@ -1168,7 +1214,7 @@
     "remaining": "Six exact conservative accepted-domain/SDK/ABI rows retained with zero absent bodies; native non-Mac/SDK21 and Android gates not certified."
   },
   "dependency_traversal_batch": {
-    "state": "Final237-command SAME-capture full gate GREEN after all independently reproduced review findings; includes new21st model producer and unchanged exact public header-only producer/consumer in all modes.",
+    "state": "Historical237-command dependency gate retained; current default/comparison final284 gate supersedes it for current ready source.",
     "root_cause": "128 cutoff treated unrelated deep type/expression models as dependent and truncated actual distant parent ancestry.",
     "implementation": "Cycle-aware iterative types/expressions/parent ancestry with actual literal-template/default edges, element-byte-extent bounds, SAME sticky fatal state before logging and all independent canonical writer entry guards. Scratch buffers freed with active allocator; same model ledger/provider retained.",
     "regression": "tests/developer-tools/generator-model-dependencies.jai:320-level type/expression/parent paths, independent ancestry cycle, cross-type/expression cycle with target on a second branch; actual native failed-constructor invalidation and retained global/flattened/canonical pointer identities.",
@@ -1205,5 +1251,80 @@
       "generator-record-metadata.jai gm_vtable_value_type:119 and gm_record_metadata:246 (64)"
     ],
     "proper_followup": "Independent valid SDK/public counterexamples, cycle-aware worklists/continuations for actual native construction and explicit cycle detection for recursive macro/metadata paths; retain ABI negatives. Current batch removes actual incorrect canonical rejection caps, not every unrelated semantic recursion guard."
-  }
+  },
+  "template_default_batch": {
+    "implemented": "Official SDK query at original template lexical/macro point, original argv and unsaved overlays; unique result by native source range/scope USR. Receipt-free builtin target query. Complete preflight rejects temporary nominal/dependent graphs; same canonical allocator/ledger/slots, null source cursors and local query TU disposal.",
+    "regressions": [
+      "unchanged tools IndependentGeneric<T=int,count=3> actual generated consumers",
+      "pointer/array/reference/function/decltype defaults",
+      "macro redefinition, namespaces and repeated guardless inclusion",
+      "CPP98 unsaved exact receipt and nonfatal missing-receipt recovery",
+      "original alias/qualifier/canonical identity, captured allocator live0, private helper rejection",
+      "real C++ native pointer writes into generated S128/U128 fields"
+    ],
+    "limits": "Packs and general template-template identity/arity; dependent/nonintegral arguments; explicit/partial specialization bodies. Nominal/composite defaults beyond original TypeRef association, formal-dependent bindings, indirect/location/counter-sensitive macros and directives in template prefixes diagnose when faithful query replay cannot be established.",
+    "abi_qualification": "128-bit memory layout/pointer calls verified; no unrestricted by-value ABI, wider-than64 evaluated payload or hex contract.",
+    "verification": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/model-outputs-rlr64cx4/verification.json"
+  },
+  "finite_comparison_batch": {
+    "repaired": [
+      "is_void_type",
+      "is_bool_type",
+      "is_same_type",
+      "functions_are_equivalent",
+      "contains_equivalent_function",
+      "find_name_clash"
+    ],
+    "policy": "Identity-aware iterative alias/structural/support traversal; enter/leave active paths diagnose cycles, completed support identities admit DAGs; no new cap or persistent model state.",
+    "regressions": "192aliases/pointers, width inequality, overload distinction, empty/multiple arguments, repeated branches, canonical/unnamed numeric128, malformed extents and real cycles.",
+    "red_receipts": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/comparison-depth-red/confirmed-0..3.json and unnamed-u128.json",
+    "review": "model_review read-only: cycle/DAG/qualifier/bounds behavior sound after unnamed-U128 compatibility repair.",
+    "verification": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/model-outputs-rlr64cx4/verification.json"
+  },
+  "ready_template_comparison_checkpoint": {
+    "stdlib/Bindings_Generator/model-helpers.jai": "fbf8b71dac225384f102599b6a856d8b619e17e8c33ca6955030a9e61ffac3c6",
+    "stdlib/internal/developer-tools/generator-template-defaults.jai": "3290c8ff44a8f1ff7319be58d934b2ac360d83dc34e67ed4670c31cfb067b740",
+    "stdlib/internal/developer-tools/generator-special-construction.jai": "7b9b018ed93d324b4559607a249e0bc35e252d1bf5640de9c839f22307847f1f",
+    "stdlib/internal/developer-tools/generator-canonical-construction.jai": "4168774964fad897cb7f028bbebb57b4686492e2743cb1ac3121497417498d5b",
+    "stdlib/internal/developer-tools/generator-model-helpers.jai": "a732e3b5b60b0424198a9e9460d0618281031e6991fe5f164db7b7640b3003c2",
+    "stdlib/internal/developer-tools/binding-model-properties.jai": "c2af81de40390b7f2b5167217c7fd3d0ccfb8fb79ef20083dfee57fab8e659cf",
+    "tests/developer-tools/generator-model-helpers.jai": "d977e1507631177e00c8746bf1100cd758192878c13f6babf91a703d695d8d50",
+    "tests/developer-tools/generator-model-lifecycle.jai": "2fecd6e324b346dff60c360dec81ad31868486487b59dc1c5633c9a093f3aa12",
+    "tests/developer-tools/generator-model-comparison-depth.jai": "fbb0a57ba369c1ee701b06f842a48d7cb826e0d5a86c5c32c141610c641baba8",
+    "tests/developer-tools/generator-model-defaults.jai": "44ed8f416928be259c6d3ed1a8afe44928ad79c47defa1c51fc44714342ef247",
+    "tests/developer-tools/generator-model-defaults.hpp": "a5a00cb4b6692b854612cecd561b0b45a2e199d7fce3426d9ac6cd0fd79fb336",
+    "tests/developer-tools/generator-model-defaults-repeat.inc": "af92cd3df78576d8bfed6ae34471cac9ca35fd4a67efe76fe4eb8a27258fe03e",
+    "tests/developer-tools/generator-model-defaults-native.cpp": "b49187a7e8930c3be072d0a55b10526e127dc3a4a7374dbc742e35f911a824c0",
+    "tests/developer-tools/generator-model-wide.hpp": "6442dad0afe56e977037550c946822c30fb8df2b5967ae3b0f1c42cdbc04d8ef",
+    "tests/developer-tools/generator-model-default-emission.jai": "f1ea7d345b93cd217a4fe28eb34ad8e771e4a37bb3e15e07a1a5e9ef698ae0e4",
+    "tests/developer-tools/generator-model-default-roundtrip.jai": "a92cc217adcc258b984fdd34540fcf31c5c613aed7cf3b2c84bf721a4b96408a",
+    "tests/developer-tools/rejections/generator-default-query-private.jai": "6ffda807ad10e8aefd7378d92c564f9ec5ec244cc437ddece4404bfcb8993428",
+    "tools/check_generator_model.py": "d9a32d2cd15a705c492e7ae0b2f3a7c2e3b268dbaa2e7ca1c109e0fa70e1836c",
+    "tools/check_generator_model_shared.py": "9f083f2fd496f19027097f38e53a6a19709290b782c5d5b964cc142d12adcf03",
+    "docs/generator-model.md": "c79f22d71b59b68a16b0300eca9faa758e55e2f34a7dcb2554cd9ea98a7f91eb",
+    "docs/generator-session.md": "f1e83c61f46a1a1db3925611bce72729c849a25b327faad9a042fdcb135bca4a",
+    "docs/specs/questions/generator-model.md": "070976439761606b282202ea08dd866d2e59482365f46ed54f3414edd7205948"
+  },
+  "verification_history_this_batch": [
+    {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/model-outputs-wtwr6uch/verification.json",
+      "passed": true,
+      "scope": "279-command default/metadata gate before finite comparison."
+    },
+    {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/model-outputs-bt5_f8zr/verification.json",
+      "passed": true,
+      "scope": "284-command finite comparison before unnamed-U128 compatibility review."
+    },
+    {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/current-default-build-5tacva63/model-outputs-nzxw00xz/verification.json",
+      "passed": false,
+      "cause": "Older fixture expected top-level qualifier inequality for unnamed unsigned128, contrary to reviewed scalar/qualifier relation; corrected own assertion."
+    },
+    {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/generator-model/shared-target/model-outputs-_ndxqrl5/verification.json",
+      "passed": false,
+      "cause": "New hardcoded128 names exposed opaque-name primitive-size gate; fixed canonical numeric encoding classification."
+    }
+  ]
 }
