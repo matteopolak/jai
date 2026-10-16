@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "scope": "general interpreter debug-register initialization performance",
+  "base": "60321c1de653dfb416f64ed000d38b657e7bbc9a plus accepted 82281aa8",
+  "production_functions": [
+    "Interp::enter",
+    "private poison_registers helper"
+  ],
+  "change": "Copy fixed blocks of exact dead_beef words rather than execute one unoptimized Rust fill iterator step per register. Small frames copy directly.",
+  "original_beec_failure": {
+    "case": "Extensions/Json/tests/numbers",
+    "mode": "interp",
+    "status": "timeout",
+    "seconds": 180.00762979098363,
+    "preserved": true,
+    "native": "passed per scoped coordinator report; not rerun here"
+  },
+  "root_source_guard": {
+    "stdlib/Extensions/Json": {
+      "603_files": 341,
+      "beec_files": 341,
+      "equal": true
+    },
+    "crates/jaic/src/interp": {
+      "603_files": 23,
+      "beec_files": 23,
+      "equal": true
+    },
+    "timings_projected_to_beec": false
+  },
+  "original_unchanged_test_after_repair": {
+    "status": 0,
+    "elapsed_seconds": 137.550162584,
+    "limit_seconds": 180,
+    "source_sha256": "e369150756a7155d0afa9ca295b5f925a355c237161ea010f32ee22eee8838cc",
+    "compiler_sha256": "4f4663aa06b79b9cba12e7845efff0df49633f9c28d338efd6c2a59590c58cbf",
+    "baseline": "60321c1d plus 82281aa8 and exact debug poison fill repair",
+    "all_original_counts_and_assertions_retained": true,
+    "release_build": false,
+    "beec_timeout_receipt_replaced": false
+  },
+  "controls": [
+    {
+      "source": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-mac-repairs/artifacts/compiler-mac-repairs/audit-0152853c/tests/cleanroom-language/json-numeric-progress/main.jai",
+      "status": 0,
+      "seconds": 0.76970125
+    },
+    {
+      "source": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-mac-repairs/artifacts/compiler-mac-repairs/audit-0152853c/tests/cleanroom-language/json-numeric-progress/random.jai",
+      "status": 0,
+      "seconds": 0.37844200000000006
+    }
+  ],
+  "verification": {
+    "core_unit_tests": 169,
+    "browser_host_unit_tests": 33,
+    "rustfmt": "passed",
+    "clippy": "warnings denied passed",
+    "exact_poison_boundary_test": "passed for 0,1,7,8,31,32,33,63,64,65,127,128,129,1024 words with guards",
+    "wasm_execution": "browser-host tests executed natively; no new wasm artifact execution claimed",
+    "release_build": false,
+    "debug_assertions_disabled": false
+  },
+  "remaining": "Coordinator must replay exact integrated beec/current candidate with native pairing; original timeout receipt is not overwritten. Other audit crashes/timeouts remain unresolved.",
+  "receipts": {
+    "original_603_bounded": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/json-numbers-original-603/receipt.json",
+    "phase_instrumentation": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/json-numbers-progress-603/receipt.json",
+    "cpu_sample": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/json-numbers-original-603/interpreter.sample.txt",
+    "original_after_repair": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/json-numbers-poison-repair.json",
+    "controls": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/json-poison-controls.json"
+  }
+}
