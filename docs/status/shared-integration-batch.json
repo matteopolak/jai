@@ -3,7 +3,7 @@
   "worktree": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/stdlib-shared",
   "branch": "codex/stdlib-shared",
   "source_snapshot_before_report": "1daa7bb8842e966a4483508381e476af48864ca8",
-  "state": "Known cohort committed including options-only projection and Minimal96/0; final source pin waits AppKit stable facade/Cocoa pair",
+  "state": "Known critical cohort committed; final immutable candidate capture ready; URI withheld pending correction",
   "ready_committed": {
     "rpmalloc_metadata": "bdd1ff4e; ABI8 native23 profiles,92 libraries built from exact source",
     "runtime_hooks": "f3b4b2f4;27/0",
@@ -20,15 +20,15 @@
     "runtime_meow_audits": "8370ec96;99/60 own checks, serialized",
     "minimal_partial": "f0d8af86;92/4 actual corrected-premise checks, genuine projection failures retained",
     "workspace_projection": "f8c7bde3;7 ownAPI/object+77core pass, source/options-only guards and clippy clean",
-    "minimal_verified": "5e407a4c;12 exact hashes;96/0 producer fresh fullsourceguard after f8, old80/6+92/4 preserved"
+    "minimal_verified": "5e407a4c;12 exact hashes;96/0 producer fresh fullsourceguard after f8, old80/6+92/4 preserved",
+    "appkit_cocoa": "aec0145f;20 exact source hashes;85 producer nonUI + separatelyqualified leasedUI1native execution",
+    "callable_metadata": "ba0d992c;42 owncore+16CLI+59LSP and general constant-wrapper regression fix",
+    "matrix_operators": "5c9ed415;14 reviewed forms,31 own full checks, original2oracle byte fixtures local"
   },
-  "ready_pending_dependency": {
-    "cocoa_enum_callers": "4 exact ready files; hold with AppKit stable facade pair"
-  },
+  "ready_pending_dependency": {},
   "active": {
-    "appkit_cocoa": "Reviewed inheritance consumed; Forbear producer source pass; final67 immutable handoff pending",
-    "callable_metadata": "Primary compiler owns; optional include only stable checkpoint, no alias refresh",
-    "windows_uri": "HOLD: root reviewer stored-document key mismatch;886/fc5 exports NOT adopted, followup required; native Windows pending"
+    "windows_uri": "HOLD: root reviewer stored-document key mismatch;886/fc5 exports NOT adopted, followup required; native Windows pending",
+    "original400_focus": "Root starts after final source/compiler/native pin; no new unrelated audit"
   },
   "blocked_or_excluded": {
     "alias_refresh": "586be99b and c018dd52 not applied; latest oracle explicitly rejects premise",
@@ -108,6 +108,26 @@
       "failed": 0,
       "ignored": 0,
       "source_guard_passed": true
+    },
+    "callable_core": {
+      "passed": 42,
+      "failed": 0,
+      "ignored": 0
+    },
+    "callable_cli": {
+      "passed": 16,
+      "failed": 0,
+      "ignored": 0
+    },
+    "callable_lsp": {
+      "passed": 59,
+      "failed": 0,
+      "ignored": 0
+    },
+    "matrix_family": {
+      "passed": 31,
+      "failed": 0,
+      "ignored": 0
     }
   },
   "superseded_failed_runs": [
@@ -128,7 +148,7 @@
     "Windows/Linux native CI later; no unsupported platform green",
     "Original all-zero PDB/CIE issue not waived"
   ],
-  "source_head_before_report": "5e407a4c673aabe2402c3df2d87dfb8216de24d7",
+  "source_head_before_report": "5c9ed415da02ce19374396635bb317b75718b697",
   "historical_minimal": {
     "original": "80/6;two invalid path-positive premises",
     "corrected_pre_projection": "92/4;genuine child options failure",
