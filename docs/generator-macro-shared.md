@@ -156,12 +156,25 @@ by this worker. Suggested checkpoint subject:
 
 The [scoped API inventory](status/generator-macro-shared-audit.json) transfers
 exactly seven verified-host names; it does not alter global totals or claim
-whole-generator completion. Tools still owns canonical `run_generator`
-parse-input capture and its broader missing workflows. An arbitrary externally
+whole-generator completion. The coordinator subsequently transferred canonical `run_generator` and
+`handle_toplevel_cursors` to this same worker; their separate in-progress
+batch is documented in [generator-run-shared.md](generator-run-shared.md).
+Tools retains the existing driver and emitters. An arbitrary externally
 supplied TU without its exact receipt remains pending with a diagnosis, rather
 than guessed configuration or a fake conversion decision. Native Linux/Windows,
 translated Mac x64 and Android/device execution remain unverified; Android
 source selection is still compiler-blocked.
+
+The runner follow-on adopted the model owner's explicit `gm_input_error`
+protocol for three owned malformed-input preconditions; unsupported native
+constructor children remain semantic diagnostics. Final current-source
+regression `generator-macro-verify-uw9o66ne` passes all 59 supported commands,
+including 15 interpreter/native Mac O0/O2 executions, 30 desktop source gates,
+eight complete strict-lint contexts and formatting. All 1,329 source hashes
+remain unchanged; Android still reports its actual unsupported CLI gate.
+The earlier independent native SDK vectors remain historical evidence, and are
+not counted again as fresh executions in this regression. The separate runner
+batch records its own fresh SDK/header/image identity guards and oracles.
 
 ## Preserved failures and invalidated measurements
 

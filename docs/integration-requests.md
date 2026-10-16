@@ -782,3 +782,8 @@ in the shared pending fixture directory and ignored
 loop-condition binding and labelled-control identity; no Hash_Table-specific
 exception, invented public helper or removed assertion is acceptable. Portable
 owner retains the real table-slot/tombstone/continue/break regression.
+
+
+## Model owner: remove arbitrary dependency cleanup depth limits
+
+Inspection of NEW stdlib/internal/developer-tools/generator-construction-state.jai finds gm_expression_depends_on depth>=128 ->true, gm_type_depends_on path.count>=128 ->true, and gm_declaration_depends_on parent traversal limited to128. Please add independent >128 expression/type/parent nesting tests with a rejected canonical declaration plus an unrelated retained declaration; verify actual rejection closure, retained identity and no dangling ancestry. Replace avoidable caps with cycle-aware iterative traversal or a reviewed explicit diagnostic contract. Do not classify the ordinary finite host model tests as depth-domain proof. Integration scoped checkpoint records this remaining limitation and will adopt the stable followup.

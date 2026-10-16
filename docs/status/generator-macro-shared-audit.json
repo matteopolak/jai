@@ -1,7 +1,7 @@
 {
   "worker": "portable-asn1-socket",
   "scope": "seven host-verified macro/expression names plus transferred canonical runner/top-level pair",
-  "phase": "seven APIs verified on actual Mac host; final precise handoff",
+  "phase": "nine assigned APIs verified_host in reviewed contract; Android source blocked and other native platforms unverified",
   "production_files": [
     "stdlib/Bindings_Generator/macro-expressions.jai",
     "stdlib/internal/developer-tools/generator-macro-expressions.jai"
@@ -52,29 +52,30 @@
     },
     {
       "name": "run_generator",
-      "status": "partial",
-      "required": "reviewed runner stages, canonical parse receipt, public interpreter/native O0/O2 and strict lint",
-      "verification": "private exact-parse-input capture/native parse implementation drafted; public body/stage reconciliation pending"
+      "status": "verified_host",
+      "required": "actual Android/device and other native platform gates; broader representation/emission limits remain explicit",
+      "verification": "105 supported commands,24 actual Jai runs; ignored legacy collections, fresh null underlying enum type, canonical enum-typed members, preserved existing type and expression metadata; previous ordinary stages retained",
+      "remaining_effort": "platform verification only within reviewed domain"
     },
     {
       "name": "handle_toplevel_cursors",
-      "status": "partial",
-      "required": "facade integration, focused native system/header/redeclaration/context/lifetime verification and strict lint",
-      "verification": "canonical callback body and independent real-header test authored; no passing evidence yet"
+      "status": "verified_host",
+      "required": "actual native Linux/Windows/translated Mac/Android remain unverified; Android source selection blocked",
+      "verification": "stable interpreter/native Mac O0/O2: captured Context restoration, transparent linkage parents, native system intake filtering, nested/enclosing/path exemptions, ordinary retained record fields, canonical function equivalence and equal/differing macro handling",
+      "remaining_effort": "platform verification only within reviewed domain"
     }
   ],
   "counts": {
     "missing": 0,
     "partial": 0,
-    "verified_host": 7
+    "verified_host": 9
   },
   "pending_handoffs": [
-    "integration sole staging/commit actor; exact own paths in developer doc/inbox",
-    "tools-owned canonical run_generator exact parse-input capture remains a separate missing workflow; external arbitrary TU configuration is not guessed",
-    "actual native Linux/Windows/Android/device gates; Android compiler target support remains unavailable"
+    "integration sole staging/commit/wiring and README index actor; exact scoped paths in developer doc and inbox",
+    "actual native Linux/Windows/Android/device gates; Android CLI unsupported"
   ],
   "verification": {
-    "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-macro-verify-fmxjw5z3",
+    "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-macro-verify-uw9o66ne",
     "supported_commands_passed": 59,
     "commands_failed": 0,
     "runtime_executions_passed": 15,
@@ -82,21 +83,22 @@
     "exact_text_consumer_runtime_executions": 3,
     "native_program_builds_passed": 10,
     "cross_target_source_checks_passed": 30,
-    "strict_lint": "warnings denied; six complete contexts, incomplete=[], unvisited=[]",
+    "strict_lint": "warnings denied; eight complete contexts, incomplete=[], unvisited=[]",
     "formatter": "source-built formatter check passes",
-    "source_hashes_unchanged": 1320,
+    "source_hashes_unchanged": 1329,
     "source_changes": [],
     "immutable_header_unchanged": true,
     "android_target_gate": "blocked: exit2 unknown OS android; not pass",
-    "fresh_sdk_oracles": 4,
-    "sdk_evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-macro-oaxrf81h",
-    "sdk_version": "official installed LLVM/libclang23.1.2 matching canonical runtime-sdk.json original-image SHA; public LIBCLANG_VERSION21 unchanged; SDK21 not certified"
+    "sdk_version": "official installed LLVM/libclang23.1.2 matching canonical runtime-sdk.json original-image SHA; public LIBCLANG_VERSION21 unchanged; SDK21 not certified",
+    "source_hash_count": 1329,
+    "head": "d1c6d84352fdb777ce13203f08c3bebf3ca3f69b"
   },
   "platform_limits": [
-    "Mac native not yet run for this batch",
-    "Linux/Windows native unverified",
+    "Mac arm64 interpreter/native O0/O2 verified on recorded immutable snapshot",
+    "Linux/Windows/translated Mac native unverified; source gates only",
     "Android compiler source gate blocked",
-    "Android/device native unverified"
+    "Android/device native unverified",
+    "installed distribution native-helper closure not certified; exact fresh source-built verification helper used"
   ],
   "global_inventory_modified": false,
   "production_edits_during_hold": false,
@@ -110,7 +112,7 @@
     "Nonconstant call evaluation is null; constructor aggregate has children rather than scalar evaluation"
   ],
   "source_hold_released": true,
-  "public_contract_sync": "reviewed Shared emission and parser helper contracts read after root source release",
+  "public_contract_sync": "approved direct-run canonical-options and no-inferred-macro-enum-type contracts reconciled",
   "private_cast_dependency": "tools maybe_append_cast handoff received and used directly",
   "tests": [
     "tests/developer-tools/generator-macro-shared-tokens.jai",
@@ -146,7 +148,7 @@
   "diagnostic_location_reductions": "An initial complex failed assertion showed differing interpreter/native locations. Two independent pure macro reductions in ku0b6db0 agree at source lines11/13; no general compiler defect reproduced or claimed, no production workaround.",
   "owned_current_sha256": {
     "stdlib/Bindings_Generator/macro-expressions.jai": "77b225ae24c0494d296f48addbb3c5f58737af48ad79c16e19c918661433f305",
-    "stdlib/internal/developer-tools/generator-macro-expressions.jai": "792ff0bf9363ee374b7b473f96c61db9db725ecbca70b2320daa195c2f11230a",
+    "stdlib/internal/developer-tools/generator-macro-expressions.jai": "1870f608cae88e8917054c54cdc0c9bfc5a942e1887850374744a7db05dc4ed4",
     "tests/developer-tools/generator-macro-shared-tokens.jai": "7103002e694483454e4de4c6869fc0a68ab32c1add753831d82a89af35501c25",
     "tests/developer-tools/generator-macro-shared-calls.jai": "7339a3459f584192c1f279e6a40625172afa48c845952cf946eef5da86530440",
     "tests/developer-tools/generator-macro-shared-invalid.jai": "fc681695906e7b33cf4f06df1a739d4fba6167a74082f2905977a9f43d0a8481",
@@ -157,18 +159,127 @@
     "tools/check_generator_macro_shared.py": "8ca142fa754b7bcc78e816f811cab6f8f1a55518aeb3c56439cd065549e82096"
   },
   "tool": "tools/check_generator_macro_shared.py",
-  "source_mode": "fresh source-built compiler, current shared production stdlib directly; no old clone/archive/overlay or reference execution",
+  "source_mode": "immutable copy of current shared inputs; no old overlays; capture before/copy/after hashes equal; generated native helper excluded and rebuilt",
   "run_batch": {
-    "phase": "implementation in progress; no runner verification claimed",
+    "phase": "approved configuration reconciliation verified on immutable current-shared snapshot",
     "production_files": [
       "stdlib/Bindings_Generator/generator-run.jai",
       "stdlib/internal/developer-tools/generator-run.jai"
     ],
-    "pending_coordination": [
-      "integration single public facade load",
-      "reviewed run stage ordering/failure/lifetime contract",
-      "callback client_data captured Context shape"
-    ],
-    "evidence": "source-built jaic/jailint in generator-run-red-r5r7cmnd; independent public callback fixture currently fails for missing integration facade load"
+    "canonical_dependencies": "same Generator/context/Session; model-supplied gm_input_error versus semantic gm_construction_error; canonical lookup, constructors, emitter and lifecycle only",
+    "pending_dependencies": [],
+    "configuration_questions": "resolved: docs/specs/questions/generator-run.md",
+    "remaining_effort": "platform verification only within reviewed run contract; noninteger/overflow/ABI emission limits remain explicit",
+    "verification": {
+      "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-run-verify-v676gxqb",
+      "head": "77562165ed0f25642df5c44c704f9946bd4b9911",
+      "commands_passed": 105,
+      "commands_failed": 0,
+      "commands_blocked": 1,
+      "jai_runtime_executions": 24,
+      "jai_native_builds": 16,
+      "sdk_cpp_runtime_executions": 4,
+      "desktop_source_checks": 48,
+      "strict_lint_complete_contexts": 10,
+      "strict_lint_incomplete": [],
+      "strict_lint_unvisited": [],
+      "source_hashes": 1349,
+      "native_sdk_header_receipt_hashes": 22,
+      "generated_native_hashes": 6,
+      "source_changes": [],
+      "native_changes": [],
+      "generated_native_changes": [],
+      "runner_python": "ruff check and format pass before immutable capture",
+      "source_capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-run-current-snapshot-ewue56zm",
+      "source_capture_files": 1766
+    },
+    "retained_evidence": {
+      "genuine_dependency_red": "generator-run-verify-vsdzgp2f:85pass/9fail/1blocked",
+      "invalidated_source_drift": [
+        "generator-run-verify-a4_9p1kk",
+        "generator-run-verify-wj315flp"
+      ],
+      "historical_before_final_cpp_case": "generator-run-verify-5kwupi87:105pass/0fail/1blocked",
+      "independent_red_green": "generator-run-red-r5r7cmnd: SDK parent premise, context-before-log, checked macro print, record intake, model diagnostic, moving view, native namespace source-parent and CPP aggregate language reducers",
+      "reconciliation_red": "generator-run-verify-r2ckppkw: interpreter/O0/O2 wrong scalar member type; full receipt invalidated by unrelated rpmalloc drift; formatter red also retained",
+      "snapshot_native_identity_red": "generator-run-verify-dbsnfzks: functional/lint/format/source gates passed; failed native helper image identity twice due copied generated helper; corrected capture excludes generated image, no production loading change"
+    },
+    "native_dependency": "fresh source-build current generator-platform-native.c; existing JAIC_NATIVE_LIBS and standard LIBRARY_PATH verification inputs, exact linked-image identity checked; installed distribution not certified",
+    "owned_current_sha256": {
+      "stdlib/Bindings_Generator/generator-run.jai": "7ea0703e9f54f5e056cf20d15224d67ea74632a2863bbd498ba9de34be663300",
+      "stdlib/Bindings_Generator/tests/generator-run-macro-print.jai": "16ec3eb2fcebd88f782739c6978a5265d4426d8b2d683e1dfb0a06d382001dad",
+      "stdlib/Bindings_Generator/tests/generator-run-toplevel.jai": "de27b6419e7b7e4c183b9665b9d4c62ff351bdb443bce9dce9a97ba175d0946e",
+      "stdlib/internal/developer-tools/generator-macro-expressions.jai": "1870f608cae88e8917054c54cdc0c9bfc5a942e1887850374744a7db05dc4ed4",
+      "stdlib/internal/developer-tools/generator-run.jai": "0c8dd3e1ae025fa1a4fde17b85774d049cd71f410e88e2b059e81f79a5e09031",
+      "tests/developer-tools/generator-run-error.h": "f8c14b0140aa06c25ff04443d85c97e5384e91ce8f418753132057b064cc787b",
+      "tests/developer-tools/generator-run-failures.jai": "1db77852c355422b0ec7d1f7865dd0163f1365f98bb8c382215e8b4025074985",
+      "tests/developer-tools/generator-run-libraries.jai": "ab131f72f79fc5e569ce3e94fa4c13b4ee41caa9a3a3687d547d27bb39d66891",
+      "tests/developer-tools/generator-run-library.c": "7b57c34e0ca56b729f9ffa65c5aaa61e06bf0ce65204dfcf0d51bd1f2b5d6c99",
+      "tests/developer-tools/generator-run-library.h": "7844f886f7130dcdbdc444b4520ba2e9e1a821cb56c537186d331aee1c611fab",
+      "tests/developer-tools/generator-run-macro-print.jai": "0404d39291f72ab5d889fe1c11cb50b9794db7bb2c09b1c994a772ad5731ca9e",
+      "tests/developer-tools/generator-run-main.hpp": "4896f58eab8b7eacb887c745bf111bc39ffb81083f8410e3e1e4e78b585c712f",
+      "tests/developer-tools/generator-run-model-diagnostic.hpp": "07477c3214b429b46c9007aabf822efd590d8ae5dc6e9518611eaa196d44bf40",
+      "tests/developer-tools/generator-run-model-diagnostic.jai": "0a70b0f20bb7a434961ca7b11c70d4a1bdf79b684be438a67e7e0c4f0279a878",
+      "tests/developer-tools/generator-run-namespace-sdk.cpp": "350050ffccd0daf1d459cea0516c54b1eef359e3e93d578f1365b953ed50a99a",
+      "tests/developer-tools/generator-run-pipeline.hpp": "70b5243b0f7b64a4a34f3087dcd297e71d4024ad3a6d1b160a9afc6d4faa7517",
+      "tests/developer-tools/generator-run-pipeline.jai": "8c8f1def7ca145040eeb15831abe24b75a4c74292910a781aceb2aa0aa475c47",
+      "tests/developer-tools/generator-run-record-intake.jai": "f69a29d237cb0e3ce9909d8c5ff524e81e13140bf6f3d5144b7f71bba816a04b",
+      "tests/developer-tools/generator-run-sdk.c": "13ef633ecde2dd1077ee9fe48036c3311425faa514492e0b1f16736c7ae5233c",
+      "tests/developer-tools/generator-run-second.hpp": "5ecc08ef1b7e31bec7301976912fc7215d218dbe0114220c2146f6e53d479b52",
+      "tests/developer-tools/generator-run-system.h": "880a21f029ea1b93bac3bf92eb0183fb69279d75d5e8fb5c4ec6b17a93a18b0f",
+      "tests/developer-tools/generator-run-toplevel.jai": "d49c7052496df93ce27c9809e008ab61415d0e1fc513e2a320cf1462a1dc0499",
+      "tests/developer-tools/generator-run-unsupported.hpp": "75ea4f6e80c450227cf65b4378bb3f639b3ce93c9ed817ff13a75e5036fbd443",
+      "tests/developer-tools/generator-run-view.h": "a34c49e945fab928ad277f123853315d64be93745d7aa41f21f83eee4ec4f327",
+      "tests/developer-tools/generator-run-view.jai": "28dd9cb1c456566b41b318af02c0e266cdc38b6abade4b7291bfc74c60128742",
+      "tests/developer-tools/generator-run-warning.h": "fbc8313f801f1e482ddd0337807696f4e89678785170bc9f2e4aaa63a09a2d72",
+      "tools/check_generator_run_shared.py": "529be57445e68a4b97c0fbf63146977c85048edd43c0b05cfd94889f4eeb4811"
+    },
+    "seven_helper_regression": {
+      "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-macro-verify-uw9o66ne",
+      "supported_commands_passed": 59,
+      "commands_failed": 0,
+      "jai_runtime_executions": 15,
+      "desktop_source_checks": 30,
+      "android": "blocked",
+      "source_changes": [],
+      "evidence_scope": "preserved historical 59-pass receipt; not rerun as part of this reconciliation"
+    },
+    "historical_pre_reconciliation_verification": {
+      "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-run-verify-at3zz138",
+      "head": "6a9d6d98d85ed3a1147ca5982e979b5c92e1ee62",
+      "commands_passed": 105,
+      "commands_failed": 0,
+      "commands_blocked": 1,
+      "jai_runtime_executions": 24,
+      "jai_native_builds": 16,
+      "sdk_cpp_runtime_executions": 4,
+      "desktop_source_checks": 48,
+      "strict_lint_complete_contexts": 10,
+      "strict_lint_incomplete": [],
+      "strict_lint_unvisited": [],
+      "source_hashes": 1345,
+      "native_sdk_header_receipt_hashes": 22,
+      "generated_native_hashes": 3,
+      "source_changes": [],
+      "native_changes": [],
+      "generated_native_changes": [],
+      "runner_python": "ruff check and format pass; formatting AST-equal receipt runner-format-identity.json"
+    },
+    "resolved_configuration_domains": {
+      "direct_legacy": "ignored by direct run; tools-owned normalize_options performs translation",
+      "fresh_macro_enum": "no inferred underlying CType even equal-width groups; canonical enum-typed members; existing underlying CType preserved; no mixed numeric join"
+    }
+  },
+  "previous_seven_helper_verification": {
+    "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-macro-verify-fmxjw5z3",
+    "supported_commands_passed": 59,
+    "commands_failed": 0,
+    "runtime_executions_passed": 15,
+    "scope": "original accepted seven-API host handoff; later fatal-input API adoption rerun separately",
+    "independent_sdk_oracles": {
+      "executions": 4,
+      "evidence": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/generator-macro-oaxrf81h",
+      "scope": "historical independent scalar/UTF8/AST SDK vectors; not counted as new regression executions"
+    }
   }
 }
