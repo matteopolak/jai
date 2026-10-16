@@ -1,65 +1,73 @@
-# Objective-C runtime helper implementation
+# Reviewed Objective_C helpers
 
-Implement the reviewed encoding, method-validation/installation and fragile
-class-creation signatures through private encoding and ownership boundaries.
-Apple's public runtime encoding grammar and runtime C declarations supply the
-native ABI. Canonical bootstrap reflection and Basic builder/allocator types
-remain shared; public records and aliases do not change.
+The independently authored public helpers now implement the delivered encoding,
+validation, registration and class-construction contracts. The canonical
+`Class`, `id`, `Selector`, reflection records and Basic builder/allocator stay
+shared. `Selector` transparently aliases `*void`; both encode as `:`. No nominal
+replacement or type-name exception is used.
 
-Support C-compatible scalar, enum, pointer, fixed-array and naturally laid-out
-record encodings. Native method implementations must use C calling convention,
-explicit receiver/selector pointer arguments and at most one return. Validate
-before installing the real IMP; class methods target the metaclass. Class
-creation checks the actual parent instance size and every native ivar offset
-before returning an unregistered class, preserving the separate finalize step.
-Dispose the unregistered class on failure; do not expose a mismatched layout.
+Encoding appends to an existing builder and returns caller-released strings
+through its allocating forms. It handles the reviewed scalar codes, byte
+pointers, fixed/view/resizable arrays, strings, procedure markers, recursive
+pointer depth and exact `isa: Class` recognition. Constants, imported and using
+members are omitted. Unsupported categories such as Any assert as specified.
 
-Remaining public review questions stay explicit: exact encoding text for Jai
-aliases/unsupported reflection categories, returned-string ownership, class
-naming/collision/default-initialization policy, validation error channel and
-member-stub output. Supported native behavior will be tested independently;
-these helpers will not be counted as fully reviewed compatibility until those
-questions are resolved. Reject unrepresentable ABI inputs explicitly rather
-than installing unsafe methods or inventing metadata. No public placeholder
-for the member-stub generator will be introduced.
+Function encoding concatenates the declared return/arguments; it inserts no
+receiver, selector or numeric offset metadata. Standalone encoding does not
+require a method signature. Method validation separately checks C convention,
+return/argument counts, supported receiver categories and exact Selector type.
+The checker remains deliberately limited as reviewed; callers must provide
+native-compatible implementations. Real method installation uses instance or
+metaclass handles, copies temporary native strings and asserts on SDK rejection.
 
-Native oracle: Apple's Objective-C Runtime Programming Guide, Type Encodings:
-https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
-Use installed official SDK runtime headers and independently authored native
-programs for method invocation, ivar layout, type sizes, ownership and rollback.
+Class creation reserves the first reflected member, uses the reflected names,
+logs missing parents/allocation/ivar failures and returns null. Parent/new-class
+size differences warn and do not cancel creation. No Jai defaults are copied
+into native instances. Runtime owns the real class/instance allocations; no
+public record pointer is forwarded as native class storage. Callers must respect
+the fragile layout precondition before accessing instances. Mismatched test
+records are used only for class metadata queries, never instance dereferences.
 
-All eight previously missing helper bodies are present. The member-stub helper
-now follows the refreshed lowercased-field/instance-size-delta contract and
-closes its temporary framework handle. The documented path omits .framework;
-the implementation tries that exact spelling first, then the actual installed
-bundle spelling. This is an explicit SDK-path workaround pending prose review,
-not a claim that the source established the fallback. No instance layout is
-created by the generated declaration text.
+The member-stub helper uses the reviewed installed framework spelling directly,
+closes its temporary handle and returns lowercased-field/size-delta declaration
+text. The previous guessed alternate path has been removed.
 
-Native tests pass on x64 and ARM64 Mac: real class allocation, ivar offsets,
-instance and metaclass method calls, 32-byte structure-return dispatch, native
-NSGetSizeAndAlignment/NSMethodSignature parsing, native object release and
-partial-class failure disposal. Contextful IMP implementations are rejected by
-the active assertion mechanism (actual signal6/diagnostic retained). Full
-Objective_C module sweep:8 source checks,6 host build/run checks and20 relevant
-privacy checks pass; unavailable targets are separately marked unsupported.
-Production formatting, strict lint, regeneration and68 Python tests pass.
-Reports: .work/objc-runtime-complete/checks.json, negative.json and
-.work/objc-helper-module.json. The initial native fixture incorrectly called a
-contextful constructor from a C callback; adding the required push_context
-corrects the test, without changing calling conventions or compiler behavior.
+`tools/native_bindings/verify_objc_contracts.py` captures the entire current
+stdlib plus owned tests/helpers/spec/config, verifies the capture and runs
+read-only immutable inputs. It builds the independent official-SDK C/Objective-C
+probe locally and records SDK/header and tool identities. It checks:
 
-Seven helpers remain conservatively partial in the declaration ledger: native
-C-compatible behavior is real, but unsupported reflected categories and exact
-Jai-specific policy questions remain. In particular, view/resizable arrays,
-strings/Any and non-native overlays are not silently encoded as another ABI.
-A private alias to canonical Basic.String_Builder avoids an extra root export.
-Native Windows/Linux are inapplicable to this target-specific module; iOS
-runtime is unverified. Worker staging is not coordinator combined corpus proof.
+- Exact public encoding and builder/ownership behavior.
+- Real native class/ivar layout, signed 32-bit instance/metaclass dispatch,
+  structure returns, release, name collisions and mismatched-layout warnings.
+- No copying of Jai record defaults during native object allocation.
+- Active invalid convention/receiver/selector/isa/Any/duplicate-method failures.
+- Root privacy, strict complete-context lint, formatting and immutable inputs.
 
-Installed official SDK evidence: macOS SDK27.0; objc/objc.h SHA256
-24d244af818046702546269afbedbe2992ea9b6d8f6ad43e7b0750e53d3bfe2b;
-objc/runtime.h SHA256
-0cd8f574aa6cf75f743f8bf60e235199792ee6686ae586909e99f151234e183e.
-The private native BOOL declaration follows the actual target SDK condition;
-public reviewed BOOL aliases remain unchanged. No SDK source patch was added.
+Native evidence is Mac ARM64; Mac x64 is source-only in the fresh batch. iOS
+source/native execution remains unverified because the compiler target and SDK
+execution are not supplied by these Mac checks. Linux/Windows are outside this
+module's reviewed availability.
+
+The old SDK fixture expected C-preferred i/I codes, `*void -> ^v`, an implicit
+receiver and overlay rejection. Those were independent implementation policies,
+superseded by the reviewed l/L, canonical alias, declared-argument and warning
+contracts. Native size/alignment, ivar offsets, receiver pointer footprint,
+dispatch, disposal and actual SDK allocation failure assertions remain active.
+One intermediate oracle assumed using inheritance exposed an isa entry;
+canonical reflection instead retains the using member, which the encoding
+omits. The corrected exact receiver encoding preserves that public rule.
+Failed intermediate receipts remain in worker scratch.
+
+Reproduce with independently source-built tools and a worker-private root:
+
+```sh
+python3 tools/native_bindings/verify_objc_contracts.py \
+  --compiler /path/to/own/jaic --jailint /path/to/own/jailint \
+  --formatter /path/to/own/jaifmt --output-root /path/to/own/scratch
+```
+
+The latest exact receipt is indexed by
+`docs/status/bindings-shared-audit.json`; its result applies to the captured
+input identity, not future moving-source changes. Global corpus and final
+assembled integration remain coordinator-owned.

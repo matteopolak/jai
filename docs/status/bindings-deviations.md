@@ -1,5 +1,11 @@
 # Bindings implementation deviations
 
+Current rpmalloc ownership/configuration status supersedes historical entries
+below describing shared-domain EINVAL or pending live-field contracts. Those
+were real compatibility defects, not accepted policies. The typed-domain
+architecture and retained limits are documented at the end of this report and
+in docs/native/rpmalloc-runtime-policies.md. Old receipts remain historical.
+
 This is an open implementation audit, not a completion claim. Scope: the 34
 owned facades, `internal/bindings`, generators and native tests. The exhaustive
 declaration ledger is [bindings-coverage.json](../native/bindings-coverage.json).
@@ -961,3 +967,114 @@ transactional reservation/publication where feasible. Existing acquisition
 reservation is transactional, but does not solve graph-wide OOM. Keep
 serialization/copy costs explicit. Objective_C's precise seven API policy
 questions and genuinely unavailable enabled telemetry ABI remain distinct.
+
+## Shared reviewed-option completion (2026-10-16)
+
+The preceding configuration and Objective_C questions are historical: current
+reviewed Objective_C helpers have real bodies/SDK tests, and rpmalloc now has
+bodies for every reviewed option combination. Verification/native dependencies
+and actual metadata-OOM limits remain separate from absent procedures.
+
+Three exact SHA-checked patches prepare the pinned official rpmalloc C SDK:
+page-granularity repair, private runtime dimensions, and private runtime
+retention/Linux policies. No vendor input is edited; verified original bytes
+are copied and patches apply with zero fuzz. Independently prepared outputs
+must hash identically. Full scope, hashes and removal plan are documented in
+`docs/native/rpmalloc-runtime-policies.md` and generated SDK provenance. Direct
+SDK probes without the private runtime macro retain original native layouts.
+
+Positive numeric settings use transactionally allocated private heap lookup
+buckets/cache-pointer storage, preserving all public Heap/Span layouts and
+canonical type names. Unrepresentable native count/byte requests return ENOMEM
+as an explicit independent resource policy; no arbitrary public parameter or
+claimed original failure guarantee is added. Drained private tables persist
+until the next initialization/process exit, then are replaced. Shared native
+domains formerly rejected overlapping import initialization with EINVAL; the
+reviewed instance contract identifies this as a defect, superseded by typed
+independent domains described below. No optional performance matrix or
+benchmark was run.
+
+Exact public DONTNEED/FREE advice differs from the SDK's Mac FREE_REUSABLE
+preference; a private unmap route issues the requested actual kernel value,
+reports failure and does not fall back. Unlimited overflow retains spans until
+finalization; disabled built-in OS unmapping deliberately retains mappings
+through finalization. Custom callback routing and native accounting keep SDK
+semantics. Linux discovery is option-gated; Linux mmap uses ordinary flags and
+no MAP_HUGETLB/fallback. Linux C body/device execution remains unverified.
+
+Native diagnostic probe corrections are explicit: LLVM23 removes an otherwise
+unused failing builtin calloc, so the failure probe uses -fno-builtin-calloc
+to preserve actual null/ENOMEM observation. A separate standalone C reduction
+reproduces the optimizer behavior. First/second metadata failure tests redirect
+the request to real libc overflow rejection, not an invented result or errno.
+The SDK introspection helper also needs a static archive for native programs:
+a helper dylib linked to a second SDK image read another allocator's state.
+Both original configuration/callback failures remain in receipts; linking one
+canonical native SDK fixes the setup without changing assertions/API behavior.
+
+Adaptive statistics-off accounting uses matching native layouts and actual SDK
+current/high fields; statistics-on already has that storage. Existing default
+native names remain unchanged. Generated possible-domain inventory is 120,
+distinct from the few required identities actually executed. Graph/default
+thread metadata publication still reports/aborts on metadata exhaustion;
+transactional table/handle reservation does not solve graph-wide OOM. A proper
+next design must reserve graph capacity before native ownership mutation and
+reclaim typed backing storage with native mapping/handle lifetimes, rather
+than silently returning success with stale public fields.
+
+The newly reviewed GL using-import projection is implemented as `using gl`
+on the canonical variable in both generator branches. It adds no copied table
+or per-procedure immutable aliases. Independent assignment, clear/reload and
+address checks prove that projected names observe the actual GL.gl storage.
+Native controls take an SDK procedure address but execute no graphics calls.
+
+
+## Reviewed live config and independent instance repair
+
+The prior same-profile EINVAL guard no longer defines public behavior. Every
+instance owns a typed Domain keyed by its nominal rpmalloc_config_t Type, with
+complete generated private SDK mutable state, actual thread heaps, leases,
+callback maps and canonical facade metadata. Code/ABI profiles remain shared;
+exact repeated imports retain canonical storage, while explicit-default or
+numeric-distinct argument lists own independent initialization/finalization.
+Public records are unchanged and never cast to native SDK heap/span types.
+
+Private ABI7 rejects stale artifacts. Five zero-fuzz/hash-checked patches now
+prepare the pinned official C SDK; the two new patches implement live naming
+and complete domain-owned SDK globals. The domain generator audits all35 SDK
+global families under separate host conditional configurations. Replacing this
+architecture requires an upstream equivalent instance/runtime-config API,
+retaining exact public types, callbacks, live sizing policy and ownership tests.
+
+Callbacks/default pair and names follow the refreshed reviewed page: either
+missing map/unmap member selects both callable defaults; null error/failure and
+empty names remain observable defaults. Fixed native thunks read current public
+fields. Names get a per-use owned C copy. Sizing writes do not change derived
+native configuration. Compatible callbacks and borrowed storage/code lifetime
+remain caller responsibilities. Native Linux naming and Windows FLS lifecycle
+are unverified, despite required desktop Jai source checks.
+
+Domain factory/first-thread-slot failures return null/ENOMEM transactionally;
+OS TLS-key creation can be retried. Retirement within an outer allocator lease
+releases the canonical owner reference and lets the last typed slot reclaim the
+domain after leave. This fixes the actual nested SHUTDOWN abort captured in
+dimensions-xo1zmjml, without removing its assertions. SDK reserve tests distinguish
+the per-heap min(batch, default) limit from actual surplus global storage.
+
+Remaining metadata OOM is explicit: bridge.c metadata() and default-thread
+graph publication, plus runtime-domain-post.h binding_required_thread_slot(),
+can abort after a real metadata allocation failure. These are existing bounded
+ownership/fail-fast limits, not fabricated SDK success or completed graph-wide
+rollback. Proper follow-up reserves complete publication capacity before native
+mutation, with transactional rollback where native ownership can be restored.
+Graph serialization/copy and per-use name-copy costs have no performance claim.
+
+Independent SDK probes receive the selected private domain before inspecting
+its native heap/configuration. Test-only imports remain under the static stdlib
+test unit; public clients gain no new helper export. Original callback concurrency,
+offset, mapping/free/lifetime and ABI assertions remain active. Old name tests
+were corrected to keep borrowed bytes alive; live-byte mutation has its own
+positive regression. Factory/slot OOM injection targets private metadata only
+and does not fabricate native allocator outcomes. No optional profile expansion
+or benchmark was added. Commercial telemetry ABI and Android8 required source
+checks/device, native Linux/Windows gates remain open.
