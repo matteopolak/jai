@@ -66,6 +66,9 @@ def main():
             continue
         source = f"tests/extensions/{fixture}.jai"
         target = ["-os", target_os, "-cpu", cpu]
+        reports = [report]
+        if fixture == "http-native-date-target":
+            reports.append("stdlib/Extensions/Http/date_native.jai")
         for mode, command in [
             ("check", [str(compiler), "-check", "-no_dce", *target, source]),
             (
@@ -77,7 +80,7 @@ def main():
                     *target,
                     "--context",
                     source,
-                    report,
+                    *reports,
                     source,
                 ],
             ),
@@ -106,6 +109,37 @@ def main():
                 f"{target_os}/{cpu} {fixture} {mode}: {'PASS' if passed else 'FAIL'}",
                 flush=True,
             )
+    if args.os is None or args.os == "wasm":
+        command = [
+            str(compiler),
+            "-check",
+            "-no_dce",
+            "-os",
+            "wasm",
+            "tests/extensions/http-date-now-wasm-negative.jai",
+        ]
+        process = subprocess.run(
+            command, cwd=ROOT, env=env, text=True, capture_output=True, timeout=90
+        )
+        expected = "module `Extensions/Http` has no exported member `http_date_now`"
+        passed = process.returncode == 1 and expected in process.stderr
+        results.append(
+            dict(
+                target_os="wasm",
+                fixture="http-date-now-wasm-negative",
+                mode="check-negative",
+                command=command,
+                exit=process.returncode,
+                passed=passed,
+                stdout=process.stdout,
+                stderr=process.stderr,
+            )
+        )
+        (args.output / "results.json").write_text(json.dumps(results, indent=2) + "\n")
+        print(
+            f"WASM native-only clock export rejection: {'PASS' if passed else 'FAIL'}",
+            flush=True,
+        )
     print("Source and lint checks only; no native execution evidence.")
     raise SystemExit(any(not result["passed"] for result in results))
 
