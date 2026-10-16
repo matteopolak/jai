@@ -737,3 +737,5 @@ Ready final cohort: [AppKit/Cocoa](status/shared-appkit-cocoa-checkpoint.json), 
 - [Current shared integration checkpoint](status/shared-integration-batch.json), [603 production receipts](status/shared-candidate-60321c1d.json), [constant evaluation repair](status/shared-callable-constant-checkpoint.json) and [paired public operator filters](status/shared-operator-filter-checkpoint.json). Full original400/Focus remain coordinator-owned; no release acceptance is inferred.
 
 - [Pinned beec9491 compiler/library/native candidate](status/shared-candidate-beec9491.json) and [actual POSIX stream storage proof](status/shared-posix-stream-checkpoint.json): exact source/binary/environment receipt for coordinator original400 replay. Final focused gates/catalogue are recorded separately.
+
+- [Exact beec9491 Mac baseline](status/mac-beec9491-baseline.json): scoped production gates pass; complete433-case catalogue failures remain classified with [reproducers and proper followups](integration-requests.md). Native/GUI lease released to coordinator; original400/Focus and Windows/Linux native verification remain open.

@@ -97,6 +97,196 @@
   "compiler_version": "jaic 0.17.0",
   "rust_toolchain": "rustc 1.100.0-nightly (17fd5b8a3 2026-08-28)\nbinary: rustc\ncommit-hash: 17fd5b8a37b6667b6cc137f3cc35f09759768a3b\ncommit-date: 2026-08-28\nhost: aarch64-apple-darwin\nrelease: 1.100.0-nightly\nLLVM version: 23.1.0\n",
   "llvm_version": "23.1.2",
-  "verification_state": "Final known cohort built; exact pinned nativePOSIX and combined gates running",
-  "proof_report": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/report.json"
+  "verification_state": "focused production gates green; complete current catalogue RED, remaining classifications explicit",
+  "proof_report": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/report.json",
+  "baseline_receipt": "docs/status/mac-beec9491-baseline.json",
+  "counts": {
+    "workspace-libraries": {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--workspace",
+        "--lib",
+        "--no-fail-fast",
+        "--",
+        "--test-threads=1"
+      ],
+      "passed": 257,
+      "failed": 0,
+      "ignored": 0,
+      "nested_counts_excluded": true
+    },
+    "compiler-regressions": {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "jaic",
+        "--test",
+        "cleanroom_callable_provenance",
+        "--test",
+        "cleanroom_struct_argument_conversion",
+        "--test",
+        "cleanroom_loaded_import_scope",
+        "--test",
+        "cleanroom_context",
+        "--test",
+        "cleanroom_operator_filters",
+        "--test",
+        "cleanroom_operator_visibility",
+        "--test",
+        "cleanroom_modules",
+        "--",
+        "--test-threads=1"
+      ],
+      "passed": 103,
+      "failed": 0,
+      "ignored": 0,
+      "nested_counts_excluded": true
+    },
+    "cli-regressions": {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "jaic-cli",
+        "--test",
+        "cleanroom_callable_provenance",
+        "--test",
+        "cleanroom_struct_argument_conversion",
+        "--test",
+        "cleanroom_code_roundtrips",
+        "--test",
+        "cleanroom_workspace_options",
+        "--",
+        "--test-threads=1"
+      ],
+      "passed": 16,
+      "failed": 0,
+      "ignored": 0,
+      "nested_counts_excluded": true
+    },
+    "lsp-regressions": {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-p",
+        "jai-language-server",
+        "--test",
+        "named_arguments",
+        "--test",
+        "qualified_values",
+        "--test",
+        "partial_edits",
+        "--",
+        "--test-threads=1"
+      ],
+      "passed": 35,
+      "failed": 0,
+      "ignored": 0,
+      "nested_counts_excluded": true
+    },
+    "posix-native": {
+      "passed": 31,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/posix-native/posix-streams-396kpdmm/report.json"
+    },
+    "appkit": {
+      "passed": 85,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/appkit/appkit-26zdsbpt/report.json"
+    },
+    "refined-emission": {
+      "passed": 88,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/refined-emission-reyt12ym/verification.json",
+      "source_unchanged": true
+    },
+    "vtable-workflow": {
+      "passed": 54,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/vtable-workflow-cgobbt59/verification.json",
+      "source_unchanged": true
+    },
+    "objc-workflow": {
+      "passed": 19,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/objc-workflow-a9dg0ftr/verification.json",
+      "source_unchanged": true
+    },
+    "minimal": {
+      "passed": 96,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/minimal-shared-2l_3dzs8/results.json"
+    },
+    "model": {
+      "passed": 284,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/model-outputs-g1stlzpy/verification.json",
+      "inputs_unchanged": true,
+      "binaries_unchanged": true
+    },
+    "allocator": {
+      "passed": 13,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/abi8-production-frozen-beec9491/results.json"
+    },
+    "native_abi8_flags": {
+      "passed": 23,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/abi8-flags.json",
+      "profile_expansion": false
+    },
+    "native_lsp": {
+      "passed": 38,
+      "failed": 0,
+      "ignored": 0,
+      "phases": 24,
+      "servers": 2,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/lsp-native/report.json",
+      "scope": "26completion/6hover/6definition requests actualMac"
+    },
+    "relocated_package": {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0,
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/verification-frozen-beec9491/native-package/relocated-runtime-6r0wxft_/verification.json",
+      "scope": "Actual dynamicLLVMclosure/notices/relocatedconsumers/signatures/negativechecks; sysroot/resources/staticdistribution not established"
+    }
+  },
+  "catalogue_counts": {
+    "interp": {
+      "passed": 408,
+      "failed": 14,
+      "platform_unavailable": 6,
+      "compile_time_only": 0,
+      "expected_negative_checks": 5
+    },
+    "native": {
+      "passed": 394,
+      "failed": 13,
+      "platform_unavailable": 6,
+      "compile_time_only": 15,
+      "expected_negative_checks": 5
+    }
+  },
+  "catalogue_ignored": 0,
+  "root_original400_focus": "Coordinator-owned, no success claimed"
 }
