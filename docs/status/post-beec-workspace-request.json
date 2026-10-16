@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "snapshot": "3b4aa4e2f032055bc2ce578ab9e6decfdab00132",
-  "final_candidate": "pending compiler Json poison-fill + scanner synthetic metadata field stable exports",
+  "snapshot": "60d2ff190ca3fc695a2a26454f0f733aaa04e08a",
+  "final_candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19",
   "owner": "coordinator; opaque original corpus inputs excluded from integration worker",
   "cwd": "Coordinator-owned full-input mirror of the final immutable candidate; all committed production/tool/test bytes must match its source-identity.json",
   "argv": [
@@ -16,16 +16,16 @@
     "--test-threads=1"
   ],
   "environment": {
-    "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/targets/full-workspace-FINAL_PIN",
+    "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/targets/full-workspace-60d2ff19",
     "CARGO_BUILD_JOBS": "2",
     "CARGO_INCREMENTAL": "0",
     "RUSTC_WRAPPER": "",
     "LLVM_SYS_231_PREFIX": "/opt/homebrew/opt/llvm",
     "DEVELOPER_TOOLS_LLVM_PREFIX": "/opt/homebrew/opt/llvm",
-    "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/full-workspace-FINAL_PIN",
+    "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/full-workspace-60d2ff19",
     "JAIC_REQUIRE_WASM_TESTS": "1",
-    "JAIC_STDLIB": "Exact final candidate stdlib path from candidate-receipt.json",
-    "JAIC_NATIVE_LIBS": "Exact final candidate layered ABI8 native path from candidate-receipt.json",
+    "JAIC_STDLIB": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19/stdlib",
+    "JAIC_NATIVE_LIBS": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19/native-inputs/catalogue-probes:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19/native-inputs/rpmalloc:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19/native-inputs/cache-0:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19/native-inputs/cache-1:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19/native-inputs/cache-2:/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19/native-inputs/cache-3",
     "JAIC_TEST_FONT_PATH": "/System/Library/Fonts/Supplemental/Arial.ttf"
   },
   "requirements": [
@@ -42,5 +42,6 @@
   "passed": null,
   "failed": null,
   "ignored": null,
-  "why_local_excluded": "Full workspace CLI/native/WASM tests load tests/corpus including denied vendor bodies. Clean integration source captures deliberately omit all tests/corpus, so scoped tests cannot establish --all-targets acceptance."
+  "why_local_excluded": "Full workspace CLI/native/WASM tests load tests/corpus including denied vendor bodies. Clean integration source captures deliberately omit all tests/corpus, so scoped tests cannot establish --all-targets acceptance.",
+  "compiler_sha256": "5ee360092b5829fc7d86d0057290f3c40bdc60623c48cfd7b1271303c43efdc3"
 }

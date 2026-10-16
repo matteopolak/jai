@@ -171,5 +171,47 @@
       "expected_negative_checks": 5
     }
   },
-  "native_gui_lease": "released"
+  "native_gui_lease": "released",
+  "post_beec_cohort": {
+    "product_snapshot": "60d2ff190ca3fc695a2a26454f0f733aaa04e08a",
+    "candidate": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/integration/snapshots/frozen-60d2ff19",
+    "receipt": "docs/status/shared-candidate-60d2ff19.json",
+    "state": "all requested ready patches committed; final focused native checks running",
+    "ready": [
+      "IR822 check-only lifecycle",
+      "AppKit13canonical flags +Metal Render-only embedding",
+      "URI886+6162 stored keys",
+      "callback839 checked callable headers",
+      "metadata74e4 passive selected context",
+      "navigationda510 checked declarations",
+      "Json82beb exact debug poison block copies",
+      "c643 passive Core entry accessor",
+      "authorized unknown scanner synthetic metadata"
+    ],
+    "held": [
+      "blocked586/c018 live alias refresh",
+      "runtime diagnostic instrumentation",
+      "peer portable/tool WIP",
+      "unreviewed new exports"
+    ],
+    "active_gates": [
+      "Exact committed focused core/CLI/LSP/browser-host +nativeABI +unchangedJson180second replay"
+    ],
+    "coordinator_required": [
+      "Fullworkspace --all-targets withopaque corpus perexact request",
+      "Original400/runtime and sgpu/UI-builder dependencies",
+      "Focus signed-wheel GUI smoke/user acceptance",
+      "Normal native macOSx64/Windows/Linux CI temporarybranch afterreview"
+    ],
+    "remaining_known": [
+      "CurrentcatalogueRED; originalbeec failures remain preserved",
+      "GetRect widgetfixture unsupported GR.Font private contextual alias",
+      "CoreBucket_Array pointer-subscript mismatch newlyassignedcompilerowner",
+      "Generated LSP entry remainsNone despite newCoreaccessor pending ownerwiring",
+      "PDB/CIE allzero fixture corruption notwaived",
+      "Nativepackagingresources/sysroot/static/otherplatform closure incomplete"
+    ],
+    "source_inputs_count": 4959,
+    "source_count_is_completion_count": false
+  }
 }
