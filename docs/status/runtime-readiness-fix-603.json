@@ -1,0 +1,330 @@
+{
+  "schema": 1,
+  "base_ref": "9603092415b0b8b1259db801c76c7fc0dda103c5",
+  "production_base": "60321c1de653dfb416f64ed000d38b657e7bbc9a",
+  "branch": "codex/compiler-runtime-603-readiness",
+  "owned_semantic_functions": [
+    "scope.rs::expand_pending",
+    "scope.rs::expand_plain_ifs"
+  ],
+  "diagnostic_observer_present": false,
+  "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/readiness-fix-upotvr2e",
+  "compiler_path": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+  "compiler_sha256": "b98284ab24717b5419a627a7520a9ab7aaa7e5d0951672b69222d6534ca4ed34",
+  "baseline_sha256": "76229406b2fe5341772a4ea353e71eb41b2deb1463f7f750919484ff784b3e5f",
+  "source_guard_match": true,
+  "source_count": 1413,
+  "file_sha256": {
+    "crates/jaic/src/sema/scope.rs": "bc9a014713589b56f976d7600268e1b86294270b139543c323beaccd332b8c72",
+    "crates/jaic/tests/cleanroom_runtime_dependencies.rs": "3422a204d21dbdb783504b5958c400a22142a24ae36980a848ff64f045a740e3",
+    "tests/producer-requests/readiness-error-preservation/invalid/flags.jai": "3ebaacc78166d73a5319f790a1ac9196dffd6de433061f065eebc362e85c496a",
+    "tests/producer-requests/readiness-error-preservation/invalid/main.jai": "b5404d402a4017467382888d39beea4c242dec8b4fe6d82f0508845481ecf74f",
+    "tests/producer-requests/readiness-error-preservation/valid/config.jai": "2a122ebdfdd9930c6006b30d8cb19784aedccb461605812b2f479e4effc2c31f",
+    "tests/producer-requests/readiness-error-preservation/valid/flags.jai": "966841353a920514eb5a6bcccf13f74e6344bffea86a5f4cb576b70cb17baf28",
+    "tests/producer-requests/readiness-error-preservation/valid/main.jai": "04a1f407b66ca5c444e3bbc1de84bf2913ee29a1aac0def87574c338dada9b6e",
+    "tests/producer-requests/readiness-error-preservation/valid-exported/config.jai": "78f45eec09e8a0e7ca2d80b80f97fa39aab4ffc6906e03810ee84d6790fe05cc",
+    "tests/producer-requests/readiness-error-preservation/valid-exported/flags.jai": "10d30fa35df9d15058a1331914121b924546c4069ee71e10b0c5f1e5e861c924",
+    "tests/producer-requests/readiness-error-preservation/valid-exported/main.jai": "04a1f407b66ca5c444e3bbc1de84bf2913ee29a1aac0def87574c338dada9b6e"
+  },
+  "focused_counts": {
+    "dependency_tests": 17,
+    "module_tests": 52,
+    "library_tests": 168,
+    "runtime_forwarder_controls": 35
+  },
+  "quality_records": [
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic",
+        "--test",
+        "cleanroom_runtime_dependencies"
+      ],
+      "exit": 0,
+      "stdout": "\nrunning 17 tests\ntest private_ready_constant_remains_unavailable_through_module ... ok\ntest configured_runtime_rejects_conflicting_explicit_parameters ... ok\ntest officially_rejected_conditional_cycle_remains_an_error ... ok\ntest acyclic_imported_conditional_flag_becomes_ready ... ok\ntest configured_runtime_imports_share_storage_and_required_parameters ... ok\ntest pending_insert_fulfills_placeholder_before_conditional_commit ... ok\ntest qualified_lookup_discovers_conditional_overloads ... ok\ntest parameterized_conditional_exports_do_not_share_expansion_state ... ok\ntest cyclic_import_keeps_ready_conditional_exports_for_stallable_body ... ok\ntest readiness_probe_does_not_discard_an_imported_undeclared_call ... ok\ntest readiness_probe_does_not_discard_an_imported_invalid_condition ... ok\ntest ready_constant_does_not_hide_conditional_duplicate ... ok\ntest static_member_absence_is_distinct_from_an_observed_other_instance_flag ... ok\ntest readiness_constant_run_effect_is_not_replayed ... ok\ntest readiness_constant_run_can_depend_on_pending_declarations ... ok\ntest readiness_constant_run_failure_is_terminal ... ok\ntest nested_conditional_dependency_order_controls ... ok\n\ntest result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n",
+      "stderr": "    Finished `test` profile [unoptimized] target(s) in 0.12s\n     Running tests/cleanroom_runtime_dependencies.rs (/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/build/jaic/1da870d498198fe0/out/cleanroom_runtime_dependencies-1da870d498198fe0)\n"
+    },
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic",
+        "--test",
+        "cleanroom_modules"
+      ],
+      "exit": 0,
+      "stdout": "\nrunning 52 tests\ntest bootstrap_discovery_uses_only_canonical_entry ... ok\ntest application_cannot_use_internal_source_as_main ... ok\ntest bootstrap_runtime_passes_only_reviewed_parameters ... ok\ntest cached_internal_module_does_not_bypass_origin_check ... ok\ntest bundled_modules_reject_unknown_and_excess_positional_arguments ... ok\ntest applications_cannot_import_or_load_library_internals ... ok\ntest aggregate_only_filter_hides_other_members ... ok\ntest aggregate_using_declaration_keeps_filter ... ok\ntest bootstrap_alias_preserves_types_and_storage ... ok\ntest editor_completions_apply_import_and_transitive_reexport_filters ... ok\ntest aggregate_assignment_validation_keeps_macro_caller_scope ... ok\ntest failed_source_loads_cannot_become_successful_cache_hits ... ok\ntest facade_procedure_alias_preserves_full_overload_set_and_defaults ... ok\ntest ide_selected_internal_entry_is_admitted_without_opening_application_imports ... ok\ntest computed_import_filters_preserve_filter_kind ... ok\ntest implicit_runtime_load_passes_only_reviewed_module_parameters ... ok\ntest implicit_runtime_does_not_ignore_explicit_import_arguments ... ok\ntest imported_module_cannot_look_into_importer_scope ... ok\ntest invalid_computed_filter_is_an_error ... ok\ntest import_message_records_describe_actual_source_entry ... ok\ntest library_facades_can_use_private_internals_without_exporting_import_alias ... ok\ntest forward_overlay_field_types_keep_the_loaded_declaration_file_scope ... ok\ntest loaded_file_has_independent_visibility_and_private_shadowing ... ok\ntest library_modules_do_not_ignore_unknown_excess_or_duplicate_arguments ... ok\ntest module_argument_order_and_omitted_defaults_are_distinct ... ok\ntest loaded_constructor_and_generic_factory_keep_the_declaring_type_namespace ... ok\ntest module_arguments_retain_literal_precision_and_use_real_conversion ... ok\ntest module_parameter_defaults_use_the_declaring_private_file_namespace ... ok\ntest module_interface_constraints_use_the_declaring_private_file_namespace ... ok\ntest module_private_declarations_are_not_qualified_exports ... ok\ntest module_pointer_arguments_preserve_relocation_identity ... ok\ntest named_except_reexport_hides_excluded_name ... ok\ntest named_filtered_reexport_preserves_qualified_alias_and_filter ... ok\ntest named_private_imports_in_loaded_files_do_not_leak ... ok\ntest nondefault_runtime_storage_cannot_be_silently_ignored ... ok\ntest file_scope_aggregate_using_keeps_computed_filter ... ok\ntest only_import_does_not_offer_filtered_out_names_as_fallback ... ok\ntest anonymous_filtered_reexports_preserve_storage_and_visibility ... ok\ntest procedure_modification_rejects_unknown_body_record ... ok\ntest embedded_computed_filters_keep_original_member_storage ... ok\ntest selected_bootstrap_cannot_be_shadowed_by_local_preload ... ok\ntest qualified_constant_aggregate_members_are_not_writable_places ... ok\ntest aggregate_mapper_changes_names_and_preserves_lvalues ... ok\ntest typechecked_events_include_resolved_selected_library_declarations ... ok\ntest unused_program_parameters_can_bind_after_the_initial_import ... ok\ntest virtual_path_normalization_preserves_consecutive_parent_components ... ok\ntest mapper_omission_hides_original_short_name ... ok\ntest loaded_pointer_constructor_keeps_public_type_and_storage_identity ... ok\ntest loaded_module_parameters_resolve_private_file_types_and_interfaces ... ok\ntest native_symlink_cannot_expose_internal_source_as_public_module ... ok\ntest procedure_and_macro_using_parameters_retain_member_filters ... ok\ntest unfiltered_reexport_preserves_mutable_storage ... ok\n\ntest result: ok. 52 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n",
+      "stderr": "   Compiling jaic v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/crates/jaic)\n    Finished `test` profile [unoptimized] target(s) in 1.42s\n     Running tests/cleanroom_modules.rs (/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/build/jaic/01fc3d4c28fc0427/out/cleanroom_modules-01fc3d4c28fc0427)\n"
+    },
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic",
+        "--lib"
+      ],
+      "exit": 0,
+      "stdout": "\nrunning 168 tests\ntest abi::tests::aarch64_large_aggregate_is_indirect ... ok\ntest abi::tests::wasm64_passes_single_scalars_directly_and_the_rest_by_pointer ... ok\ntest abi::tests::sysv_large_aggregate_is_byval ... ok\ntest abi::tests::aarch64_small_int_struct_uses_x_registers ... ok\ntest abi::tests::sysv_unaligned_member_forces_memory ... ok\ntest abi::tests::sysv_mixed_eightbytes ... ok\ntest abi::tests::aarch64_hfa_uses_float_registers ... ok\ntest abi::tests::sysv_aggregate_without_enough_registers_goes_to_memory ... ok\ntest abi::tests::long_double_classes ... ok\ntest abi::tests::aarch64_packed_floats_stay_homogeneous ... ok\ntest abi::tests::win64_other_sizes_go_by_reference ... ok\ntest abi::tests::win64_power_of_two_sizes_use_one_integer_register ... ok\ntest abi::tests::win64arm_fixed_arguments_follow_aapcs64 ... ok\ntest abi::tests::windows_arm64_triples_select_win64arm ... ok\ntest abi::tests::windows_triples_select_win64 ... ok\ntest abi::tests::win64arm_variadic_arguments_ignore_hfas ... ok\ntest ast::tests::int128_round_trips ... ok\ntest ast::tests::node_sizes_stay_small ... ok\ntest docs::tests::declaration_lines ... ok\ntest docs::tests::fields_and_members_take_trailing_comments ... ok\ntest docs::tests::link_paths_exclude_code_marks ... ok\ntest docs::tests::locals_are_not_parameters ... ok\ntest docs::tests::line_comments_directly_above_are_the_docs ... ok\ntest docs::tests::block_comments_are_docs ... ok\ntest docs::tests::links_in_prose ... ok\ntest docs::tests::markdown_tags_fences_and_links ... ok\ntest docs::tests::meant_links_are_told_from_prose ... ok\ntest docs::tests::fenced_code_is_the_jai_blocks_of_comments ... ok\ntest docs::tests::stale_offsets_answer_nothing ... ok\ntest docs::tests::parameters_use_their_own_comments_or_the_list ... ok\ntest docs::tests::sites_cover_runs_blocks_and_trailing_comments ... ok\ntest docs::tests::targeted_links_include_their_closing_parenthesis ... ok\ntest interp::executable_path::tests::quotes_only_what_command_line_to_argv_would_split ... ok\ntest interp::native::wide::tests::vectors::quad_registers_and_stack ... ok\ntest interp::probe::tests::a_protected_page_in_the_middle_of_a_known_mapping_is_found ... ok\ntest interp::executable_path::tests::omitted_interpreter_arguments_still_name_the_windows_executable ... ok\ntest interp::executable_path::tests::command_line_parser_keeps_native_success_and_error_semantics ... ok\ntest interp::executable_path::tests::explicit_program_arguments_are_not_replaced_by_the_executable_path ... ok\ntest interp::probe::tests::read_vec_copies_readable_memory_and_refuses_garbage_lengths ... ok\ntest interp::probe::tests::memory_intrinsics_preserve_overlap_and_empty_ranges ... ok\ntest interp::probe::tests::released_memory_is_checked_again ... ok\ntest interp::probe::tests::writes_writable_memory_and_refuses_the_rest ... ok\ntest interp::sandbox::objc::tests::classes_are_interned_apart_from_selectors ... ok\ntest interp::sandbox::objc::tests::only_framework_libraries_open ... ok\ntest interp::sandbox::objc::tests::selectors_are_interned_and_named ... ok\ntest interp::sandbox::objc::tests::sends_answer_null_except_class_and_superclass ... ok\ntest interp::sandbox::tests::process_creation_and_shared_memory_are_refused ... ok\ntest interp::sandbox::tests::darwin_error_and_realpath_names_are_served ... ok\ntest interp::sandbox::tests::windows_process_creation_is_access_denied ... ok\ntest interp::sandbox::tests::windows_file_round_trip ... ok\ntest interp::sandbox::tests::windows_find_files_lists_a_directory ... ok\ntest interp::sandbox::tests::windows_text_conversion_and_current_directory ... ok\ntest interp::threads::win32::handle_registry_tests::managed_thread_lookup_accepts_native_handle_range_without_events ... ok\ntest interp::atomic_contention_tests::interpreted_exchange_preserves_all_prior_values_under_contention ... ok\ntest interp::threads::worker_lifetime_tests::compiler_keeps_its_owned_state_alive_through_interpreter_teardown ... ok\ntest interp::threads::worker_lifetime_tests::shutdown_releases_a_callback_lease_waiting_for_the_baton ... ok\ntest lexer::tests::a_note_runs_to_the_next_whitespace ... ok\ntest lexer::tests::basics ... ok\ntest lexer::tests::here_string_flags_cut_off_by_the_end_of_file ... ok\ntest lexer::tests::here_strings ... ok\ntest lexer::tests::identifier_separators ... ok\ntest lexer::tests::leading_dot_floats ... ok\ntest lexer::tests::nested_comments_and_escapes ... ok\ntest lexer::tests::unknown_escape_of_a_multibyte_character ... ok\n\nrunning 1 test\ntest memory_limit::tests::sizes ... ok\ntest parser::ide::callee_tests::captures_the_actual_callee_before_nested_incomplete_arguments ... ok\ntest parser::tests::array_literal_with_array_type_prefix ... ok\ntest parser::tests::array_types ... ok\ntest interp::probe::tests::stale_mapping_cache_cannot_fault_compiler_memory_transfers ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 167 filtered out; finished in 0.00s\n\ntest parser::tests::asm_declarations_and_pins ... ok\ntest parser::tests::asm_errors ... ok\n\nrunning 1 test\ntest parser::tests::asm_instruction_forms ... ok\ntest parser::tests::assignments ... ok\ntest parser::tests::binary_precedence ... ok\ntest interp::probe::tests::stale_mapping_cache_cannot_fault_compiler_memory_transfers ... ok\ntest parser::tests::call_arguments ... ok\ntest interp::probe::tests::memory_intrinsics_reject_protected_ranges ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 167 filtered out; finished in 0.00s\n\ntest parser::tests::binary_precedence_matches_recorded_jai_output ... ok\ntest parser::tests::declaration_flags_and_notes ... ok\ntest parser::tests::bitwise_and_shift_operators_share_a_level ... ok\ntest parser::tests::directive_comma_is_a_flag_only_when_it_hugs_the_directive ... ok\ntest parser::tests::diagnostics_name_the_expected_and_found_tokens ... ok\ntest parser::tests::declaration_forms ... ok\ntest parser::tests::enum_forms ... ok\ntest parser::tests::equality_comparison_is_not_a_switch ... ok\ntest parser::tests::file_level_directives ... ok\ntest parser::tests::header_without_body_is_a_type ... ok\ntest parser::tests::header_with_body_is_a_procedure ... ok\ntest parser::tests::for_loop_forms ... ok\ntest parser::tests::if_condition_in_parentheses_is_not_a_header ... ok\ntest parser::tests::here_string_argument_in_call ... ok\ntest parser::tests::imports_and_loads ... ok\ntest parser::tests::ifx_forms ... ok\ntest parser::tests::lambdas ... ok\ntest parser::tests::mixed_declarations_assign_to_places ... ok\ntest parser::tests::inferred_members_and_directive_primaries ... ok\ntest parser::tests::multiple_values_and_mixed_declarations ... ok\ntest parser::tests::modify_block_and_deprecation ... ok\ntest parser::tests::named_returns_and_foreign_flags ... ok\ntest parser::tests::operator_declarations ... ok\ntest parser::tests::nested_assert_is_parsed_once ... ok\ntest parser::tests::nested_ifx_statements_are_parsed_once ... ok\ntest parser::tests::parenthesized_cast_with_flags_is_not_a_header ... ok\ntest parser::tests::parenthesized_expression_is_not_a_header ... ok\ntest parser::tests::polymorphic_names_and_restrictions ... ok\ntest parser::tests::pointer_type_and_address_of_share_the_unary_star ... ok\ntest parser::tests::postfix_dereference_binds_tighter_than_member_access ... ok\ntest parser::tests::prefix_operators_bind_tighter_than_binary_ones ... ok\ntest parser::tests::proc_type_return_does_not_swallow_the_next_parameter ... ok\ntest parser::tests::procedures_and_structs_need_no_semicolon ... ok\ntest parser::tests::remainder_sits_between_multiplication_and_addition ... ok\ntest parser::tests::prefix_cast_takes_bitwise_and_shift_operators ... ok\ntest parser::tests::return_defer_using_push_context ... ok\ntest parser::tests::run_operand_is_a_full_expression ... ok\ntest parser::tests::statement_starting_with_prefix_operator_after_a_block ... ok\ntest parser::tests::static_if_at_file_scope ... ok\ntest parser::tests::struct_literal_versus_block ... ok\ntest interp::atomic_contention_tests::interpreted_cas_is_atomic_against_simultaneous_host_access ... ok\ntest parser::tests::struct_body_forms ... ok\ntest parser::tests::switch_statements ... ok\ntest parser::tests::struct_literal_without_dot ... ok\ntest parser::tests::tagged_unions ... ok\ntest parser::tests::type_directive_modifiers ... ok\ntest parser::tests::unary_and_cast_forms ... ok\ntest parser::tests::while_condition_backtick_is_retained_without_affecting_other_labels ... ok\ntest parser::tests::while_break_continue_remove ... ok\ntest record_build::tests::malformed_field_shape_is_an_error ... ok\ntest record_build::tests::missing_record_is_an_error_and_null_remains_null ... ok\ntest record_build::tests::tagged_type_without_plan_is_an_error_not_a_panic ... ok\ntest records::tests::records_made_while_lent_keep_unique_ids ... ok\ntest record_build::tests::late_record_references_update_existing_identity_without_replaying_user_edits ... ok\ntest render::tests::ascii_block_has_line_numbers_context_labels_and_the_fix ... ok\ntest render::tests::detection_follows_terminal_flags_and_environment ... ok\ntest render::tests::colour_marks_severity_gutter_and_labels ... ok\ntest render::tests::msvc_layout_is_one_located_line_per_item_and_never_coloured ... ok\ntest render::tests::long_spans_show_their_edges_and_long_lines_are_cut ... ok\ntest render::tests::plain_compact_is_the_long_standing_layout ... ok\ntest render::tests::reports_from_text_split_help_and_note_lines ... ok\ntest render::tests::multi_line_spans_get_a_connector ... ok\ntest render::tests::reports_without_a_place ... ok\ntest render::tests::tabs_are_expanded_outside_the_plain_layout ... ok\ntest render::tests::secondary_labels_and_other_files ... ok\ntest render::tests::scoped_style_stays_on_its_thread ... ok\ntest render::tests::unicode_block_draws_boxes ... ok\ntest sema::asm::catalog::tests::inline_declarations_take_the_class_the_lowering_gives_them ... ok\ntest sema::dependencies::tests::initial_call_preflight_accepts_local_setup_but_not_external_effects_or_branches ... ok\ntest interp::threads::worker_lifetime_tests::teardown_reaps_a_never_started_suspended_worker ... ok\ntest interp::threads::worker_lifetime_tests::teardown_reaps_a_worker_blocked_in_interpreted_sleep ... ok\ntest sema::format_check::tests::counts_directives_as_basic_reads_them ... ok\ntest sema::ide_meta::tests::atoms_need_no_parentheses ... ok\ntest sema::ide_meta::tests::substitution_replaces_parameters_and_drops_caller_backticks ... ok\ntest sema::ide_meta::tests::dedent_keeps_relative_indentation ... ok\ntest sema::long_double_tests::formats_follow_the_c_compiler ... ok\ntest sema::value::tests::aggregate_identity_includes_every_relocation_component ... ok\ntest suggest::tests::a_missing_file_suggests_its_jai_file_first ... ok\ntest tests::verbatim_paths_lose_their_prefix_when_win32_reads_them_the_same ... ok\ntest suggest::tests::suggests_near_names_only ... ok\ntest wide_float::tests::extra_precision_is_kept ... ok\ntest wide_float::tests::f64_round_trips_exactly ... ok\ntest wide_float::tests::integers_and_specials ... ok\n\nrunning 1 test\ntest wide_float::tests::known_encodings ... ok\ntest wide_float::tests::subnormal_and_overflow_limits ... ok\ntest wide_float::tests::x87_matches_binary128_where_that_is_exact ... test interp::probe::tests::memory_intrinsics_reject_protected_ranges ... ok\nok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 167 filtered out; finished in 0.00s\n\ntest wide_float::tests::binary128_agrees_with_f64_after_rounding ... ok\n\nrunning 1 test\ntest interp::probe::tests::memory_intrinsics_reject_protected_ranges ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 167 filtered out; finished in 0.00s\n\ntest interp::probe::tests::memory_intrinsics_reject_protected_ranges ... ok\ntest interp::probe::tests::copies_readable_memory_and_refuses_the_rest ... ok\ntest sema::asm::catalog::tests::every_listed_mnemonic_is_accepted_and_described ... ok\ntest parser::tests::deep_nesting_is_an_error_not_a_stack_overflow ... ok\ntest interp::threads::worker_lifetime_tests::teardown_reaps_a_worker_returning_from_a_finite_native_call ... ok\ntest sema::asm::catalog::tests::the_table_covers_every_accepted_spelling ... ok\n\ntest result: ok. 168 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.22s\n\n",
+      "stderr": "   Compiling jaic v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/crates/jaic)\n    Finished `test` profile [unoptimized] target(s) in 9.44s\n     Running unittests src/lib.rs (/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/build/jaic/49dd53170b1f090f/out/jaic-49dd53170b1f090f)\n"
+    },
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic-cli",
+        "--test",
+        "cleanroom_runtime_lookup"
+      ],
+      "exit": 0,
+      "stdout": "\nrunning 1 test\ntest full_build_body_and_static_classification_survive_public_runtime_forwarding ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 16.19s\n\n",
+      "stderr": "   Compiling serde_core v1.0.229\n   Compiling zmij v1.0.23\n   Compiling serde_json v1.0.151\n   Compiling jaic-llvm v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/crates/jaic-llvm)\n   Compiling itoa v1.0.18\n   Compiling memchr v2.8.3\n   Compiling jaic-cli v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/crates/jaic-cli)\n    Finished `test` profile [unoptimized] target(s) in 5.96s\n     Running tests/cleanroom_runtime_lookup.rs (/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/build/jaic-cli/5798d8e0573c2aad/out/cleanroom_runtime_lookup-5798d8e0573c2aad)\n"
+    },
+    {
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic",
+        "--test",
+        "cleanroom_runtime_dependencies",
+        "-p",
+        "jaic-cli",
+        "--test",
+        "cleanroom_runtime_lookup",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "    Checking libc v0.2.189\n    Checking thiserror v2.0.20\n    Checking bitflags v2.13.2\n    Checking jaic v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/crates/jaic)\n    Checking llvm-sys v231.0.0\n    Checking inkwell v0.10.0 (https://github.com/TheDan64/inkwell?rev=b7cbeed24af810e14cb36d703f057167b4c033a4#b7cbeed2)\n    Checking serde_core v1.0.229\n    Checking zmij v1.0.23\n    Checking memchr v2.8.3\n    Checking itoa v1.0.18\n    Checking jaic-llvm v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/crates/jaic-llvm)\n    Checking serde_json v1.0.151\n    Checking jaic-cli v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/crates/jaic-cli)\n    Finished `dev` profile [unoptimized] target(s) in 7.32s\n"
+    },
+    {
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic-cli",
+        "--bin",
+        "jaic"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": "    Finished `dev` profile [unoptimized] target(s) in 0.79s\n"
+    }
+  ],
+  "cli_records": [
+    {
+      "label": "before-invalid",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/readiness-fix-upotvr2e/jaic-before",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/invalid/main.jai",
+        "-check"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "before-valid",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/readiness-fix-upotvr2e/jaic-before",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/main.jai",
+        "-check"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "before-valid-exported",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/readiness-fix-upotvr2e/jaic-before",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid-exported/main.jai",
+        "-check"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "before-rejected-cycle",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/readiness-fix-upotvr2e/jaic-before",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/conditional-module-dependency/main.jai",
+        "-check"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "tests/producer-requests/conditional-module-dependency/config.jai:5:10: error: module `consumer.jai` has no exported member `api`\n    #if Peer.api(41) == 42 {\n             ^^^\n\n"
+    },
+    {
+      "label": "after-invalid",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/invalid/main.jai",
+        "-check"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "tests/producer-requests/readiness-error-preservation/invalid/flags.jai:3:5: error: unknown identifier `missing_flag`\n    #if missing_flag {\n        ^^^^^^^^^^^^\n\n"
+    },
+    {
+      "label": "after-valid",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/main.jai",
+        "-check"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "after-valid-exported",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid-exported/main.jai",
+        "-check"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "after-rejected-cycle",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/conditional-module-dependency/main.jai",
+        "-check"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "tests/producer-requests/conditional-module-dependency/config.jai:5:10: error: module `consumer.jai` has no exported member `api`\n    #if Peer.api(41) == 42 {\n             ^^^\n\n"
+    },
+    {
+      "label": "Jai-format",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/target/debug/jaifmt",
+        "--check",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/invalid/flags.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/invalid/main.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/config.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/flags.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/main.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid-exported/config.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid-exported/flags.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid-exported/main.jai"
+      ],
+      "exit": 1,
+      "stdout": "tests/producer-requests/readiness-error-preservation/valid-exported/flags.jai:5\ntests/producer-requests/readiness-error-preservation/valid-exported/main.jai:4\n",
+      "stderr": ""
+    }
+  ],
+  "official_facts": {
+    "invalid": "REJECT: unknown name",
+    "historical_valid": "REJECT: module parameter is not exported",
+    "valid_exported": "BUILD PASS: explicit public_enabled alias",
+    "historical_cyclic_baseline": "REJECT"
+  },
+  "limitations": [
+    "Protected-provider cause is unproven; root replay requested.",
+    "Historical Config.enabled invalid positive still accepted by this compiler: existing out-of-scope visibility defect.",
+    "No native Jai program/GUI/fault/full400 run during root native lease.",
+    "Diagnostic observer remains separate; no protected body/AST access.",
+    "Initial corrected-positive Jai formatting failed; preserved cli.json and original files in capture, then whitespace-normalized new valid-exported only."
+  ],
+  "final_focused_records": [
+    {
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic",
+        "--test",
+        "cleanroom_runtime_dependencies"
+      ],
+      "exit": 0,
+      "stdout": "\nrunning 17 tests\ntest officially_rejected_conditional_cycle_remains_an_error ... ok\ntest configured_runtime_rejects_conflicting_explicit_parameters ... ok\ntest private_ready_constant_remains_unavailable_through_module ... ok\ntest pending_insert_fulfills_placeholder_before_conditional_commit ... ok\ntest acyclic_imported_conditional_flag_becomes_ready ... ok\ntest readiness_probe_does_not_discard_an_imported_invalid_condition ... ok\ntest readiness_probe_does_not_discard_an_imported_undeclared_call ... ok\ntest parameterized_conditional_exports_do_not_share_expansion_state ... ok\ntest readiness_constant_run_can_depend_on_pending_declarations ... ok\ntest readiness_constant_run_failure_is_terminal ... ok\ntest configured_runtime_imports_share_storage_and_required_parameters ... ok\ntest qualified_lookup_discovers_conditional_overloads ... ok\ntest ready_constant_does_not_hide_conditional_duplicate ... ok\ntest readiness_constant_run_effect_is_not_replayed ... ok\ntest cyclic_import_keeps_ready_conditional_exports_for_stallable_body ... ok\ntest static_member_absence_is_distinct_from_an_observed_other_instance_flag ... ok\ntest nested_conditional_dependency_order_controls ... ok\n\ntest result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n",
+      "stderr": "   Compiling jaic v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/crates/jaic)\n    Finished `test` profile [unoptimized] target(s) in 0.93s\n     Running tests/cleanroom_runtime_dependencies.rs (/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/build/jaic/1da870d498198fe0/out/cleanroom_runtime_dependencies-1da870d498198fe0)\n"
+    },
+    {
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/target/debug/jaifmt",
+        "--check",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/invalid/flags.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/invalid/main.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/config.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/flags.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/main.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid-exported/config.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid-exported/flags.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid-exported/main.jai"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jailint",
+        "-D",
+        "warnings",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid-exported/main.jai"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jailint",
+        "-D",
+        "warnings",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/invalid/main.jai"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "jailint: tests/producer-requests/readiness-error-preservation/invalid/main.jai did not compile completely (unknown identifier `missing_flag`); bodies that failed were not linted\n"
+    }
+  ],
+  "lint_negative": "Expected exit1: unknown missing_flag; incomplete body coverage explicitly reported, not suppressed."
+}

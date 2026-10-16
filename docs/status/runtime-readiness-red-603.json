@@ -1,0 +1,160 @@
+{
+  "schema": 1,
+  "base_ref": "9603092415b0b8b1259db801c76c7fc0dda103c5",
+  "production_base": "60321c1de653dfb416f64ed000d38b657e7bbc9a",
+  "branch": "codex/compiler-runtime-603-readiness",
+  "production_changes": false,
+  "diagnostic_code_present": false,
+  "compiler_sha256": "76229406b2fe5341772a4ea353e71eb41b2deb1463f7f750919484ff784b3e5f",
+  "capture": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/readiness-red-8m46q98o",
+  "source_guard_match": true,
+  "source_count": 1413,
+  "environment": {
+    "CARGO_TARGET_DIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target",
+    "CARGO_BUILD_JOBS": "2",
+    "TMPDIR": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/readiness-red-8m46q98o"
+  },
+  "records": [
+    {
+      "label": "invalid-wrongly-accepted",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/invalid/main.jai",
+        "-check"
+      ],
+      "cwd": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "acyclic-positive",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/main.jai",
+        "-check"
+      ],
+      "cwd": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "same-invalid-module-without-readiness-condition",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/jaic",
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/readiness-red-8m46q98o/direct-static-query/main.jai",
+        "-check"
+      ],
+      "cwd": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603",
+      "exit": 1,
+      "stdout": "",
+      "stderr": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/scratch/readiness-red-8m46q98o/direct-static-query/flags.jai:3:5: error: unknown identifier `missing_flag`\n    #if missing_flag {\n        ^^^^^^^^^^^^\n\n"
+    },
+    {
+      "label": "core-regression-RED",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic",
+        "--test",
+        "cleanroom_runtime_dependencies",
+        "readiness_probe_does_not_discard_an_imported_invalid_condition",
+        "--",
+        "--nocapture"
+      ],
+      "cwd": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603",
+      "exit": 101,
+      "stdout": "\nrunning 1 test\ntest readiness_probe_does_not_discard_an_imported_invalid_condition ... FAILED\n\nfailures:\n\nfailures:\n    readiness_probe_does_not_discard_an_imported_invalid_condition\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s\n\n",
+      "stderr": "   Compiling jaic v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/crates/jaic)\n    Finished `test` profile [unoptimized] target(s) in 1.14s\n     Running tests/cleanroom_runtime_dependencies.rs (/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/build/jaic/1da870d498198fe0/out/cleanroom_runtime_dependencies-1da870d498198fe0)\n\nthread 'readiness_probe_does_not_discard_an_imported_invalid_condition' (11548490) panicked at crates/jaic/tests/cleanroom_runtime_dependencies.rs:270:70:\na readiness probe must not discard unknown-name errors from imported pending conditions: ()\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nerror: test failed, to rerun pass `-p jaic --test cleanroom_runtime_dependencies`\n"
+    },
+    {
+      "label": "core-acyclic-positive",
+      "argv": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic",
+        "--test",
+        "cleanroom_runtime_dependencies",
+        "acyclic_imported_conditional_flag_becomes_ready"
+      ],
+      "cwd": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603",
+      "exit": 0,
+      "stdout": "\nrunning 1 test\ntest acyclic_imported_conditional_flag_becomes_ready ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 10 filtered out; finished in 0.00s\n\n",
+      "stderr": "    Finished `test` profile [unoptimized] target(s) in 0.08s\n     Running tests/cleanroom_runtime_dependencies.rs (/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/readiness-target/debug/build/jaic/1da870d498198fe0/out/cleanroom_runtime_dependencies-1da870d498198fe0)\n"
+    },
+    {
+      "label": "clippy",
+      "argv": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "-j2",
+        "-p",
+        "jaic",
+        "--test",
+        "cleanroom_runtime_dependencies",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "cwd": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "    Checking jaic v0.17.0 (/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/crates/jaic)\n    Finished `dev` profile [unoptimized] target(s) in 3.03s\n"
+    },
+    {
+      "label": "rustfmt",
+      "argv": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "cwd": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "Jai-format",
+      "argv": [
+        "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler-plugin-evaluation/runtime-603/target/debug/jaifmt",
+        "--check",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/invalid/flags.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/invalid/main.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/config.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/flags.jai",
+        "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603/tests/producer-requests/readiness-error-preservation/valid/main.jai"
+      ],
+      "cwd": "/Users/matthew/projects/jai/artifacts/cleanroom-workers/compiler-plugin-evaluation/artifacts/compiler-runtime-603",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "root_public_observations_sha256": "17f2ec9e1b36bb7cb4f6b0e6ffeef9636b4b91c3bcf2aec5ce77296111f44063",
+  "negative_regression": "RED: invalid unknown conditional accepted; expected language error lost.",
+  "own_acyclic_positive": "PASS; official confirmation requested, not assumed.",
+  "semantic_ownership_requested": [
+    "scope.rs::expand_pending",
+    "scope.rs::expand_plain_ifs"
+  ],
+  "root_dependencies": [
+    "Official offline positive/negative fixture verdicts",
+    "Exact semantic function ownership coordination",
+    "Optional original protected failure category only; final flag selection unknown"
+  ],
+  "protected_body_access": false,
+  "native_executables_run": 0
+}
