@@ -799,3 +799,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Canonical Basic array ownership](status/shared-array-owner-source-checkpoint.json): original shared array bodies declared in public Basic context, with private allocator dependency closure; remaining custom configuration failure retained.
 
 - [Canonical Basic array declaration context](specs/stdlib/README.md): shared implementation ownership, overload injection, private allocation closure and [remaining questions](specs/stdlib/basic-array-context-questions.md).
+
+- [Windows native provider environment](status/shared-windows-provider-environment.json): matching CPU helper, ordinary DLL loading and file-identity CI checks; native Windows acceptance pending.
