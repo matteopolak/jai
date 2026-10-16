@@ -83,6 +83,36 @@ def run(binary, stdlib, output):
             ["inner"],
         ),
         (
+            "nested-incomplete",
+            "outer :: (value: int) {}\ninner :: (inner_option := false) -> int { return 1; }\nmain :: () { outer(inner(in|\n}",
+            ["inner_option"],
+        ),
+        (
+            "nested-method-incomplete",
+            "outer :: (value: int) {}\nTools :: struct { emit :: (enabled := false) -> int { return 1; } }\nmain :: () { outer(Tools.emit(en|\n}",
+            ["enabled"],
+        ),
+        (
+            "declaration-after-incomplete",
+            '#import "Basic";\nmain :: () {\n    print("hello", to_sta|\n    healthy := 42;\n}',
+            ["to_standard_error"],
+        ),
+        (
+            "parenthesized-procedure",
+            "f :: (option := false) {}\nmain :: () { (f)(op|); }",
+            ["option"],
+        ),
+        (
+            "query-failed-body-guard",
+            "counter: int;\nf :: (option := false) #no_context {}\ndamaged :: () #no_context {\n    counter += 1;\n    f(op|\n}\n#run damaged();",
+            ["option"],
+        ),
+        (
+            "overloaded-nested-method",
+            "outer :: (value: int) {}\nTools :: struct {\n    emit :: (value: int, option_number := false) -> int { return 1; }\n    emit :: (value: string, option_string := false) -> int { return 1; }\n}\nmain :: () { outer(Tools.emit(op|\n}",
+            ["option_number", "option_string"],
+        ),
+        (
             "method",
             "Tools :: struct { emit :: (option := false) {} }\nmain :: () { Tools.emit(op|); }",
             ["option"],
