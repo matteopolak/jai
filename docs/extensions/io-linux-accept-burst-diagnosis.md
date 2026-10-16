@@ -56,12 +56,17 @@ and output, and samples inherited limits, process descriptors/scheduling, CPU
 and memory pressure, socket counters and TCP state counts once per second.
 Kernel/socket observations cover the network namespace, not just the child;
 TIME_WAIT counts must not be attributed to the child's live descriptors.
-The collector has a separate 180-second safety limit; reaching it is a failure,
-not a passing test or a replacement for the original deadline. It does not
-change the program environment or restart failed programs.
+The current collector samples for at most 180 seconds, then waits for the
+original program's result under the existing CI supervisor's timeout policy.
+It never kills or restarts the target at the sampling limit. Exhausting that
+window is recorded explicitly; an unfinished/interrupted receipt is not a
+pass. The earlier collector's target-killing safety limit is superseded: a
+whole backend program can legitimately include multiple long connect waits.
+The observation budget must not replace the original program's disposition.
 
-Root/integration should collect the unchanged full backend program under the
-existing default/O2/ASan load profile, or add the focused entry alongside it.
+Root/integration should wrap ONE existing copy of the unchanged full backend
+program under the existing default/O2/ASan 12-copy load profile. Do not add a
+thirteenth copy or substitute the focused entry for the original full program.
 Use a fresh report directory per process/copy and retain stdout, stderr and
 receipt.json. No CI/profile changes are owned by this producer.
 
@@ -86,7 +91,7 @@ Integration alone owns Git/index, CI wiring and the docs/README.md link.
 Release/publication remains held. No original/reference implementation,
 quarantine history, raw oracle log or agent transcript was used.
 
-Local final source receipt `io-burst-source-20261016-c` passes 10/10 checks,
+Historical local source receipt `io-burst-source-20261016-c` passes 10/10 checks,
 with four complete strict-lint contexts, no incomplete/unvisited files, and
 1,006 source hashes unchanged. Fresh compiler SHA
 `e2c1a7569844675facca7134327b13f21b02521b58d158ddc93244b30a98b29b`
@@ -103,3 +108,83 @@ separate benchmark/API premise is unmodified and unverified. Final focused
 lint covers the production module, backends, tcp and diagnostic entry roots,
 not benchmarks. The first formatter invocation used a relative config path
 and failed; the corrected absolute-path check passes. No errors were waived.
+
+## Actual 07bf Linux evidence and the next bounded request
+
+Root supplied run 38945081630/job 117122054637: 151 failures among 1,188 runs.
+For epoll O2 copy 6, round 12 took 135,248 ms, with 3,569 accepted and finished
+handlers and 31 connect failures, first TIMED_OUT/native 110. Copy 11 round 13
+took 135,228 ms, with 3,879 accepted/finished and 21 connect failures. The
+supplied io_uring examples took about 68 seconds, with accepted/finished totals
+898, 1,199 and 1,499 at rounds 3, 4 and 5. No recorded server accept/read/write
+or client read/write failure explains these samples. This does not classify
+every failure in the aggregate.
+
+The 30-second deadline in `burst_client` starts **after** `Io.connect` returns.
+`start_fiber` initializes its deadline to zero; `run_group` installs no outer
+deadline. `await_op` installs a timer only for a nonzero fiber deadline, and
+maps native Linux E_TIMEDOUT=110 to TIMED_OUT. Therefore these long connect
+rounds are not evidence that a 30-second scheduler timer fired late. The
+reported round elapsed time includes the untimed connect, not just its later
+bounded write/read. No deadline relocation or change is proposed.
+
+The Linux [TCP policy documentation](https://docs.kernel.org/networking/ip-sysctl.html)
+describes SYN retry/backoff controls that can produce long native connect
+waits. Actual CI values must be captured; elapsed time alone does not identify
+the retry configuration or prove why handshakes failed. Resource pressure,
+listener queues, packet drops and runtime scheduling remain hypotheses.
+
+The revised collector requests these exact outputs, without another target
+execution or production change:
+
+- Existing failed-copy stderr plus actual binary SHA, inherited backend
+  variables, working directory, monotonic and wall timestamps.
+- TCP SYN retry/linear-backoff/SYNACK settings, overflow policy, socket limits,
+  namespace ListenDrops/ListenOverflows/SYN-retransmission counters, softnet/
+  interface drops and conntrack occupancy/limits where available.
+- Child-owned listening sockets' raw queues, owned connection state counts,
+  and up to 16 pending-SYN examples with inode/endpoints/retransmission timer
+  and unrecovered-RTO count. Aggregate counts are not capped. Interpretation
+  uses the public [proc TCP format](https://docs.kernel.org/networking/proc_net_tcp.html);
+  raw queue/timer units are retained rather than guessed.
+- Child descriptor counts/limits, schedstat/status/wchan, host pressure, and
+  cgroup-v2 CPU quotas/throttling/pressure and memory events for the child and
+  ancestors. [Kernel cgroup documentation](https://docs.kernel.org/admin-guide/cgroup-v2.html)
+  explains why ancestor limits matter. Unsupported v1/missing files remain
+  explicit unavailable observations, never fabricated zero pressure.
+
+TCP tables come from the child's network namespace; observer/child namespace
+identities are recorded before comparing host sysctls/counters. Descriptor
+ownership and tables are sampled separately and can race; unavailable link
+reads and malformed rows are counted. Namespace totals include sibling load,
+while owned rows are matched by the child's socket inodes. Sampling duration
+is recorded so observer overhead is visible.
+
+Integration should replace one existing process launch with the collector's
+single launch, retaining the other 11 copies, same binary/arguments (the
+backend test takes none), environment, cwd, flags, supervisor timeout and
+required original assertion. Retain receipt.json, program.stdout and
+program.stderr. A nonreproducing diagnostic execution does not clear the
+original RED result. No local network/native/GUI/fault or LSP execution is
+needed or claimed for this request.
+
+Current followup source receipt `io-burst-07bf-source-b` passes 10/10 checks,
+with four complete lint contexts and 1,007 guarded source inputs unchanged.
+Its local compiler SHA is
+`635492b0326655c5594bd37b6dbf95d505300335c3e001c9072446cbc34b9913`;
+the source receipt records HEAD `29fbdef12b71badda14a71ff0b252f1f846368f4`.
+This is local source evidence, not equivalence to the deployed 07bf compiler.
+`io-burst-07bf-focused-checks` records 11 passing independent metadata tests
+plus Ruff check/format. Tests cover process/namespace ownership, malformed and
+unavailable tables, bounded examples with complete aggregate counts, cgroup
+ancestor/escape/v1 cases, descriptor races, Mac execution refusal, and no
+target kill/retry when the observation window expires. An initial unit harness
+incorrectly patched `module.sys`; its corrected `sys.argv` patch is test-only.
+No Extensions production/test source or application runtime was changed in
+this followup. Earlier receipts and the original RED CI outcomes are retained.
+
+## Integration: observe one original loaded copy
+
+HTTP Linux CI fixes the observed workload at its original12 copies and selects only backends:o2:1:0 for observation; all default/O2/ASan variants and three outer rounds remain. The same child binary runs once, in its original scratch cwd with inherited environment and unchanged180-second supervisor timeout. A metadata thread samples that PID; it never adds an execution, retries, changes backend/deadlines or kills a process. The observer180-second cap ends sampling only. The original supervisor retains its kill-on-timeout policy, and timeout remains failure. Child stdout/stderr plus actual exit are retained privately; unexpected observer failures are explicit harness failures.
+
+Seventeen policy/parser checks pass (six stress/two prior+four new, eleven collector), Ruff and workflow actionlint pass. Tests use command mocks and independent proc-table vectors, not Linux/native evidence. Observer hash/thread/receipt I/O changes scheduling; nonreproduction cannot clear151/1188 original failures. ROOT must run the same actual workload; no standalone extra collector execution is wired. See [integration receipt](../status/io-existing-copy-integration.json).

@@ -1,14 +1,55 @@
 {
   "owner": "network runtime producer / portable-asn1-socket",
-  "scope": "failure-only Linux accept-burst diagnostics; no production runtime repair",
-  "phase": "diagnostic_patch_ready_pending_actual_linux_evidence",
-  "base_head": "8e81e901866e60122901596117892be77abb631b",
+  "scope": "collector followup only; no Extensions or production runtime fix",
+  "phase": "actual_connect_failure_isolated; mechanism_pending_one_existing_linux_copy_resource_evidence",
+  "base_head": "29fbdef12b71badda14a71ff0b252f1f846368f4",
   "root_failure_facts": {
-    "run": "38933357668",
-    "job": "117082609938",
+    "run": "38945081630",
+    "job": "117122054637",
+    "candidate": "07bf",
     "runs": 1188,
-    "failed": 156,
-    "sample": "io_uring pass followed by accept-burst round8 assertion,8/300 not served; other copies7-8; backend and failure-stage pending"
+    "failed": 151,
+    "epoll_O2_copy6": {
+      "round": 12,
+      "elapsed_ms": 135248,
+      "accepted": 3569,
+      "handlers_finished": 3569,
+      "connect_failed": 31,
+      "first_error": "TIMED_OUT",
+      "native_code": 110
+    },
+    "epoll_O2_copy11": {
+      "round": 13,
+      "elapsed_ms": 135228,
+      "accepted": 3879,
+      "handlers_finished": 3879,
+      "connect_failed": 21,
+      "first_error": "TIMED_OUT",
+      "native_code": 110
+    },
+    "io_uring_default_samples": [
+      {
+        "round": 3,
+        "elapsed_ms": 67992,
+        "accepted": 898,
+        "handlers_finished": 898
+      },
+      {
+        "round": 4,
+        "elapsed_ms": 67986,
+        "accepted": 1199,
+        "handlers_finished": 1199
+      },
+      {
+        "round": 5,
+        "elapsed_ms": 67971,
+        "accepted": 1499,
+        "handlers_finished": 1499
+      }
+    ],
+    "known_sample_server_errors": 0,
+    "known_sample_client_read_write_errors": 0,
+    "all_failures_classified": false
   },
   "owned_functions": [
     "Burst_Job",
@@ -25,11 +66,12 @@
   "owned_file_sha256": {
     "stdlib/Extensions/Io/tests/lib/suite.jai": "038ca4bbf490d035b698034827a573a3f8222311f57f7413f7a8a8833d985332",
     "tests/extensions/io-accept-burst-diagnostics.jai": "1eecde7e22168a7dd8d9558aab9ffbd5f546decb15f3c021ea466adc54b40840",
-    "tools/check_io_burst_diagnostics.py": "55f74870070341cd607932872fa4e7801687d3ee491baa55ada501b6e7a98546",
-    "docs/extensions/io-linux-accept-burst-diagnosis.md": "e8b687169339f4e6aeb9896dfc457d30329605e7b092975c0fc4f23fbe125630"
+    "tools/check_io_burst_diagnostics.py": "84cc8b194497444aa9c67b6190c8959749ee1f0cc6b4862ace1904b926b27318",
+    "docs/extensions/io-linux-accept-burst-diagnosis.md": "68200132506a92a472e47e8dc733940eaea976597e8d760138e48677325b7a7f",
+    "tests/tools/test_io_burst_diagnostics.py": "71f94ec639bebf10d2d7d0858d578c8a54a7057ca80d73f0a6a9feeafa780c68"
   },
   "source_verification": {
-    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-burst-source-20261016-c/receipt.json",
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-burst-07bf-source-b/receipt.json",
     "passed": 10,
     "failed": 0,
     "source_only_configurations": [
@@ -45,9 +87,10 @@
     "strict_lint_contexts": 4,
     "strict_lint_incomplete": [],
     "strict_lint_unvisited": [],
-    "source_hashes": 1006,
+    "source_hashes": 1007,
     "source_changes": [],
-    "compiler_sha256": "e2c1a7569844675facca7134327b13f21b02521b58d158ddc93244b30a98b29b"
+    "compiler_sha256": "635492b0326655c5594bd37b6dbf95d505300335c3e001c9072446cbc34b9913",
+    "deployed_07bf_compiler_equivalence": "not claimed"
   },
   "other_checks": {
     "jaifmt_interpreter_check": "pass for owned two Jai files, absolute config path",
@@ -58,8 +101,8 @@
   "runtime": {
     "local_io_executions": 0,
     "local_native_gui_fault_executions": 0,
-    "root_host_lease": "HELD; respected",
-    "linux": "not available locally; remote CI evidence requested",
+    "root_host_lease": "free subject to LSP priority; no native/GUI/fault lease claimed or runtime executed",
+    "linux": "new actual07bf samples received; local host unavailable, queue/pressure mechanism evidence pending",
     "production_fix": "none; cause unclassified"
   },
   "preserved_requirements": {
@@ -73,17 +116,125 @@
   },
   "diagnostic_limit": "spawn payloads and timing change; nonreproduction does not clear original failure",
   "pending": [
-    "root/integration Linux default/O2/ASan same-load diagnostic stderr+kernel/process receipt",
-    "classify connection/provider/readiness/scheduler/compiler versus resource contention from evidence",
-    "production fix and actual native regression only after root cause",
-    "integration CI/profile/wiring/README link/index operations"
+    "root/integration single-existing-copy Linux capture under original12-copy default/O2/ASan profile",
+    "classify native connect timeout cause from actual resource/queue/scheduling evidence",
+    "production fix and native regression ONLY after general cause proven"
   ],
   "preserved_failure_evidence": [
     "io-burst-source-20261016-a: unsupported print_error new diagnostic; existing bench atomic_store lookup failure in overbroad directory lint",
     "io-burst-source-20261016-b:10/10 before blank-line-only formatter correction"
   ],
-  "patch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-linux-burst-diagnostics-20261016.patch",
-  "export_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-linux-burst-diagnostics-20261016-receipt.json",
+  "patch": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-linux-connect-evidence-07bf-20261016.patch",
+  "export_receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-linux-connect-evidence-07bf-20261016-receipt.json",
   "git_index_or_commits": "none",
-  "publication": "held"
+  "publication": "held",
+  "historical_root_failure_facts": [
+    {
+      "run": "38933357668",
+      "job": "117082609938",
+      "runs": 1188,
+      "failed": 156,
+      "sample": "io_uring pass followed by accept-burst round8 assertion,8/300 not served; other copies7-8; backend and failure-stage pending"
+    }
+  ],
+  "historical_source_verification": [
+    {
+      "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-burst-source-20261016-c/receipt.json",
+      "passed": 10,
+      "failed": 0,
+      "source_only_configurations": [
+        "linux/x64",
+        "linux/arm64",
+        "macos/arm64"
+      ],
+      "programs": [
+        "backends",
+        "tcp",
+        "io-accept-burst-diagnostics"
+      ],
+      "strict_lint_contexts": 4,
+      "strict_lint_incomplete": [],
+      "strict_lint_unvisited": [],
+      "source_hashes": 1006,
+      "source_changes": [],
+      "compiler_sha256": "e2c1a7569844675facca7134327b13f21b02521b58d158ddc93244b30a98b29b"
+    }
+  ],
+  "followup_owned_file_sha256": {
+    "tools/check_io_burst_diagnostics.py": "84cc8b194497444aa9c67b6190c8959749ee1f0cc6b4862ace1904b926b27318",
+    "tests/tools/test_io_burst_diagnostics.py": "71f94ec639bebf10d2d7d0858d578c8a54a7057ca80d73f0a6a9feeafa780c68",
+    "docs/extensions/io-linux-accept-burst-diagnosis.md": "68200132506a92a472e47e8dc733940eaea976597e8d760138e48677325b7a7f"
+  },
+  "followup_functions": [
+    "read_optional",
+    "tcp_observations",
+    "cgroup_observations",
+    "sample",
+    "observe_process",
+    "main",
+    "MetadataTests"
+  ],
+  "followup_checks": {
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-burst-07bf-focused-checks/receipt.json",
+    "independent_metadata_unit_cases_passed": 11,
+    "ruff_check": "pass",
+    "ruff_format": "pass",
+    "initial_unit_harness_error": "module.sys nonexistent; corrected test-only sys.argv mock"
+  },
+  "deadline_scope_finding": {
+    "connect": "outside30000ms with_deadline; new fiber deadline zero; no outer run_group deadline",
+    "read_write": "inside original30000ms deadline unchanged",
+    "native110": "current Linux E_TIMEDOUT maps to TIMED_OUT",
+    "conclusion": "reported connect-round elapsed does not demonstrate30s scheduler timer lateness",
+    "runtime_cause": "still unclassified"
+  },
+  "read_only_runtime_source_sha256": {
+    "stdlib/Extensions/Io/tests/lib/suite.jai": "038ca4bbf490d035b698034827a573a3f8222311f57f7413f7a8a8833d985332",
+    "stdlib/Extensions/Io/net.jai": "d867c6a00d2505542ef410fd6b5266fc4e5a857caf0e9c568e9b0d0f5191c439",
+    "stdlib/Extensions/Io/platform.jai": "193c0e8b966cbfc8f0da1d56c6406907b8b05c022a9f805211ffabc4560e124a",
+    "stdlib/Extensions/Io/engine.jai": "723b33b19e92d15cadbff5afba1df127c0328723c9284a79a8a2d671580e37dd",
+    "stdlib/Extensions/Io/engine_poll.jai": "6ae99fd2b32fc51ab9a3bf5590dc9da05db79ac3aee65330b76d2eb2ef4e67cd",
+    "stdlib/Extensions/Io/engine_uring.jai": "32544e0efd7219a333d77f473d1d0ae5bd05bb782c7acc5cc6b7aedd4c6dfff8",
+    "stdlib/Extensions/Io/scheduler.jai": "101562baf64271a4da75517503473785f6da19a5b90817aae331eaf61f6ca82c",
+    "stdlib/Extensions/Io/runtime.jai": "d87a81b581bb150d63681b2bf5b0899330b5abdd9052fc025f15e6498cd39387"
+  },
+  "followup_runtime": {
+    "io_executions": 0,
+    "native_gui_fault_executions": 0,
+    "extensions_source_edits": 0,
+    "production_root_cause_fix": "none; not proven"
+  },
+  "collector_request": {
+    "launches": 1,
+    "workload": "wrap one EXISTING copy of same original full backend program; retain12copies and required assertions",
+    "other_copies": 11,
+    "preserve": [
+      "actualbinary",
+      "backend",
+      "env",
+      "cwd",
+      "compilerflags",
+      "supervisortimeout",
+      "load",
+      "deadline"
+    ],
+    "sampling_window_seconds": 180,
+    "target_kill_retry_or_new_timeout": false,
+    "after_observation_cap": "wait for original result under existing CI supervisor; interrupted receipt remains collecting",
+    "outputs": [
+      "receipt.json",
+      "program.stdout",
+      "program.stderr"
+    ],
+    "evidence": [
+      "actualbinary SHA and errorstage/nativecode",
+      "owned listener rawqueues and SYN_SENT state/RTO examples+aggregates",
+      "observer+child netns identities",
+      "SYN retry/backoff/overflow policy",
+      "namespace listen-drop/SYN-retrans/softnet/conntrack counters",
+      "process descriptors/limits/wchan/schedstat",
+      "host pressure and child+ancestor cgroupv2 quota/throttle/memory events"
+    ],
+    "limits": "unavailable/raced/malformed observations explicit; no syntheticzero; diagnostic nonrepro does not clear RED"
+  }
 }

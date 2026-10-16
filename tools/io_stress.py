@@ -24,15 +24,19 @@ stdlib/Extensions/Tls/tests/tls.jai (it carries its certificates, so it runs fro
 directories). interop.jai starts openssl processes on ports and is not part of it.
 """
 import argparse
+import hashlib
+import json
 import os
 import shutil
 import subprocess
 import sys
 import tempfile
 import time
+from threading import Thread
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from http_native import ensure_native_libraries
+from check_io_burst_diagnostics import observe_process
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_TESTS = [
@@ -71,17 +75,73 @@ def build(jaic, test, variant, out):
     return None
 
 
-def run_copy(program, directory, timeout):
+def observed_run(program, directory, timeout, report):
+    """Observe the original child; the original supervisor owns its timeout."""
+    report.mkdir(parents=True, exist_ok=False)
+    receipt = {
+        "program": str(program),
+        "program_sha256": hashlib.sha256(program.read_bytes()).hexdigest(),
+        "cwd": str(directory),
+        "supervisor_timeout_seconds": timeout,
+        "samples": [],
+    }
+
+    def save():
+        (report / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
+
+    with subprocess.Popen([str(program)], cwd=directory, stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE, text=True, errors="replace") as process:
+        receipt["pid"] = process.pid
+
+        def observe():
+            try:
+                observe_process(process, receipt, save)
+            except Exception as error:
+                receipt["observer_error"] = repr(error)
+
+        observer = Thread(target=observe)
+        observer.start()
+        try:
+            stdout, stderr = process.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            # This is the same timeout/kill policy used by subprocess.run for
+            # every other copy. The observer never owns termination or retries.
+            receipt["supervisor_timeout"] = True
+            process.kill()
+            stdout, stderr = process.communicate()
+            (report / "program.stdout").write_text(stdout)
+            (report / "program.stderr").write_text(stderr)
+            raise
+        finally:
+            observer.join()
+            receipt["exit"] = process.returncode
+            save()
+        (report / "program.stdout").write_text(stdout)
+        (report / "program.stderr").write_text(stderr)
+        if "observer_error" in receipt:
+            raise RuntimeError("required observation failed: " + receipt["observer_error"])
+        return subprocess.CompletedProcess([str(program)], process.returncode, stdout, stderr)
+
+
+def run_copy(program, directory, timeout, observation=None):
     """Runs one copy in `directory`. None if it passed, else a description of the failure."""
     directory.mkdir(parents=True)
     try:
-        result = subprocess.run([str(program)], cwd=directory, capture_output=True, text=True,
-                                errors="replace", timeout=timeout)
+        if observation is not None:
+            result = observed_run(program, directory, timeout, observation)
+        else:
+            result = subprocess.run([str(program)], cwd=directory, capture_output=True, text=True,
+                                    errors="replace", timeout=timeout)
     except subprocess.TimeoutExpired as error:
         output = error.stdout or b""
         if isinstance(output, bytes):
             output = output.decode(errors="replace")
-        return f"timed out after {timeout:g} s\n{output}"
+        stderr = error.stderr or b""
+        if isinstance(stderr, bytes):
+            stderr = stderr.decode(errors="replace")
+        return f"timed out after {timeout:g} s\n{output}{stderr}"
+    except RuntimeError as error:
+        return f"observation failed: {error}"
     if result.returncode == 0:
         return None
     status = f"signal {-result.returncode}" if result.returncode < 0 else f"exit status {result.returncode}"
@@ -114,6 +174,8 @@ def main():
     parser.add_argument("--timeout", type=float, default=180, help="seconds a copy may run")
     parser.add_argument("-j", "--jobs", type=int, default=os.cpu_count() or 1, help="parallel builds")
     parser.add_argument("--keep", action="store_true", help="keep the build and scratch folders")
+    parser.add_argument("--observe-copy", help="Linux only: one existing test:variant:round:copy")
+    parser.add_argument("--observe-report", type=Path, help="fresh private metadata output directory")
     args = parser.parse_args()
 
     jaic = Path(args.jaic).resolve()
@@ -125,6 +187,20 @@ def main():
     for test in tests:
         if not test.is_file():
             parser.error(f"no such test: {test}")
+    observed = None
+    if args.observe_copy or args.observe_report:
+        if not sys.platform.startswith("linux") or not args.observe_copy or not args.observe_report:
+            parser.error("observation requires Linux, --observe-copy and --observe-report")
+        try:
+            stem, variant, number, copy = args.observe_copy.split(":")
+            observed = (stem, variant, int(number), int(copy))
+        except ValueError:
+            parser.error("--observe-copy must be test:variant:round:copy")
+        if (sum(t.stem == stem for t in tests) != 1 or variant not in variants
+                or not 1 <= observed[2] <= args.rounds or not 0 <= observed[3] < args.copies):
+            parser.error("--observe-copy must select exactly one existing workload copy")
+        if args.observe_report.exists():
+            parser.error("--observe-report must be a fresh directory")
     if "asan" in variants and not sys.platform.startswith("linux"):
         print("skipping the asan variant: AddressSanitizer is Linux-only here")
         variants.remove("asan")
@@ -164,7 +240,8 @@ def main():
                     base = work / "run" / f"{variant}-{test.stem}-{number}"
                     with ThreadPoolExecutor(max_workers=args.copies) as pool:
                         results = list(pool.map(
-                            lambda copy: run_copy(program, base / str(copy), args.timeout),
+                            lambda copy: run_copy(program, base / str(copy), args.timeout,
+                                                  args.observe_report if observed == (test.stem, variant, number, copy) else None),
                             range(args.copies)))
                     bad = [(copy, r) for copy, r in enumerate(results) if r is not None]
                     runs += len(results)
