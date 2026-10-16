@@ -1,0 +1,16 @@
+{
+  "producer_basic_manifest": "8dd47a3e21da02c003d71ed1d4a04d80b0766fa91852214be7c2ac9cfbeb15b3",
+  "producer_commit": "f5421547",
+  "integration_adjustment": "Runtime controls now require exact preceding stdout, nonzero status and specific Any validation diagnostic; unrelated missing-library/build failures cannot count as a required negative",
+  "legacy_delta": "Only null-deref-print-any runtime.error literal changed to cannot format an Any without payload storage; source/hash/stdout/rules unchanged",
+  "unit_tests": {
+    "passed": 2,
+    "failed": 0,
+    "ignored": 0,
+    "initial_red": "missing helper import before implementation"
+  },
+  "local_fault_executions": 0,
+  "reason": "Root original LSP timing lease held; producer15 current Mac outcomes remain supplied evidence, not local stronger-check replay",
+  "tool_sha256": "7953ac892b9589dba53fbb29581b48d557ac810664c1a59e48f8236115e2c900",
+  "type_and_payload_guards": "Producer exact render_item guards unchanged; convert.rs untouched"
+}

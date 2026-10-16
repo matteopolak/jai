@@ -62,3 +62,5 @@ See [the ready manifest](status/basic-any-read-ready.json) for exact files,
 source/build/strict-lint receipts and hashes. Integration alone stages/commits
 the narrow patch and updates the global README link. Actual Windows follow-up
 remains required; Mac native execution is not Windows runtime proof.
+
+Integration additionally tightens the runtime checker: partial-null controls must fail with the specific metadata/payload validation cause and exact preceding stdout. Unrelated missing-library failures cannot count as an accepted negative. Two policy unit tests pass; actual replay of this stronger checker is deferred under root’s timing lease. The legacy null-deref-print-any fixture retains its source/hash, stdout7 newline true newline and mandatory failure; only its obsolete NULL READ error literal changes to the new specific validation cause. Original wrong-oracle/failed receipts remain preserved. See [integration review](status/basic-any-integration-review.json).
