@@ -542,7 +542,7 @@ pub struct Compiler {
     /// `using,only(...) field.path;` aliases declared in struct bodies.
     pub member_aliases: HashMap<crate::types::StructId, Vec<structs::MemberAlias>>,
     /// `using,only(..)`/`using,except(..)` on struct members: field index and filter.
-    pub using_filters: HashMap<crate::types::StructId, Vec<(usize, ast::UsingFilter)>>,
+    using_filters: HashMap<crate::types::StructId, structs::UsingFilters>,
     pub default_images: HashMap<TypeId, Option<Rc<value::Aggregate>>>,
     pub default_globals: HashMap<TypeId, ir::GlobalId>,
     pub initializers: HashMap<TypeId, ir::FuncId>,
