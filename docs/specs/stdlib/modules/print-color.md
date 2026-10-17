@@ -76,5 +76,5 @@ Console_Style :: enum {
 These configure Windows console color handling; they are import-time options, not exported globals.
 
 ```jai
-#module_parameters (USE_ANSI_CODES_ON_WINDOWS := false, SAVE_RESTORE_ON_WINDOWS := false);
+#module_parameters (SAVE_RESTORE_ON_WINDOWS := false)(USE_ANSI_CODES_ON_WINDOWS := false);
 ```
