@@ -787,7 +787,7 @@ impl Cache {
             self.compiles += 1;
             let snapshot = files.clone();
             let (compiler, errors, others) =
-                compile(env, root, dirs, files, os, self.untrusted, &self.parses);
+                compile(env, root, dirs, files, os, &self.parses, self.untrusted);
             let cost = std::iter::once(&compiler)
                 .chain(others.iter().map(|p| &p.compiler))
                 .flat_map(|c| {

@@ -672,14 +672,7 @@ impl Session {
         let Some(env) = self.environment.as_ref() else {
             return false;
         };
-        let sources = Sources {
-            env,
-            open: self
-                .documents
-                .iter()
-                .map(|(u, d)| (canonical_key(env, Path::new(u.path())), d.text.as_str()))
-                .collect(),
-        };
+        let sources = self.sources(env);
         let mut index = self.index.borrow_mut();
         !sources.scan(&mut index, root).builds.is_empty()
     }
