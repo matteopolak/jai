@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "scope": "Windows Crt physical provider selection and ffi/libclang build-closure handoff",
+  "source_ready": true,
+  "native_windows_verified": false,
+  "formatter_verified": false,
+  "source_guards": {
+    "tools/native_bindings/config.py": "02ac678180f058f3ba074caa6e652d03c619746c88fa8ddbbd888d2406bdda21",
+    "stdlib/Windows/declarations.jai": "ca9d3eb92ba104d167072e267c210695a6024eaa47a15928fb2195bb24efd81a",
+    "tools/test_windows_crt_provider.py": "b0db39708396dc4b2d73b7589950a051418e506f1798ab74356ba0d8d6de5a9a",
+    "tests/native-bindings/windows-crt-provider.jai": "96f9a970031893c2d4b1c89af7cbd60b089e785dafefc9cd5de31dd200ee8d8c"
+  },
+  "verification": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/bindings/windows-crt-provider/verification.json",
+  "verification_sha256": "afade22da14b6ee414f9542ad6b5c4ce11f7a3dfbca9a42f4cf79b8c69f3f4b3",
+  "checks": {
+    "commands_pass": 7,
+    "source_contract_tests_pass": 3,
+    "windows_x64_check_and_strictlint": true,
+    "windows_arm64_check_and_strictlint": true,
+    "official_sdk_four_symbol_coverage": [
+      "x64",
+      "arm64"
+    ],
+    "sdk_execution": false
+  },
+  "cause": "Private generator LIBRARIES lookup had no Crt key and emitted literal Crt, requesting nonexistent Crt.dll.",
+  "repair": "Select official SDK dynamic UCRT import-library basename ucrt while retaining private identifier Crt and every public declaration byte.",
+  "implementation_policy": "Physical CRT selection is an independent SDK-backed implementation decision; reviewed page supplies four foreign Crt signatures but no literal native basename.",
+  "remaining_required": [
+    "Actual Windows x64 and ARM64 interpreter/native O0/O2 provider/ownership regression",
+    "Jai formatter check after serialized lease release",
+    "Actual target libffi and binding_ffi bridge import/runtime package closure",
+    "Windows libclang canonical private-path SDK package and dependent DLL closure"
+  ],
+  "ownership": {
+    "bindings": [
+      "tools/native_bindings/config.py:LIBRARIES[Crt]",
+      "stdlib/Windows/declarations.jai:private Crt declaration",
+      "tools/test_windows_crt_provider.py",
+      "tests/native-bindings/windows-crt-provider.jai",
+      "docs/native/windows-crt-provider.md",
+      "docs/status/bindings-windows-crt-provider.json"
+    ],
+    "integration": "build_native_libs.py, stdlib_runtime.py, workflow/catalogue, sole Git actor",
+    "generator": "Windows libclang build/package handoff requested in shared inbox"
+  },
+  "no_waivers": true
+}
