@@ -619,7 +619,7 @@ Native Windows executables, debug information, a code formatter and a much riche
 - Alignment, `cast(bool)`, `push_allocator` and pointer arithmetic types are corrected.
 - `jaic run file.jai -- args` passes arguments to the program.
 - `jaic --timings` prints time per compile phase, and `-plug Tracy` loads a metaprogram plugin.
-- The standalone playground UI is gone; use the hosted playground at https://matteopolak.com/playground/jai.
+- The standalone playground UI is gone; use the hosted playground at https://matteopolak.com/playground/jacket.
 
 ## [0.1.0] - 2026-10-05
 
