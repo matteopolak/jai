@@ -10,7 +10,7 @@ main :: () {
     defer array_free(options.source_files);
     array_add(*options.libraries, .{ filename = "liboriginal_resolved", identifier = "Native" });
     defer array_free(options.libraries);
-    options.generated_library_path_prefix = "./";
+    options.generated_library_path_prefix = ".";
     options.add_generator_command = false;
     options.generate_compile_time_struct_checks = false;
     builder, ok := B.generate_bindings(options);

@@ -36,7 +36,7 @@ def main():
 
     core = ["core-public-gaps", "core-context-style", "core-integer-time", "core-hash-free", "core-builder-allocation"]
     sources = [f"tests/portable-stdlib/{name}.jai" for name in core + ["basic-configuration", "formatter-records"]]
-    sources.append("stdlib/Extensions/Json/tests/numeric_ownership.jai")
+    sources.append("stdlib/Extensions/Json/tests/numeric-ownership.jai")
     for source in sources:
         name = Path(source).stem
         run(f"{name}-interp", [compiler, "-interp", source])

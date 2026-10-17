@@ -16,7 +16,7 @@ now_ms :: () -> s64 {
 
 // The test certificates and keys, as string constants (data/certs.jai, made by data/make_certs.sh
 // from the files beside it), so the program carries them and reads no file.
-#load "../data/certs.jai";
+#load "../fixtures/certs.jai";
 
 load :: (name: string) -> string {
     for DATA if it.name == name return it.text;

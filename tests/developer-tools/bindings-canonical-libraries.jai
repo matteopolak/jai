@@ -39,7 +39,7 @@ main :: () {
     defer array_free(options.system_libraries);
     options.add_generator_command = false;
     options.log_stripped_declarations = false;
-    options.generated_library_path_prefix = "./";
+    options.generated_library_path_prefix = ".";
     options.will_print_bindings = will_print;
     builder, success := B.generate_bindings(options);
 
@@ -48,8 +48,8 @@ main :: () {
     text := builder_to_string(*builder, do_reset = false);
 
     defer free(text);
-    assert(contains(text, "primary :: #library \"./"));
-    assert(contains(text, "archive :: #library,no_dll,link_always \"./"));
+    assert(contains(text, "primary :: #library \"."));
+    assert(contains(text, "archive :: #library,no_dll,link_always \"."));
     assert(contains(text, "system :: #library,system \"libdriver_system\";"));
     assert(!contains(text, ",shared") && !contains(text, ".dylib\"") && !contains(text, ".a\""));
     assert(write_entire_file(tprint("%/developer-tools-libraries-generated.jai", args[1]), text));

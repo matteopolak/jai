@@ -1,5 +1,5 @@
 // An independent failed check must use the real support counter and exit path.
-#load "../../stdlib/Extensions/Http/tests/lib/support.jai";
+#load "../../stdlib/Extensions/Http/tests/support/support.jai";
 
 main :: () {
     check(false, "independent WASM termination control");

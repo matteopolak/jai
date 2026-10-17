@@ -15,7 +15,7 @@ const cases = [
   ["tests/extensions/http-codec-roundtrip.jai", 0, "ok\n"],
 ];
 const files = {};
-for (const source of [...cases.map(row => row[0]), "stdlib/Extensions/Http/tests/lib/support.jai"]) {
+for (const source of [...cases.map(row => row[0]), "stdlib/Extensions/Http/tests/support/support.jai"]) {
   files[source] = await readFile(path.join(root, source), "utf8");
 }
 const engine = await createEngine(await readFile(binary));

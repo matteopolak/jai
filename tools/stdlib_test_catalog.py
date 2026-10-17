@@ -48,10 +48,10 @@ HTTP_CONFORMANCE_CASE_IDS = tuple(
         "codec",
         "https",
         "llhttp",
-        "server_connections",
-        "server_extractors",
-        "server_responses",
-        "server_routing",
+        "server-connections",
+        "server-extractors",
+        "server-responses",
+        "server-routing",
         "smuggling",
         "testing",
     )
@@ -67,10 +67,10 @@ HTTP_NATIVE_IO_CASE_IDS = frozenset(
         for name in (
             "client",
             "https",
-            "server_connections",
-            "server_extractors",
-            "server_responses",
-            "server_routing",
+            "server-connections",
+            "server-extractors",
+            "server-responses",
+            "server-routing",
             "testing",
         )
     ]

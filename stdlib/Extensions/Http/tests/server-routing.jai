@@ -1,7 +1,7 @@
 // The router through the test client (no socket): static, {param} and {rest...} segments, priorities, trailing
 // slashes and percent-decoding, 404 and 405 with Allow, automatic HEAD and OPTIONS, and routes
 // that conflict.
-#load "lib/server_support.jai";
+#load "support/server_support.jai";
 
 name_of :: (name: Path("name", string)) -> string {
     return tprint("name=%", name.value);

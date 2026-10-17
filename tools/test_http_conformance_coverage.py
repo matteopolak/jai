@@ -44,10 +44,10 @@ class HttpCoverageTests(unittest.TestCase):
         native = {
             "client",
             "https",
-            "server_connections",
-            "server_extractors",
-            "server_responses",
-            "server_routing",
+            "server-connections",
+            "server-extractors",
+            "server-responses",
+            "server-routing",
             "testing",
         }
         for name, case in cases.items():

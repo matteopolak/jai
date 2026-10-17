@@ -35,13 +35,13 @@ class TargetContracts(unittest.TestCase):
                     target_contract(source, target)
 
     def test_named_pasteboard_does_not_gain_linux_shutdown(self):
-        source = "stdlib/GetRect/tests/native_clipboard.jai"
+        source = "stdlib/GetRect/tests/native-clipboard.jai"
         self.assertTrue(target_contract(source, "macos").available)
         for target in ["linux", "windows", "wasm"]:
             contract = target_contract(source, target)
             self.assertFalse(contract.available)
             self.assertEqual(
-                contract.alternative, "stdlib/GetRect/tests/clipboard_unavailable.jai"
+                contract.alternative, "stdlib/GetRect/tests/clipboard-unavailable.jai"
             )
 
     def test_linux_cursor_callbacks_remain_enabled(self):
@@ -59,7 +59,7 @@ class TargetContracts(unittest.TestCase):
         )
 
     def test_unavailable_provider_negatives_are_targeted(self):
-        source = "stdlib/GetRect/tests/cursors_unavailable.jai"
+        source = "stdlib/GetRect/tests/cursors-unavailable.jai"
         self.assertTrue(target_contract(source, "linux").available)
         self.assertTrue(target_contract(source, "wasm").available)
         self.assertFalse(target_contract(source, "macos").available)

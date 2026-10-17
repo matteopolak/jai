@@ -18,7 +18,7 @@ behavior or a missing public body? No alias/export or absence assertion will be
 invented from a compiler error. Please refine the page's target clauses.
 
 Independently unambiguous portable checks are now in
-`stdlib/Debug/tests/portable-target-contract.jai`: canonical enums/shared storage
+`stdlib/Debug/tests/target.jai`: canonical enums/shared storage
 across graphics parameterizations, absent separate crash-handler thread under
 the declared false constant, absent graphics-only functions with
 `USE_GRAPHICS=false`, Android/WASM false debugger query, and reviewed non-Windows

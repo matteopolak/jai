@@ -191,7 +191,7 @@ Scripts list every non-hidden option, subcommand (with its own options plus inhe
 
 - A new note: read it in `read_field` and validate it in `analyze` (`generate.jai`), emit code in `generate_command`, show it in `generate_description` and `render.jai` if help should mention it, and add a negative fixture under `tests/corpus/negative/args-*.jai` (with its `tests/corpus/manifest.json` entry) plus a case in `tests/parse.jai`.
 - A new field type: `classify_scalar` for its kind, then `store_value` in `runtime.jai` (or a per-field store, as enums have).
-- Help layout: `render_help`. Completions: `completions.jai`. After an intended change to either, regenerate the golden texts: `jaic stdlib/Extensions/Args/tests/data/bless.jai -interp > stdlib/Extensions/Args/tests/data/golden.jai`.
+- Help layout: `render_help`. Completions: `completions.jai`. After an intended change to either, regenerate the golden texts: `jaic stdlib/Extensions/Args/tests/fixtures/bless.jai -interp > stdlib/Extensions/Args/tests/fixtures/golden.jai`.
 - Gotchas: generated code cannot use `%` inside a `print` format; names in the generator that are not `quote`d end up as Jai identifiers; `Help` reserves `about` and `version`; compile errors point at the `Args` source, so they name the field in the message instead (`Cli.jobs`).
 
 ## Configuration

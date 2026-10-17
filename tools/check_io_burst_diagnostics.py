@@ -15,7 +15,7 @@ import subprocess
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-SUITE = ROOT / "stdlib/Extensions/Io/tests/lib/suite.jai"
+SUITE = ROOT / "stdlib/Extensions/Io/tests/support/suite.jai"
 ENTRY = ROOT / "tests/extensions/io-accept-burst-diagnostics.jai"
 KERNEL_FILES = [
     "/proc/net/sockstat",

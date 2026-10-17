@@ -1,6 +1,6 @@
 // Every extractor through the test client (no socket), with the errors they give: Path, Params, Rest, Query,
 // Json, Form, Header, Header_Optional, Bytes, Text, *Request and *State.
-#load "lib/server_support.jai";
+#load "support/server_support.jai";
 
 Color :: enum {
     red;

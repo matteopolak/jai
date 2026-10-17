@@ -53,15 +53,15 @@ PORTABLE_CASES = frozenset(
 
 NATIVE_CURSOR_CASES = frozenset(
     {
-        "stdlib/GetRect/tests/native_cursors.jai",
+        "stdlib/GetRect/tests/native-cursors.jai",
         "tests/numerics/native_ui_cursors.jai",
     }
 )
 
 MODULE_CASES = NATIVE_CURSOR_CASES - {"tests/numerics/native_ui_cursors.jai"} | {
-    "stdlib/GetRect/tests/native_clipboard.jai",
-    "stdlib/GetRect/tests/clipboard_unavailable.jai",
-    "stdlib/GetRect/tests/cursors_unavailable.jai",
+    "stdlib/GetRect/tests/native-clipboard.jai",
+    "stdlib/GetRect/tests/clipboard-unavailable.jai",
+    "stdlib/GetRect/tests/cursors-unavailable.jai",
 }
 
 
@@ -85,13 +85,13 @@ def target_contract(source: str, target: str) -> TargetContract:
         return TargetContract(
             True, "reviewed native window types; caller callbacks supported"
         )
-    if source == "stdlib/GetRect/tests/native_clipboard.jai":
+    if source == "stdlib/GetRect/tests/native-clipboard.jai":
         return TargetContract(
             target == "macos",
             "private named-pasteboard transport and shutdown are macOS-only",
             None
             if target == "macos"
-            else "stdlib/GetRect/tests/clipboard_unavailable.jai",
+            else "stdlib/GetRect/tests/clipboard-unavailable.jai",
         )
     if source in NATIVE_CURSOR_CASES:
         return TargetContract(
@@ -99,13 +99,13 @@ def target_contract(source: str, target: str) -> TargetContract:
             "system cursor resources exist only on implemented Windows/macOS providers",
             None
             if target in {"macos", "windows"}
-            else "stdlib/GetRect/tests/cursors_unavailable.jai",
+            else "stdlib/GetRect/tests/cursors-unavailable.jai",
         )
-    if source == "stdlib/GetRect/tests/cursors_unavailable.jai":
+    if source == "stdlib/GetRect/tests/cursors-unavailable.jai":
         return TargetContract(
             target not in {"windows", "macos"}, "explicit unavailable-provider negative"
         )
-    if source == "stdlib/GetRect/tests/clipboard_unavailable.jai":
+    if source == "stdlib/GetRect/tests/clipboard-unavailable.jai":
         return TargetContract(
             target != "macos", "explicit unavailable named-pasteboard negative"
         )

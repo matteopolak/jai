@@ -1,6 +1,6 @@
 // What handlers return and how it becomes a response, error responses and `on_error`, middleware,
 // groups (nested, with parameters in the prefix) and large bodies.
-#load "lib/server_support.jai";
+#load "support/server_support.jai";
 #import "Extensions/Json";
 
 User :: struct {

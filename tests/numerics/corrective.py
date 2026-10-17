@@ -118,11 +118,11 @@ if host_target == "linux":
         ),
         ("tests/numerics/cursor_callbacks.jai", "caller cursor callbacks ok"),
         (
-            "stdlib/GetRect/tests/clipboard_unavailable.jai",
+            "stdlib/GetRect/tests/clipboard-unavailable.jai",
             "named pasteboard provider explicitly unavailable",
         ),
         (
-            "stdlib/GetRect/tests/cursors_unavailable.jai",
+            "stdlib/GetRect/tests/cursors-unavailable.jai",
             "cursor provider explicitly unavailable",
         ),
     ]:
