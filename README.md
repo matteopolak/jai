@@ -3,7 +3,7 @@
 Jacket ("Jai kit") is an independently implemented toolchain for the [Jai](https://en.wikipedia.org/wiki/Jai_(programming_language)) programming language.
 
 > [!NOTE]
-> This project is unofficial and is not affiliated with or endorsed by Thekla or the official Jai project.
+> This project is unofficial and is not affiliated with or endorsed by Thekla, Inc. or the official Jai project.
 
 [![Compiler checks](https://github.com/matteopolak/jacket/actions/workflows/ci.yml/badge.svg)](https://github.com/matteopolak/jacket/actions/workflows/ci.yml)
 
