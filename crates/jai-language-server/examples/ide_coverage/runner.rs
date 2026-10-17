@@ -141,7 +141,7 @@ fn run() -> Result<(Report, bool, bool), String> {
             "--stdlib-id" => stdlib_id=next(&mut args)?,
             "--stdlib" => stdlib=PathBuf::from(next(&mut args)?),
             "--review" => manifest=serde_json::from_slice(&std::fs::read(next(&mut args)?).map_err(|e|e.to_string())?).map_err(|e|format!("review: {e}"))?,
-            "--os" => os=Some(match next(&mut args)?.as_str(){"windows"=>TargetOs::Windows,"linux"=>TargetOs::Linux,"macos"=>TargetOs::MacOS,"wasm"|"wasi"=>TargetOs::Wasm,_=>return Err("invalid --os".into())}),
+            "--os" => os=Some(jaic::target::parse_os(&next(&mut args)?).ok_or("invalid --os")?),
             "--cpu" => cpu=Some(match next(&mut args)?.as_str(){"x64"=>TargetCpu::X64,"arm64"=>TargetCpu::Arm64,"wasm"=>TargetCpu::Wasm,_=>return Err("invalid --cpu".into())}),
             "--list" | "--errors" | "--stats" => {}, // Replaced by structured file/gap/failure records.
             "--help" => return Err("ide_coverage [--json] [--strict] [--redacted] [--review FILE] [--case-id ID] [--progress NEW_JSONL] [--inputs RELATIVE_PATHS_JSON] [--only-inputs ID,ID] [--stdlib DIR] [--stdlib-id ID] [--no-runtime] [--os OS] [--cpu CPU] DIR...".into()),

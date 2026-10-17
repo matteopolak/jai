@@ -5,7 +5,7 @@ use jaic::build::{BuildEnv, WorkspaceObserver, Workspaces};
 use jaic::intern::Sym;
 use jaic::interp::{SandboxHost, SharedHost};
 use jaic::sema::ide::{IdeFacts, IdeLayout, IdeName};
-use jaic::sema::{Compiler, FileSystem, Options, TargetCpu, TargetOs};
+use jaic::sema::{Compiler, FileSystem, Options, TargetOs};
 use jaic::source::{FileId, ImportSuggestion};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -881,15 +881,8 @@ fn compile(
     let options = || {
         let mut options = (env.options)(root);
         crate::modules::splice(&mut options.import_paths, dirs);
-        if let Some(os) = os {
-            options.os = os;
-            options.cpu = match os {
-                TargetOs::Windows | TargetOs::Linux => TargetCpu::X64,
-                TargetOs::MacOS => TargetCpu::Arm64,
-                TargetOs::Wasm => TargetCpu::Wasm,
-            };
-            options.long_double = jaic::sema::long_double_for(os, options.cpu, false);
-        }
+        // The target `jaic -check -os <os>` would use.
+        jaic::target::select_os_cpu(&mut options, os, None);
         options
     };
     let mut compiler = Compiler::new(options(), fs.clone());

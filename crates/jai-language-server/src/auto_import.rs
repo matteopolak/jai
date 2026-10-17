@@ -635,12 +635,7 @@ impl Sources<'_> {
 
 /// Whether a module asserting `only_os` builds for `os`.
 fn builds_for(only_os: &Option<Vec<String>>, os: TargetOs) -> bool {
-    let name = match os {
-        TargetOs::Windows => "WINDOWS",
-        TargetOs::Linux => "LINUX",
-        TargetOs::MacOS => "MACOS",
-        TargetOs::Wasm => "WASM",
-    };
+    let name = jaic::target::os_member(os);
     only_os
         .as_ref()
         .is_none_or(|targets| targets.iter().any(|t| t == name))
