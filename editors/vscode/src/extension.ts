@@ -110,7 +110,7 @@ async function offerToUninstallOldExtensions(ids: string[]): Promise<void> {
   const list = ids.join(", ");
   const uninstall = "Uninstall";
   const choice = await vscode.window.showWarningMessage(
-    `Jacket (Jai toolchain) is now matteopolak.jacket, but the old ${list} ${ids.length > 1 ? "are" : "is"} still installed. They provide the same commands, so this extension stays off until ${ids.length > 1 ? "they are" : "it is"} uninstalled.`,
+    `The Jai extension is now Jacket (matteopolak.jacket), but the old ${list} ${ids.length > 1 ? "are" : "is"} still installed. They provide the same commands, so this extension stays off until ${ids.length > 1 ? "they are" : "it is"} uninstalled.`,
     uninstall,
   );
   if (choice !== uninstall) return;

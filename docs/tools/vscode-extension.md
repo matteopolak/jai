@@ -172,7 +172,7 @@ Publishing needs accounts only the repository owner can create. Until the secret
 3. **Open VSX.** Sign in at <https://open-vsx.org> with GitHub, sign the Eclipse Foundation publisher agreement from your profile, and create an access token (*Settings → Access Tokens*). The release workflow creates the `matteopolak` namespace if it does not exist yet.
 4. **Repository secrets.** *Settings → Secrets and variables → Actions*: `VSCE_PAT` (step 2) and `OVSX_PAT` (step 3).
 
-The next tag release then publishes the same `.vsix` it attaches to the release. The listing (display name, description, categories, keywords, icon, dark gallery banner, repository, homepage and issue links) comes from `package.json`, and the page from `editors/vscode/README.md`. The Marketplace requires a `name` (and display name) no other extension uses, across all publishers: another publisher's extension is already named `jai` and displayed as *Jai*, so 0.4.0's Marketplace publish failed on the display name and 0.4.1's on the name. That is why the extension is `jacket`, displayed as *Jacket (Jai toolchain)*, on both stores. The Marketplace and Open VSX badges in the repository's `README.md` show a version once the first publish has gone through. To publish an existing release by hand:
+The next tag release then publishes the same `.vsix` it attaches to the release. The listing (display name, description, categories, keywords, icon, dark gallery banner, repository, homepage and issue links) comes from `package.json`, and the page from `editors/vscode/README.md`. The Marketplace requires a `name` (and display name) no other extension uses, across all publishers: another publisher's extension is already named `jai` and displayed as *Jai*, so 0.4.0's Marketplace publish failed on the display name and 0.4.1's on the name. That is why the extension is `jacket`, displayed as *Jacket*, on both stores. The Marketplace and Open VSX badges in the repository's `README.md` show a version once the first publish has gone through. To publish an existing release by hand:
 
 ```sh
 cd editors/vscode && pnpm install --frozen-lockfile
@@ -195,12 +195,12 @@ After the first `matteopolak.jacket` publish, deprecate the old IDs:
   ```json
   "matteopolak.jai": {
     "disallowInstall": true,
-    "extension": { "id": "matteopolak.jacket", "displayName": "Jacket (Jai toolchain)" },
+    "extension": { "id": "matteopolak.jacket", "displayName": "Jacket" },
     "additionalInfo": "Renamed to matteopolak.jacket."
   },
   "matteopolak.jai-toolchain": {
     "disallowInstall": true,
-    "extension": { "id": "matteopolak.jacket", "displayName": "Jacket (Jai toolchain)" },
+    "extension": { "id": "matteopolak.jacket", "displayName": "Jacket" },
     "additionalInfo": "Renamed to matteopolak.jacket."
   }
   ```

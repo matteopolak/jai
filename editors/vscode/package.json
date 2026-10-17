@@ -1,7 +1,7 @@
 {
   "name": "jacket",
-  "displayName": "Jacket (Jai toolchain)",
-  "description": "Jai language support: language server, linter, formatter and syntax highlighting",
+  "displayName": "Jacket",
+  "description": "Jai toolchain: language server, linter, formatter and syntax highlighting for the Jai language",
   "version": "0.3.0",
   "publisher": "matteopolak",
   "license": "AGPL-3.0-or-later",
