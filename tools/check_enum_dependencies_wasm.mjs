@@ -7,7 +7,7 @@ const binary = process.argv[2];
 if (!binary) throw new Error("usage: node tools/check_enum_dependencies_wasm.mjs <jai_wasm.wasm>");
 const engine = await createEngine(await readFile(binary));
 for (const [file, expected] of [
-    ["../tests/compiler-semantics/enum-dependencies.jai", 0],
+    ["../tests/compiler/semantics/enum-dependencies.jai", 0],
     ["../tests/fixtures/enum-dependencies/forward-enum-dependencies.jai", 5],
 ]) {
     const source = await readFile(new URL(file, import.meta.url), "utf8");

@@ -32,7 +32,7 @@ def reference_rejected_reason(case):
 
 
 REGRESSION_FAMILIES = {
-    "compiler": "compiler-regressions",
+    "compiler": "compiler/regressions",
     "extensions": "extensions",
     "native": "native-regressions",
     "graphics": "graphics-regressions",

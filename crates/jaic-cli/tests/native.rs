@@ -293,7 +293,7 @@ fn compiler_and_abi_regressions_run_natively() {
         let family = if matches!(name, "proc-sentinel-constant" | "posix-stat-and-mutex") {
             "native-regressions"
         } else {
-            "compiler-regressions"
+            "compiler/regressions"
         };
         let source = repo_root().join(format!("tests/{family}/{name}.jai"));
         let output = build_and_run(&source, &dir, name).unwrap();
@@ -358,7 +358,7 @@ fn asm_instructions_run_natively() {
         "asm-avx512-masks",
         "asm-f16c-sha-gfni",
     ] {
-        let source = repo_root().join(format!("tests/compiler-regressions/{name}.jai"));
+        let source = repo_root().join(format!("tests/compiler/regressions/{name}.jai"));
         let output = build_and_run(&source, &dir, name).unwrap();
         assert_eq!(
             String::from_utf8_lossy(&output.stdout),
@@ -375,7 +375,7 @@ fn asm_instructions_run_natively() {
 fn empty_workspaces_write_no_output() {
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-empty-workspaces");
     std::fs::create_dir_all(&dir).unwrap();
-    let source = repo_root().join("tests/compiler-regressions/compiler-workspace-ids.jai");
+    let source = repo_root().join("tests/compiler/regressions/compiler-workspace-ids.jai");
     let output = build_and_run(&source, &dir, "workspace-ids").unwrap();
     assert_eq!(
         output.status.code(),
@@ -383,7 +383,7 @@ fn empty_workspaces_write_no_output() {
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
-    let source = repo_root().join("tests/compiler-semantics/workspace-identity.jai");
+    let source = repo_root().join("tests/compiler/semantics/workspace-identity.jai");
     let output = build_and_run(&source, &dir, "workspace-identity").unwrap();
     assert!(
         output.status.success(),
@@ -410,7 +410,7 @@ fn empty_workspaces_write_no_output() {
 fn stack_traces() {
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-stack-trace");
     std::fs::create_dir_all(&dir).unwrap();
-    let ok = repo_root().join("tests/compiler-regressions/stack-trace-line-through-inline.jai");
+    let ok = repo_root().join("tests/compiler/regressions/stack-trace-line-through-inline.jai");
     let output = build_and_run(&ok, &dir, "through-inline").unwrap();
     assert_eq!(String::from_utf8_lossy(&output.stdout), "ok\n");
     let source = dir.join("trace.jai");
@@ -450,11 +450,12 @@ fn stack_traces() {
 }
 
 fn abi_manifest(target: &str) -> abi_layout::Manifest {
-    let text = std::fs::read_to_string(repo_root().join("tests/abi/manifest.txt")).unwrap();
+    let text =
+        std::fs::read_to_string(repo_root().join("tests/compiler/abi/manifest.txt")).unwrap();
     abi_layout::parse(&text, target).unwrap_or_else(|e| panic!("{e}"))
 }
 
-/// The stdlib's hand-written C declarations (`tests/abi/manifest.txt`) against the host's own
+/// The stdlib's hand-written C declarations (`tests/compiler/abi/manifest.txt`) against the host's own
 /// headers: sizes, alignments, field offsets, integer signedness and constants. Every CI host
 /// runs this, so a layout copied from another CPU or OS fails on the host it is wrong for.
 #[test]
@@ -1260,7 +1261,7 @@ fn c_long_double() {
 fn c_variadic_calls() {
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-varargs");
     std::fs::create_dir_all(&dir).unwrap();
-    let source = repo_root().join("tests/compiler-regressions/c-variadic-foreign-calls.jai");
+    let source = repo_root().join("tests/compiler/regressions/c-variadic-foreign-calls.jai");
     let output = build_and_run(&source, &dir, "varargs").unwrap();
     assert_eq!(
         String::from_utf8_lossy(&output.stdout),
@@ -2013,7 +2014,7 @@ fn windows_runtime_program() {
 /// `WaitForSingleObject`, `Sleep`); elsewhere the pthread side, as the sweep does.
 #[test]
 fn interpreted_threads() {
-    let dir = repo_root().join("tests/compiler-regressions");
+    let dir = repo_root().join("tests/compiler/regressions");
     let mut checked = 0;
     for entry in std::fs::read_dir(&dir).unwrap() {
         let path = entry.unwrap().path();
@@ -2038,7 +2039,7 @@ fn interpreted_threads() {
     }
     assert!(
         checked >= 2,
-        "no tests/compiler-regressions/threads-*.jai found"
+        "no tests/compiler/regressions/threads-*.jai found"
     );
 }
 

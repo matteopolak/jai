@@ -5,7 +5,7 @@ import { createEngine } from "../crates/jai-wasm/js/engine.mjs";
 const binary = process.argv[2];
 if (!binary) throw new Error("usage: node tools/check_typed_nodes_wasm.mjs <jai_wasm.wasm>");
 const engine = await createEngine(await readFile(binary));
-const source = await readFile(new URL("../tests/compiler-semantics/typed-expression-message.jai", import.meta.url), "utf8");
+const source = await readFile(new URL("../tests/compiler/semantics/typed-expression-message.jai", import.meta.url), "utf8");
 for (let i=0; i<2; i++) {
     const result = engine.play({"main.jai":source}, "main.jai");
     assert.deepEqual(result.diagnostics, [], result.rendered);

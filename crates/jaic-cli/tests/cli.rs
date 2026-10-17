@@ -366,7 +366,7 @@ fn memory_limit_stops_unbounded_allocation() {
 #[test]
 fn sandbox_threads_wake_waiters_and_report_deadlocks() {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../../tests/compiler-semantics/sandbox-threads");
+        .join("../../tests/compiler/semantics/sandbox-threads");
     for name in ["returned.jai", "blocked.jai", "timed.jai"] {
         let path = dir.join(name);
         let output = Command::new(JAIC)

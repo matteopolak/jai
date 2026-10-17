@@ -2,7 +2,7 @@
 use jaic::sema::{Compiler, Options, ProgramSource, TargetCpu, VirtualFs};
 use std::rc::Rc;
 
-const SOURCE: &str = include_str!("../../../tests/compiler-semantics/cpuid.jai");
+const SOURCE: &str = include_str!("../../../tests/compiler/semantics/cpuid.jai");
 
 #[test]
 fn cpuid_executes_real_host_query_or_diagnoses_unsupported_host() {

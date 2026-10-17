@@ -1,4 +1,4 @@
-// Module for tests/compiler-regressions/rules-modules-and-imports.jai.
+// Module for tests/compiler/regressions/rules-modules-and-imports.jai.
 answer :: 42;
 other :: 7;
 

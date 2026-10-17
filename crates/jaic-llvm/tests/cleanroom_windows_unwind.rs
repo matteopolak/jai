@@ -7,7 +7,7 @@ use std::{
     rc::Rc,
 };
 
-const SOURCE: &str = include_str!("../../../tests/compiler-semantics/windows-unwind.jai");
+const SOURCE: &str = include_str!("../../../tests/compiler/semantics/windows-unwind.jai");
 
 fn checked(command: &mut Command) -> String {
     let output = command.output().expect("required LLVM metadata tool");
@@ -176,7 +176,7 @@ fn sdk_backtrace_driver_links_and_executes_on_native_windows() {
             } else {
                 "-O2"
             })
-            .arg(root.join("tests/compiler-semantics/windows-unwind-driver.c"))
+            .arg(root.join("tests/compiler/semantics/windows-unwind-driver.c"))
             .arg(object)
             .arg("-o")
             .arg(&exe),

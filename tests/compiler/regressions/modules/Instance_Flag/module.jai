@@ -1,4 +1,4 @@
-// Module for tests/compiler-regressions/module-parameter-instances.jai.
+// Module for tests/compiler/regressions/module-parameter-instances.jai.
 #module_parameters(LOUD := false);
 
 is_loud :: () -> bool {

@@ -7,7 +7,7 @@ The standard library is tested against the public contracts in [docs/specs](../s
 | Family | Location |
 |---|---|
 | Public contracts | `tests/stdlib-contract/manifest.json` |
-| Compiler semantics and safety | `tests/compiler-regressions` |
+| Compiler semantics and safety | `tests/compiler/regressions` |
 | Extensions | `tests/extensions` and `stdlib/Extensions/*/tests` |
 | Native ABI and SDK | `tests/native-regressions`, `tests/native` |
 | Graphics and events | `tests/graphics-regressions`, `tests/window-render` |

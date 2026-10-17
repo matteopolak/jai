@@ -95,7 +95,7 @@ fn native_x64_interpreter_queries_are_guarded_and_not_cached_as_pure_results() {
     use std::arch::x86_64::{__cpuid_count, _xgetbv};
     let (mut c, result) = compile(
         TargetCpu::X64,
-        include_str!("../../../tests/compiler-semantics/xgetbv.jai"),
+        include_str!("../../../tests/compiler/semantics/xgetbv.jai"),
     );
     result.unwrap();
     let function = |c: &Compiler, name: &str| {

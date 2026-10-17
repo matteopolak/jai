@@ -1,5 +1,5 @@
 // rules: modparam.1 modparam.2 modparam.3 modparam.4 modparam.6 modparam.7 modparam.8 modparam.9 modparam.10 modparam.11 modparam.12
-// Module parameters, through tests/compiler-regressions/modules/Rules_Params.
+// Module parameters, through tests/compiler/regressions/modules/Rules_Params.
 #import "Basic";
 
 Color :: enum {

@@ -87,7 +87,7 @@ fn interpreter_uses_real_timestamps_aux_flags_and_optional_feature_diagnostics()
     use std::arch::x86_64::{__cpuid_count, __rdtscp, _mm_lfence, _rdtsc};
     let (mut c, result) = compile(
         TargetCpu::X64,
-        include_str!("../../../tests/compiler-semantics/x86-machine.jai"),
+        include_str!("../../../tests/compiler/semantics/x86-machine.jai"),
     );
     result.unwrap();
     let function = |c: &Compiler, name: &str| {

@@ -7,7 +7,7 @@ This guide summarizes behavior demonstrated by the supplied Jai tutorial and exa
 - [Polymorphism, compile-time execution and code generation](polymorphism-and-metaprogramming.md)
 - [Modules, workspaces and practical example patterns](modules-workspaces-and-examples.md)
 - [Implementation readiness and unresolved rules](implementation-readiness.md)
-- [Public-language contract regression fixtures](../../tests/cleanroom-language/README.md)
+- [Public-language contract regression fixtures](../../tests/compiler/language/README.md)
 
 ## Evidence boundary
 

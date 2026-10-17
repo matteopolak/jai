@@ -26,7 +26,7 @@ fn cpuid_native_outputs_match_c_at_o0_and_o2() {
     options.runtime_support = false;
     let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
     if let Err(e) = c.compile_sources(&[ProgramSource::String(
-        include_str!("../../../tests/compiler-semantics/cpuid.jai").into(),
+        include_str!("../../../tests/compiler/semantics/cpuid.jai").into(),
     )]) {
         panic!("{}", e.render(&c.sources));
     }
@@ -63,7 +63,7 @@ fn cpuid_native_outputs_match_c_at_o0_and_o2() {
             } else {
                 "-O2"
             })
-            .arg(root.join("tests/compiler-semantics/cpuid-driver.c"))
+            .arg(root.join("tests/compiler/semantics/cpuid-driver.c"))
             .arg(object)
             .arg("-o")
             .arg(&exe);
@@ -80,7 +80,7 @@ fn cpuid_emits_real_instruction_for_x64_abis_and_rejects_other_architectures() {
     options.runtime_support = false;
     let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
     c.compile_sources(&[ProgramSource::String(
-        include_str!("../../../tests/compiler-semantics/cpuid.jai").into(),
+        include_str!("../../../tests/compiler/semantics/cpuid.jai").into(),
     )])
     .unwrap();
     let dir = root.join("target/cpuid/metadata");

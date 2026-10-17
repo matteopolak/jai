@@ -11,7 +11,7 @@ fn real_kernel_aliases_preserve_exit_codes_and_handle_lifetimes() {
     let mut compiler = Compiler::new(options, Rc::new(NativeFs));
     let source = format!(
         "{}\n#assert check()==0;",
-        include_str!("../../../tests/compiler-semantics/windows-thread-alias-lifecycle.jai")
+        include_str!("../../../tests/compiler/semantics/windows-thread-alias-lifecycle.jai")
     );
     if let Err(error) = compiler.compile_sources(&[ProgramSource::String(source)]) {
         panic!("{}", error.render(&compiler.sources));

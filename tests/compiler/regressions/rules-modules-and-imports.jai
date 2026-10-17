@@ -1,5 +1,5 @@
 // rules: import.1 import.2 import.3 import.4 import.5 import.6 import.7 import.8 import.9 import.11 import.12 import.13 import.14 import.16
-// The forms of #import and #load, through modules in tests/compiler-regressions/modules.
+// The forms of #import and #load, through modules in tests/compiler/regressions/modules.
 #import "Basic";
 
 Plain :: #import "Rules_Plain";

@@ -103,7 +103,7 @@ coverage; the current completeness check diagnoses those cases.
   core language page: cast(u32) byte << 2 means cast(u32)(byte << 2), and the cast
   does not retype an already typed operand. Narrow shift result promotion alone
   remains unspecified. Independent
-  tests/compiler-semantics/cast-shift-widths.jai reproduces the mailbox's missing
+  tests/compiler/semantics/cast-shift-widths.jai reproduces the mailbox's missing
   control byte: for group:u8=0x66, cast(u32) group << 8 yields zero in the current
   interpreter and native O0/O2, while (cast(u32) group) << 8 yields 0x6600.
   Does a shift whose left operand is u8 preserve that width or promote its result?

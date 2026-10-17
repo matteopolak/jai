@@ -33,11 +33,11 @@ import stdlib_runtime  # noqa: E402
 WINDOWS_PROGRAMS = [
     "tests/native/windows/runtime.jai",
     "tests/native/windows/variadic.jai",
-    "tests/compiler-regressions/struct-literal-overrides-default-string.jai",
-    "tests/compiler-regressions/array-literal-view-lifetime.jai",
-    "tests/compiler-regressions/c-variadic-foreign-calls.jai",
-    "tests/compiler-regressions/member-align-lowers-alignment.jai",
-    "tests/compiler-regressions/over-aligned-allocation.jai",
+    "tests/compiler/regressions/struct-literal-overrides-default-string.jai",
+    "tests/compiler/regressions/array-literal-view-lifetime.jai",
+    "tests/compiler/regressions/c-variadic-foreign-calls.jai",
+    "tests/compiler/regressions/member-align-lowers-alignment.jai",
+    "tests/compiler/regressions/over-aligned-allocation.jai",
 ]
 
 # These exact fixtures execute target File/Process operations during ordinary

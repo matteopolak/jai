@@ -41,7 +41,7 @@ class Selection(unittest.TestCase):
             )
 
     def test_original_overloaded_ifx_is_only_exact_reference_rejection(self):
-        source = cross.ROOT / "tests/compiler-regressions/proc-type-defaults-ifx.jai"
+        source = cross.ROOT / "tests/compiler/regressions/proc-type-defaults-ifx.jai"
         case = {"id": "compiler/proc-type-defaults-ifx", "path": source}
         self.assertIsNotNone(cross.fixture_reference_rejected_reason(case))
         independent = dict(case, id="producer/ifx-official-selection")

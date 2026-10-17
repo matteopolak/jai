@@ -1,5 +1,5 @@
 // A module with no imports of its own: Preload and Runtime_Support names are still visible.
-// Used by tests/compiler-regressions/rules-prelude-and-runtime-support.jai.
+// Used by tests/compiler/regressions/rules-prelude-and-runtime-support.jai.
 
 struct_member_count :: (T: Type) -> int {
     info := cast(*Type_Info) T;

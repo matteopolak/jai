@@ -15,7 +15,7 @@ class CatalogueTests(unittest.TestCase):
             root = Path(temporary)
             (root / "tests/stdlib-contract").mkdir(parents=True)
             (root / "tests/stdlib-contract/manifest.json").write_text("[]")
-            regression = root / "tests/compiler-regressions"
+            regression = root / "tests/compiler/regressions"
             regression.mkdir()
             (regression / "actual.jai").write_text("main :: () {}")
             (regression / "._actual.jai").write_bytes(b"\x00\x05\x16\x07")

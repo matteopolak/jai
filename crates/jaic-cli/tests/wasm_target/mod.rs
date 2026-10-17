@@ -315,7 +315,7 @@ main :: () {
 #[test]
 fn tour_runtime_provider_runs_as_wasi_with_real_workers() {
     let dir = scratch("wasm-tour-runtime");
-    let source = repo_root().join("tests/cleanroom-language/tour-runtime/main.jai");
+    let source = repo_root().join("tests/compiler/language/tour-runtime/main.jai");
     for (flag, name) in [("-O0", "unoptimized"), ("-O2", "optimized")] {
         let module = dir.join(format!("{name}.wasm"));
         assert!(

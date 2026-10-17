@@ -1,4 +1,4 @@
-// Used by tests/compiler-regressions/dead-code-elimination.jai. Nothing calls `stale` or `loud`: with the
+// Used by tests/compiler/regressions/dead-code-elimination.jai. Nothing calls `stale` or `loud`: with the
 // default dead-code elimination their bodies are never checked, so neither the type error nor
 // the failing #run surfaces.
 

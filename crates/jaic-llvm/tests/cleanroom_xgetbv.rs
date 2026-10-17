@@ -18,7 +18,7 @@ fn program() -> Compiler {
     options.runtime_support = false;
     let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
     if let Err(e) = c.compile_sources(&[ProgramSource::String(
-        include_str!("../../../tests/compiler-semantics/xgetbv.jai").into(),
+        include_str!("../../../tests/compiler/semantics/xgetbv.jai").into(),
     )]) {
         panic!("{}", e.render(&c.sources));
     }
@@ -128,7 +128,7 @@ fn xgetbv_native_matches_guarded_independent_isa_queries_at_o0_and_o2() {
             } else {
                 "-O2"
             })
-            .arg(root.join("tests/compiler-semantics/xgetbv-driver.c"))
+            .arg(root.join("tests/compiler/semantics/xgetbv-driver.c"))
             .arg(&object)
             .arg("-o")
             .arg(&exe);

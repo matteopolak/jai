@@ -1,4 +1,4 @@
-// Used by tests/compiler-regressions/compiler-noted-module-procs.jai.
+// Used by tests/compiler/regressions/compiler-noted-module-procs.jai.
 
 // Nothing calls this, and its body names a procedure that does not exist: a module's
 // uncalled procedures are never checked, notes or not.

@@ -95,7 +95,7 @@ fn opcodes_and_architecture_rejection_survive_optimization() {
     options.stack_trace = false;
     let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
     if let Err(e) = c.compile_sources(&[ProgramSource::String(
-        include_str!("../../../tests/compiler-semantics/x86-machine.jai").into(),
+        include_str!("../../../tests/compiler/semantics/x86-machine.jai").into(),
     )]) {
         panic!("{}", e.render(&c.sources));
     }
@@ -175,7 +175,7 @@ fn opcodes_and_architecture_rejection_survive_optimization() {
                     checked(
                         clang
                             .args(["-std=c11", "-Wall", "-Wextra", "-Werror"])
-                            .arg(root.join("tests/compiler-semantics/x86-machine-driver.c"))
+                            .arg(root.join("tests/compiler/semantics/x86-machine-driver.c"))
                             .arg(&object)
                             .arg("-o")
                             .arg(&exe),

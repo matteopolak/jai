@@ -9,7 +9,7 @@ const engine = await createEngine(await readFile(binary));
 const files = {};
 for (const name of ["Backing", "Facade", "Forward"]) {
     files[`modules/${name}/module.jai`] = await readFile(
-        new URL(`../tests/compiler-semantics/storage-aliases/${name}/module.jai`, import.meta.url), "utf8");
+        new URL(`../tests/compiler/semantics/storage-aliases/${name}/module.jai`, import.meta.url), "utf8");
 }
 files["main.jai"] = `
     F :: #import "Forward"; R :: #import "Backing";

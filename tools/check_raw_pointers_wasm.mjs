@@ -6,7 +6,7 @@ import { createEngine } from "../crates/jai-wasm/js/engine.mjs";
 const binary = process.argv[2];
 if (!binary) throw new Error("usage: node tools/check_raw_pointers_wasm.mjs <jai_wasm.wasm>");
 const engine = await createEngine(await readFile(binary));
-const fixture = await readFile(new URL("../tests/compiler-semantics/raw-pointer-constants.jai", import.meta.url), "utf8");
+const fixture = await readFile(new URL("../tests/compiler/semantics/raw-pointer-constants.jai", import.meta.url), "utf8");
 for (let i=0; i<2; ++i) {
     const result=engine.play({"main.jai": fixture+`
         HIGH :: cast(*void) 0x1234567880000001;

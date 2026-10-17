@@ -1,4 +1,4 @@
-// Helper module for tests/compiler-regressions/rules-scoping.jai (docs/language/scoping.md): visibility
+// Helper module for tests/compiler/regressions/rules-scoping.jai (docs/language/scoping.md): visibility
 // directives across two files and conditional loads.
 #load "second.jai";
 

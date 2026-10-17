@@ -2,7 +2,7 @@
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 
-const SOURCE: &str = include_str!("../../../tests/compiler-semantics/cast-shift-widths.jai");
+const SOURCE: &str = include_str!("../../../tests/compiler/semantics/cast-shift-widths.jai");
 
 fn compiler() -> Compiler {
     let mut options = Options::host();

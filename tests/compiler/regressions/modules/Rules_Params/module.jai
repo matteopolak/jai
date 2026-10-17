@@ -1,4 +1,4 @@
-// Module for tests/compiler-regressions/rules-module-parameters.jai: per-instance parameters, a program
+// Module for tests/compiler/regressions/rules-module-parameters.jai: per-instance parameters, a program
 // parameter read from a loaded file, a typed parameter, untyped ones and a trailing block.
 #module_parameters (LOUD := false, COUNT: s64 = 1, STYLE: Style = .PLAIN, TAG := 0, WIDTH := DEFAULT_WIDTH)(TRACE := false) {
     Style :: enum {

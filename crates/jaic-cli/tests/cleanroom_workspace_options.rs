@@ -24,7 +24,7 @@ fn checked(command: &mut Command) -> std::process::Output {
 fn selected_workspace_options_survive_child_and_grandchild_compilation() {
     let dir = directory("projection");
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
-    let source = root.join("tests/compiler-semantics/workspace-options/projection.jai");
+    let source = root.join("tests/compiler/semantics/workspace-options/projection.jai");
     checked(
         Command::new(env!("CARGO_BIN_EXE_jaic"))
             .arg(source)

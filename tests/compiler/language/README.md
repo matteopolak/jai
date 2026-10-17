@@ -6,7 +6,7 @@ Build jaic from this workspace, then run the cases with its explicit target arti
 
 ```sh
 cargo build -p jaic-cli --bin jaic
-python3 tests/cleanroom-language/run.py --jaic "$(pwd)/target/debug/jaic"
+python3 tests/compiler/language/run.py --jaic "$(pwd)/target/debug/jaic"
 ```
 
 The runner requires an absolute `jaic` executable located under this workspace's `target/` directory. It runs positive cases with `-interp`, checks one expected visibility error with `-check`, and compares exact `ok` output. It never locates or runs a compiler from an external example tree. To run against another source build, build it in this workspace's target directory and pass that executable explicitly.

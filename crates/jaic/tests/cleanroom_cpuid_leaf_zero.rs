@@ -10,7 +10,7 @@ fn cpuid_leaf_zero_compiles_for_x64_and_rejects_other_targets() {
         options.runtime_support = false;
         let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
         let result = c.compile_sources(&[ProgramSource::String(
-            include_str!("../../../tests/compiler-semantics/cpuid-leaf-zero.jai").into(),
+            include_str!("../../../tests/compiler/semantics/cpuid-leaf-zero.jai").into(),
         )]);
         if cpu == TargetCpu::X64 {
             result.unwrap();
@@ -29,7 +29,7 @@ fn interpreter_returns_all_real_leaf_zero_vendor_fields() {
     options.runtime_support = false;
     let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
     c.compile_sources(&[ProgramSource::String(
-        include_str!("../../../tests/compiler-semantics/cpuid-leaf-zero.jai").into(),
+        include_str!("../../../tests/compiler/semantics/cpuid-leaf-zero.jai").into(),
     )])
     .unwrap();
     let function = jaic::ir::FuncId(

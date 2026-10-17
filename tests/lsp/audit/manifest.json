@@ -5,19 +5,19 @@
   "cases": [
     {
       "id": "strict-clean",
-      "root": "tests/ide-audit/strict-clean",
+      "root": "tests/lsp/audit/strict-clean",
       "expected_files": 1
     },
     {
       "id": "values",
-      "root": "tests/ide-audit/values",
+      "root": "tests/lsp/audit/values",
       "expected_files": 2,
-      "inputs": "tests/ide-audit/values/inputs.json",
-      "review": "tests/ide-audit/values/review.json"
+      "inputs": "tests/lsp/audit/values/inputs.json",
+      "review": "tests/lsp/audit/values/review.json"
     },
     {
       "id": "deliberate-invalid-member",
-      "root": "tests/ide-audit/failures",
+      "root": "tests/lsp/audit/failures",
       "expected_files": 1
     }
   ]

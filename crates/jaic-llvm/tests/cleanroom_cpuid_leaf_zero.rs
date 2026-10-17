@@ -24,7 +24,7 @@ fn cpuid_leaf_zero_survives_optimization_and_matches_native_intrinsic() {
     options.stack_trace = false;
     let mut c = Compiler::new(options, Rc::new(VirtualFs::default()));
     c.compile_sources(&[ProgramSource::String(
-        include_str!("../../../tests/compiler-semantics/cpuid-leaf-zero.jai").into(),
+        include_str!("../../../tests/compiler/semantics/cpuid-leaf-zero.jai").into(),
     )])
     .unwrap();
     let target = if cfg!(target_os = "macos") {
@@ -78,7 +78,7 @@ fn cpuid_leaf_zero_survives_optimization_and_matches_native_intrinsic() {
             checked(
                 clang
                     .args(["-std=c11", "-Wall", "-Wextra", "-Werror"])
-                    .arg(root.join("tests/compiler-semantics/cpuid-leaf-zero-driver.c"))
+                    .arg(root.join("tests/compiler/semantics/cpuid-leaf-zero-driver.c"))
                     .arg(&object)
                     .arg("-o")
                     .arg(&exe),
