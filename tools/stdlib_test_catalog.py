@@ -183,6 +183,9 @@ def validated_entries(root=ROOT):
         if case["id"] == "Simp/tests/context-default-assertions":
             case["fixture_libraries"] = {"GL_PROBE": "window_gl_probe"}
             case["requires_display"] = True
+        if case["id"] == "SDL/tests/sdl-wm":
+            # Creates a real (hidden) SDL window, which needs a display server.
+            case["requires_display"] = True
         if case["id"] in names:
             raise ValueError("duplicate test ID: " + case["id"])
         names.add(case["id"])
