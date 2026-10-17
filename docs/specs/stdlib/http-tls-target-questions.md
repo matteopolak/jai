@@ -37,13 +37,13 @@ was changed, and the production WASM failure remains counted as a failure.
 
 ## Required-library phase question (compiler/provider owners)
 
-`tests/extensions/json-windows-host-provider-repro.jai` is an independent small
+`stdlib/Extensions/Json/tests/windows-host-provider.jai` is an independent small
 reproducer: import current `Extensions/Tls` and `Extensions/Json`, declare a
 one-string record, call public `Json.free_json` on that record. On a Mac host:
 
 ```
 JAIC_STDLIB=<shared>/stdlib <own-source-built-jaic> -check -no_dce \
-  -os windows -cpu x64 tests/extensions/json-windows-host-provider-repro.jai
+  -os windows -cpu x64 stdlib/Extensions/Json/tests/windows-host-provider.jai
 ```
 
 It fails during `generate_freer` compile-time execution, at the ordinary

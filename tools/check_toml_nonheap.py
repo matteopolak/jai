@@ -11,7 +11,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = "sjorsdonkers--toml-jai"
-FIXTURES = ROOT / "tests/developer-tools/runtime-reducers/toml-nonheap"
+FIXTURES = ROOT / "tests/compiler/runtime-reducers/toml-nonheap"
 
 
 def digest(path):
@@ -191,7 +191,7 @@ def main():
         FIXTURES / name
         for name in ("union-metadata.jai", "union-format.jai", "numeric-variants.jai")
     ]
-    positives.append(ROOT / "tests/portable-stdlib/hash-table-contract/main.jai")
+    positives.append(ROOT / "stdlib/Hash_Table/tests/basics/main.jai")
     run(
         "fixture format",
         [

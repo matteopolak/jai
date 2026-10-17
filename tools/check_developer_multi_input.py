@@ -19,9 +19,9 @@ def run(command, expected=""):
 
 def main():
     prefix = Path(os.environ.get("DEVELOPER_TOOLS_LLVM_PREFIX", "/opt/homebrew/opt/llvm"))
-    source = ROOT / "tests/developer-tools/bindings-multi.jai"
-    consumer = ROOT / "tests/developer-tools/bindings-multi-roundtrip.jai"
-    native = ROOT / "tests/developer-tools/bindings-multi-native.c"
+    source = ROOT / "stdlib/Bindings_Generator/tests/driven/bindings-multi.jai"
+    consumer = ROOT / "stdlib/Bindings_Generator/tests/driven/bindings-multi-roundtrip.jai"
+    native = ROOT / "stdlib/Bindings_Generator/tests/driven/bindings-multi-native.c"
     jaic = Path(os.environ.get("CARGO_TARGET_DIR", ROOT / "target")) / "debug/jaic"
     flags = ["-dynamiclib"] if platform.system() == "Darwin" else ["-shared", "-fPIC"]
     suffix = "dylib" if platform.system() == "Darwin" else "so"

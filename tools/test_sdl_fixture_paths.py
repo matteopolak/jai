@@ -70,11 +70,11 @@ class SdlFixturePaths(unittest.TestCase):
     def test_unmoved_fixtures_keep_their_existing_location(self):
         self.assertEqual(
             self.paths.fixture_source(self.root, "sdl.jai"),
-            self.root / "tests/native-bindings/sdl.jai",
+            self.root / "stdlib/Bindings_Generator/tests/driven/sdk/sdl.jai",
         )
         self.assertEqual(
             self.paths.fixture_source(self.root, "posix-abi.jai"),
-            self.root / "tests/native-bindings/posix-abi.jai",
+            self.root / "stdlib/Bindings_Generator/tests/driven/sdk/posix-abi.jai",
         )
 
     def test_source_and_runtime_loops_both_use_the_migration_inventory(self):

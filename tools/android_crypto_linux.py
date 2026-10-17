@@ -177,8 +177,8 @@ def build_linux(sdk, stdlib, spec, root, manifest):
         )
     identity, needed = elf_dynamic(run(["readelf", "--dynamic", shared_source]))
     dependencies = runtime_paths(run(["ldd", shared_source]), needed)
-    abi = root / "tests/native/android-crypto/abi.c"
-    version_source = root / "tests/native/android-crypto/package-version.c"
+    abi = root / "stdlib/Android/tests/native/abi.c"
+    version_source = root / "stdlib/Android/tests/native/package-version.c"
     headers = {header}
     for source in (abi, version_source):
         headers.update(

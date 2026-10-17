@@ -25,7 +25,7 @@ These give the commented results: `$T` inferred from an argument {#poly.2}, an e
 
 Struct parameters can declare type variables inside their type: `struct (x: $T)`, `struct (x: [$N] $T)`. `instantiate_struct` matches the argument type against the pattern (`match_pattern`) and adds the bound variables to the instance key {#poly.12}.
 
-A struct parameter may be variadic: in `Holder :: struct(types: ..Type)`, `Holder(s64, string)` binds `types` to a constant `[] Type` of both arguments, and `Holder()` to an empty one. The whole list keys the instance, so `Holder(s64)` and `Holder(string)` are different types. `Tagged_Union` is declared this way. Test: `tests/stdlib/variadic-struct-parameter.jai`.
+A struct parameter may be variadic: in `Holder :: struct(types: ..Type)`, `Holder(s64, string)` binds `types` to a constant `[] Type` of both arguments, and `Holder()` to an empty one. The whole list keys the instance, so `Holder(s64)` and `Holder(string)` are different types. `Tagged_Union` is declared this way. Test: `tests/compiler/regressions/variadic-struct-parameter.jai`.
 
 `$T/Entity`, where `Entity` is a plain struct, matches only `Entity` or a struct with `Entity` as an `#as` base (`has_as_base`) {#poly.13}. A failed match lets other overloads win {#poly.14}.
 
@@ -44,7 +44,7 @@ positive :: ($n: int) -> int #modify { return n > 0, "n must be positive"; } { r
 
 Note: jaic accepts more than Jai here. Real Jai only treats polymorph variables as types inside `#modify`, so naming an inferred value variable (`N`) is an error there; jaic makes it readable. Inside the block a type variable is a runtime variable, so `size_of(V)` is a compile error; use `(cast(*Type_Info) V).runtime_size`.
 
-On a struct, every struct parameter is assignable and the final values pick the instance (`tests/stdlib/struct-modify.jai`).
+On a struct, every struct parameter is assignable and the final values pick the instance (`tests/compiler/regressions/struct-modify.jai`).
 
 A `#modify` on a procedure with no polymorph variables (no `$T`, no `$x`, no parameter typed with a bare polymorphic struct), or on a struct without parameters, is an error at the `#modify`, whether or not the procedure is called: such a procedure is never instantiated, so the block would never run {#poly.19}:
 
@@ -75,13 +75,13 @@ Baking a struct leaves a struct that takes the remaining parameters {#poly.8}.
 
 The target must be a single procedure or a polymorphic struct {#poly.9}; extra arguments give "too many arguments to #bake_arguments" {#poly.10}. For structs, `sema/structs.rs` records the baked constants and the origin, so instances of the baked struct are instances of the origin {#poly.11}; a `$V/Vec3` restriction where `Vec3` is baked accepts only matching instances.
 
-An `ifx` argument is typed by its target, so inference looks at its branches instead (`ifx_binding_operand` in `sema/calls.rs`). The first branch with a type of its own binds `$T`: `mx(ifx c then x else y, y)` with `x: s16` binds `s16`. When both branches are untyped literals, the literal default applies (`tests/stdlib/poly-infer-from-ifx.jai`).
+An `ifx` argument is typed by its target, so inference looks at its branches instead (`ifx_binding_operand` in `sema/calls.rs`). The first branch with a type of its own binds `$T`: `mx(ifx c then x else y, y)` with `x: s16` binds `s16`. When both branches are untyped literals, the literal default applies (`tests/compiler/regressions/poly-infer-from-ifx.jai`).
 
 ## How to change it
 
 New inference rules go in `calls.rs`; instance creation is `instantiate` in `procs.rs`. `sema/typeinfo.rs` lists baked parameters first in a struct's type info; keep that order.
 
-Tests: `tests/stdlib/baked-default-uses-poly.jai`, `modify-polymorph-forms.jai`, `auto-bake-omitted-default.jai`, `baked-struct-restriction.jai`, `baked-overload-runtime-field.jai`, `lang-poly-misc.jai`, `lang-lambdas.jai`.
+Tests: `tests/compiler/regressions/baked-default-uses-poly.jai`, `modify-polymorph-forms.jai`, `auto-bake-omitted-default.jai`, `baked-struct-restriction.jai`, `baked-overload-runtime-field.jai`, `lang-poly-misc.jai`, `lang-lambdas.jai`.
 
 ## Dependencies
 

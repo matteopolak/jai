@@ -46,7 +46,7 @@ Parameters are values: a procedure that changes a struct or string parameter, or
 - New header directive: add it to the table in `parser/procedure.rs`, add a field to the header flags in `ast.rs` (`no_debug` is the pattern), and consume it in `sema/procs.rs`.
 - Overload ranking is `arg_cost` in `sema/calls.rs`. It affects every call; run the full sweep after changing it.
 
-Tests: `tests/stdlib/proc-alias-overloads.jai`, `modern-library-conversions.jai`, `aggregate-parameter-copy.jai`.
+Tests: `tests/compiler/regressions/proc-alias-overloads.jai`, `modern-library-conversions.jai`, `aggregate-parameter-copy.jai`.
 
 ## Dependencies
 

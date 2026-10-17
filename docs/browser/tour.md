@@ -28,7 +28,7 @@
 
 ## How it works
 
-- **Compiler side.** `tests/examples.json` lists example cases. The tour's case has `bundle: "tour"`, so `tools/build_scripting_wasm.py` copies `examples/tour/**` (dotfiles skipped) to `<bundle>/tour/` and writes `<bundle>/tour.json`:
+- **Compiler side.** `tests/corpus/examples.json` lists example cases. The tour's case has `bundle: "tour"`, so `tools/build_scripting_wasm.py` copies `examples/tour/**` (dotfiles skipped) to `<bundle>/tour/` and writes `<bundle>/tour.json`:
 
   ```json
   { "schema_version": 1, "main": "main.jai", "files": ["basics/basics.jai", "...", "tour.md"] }
@@ -45,12 +45,12 @@
 - A stop that shows a failure must not fail the default run: put the failing code behind a constant the reader flips (`BREAK_ON_PURPOSE` in `safety/safety.jai`). The playground always runs `main.jai`, so a separate failing file could not be run on its own.
 - Keep it browser-safe: no processes, sockets, windows or native `#foreign` libraries (see how `tests/stdlib` programs skip those parts under `OS == .WASM`, [playground](playground.md)). Keep runtime small: auto-run recompiles and reruns on every edit.
 - Keep lines short (the editor is narrow on phones) and run jaifmt: `jaic jaifmt/main.jai -interp -- --check "$PWD/examples/tour"`. The portfolio's `JAI_WASM_DIR=<bundle> pnpm test:jai` also checks the tour is formatted under the playground's default `jaifmt.toml`.
-- When output changes, update `stdout_contains` in `tests/examples.json`.
+- When output changes, update `stdout_contains` in `tests/corpus/examples.json`.
 - Gotchas: `builder_to_string`, `NewArray` and the `String` helpers take no allocator argument (wrap them in `push_allocator(temp)`).
 
 ## Configuration
 
-- `tests/examples.json`: `directory`, `main`, `args` (native sweep), `budget` (wasm checks), `bundle` (staged name), `stdout_contains`, `stdout_excludes`.
+- `tests/corpus/examples.json`: `directory`, `main`, `args` (native sweep), `budget` (wasm checks), `bundle` (staged name), `stdout_contains`, `stdout_excludes`.
 - Portfolio: `MAX_TOUR_FILES` (64) and `MAX_TOUR_BYTES` (1 MiB) in `starter.ts`; the release inventory allows 64 files (`MAX_FILES`, schema `maxItems`).
 
 ## Dependencies

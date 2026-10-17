@@ -28,7 +28,7 @@ Not checked: constant folding (wraps), unary minus, shifts, pointer arithmetic, 
 
 - A new path that lowers `+ - *` itself must call `emit_overflow_check` after the operation and honour `no_aoc`.
 - Stdlib code that overflows on purpose needs `#no_aoc`; `Hash`, `PCG`, `Crc`, `xxHash`, `Random` and `Runtime_Support` have it. `Basic/Int128.jai` avoids overflow instead.
-- Tests: `tests/stdlib/arithmetic-overflow-check.jai` (each mode, interpreter), `tests/corpus/negative/aoc-fatal-*.jai`, and `arithmetic_overflow_checks` in `crates/jaic-cli/tests/native.rs` (LLVM).
+- Tests: `tests/compiler/regressions/arithmetic-overflow-check.jai` (each mode, interpreter), `tests/corpus/negative/aoc-fatal-*.jai`, and `arithmetic_overflow_checks` in `crates/jaic-cli/tests/native.rs` (LLVM).
 
 ## Dependencies
 

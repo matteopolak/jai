@@ -72,7 +72,7 @@ def main():
     print("NEW foundation facade/load-list regeneration and formatting are stable", flush=True)
     env = dict(os.environ, JAIC_STDLIB=str(LIBRARY))
     compiler = str(ROOT / "target/compiler/debug/jaic")
-    fixture = ROOT / "tests/portable-stdlib/time-configured/main.jai"
+    fixture = ROOT / "stdlib/Basic/tests/time-configured/main.jai"
     for cpu in ["x64", "arm64"]:
         subprocess.run([compiler, "-check", "-os", "windows", "-cpu", cpu, str(fixture)],
                        cwd=ROOT, env=env, check=True)

@@ -40,7 +40,7 @@ Per-module state is `Module::params`, `param_entities` and `program_params` in `
 
 Gotcha: a program-parameter setting patches the declaration's value only when the parameter has no written type; typed parameters wait for the import itself.
 
-Tests: `tests/stdlib/program-module-parameters.jai`, `typed-module-parameters.jai`, `untyped-module-parameters.jai`, with modules under `tests/stdlib/modules/` (`Program_Param`, `Typed_Param`, `Untyped_Param`).
+Tests: `tests/compiler/regressions/program-module-parameters.jai`, `typed-module-parameters.jai`, `untyped-module-parameters.jai`, with modules under `tests/stdlib/modules/` (`Program_Param`, `Typed_Param`, `Untyped_Param`).
 
 ## Dependencies
 

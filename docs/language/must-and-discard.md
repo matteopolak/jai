@@ -33,7 +33,7 @@ error: the result of `only` is marked #must and cannot be discarded
 
 - A new place that drops call results (say, assigning a multi-result call to one target) must call `check_must_used` right after checking the call. `last_call_must` identifies the call only by span, so another call emitted in between hides it.
 - New call forms must route arguments through `precheck_args_deferring` (or honour `discarded_args`), or the argument is evaluated before the callee is known.
-- Tests: `tests/stdlib/must-return-values.jai`, `tests/stdlib/discard-parameters.jai`, and negative programs `tests/corpus/negative/must-*.jai` and `discard-*.jai`.
+- Tests: `tests/compiler/regressions/must-return-values.jai`, `tests/compiler/regressions/discard-parameters.jai`, and negative programs `tests/corpus/negative/must-*.jai` and `discard-*.jai`.
 
 ## Configuration
 

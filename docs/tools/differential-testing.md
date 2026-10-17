@@ -135,14 +135,14 @@ Each bug was fixed with a regression test.
 | Program | Wrong backend | Bug |
 | --- | --- | --- |
 | `tests/stdlib/bindings-generator-cpp-classes.jai` | native | `#cpp_return_type_is_non_pod` was ignored, so a one-`int` C++ class came back in registers while the callee wrote through the hidden pointer (`c-abi.md`) |
-| `tests/stdlib/compiler-workspace-ids.jai` | native | the build tried to link workspaces that were created but given no source (`workspaces.md`) |
+| `tests/compiler/regressions/compiler-workspace-ids.jai` | native | the build tried to link workspaces that were created but given no source (`workspaces.md`) |
 | stdlib programs calling Bindings_Generator at run time | native (diagnostic) | compiled `#compiler` stubs trapped without a word; they now say why |
-| generated (`tests/stdlib/poly-infer-from-ifx.jai`) | front end | `$T` could not be inferred from an `ifx` argument |
-| targeted probe (`tests/stdlib/int-to-float32-rounding.jai`) | interp, wasm, constant folding | 64-bit integer → `float32` rounded twice, through f64 |
+| generated (`tests/compiler/regressions/poly-infer-from-ifx.jai`) | front end | `$T` could not be inferred from an `ifx` argument |
+| targeted probe (`tests/compiler/regressions/int-to-float32-rounding.jai`) | interp, wasm, constant folding | 64-bit integer → `float32` rounded twice, through f64 |
 | `tests/stdlib/debug-assert-handlers.jai` | native | functions had no frame records, so macOS `backtrace` (Debug's `backtrace`) found no frames ([LLVM backend](../native/llvm-backend.md)) |
 | generated seed 10014 (`tests/corpus/positive/unrolled-sub-reduction.jai`) | native-O2 | LLVM 22's runtime unroller recombined parallel accumulators of an `a -= b` recurrence wrongly (llvm/llvm-project#201065). jaic turned that transformation off until LLVM 23.1.0 fixed it ([LLVM backend](../native/llvm-backend.md)) |
-| generated seed 61919 (`tests/stdlib/poly-infer-from-ifx.jai`) | front end | `$T` could not be inferred from an `ifx` whose branches are all `ifx` themselves |
-| generated seeds 62030, 62063 (`tests/stdlib/cast-float-of-integer-operator.jai`) | front end | a float cast's target reached an `ifx` operand of `&`/`%`, which widened to float, so the operator failed on `float32` |
+| generated seed 61919 (`tests/compiler/regressions/poly-infer-from-ifx.jai`) | front end | `$T` could not be inferred from an `ifx` whose branches are all `ifx` themselves |
+| generated seeds 62030, 62063 (`tests/compiler/regressions/cast-float-of-integer-operator.jai`) | front end | a float cast's target reached an `ifx` operand of `&`/`%`, which widened to float, so the operator failed on `float32` |
 
 The generated programs found 4 of these bugs. Four came from the stdlib sets, and one from a targeted probe of int-to-float conversions (jaigen now generates those edge values too). Run counts, seed ranges and timings belong in the commit messages and reports of each campaign, not here: a generator change gives every seed a different program. One generated program failed to compile everywhere; see Settled questions.
 

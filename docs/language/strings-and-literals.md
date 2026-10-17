@@ -47,7 +47,7 @@ A string literal in a `*u8` context becomes a pointer to static bytes with a NUL
 
 ## How to change it
 
-Escapes and here strings are in `lexer.rs`. The rule that turns literals into `*u8` is in `convert` in `sema/convert.rs`, which treats a `Value::String` constant specially. Tests: `tests/stdlib/one-char-string-as-byte.jai`, `string-scan.jai`.
+Escapes and here strings are in `lexer.rs`. The rule that turns literals into `*u8` is in `convert` in `sema/convert.rs`, which treats a `Value::String` constant specially. Tests: `tests/compiler/regressions/one-char-string-as-byte.jai`, `string-scan.jai`.
 
 ## Dependencies
 

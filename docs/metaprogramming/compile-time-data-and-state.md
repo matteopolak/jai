@@ -53,7 +53,7 @@ The example above prints `counter = 5, keep = 7` {#ctdata.11}.
 - New user-visible global storage: push it to `reset_globals` where the `Global` is created.
 - Runtime info layout: change `runtime_info.rs` and `stdlib/Compiler/workspace.jai` together.
 
-Tests: `tests/stdlib/compile-time-globals-reset.jai`, `no-reset-globals-baked.jai` (also run natively).
+Tests: `tests/compiler/regressions/compile-time-globals-reset.jai`, `no-reset-globals-baked.jai` (also run natively).
 
 ## Dependencies
 

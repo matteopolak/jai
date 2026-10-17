@@ -38,7 +38,7 @@ Anonymous `union { }` blocks inside structs are covered in [structs](structs.md)
 
 ## How to change it
 
-Layout is the `is_union` branch of `layout_struct_inner` in `sema/structs.rs`. `parser/aggregate.rs` parses the tag into `lit.tag`; a union with a tag is not `is_union`. Tests: `tests/stdlib/tagged-union-layout.jai`, `print-null-pointer-union-forms.jai`.
+Layout is the `is_union` branch of `layout_struct_inner` in `sema/structs.rs`. `parser/aggregate.rs` parses the tag into `lit.tag`; a union with a tag is not `is_union`. Tests: `tests/compiler/regressions/tagged-union-layout.jai`, `print-null-pointer-union-forms.jai`.
 
 ## Dependencies
 

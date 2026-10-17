@@ -11,22 +11,21 @@ on:
       - stdlib/Extensions/Io/**
       - stdlib/Extensions/Tls/**
       - tools/native/mbedtls/**
-      - tests/extensions/http-codec-*.jai
       - tools/http_conformance.py
       - tools/http_native.py
       - tools/test_http_native.py
       - tools/check_io_burst_diagnostics.py
       - tools/io_failure_observer.py
       - tools/test_io_failure_wiring.py
-      - tests/tools/test_io_failure_observer.py
+      - tools/test_io_failure_observer.py
       - tools/io_stress.py
       - tools/test_io_stress_diagnostics.py
       - tools/test_io_stress_observation.py
       - tools/ci_test_scratch.py
       - tools/test_ci_test_scratch.py
       - tools/test_http_observer_artifacts.py
-      - tests/tools/test_io_burst_diagnostics.py
-      - tests/extensions/io-accept-burst-diagnostics.jai
+      - tools/test_io_burst_diagnostics.py
+      - stdlib/Extensions/Io/tests/accept-burst-diagnostics.jai
       - tools/build_native_libs.py
       - tools/native-libs.json
       - tools/io_stress.py
@@ -40,22 +39,21 @@ on:
       - stdlib/Extensions/Io/**
       - stdlib/Extensions/Tls/**
       - tools/native/mbedtls/**
-      - tests/extensions/http-codec-*.jai
       - tools/http_conformance.py
       - tools/http_native.py
       - tools/test_http_native.py
       - tools/check_io_burst_diagnostics.py
       - tools/io_failure_observer.py
       - tools/test_io_failure_wiring.py
-      - tests/tools/test_io_failure_observer.py
+      - tools/test_io_failure_observer.py
       - tools/io_stress.py
       - tools/test_io_stress_diagnostics.py
       - tools/test_io_stress_observation.py
       - tools/ci_test_scratch.py
       - tools/test_ci_test_scratch.py
       - tools/test_http_observer_artifacts.py
-      - tests/tools/test_io_burst_diagnostics.py
-      - tests/extensions/io-accept-burst-diagnostics.jai
+      - tools/test_io_burst_diagnostics.py
+      - stdlib/Extensions/Io/tests/accept-burst-diagnostics.jai
       - tools/build_native_libs.py
       - tools/native-libs.json
       - tools/io_stress.py
@@ -117,8 +115,8 @@ jobs:
           python3 -m unittest discover -s tools -p test_ci_test_scratch.py -v
           python3 -m unittest discover -s tools -p test_http_observer_artifacts.py -v
           python3 -m unittest discover -s tools -p test_io_stress_observation.py -v
-          python3 -m unittest discover -s tests/tools -p test_io_burst_diagnostics.py -v
-          python3 -m unittest discover -s tests/tools -p test_io_failure_observer.py -v
+          python3 -m unittest discover -s tools -p test_io_burst_diagnostics.py -v
+          python3 -m unittest discover -s tools -p test_io_failure_observer.py -v
           python3 -m unittest discover -s tools -p test_io_failure_wiring.py -v
           observe=()
           if [ "$RUNNER_OS" = Linux ]; then

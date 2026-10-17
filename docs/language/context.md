@@ -42,7 +42,7 @@ Add context fields with `#add_context` in Jai, not in the compiler. Base fields 
 
 Gotcha: the Context layout must be final before any `#run` lays it out. `expand_plain_ifs` in `sema/scope.rs` expands plain `#if` items first so an `#add_context` inside a conditionally `#load`ed file is seen in time, but an `#add_context` that depends on a `#run` result cannot work.
 
-Tests: `tests/stdlib/push-context-defer-pop.jai`, `tests/stdlib/add-context-constant.jai`.
+Tests: `tests/compiler/regressions/push-context-defer-pop.jai`, `tests/compiler/regressions/add-context-constant.jai`.
 
 ## Dependencies
 

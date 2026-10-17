@@ -36,7 +36,7 @@ f & .WRITE != 0        // true
 
 ## How to change it
 
-For a new operator token, make the parser accept `operator <tok>` as a declaration, then add the dispatch next to the `try_*_operator_overload` functions. Tests: `tests/stdlib/operator-ne-from-eq.jai`, `tests/stdlib/index-operator-fallback.jai`.
+For a new operator token, make the parser accept `operator <tok>` as a declaration, then add the dispatch next to the `try_*_operator_overload` functions. Tests: `tests/compiler/regressions/operator-ne-from-eq.jai`, `tests/compiler/regressions/index-operator-fallback.jai`.
 
 ## Dependencies
 

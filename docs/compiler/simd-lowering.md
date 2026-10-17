@@ -64,4 +64,4 @@ Gotchas:
 
 - `inkwell` (builder, intrinsic lookup by name), through `crate::lower::Error` for errors.
 - `jaic::abi::Arch` for the architecture family.
-- Tests: `cargo test -p jaic-llvm simd` (feature resolution) and `tests/stdlib/intrinsic-byte-lookup.jai` (semantics, interpreted and native).
+- Tests: `cargo test -p jaic-llvm simd` (feature resolution) and `tests/compiler/regressions/intrinsic-byte-lookup.jai` (semantics, interpreted and native).

@@ -2,7 +2,7 @@
 
 ## Resolved dependency: child options projection
 
-Reviewed Compiler get/set_build_options operate on the selected workspace. tests/portable-stdlib/pending/child-build-options-projection.jai explicitly commits O3 and stack_trace=false, asserts correct selected readback in the parent, then reads those settings inside added child source. Clean compilation fails the child assertion. Coordinator official controls build that exact independent reduction successfully. This is not an automatic-inheritance expectation.
+Reviewed Compiler get/set_build_options operate on the selected workspace. stdlib/Basic/tests/probes/child-build-options-projection.jai explicitly commits O3 and stack_trace=false, asserts correct selected readback in the parent, then reads those settings inside added child source. Clean compilation fails the child assertion. Coordinator official controls build that exact independent reduction successfully. This is not an automatic-inheritance expectation.
 
 Minimal's analogous O2/false assertions remain required. Own fresh full-source guarded capture minimal-guarded-1v1bo9e2/summary.json records 92 passed/four failed: release and backend-last child-options checks in parent O0/O2. No Rust or shared source drift occurred. Compiler worker 10222 supplied the general snapshot fix; no helper-specific result or caller patch was added. This is preserved pre-fix evidence.
 

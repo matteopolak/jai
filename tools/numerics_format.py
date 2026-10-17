@@ -9,7 +9,7 @@ args=parser.parse_args()
 roots=[ROOT/'stdlib'/name for name in ['Math','Sloppy_Math','Float16','Color_Interpolation','GetRect','GetRect_LeftHanded','internal/numerics']]
 roots += [ROOT/'tests/numerics']
 files=sorted({p for root in roots for p in root.rglob('*.jai')})
-files += [ROOT/'tests/stdlib-contract/math-float16/main.jai']
+files += [ROOT/'stdlib/Math/tests/float16-edge-vectors.jai']
 changed=[]
 for path in files:
     source=path.read_text(); formatted=normalize(source)

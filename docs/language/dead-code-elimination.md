@@ -82,4 +82,4 @@ Errors from this pass are ordinary compile errors. The language server publishes
 - `sema/driver.rs`: `check_unreferenced`, `drop_unreferenced_code`.
 - `sema/procs.rs`: `proc_func`, `drain_bodies`, `refresh_implicit_poly`.
 - `build.rs`: the `dead_code_elimination` workspace option and `dead_code_setting`.
-- Tests: `tests/stdlib/dead-code-elimination.jai`, `tests/corpus/negative/rule-dce-*.jai` and `dce-*.jai`, `dead_code_elimination_flag` in `crates/jaic-cli/tests/cli.rs`, `unreferenced_code_is_not_compiled` in `crates/jaic-cli/tests/native.rs`, `type_error_in_an_unused_procedure_is_published` in `crates/jai-language-server/tests/semantic.rs`.
+- Tests: `tests/compiler/regressions/dead-code-elimination.jai`, `tests/corpus/negative/rule-dce-*.jai` and `dce-*.jai`, `dead_code_elimination_flag` in `crates/jaic-cli/tests/cli.rs`, `unreferenced_code_is_not_compiled` in `crates/jaic-cli/tests/native.rs`, `type_error_in_an_unused_procedure_is_published` in `crates/jai-language-server/tests/semantic.rs`.

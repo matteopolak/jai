@@ -1,6 +1,6 @@
 # SDL3 formatter integration blocker
 
-Owned code is `stdlib/Extensions/SDL3/*.jai` and `tests/sdl3/*.jai`. The requested `jaifmt --check` pass is **not established**. No formatter/rule suppression, replacement formatter or original-library fallback is used.
+Owned code is `stdlib/Extensions/SDL3/*.jai` and `stdlib/Extensions/SDL3/tests/*.jai`. The requested `jaifmt --check` pass is **not established**. No formatter/rule suppression, replacement formatter or original-library fallback is used.
 
 Actual source/tool attempts in this worker (2026-10-14):
 
@@ -32,8 +32,8 @@ After that integration, build the **real** repository CLI again, then execute:
 
 ```sh
 JAIC_STDLIB=... <source-built-jaic> jaifmt/main.jai -O2 -exe artifacts/sdl3/tools-target/jaifmt
-artifacts/sdl3/tools-target/jaifmt stdlib/Extensions/SDL3 tests/sdl3
-artifacts/sdl3/tools-target/jaifmt --check stdlib/Extensions/SDL3 tests/sdl3
+artifacts/sdl3/tools-target/jaifmt stdlib/Extensions/SDL3 stdlib/Extensions/SDL3/tests
+artifacts/sdl3/tools-target/jaifmt --check stdlib/Extensions/SDL3 stdlib/Extensions/SDL3/tests
 python3 tools/sdl3_gen.py --source artifacts/sdl3/SDL3-3.4.18 --jaifmt artifacts/sdl3/tools-target/jaifmt --check
 ```
 

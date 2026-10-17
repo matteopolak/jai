@@ -6,7 +6,7 @@ from pathlib import Path
 import random
 
 ROOT = Path(__file__).resolve().parents[1]
-DESTINATION = ROOT / "tests/portable-stdlib/apollo-comparisons/word-boundary-oracle.jai"
+DESTINATION = ROOT / "stdlib/Basic/tests/apollo-comparisons/word-boundary-oracle.jai"
 
 
 def generate():

@@ -290,12 +290,13 @@ fn compiler_and_abi_regressions_run_natively() {
         if cfg!(windows) && name == "proc-sentinel-constant" {
             continue;
         }
-        let family = if matches!(name, "proc-sentinel-constant" | "posix-stat-and-mutex") {
-            "native-regressions"
-        } else {
-            "compiler/regressions"
-        };
-        let source = repo_root().join(format!("tests/{family}/{name}.jai"));
+        let source = repo_root().join(match name {
+            "proc-sentinel-constant" => {
+                "stdlib/Compiler/tests/proc-sentinel-constant.jai".to_string()
+            }
+            "posix-stat-and-mutex" => "stdlib/POSIX/tests/stat-and-mutex.jai".to_string(),
+            _ => format!("tests/compiler/regressions/{name}.jai"),
+        });
         let output = build_and_run(&source, &dir, name).unwrap();
         assert_eq!(
             String::from_utf8_lossy(&output.stdout),
@@ -314,7 +315,7 @@ fn stdin_lines_are_read_natively() {
     use std::process::Stdio;
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-stdin-lines");
     std::fs::create_dir_all(&dir).unwrap();
-    let source = repo_root().join("tests/native/stdin-lines/main.jai");
+    let source = repo_root().join("tests/compiler/native/stdin-lines/main.jai");
     let exe = exe_path(&dir, "stdin-lines");
     let build = Command::new(JAIC)
         .arg(&source)
@@ -530,7 +531,7 @@ fn stdlib_c_abi_matches_cross_target_headers() {
 /// native `#c_call` definitions called back from C. Skipped when no C compiler is installed.
 #[test]
 fn c_structs_by_value() {
-    let fixture = repo_root().join("tests/native/c-structs-by-value");
+    let fixture = repo_root().join("tests/compiler/native/c-structs-by-value");
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-c-structs");
     std::fs::create_dir_all(&dir).unwrap();
     for name in [
@@ -639,7 +640,7 @@ fn c_structs_by_value() {
 /// is installed.
 #[test]
 fn c_call_procedures_stored_in_memory() {
-    let fixture = repo_root().join("tests/native/c-call-stored");
+    let fixture = repo_root().join("tests/compiler/native/c-call-stored");
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-c-call-stored");
     std::fs::create_dir_all(&dir).unwrap();
     for name in ["stored.c", "stored.jai"] {
@@ -706,7 +707,7 @@ fn c_call_procedures_stored_in_memory() {
 /// is installed.
 #[test]
 fn c_thread_callbacks_block_on_jai_threads() {
-    let fixture = repo_root().join("tests/native/c-callback-threads");
+    let fixture = repo_root().join("tests/compiler/native/c-callback-threads");
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-c-callback-threads");
     std::fs::create_dir_all(&dir).unwrap();
     for name in ["blocking.c", "blocking.jai", "deadlock.jai"] {
@@ -1149,7 +1150,7 @@ fn c_long_double() {
     if cfg!(windows) {
         return;
     }
-    let fixture = repo_root().join("tests/native/c-long-double");
+    let fixture = repo_root().join("tests/compiler/native/c-long-double");
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-c-long-double");
     std::fs::create_dir_all(&dir).unwrap();
     for name in [
@@ -1611,7 +1612,7 @@ fn null_checks_skipped_after_a_check_still_catch_changes() {
 /// OS (the GLX/WGL paths cannot run here, but they must keep compiling).
 #[test]
 fn simp_window_program_checks_on_desktop_oses() {
-    let source = repo_root().join("tests/graphics-regressions/simp-window-program.jai");
+    let source = repo_root().join("stdlib/Simp/tests/window-program.jai");
     for os in ["linux", "windows", "macos"] {
         let output = Command::new(JAIC)
             .arg("-check")
@@ -1949,7 +1950,7 @@ fn jaifmt_is_idempotent_on_the_repository() {
 fn windows_runtime_program() {
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-windows-runtime");
     std::fs::create_dir_all(&dir).unwrap();
-    let source = repo_root().join("tests/native/windows/runtime.jai");
+    let source = repo_root().join("tests/compiler/native/windows/runtime.jai");
     let output = build_and_run(&source, &dir, "runtime").unwrap();
     assert_eq!(
         String::from_utf8_lossy(&output.stdout),
@@ -2609,7 +2610,7 @@ fn backtrace_on_crash_and_minimum_os_version() {
 #[cfg(unix)]
 #[test]
 fn library_search_directory_added_by_a_metaprogram() {
-    let fixture = repo_root().join("tests/native/library-search-dir");
+    let fixture = repo_root().join("tests/compiler/native/library-search-dir");
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("native-library-search-dir");
     std::fs::create_dir_all(dir.join("lib")).unwrap();
     for name in ["probe.c", "probe.jai"] {
@@ -2652,7 +2653,7 @@ fn c_struct_return_shapes() {
 }
 
 /// Aggregates of every class, including packed ones, by value in both directions and as arguments
-/// of Jai callbacks, in the interpreter and in native builds (`tests/native/c-aggregate-abi`,
+/// of Jai callbacks, in the interpreter and in native builds (`tests/compiler/native/c-aggregate-abi`,
 /// generated by `generate.py` there). Skipped when no C compiler is installed.
 #[test]
 fn c_aggregate_abi_shapes() {
@@ -2660,14 +2661,14 @@ fn c_aggregate_abi_shapes() {
 }
 
 /// Aggregates passed through `...` to C functions that read them with `va_arg`, on every host
-/// (`tests/native/c-variadic-aggregates`, generated by `generate.py` in `c-aggregate-abi`).
+/// (`tests/compiler/native/c-variadic-aggregates`, generated by `generate.py` in `c-aggregate-abi`).
 #[test]
 fn c_variadic_aggregates() {
     run_shapes_fixture("c-variadic-aggregates", "variadics");
 }
 
 fn run_shapes_fixture(fixture_dir: &str, stem: &str) {
-    let fixture = repo_root().join("tests/native").join(fixture_dir);
+    let fixture = repo_root().join("tests/compiler/native").join(fixture_dir);
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join(format!("native-{fixture_dir}"));
     std::fs::create_dir_all(&dir).unwrap();
     // The C file and every program (`<stem>.jai`, or `<stem>_N.jai` when a fixture is split
@@ -2826,7 +2827,7 @@ fn run_shapes_fixture(fixture_dir: &str, stem: &str) {
 fn fibers_switch_stacks_like_the_interpreter() {
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("fibers-switch");
     std::fs::create_dir_all(&dir).unwrap();
-    let source = repo_root().join("tests/native/fibers/switch.jai");
+    let source = repo_root().join("tests/compiler/native/fibers/switch.jai");
     let interpreted = Command::new(JAIC)
         .arg("-interp")
         .arg(&source)
@@ -2867,7 +2868,7 @@ fn fibers_switch_stacks_like_the_interpreter() {
 fn fiber_stack_overflow_names_the_problem() {
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("fibers-overflow");
     std::fs::create_dir_all(&dir).unwrap();
-    let source = repo_root().join("tests/native/fibers/overflow.jai");
+    let source = repo_root().join("tests/compiler/native/fibers/overflow.jai");
     let native = build_and_run(&source, &dir, "overflow").unwrap();
     assert!(!native.status.success());
     #[cfg(unix)]
@@ -2895,7 +2896,7 @@ fn fiber_stack_overflow_names_the_problem() {
 fn fibers_are_refused_for_wasm() {
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("fibers-wasm");
     std::fs::create_dir_all(&dir).unwrap();
-    let source = repo_root().join("tests/native/fibers/switch.jai");
+    let source = repo_root().join("tests/compiler/native/fibers/switch.jai");
     let build = Command::new(JAIC)
         .arg(&source)
         .args(["-os", "wasm", "-exe"])

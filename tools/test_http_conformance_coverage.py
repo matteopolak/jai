@@ -36,7 +36,7 @@ class HttpCoverageTests(unittest.TestCase):
         self.assertEqual(len(roundtrip), 1)
         self.assertEqual(
             roundtrip[0]["path"],
-            catalog.ROOT / "tests/extensions/http-codec-roundtrip.jai",
+            catalog.ROOT / "stdlib/Extensions/Http/tests/codec-roundtrip.jai",
         )
 
     def test_only_reviewed_io_cases_are_unavailable_on_wasm(self):

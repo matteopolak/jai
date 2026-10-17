@@ -48,7 +48,7 @@ Folding lives in `sema/expr.rs` (`wrap_int`); conversions in `sema/convert.rs` (
 
 Gotcha: untyped constants carry `untyped: true` on `Operand::Const` until `settle_untyped` picks a type. Preserve that flag in any new folding path, or a literal silently becomes `s64`.
 
-Tests: `tests/stdlib/float-literal-precision.jai`, `literal-matches-other-operand.jai`, `literal-prefers-float32.jai`, `int128-arithmetic.jai`.
+Tests: `tests/compiler/regressions/float-literal-precision.jai`, `literal-matches-other-operand.jai`, `literal-prefers-float32.jai`, `int128-arithmetic.jai`.
 
 ## Dependencies
 

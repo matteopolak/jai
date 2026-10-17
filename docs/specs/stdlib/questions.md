@@ -30,7 +30,7 @@ It is not a source of invented compatibility behavior.
   do not add public convenience overloads to bypass this general resolver gap.
 - `#run get_current_workspace()` fails with `get_current_workspace is a compiler
   primitive; it runs only at compile time`, even though the call is in #run.
-  Reproduce with `tests/portable-stdlib/pending/workspace-hook.jai`. No zero
+  Reproduce with `stdlib/Basic/tests/probes/workspace-hook.jai`. No zero
   workspace fallback is fabricated. Thread currently preserves its workspace
   field; automatic population needs the reviewed runtime/compile-time contract.
 
@@ -59,7 +59,7 @@ operation-level review beyond the focused public path fixture.
 - `Temporary_Storage_Paged_Alloc` initially failed because overlay layout checked
   only direct fields. Resolved by the compiler worker's general promoted-member
   layout fix; the
-  rebuilt source compiler now passes `tests/portable-stdlib/temp-storage.jai`
+  rebuilt source compiler now passes `stdlib/Basic/tests/temp-storage.jai`
   in interpreter/native mode. The exact public shape is enabled unchanged.
 
 ## Thread configurations
@@ -140,7 +140,7 @@ operation-level review beyond the focused public path fixture.
 - Duplicate format/fact chunks are unspecified. Current parser takes the first
   format/data and last readable fact chunk. Exact duplicate-selection behavior
   needs review; extensible format tags remain rejected.
-- Compiler gap: tests/portable-stdlib/pending/widened-bitwise.jai shows that
+- Compiler gap: stdlib/Basic/tests/probes/widened-bitwise.jai shows that
   cast(u32)low | (cast(u32)high << 8) with u8 inputs yields 64 instead of 8000
   in interpreter and native modes. Wav_File uses explicit u32 locals before
   shifts. Fix contextual type inference/lowering generally; no symbol-specific

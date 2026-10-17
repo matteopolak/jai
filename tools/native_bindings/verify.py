@@ -79,30 +79,30 @@ def private_unit_module(name):
 PRIVATE_UNIT_DEPENDENCIES = {
     "rpmalloc-no-thread-cache": {
         **{
-            "tests/native-bindings/generated/rpmalloc-no-thread-cache-"
+            "stdlib/Bindings_Generator/tests/driven/sdk/generated/rpmalloc-no-thread-cache-"
             + label
-            + "-layout.jai": "../tests/native-bindings/generated/rpmalloc-no-thread-cache-"
+            + "-layout.jai": "../stdlib/Bindings_Generator/tests/driven/sdk/generated/rpmalloc-no-thread-cache-"
             + label
             + "-layout.jai"
             for label in ("rewrite", "raw-base", "raw")
         },
-        "tests/native-bindings/rpmalloc-cache-exercise.jai": "../tests/native-bindings/rpmalloc-cache-exercise.jai",
+        "stdlib/Bindings_Generator/tests/driven/sdk/rpmalloc-cache-exercise.jai": "../stdlib/Bindings_Generator/tests/driven/sdk/rpmalloc-cache-exercise.jai",
     },
     "rpmalloc-raw-base-marshalling": {
-        "tests/native-bindings/generated/rpmalloc-raw-base-heap-facade-layout.jai": "rpmalloc/generated/rpmalloc-raw-base-heap-facade-layout.jai",
+        "stdlib/Bindings_Generator/tests/driven/sdk/generated/rpmalloc-raw-base-heap-facade-layout.jai": "rpmalloc/generated/rpmalloc-raw-base-heap-facade-layout.jai",
     },
     "rpmalloc-raw-heap-marshalling": {
-        "tests/native-bindings/generated/rpmalloc-raw-heap-facade-layout.jai": "rpmalloc/generated/rpmalloc-raw-heap-facade-layout.jai",
+        "stdlib/Bindings_Generator/tests/driven/sdk/generated/rpmalloc-raw-heap-facade-layout.jai": "rpmalloc/generated/rpmalloc-raw-heap-facade-layout.jai",
     },
     "rpmalloc-heap-marshalling": {
-        "tests/native-bindings/generated/rpmalloc-heap-facade-layout.jai": "rpmalloc/generated/rpmalloc-heap-facade-layout.jai",
+        "stdlib/Bindings_Generator/tests/driven/sdk/generated/rpmalloc-heap-facade-layout.jai": "rpmalloc/generated/rpmalloc-heap-facade-layout.jai",
     },
     "rpmalloc-native-sdk": {
-        "tests/native-bindings/generated/rpmalloc-sdk-layout.jai": "rpmalloc/generated/rpmalloc-sdk-layout.jai",
+        "stdlib/Bindings_Generator/tests/driven/sdk/generated/rpmalloc-sdk-layout.jai": "rpmalloc/generated/rpmalloc-sdk-layout.jai",
     },
     "rpmalloc-native-storage": {
-        "tests/native-bindings/generated/rpmalloc-storage-layout.jai": "rpmalloc/generated/rpmalloc-storage-layout.jai",
-        "tests/native-bindings/generated/rpmalloc-storage-records.jai": "rpmalloc/generated/rpmalloc-storage-records.jai",
+        "stdlib/Bindings_Generator/tests/driven/sdk/generated/rpmalloc-storage-layout.jai": "rpmalloc/generated/rpmalloc-storage-layout.jai",
+        "stdlib/Bindings_Generator/tests/driven/sdk/generated/rpmalloc-storage-records.jai": "rpmalloc/generated/rpmalloc-storage-records.jai",
     },
 }
 
@@ -1071,7 +1071,7 @@ def run_verification(cleanup):
                 (ROOT / "tools/native_bindings/dependencies.json").read_text()
             )["imgui"]
             exe = work / "imgui-ffi-test"
-            source = ROOT / "tests/native-bindings/imgui_ffi.cpp"
+            source = ROOT / "stdlib/Bindings_Generator/tests/driven/sdk/imgui_ffi.cpp"
             report["test_sources"][str(source.relative_to(ROOT))] = hashlib.sha256(
                 source.read_bytes()
             ).hexdigest()
@@ -1083,7 +1083,7 @@ def run_verification(cleanup):
                 "-Werror",
                 "-isystem",
                 ROOT / ".work/vendor" / pin["archive"]["root"],
-                ROOT / "tests/native-bindings/imgui_ffi.cpp",
+                ROOT / "stdlib/Bindings_Generator/tests/driven/sdk/imgui_ffi.cpp",
                 native / "libimgui.a",
                 native / "libbinding_ffi.a",
                 "-lffi",

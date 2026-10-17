@@ -23,7 +23,7 @@ options.llvm_options.target_system_features = "+bulk-memory,+sign-ext";
 options.additional_linker_arguments = .["-z", "stack-size=1048576"];  // passed to wasm-ld
 ```
 
-`tests/native/wasm/build_wasi.jai` is a complete example. The output is `<output_executable_name>.wasm`.
+`tests/compiler/native/wasm/build_wasi.jai` is a complete example. The output is `<output_executable_name>.wasm`.
 
 ## How it works
 
@@ -69,7 +69,7 @@ WASI preview 1 is defined for 32-bit memories, so its pointers are `u32` offsets
 
 **Math.** `round` and `fma` are what LLVM calls for `roundsd`/`vfmadd` emulation and the `#intrinsic` procedures of those names; the rest are for programs that declare them `#foreign` from libm. `fma`, `fmod` and the binary128 helpers round once from a wide exact accumulator. The transcendental functions work in float64 pairs (about 106 bits) and round once; `sin`, `cos` and `tan` reduce with 2/pi to 1344 bits, so huge arguments are right too. The float32 forms compute in float64.
 
-jaic adds `#import "Extensions/Wasi_Runtime"` to the first workspace when the target triple has a component starting with `wasi` (`jaic::build::wants_wasi_runtime`). With a bare `wasm64-unknown-unknown` nothing is added, as in Jai: Runtime_Support's own needs (`malloc`, `free`, `memmove`, `memcmp`, `wasm_write_string`, `wasm_debug_break`) are `env` imports the host provides, and `tests/native/wasm/exports.mjs` shows a host that does.
+jaic adds `#import "Extensions/Wasi_Runtime"` to the first workspace when the target triple has a component starting with `wasi` (`jaic::build::wants_wasi_runtime`). With a bare `wasm64-unknown-unknown` nothing is added, as in Jai: Runtime_Support's own needs (`malloc`, `free`, `memmove`, `memcmp`, `wasm_write_string`, `wasm_debug_break`) are `env` imports the host provides, and `tests/compiler/native/wasm/exports.mjs` shows a host that does.
 
 **Why the sandbox's `OS == .WASM` code is unaffected.** The stdlib's `OS == .WASM` branches call ordinary C names (`malloc`, `write`, `clock_gettime`, `getenv`, ...). Under the interpreter, in the browser engine and in the compile-time code of a wasm build (`make_host` gives `.WASM` workspaces the `SandboxHost`), the sandbox host answers those `#foreign` calls. In a native wasm build the same calls bind to Wasi_Runtime's exports. No stdlib code distinguishes the two, so `tools/check_playground_stdlib.mjs` sees no change.
 
@@ -86,7 +86,7 @@ jaic adds `#import "Extensions/Wasi_Runtime"` to the first workspace when the ta
 - **wasm-ld discovery**: `find_llvm_tool` in `wasm.rs`. When LLVM's major version changes, update the versioned names there with the rest ([LLVM setup](../tools/llvm-setup.md)).
 - **A libm or compiler-rt function** LLVM starts calling: a `#program_export` under its name in `math.jai`/`elementary.jai`/`quad.jai`. `fp128` arguments arrive as two `u64`s (low first) and results go through a pointer passed first. Check accuracy against the host's libm with a probe that reads bit patterns from stdin.
 - Gotchas: a libcall Wasi_Runtime does not define (`sinh`, `cbrt`, `__powitf2`...) becomes an `env` import and the module fails to instantiate. Sockets and processes are not available: WASI preview 1 has none. Threads are green threads that switch only when one blocks, so a busy wait never lets another run. Under a runtime that pre-opens nothing (wasmtime without `--dir`), every path call fails with `ENOENT`. Wasi_Runtime's `#program_export`s are not wasm exports (`is_wasi_library` in `lower.rs` checks the source directory's name), so a host cannot call `malloc` on a WASI command.
-- **Tests**: `crates/jaic-cli/tests/wasm_target/` (part of the `native` test binary) builds hello, `tests/native/wasm/program.jai` at `-O0` and `-O2`, the metaprogram build, the bare exports module, jaifmt.wasm and every corpus case, and runs them under node. `python3 tools/jaic-diff.py --backends interp,wasm-native corpus gen:1:200` compares the interpreter with WASI builds ([differential testing](../tools/differential-testing.md)).
+- **Tests**: `crates/jaic-cli/tests/wasm_target/` (part of the `native` test binary) builds hello, `tests/compiler/native/wasm/program.jai` at `-O0` and `-O2`, the metaprogram build, the bare exports module, jaifmt.wasm and every corpus case, and runs them under node. `python3 tools/jaic-diff.py --backends interp,wasm-native corpus gen:1:200` compares the interpreter with WASI builds ([differential testing](../tools/differential-testing.md)).
 
 ## Configuration
 

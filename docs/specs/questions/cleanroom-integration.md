@@ -7,7 +7,7 @@ and producer implementation policies do not settle these questions.
    bootstrap instance. How should an explicit source import with flags different
    from the configured bootstrap behave? Integration currently rejects conflicts
    rather than silently ignoring them. The original reproducer is retained as
-   `tests/portable-stdlib/negative/runtime-configuration-conflict.jai`; the positive
+   `stdlib/Runtime_Support/tests/negative/configuration-conflict.jai`; the positive
    temporary-storage fixture now uses the configured instance. Mail only needs
    one_time_init and now imports the configured runtime
    without trying to override executable startup flags.

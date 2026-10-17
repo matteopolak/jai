@@ -84,4 +84,4 @@ The other modules under `stdlib/Extensions/` are listed in [stdlib extensions](.
 
 - `crates/jaic/src/wide_float.rs`, `sema/wide.rs`, `sema/expr.rs`, `sema/convert.rs`, `ir.rs`, `abi.rs`, `interp/native/wide.rs`, `crates/jaic-llvm/src/lower.rs`.
 - `stdlib/Basic/Print.jai` for printing.
-- Tests: `tests/stdlib/extensions-long-double.jai` (also run with four `-target`s by `long_double_extension_on_wide_targets` in `crates/jaic-cli/tests/cli.rs`), `tests/native/c-long-double/` (`c_long_double` in `crates/jaic-cli/tests/native.rs`), `tests/stdlib/bindings-generator-long-double.jai`.
+- Tests: `tests/stdlib/extensions-long-double.jai` (also run with four `-target`s by `long_double_extension_on_wide_targets` in `crates/jaic-cli/tests/cli.rs`), `tests/compiler/native/c-long-double/` (`c_long_double` in `crates/jaic-cli/tests/native.rs`), `tests/stdlib/bindings-generator-long-double.jai`.

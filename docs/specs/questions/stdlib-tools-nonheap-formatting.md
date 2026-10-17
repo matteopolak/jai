@@ -8,7 +8,7 @@ original sources and data were unchanged. Neither failure is classified as a
 capability or a stale expectation without evidence.
 
 Independent producer inputs are under
-`tests/developer-tools/runtime-reducers/toml-nonheap/`:
+`tests/compiler/runtime-reducers/toml-nonheap/`:
 
 * `numeric-variants.jai` has separate `base`, `metadata`, `float`, and `int` modes.
   It uses canonical Basic factories and nominal float64/s64 distinct/isa variants.

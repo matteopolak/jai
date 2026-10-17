@@ -8,11 +8,11 @@ const [binary, output] = process.argv.slice(2);
 if (!binary || !output) throw new Error("usage: node tools/check_http_wasm_termination.mjs <jai_wasm.wasm> <results.json>");
 const root = fileURLToPath(new URL("../", import.meta.url));
 const cases = [
-  ["tests/extensions/http-wasm-termination-failure.jai", 1, "FAIL: independent WASM termination control\n1 failure(s)\n"],
-  ["tests/extensions/http-wasm-termination-status.jai", 37, "before exit 37\n"],
+  ["stdlib/Extensions/Http/tests/wasm-termination-failure.jai", 1, "FAIL: independent WASM termination control\n1 failure(s)\n"],
+  ["stdlib/Extensions/Http/tests/wasm-termination-status.jai", 37, "before exit 37\n"],
   ["stdlib/Extensions/Http/tests/codec.jai", 0, "ok\n"],
   ["stdlib/Extensions/Http/tests/smuggling.jai", 0, "ok\n"],
-  ["tests/extensions/http-codec-roundtrip.jai", 0, "ok\n"],
+  ["stdlib/Extensions/Http/tests/codec-roundtrip.jai", 0, "ok\n"],
 ];
 const files = {};
 for (const source of [...cases.map(row => row[0]), "stdlib/Extensions/Http/tests/support/support.jai"]) {

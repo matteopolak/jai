@@ -46,7 +46,7 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     inputs = [
         ROOT / "stdlib/internal/runtime/crash-native/runtime.c",
-        ROOT / "tests/platform-io/portable-crash-init.c",
+        ROOT / "stdlib/Runtime_Support_Crash_Handler/tests/native/crash-init.c",
     ]
 
     def digest(path):

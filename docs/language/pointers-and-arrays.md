@@ -61,7 +61,7 @@ The check lives in the IR, so the interpreter and LLVM agree. Don't add a check 
 
 `box_any` (`sema/convert.rs`) must not check or read the place: a check there broke jaison. The stop for a null value lives in the reader (`Basic/Print.jai`).
 
-Tests: `tests/stdlib/reverse-for-remove.jai`, `array-bounds-check-opt-out.jai` (every `#no_abc` placement), `cpp-method-and-array-decay.jai`; for null `Any`s, the corpus cases `null-deref-print-any` (a runtime error on every backend) and `null-deref-any-member` (runs to the end).
+Tests: `tests/compiler/regressions/reverse-for-remove.jai`, `array-bounds-check-opt-out.jai` (every `#no_abc` placement), `cpp-method-and-array-decay.jai`; for null `Any`s, the corpus cases `null-deref-print-any` (a runtime error on every backend) and `null-deref-any-member` (runs to the end).
 
 ## Configuration
 

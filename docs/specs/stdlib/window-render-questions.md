@@ -134,7 +134,7 @@ text contract and is not a compatibility requirement.
     X11 uses the native window's screen height for global dimension orientation.
 17. NEW GL now supplies the Linux glx_create_context constructor. Generic
     gl_create_context and NSOpenGL constructors remain missing. Compile-only reproducer:
-    tests/window-render/repros/gl-context.jai on Linux. Simp window/context ownership
+    stdlib/GL/tests/context-invalid-window.jai on Linux. Simp window/context ownership
     should integrate these real constructors; do not return fake contexts or bypass the
     native binding owner with a second public GL module.
     Existing internal/window connection storage must converge with canonical
@@ -165,7 +165,7 @@ text contract and is not a compatibility requirement.
     on an undefined return value. Binding owner should review the contextual result.
 24. NEW bindings POSIX on macOS x64 currently reports unknown itimerval at
     declarations.jai:3422 (kinfo_proc dependency). Compile-only original reproducer:
-    tests/window-render/repros/macos-x64-posix.jai with -check -os macos -cpu x64.
+    stdlib/POSIX/tests/macos-x64-kinfo.jai with -check -os macos -cpu x64.
     macOS arm64 no_dce window test passes; do not patch tool-only imports or peer code.
 25. macOS native scroll uses scrollingDeltaX/Y with fractional accumulation and a
     typical_wheel_delta of 1 in native point/line units. Confirm expected trackpad
@@ -174,7 +174,7 @@ text contract and is not a compatibility requirement.
 26. Release-blocking general reflection issue: `struct
     #type_info_procedures_are_void_pointers` reflects a stored procedure field as
     POINTER but omits PROCEDURE_WITH_VOID_POINTER_TYPE_INFO (0x8). Original minimal
-    reproducer tests/window-render/repros/procedure-reflection.jai fails at runtime
+    reproducer stdlib/Reflection/tests/procedure-type-info.jai fails at runtime
     with kind POINTER, flags 0; an ordinary struct reflects PROCEDURE and passes.
     GL.gl_load correctly recognizes procedure kind or this flag, so it cannot load
     glGetStringi or other stored procedure fields. Both interpreter and native O0
@@ -191,7 +191,7 @@ text contract and is not a compatibility requirement.
     this classification question; physical-device and Win32 runtime remain pending.
 35. Broader all-code Windows arm64 check now fails in the NEW Unicode producer's
     utf8_inital_byte_mask initializer: expected [6]u8, found s64. Original minimal
-    production-import reproducer: tests/window-render/repros/unicode-no-dce.jai,
+    production-import reproducer: stdlib/Unicode/tests/no-dce.jai,
     -check -no_dce -os windows -cpu arm64; ordinary -check passes. Foundation/compiler
     owners should review that typed array declaration/general semantics. No local
     staged import/source rewrite or individual-symbol compiler bypass is applied.

@@ -6,7 +6,7 @@ fail their WASM `-check -no_dce` checks on an unresolved public `Basic.exit`:
 
 - `stdlib/Extensions/Http/tests/codec.jai` and `smuggling.jai` load
   `tests/lib/support.jai`, whose `finish()` calls `exit(1)` after failed checks.
-- `tests/extensions/http-codec-roundtrip.jai` calls `exit(1)` on test failure.
+- `stdlib/Extensions/Http/tests/codec-roundtrip.jai` calls `exit(1)` on test failure.
 
 The public Basic inventory declares `exit` only on its native POSIX and Windows
 branches. It does not export a portable WASM termination procedure. The shared

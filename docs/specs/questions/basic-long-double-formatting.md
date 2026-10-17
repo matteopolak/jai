@@ -8,7 +8,7 @@ The diagnosis and proposed probes below record the initial question. Their appro
 
 ## Required failure and source cause
 
-Linux CI's `tests/extensions/rules-jaic-extensions.jai` remains a required positive. Root reports that interpreter and native execution reach Basic's 4/8-byte assertion. The original fixture and its `tprint("%", sqrtl(one * 2)) == "1.414214"` assertion remain unchanged. Exact sanitized CI argv, diagnostic, architecture, and tool identity have been requested; no Linux execution is claimed here.
+Linux CI's `stdlib/Extensions/Long_Double/tests/libm-foreign.jai` remains a required positive. Root reports that interpreter and native execution reach Basic's 4/8-byte assertion. The original fixture and its `tprint("%", sqrtl(one * 2)) == "1.414214"` assertion remain unchanged. Exact sanitized CI argv, diagnostic, architecture, and tool identity have been requested; no Linux execution is claimed here.
 
 The current source path is:
 

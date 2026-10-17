@@ -23,7 +23,7 @@ class FoundationsLintTests(unittest.TestCase):
 
     def test_x64_diagnostics_retain_an_actual_supported_lint_profile(self):
         division = (
-            foundations.ROOT / "tests/portable-stdlib/basic-division-exercise.jai"
+            foundations.ROOT / "stdlib/Basic/tests/division-exercise.jai"
         )
         self.assertNotIn(
             division, foundations.lint_profile_sources("macos", "arm64")[1]

@@ -10,8 +10,6 @@ on:
       - 'crates/**'
       - 'Cargo.*'
       - 'rust-toolchain.toml'
-      - 'tests/portable-stdlib/clipboard-*.jai'
-      - 'tests/portable-stdlib/native/clipboard-*.c'
       - 'tools/*portable_clipboard.py'
       - 'tools/check_clipboard_linux_package.py'
       - 'tools/test_clipboard_linux_toolchain.py'

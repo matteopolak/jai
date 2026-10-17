@@ -13,18 +13,18 @@ The test reads literal sel_registerName calls and discovers explicit #foreign al
    - `objc_getClass("X")` makes it a class method of `X`;
    - `self` makes it an instance method of the type of the procedure's `self` parameter, or of the struct it is declared in. `Lightweight*` views map to `NSOpenGLView` and `NSView`, as `Objective_C.class` maps them, and a polymorphic `self` maps to `NSObject`.
 
-   The test writes a Jai program that loads Foundation, AppKit, QuartzCore, Metal and GameController and asks the runtime about each method: `class_getInstanceMethod`/`class_getClassMethod` for a class, and `protocol_getMethodDescription` through inherited protocols for a protocol such as `MTLDevice`. A class that lacks the method itself still has it when a declared property of it or a superclass has that getter or setter (the attribute string's `G` and `S` names, else `name` and `setName:`; class properties are declared on the metaclass), because some classes implement their properties in a hidden subclass (Metal's descriptors). For an instance method, the subclass `alloc` returns is asked too, which covers class clusters (`NSString`); the object is not initialized or released. It runs the program with `jaic -interp`, and its output must match `tests/objc-selectors.txt`. Elsewhere, the program only has to type-check for macOS.
+   The test writes a Jai program that loads Foundation, AppKit, QuartzCore, Metal and GameController and asks the runtime about each method: `class_getInstanceMethod`/`class_getClassMethod` for a class, and `protocol_getMethodDescription` through inherited protocols for a protocol such as `MTLDevice`. A class that lacks the method itself still has it when a declared property of it or a superclass has that getter or setter (the attribute string's `G` and `S` names, else `name` and `setName:`; class properties are declared on the metaclass), because some classes implement their properties in a hidden subclass (Metal's descriptors). For an instance method, the subclass `alloc` returns is asked too, which covers class clusters (`NSString`); the object is not initialized or released. It runs the program with `jaic -interp`, and its output must match `tests/compiler/objc-selectors.txt`. Elsewhere, the program only has to type-check for macOS.
 
 A call on a local object (`call(event, sel_registerName("window"))`) gets the arity check but not the existence check, because its class is not written next to it. A selector stored in a variable and sent later is not checked at all, so send selectors as literals at the call.
 
 ## How to change it
 
-- When the macOS check reports a method the runtime does not have, fix the binding. If the method only exists on newer macOS than the CI runners, or the class is private, list the line it printed in `tests/objc-selectors.txt` with a `#` reason.
+- When the macOS check reports a method the runtime does not have, fix the binding. If the method only exists on newer macOS than the CI runners, or the class is private, list the line it printed in `tests/compiler/objc-selectors.txt` with a `#` reason.
 - When it reports a listed line as found, remove the line.
 
 ## Configuration
 
 - `cargo test -p jaic-cli --test objc_selectors` (add `--no-default-features` to build without LLVM).
-- `tests/objc-selectors.txt`: `missing <class> <instance|class> <selector>` and `unknown <class>` lines; `#` starts a comment.
+- `tests/compiler/objc-selectors.txt`: `missing <class> <instance|class> <selector>` and `unknown <class>` lines; `#` starts a comment.
 
 Refresh18: alias-aware checks discovered an actual NSThread selector spelling defect. Official installed Foundation NSThread.h:43 declares detachNewThreadSelector:toTarget:withObject:. The public Jai method detachNewThreadSelectorToTargetWithObject retains its reviewed signature, while the generator now selects that exact native selector. All three scanner/runtime tests pass, including 805 distinct runtime receiver/selector pairs, with no added exception baseline. Dynamic selectors/local receiver types remain the documented coverage boundary. Generated sources pass regeneration/idempotence with the actual repository formatter.

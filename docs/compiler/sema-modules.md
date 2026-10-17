@@ -16,7 +16,7 @@ How `crates/jaic/src/sema` loads modules, binds module parameters, and expands t
 
 Every way of reaching a module's names goes through `module_lookup` in `scope.rs`: a plain `#import`, `M.name`, `using M;` and re-exporting modules. It returns declarations, re-exports, exported `using` members (`Found::Using`) and module parameters. Qualified lookup respects the same export boundary.
 
-This is deliberate. Separate per-path lookups once diverged: `GL.glViewport` failed while a plain `glViewport` worked, because only one path knew about GL's `using gl;` procedure table. `tests/stdlib/module-member-resolution.jai` checks that the paths agree.
+This is deliberate. Separate per-path lookups once diverged: `GL.glViewport` failed while a plain `glViewport` worked, because only one path knew about GL's `using gl;` procedure table. `tests/compiler/regressions/module-member-resolution.jai` checks that the paths agree.
 
 - A module-level `using global;` outside `#scope_file` is recorded in `Module.exported_usings`. An exported `using X :: #import "Y";` re-exports `Y`'s names (`Module.exported_using_imports`, followed with a cycle guard).
 - `module_declarations` sees only the module's own declarations and re-exports. Use it only for fixed compiler names (`Context`, `__arithmetic_overflow`), never for user-written names.
@@ -42,9 +42,9 @@ An item that fails while a procedure body is mid-lowering is retried later (see 
 - Per-module state goes on `Module` (`mod.rs`).
 - Anything that must be visible before compile-time code runs belongs in the plain pass of `expand_all`. Keep that pass free of calls; most declarations aren't resolved yet.
 - Queue top-level items and imports with `push_pending` / `push_import`, never by pushing onto `Scope::pending` or `Scope::imports` directly: a scope `expand_all` has already retired would never see them.
-- A new kind of module member goes into `module_lookup`, never into one caller, with a line in `tests/stdlib/module-member-resolution.jai`.
+- A new kind of module member goes into `module_lookup`, never into one caller, with a line in `tests/compiler/regressions/module-member-resolution.jai`.
 
-Test: `tests/stdlib/static-switch-add-context.jai`.
+Test: `tests/compiler/regressions/static-switch-add-context.jai`.
 
 ## Configuration
 

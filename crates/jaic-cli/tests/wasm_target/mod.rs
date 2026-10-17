@@ -162,7 +162,7 @@ main :: () -> s32 {
 #[test]
 fn wasm_allocation_heavy_program() {
     let dir = scratch("wasm-program");
-    let source = repo_root().join("tests/native/wasm/program.jai");
+    let source = repo_root().join("tests/compiler/native/wasm/program.jai");
     let source = source.to_str().unwrap();
     let module = dir.join("program.wasm");
     for opt in ["-O0", "-O2"] {
@@ -192,9 +192,10 @@ fn wasm_allocation_heavy_program() {
 /// no page, so the GPU stop is skipped without calling them.
 #[test]
 fn wasm_tour_runs_as_a_wasi_command() {
-    let examples: serde_json::Value =
-        serde_json::from_slice(&std::fs::read(repo_root().join("tests/examples.json")).unwrap())
-            .unwrap();
+    let examples: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(repo_root().join("tests/corpus/examples.json")).unwrap(),
+    )
+    .unwrap();
     let case = examples["cases"]
         .as_array()
         .unwrap()
@@ -361,7 +362,7 @@ fn wasm_build_options_from_a_metaprogram() {
     let dir = scratch("wasm-metaprogram");
     for name in ["build_wasi.jai", "program.jai"] {
         std::fs::copy(
-            repo_root().join("tests/native/wasm").join(name),
+            repo_root().join("tests/compiler/native/wasm").join(name),
             dir.join(name),
         )
         .unwrap();
@@ -385,7 +386,7 @@ fn wasm_build_options_from_a_metaprogram() {
 #[test]
 fn wasm_bare_module_imports_and_exports() {
     let dir = scratch("wasm-exports");
-    let source = repo_root().join("tests/native/wasm/exports.jai");
+    let source = repo_root().join("tests/compiler/native/wasm/exports.jai");
     let module = dir.join("exports.wasm");
     let args = [
         source.to_str().unwrap(),
@@ -414,7 +415,7 @@ fn wasm_bare_module_imports_and_exports() {
     );
     let output = node()
         .unwrap()
-        .arg(repo_root().join("tests/native/wasm/exports.mjs"))
+        .arg(repo_root().join("tests/compiler/native/wasm/exports.mjs"))
         .arg(&module)
         .output()
         .unwrap();

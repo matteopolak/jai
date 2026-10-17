@@ -1,0 +1,10 @@
+[
+  {
+    "name": "basics",
+    "stdout": "ok\n"
+  },
+  {
+    "name": "counter",
+    "stdout": "ok\n"
+  }
+]

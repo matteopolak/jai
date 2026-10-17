@@ -10,7 +10,7 @@ While a program runs, under `jaic -interp` or as a `jaic` executable, `context.s
   not `inline` or `#no_debug`, gets `Func.trace = Some(TraceInfo { name, file, line, col })`.
 - The interpreter tracks `trace_loc`: inside untraced procedures (`inline`, `#no_debug`) it holds the
   location of the call that entered them, so a traced call made there records the caller's own line
-  (test: `tests/stdlib/stack-trace-line-through-inline.jai`).
+  (test: `tests/compiler/regressions/stack-trace-line-through-inline.jai`).
 - `Interp::exec` (`interp/mod.rs`) pushes a node when such a function is entered. The node lives in
   the callee's interpreter stack frame (right after the frame). Its fields: `next` (the
   previous top), `info` (a leaked `Stack_Trace_Procedure_Info` cached per `FuncId`), `hash`,
@@ -72,4 +72,4 @@ While a program runs, under `jaic -interp` or as a `jaic` executable, `context.s
 ## Dependencies
 
 `ir::Func::trace`, `ir::Program::{file_paths, stack_trace}`, `interp::Interp::trace_enter`.
-Tests: `tests/stdlib/stack-trace-nodes.jai`, `tests/stdlib/compile-time-stack-trace.jai`.
+Tests: `tests/compiler/regressions/stack-trace-nodes.jai`, `tests/compiler/regressions/compile-time-stack-trace.jai`.

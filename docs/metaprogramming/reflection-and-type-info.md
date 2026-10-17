@@ -31,7 +31,7 @@ Metaprograms see a target workspace's types through exported records, not these 
 - New descriptor kind: a tag in `Type_Info_Tag`, a struct embedding `using #as info: Type_Info`, and an arm in `type_info_struct_type`. The tag numbers in `tag` (`typeinfo.rs`) must equal `Type_Info_Tag`.
 - Descriptors are built lazily, so `type_info` of a type forces its layout.
 
-Tests: `tests/stdlib/compiler-reflection-pure.jai`, `compiler-enum-external-type.jai`, `poly-struct-type-names.jai`.
+Tests: `tests/compiler/regressions/compiler-reflection-pure.jai`, `compiler-enum-external-type.jai`, `poly-struct-type-names.jai`.
 
 ## Dependencies
 

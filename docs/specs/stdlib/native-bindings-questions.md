@@ -176,7 +176,7 @@ not an extra public import parameter. Twenty previously unresolved conditional
 procedure/alias entries are now implemented for this explicit source profile.
 
 Original general lint reproducer:
-`tests/native-bindings/compiler-repros/lint-module-context/modules/Example/module.jai`.
+`stdlib/Bindings_Generator/tests/driven/sdk/compiler-repros/lint-module-context/modules/Example/module.jai`.
 Linting that module alone freezes bootstrap Context before its #add_context;
 normal main compilation and explicit `jailint --context main.jai main.jai`
 work. Proper long-term lint fix: load the target module/context additions before
@@ -218,7 +218,7 @@ Historical requests resolved by the refreshed reviewed page:
 Resolved module identity question: the reviewed language module contract requires
 different written argument lists to produce distinct module instances even when
 their effective defaults match. Original independent regression:
-`tests/native-bindings/compiler-repros/module-default-identity/main.jai`.
+`stdlib/Bindings_Generator/tests/driven/sdk/compiler-repros/module-default-identity/main.jai`.
 It now checks distinct implicit/explicit types and global storage, plus repeated
 identical-list type/storage identity. The private native-handle ABI test correctly
 selects its actual explicit SDK profile. Effective-default normalization would

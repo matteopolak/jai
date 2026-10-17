@@ -26,7 +26,7 @@ Lambdas do not capture locals. Using one is ``error: cannot access local `n` of 
 
 ## How to change it
 
-A lambda is checked against whatever procedure type the context supplies, so inference bugs are usually on the callee side (`infer_lambda_bindings`), not in the lambda body. Tests: `tests/stdlib/lang-lambdas.jai`, `proc-type-defaults-ifx.jai`, `type-directive-proc-one-param.jai`.
+A lambda is checked against whatever procedure type the context supplies, so inference bugs are usually on the callee side (`infer_lambda_bindings`), not in the lambda body. Tests: `tests/compiler/regressions/lang-lambdas.jai`, `proc-type-defaults-ifx.jai`, `type-directive-proc-one-param.jai`.
 
 ## Dependencies
 

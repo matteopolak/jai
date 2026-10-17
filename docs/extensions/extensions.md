@@ -47,7 +47,7 @@ The folder is part of `stdlib/`, so everything that copies or embeds the stdlib 
 - New extension module: add `stdlib/Extensions/<Name>/module.jai` (one feature per module, named after it, starting with a comment that says it is a jaic extension), add a row to the table above, and document it. Nothing in the compiler lists the modules: the help, quick fix and completion find it by listing the folder.
 - A compiler-backed type (like `Long_Double`): add a name to `jaic_type` in `sema/expr.rs` and export it from the module as `Name :: #jaic_type name;`.
 - Never put a module here whose name the public source files uses: those belong in `stdlib/` itself, under the official name.
-- Tests that enumerate modules include the folder: `crates/jaic-cli/tests/stdlib_targets.rs` checks each as `Extensions/<Name>` (keys in `tests/stdlib-targets.txt`), `tools/stdlib_coverage.py` keys them the same way in `tests/stdlib-coverage.txt`, and `tools/stdlib_runtime.py`, `tools/jaic-sweep.py` and `tools/jaic-diff.py` run `stdlib/Extensions/*/tests/*.jai` (test ids `Extensions/<Name>/tests/<file>`).
+- Tests that enumerate modules include the folder: `crates/jaic-cli/tests/stdlib_targets.rs` checks each as `Extensions/<Name>` (keys in `tests/compiler/stdlib-targets.txt`), `tools/stdlib_coverage.py` keys them the same way in `tests/stdlib-coverage.txt`, and `tools/stdlib_runtime.py`, `tools/jaic-sweep.py` and `tools/jaic-diff.py` run `stdlib/Extensions/*/tests/*.jai` (test ids `Extensions/<Name>/tests/<file>`).
 
 ## Configuration
 

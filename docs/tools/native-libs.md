@@ -228,7 +228,7 @@ Examples request `VK_LAYER_KHRONOS_validation` (hence the layers). `04_mesh_shad
 `cc`, `c++` and `ar` on macOS and Linux (`cc` also compiles Lemon when MojoShader builds); `clang`, `llvm-lib` and `llvm-nm` (the official LLVM release) and the
 MSVC libraries on Windows; network access to `raw.githubusercontent.com` and `github.com` on first
 build. Release archives include these libraries (`release.yml`'s Package step; the smoke test runs
-`tests/native-libs/simp-image.jai` and the FreeType, ImGui and MojoShader runtime tests (plus SDL2's on Windows
+`stdlib/Simp/tests/image.jai` and the FreeType, ImGui and MojoShader runtime tests (plus SDL2's on Windows
 x64) from the unpacked archive with `jaic -interp` and as built executables). Archives
 up to 0.4.2 did not, so Simp programs stopped with ``foreign procedure `stbi_load` is not available here``
 under `jaic -interp` and with a missing `stb_image` library when linking.

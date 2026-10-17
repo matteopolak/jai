@@ -28,7 +28,7 @@ The `cqe_seen` pointer parameter and its existing head-advance behavior are
 retained, with the intentionally unused pointer explicitly discarded rather
 than renaming a public parameter or suppressing a lint rule.
 
-`tests/extensions/io-uring-protocol.jai` loads the production queue source
+`stdlib/Extensions/Io_Uring/tests/protocol.jai` loads the production queue source
 directly on the actual host. Caller-owned memory exercises SQ reservation/full
 capacity, partial consumption, idempotent publication, u32 rollover, optional
 index arrays, 64/128-byte SQE and 16/32-byte CQE strides, and completion consumption.
@@ -36,16 +36,16 @@ A second real host thread also exchanges 1000 submissions/completions through th
 actual atomic publication paths. Interpreter/native O0/O2 pass on Darwin arm64.
 These are userspace protocol tests; no kernel syscall is called or substituted.
 
-`python3 tests/extensions/run-uring-protocol.py` repeats the host protocol,
+`python3 tools/extensions/run_uring_protocol.py` repeats the host protocol,
 Linux source checks on both CPUs, contextual strict lint and formatting checks,
 writing actual command results to ignored
 `artifacts/extensions-dependencies/uring-protocol/results.json`.
 
 ```sh
-JAIC_STDLIB="$PWD/stdlib" target/debug/jaic -interp tests/extensions/io-uring-protocol.jai
-JAIC_STDLIB="$PWD/stdlib" target/debug/jaic tests/extensions/io-uring-protocol.jai -O0 -exe artifacts/extensions-dependencies/uring-protocol-o0
+JAIC_STDLIB="$PWD/stdlib" target/debug/jaic -interp stdlib/Extensions/Io_Uring/tests/protocol.jai
+JAIC_STDLIB="$PWD/stdlib" target/debug/jaic stdlib/Extensions/Io_Uring/tests/protocol.jai -O0 -exe artifacts/extensions-dependencies/uring-protocol-o0
 artifacts/extensions-dependencies/uring-protocol-o0
-JAIC_STDLIB="$PWD/stdlib" target/debug/jaic tests/extensions/io-uring-protocol.jai -O2 -exe artifacts/extensions-dependencies/uring-protocol-o2
+JAIC_STDLIB="$PWD/stdlib" target/debug/jaic stdlib/Extensions/Io_Uring/tests/protocol.jai -O2 -exe artifacts/extensions-dependencies/uring-protocol-o2
 artifacts/extensions-dependencies/uring-protocol-o2
 ```
 
@@ -142,4 +142,4 @@ libc (`syscall`, `mmap`, `munmap`, `close`, `__errno_location`, declared inside 
 
 ## Tests
 
-`tests/stdlib/io-uring-raw.jai` runs on every platform and mode of the [stdlib runtime tests](../tools/stdlib-runtime-tests.md). On Linux with a usable io_uring it does a NOP, a batch that fills the submission queue, a write and a read of a file (`IORING_OP_WRITE`, `IORING_OP_READ`, an offset read, a read at the end of the file, a bad descriptor), the probe, a timed wait, and a ring with 128-byte entries and 32-byte completions. Everywhere else, and on a Linux that refuses io_uring, it prints why it skipped and exits 0. `tests/stdlib-targets.txt` lists the module's intentional failure on the other targets ([stdlib target check](../tools/stdlib-target-check.md)).
+`tests/stdlib/io-uring-raw.jai` runs on every platform and mode of the [stdlib runtime tests](../tools/stdlib-runtime-tests.md). On Linux with a usable io_uring it does a NOP, a batch that fills the submission queue, a write and a read of a file (`IORING_OP_WRITE`, `IORING_OP_READ`, an offset read, a read at the end of the file, a bad descriptor), the probe, a timed wait, and a ring with 128-byte entries and 32-byte completions. Everywhere else, and on a Linux that refuses io_uring, it prints why it skipped and exits 0. `tests/compiler/stdlib-targets.txt` lists the module's intentional failure on the other targets ([stdlib target check](../tools/stdlib-target-check.md)).

@@ -65,17 +65,17 @@ the suite's own `ALL PASSED.` and exit code 0. The project's `build.jai` also bu
 (`#foreign kernel32`), so the case copies `tools/upstream-drivers/reflector-tests.jai` into a scratch copy of the
 project. That driver makes the same test workspace calls. The suite found these jaic bugs, all fixed with tests:
 
-- a tagged-union tag with a default (`union tag := Kind.A { ... }`): `tests/stdlib/tagged-union-tag-default.jai`;
-- `for < :it_name`: `tests/stdlib/for-reverse-named-iterator.jai`;
+- a tagged-union tag with a default (`union tag := Kind.A { ... }`): `tests/compiler/regressions/tagged-union-tag-default.jai`;
+- `for < :it_name`: `tests/compiler/regressions/for-reverse-named-iterator.jai`;
 - `#assert` with format arguments: `tests/corpus/negative/assert-format-arguments.jai`;
 - a bare polymorphic struct parameter (`r: *BinaryReflector`) given a struct that `#as`-uses an instance. The body
   now sees the argument's own type, and the match costs an `#as` conversion:
-  `tests/stdlib/bare-poly-struct-derived-argument.jai`;
+  `tests/compiler/regressions/bare-poly-struct-derived-argument.jai`;
 - `#if R.FLAG` on a macro's constant `Type` argument;
 - a parameter type that names a later parameter (`info: *r.Info, r: *$R`);
 - a macro overload taking `Code`, which stopped the other overloads from binding `$T`;
 - `.FLAG & x.flags` inside `cast(int)`: the inferred member took `int`, not the flags type;
-- `compiler_get_struct_location` (it used to be unsupported): `tests/stdlib/compiler-struct-location.jai`.
+- `compiler_get_struct_location` (it used to be unsupported): `tests/compiler/regressions/compiler-struct-location.jai`.
 
 reflector's readers call `Reset( d, count, initialized = false )` on arrays of structs, then
 resize each element's `[] T` view. Those views are uninitialised memory, so the second resize reads a
@@ -91,7 +91,7 @@ toml-jai's examples (run by its `tests.jai`) found three more, also fixed:
 - `ifx c then x = 1 else x = 2;` as a statement;
 - `ok=, p.* = f();`.
 
-All three are in `tests/stdlib/tagged-union-constant-tags.jai`. Later rounds fixed `ok:, x.y = f();`
+All three are in `tests/compiler/regressions/tagged-union-constant-tags.jai`. Later rounds fixed `ok:, x.y = f();`
 (rule `decl.22`), `Type_Info_Struct_Member.Flags.OVERLAY` (`struct.18`), one-byte strings as `u8` in
 `c - "0"`, `split(s, ".")` and `cast(u8, "\u001F")` (`str.19`), `string_to_float64_new`, `FormatFloat`
 on a variant of a float, `null` in a struct literal over a union member's default (`struct.19`), and

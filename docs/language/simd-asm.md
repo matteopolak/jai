@@ -44,7 +44,7 @@ Add an instruction to the mnemonic match in `sema/asm.rs` or `asm/scalar.rs` (sc
 
 Vectors are 64-byte stack locals processed through a scratch buffer, so aliased operands (`addps v, v, v`) behave as on hardware. Keep it that way: never write the destination before every source is read.
 
-Tests (each prints `ok`): `tests/stdlib/lang-asm.jai`, `asm-vector-instructions.jai`, `asm-scalar-extended.jai`, `asm-simd-extended.jai`, `asm-avx512-masks.jai`, `asm-evex-decorations.jai`, `machine-x64-intrinsics.jai`. The expected values were recorded on x86-64 hardware (under Rosetta), so they also check the lowering against real instructions.
+Tests (each prints `ok`): `tests/compiler/regressions/lang-asm.jai`, `asm-vector-instructions.jai`, `asm-scalar-extended.jai`, `asm-simd-extended.jai`, `asm-avx512-masks.jai`, `asm-evex-decorations.jai`, `machine-x64-intrinsics.jai`. The expected values were recorded on x86-64 hardware (under Rosetta), so they also check the lowering against real instructions.
 
 ## Dependencies
 

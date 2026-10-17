@@ -56,7 +56,7 @@ The table is `binary_op` in `parser/expr.rs`; `BITWISE_PREC` is the shared bitwi
 
 1. Parse everything twice, with the old and new tables, and list every expression whose tree differs. (A throwaway tool did this: a thread-local table override in `expr.rs` plus a binary comparing `(span, op)` lists. It is not in the repo.)
 2. Run it over `stdlib/`, `tests/`, `examples/`, `tools/`, `benchmarks/`, and parenthesize each site to keep its meaning.
-3. Update the parser tests (`binary_precedence*`, `prefix_operators_bind_tighter_than_binary_ones`) and `tests/stdlib/operator-precedence.jai`.
+3. Update the parser tests (`binary_precedence*`, `prefix_operators_bind_tighter_than_binary_ones`) and `tests/compiler/regressions/operator-precedence.jai`.
 
 Two stdlib modules keep their own copy of the table and must change with it:
 
@@ -67,4 +67,4 @@ jaifmt never adds or removes tokens and spaces all binary operators alike, so it
 
 ## Dependencies
 
-`parser/expr.rs` (`binary_op`, `parse_binary`, `parse_cast_value`, `parse_unary`), `stdlib/Program_Print/module.jai`, `stdlib/Bindings_Generator/convert.jai`. Tests: `crates/jaic/src/parser/tests.rs`, `tests/stdlib/operator-precedence.jai`, `cast-operand-precedence.jai`, `program-print-expressions.jai`, `bindings-generator-c.jai`.
+`parser/expr.rs` (`binary_op`, `parse_binary`, `parse_cast_value`, `parse_unary`), `stdlib/Program_Print/module.jai`, `stdlib/Bindings_Generator/convert.jai`. Tests: `crates/jaic/src/parser/tests.rs`, `tests/compiler/regressions/operator-precedence.jai`, `cast-operand-precedence.jai`, `program-print-expressions.jai`, `bindings-generator-c.jai`.

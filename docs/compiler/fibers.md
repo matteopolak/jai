@@ -35,7 +35,7 @@ wasm: all three fail to compile with "fibers are not supported when compiling fo
 
 ## How to change it
 
-A new target needs a new `asm_*` macro in `fiber.rs` (plus its entry in `module_asm` and the `host` module for the interpreter). Keep the `Context` offsets (0, 8, 16, 24) in sync with the assembly. Tests: `tests/native/fibers/` run by `crates/jaic-cli/tests/native.rs` (`fibers_*`), and the `io-fibers-*` stdlib tests.
+A new target needs a new `asm_*` macro in `fiber.rs` (plus its entry in `module_asm` and the `host` module for the interpreter). Keep the `Context` offsets (0, 8, 16, 24) in sync with the assembly. Tests: `tests/compiler/native/fibers/` run by `crates/jaic-cli/tests/native.rs` (`fibers_*`), and the `io-fibers-*` stdlib tests.
 
 ## Configuration
 

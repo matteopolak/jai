@@ -42,4 +42,4 @@ Io :: #import "Extensions/Io"(STACK_BYTES = 64 * 1024);
 
 ## Dependencies
 
-`Basic`, [`Extensions/Json`](json.md) (only for `read_json`), the fiber intrinsics, `POSIX`/`Windows` for stack memory and signals. Tests: `tests/stdlib/io-fibers-*.jai` (interp and native; skipped on wasm), `tests/native/fibers/`.
+`Basic`, [`Extensions/Json`](json.md) (only for `read_json`), the fiber intrinsics, `POSIX`/`Windows` for stack memory and signals. Tests: `tests/stdlib/io-fibers-*.jai` (interp and native; skipped on wasm), `tests/compiler/native/fibers/`.

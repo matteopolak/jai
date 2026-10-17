@@ -2,7 +2,7 @@
 
 ## Extended floating values in Basic formatting
 
-`tests/extensions/rules-jaic-extensions.jai` calls `tprint("%", sqrtl(one * 2))`
+`stdlib/Extensions/Long_Double/tests/libm-foreign.jai` calls `tprint("%", sqrtl(one * 2))`
 where the value has the compiler extension's native Long_Double type. Linux
 ARM64/x64 interpreter and native records fail in Basic's float formatter. The
 current implementation accepts runtime sizes 4 and 8 only; the reviewed Basic

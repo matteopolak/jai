@@ -56,7 +56,7 @@ A struct body can also hold constants (`K :: 3;`, read as `Plain.K`) {#struct.15
 
 ## How to change it
 
-New struct flags: parse them in `parser/aggregate.rs` next to `#no_padding` and `#align`, and apply them in `layout_struct_inner`. Tests: `tests/stdlib/poly-struct-type-names.jai`, `baked-struct-restriction.jai`, `struct-body-member-path-override.jai`, `struct-member-overlay-flag.jai`, `struct-literal-null-over-union-default.jai`.
+New struct flags: parse them in `parser/aggregate.rs` next to `#no_padding` and `#align`, and apply them in `layout_struct_inner`. Tests: `tests/compiler/regressions/poly-struct-type-names.jai`, `baked-struct-restriction.jai`, `struct-body-member-path-override.jai`, `struct-member-overlay-flag.jai`, `struct-literal-null-over-union-default.jai`.
 
 ## Dependencies
 

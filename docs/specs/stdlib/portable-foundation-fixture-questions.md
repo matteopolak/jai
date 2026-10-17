@@ -8,7 +8,7 @@ configuration acceptance; its named JSON receipt is not present in this
 worker's shared filesystem, so no alternate source lookup was attempted.
 
 Independent current control:
-tests/portable-stdlib/foundation-config-negative/non-main.jai imports
+stdlib/Basic/tests/config-negative/non-main.jai imports
 Non_Main_Basic_Parameters from its local modules directory and calls run.
 That module configures Basic ENABLE_ASSERT=false and run actually calls print.
 Fresh source checks unexpectedly accept this in all six desktop CPU/OS targets.

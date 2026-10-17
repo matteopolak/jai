@@ -158,7 +158,7 @@ jobs:
         id: stdlib-targets
         continue-on-error: true
         # Every stdlib module with -no_dce for linux, macos, windows and wasm, against
-        # tests/stdlib-targets.txt (docs/tools/stdlib-target-check.md); every Objective-C selector
+        # tests/compiler/stdlib-targets.txt (docs/tools/stdlib-target-check.md); every Objective-C selector
         # against its arguments and, on macOS, the runtime (docs/tools/objc-selector-check.md).
         run: cargo test -p jaic-cli --locked --test stdlib_targets --test objc_selectors
       - name: Prepare hash-pinned SDL Python test inputs
@@ -331,7 +331,7 @@ jobs:
           brew install openssl@3 pkg-config
           # The stdlib's FreeType is built by tools/build_native_libs.py and found first;
           # Homebrew's stays for projects that link it themselves. SDL2 is not built there:
-          # tests/native-regressions/sdl2-geometry-timer.jai uses Homebrew's.
+          # stdlib/SDL/tests/geometry-timer.jai uses Homebrew's.
           brew list freetype > /dev/null 2>&1 || brew install freetype
           brew list sdl2 > /dev/null 2>&1 || brew install sdl2
           echo 'JAIC_TEST_FONT_PATH=/System/Library/Fonts/Supplemental/Arial.ttf' >> "$GITHUB_ENV"
@@ -353,8 +353,8 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           test -r /usr/share/alsa/alsa.conf
-          test -r "$GITHUB_WORKSPACE/tests/audio/fixtures/alsa-null.conf"
-          echo "ALSA_CONFIG_PATH=$GITHUB_WORKSPACE/tests/audio/fixtures/alsa-null.conf" >> "$GITHUB_ENV"
+          test -r "$GITHUB_WORKSPACE/stdlib/Sound_Player/tests/fixtures/alsa-null.conf"
+          echo "ALSA_CONFIG_PATH=$GITHUB_WORKSPACE/stdlib/Sound_Player/tests/fixtures/alsa-null.conf" >> "$GITHUB_ENV"
           echo 'JAI_AUDIO_ALSA_DEVICE=jai_audio_test' >> "$GITHUB_ENV"
       - name: Build production compiler and lint tools
         run: |
@@ -377,7 +377,7 @@ jobs:
           native="$(python3 -c 'import sys;sys.path.insert(0,"tools");import build_native_libs;print(build_native_libs.output_dir())')"
           echo "JAIC_NATIVE_LIBS=$PWD/target/audio-native:$PWD/target/production-bindings/native:$PWD/target/window-native:$native" >> "$GITHUB_ENV"
           if [[ "$RUNNER_OS" == macOS ]]; then
-            clang -Wall -Wextra -Werror tests/window-render/clipboard-guard.m -framework AppKit -o target/clipboard-guard
+            clang -Wall -Wextra -Werror stdlib/Clipboard/tests/native/guard.m -framework AppKit -o target/clipboard-guard
             echo "JAIC_CLIPBOARD_GUARD=$PWD/target/clipboard-guard" >> "$GITHUB_ENV"
           fi
       - name: Build the real Linux clipboard provider
@@ -393,9 +393,12 @@ jobs:
           [[ "$RUNNER_OS" == Linux ]] && run=(xvfb-run -a -s "-screen 0 1280x1024x24")
           "${run[@]}" python3 -u tools/stdlib_runtime.py --jaic target/release/jaic --platform ${{ matrix.platform }} \
             --modes interp,native,wasm-interp,wasm-native --strict --coverage target/stdlib-coverage.txt
-      - name: Reviewed contract native O2
+      - name: Stdlib runtime tests, native O2
         if: ${{ always() && !cancelled() }}
-        run: python3 tests/stdlib-contract/run.py --jaic "$PWD/target/release/jaic" --stdlib-root "$PWD/stdlib" --mode native --opt O2
+        run: |
+          run=()
+          [[ "$RUNNER_OS" == Linux ]] && run=(xvfb-run -a -s "-screen 0 1280x1024x24")
+          "${run[@]}" python3 -u tools/stdlib_runtime.py --jaic target/release/jaic --platform ${{ matrix.platform }} --modes native --opt O2 --strict
       - name: NEW producer behavior suites against production
         if: ${{ always() && !cancelled() }}
         run: |
@@ -413,7 +416,7 @@ jobs:
             --jailint target/debug/jailint --jaifmt target/jaifmt --native-libs "$native" --bindings-native-libs target/production-bindings/native --font "$font" "${display[@]}"
       - name: WebGPU without a window (wgpu-native, interpreted and built)
         # Renders offscreen, runs a compute shader, uploads a texture, maps buffers and checks
-        # an error scope (tests/webgpu/headless.jai). Linux has Mesa's lavapipe; the macOS
+        # an error scope (stdlib/Extensions/WebGPU/tests/headless.jai). Linux has Mesa's lavapipe; the macOS
         # runners are VMs whose Metal device may be missing, so there no adapter is a skip.
         if: ${{ always() && !cancelled() }}
         run: |
@@ -421,7 +424,7 @@ jobs:
           [[ "$RUNNER_OS" == Linux ]] && require=(--require-adapter)
           python3 -u tools/test_webgpu_native.py --jaic target/debug/jaic "${require[@]}"
       - name: WebGPU in a window (surface, configure, present, read back)
-        # tests/webgpu/window.jai opens a Window_Creation window and presents frames to its
+        # stdlib/Extensions/WebGPU/tests/window.jai opens a Window_Creation window and presents frames to its
         # surface: on Linux an X11 surface on Xvfb, presented by lavapipe through Vulkan's Xlib WSI.
         if: ${{ always() && !cancelled() }}
         run: |
@@ -496,8 +499,8 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           test -r /usr/share/alsa/alsa.conf
-          test -r "$GITHUB_WORKSPACE/tests/audio/fixtures/alsa-null.conf"
-          echo "ALSA_CONFIG_PATH=$GITHUB_WORKSPACE/tests/audio/fixtures/alsa-null.conf" >> "$GITHUB_ENV"
+          test -r "$GITHUB_WORKSPACE/stdlib/Sound_Player/tests/fixtures/alsa-null.conf"
+          echo "ALSA_CONFIG_PATH=$GITHUB_WORKSPACE/stdlib/Sound_Player/tests/fixtures/alsa-null.conf" >> "$GITHUB_ENV"
           echo 'JAI_AUDIO_ALSA_DEVICE=jai_audio_test' >> "$GITHUB_ENV"
       - name: Build jaic
         run: cargo build --release --locked -p jaic-cli
@@ -561,7 +564,7 @@ jobs:
         run: |
           tools/install_ci_llvm_macos.sh
           brew install openssl@3 pkg-config
-          # tests/native-regressions/sdl2-geometry-timer.jai links the installed SDL2.
+          # stdlib/SDL/tests/geometry-timer.jai links the installed SDL2.
           brew list sdl2 > /dev/null 2>&1 || brew install sdl2
           brew list freetype > /dev/null 2>&1 || brew install freetype
           echo 'JAIC_TEST_FONT_PATH=/System/Library/Fonts/Supplemental/Arial.ttf' >> "$GITHUB_ENV"
@@ -581,8 +584,8 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           test -r /usr/share/alsa/alsa.conf
-          test -r "$GITHUB_WORKSPACE/tests/audio/fixtures/alsa-null.conf"
-          echo "ALSA_CONFIG_PATH=$GITHUB_WORKSPACE/tests/audio/fixtures/alsa-null.conf" >> "$GITHUB_ENV"
+          test -r "$GITHUB_WORKSPACE/stdlib/Sound_Player/tests/fixtures/alsa-null.conf"
+          echo "ALSA_CONFIG_PATH=$GITHUB_WORKSPACE/stdlib/Sound_Player/tests/fixtures/alsa-null.conf" >> "$GITHUB_ENV"
           echo 'JAI_AUDIO_ALSA_DEVICE=jai_audio_test' >> "$GITHUB_ENV"
       - name: Build real private runtime and ABI8 fixture providers
         run: |
@@ -600,7 +603,7 @@ jobs:
           native="$(python3 -c 'import sys;sys.path.insert(0,"tools");import build_native_libs;print(build_native_libs.output_dir())')"
           echo "JAIC_NATIVE_LIBS=$PWD/target/audio-native:$PWD/target/production-bindings/native:$PWD/target/window-native:$native" >> "$GITHUB_ENV"
           if [[ "$RUNNER_OS" == macOS ]]; then
-            clang -Wall -Wextra -Werror tests/window-render/clipboard-guard.m -framework AppKit -o target/clipboard-guard
+            clang -Wall -Wextra -Werror stdlib/Clipboard/tests/native/guard.m -framework AppKit -o target/clipboard-guard
             echo "JAIC_CLIPBOARD_GUARD=$PWD/target/clipboard-guard" >> "$GITHUB_ENV"
           fi
       - name: Build the real Linux clipboard provider

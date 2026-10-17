@@ -72,7 +72,7 @@ def build(sdk, stdlib):
             raise ValueError(f'undeclared third-party dependency closure: {foreign}')
         run(['codesign', '--force', '--sign', '-', shared])
         run(['codesign', '--verify', shared])
-        abi = ROOT / 'tests/native/android-crypto/abi.c'
+        abi = ROOT / 'stdlib/Android/tests/native/abi.c'
         runtime_versions = {}
         for artifact in [archive, shared]:
             executable = stage / ('abi-' + artifact.suffix[1:])
@@ -81,7 +81,7 @@ def build(sdk, stdlib):
             run([executable])
             executable.unlink()
             run(['cc', '-std=c11', '-Wall', '-Wextra', '-Werror', '-I', sdk / 'include',
-                 ROOT / 'tests/native/android-crypto/package-version.c', artifact,
+                 ROOT / 'stdlib/Android/tests/native/package-version.c', artifact,
                  '-Wl,-rpath,' + str(stage), '-o', executable])
             actual_version = run([executable]).strip()
             if actual_version != version[1]:

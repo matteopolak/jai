@@ -170,13 +170,13 @@ None at run time. Constants in `threads.rs`: `PREEMPT_TICKS` (20,000 blocks), `N
 ## Dependencies
 
 `stdlib/Thread/`, `stdlib/Atomics.jai`, `interp/native/callbacks.rs` (`Gate`, `calling_out`).
-Tests: `tests/stdlib/threads-cooperative.jai`,
-`tests/stdlib/threads-group-and-condition.jai`, `tests/stdlib/threads-worker-requests.jai` (a worker serving
+Tests: `tests/compiler/regressions/threads-cooperative.jai`,
+`tests/compiler/regressions/threads-group-and-condition.jai`, `tests/compiler/regressions/threads-worker-requests.jai` (a worker serving
 repeated requests from a semaphore) and `tests/stdlib/file-async.jai` (all run natively and in the playground);
 `sandbox_threads_wake_waiters_and_report_deadlocks` in `crates/jaic-cli/tests/cli.rs` (deadlocks and timed waits
 under `-os wasm`);
 `c_thread_callbacks_block_on_jai_threads` in `crates/jaic-cli/tests/native.rs`
-(`tests/native/c-callback-threads`: a C thread's callback waiting on a Jai mutex, condition
+(`tests/compiler/native/c-callback-threads`: a C thread's callback waiting on a Jai mutex, condition
 variable, join and sleep, nested callbacks on the main thread, a C thread and a Jai thread, a Jai
 thread running while another waits in C, and both kinds of deadlock), checked against the native
 build. The deadlock cases are timed from the `started` line the program writes to stderr, so compile time never counts toward the grace period. On Windows

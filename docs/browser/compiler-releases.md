@@ -16,7 +16,7 @@
 3. **Inventory.** The stage must contain `jai_wasm.wasm`, `engine.mjs`, `jaifmt-playground.jai`, `jaifmt.wasm` (compiled by the native `jaic` given with `--jaic`, checked against the `jaifmt_wasm_sha256` receipt and published in the metadata), `build-metadata.json`, `README.md`, `tour.json` and `tour/main.jai` (the rest of the tour sits under `tour/`). Only `.wasm`, `.mjs`, `.jai`, `.json` and `.md` regular files with normalized relative paths are accepted. The bundle is limited to 64 files, 64 MiB per file and 128 MiB total. Each file's size and SHA-256 are recorded.
 4. **Probe.** `node tools/check_browser_release.mjs <stage> --report <json>` imports the **staged** `engine.mjs` and Wasm. It requires the exact top-level inventory (the five files plus `tour.json`), a `tour/` folder whose files are exactly those `tour.json` lists, a matching `wasm_sha256` and a self-contained `engine.mjs`. It then:
    - runs execution probes: exit codes, compile-time and runtime phases, nested `#load`, diagnostics, `Hash_Table`, a `#run` workspace message loop, the virtual clock, separate stdout/stderr, the execution budget, a refused `#foreign`;
-   - runs the staged tour within the playground budget and checks its key output lines (`tests/examples.json`);
+   - runs the staged tour within the playground budget and checks its key output lines (`tests/corpus/examples.json`);
    - formats a file with the staged driver;
    - checks the language server (initialize, definition, hover, completion, versioned diagnostics) when the module exports it;
    - runs `check_playground_stdlib.mjs`, where every `tests/stdlib` program must pass apart from those `tests/stdlib-runtime-skips.txt` lists for `playground`.
@@ -35,7 +35,7 @@ Schema v2 bundles have no UI (`index.html`, `worker.mjs`, editor files) and no `
 
 ## How to change it
 
-- **Bundle contents:** keep `BUNDLED_GLUE` and the bundled examples (`build_scripting_wasm.py`, `tests/examples.json`), `REQUIRED` and `MAX_FILES` (`package_browser_release.py`), `BUNDLE_FILES`/`BUNDLE_EXAMPLES` (`check_browser_release.mjs`), the schema's `files` bounds (7 to 64) and the tests in step. Coordinate any change with the portfolio's verifier and sync script.
+- **Bundle contents:** keep `BUNDLED_GLUE` and the bundled examples (`build_scripting_wasm.py`, `tests/corpus/examples.json`), `REQUIRED` and `MAX_FILES` (`package_browser_release.py`), `BUNDLE_FILES`/`BUNDLE_EXAMPLES` (`check_browser_release.mjs`), the schema's `files` bounds (7 to 64) and the tests in step. Coordinate any change with the portfolio's verifier and sync script.
 - **Archive policy:** `package_browser_release.py`. Keep the inventory exhaustive, paths and sizes bounded, dirty or changing sources refused, and output atomic.
 - **Probes:** `check_browser_release.mjs`. Probes must run the staged files, not the source tree.
 - Tests: the Python tests (`test_package_browser_release.py`, `test_build_scripting_wasm.py`) use inert fixtures and mock the build and Node calls. They prove archive, staging and refusal behavior, not compilation. `test_browser_release.mjs` proves the inventory rules and that a header-only module fails real execution.

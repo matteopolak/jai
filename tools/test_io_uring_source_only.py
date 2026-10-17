@@ -33,7 +33,7 @@ class IoUringSourceOnly(unittest.TestCase):
 
     def test_source_only_never_builds_or_executes_main(self):
         args = argparse.Namespace(jaic="metadata-only", timeout=12, coverage=None)
-        path = ROOT / "tests/extensions/io-uring-dependency-repro.jai"
+        path = ROOT / "stdlib/Extensions/Io_Uring/tests/dependency.jai"
         for mode in runtime.MODES:
             with (
                 self.subTest(mode=mode),
@@ -95,7 +95,7 @@ class IoUringSourceOnly(unittest.TestCase):
                 report = directory / "report.json"
                 case = {
                     "id": "extensions/io-uring-dependency-repro",
-                    "path": ROOT / "tests/extensions/io-uring-dependency-repro.jai",
+                    "path": ROOT / "stdlib/Extensions/Io_Uring/tests/dependency.jai",
                     "source_check_only": True,
                 }
                 with (

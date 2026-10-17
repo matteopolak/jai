@@ -48,7 +48,7 @@ Metaprograms read code with `compiler_get_nodes` and write it back with `compile
 
 - A new insertion context (enum bodies do this in `eval_insert_enum_items`): evaluate with `eval_insert_operand`, convert with `insert_stmts_from`, check the result in the right scope.
 - Changing which scope a `Code` argument uses changes macro hygiene everywhere.
-- Tests: `tests/stdlib/lang-insert-block.jai`, `insert-scope-named-code.jai`, `insert-scope-string-top-level.jai`, `insert-expression-code-scope.jai`, `insert-replacements.jai`, `macro-code-variable-arg.jai`, `enum-insert-members.jai`.
+- Tests: `tests/compiler/regressions/lang-insert-block.jai`, `insert-scope-named-code.jai`, `insert-scope-string-top-level.jai`, `insert-expression-code-scope.jai`, `insert-replacements.jai`, `macro-code-variable-arg.jai`, `enum-insert-members.jai`.
 
 ## Dependencies
 

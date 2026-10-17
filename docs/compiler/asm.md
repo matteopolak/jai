@@ -232,7 +232,7 @@ arm64 `#asm`, so there is nothing to add for arm64; x64 blocks simply run there 
 
 `ir` (builder, `Intrinsic::{CompareAndSwap, CycleCounter, Pause, DebugBreak, Trap, Popcount, Ctlz, Cttz, Bswap,
 Fma}`), `sema::calls` (macro expansion, `Code` parameters), `interp` and `jaic-llvm` for the intrinsics. Tests:
-`tests/stdlib/lang-asm.jai`, `asm-vector-instructions.jai`, `asm-evex-decorations.jai`, `asm-scalar-extended.jai`,
+`tests/compiler/regressions/lang-asm.jai`, `asm-vector-instructions.jai`, `asm-evex-decorations.jai`, `asm-scalar-extended.jai`,
 `asm-simd-extended.jai`, `asm-avx512-masks.jai`, `asm-f16c-sha-gfni.jai` (swept by `tools/jaic-sweep.py stdlib`; the
 last four also built and run natively by `asm_instructions_run_natively` in `crates/jaic-cli/tests/native.rs`) and the
 `asm_*` parser tests.

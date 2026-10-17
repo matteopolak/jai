@@ -56,7 +56,7 @@ embedding preserves its accumulated offset and each embedding's filter.
 Pointer-backed promoted storage has no inline layout offset and is rejected as
 an overlay/place target.
 
-Tests: `tests/stdlib/using-pointer-member.jai`, `using-member-default-override.jai`, `struct-body-member-path-override.jai`, `module-using-global.jai`, `module-using-import-reexport.jai`, `using-discard-struct-constants.jai`, `using-global-of-own-struct.jai`.
+Tests: `tests/compiler/regressions/using-pointer-member.jai`, `using-member-default-override.jai`, `struct-body-member-path-override.jai`, `module-using-global.jai`, `module-using-import-reexport.jai`, `using-discard-struct-constants.jai`, `using-global-of-own-struct.jai`.
 
 ## Dependencies
 

@@ -63,7 +63,7 @@ class WindowsProviderEnvironment(unittest.TestCase):
                 block = body[body.index(probe) :].split("      - name:", 1)[0]
                 triple = "aarch64" if job == "native-arm64" else "x86_64"
                 self.assertIn(f"clang --target={triple}-pc-windows-msvc", block)
-                self.assertIn("tests/native-provider/windows-provider-load.c", block)
+                self.assertIn("stdlib/Runtime_Support_Crash_Handler/tests/native/provider-load.c", block)
                 self.assertIn(
                     'target/provider-load/provider-load.exe "$(cygpath -m "$PWD/stdlib/internal/runtime/crash-native/platform_io_windows_crash.dll")" '
                     + export,
@@ -79,7 +79,7 @@ class WindowsProviderEnvironment(unittest.TestCase):
     ):
         source = (
             Path(__file__).resolve().parents[1]
-            / "tests/native-provider/windows-provider-load.c"
+            / "stdlib/Runtime_Support_Crash_Handler/tests/native/provider-load.c"
         ).read_text()
         self.assertIn('LoadLibraryW(L"platform_io_windows_crash.dll")', source)
         self.assertIn("GetProcAddress(provider, export_name)", source)

@@ -47,7 +47,7 @@ Two lookups that cross scopes:
 
 Entity creation and visibility: `declare_stmt` in `sema/modules.rs` (`file_private`, `target_scope`). Lookup: `sema/scope.rs` (`Found::Using`, `module_lookup`). Conditional expansion: `expand_pending` and `expand_plain_ifs` in `scope.rs`. Keep `plain_condition` free of calls, or the early pass could run code before the program is ready.
 
-Tests: `tests/stdlib/module-using-import-reexport.jai`, `module-using-global.jai`.
+Tests: `tests/compiler/regressions/module-using-import-reexport.jai`, `module-using-global.jai`.
 
 ## Configuration
 

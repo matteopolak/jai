@@ -29,7 +29,7 @@ An alias equals its target {#typeval.4}; a `#type,distinct` type differs from it
 
 To add a type kind, extend `TypeKind` and `size_of`/`align_of`/`name` in `types.rs`, then emit its info in `build_type_info`. Info globals are created once per type (`type_info_global`). The `Type_Info` struct definitions come from the prelude; keep their field names in sync with `type_info_struct_type`.
 
-Tests: `tests/stdlib/type-field-constant.jai`, `type-of-outer-local-expr.jai`, `poke-name-shared-type.jai`.
+Tests: `tests/compiler/regressions/type-field-constant.jai`, `type-of-outer-local-expr.jai`, `poke-name-shared-type.jai`.
 
 ## Dependencies
 
