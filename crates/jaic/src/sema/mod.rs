@@ -473,6 +473,11 @@ pub struct Compiler {
     namespace_generation: u64,
     /// The procedures targeting each IR function (`procs_of_func`).
     func_targets: HashMap<ir::FuncId, Vec<ProcId>>,
+    /// `module_declarations` answers (before `bound_entities`) and the `namespace_generation`
+    /// they hold for. Only answers that no later expansion or import can change are kept.
+    module_names: HashMap<(ModuleId, Sym), (u64, Rc<[EntityId]>)>,
+    /// Set while computing a `module_declarations` answer that may still change.
+    module_names_unsettled: bool,
     /// Debug builds check `namespace_generation` against a full count of scope contents.
     #[cfg(debug_assertions)]
     namespace_check: std::cell::Cell<(usize, u64)>,
@@ -737,6 +742,8 @@ impl Compiler {
             parked_epoch: 0,
             namespace_generation: 0,
             func_targets: HashMap::default(),
+            module_names: HashMap::default(),
+            module_names_unsettled: false,
             #[cfg(debug_assertions)]
             namespace_check: std::cell::Cell::new((0, 0)),
             interp: crate::interp::Interp::default(),

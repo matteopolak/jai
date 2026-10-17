@@ -1583,13 +1583,14 @@ impl Compiler {
 
     /// Resolve the module behind import entry `index` of `scope`, loading it on first use.
     pub fn import_module(&mut self, scope: ScopeId, index: usize) -> Result<Option<ModuleId>> {
-        let entry = self.scope(scope).imports[index].clone();
-        if let Some(module) = entry.module {
+        let known = &self.scope(scope).imports[index];
+        if let Some(module) = known.module {
             return Ok(Some(module));
         }
-        if entry.loading {
+        if known.loading {
             return Ok(None);
         }
+        let entry = known.clone();
         self.scope_mut(scope).imports[index].loading = true;
         let resolved = (|| {
             let filter = self.resolve_name_filter(entry.from_scope, &entry.filter)?;

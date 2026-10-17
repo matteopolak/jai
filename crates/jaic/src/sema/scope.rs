@@ -272,6 +272,7 @@ impl Compiler {
     /// Queue a top-level item of `scope` for expansion.
     pub fn push_pending(&mut self, scope: ScopeId, item: Pending) {
         self.scope_mut(scope).pending.push(item);
+        self.namespace_changed(scope);
         self.unsettle(scope);
     }
 
@@ -911,7 +912,11 @@ impl Compiler {
                     return Ok(Found::Entities(found));
                 }
             }
-            for entry in self.scope(sid).usings.clone() {
+            // Entries added while these are searched are not seen by this lookup.
+            for k in 0..self.scope(sid).usings.len() {
+                let Some(entry) = self.scope(sid).usings.get(k).cloned() else {
+                    break;
+                };
                 match &entry {
                     UsingEntry::Module(m, filter) => {
                         if filter.as_deref().is_some_and(|f| filter_hides(f, name)) {
@@ -1000,10 +1005,46 @@ impl Compiler {
     /// (`__arithmetic_overflow` in Runtime_Support); resolving a user's name through a
     /// module needs `module_lookup`, which also sees members of exported `using` globals.
     pub fn module_declarations(&mut self, module: ModuleId, name: Sym) -> Result<Vec<EntityId>> {
+        // A search inside a re-export cycle skips modules, so only whole answers are kept.
+        if !self.reexport_visiting.is_empty() {
+            let ids = self.module_declarations_unbound(module, name)?;
+            return Ok(self.bound_entities(&ids));
+        }
+        let generation = self.namespace_generation;
+        if let Some((at, ids)) = self.module_names.get(&(module, name))
+            && *at == generation
+        {
+            let ids = ids.clone();
+            return Ok(self.bound_entities(&ids));
+        }
+        let outer = std::mem::replace(&mut self.module_names_unsettled, false);
+        let ids = self.module_declarations_unbound(module, name);
+        let unsettled = std::mem::replace(&mut self.module_names_unsettled, outer);
+        let ids = ids?;
+        if !unsettled && self.namespace_generation == generation {
+            self.module_names
+                .insert((module, name), (generation, ids.as_slice().into()));
+        }
+        Ok(self.bound_entities(&ids))
+    }
+
+    /// `module_declarations` before aliases are replaced by what they are bound to.
+    fn module_declarations_unbound(
+        &mut self,
+        module: ModuleId,
+        name: Sym,
+    ) -> Result<Vec<EntityId>> {
         let scope = self.modules[module.0 as usize].scope;
         self.expand_pending(scope)?;
         if !self.modules[module.0 as usize].loading {
             self.validate_module_arguments(module, Span::NONE)?;
+        }
+        let s = self.scope(scope);
+        if s.pending_done < s.pending.len()
+            || self.modules[module.0 as usize].loading
+            || !self.modules[module.0 as usize].arguments_validated
+        {
+            self.module_names_unsettled = true;
         }
         let own: Vec<EntityId> = self
             .scope(scope)
@@ -1017,7 +1058,7 @@ impl Compiler {
             })
             .unwrap_or_default();
         if !own.is_empty() {
-            return Ok(self.bound_entities(&own));
+            return Ok(own);
         }
         // Names of modules this one re-exports with `using M :: #import "M";` (each module
         // once per lookup, so re-export cycles end).
@@ -1026,18 +1067,24 @@ impl Compiler {
         }
         self.reexport_visiting.push(module);
         let mut result = Ok(own);
-        for index in self.modules[module.0 as usize]
-            .exported_using_imports
-            .clone()
-        {
+        for k in 0..self.modules[module.0 as usize].exported_using_imports.len() {
+            let Some(&index) = self.modules[module.0 as usize]
+                .exported_using_imports
+                .get(k)
+            else {
+                break;
+            };
             let ids = match self.lookup_import(scope, index) {
                 Ok(Some(inner)) => {
                     if filter_hides(&self.scope(scope).imports[index].filter, name) {
                         continue;
                     }
-                    self.module_declarations(inner, name)
+                    self.module_declarations_unbound(inner, name)
                 }
-                Ok(None) => continue,
+                Ok(None) => {
+                    self.module_names_unsettled = true;
+                    continue;
+                }
                 Err(e) => Err(e),
             };
             if !matches!(&ids, Ok(ids) if ids.is_empty()) {
@@ -1088,7 +1135,14 @@ impl Compiler {
         module: ModuleId,
         name: Sym,
     ) -> Result<Option<(UsingEntry, Sym)>> {
-        for entry in self.modules[module.0 as usize].exported_usings.clone() {
+        for k in 0..self.modules[module.0 as usize].exported_usings.len() {
+            let Some(entry) = self.modules[module.0 as usize]
+                .exported_usings
+                .get(k)
+                .cloned()
+            else {
+                break;
+            };
             if let Some(found) = self.aggregate_using_member(&entry, name)? {
                 return Ok(Some(found));
             }
@@ -1099,10 +1153,13 @@ impl Compiler {
         self.reexport_visiting.push(module);
         let scope = self.modules[module.0 as usize].scope;
         let mut result = Ok(None);
-        for index in self.modules[module.0 as usize]
-            .exported_using_imports
-            .clone()
-        {
+        for k in 0..self.modules[module.0 as usize].exported_using_imports.len() {
+            let Some(&index) = self.modules[module.0 as usize]
+                .exported_using_imports
+                .get(k)
+            else {
+                break;
+            };
             match self.lookup_import(scope, index) {
                 Ok(Some(inner))
                     if !filter_hides(&self.scope(scope).imports[index].filter, name) =>
