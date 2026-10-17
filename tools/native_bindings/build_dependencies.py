@@ -194,7 +194,10 @@ def main():
         if name == 'rpmalloc_callback_probe':
             # Shared adapters must use the same SDK instance as allocations.
             # Statically embedding a second allocator would split ownership.
-            extra = ['-L', args.output, '-lbinding_rpmalloc_sdk'+('_nostats' if name.endswith('_nostats') else '')]
+            # The SDK sits next to the probe: the interpreter dlopens the probe on its own, so the
+            # loader needs the probe's directory in its search path to find the SDK.
+            extra = ['-L', args.output, '-lbinding_rpmalloc_sdk'+('_nostats' if name.endswith('_nostats') else ''),
+                     '-Wl,-rpath,@loader_path' if suffix == '.dylib' else '-Wl,-rpath,$ORIGIN']
         run(['c++' if name in ('meshoptimizer','imgui') else 'cc', '-dynamiclib' if suffix == '.dylib' else '-shared', *compiled,
              '-lm', *extra, '-o', args.output / ('lib' + name + suffix)])
         print('Built ' + name)
