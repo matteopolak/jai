@@ -856,11 +856,12 @@ fn find_file(compiler: &Compiler, path: &Path) -> Option<FileId> {
 /// going to `host`, with what jailint needs (expression types, casts, uses) when `lint`.
 fn editor_facts(
     prefix: &str,
+    open: &[PathBuf],
     host: &Rc<RefCell<SandboxHost>>,
     lint: bool,
     untrusted: bool,
 ) -> Box<IdeFacts> {
-    let mut facts = IdeFacts::new(vec![prefix.to_string()]);
+    let mut facts = IdeFacts::new(vec![prefix.to_string()]).with_files(open.to_vec());
     facts.output = Some(host.clone());
     facts.lint = lint;
     facts.untrusted = untrusted;
@@ -870,6 +871,7 @@ fn editor_facts(
 /// Gives each compiler a metaprogram creates editor facts, and keeps it when it is done.
 struct Built {
     prefix: String,
+    open: Vec<PathBuf>,
     host: Rc<RefCell<SandboxHost>>,
     lint: bool,
     untrusted: bool,
@@ -880,6 +882,7 @@ impl WorkspaceObserver for Built {
     fn created(&mut self, compiler: &mut Compiler) {
         compiler.ide = Some(editor_facts(
             &self.prefix,
+            &self.open,
             &self.host,
             self.lint,
             self.untrusted,
@@ -941,6 +944,7 @@ fn compile(
     untrusted: bool,
 ) -> (Compiler, Vec<jaic::source::Diagnostic>, Vec<Program>) {
     let dir = root.parent().map(Path::to_path_buf).unwrap_or_default();
+    let open: Vec<PathBuf> = files.keys().cloned().collect();
     let fs: Rc<dyn FileSystem> = Rc::new(OverlayFs {
         base: env.fs.clone(),
         dir: dir.clone(),
@@ -982,6 +986,7 @@ fn compile(
         report: Box::new(|_| {}),
         observer: Some(Box::new(Built {
             prefix: prefix.clone(),
+            open: open.clone(),
             host: host.clone(),
             lint,
             untrusted,
@@ -989,7 +994,7 @@ fn compile(
         })),
     });
     compiler.attach_workspaces(workspaces);
-    compiler.ide = Some(editor_facts(&prefix, &host, lint, untrusted));
+    compiler.ide = Some(editor_facts(&prefix, &open, &host, lint, untrusted));
     let number = parses.borrow_mut().begin();
     compiler.parse_reuse = Some((parses.clone(), number));
     let errors = compiler

@@ -55,12 +55,34 @@ const MAIN: &str = "#import \"Basic\";\nhelper :: (x: int) -> int { return x * 2
     main :: () {\n    answer := helper(21);\n    print(\"%\\n\", answer);\n}\n";
 
 fn check(name: &str, toml: Option<&str>) {
-    let mut files = vec![("build.jai", BUILD), ("src/main.jai", MAIN)];
+    check_with(name, toml, "build.jai", BUILD);
+}
+
+fn check_with(name: &str, toml: Option<&str>, build_path: &str, build: &str) {
+    check_via(name, toml, build_path, build, &|dir| {
+        Some(dir.to_path_buf())
+    });
+}
+
+/// `via` gives the folder the editor opens the project by (a symlink to it, a case variant);
+/// `None` skips the check where the platform cannot do that.
+fn check_via(
+    name: &str,
+    toml: Option<&str>,
+    build_path: &str,
+    build: &str,
+    via: &dyn Fn(&Path) -> Option<PathBuf>,
+) {
+    let mut files = vec![(build_path, build), ("src/main.jai", MAIN)];
     if let Some(toml) = toml {
         files.push(("jai.toml", toml));
     }
     let dir = project(name, &files);
-    let (s, uri, text) = open(&dir, "src/main.jai");
+    let Some(editor_dir) = via(&dir) else {
+        let _ = std::fs::remove_dir_all(&dir);
+        return;
+    };
+    let (s, uri, text) = open(&editor_dir, "src/main.jai");
     let errors: Vec<_> = s
         .diagnostics(&uri)
         .unwrap()
@@ -112,4 +134,92 @@ fn toml_with_main_then_the_build_file() {
         "both-reversed",
         Some("build_files = [\"src/main.jai\", \"build.jai\"]\n"),
     );
+}
+
+/// The path the metaprogram adds is computed, so no text scan can follow it to `src/main.jai`.
+#[test]
+fn computed_main_path_with_the_build_file_listed() {
+    let build = BUILD.replace(
+        "add_build_file(\"src/main.jai\", w);",
+        "add_build_file(tprint(\"%/src/main.jai\", #filepath), w);",
+    );
+    for (name, toml) in [
+        ("computed-none", None),
+        ("computed-build", Some("build_files = [\"build.jai\"]\n")),
+        (
+            "computed-both",
+            Some("build_files = [\"build.jai\", \"src/main.jai\"]\n"),
+        ),
+    ] {
+        check_with(name, toml, "build.jai", &build);
+    }
+}
+
+/// The build file lives in a folder of its own and reaches `src/main.jai` with `../`.
+#[test]
+fn build_file_in_a_subfolder() {
+    let build = BUILD.replace("\"src/main.jai\"", "\"../src/main.jai\"");
+    for (name, toml) in [
+        ("sub-none", None),
+        ("sub-build", Some("build_files = [\"tools/build.jai\"]\n")),
+    ] {
+        check_with(name, toml, "tools/build.jai", &build);
+    }
+}
+
+const BUILD_TOML: Option<&str> = Some("build_files = [\"build.jai\"]\n");
+
+/// Every spelling of the one `src/main.jai` the build file may add.
+#[test]
+fn spellings_of_the_added_path() {
+    for (name, spelled) in [
+        ("dot", "./src/main.jai"),
+        ("double-slash", "src//main.jai"),
+        ("dot-dot", "src/../src/main.jai"),
+        ("up-and-back", "../{DIR}/src/main.jai"),
+    ] {
+        for toml in [None, BUILD_TOML] {
+            // `{DIR}` is the project folder's own name.
+            let leaf = format!("jailsp-buildfile-{name}-{}", std::process::id());
+            let path = spelled.replace("{DIR}", &leaf);
+            let build = BUILD.replace("\"src/main.jai\"", &format!("\"{path}\""));
+            check_with(name, toml, "build.jai", &build);
+        }
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn project_opened_through_a_symlink() {
+    for toml in [None, BUILD_TOML] {
+        check_via("symlink", toml, "build.jai", BUILD, &|dir| {
+            let leaf = dir.file_name().unwrap().to_string_lossy().into_owned();
+            let link = dir.with_file_name(format!("{leaf}-link"));
+            let _ = std::fs::remove_file(&link);
+            std::os::unix::fs::symlink(dir, &link).ok()?;
+            Some(link)
+        });
+    }
+}
+
+/// The editor reports the folder in another case where the disk ignores case.
+#[test]
+fn project_opened_with_another_case() {
+    for toml in [None, BUILD_TOML] {
+        check_via("case", toml, "build.jai", BUILD, &|dir| {
+            let upper = PathBuf::from(dir.to_string_lossy().to_uppercase());
+            // Only where the disk treats both spellings as one folder.
+            (upper != *dir && upper.is_dir()).then_some(upper)
+        });
+    }
+}
+
+/// An absolute path with `.` and a doubled slash in it.
+#[test]
+fn computed_untidy_absolute_path() {
+    let build = BUILD.replace(
+        "add_build_file(\"src/main.jai\", w);",
+        "path := tprint(\"%/./src//main.jai\", #filepath);\n    add_build_file(path, w);",
+    );
+    check_with("abs-odd", BUILD_TOML, "build.jai", &build);
 }
