@@ -37,7 +37,6 @@ min :: Impl.min;
 max :: Impl.max;
 clamp :: Impl.clamp;
 swap :: Impl.swap;
-Swap :: Impl.Swap;
 to_upper :: Impl.to_upper;
 to_lower :: Impl.to_lower;
 is_alpha :: Impl.is_alpha;
@@ -178,9 +177,7 @@ to_nanoseconds :: Impl.to_nanoseconds;
 compare_apollo_times :: Impl.compare_apollo_times;
 to_float64_seconds :: Impl.to_float64_seconds;
 to_apollo :: Impl.to_apollo;
-#if OS == .MACOS || OS == .LINUX || OS == .ANDROID || OS == .WINDOWS {
-    seconds_since_init :: Impl.seconds_since_init;
-}
+#if OS == .MACOS || OS == .LINUX || OS == .ANDROID || OS == .WINDOWS seconds_since_init :: Impl.seconds_since_init;
 
 #if OS == .WINDOWS {
     to_calendar :: Impl.to_calendar;
