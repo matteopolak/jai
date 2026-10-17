@@ -185,6 +185,7 @@ Jai language behavior as implemented by `jaic`.
 
 - [Casts and conversions](language/casts-and-conversions.md)
 - [Full available compiler suite and triage](compiler/full-suite-triage.md)
+- [Variables are not constants](compiler/variable-constness.md)
 - [Native interpreter thread entry and ownership](compiler/windows-thread-entry-lifecycle.md)
 - [Windows SDK runtime resolution and native build gate](compiler/windows-sdk-runtime-resolution.md)
 - [Windows compiler CRT selection and tool build gate](compiler/windows-crt-linkage.md)
