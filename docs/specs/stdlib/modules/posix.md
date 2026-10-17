@@ -1337,7 +1337,7 @@ Only names visible through the module’s exported scope are listed. Declaration
 - [OS == .LINUX] `mkostemps :: (__template: *u8, __suffixlen: s32, __flags: s32) -> s32 #foreign libc`
 - [OS == .LINUX] `system :: (__command: *u8) -> s32 #foreign libc`
 - [OS == .LINUX] `realpath :: (__name: *u8, __resolved: *u8) -> *u8 #foreign libc`
-- [OS == .LINUX] `SYS__sysctl :: 156`
+- [OS == .LINUX && CPU == .X64] `SYS__sysctl :: 156`
 - [OS == .LINUX] `SYS_accept :: 43`
 - [OS == .LINUX] `SYS_accept4 :: 288`
 - [OS == .LINUX] `SYS_access :: 21`

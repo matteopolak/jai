@@ -111896,7 +111896,7 @@
         {
           "name": "SYS__sysctl",
           "signature": "SYS__sysctl :: 156",
-          "condition": "OS == .LINUX",
+          "condition": "OS == .LINUX && CPU == .X64",
           "spec_line": 1340,
           "status": "declared"
         },
