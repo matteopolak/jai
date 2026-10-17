@@ -631,7 +631,7 @@ input does not match the documented behavior.
 
 `ConvertToApollo(m, FACTOR)` is a `#expand` macro with no procedure result type. Its expansion computes the scaled `Apollo_Time` value and uses a caller-scoped `` `return `` to return that value from the containing procedure; the call therefore belongs in a procedure whose return type accepts `Apollo_Time`. This is the same caller-return behavior demonstrated by the language's `#expand` examples. No leap-second representation is provided by `Calendar_Time`.
 
-`Apollo_Time` is declared as an `#type,isa S128`; its operators are the inherited `S128` overloads, not Apollo_Time-specific `Add`/`Sub` procedures. `U128` also exposes subtraction. The Basic allocation helpers `alloc(size)` and `New(T, initialized := true)` use `context.allocator`; neither has a named allocator argument. The exported swap helper is lowercase `swap(a, b)`; Basic does not export `Swap`, `bubble_sort`, or a `get_time` function in this interface. The current `free` overloads accept `*void` and `string`.
+`Apollo_Time` is declared as an `#type,isa S128`; its operators are the inherited `S128` overloads, not Apollo_Time-specific `Add`/`Sub` procedures. `U128` also exposes subtraction. The Basic allocation helpers `alloc(size)` and `New(T, initialized := true)` use `context.allocator`; neither has a named allocator argument. `Swap(*a, *b)` exchanges two values through pointers, and lowercase `swap(a, b)` returns the pair reversed (`a, b = swap(a, b)`). The current `free` overloads accept `*void` and `string`.
 
 `Apollo_Time` inherits its arithmetic/comparison operators from its `#type,isa
 S128` base; there are no Apollo_Time-specific operator declarations. The
