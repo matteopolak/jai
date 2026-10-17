@@ -330,9 +330,10 @@ main :: () {
     }
 
     close_like_the_user :: (window: HWND) {
-        // What the close button ends in: a sent WM_CLOSE (the system menu's SC_CLOSE only gets
-        // there for a window that has a system menu).
-        SendMessageW(window, 0x10, 0, 0);
+        // What the close button ends in, posted so that the pump handles it: update_window_events
+        // starts the frame's event list afresh, which a sent message would be gone before.
+        ok := PostMessageW(window, 0x10, 0, 0);
+        assert(ok != 0, "PostMessageW close");
     }
 
     GetCursor :: () -> HCURSOR #foreign user32;
