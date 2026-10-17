@@ -3993,7 +3993,7 @@ impl Compiler {
                 if let Some(filter) = &param.using_filter {
                     entry = self.filter_using_entry(mscope, entry, filter, param.span)?;
                 }
-                self.scope_mut(mscope).usings.push(entry);
+                self.push_using(mscope, entry);
             }
         }
         if self.ide.is_some() {
