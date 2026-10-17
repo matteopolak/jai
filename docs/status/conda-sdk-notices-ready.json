@@ -1,0 +1,24 @@
+{
+  "status": "READY TO PUSH SDK notice companion; Intel native CI pending",
+  "files": {
+    "tools/developer_native_runtime.py": "b83fb5528e5c6b9d3d8c2adcf0b903f7ee0e460dc3d5ab80af438df4985229c4",
+    "tools/test_conda_sdk_notices.py": "b674c4fbce31955bc80fdcebecd0e0dba9e04c69abd3e5fc6d33ff7090c4e077",
+    "tools/install_ci_llvm_macos.sh": "8faaf7fc603e6c4bb6a7b728c1ab4a829b20d679f3bd709543d4d7322530c37c",
+    ".github/workflows/ci.yml": "e242b7bdcf51d28dce2f51e2ee59a51dfc26cde3da57dc38b11ad6534300f251",
+    "docs/tools/conda-sdk-notices.md": "899412b7e6da509dbeedd09ae010e9ed75907f9e7377c63897648ee5808c20ed"
+  },
+  "tests_passed": 7,
+  "tests_failed": 0,
+  "tests_ignored": 0,
+  "old_source_controls_exit": 1,
+  "ruff_check_exit": 0,
+  "ruff_format_exit": 0,
+  "actionlint_exit": 0,
+  "bash_syntax_exit": 0,
+  "existing_provider_policy_tests_passed": 2,
+  "actual_package_archive_sha256": "0dfe44aa4d56eae2ac5832a611ce1167d44ff17181c85596de01e149c04af01c",
+  "actual_package_notice_sha256": "ebcd9bbf783a73d05c53ba4d586b8d5813dcdf3bbec50265860ccc885e606f47",
+  "native_execution": false,
+  "actual_conda_prefix_runtime_replay": false,
+  "qualification": "Real official package metadata/license inspection and filesystem policy controls; actual Intel CI required. No dummy notices or skipped failures."
+}
