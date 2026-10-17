@@ -41,7 +41,6 @@ runs:
     - name: Install LLVM 23 (Linux)
       if: runner.os == 'Linux'
       shell: bash
-      timeout-minutes: 15
       env:
         NATIVE: ${{ inputs.native-libs }}
         FONT: ${{ inputs.font }}
