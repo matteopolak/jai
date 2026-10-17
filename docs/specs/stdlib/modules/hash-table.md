@@ -8,7 +8,7 @@ Visible public declarations and module-conditional variants are listed below. Pr
 
 - `Table :: struct (Key_Type: Type, Value_Type: Type, given_hash_function: (Key_Type) -> u32 = null, given_compare_function: (Key_Type, Key_Type) -> bool = null, LOAD_FACTOR_PERCENT: u32 = 70, REFILL_REMOVED := true)`
 - `for_expansion :: (table: *$T/Table, body: Code, flags: For_Flags) #expand`
-- `init :: (using table: *Table, slots_to_allocate: s64 = 0) #deprecated "Calling init() on a Hash_Table is no longer necessary (a default-initialized table is all you need)."`
+- `init :: (using table: *Table, slots_to_allocate: s64 = 0) #deprecated "Not needed: a zero-initialized Table is ready to use."`
 - `deinit :: (table: *Table)`
 - `table_reset_keeping_memory :: (using table: *Table)`
 - `table_reset :: (using table: *Table)`

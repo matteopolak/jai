@@ -302,9 +302,9 @@ Visible public declarations and module-conditional variants are listed below. Pr
 - `AbsoluteTime :: u64`
 - `_NSGetExecutablePath :: (buf: *u8, bufsize: *u32) -> s32 #foreign libc`
 - `NSSymbol :: *void`
-- `NSIsSymbolNameDefined :: (symbolName: *u8) -> bool #foreign libc #deprecated "use dlysym()"`
-- `NSLookupAndBindSymbol :: (symbolName: *u8) -> NSSymbol #foreign libc #deprecated "use dlysym()"`
-- `NSAddressOfSymbol :: (symbol: NSSymbol) -> *void #foreign libc #deprecated "use dlysym()"`
+- `NSIsSymbolNameDefined :: (symbolName: *u8) -> bool #foreign libc #deprecated "Use dlsym() instead."`
+- `NSLookupAndBindSymbol :: (symbolName: *u8) -> NSSymbol #foreign libc #deprecated "Use dlsym() instead."`
+- `NSAddressOfSymbol :: (symbol: NSSymbol) -> *void #foreign libc #deprecated "Use dlsym() instead."`
 - `FourCharCode :: u32`
 - `OSStatus :: s32`
 - `OSType :: FourCharCode`
