@@ -7,6 +7,8 @@ layouts. UI globals are declared in facade-loaded sources to preserve storage
 identity. Default rendering types are canonical Simp.Dynamic_Font, Texture and
 Font_Effects; windows alias Window_Creation.Window_Type. Type_Indicator supplies
 the four alternate contextual types. No empty render_types substitute remains.
+`ui_init()` without a `Draw_Procs` installs Simp-backed callbacks when Type_Indicator
+is void (the pointer image keeps its native fallback); an explicit `procs` replaces them.
 
 Math uses row-major matrices and column vectors. Matrix3 inverse rejects the
 strict determinant interval and returns input on failure. Matrix4 Gaussian
