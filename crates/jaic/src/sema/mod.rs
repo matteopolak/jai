@@ -620,6 +620,9 @@ pub struct Compiler {
     frozen: HashMap<(u64, u64), ir::GlobalId>,
     /// Editor facts recorded while checking (`ide.rs`); `None` outside the language server.
     pub ide: Option<Box<ide::IdeFacts>>,
+    /// Editor parses shared with other compiles, and this compile's number in it (see
+    /// `ParseReuse::begin`). Only read while `ide` is set.
+    pub parse_reuse: Option<(Rc<std::cell::RefCell<crate::parser::ParseReuse>>, u64)>,
     /// Set by `finish_program`: pending items no longer wait for placeholders.
     pub placeholders_final: bool,
     /// Set while the plain `#if` pass expands an item: lookups then leave other pending items
@@ -742,6 +745,7 @@ impl Compiler {
             parked_epoch: 0,
             namespace_generation: 0,
             func_targets: HashMap::default(),
+            parse_reuse: None,
             module_names: HashMap::default(),
             module_names_unsettled: false,
             #[cfg(debug_assertions)]

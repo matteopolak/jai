@@ -505,13 +505,25 @@ impl Compiler {
     fn load_file_inner(&mut self, path: &Path, module: ModuleId, span: Span) -> Result<()> {
         let file = self.read_source(path, span)?;
         let text = self.sources.get(file).text.clone();
+        let shared;
+        let own;
         let ast = if let Some(ide) = self.ide.as_mut() {
-            let parsed = crate::parser::parse_file_ide(file, &text);
-            ide.parse_errors.extend(parsed.diagnostics.iter().cloned());
-            ide.errors.extend(parsed.diagnostics);
-            parsed.file
+            shared = match &self.parse_reuse {
+                Some((reuse, compile)) => reuse.borrow_mut().parse(*compile, path, file, &text),
+                None => {
+                    let parsed = crate::parser::parse_file_ide(file, &text);
+                    Rc::new(crate::parser::SharedParse {
+                        file: parsed.file,
+                        diagnostics: parsed.diagnostics,
+                    })
+                }
+            };
+            ide.parse_errors.extend(shared.diagnostics.iter().cloned());
+            ide.errors.extend(shared.diagnostics.iter().cloned());
+            &shared.file
         } else {
-            crate::parser::parse_file(file, &text).map_err(Box::new)?
+            own = crate::parser::parse_file(file, &text).map_err(Box::new)?;
+            &own
         };
         let module_scope = self.modules[module.0 as usize].scope;
         let file_scope = self.new_scope(ScopeKind::File, Some(module_scope), module, Some(file));
