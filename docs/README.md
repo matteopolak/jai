@@ -654,11 +654,7 @@ the earlier120-second timeout is retained. Full aggregate replay remains require
 - [Generator model shared audit](status/generator-model-shared-audit.json), [tools shared audit](status/stdlib-tools-shared-audit.json), and [bindings shared audit](status/bindings-shared-audit.json): pre-adoption producer inventories; these are not combined passing results
 
 
-ASN1/Socket shared-tree verification now uses current production dependencies and
-a fresh source-built compiler, with separate worker outputs and no old overlays.
-[The scoped handoff](portable-asn1-socket-handoff.md) records 54 actual host
-executions, 34 supported-platform source/lint gates, and the blocked Android
-compiler gate. [The API inventory](status/asn1-socket-remaining.json) keeps six
+[The ASN.1 and Socket API inventory](status/asn1-socket-remaining.json) keeps six
 Android rows partial and other native platforms unverified.
 
 - [Retained portable shared audit](status/stdlib-shared-audit.json): per-API current audit distinct from 929 historical bookkeeping rows

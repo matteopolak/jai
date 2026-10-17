@@ -114,7 +114,7 @@ compiler hygiene repair and the unchanged table-slot assertions are required.
   exports from private files. Typed context.generator uses the single canonical
   default Generator; cross-configured nominal type identity remains unestablished.
 
-- `tools/check_asn1_socket_closure.py`, `tools/check_portable_jks_crypto.py` and
+- `tools/check_portable_jks_crypto.py` and
   `tools/check_portable_apk_signing.py` retain producer source/facade staging.
   Their old passes are historical diagnostic evidence, not current production
   proof. `tools/check_shared_portable.py` executes nine unchanged public fixtures

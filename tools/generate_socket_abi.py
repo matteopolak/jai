@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Materialize only reviewed native Socket declarations, never procedure stubs."""
+"""Materialize the native Socket declarations of docs/specs/stdlib/modules/socket.md.
+
+Each target OS gets one file, stdlib/internal/net/socket-abi-<os>.jai, that the Socket module
+loads straight into its own scope, so the declarations are the public names. Authored helpers
+(field accessors, ancillary-data macros, the FD_* wrappers) are never emitted; they live in the
+hand-written socket-*.jai files next to the generated ones.
+"""
 from collections import defaultdict
 import argparse
 import json
@@ -10,10 +16,23 @@ import subprocess
 from portable_api_spec import parse_spec
 
 ROOT = Path(__file__).resolve().parents[1]
+OSES = ["macos", "linux", "android", "windows"]
 
 
 def condition(text):
     return text.replace("else branch", "OS != .WINDOWS")
+
+
+def route(guard):
+    """The target file of a spec condition, and the condition left to test inside that file."""
+    simple = re.fullmatch(r"OS == \.(\w+)", guard)
+    if simple:
+        return simple[1].lower(), ""
+    if guard == "CPU == .X64 && OS == .MACOS":
+        return "macos", "CPU == .X64"
+    if guard == "OS != .WINDOWS && OS == .MACOS":
+        return "macos", ""
+    raise RuntimeError(f"no target file for condition {guard!r}")
 
 
 def guarded(code, guard):
@@ -56,16 +75,19 @@ def main():
     shapes = defaultdict(list)
     for shape in spec.shapes:
         shapes[shape.name].append(shape)
-    output, ledger, exported, seen = [], [], [], set()
-    fields_facade = ROOT / "stdlib/Socket/fields.jai"
-    authored_fields = set(re.findall(r"^\s*(\w+)\s*::\s*Fields\.", fields_facade.read_text(), re.MULTILINE)) if fields_facade.exists() else set()
-    scope_facade = ROOT / "stdlib/Socket/scope-fields.jai"
-    authored_scope = set(re.findall(r"^\s*(\w+)\s*::\s*Fields\.", scope_facade.read_text(), re.MULTILINE)) if scope_facade.exists() else set()
-    linux_facade = ROOT / "stdlib/Socket/tcp-unix-fields.jai"
-    authored_linux = set(re.findall(r"^\s*(\w+)\s*::\s*Fields\.", linux_facade.read_text(), re.MULTILINE)) if linux_facade.exists() else set()
-    cmsg_facade = ROOT / "stdlib/Socket/cmsg.jai"
-    authored_cmsg = set(re.findall(r"^\s*(\w+)\s*::\s*Cmsg\.", cmsg_facade.read_text(), re.MULTILINE)) if cmsg_facade.exists() else set()
-    manual = {"Socket", "INVALID_SOCKET", "SOCKET_ERROR", "SOCKET_WOULDBLOCK", "SOCKET_WOULDBLOCK_CONNECT"}
+    files, ledger, seen = defaultdict(list), [], set()
+    net = ROOT / "stdlib/internal/net"
+
+    def authored(file):
+        text = (net / file).read_text() if (net / file).exists() else ""
+        return set(re.findall(r"^\s*(\w+)\s*::", text, re.MULTILINE))
+
+    authored_fields = authored("socket-fields-macos.jai")
+    authored_scope = authored("socket-fields-windows.jai")
+    authored_linux = authored("socket-fields-tcp-unix.jai")
+    authored_cmsg = authored("socket-cmsg.jai")
+    manual = {"Socket", "INVALID_SOCKET", "SOCKET_ERROR", "SOCKET_WOULDBLOCK", "SOCKET_WOULDBLOCK_CONNECT",
+              "FD_BITS_ELEMENT_TYPE", "BITS_PER_FD_SET_MASK"}
     for declaration in sorted(spec.declarations, key=declaration_group):
         code, name = declaration.code.rstrip(";"), declaration.name
         guard = condition(declaration.condition)
@@ -124,49 +146,39 @@ def main():
             emitted = "\n".join(bodies)
         else:
             emitted = code + ";"
-        output.append(guarded(emitted, guard))
-        # Immutable declarations alias values/types/overload sets. Mutable native
-        # storage must be reexported by name resolution, never read into a :: copy.
-        if re.match(rf"{re.escape(name)}\s*:(?!:)", code):
-            public = f'using,only({name}) #import "internal/net/socket-abi";'
-        else:
-            public = f"{name} :: ABI.{name};"
-        exported.append(guarded(public, guard))
+        target, residual = route(guard)
+        files[target].append(guarded(emitted, residual))
         record["status"] = "native declaration; runtime/ABI verification separate"
         ledger.append(record)
-    # Import only external reviewed Windows names needed by these declarations.
-    # Wildcard imports make native declarations vulnerable to same-named types
-    # (notably the Windows GUI MSG versus the Socket flag enum).
+    # Only the Windows names these declarations use are imported by name: a wildcard import would
+    # let same-named types (notably the Windows GUI MSG versus the Socket flag enum) capture them.
     windows_spec = parse_spec((ROOT / "docs/specs/stdlib/modules/windows.md").read_text())
     external_names = {declaration.name for declaration in windows_spec.declarations}
     local_names = {declaration.name for declaration in spec.declarations}
-    used_names = set(re.findall(r"\b[A-Za-z_]\w*\b", '\n'.join(output)))
+    used_names = set(re.findall(r"\b[A-Za-z_]\w*\b", "\n".join(files["windows"])))
     dependencies = sorted((used_names & external_names) - local_names)
-    windows_import = '#if OS == .WINDOWS {\n    Windows_Native :: #import "Windows";\n'
-    windows_import += ''.join(f"    {name} :: Windows_Native.{name};\n" for name in dependencies)
-    windows_import += '}\n'
-    preamble = """// Generated exclusively from reviewed public declarations.
-#scope_file
-#if OS_IS_UNIX #import "POSIX";
-// Unix select uses the canonical native timeval through a private spelling.
-// TIMEVAL remains a public Socket name only on Windows, as reviewed.
-#if OS_IS_UNIX TIMEVAL :: timeval;
-""" + windows_import + """
-libc :: #system_library "libc";
-ws2_32 :: #system_library "ws2_32";
-#scope_export
-#load "socket-native-completions.jai";
-"""
-    target = output_root / "stdlib/internal/net/socket-abi.jai"
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(preamble + "\n".join(output))
-    exported.append(guarded("in_addr :: ABI.in_addr;", "OS == .MACOS"))
-    facade = output_root / "stdlib/Socket/native.jai"
-    facade.parent.mkdir(parents=True, exist_ok=True)
-    facade.write_text("// Generated public native aliases.\n" + "\n".join(exported) + '\n#scope_file\nABI :: #import "internal/net/socket-abi";\n')
+    generator = "tools/generate_socket_abi.py"
+    written = []
+    for target in OSES:
+        header = f"// Native socket declarations for {target}, generated by {generator} from\n"
+        header += "// docs/specs/stdlib/modules/socket.md. Edit the generator, not this file.\n"
+        if target == "windows":
+            header += '#scope_file\nWindows_Native :: #import "Windows";\n\n'
+            header += "".join(f"{name} :: Windows_Native.{name};\n" for name in dependencies)
+            header += 'ws2_32 :: #system_library "ws2_32";\n'
+        else:
+            header += '#scope_file\n#import "POSIX";\n\n'
+            header += "// Unix select takes the native timeval through a private spelling.\n"
+            header += "TIMEVAL :: timeval;\n"
+            header += 'libc :: #system_library "libc";\n'
+        header += "#scope_export\n\n"
+        path = output_root / f"stdlib/internal/net/socket-abi-{target}.jai"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(header + "\n".join(files[target]))
+        written.append(path)
     (output_root / "docs").mkdir(parents=True, exist_ok=True)
     (output_root / "docs/socket-native-ledger.json").write_text(json.dumps(ledger, indent=2) + "\n")
-    subprocess.run([str(formatter), "--config", str(ROOT / "jaifmt.toml"), str(target), str(facade)],
+    subprocess.run([str(formatter), "--config", str(ROOT / "jaifmt.toml"), *map(str, written)],
                    cwd=ROOT, check=True)
 
 

@@ -26,7 +26,7 @@ FIELDS = {
 def main():
     spec = (ROOT / "docs/specs/stdlib/modules/socket.md").read_text()
     inventory = {(d.name, d.condition) for d in parse_spec(spec).declarations}
-    lines = ['// Official glibc/bionic TCP little-endian ABI; reviewed signatures.',
+    lines = ['// Accessors for the little-endian bitfields of glibc and bionic TCP structures.',
              '#assert OS == .LINUX || OS == .ANDROID;', '#assert CPU == .X64 || CPU == .ARM64;']
     exports = []
     linux_exports = []
@@ -37,12 +37,12 @@ def main():
         word_type = 'u16' if word == '__bitfield_1' else 'u8'
         maximum = (1 << width) - 1
         read = f'(fields.{word} & {mask}) != 0' if result == 'bool' else f'(fields.{word} >> {shift}) & {maximum}'
-        lines += [f'get_{field} :: (fields: ABI.{record}) -> {result} {{ return {read}; }}']
+        lines += [f'get_{field} :: (fields: {record}) -> {result} {{ return {read}; }}']
         if result == 'bool':
             body = f'if value fields.{word} |= {mask}; else fields.{word} &= ~cast({word_type}) {mask};'
         else:
             body = f'fields.{word} = (fields.{word} & ~cast({word_type}) {mask}) | ((value & {maximum}) << {shift});'
-        lines += [f'set_{field} :: (fields: *ABI.{record}, value: {result}) {{ {body} }}']
+        lines += [f'set_{field} :: (fields: *{record}, value: {result}) {{ {body} }}']
         for action in ['get', 'set']:
             name = f'{action}_{field}'
             if (name, 'OS == .LINUX') not in inventory:
@@ -55,16 +55,12 @@ def main():
                 exports.append(name)
         if record == 'tcp_info':
             lines += ['}']
-    lines += ['#scope_file', 'ABI :: #import "internal/net/socket-abi";', '']
+    lines += ['']
     private = ROOT / 'stdlib/internal/net/socket-fields-tcp-unix.jai'
     private.write_text('\n'.join(lines))
-    facade = ROOT / 'stdlib/Socket/tcp-unix-fields.jai'
-    facade.write_text('#if OS == .LINUX || OS == .ANDROID {\n' + ''.join(f'{name} :: Fields.{name};\n' for name in exports)
-                      + '}\n#if OS == .LINUX {\n' + ''.join(f'{name} :: Fields.{name};\n' for name in linux_exports)
-                      + '}\n#scope_file\n#if OS == .LINUX || OS == .ANDROID Fields :: #import "internal/net/socket-fields-tcp-unix";\n')
     for flags in [[], ['--check']]:
         subprocess.run([str(ROOT / 'target/jaifmt'), '--config', str(ROOT / 'jaifmt.toml'),
-                        *flags, str(private), str(facade)], check=True)
+                        *flags, str(private)], check=True)
     print(f'Generated {len(exports)} shared Linux/Android TCP APIs and {len(linux_exports)} Linux scale APIs')
 
 

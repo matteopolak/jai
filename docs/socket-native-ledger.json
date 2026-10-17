@@ -5823,7 +5823,7 @@
     "name": "BITS_PER_FD_SET_MASK",
     "condition": "OS != .WINDOWS && OS_IS_UNIX",
     "spec_line": 132,
-    "status": "native declaration; runtime/ABI verification separate"
+    "status": "authored wrapper or pending helper"
   },
   {
     "name": "CF_ACCEPT",
@@ -5883,7 +5883,7 @@
     "name": "CMSG_SIZE",
     "condition": "OS != .WINDOWS",
     "spec_line": 139,
-    "status": "authored wrapper or pending helper"
+    "status": "authored native ancillary helper; host SDK vectors verified, other native platforms pending"
   },
   {
     "name": "CMSGHDR",
@@ -6231,7 +6231,7 @@
     "name": "FD_BITS_ELEMENT_TYPE",
     "condition": "OS != .WINDOWS && OS_IS_UNIX",
     "spec_line": 131,
-    "status": "native declaration; runtime/ABI verification separate"
+    "status": "authored wrapper or pending helper"
   },
   {
     "name": "FD_CLOSE",

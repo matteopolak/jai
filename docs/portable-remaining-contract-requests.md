@@ -37,7 +37,7 @@ Resolved contracts and current implementation boundaries:
 
 - Socket.CMSG_SIZE and both Android/Toolchain to_hex_string overloads have
   independently implemented, committed bodies and scoped Mac verification. See
-  portable-asn1-socket-handoff.md and status/asn1-socket-remaining.json. Android
+  status/asn1-socket-remaining.json. Android
   target admission and non-Mac native execution remain external gates.
 - buffer_no_start_code, BLOCK_SET and PUT_PIXEL now have reviewed cursor/caller
   contracts and real tested bodies, committed36cc8f5e. PUT_PIXEL uses raw-byte

@@ -8,6 +8,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 BINARIES = Path(os.environ.get("CARGO_TARGET_DIR", ROOT / "target/compiler")) / "debug"
+ABI_OSES = ["macos", "linux", "android", "windows"]
 
 
 def main():
@@ -20,7 +21,7 @@ def main():
         subprocess.run(["python3", "-B", str(ROOT / "tools/generate_socket_abi.py"),
                         "--formatter", str(ROOT / "target/jaifmt"), "--output-root", str(output / "generated")], check=True)
         initial.append(tuple((output / "generated" / relative).read_bytes() for relative in
-                             ["stdlib/Socket/native.jai", "stdlib/internal/net/socket-abi.jai", "docs/socket-native-ledger.json"]))
+                             [f"stdlib/internal/net/socket-abi-{os_name}.jai" for os_name in ABI_OSES] + ["docs/socket-native-ledger.json"]))
     if initial[0] != initial[1]:
         raise RuntimeError("review-derived declaration generation is not stable")
     expected = [48, 8, 0, 4, 8, 12, 16, 24, 32, 40, 32123, 0x7f000001]
@@ -34,7 +35,7 @@ def main():
         print(f"Actual macOS C SDK {label} layout and numeric resolver pass:", result.stdout.strip(), flush=True)
     library = output / "stdlib"
     shutil.copytree(ROOT / "target/portable-integration-stdlib", library, dirs_exist_ok=True)
-    for relative in ["Socket/native.jai", "internal/net/socket-abi.jai"]:
+    for relative in [f"internal/net/socket-abi-{os_name}.jai" for os_name in ABI_OSES]:
         shutil.copyfile(output / "generated/stdlib" / relative, library / relative)
     env = dict(os.environ, JAIC_STDLIB=str(library))
     compiler = str(BINARIES / "jaic")
@@ -53,7 +54,7 @@ def main():
         subprocess.run([compiler, "-check", "-os", "macos", "-cpu", cpu, str(source)], env=env, check=True)
     print("Actual Jai resolver execution passes interpreter/native ARM64/x64 O0/O2 and source checks; whole-binding lint follows", flush=True)
     subprocess.run([str(BINARIES / "jailint"), "-D", "warnings",
-                    str(library / "Socket/native.jai"), str(library / "internal/net/socket-abi.jai"), str(source)], env=env, check=True)
+                    *[str(library / "internal/net" / f"socket-abi-{os_name}.jai") for os_name in ABI_OSES], str(source)], env=env, check=True)
     print("Jai public resolver passes interpreter/native both CPUs O0/O2, source checks and strict lint")
 
 
