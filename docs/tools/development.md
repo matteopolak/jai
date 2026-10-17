@@ -60,8 +60,8 @@ Workflows in `.github/workflows/`:
 
 | Workflow | Runs |
 | --- | --- |
-| `ci.yml` | every push and pull request: all checks below |
-| `fuzz.yml` | nightly fuzzing; crash-input replay on push and PR ([testing](testing.md#fuzzing)) |
+| `ci.yml` | pushes to `main` and `staging`, pull requests and manual runs: all checks below, including the fuzz crash-input replay |
+| `fuzz.yml` | nightly fuzzing and manual runs ([testing](testing.md#fuzzing)) |
 | `http-conformance.yml` | only when `stdlib/Extensions/Http/**` or its harness (`tools/http_conformance.py`, `http_native.py`, `gen_http_corpus.py`, `http_deviations.json`) changes, and by hand |
 | `release.yml` | tags ([releases](releases.md)) |
 | `compile-bench.yml`, `browser-release.yml` | manual only ([benchmarks](benchmarks.md), [browser releases](../browser/playground.md)) |
@@ -83,7 +83,7 @@ Path-gated jobs: `sdl3` (native SDL3 artifacts), `clipboard-linux` (X11 clipboar
 
 The full corpus sweep with the `upstream` set is not in CI (the corpus is fetched, not committed); CI fetches only what the smoke checks use.
 
-**Concurrency.** A push cancels that branch's older `ci.yml` run. On `main` every push has its own group so the light jobs finish for each commit; heavy jobs (`stdlib-runtime`, `upstream-smoke`, sanitizers, the Intel leg) have job-level `concurrency` keyed by job, ref and platform, so only the newest `main` commit runs them to the end. Add or remove that block to change which jobs are heavy. Fuzz push replays cancel too; nightly runs never do.
+**Concurrency.** A push cancels that branch's older `ci.yml` run. On `main` every push has its own group so the light jobs finish for each commit; heavy jobs (`stdlib-runtime`, `upstream-smoke`, sanitizers, the Intel leg) have job-level `concurrency` keyed by job, ref and platform, so only the newest `main` commit runs them to the end. Add or remove that block to change which jobs are heavy. Nightly fuzz runs never cancel.
 
 **To change it:** edit the workflows. Keep each check's step id paired with the `steps.<id>.outcome` test in the job's final enforcement step, or failures are silently ignored. Pin third-party actions by commit SHA and keep `permissions: contents: read`. A `test_*` Python file under `tools/` is picked up by the Python test step; Node tests must be added to the relevant job by hand. Runners: `macos-15`, `macos-15-intel`, `ubuntu-24.04`, `ubuntu-24.04-arm`, `windows-2025`, `windows-11-arm`; 30 minute timeouts (45 for sanitizers); `CARGO_INCREMENTAL=0`; toolchain `nightly-2026-08-29`; Python 3.14; node 24.
 

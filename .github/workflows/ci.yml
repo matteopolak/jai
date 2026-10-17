@@ -1,5 +1,9 @@
 name: compiler checks
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 env:
@@ -42,6 +46,21 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           SHA: ${{ github.sha }}
         run: python3 tools/ci_changes.py
+  fuzz-regressions:
+    # Replays the saved crash inputs so fixed crashes stay fixed (nightly fuzzing: fuzz.yml).
+    name: replay fuzz regressions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install the pinned toolchain
+        run: rustup toolchain install nightly-2026-08-29 --profile minimal
+      - name: Validate fuzz dependency ages
+        run: python3 tools/check_dependency_age.py --lockfile fuzz/Cargo.lock
+      - name: Replay fuzz/regressions through the harnesses
+        run: cargo test --locked --manifest-path fuzz/harness/Cargo.toml
   scripting-wasm:
     name: scripting interpreter (LLVM-free WebAssembly)
     runs-on: ubuntu-24.04

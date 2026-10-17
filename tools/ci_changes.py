@@ -29,8 +29,8 @@ AREAS = {
     ],
     "nix": ["flake.nix", "flake.lock", "nix/**", "Cargo.lock", "rust-toolchain.toml"],
     "packaging": ["install.sh", "install.ps1", "packaging/**", "tools/render_packages.py"],
-    # Windows runs on main only for the paths its coverage is about, and on the Windows work
-    # branches for anything that can affect it.
+    # Windows runs on pushes (main, staging) only for the paths its coverage is about, never on
+    # pull requests, and always on manual runs.
     "windows": [
         "stdlib/Extensions/Io/**", "stdlib/Extensions/Io_Uring/**", "stdlib/Extensions/Http/**",
         "stdlib/Extensions/Json/**", "stdlib/Extensions/Tls/**", "tools/native/mbedtls/**",
@@ -44,8 +44,6 @@ AREAS = {
         "crates/jaic-cli/tests/native.rs", "tests/native/**",
     ],
 }
-WINDOWS_BRANCHES = {"wip/windows-native", "ci/windows-arm64", "codex/cleanroom-integration"}
-WINDOWS_BRANCH_PATHS = ["crates/**", "stdlib/**", "tests/**", "tools/**"]
 
 
 def regex(pattern):
@@ -87,18 +85,12 @@ def changed_files(env):
 def main():
     env = os.environ
     files = changed_files(env)
-    branch = env.get("GITHUB_REF", "").removeprefix("refs/heads/")
     event = env.get("GITHUB_EVENT_NAME", "")
     results = {}
     for area, patterns in AREAS.items():
         results[area] = files is None or matches(patterns, files)
     if event == "pull_request":
         results["windows"] = False
-    elif event == "push":
-        if branch in WINDOWS_BRANCHES:
-            results["windows"] = files is None or matches(WINDOWS_BRANCH_PATHS, files)
-        elif branch != "main":
-            results["windows"] = False
     lines = [f"{area}={str(value).lower()}" for area, value in results.items()]
     print("\n".join(lines))
     if env.get("GITHUB_OUTPUT"):

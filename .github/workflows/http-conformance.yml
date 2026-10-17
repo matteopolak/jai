@@ -5,6 +5,7 @@ name: http conformance
 # the stdlib runtime tests, so this adds the focused report and the optional external suites.
 on:
   push:
+    branches: [main, staging]
     paths:
       - stdlib/Extensions/Http/**
       - tests/extensions/http-codec-*.jai
