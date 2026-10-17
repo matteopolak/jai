@@ -1699,8 +1699,8 @@ impl Session {
                     .push(row.location);
             }
         }
-        let mut specs: Vec<Span> = analysis
-            .format_calls
+        let format_calls = self.format_calls(uri);
+        let mut specs: Vec<Span> = format_calls
             .iter()
             .flat_map(|c| c.specs.iter().map(|s| s.span))
             .collect();
