@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "phase": "source-only diagnosis; actual Windows cause unconfirmed",
+  "own_base": "01767cbb72ff0b5f8c1a880c4353013cba54f467",
+  "ci_job": 117243082265,
+  "sanitized_record_sha256": "c2ea1e07acb217b74df14ff58c5dfd7fa8926e69b7c473dd29bc025dacc1283a",
+  "table_diagnostic_records": 60,
+  "reported_node": "22.23.3",
+  "actual_ci_wasm_capture": null,
+  "actual_ci_lld_version": null,
+  "actual_ci_lld_argv": null,
+  "source_facts": {
+    "target_baseline": "generic wasm64; bulk-memory added unless explicitly overridden",
+    "linker_mode": "-mwasm64",
+    "existing_node_below24_helper": "already requests experimental-wasm-memory64; no new flags added",
+    "documented_node": "24",
+    "main_ci_node_pin": "24",
+    "windows_workflow_node_pin": null,
+    "windows_workflow_llvm_pin": "23.1.2"
+  },
+  "hypothesis": "Memory64 versus Table64 capability distinction; not proved for actual CI output bytes",
+  "own_source_guards": {
+    "crates/jaic-llvm/src/lib.rs": "758509ad17ec1898b59f17c17fbf34aff2e6ae8d69ee2a0f2144bf1d12a246ff",
+    "crates/jaic-llvm/src/wasm.rs": "22941b5d786c645a02007bf31c1cc0b9fd4be275cb780c2354c87de39562bb52",
+    "crates/jaic-cli/tests/wasm_target/mod.rs": "59baa1cbf722d6dc0d1e4c854484b8d14a93d7e6251ff75ac7bc8d60fb8fd02f",
+    "tools/wasi_run.mjs": "0e85b3a51653d215098084cffeca293cbf9d29f390e414eba0bbe9e09af7523f",
+    ".github/workflows/windows-native.yml": "0f69c71c2b8c495c0d445b9712dedc958e1c1f531aea8eb3f26aac4c57542c42",
+    ".github/workflows/ci.yml": "b24758cbe75aaf67ee78dcb4a2928a7eb539cd777ec36ed7341abe1fc5ec678c"
+  },
+  "reducer_manifest": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/compiler/mac-repairs-audit/windows-node22-tables/preparation.json",
+  "reducer_execution": "NOT RUN: integration runtime lease held",
+  "metadata_tests": {
+    "passed": 6,
+    "kind": "pure Python data decoding; not wasm/compiler/SDK execution",
+    "ruff_check": "pass",
+    "ruff_format": "pass"
+  },
+  "capture_request": {
+    "maximum_files": 3,
+    "maximum_bytes_per_file": 2097152,
+    "fields": [
+      "sha256",
+      "actual triple/features",
+      "selected LLD path/version",
+      "actual argv"
+    ],
+    "test_preimage_confirmation": "requested before modifying canonical capture hook",
+    "workflow_owner": "integration"
+  },
+  "production_changes": false,
+  "node_flags_changed": false,
+  "minimum_version_changed": false,
+  "required_tests_changed": false,
+  "native_lease_claimed": false,
+  "open": [
+    "actual failed-output capture and tool identity",
+    "runtime lease release for independent compiler/LLD/Node controls",
+    "causal target/encoding compatibility determination",
+    "actual Windows required tests remain red"
+  ],
+  "output_durability_issue": "separate; no output repair claimed"
+}
