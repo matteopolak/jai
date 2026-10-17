@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Unpack Mesa's software OpenGL (llvmpipe) for x64 Windows into a directory, for the window tests
 # on CI runners that only have GDI's OpenGL 1.1. Usage: install_ci_mesa_windows.sh DIR
-# MESA_VERSION and MESA_SHA256 pin the mesa-dist-win release (.github/workflows/windows-native.yml).
+# MESA_VERSION and MESA_SHA256 pin the mesa-dist-win release (.github/workflows/ci.yml).
 # Copy DIR/*.dll next to a program (Windows loads opengl32.dll from there before System32) and set
 # GALLIUM_DRIVER=llvmpipe. See docs/tools/continuous-integration.md.
 set -euo pipefail
