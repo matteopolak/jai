@@ -4,6 +4,8 @@
     {
       "id": "chess-engine",
       "project": "danieltan1517--chess-jai",
+      "only": ["macos-x64", "linux-x64", "windows-x64"],
+      "only_reason": "build.jai calls Machine_X64's get_cpu_info() unconditionally in the build program, which executes the x86 CPUID instruction; the build cannot run on an ARM host",
       "steps": [
         {
           "name": "build.jai - ai release",
@@ -64,6 +66,8 @@
     {
       "id": "chess-ui",
       "project": "danieltan1517--chess-jai",
+      "only": ["macos-x64", "linux-x64", "windows-x64"],
+      "only_reason": "build.jai calls Machine_X64's get_cpu_info() unconditionally in the build program, which executes the x86 CPUID instruction; the build cannot run on an ARM host",
       "steps": [
         {
           "name": "build.jai - ui release",
