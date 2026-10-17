@@ -1,0 +1,70 @@
+{
+  "owner": "portable-asn1-socket / Linux connect observer",
+  "qualification": "source, numeric vectors and mocked supervisors only; no native/network/fault/server execution",
+  "ready": "NEW observer plus proposed narrow integration wiring; actual Linux collection and correctness unresolved",
+  "receipt_directory": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-failed-copy-wiring-lyuq2dy0",
+  "source_head": "ae6c1b069bb766772ff7638b99e85936d9119ec3",
+  "admitted_additional_metrics_sha256": "5122e4175b4e8bc183daa1ad9ddac9b76c0d14f4c55b137c908481441a1519f2",
+  "retained_evidence_scope": "existing passed observer copy only; namespace counters not attribution to failed copies",
+  "old_missing_records": "failed-copy connect counts/all-thread aggregates not retained; no pending request to recover nonexistent records",
+  "pressure": {
+    "conntrack_first": 176845,
+    "conntrack_last": 258544,
+    "conntrack_max": 262144,
+    "softnet_dropped_delta": 357,
+    "softnet_time_squeeze_delta": 6,
+    "failed_copy_attribution": false,
+    "causal_defect_proven": false
+  },
+  "owned_new_files": [
+    "tools/io_failure_observer.py",
+    "tools/test_io_failure_wiring.py",
+    "tests/tools/test_io_failure_observer.py",
+    "docs/extensions/io-failed-copy-observer.md",
+    "docs/status/io-failed-copy-observer-ready.json"
+  ],
+  "proposed_shared_files_not_applied": [
+    "tools/io_stress.py run_copy and explicit-option/group/source-guard wiring",
+    ".github/workflows/http-conformance.yml Linux flag, trigger/test paths, numeric-only upload",
+    "tools/test_http_observer_artifacts.py exact CLI/upload allowlist expectations"
+  ],
+  "limits": {
+    "wait_between_samples_seconds": 5,
+    "samples_per_copy": 36,
+    "fd_entries_per_copy": 4096,
+    "task_entries_per_copy": 32,
+    "tcp_rows_per_table": 262144,
+    "retained_failed_groups": 32,
+    "actual_monitored_ci_groups": 18
+  },
+  "verification": {
+    "observer_tests": 11,
+    "candidate_runner_artifact_legacy_tests": 11,
+    "ruff_check": true,
+    "ruff_format": true,
+    "actionlint": true,
+    "shared_proposal_preimage_drift": [],
+    "unchanged_production_jai_inputs": 1011,
+    "native_or_linux_runtime_verified": false,
+    "retained_initial_failure": "digest-sidecar-red.json: source hash test caught macOS metadata sidecars, general source filtering corrected"
+  },
+  "preserved": {
+    "copies": 12,
+    "rounds": 3,
+    "variants": "default,o2,asan",
+    "per_copy_timeout_seconds": 180,
+    "all_original_fixtures_and_assertions": true,
+    "old_single_observer_override": true,
+    "sealed_child_main_packet": "unchanged",
+    "exit_accounting": "integrated ab198237; unchanged",
+    "App_WASM_codec_and_Io_target_boundaries": true
+  },
+  "remaining": [
+    "Integration adopt NEW8 atomically and rerun candidate tests against shared files",
+    "Root next normal Linux CI executes unchanged1188-run workload and retains actual failing monitored-copy numeric histories",
+    "Original Linux unserved/connect correctness remains RED until proven cause repaired and required workload passes",
+    "Observer overhead/capture gaps/unavailable metrics explicit; namespace pressure not failure attribution",
+    "Other HTTP failure classes/router lifetime remain independent; backends/tcp only monitored",
+    "Hyperserve original runtime unresolved; rejected fault request never retried"
+  ]
+}
