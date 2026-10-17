@@ -164,7 +164,7 @@ main :: () {
         // cursor must keep its hand cursor in at least one of a few attempts.
         shown := false;
 
-        for attempt: 1..(ifx custom then 5 else 1) {
+        for attempt: 1..(ifx custom then 5 else 3) {
             show_hand(first);
             move_pointer(first);
 
@@ -456,8 +456,13 @@ main :: () {
         }
     }
 
+    // Where the pointer went last: every call moves it somewhere else, since a warp to where the
+    // pointer already is makes no motion event.
+    pointer_x: s32 = 20;
+
     move_pointer :: (window: Window) {
-        XWarpPointer(x_global_display, 0, window, 0, 0, 0, 0, 30, 30);
+        pointer_x = ifx pointer_x == 30 then cast(s32) 40 else cast(s32) 30;
+        XWarpPointer(x_global_display, 0, window, 0, 0, 0, 0, pointer_x, pointer_x);
         XFlush(x_global_display);
     }
 
