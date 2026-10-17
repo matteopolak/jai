@@ -108,6 +108,8 @@ DRIVEN_ELSEWHERE = {"bootstrap", "process-parent", "float-power-sweep", "basic-d
                     "clipboard-linux-no-empty", "clipboard-linux-private", "clipboard-linux-window-source"}
 # basic-division-exercise (x86-64 only, and it prints its samples) is run by tools/check_foundations.py
 # against an independent integer oracle.
+# Programs whose work is a `#run` in the build (they drive a child workspace and write no executable).
+BUILD_TIME_PROGRAMS = {"minimal-build-contracts"}
 # Source-only contracts: type-checked, never executed (the program would open a native window).
 SOURCE_ONLY = {"cocoa-appkit-enum-callers": "darwin"}
 # Cases that read their configuration from the command line (assertions enabled is the default build).
@@ -234,7 +236,12 @@ def main():
                 extra = ["-add", probe[2]] if probe[2] else []
             run([str(compiler), "-interp", str(source), *extra, "--", *PROGRAM_ARGUMENTS.get(source.stem, [])], case_env, expected,
                 expected_stderr=EXPECTED_STDERR.get(source.stem,""), expected_code=EXPECTED_EXIT.get(source.stem, 0))
-            if args.native:
+            if args.native and source.stem in BUILD_TIME_PROGRAMS:
+                # The program is its compile: its output comes from the build and no executable
+                # is written.
+                run([str(compiler), str(source), *extra, "-exe", str(output / f"case-{index}")], case_env, expected,
+                    expected_stderr=EXPECTED_STDERR.get(source.stem, ""))
+            elif args.native:
                 executable = output / f"case-{index}"
                 run([str(compiler), str(source), *extra, "-exe", str(executable)], case_env)
                 run([str(executable), *PROGRAM_ARGUMENTS.get(source.stem, [])], case_env, expected, source.parent,
