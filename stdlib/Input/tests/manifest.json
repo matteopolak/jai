@@ -1,15 +1,5 @@
 [
   {
-    "name": "button-states",
-    "unsupported_modes": [
-      "wasm-interp",
-      "wasm-native"
-    ],
-    "required_capabilities": [
-      "needs files, process arguments or native services; the browser engine never ran it before the tests moved next to their modules"
-    ]
-  },
-  {
     "name": "callback-types",
     "unsupported_modes": [
       "wasm-interp",
@@ -61,6 +51,9 @@
     ],
     "required_capabilities": [
       "needs files, process arguments or native services; the browser engine never ran it before the tests moved next to their modules"
+    ],
+    "required_os": [
+      "macos"
     ]
   },
   {

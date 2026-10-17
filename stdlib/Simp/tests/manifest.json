@@ -45,6 +45,9 @@
     ],
     "required_capabilities": [
       "needs files, process arguments or native services; the browser engine never ran it before the tests moved next to their modules"
+    ],
+    "required_os": [
+      "macos"
     ]
   },
   {
@@ -172,6 +175,9 @@
     ],
     "required_capabilities": [
       "needs files, process arguments or native services; the browser engine never ran it before the tests moved next to their modules"
+    ],
+    "required_os": [
+      "macos"
     ]
   },
   {
@@ -182,6 +188,9 @@
     ],
     "required_capabilities": [
       "needs files, process arguments or native services; the browser engine never ran it before the tests moved next to their modules"
+    ],
+    "required_os": [
+      "macos"
     ]
   },
   {
@@ -202,6 +211,9 @@
     ],
     "required_capabilities": [
       "needs files, process arguments or native services; the browser engine never ran it before the tests moved next to their modules"
+    ],
+    "required_os": [
+      "macos"
     ]
   },
   {
@@ -212,6 +224,9 @@
     ],
     "required_capabilities": [
       "needs files, process arguments or native services; the browser engine never ran it before the tests moved next to their modules"
+    ],
+    "required_os": [
+      "macos"
     ]
   },
   {

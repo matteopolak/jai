@@ -92,17 +92,6 @@
     "stdout": "-42 true text 55\n"
   },
   {
-    "name": "builder-allocation",
-    "stdout": "ok\n",
-    "unsupported_modes": [
-      "wasm-interp",
-      "wasm-native"
-    ],
-    "required_capabilities": [
-      "needs files, process arguments or native services; the browser engine never ran it before the tests moved next to their modules"
-    ]
-  },
-  {
     "name": "builder-format",
     "stdout": "ok\n"
   },
@@ -145,17 +134,6 @@
   {
     "name": "configuration-isolated-combined",
     "stdout": "ok\n"
-  },
-  {
-    "name": "context-style",
-    "stdout": "ok\n",
-    "unsupported_modes": [
-      "wasm-interp",
-      "wasm-native"
-    ],
-    "required_capabilities": [
-      "needs files, process arguments or native services; the browser engine never ran it before the tests moved next to their modules"
-    ]
   },
   {
     "name": "corpus-api/file-compile-time-qualified",
@@ -391,17 +369,6 @@
     "name": "negative/builder-buffer-visibility",
     "mode": "check-fail",
     "diagnostic_contains": "module `Basic` has no exported member `Buffer`"
-  },
-  {
-    "name": "negative/file-compile-time-private",
-    "stdout": "",
-    "unsupported_modes": [
-      "wasm-interp",
-      "wasm-native"
-    ],
-    "required_capabilities": [
-      "needs files, process arguments or native services; the browser engine never ran it before the tests moved next to their modules"
-    ]
   },
   {
     "name": "negative/interface-import-visibility",
