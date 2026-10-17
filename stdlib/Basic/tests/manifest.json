@@ -159,7 +159,11 @@
   },
   {
     "name": "corpus-api/file-compile-time-qualified",
-    "stdout": "ok\n"
+    "stdout": "ok\n",
+    "required_os": [
+      "linux",
+      "macos"
+    ]
   },
   {
     "name": "corpus-api/file-no-import-negative",
@@ -696,6 +700,10 @@
     ],
     "required_capabilities": [
       "native-only stdlib test: not part of the browser engine's catalogue"
+    ],
+    "required_os": [
+      "linux",
+      "macos"
     ]
   },
   {
@@ -756,6 +764,10 @@
     ],
     "required_capabilities": [
       "native-only stdlib test: not part of the browser engine's catalogue"
+    ],
+    "required_os": [
+      "linux",
+      "macos"
     ]
   },
   {
