@@ -1286,6 +1286,10 @@ test_accept_bursts :: () {
         assert(failed == 0, "round %: % of % connections were not served", it, failed, COUNT);
     }
 
+    // The handlers end when their client has closed, which can be after the round: they write to
+    // `diagnostics`, so they must be done before it goes.
+    while diagnostics.handlers_finished < diagnostics.accepted Io.sleep(1);
+
     assert(Io.close(listener) == .NONE);
     Io.wait(*acceptor_group);
 }
