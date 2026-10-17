@@ -492,6 +492,9 @@ def build_data_fixtures():
 
 
 def main():
+    # Test output may hold any Unicode text; the Windows console codec cannot print it.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     target = os.environ.get("CARGO_TARGET_DIR") or str(ROOT / "target")
     ap.add_argument("--jaic", default=os.path.join(target, "debug", "jaic"))
