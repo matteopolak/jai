@@ -1501,7 +1501,17 @@ impl Compiler {
             // under the expected type as before {#num.16}.
             self.check_expr(f, scope, a, None)?
         } else {
-            self.check_expr(f, scope, a, lhs_expected)?
+            let own = is_complement_literal(a) && !is_shift && !is_cmp;
+            self.check_expr(
+                f,
+                scope,
+                a,
+                if own {
+                    None
+                } else {
+                    lhs_expected
+                },
+            )?
         };
         if let Operand::PolyStruct(ps) = lhs {
             lhs = Operand::Type(self.poly_struct_type(ps));
@@ -1532,11 +1542,15 @@ impl Compiler {
                 f,
                 scope,
                 b,
-                rhs_expected.or(if is_cmp || is_shift {
+                if is_complement_literal(b) && !is_shift && !is_cmp {
                     None
                 } else {
-                    expected
-                }),
+                    rhs_expected.or(if is_cmp || is_shift {
+                        None
+                    } else {
+                        expected
+                    })
+                },
             )?,
         };
         if let Operand::PolyStruct(ps) = rhs {
@@ -1777,6 +1791,35 @@ impl Compiler {
         // Unify operand types.
         let patterns = (self.bit_pattern(a.span), self.bit_pattern(b.span));
         let ty = self.binary_operand_type(&lhs, &rhs, expected, is_shift, patterns, span)?;
+        // A negative constant cannot meet a `u64`: nothing wider takes its place.
+        if !is_shift {
+            for (constant, other) in [(&rhs, &lhs), (&lhs, &rhs)] {
+                if let Operand::Const {
+                    value: Value::Int(v),
+                    untyped: true,
+                    ..
+                } = constant
+                    && *v < 0
+                    && !matches!(
+                        other,
+                        Operand::Const {
+                            untyped: true,
+                            ..
+                        }
+                    )
+                    && self.types.int_info(other.ty()) == Some((64, false))
+                    && !matches!(self.types.kind(other.ty()), TypeKind::Enum(_))
+                {
+                    return err(
+                        span,
+                        format!(
+                            "signedness mismatch: the constant {v} does not fit in `{}`",
+                            self.types.name(other.ty())
+                        ),
+                    );
+                }
+            }
+        }
         if self.types.repr(ty) == TypeId::BOOL
             && matches!(
                 op,
@@ -3266,6 +3309,12 @@ fn cast_operand_needs_target(e: &ast::Expr) -> bool {
         } => cast_operand_needs_target(a) && cast_operand_needs_target(b),
         _ => false,
     }
+}
+
+/// `~7`, `~0`: the complement of a constant. It is a 64-bit pattern whatever the other operand
+/// is, so it does not adapt to the width of that operand.
+fn is_complement_literal(e: &ast::Expr) -> bool {
+    matches!(&e.kind, E::Unary(ast::UnOp::BitNot, x) if is_number_literal(x))
 }
 
 /// A numeric literal, possibly signed or parenthesised arithmetic of literals (`-1`, `(2 * 3)`):
