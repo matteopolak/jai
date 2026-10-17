@@ -71,24 +71,34 @@ emit_float :: (builder: *String_Builder, format: FormatFloat) {
 
     if format.mode == .SHORTEST {
         limit := ifx wide then 17 else 9;
-        for digits: 1..limit {
-            candidate := portable_float(value, 103, digits);
-            matches := candidate_matches(candidate, value, wide);
+        low := 1;
+        high := limit;
+        matched_digits := 0;
 
-            // Normal powers of two have a smaller interval below than above.
-            // The nearest decimal can miss below while its ceiling still fits.
-            if !matches && fraction == 0 && exponent > 1 {
-                free(candidate);
-                candidate = portable_float(value, 103, digits, round_up = true);
-                matches = candidate_matches(candidate, value, wide);
-            }
+        // A digit count that round-trips keeps doing so with more digits, so the smallest one is
+        // found by bisection instead of trying every count from one.
+        while low < high {
+            middle := (low + high) / 2;
+            candidate, matches := shortest_candidate(value, middle, wide, fraction == 0 && exponent > 1);
 
             if matches {
+                free(raw);
                 raw = candidate;
-                break;
+                matched_digits = middle;
+                high = middle;
+            } else {
+                free(candidate);
+                low = middle + 1;
             }
+        }
 
-            free(candidate);
+        if matched_digits != low {
+            free(raw);
+
+            candidate, matches := shortest_candidate(value, low, wide, fraction == 0 && exponent > 1);
+
+            if matches raw = candidate;
+            else free(candidate);
         }
 
         assert(raw.data != null, "shortest float conversion failed to round-trip");
@@ -149,6 +159,22 @@ emit_float :: (builder: *String_Builder, format: FormatFloat) {
     }
 
     formatter_repeat(builder, 32, trailing_spaces);
+}
+
+// The text of `value` with `digits` significant digits, and whether it reads back as `value`.
+// Normal powers of two have a smaller interval below than above: the nearest decimal can miss
+// below while its ceiling still fits.
+shortest_candidate :: (value: float64, digits: s64, wide: bool, power_of_two: bool) -> string, bool {
+    candidate := portable_float(value, 103, digits);
+    matches := candidate_matches(candidate, value, wide);
+
+    if !matches && power_of_two {
+        free(candidate);
+        candidate = portable_float(value, 103, digits, round_up = true);
+        matches = candidate_matches(candidate, value, wide);
+    }
+
+    return candidate, matches;
 }
 
 candidate_matches :: (text: string, value: float64, wide: bool) -> bool {
