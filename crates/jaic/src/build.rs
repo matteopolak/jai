@@ -557,10 +557,18 @@ impl MetaOp {
 /// Id of the program being compiled by the command line (workspace 1 is reserved, as in `jai`).
 pub const TOP_LEVEL_WORKSPACE: i64 = 2;
 
-/// Version text returned by `compiler_get_version_info`. Programs read the Jai language version
-/// from the first three integers of this text (`0.2.030` is language 0 / 2 / 30), so the
-/// language version comes first and the `jaic` product version follows it.
-pub const COMPILER_VERSION: &str = concat!("Jai 0.2.030 (jaic ", env!("CARGO_PKG_VERSION"), ")");
+/// Jai language version `jaic` implements, as major / minor / micro.
+pub const LANGUAGE_VERSION: (u32, u32, u32) = (0, 2, 30);
+
+/// Version text returned by `compiler_get_version_info`. Programs read the language version
+/// from its first three integers, so those come first and the `jaic` product version follows.
+pub fn compiler_version() -> String {
+    let (major, minor, micro) = LANGUAGE_VERSION;
+    format!(
+        "Jai {major}.{minor}.{micro:03} (jaic {})",
+        env!("CARGO_PKG_VERSION")
+    )
+}
 
 impl Workspaces {
     /// A registry whose workspace 1 is the top-level program.
@@ -2092,7 +2100,7 @@ pub fn call(
             Ok(Rets::default())
         }
         MetaOp::CompilerVersion => {
-            return_string(interp, COMPILER_VERSION.as_bytes(), 0)?;
+            return_string(interp, compiler_version().as_bytes(), 0)?;
             Ok(Rets::default())
         }
         MetaOp::CustomLinkComplete => {
