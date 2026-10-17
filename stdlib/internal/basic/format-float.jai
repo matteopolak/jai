@@ -26,7 +26,7 @@ emit_float :: (builder: *String_Builder, format: FormatFloat) {
 
     if item.type.runtime_size != 4 && item.type.runtime_size != 8 {
         assert(item.type == type_info(Formatter_Extended_Float), "unsupported reflected float representation");
-        converted = cast(float64) (cast(*Formatter_Extended_Float) item.value_pointer).*;
+        converted = extended_to_float64(item.value_pointer);
         item = Any.{ type_info(float64), *converted };
     }
 
@@ -160,4 +160,71 @@ candidate_matches :: (text: string, value: float64, wide: bool) -> bool {
     parsed, ok, rest := string_to_float(text);
 
     return ok && rest.count == 0 && parsed == cast(float32) value;
+}
+
+// Reads a long_double in memory without the target's runtime library: a wasm module that has no
+// support for 128-bit floats must still be able to format values. x87 extended precision is used
+// on x86-64 and IEEE binary128 elsewhere; both reduce to a sign, a 15-bit exponent and a 64-bit
+// significand, and the single u64 to float64 conversion rounds it.
+extended_to_float64 :: (pointer: *void) -> float64 {
+    words := cast(*u64) pointer;
+    low := words[0];
+    high := words[1];
+
+    negative: bool;
+    exponent: s64;
+    significand: u64;
+    has_payload: bool;
+
+    #if CPU == .X64 {
+        negative = (high & 0x8000) != 0;
+        exponent = cast(s64) (high & 0x7fff);
+        significand = low;
+        has_payload = (low << 1) != 0;
+    } else {
+        fraction_high := high & 0xffff_ffff_ffff;
+
+        negative = (high >> 63) != 0;
+        exponent = cast(s64) ((high >> 48) & 0x7fff);
+        significand = (fraction_high << 15) | (low >> 49);
+        // Bits below the 64-bit significand only decide ties, so they collapse into its last bit.
+        if (low & ((cast(u64) 1 << 49) - 1)) != 0 significand |= 1;
+        if exponent != 0 significand |= cast(u64) 1 << 63;
+        has_payload = fraction_high != 0 || low != 0;
+    }
+
+    sign_bit: u64 = ifx negative then (cast(u64) 1 << 63) else 0;
+
+    if exponent == 0x7fff {
+        bits := sign_bit | 0x7ff0_0000_0000_0000;
+        if has_payload bits |= 0x0008_0000_0000_0000;
+
+        return (cast(*float64) *bits).*;
+    }
+
+    if significand == 0 return (cast(*float64) *sign_bit).*;
+
+    if exponent == 0 exponent = 1;
+    scale := exponent - 16383 - 63;
+
+    // Outside float64's range after the 64-bit significand: overflow or underflow to zero.
+    if scale > 1023 + 64 {
+        bits := sign_bit | 0x7ff0_0000_0000_0000;
+
+        return (cast(*float64) *bits).*;
+    }
+
+    if scale < -1074 - 64 return (cast(*float64) *sign_bit).*;
+
+    result := cast(float64) significand;
+
+    while scale != 0 {
+        step := max(-1000, min(1000, scale));
+        factor_bits := cast(u64) (step + 1023) << 52;
+
+        result *= (cast(*float64) *factor_bits).*;
+        scale -= step;
+    }
+
+    return ifx negative then -result else result;
 }
