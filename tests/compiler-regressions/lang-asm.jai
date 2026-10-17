@@ -542,23 +542,34 @@ test_atomic_forms :: () {
     assert(!ok && target == 60 && expected == 60, "cmpxchg failure loads the accumulator");
 }
 
+// `__reg` parameters alias the caller's SIMD registers (a scalar or general-purpose value is rejected).
 add_regs :: (c: __reg, d: __reg) #expand {
     #asm {
-        add c, d;
+        paddq c, d;
     }
 }
 
 test_macros :: () {
+    left: [2] u64 = .[10, 20];
+    right: [2] u64 = .[7, 30];
+    left_data := left.data;
+    right_data := right.data;
+
     #asm {
-        mov a:, 10;
-        mov b:, 7;
+        movdqu.x a:, [left_data];
+        movdqu.x b:, [right_data];
     }
 
     add_regs(b, a);
-    c: u64 = ---;
+    low: u64 = ---;
+    high: u64 = ---;
 
-    #asm { mov c, b; }
-    assert(c == 17, "__reg macro parameters");
+    #asm {
+        pextrq low, b, 0;
+        pextrq high, b, 1;
+    }
+
+    assert(low == 17 && high == 50, "__reg macro parameters");
 
     fetch_and_add :: (val: *int) #expand {
         #asm {
