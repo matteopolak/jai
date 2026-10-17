@@ -25,6 +25,7 @@ on:
       - 'tools/check_windows_time_zone.py'
       - 'tools/stdlib_runtime.py'
       - 'tools/build_native_libs.py'
+      - 'tools/test_windows_dynamic_package.py'
       - 'tools/native-libs.json'
       - 'tools/install_ci_mesa_windows.sh'
       - 'tools/fetch_wgpu_native.py'
@@ -89,7 +90,7 @@ jobs:
             exit 0
           fi
           echo "$files"
-          if echo "$files" | grep -Eq '^(stdlib/Extensions/(Io|Io_Uring|Http|Json|Tls)/|tools/native/mbedtls/|stdlib/Windows/|stdlib/File_Watcher/|stdlib/internal/watching/|tools/check_(file_watcher_platforms|windows_time_zone)\.py$|tools/(build_windows_resource_fixture|test_windows_resource_fixture|install_ci_native_linux|upstream_native|upstream_smoke|build_portable_runtime|audio_build_native)\.(py|sh)$|crates/jaic-llvm/|crates/jaic/src/interp/|crates/jaic-cli/src/|crates/jaic-cli/tests/native\.rs$|tests/native/|\.github/workflows/windows-native\.yml$)'; then
+          if echo "$files" | grep -Eq '^(stdlib/Extensions/(Io|Io_Uring|Http|Json|Tls)/|tools/native/mbedtls/|stdlib/Windows/|stdlib/File_Watcher/|stdlib/internal/watching/|tools/check_(file_watcher_platforms|windows_time_zone)\.py$|tools/(build_windows_resource_fixture|test_windows_resource_fixture|install_ci_native_linux|upstream_native|upstream_smoke|build_portable_runtime|audio_build_native|build_native_libs|stdlib_runtime|test_windows_dynamic_package)\.(py|sh)$|crates/jaic-llvm/|crates/jaic/src/interp/|crates/jaic-cli/src/|crates/jaic-cli/tests/native\.rs$|tests/native/|\.github/workflows/windows-native\.yml$)'; then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
             echo "no Io, Http, Json, Tls, Windows, LLVM backend, interpreter or native test change; skipping"
@@ -200,6 +201,8 @@ jobs:
           bash tools/windows-llvm/prepare.sh "$llvm"
       - name: Build jaic with the LLVM backend
         run: cargo build --locked -p jaic-cli -p jailint --no-default-features --features static-llvm
+      - name: Check Windows dynamic package identities
+        run: TMPDIR="$RUNNER_TEMP" PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tools -p test_windows_dynamic_package.py -v
       - name: Build matching Windows runtime provider and expose normal DLL search
         run: |
           python -u tools/build_platform_io_runtime.py --stdlib stdlib --cpu x64
@@ -396,6 +399,8 @@ jobs:
           bash tools/windows-llvm/prepare.sh "$llvm"
       - name: Build jaic with the LLVM backend
         run: cargo build --release --locked -p jaic-cli --no-default-features --features static-llvm
+      - name: Check Windows dynamic package identities
+        run: TMPDIR="$RUNNER_TEMP" PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tools -p test_windows_dynamic_package.py -v
       - name: Build matching Windows runtime provider and expose normal DLL search
         run: |
           python -u tools/build_platform_io_runtime.py --stdlib stdlib --cpu x64
@@ -530,6 +535,8 @@ jobs:
           bash tools/windows-llvm/prepare.sh "$llvm"
       - name: Build jaic with the LLVM backend
         run: cargo build --locked -p jaic-cli -p jailint --no-default-features --features static-llvm
+      - name: Check Windows dynamic package identities
+        run: TMPDIR="$RUNNER_TEMP" PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s tools -p test_windows_dynamic_package.py -v
       - name: Build matching Windows runtime provider and expose normal DLL search
         run: |
           python -u tools/build_platform_io_runtime.py --stdlib stdlib --cpu arm64

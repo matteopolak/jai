@@ -2443,3 +2443,7 @@ Final940 native assets are fresh for every affected SDK/callback/counter/crash r
 ## Current next-cohort verification boundary
 
 The currentRustbrowser build surfaced dead_code for inspect_callable: its onlycaller hand_thunks_to_c is already native-only. Matching that exact cfg on the privatehelper retains nativecallbackreadiness and compiles no unusedmethod intoWASM; no lint suppression orbackend disable. Separately, the canonicalCargo WASM output (278278141bytes) later becomesallzero. Magiccheck fails ratherthanpublishing a fakebrowserbundle; actualbrowseracceptance remains requiredRED. Zeroartifact/firststagingmetadatafailure preserved and exacthashdiagnostics forwarded to maincompileroutputowner. All114previouslycapturednativeC/header/templateinputs remainidentical for178ABI8packagingfiles; newx86driver is independentregression data. No Linux/Windowsruntimeinference fromsource/metadata proofs.
+
+### Windows SDK dynamic deployment companion
+
+See [exact repair and qualification](../tools/windows-dynamic-sdk-packaging.md). tools/build_native_libs.py retains real linker import output instead of discarding it; tools/stdlib_runtime.py selects real import folders and stages package DLLs. Copying the complete available DLL set per native executable adds I/O/disk cost; proper future improvement is actual recursive PE-import closure, preserving collision/identity checks. Five mocked package controls and12runtime tests are not Windows execution; CRT/ffi/Clang providers and actualx64/ARM64replays remainrequired. No compiler parser/ABI/assertion bypass.
