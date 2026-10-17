@@ -22,7 +22,7 @@ output.mkdir(parents=True, exist_ok=True)
 native = output / "watcher-c-check"
 subprocess.run(["clang", "-std=c11", "-O1", "-g", "-fblocks", "-Wall", "-Wextra", "-Werror",
                 "-fsanitize=address,undefined", "-fno-omit-frame-pointer",
-                str(ROOT / "tests/portable-stdlib/native/watcher-c-check.c"),
+                str(ROOT / "stdlib/File_Watcher/tests/native/watcher-c-check.c"),
                 "-framework", "CoreServices", "-pthread", "-o", str(native)], cwd=ROOT, check=True)
 fixture = output / "native-watch-fixtures"
 if fixture.exists():
@@ -39,7 +39,7 @@ targets = [([], "host")]
 if platform.machine() == "arm64":
     targets.append((["-target", "x86_64-apple-darwin", "-cpu", "x64"], "translated-x64"))
 for fixture_name in ["main", "diagnostics"]:
-    source = ROOT / f"tests/portable-stdlib/file-watcher/{fixture_name}.jai"
+    source = ROOT / f"stdlib/File_Watcher/tests/basics/{fixture_name}.jai"
     commands.append([str(compiler), "-interp", str(source), "--"])
     for flags, name in targets:
         for optimization in ["-O0", "-O2"]:

@@ -294,7 +294,7 @@ class WglConsumerSetup(unittest.TestCase):
             )
             for opt in ["O0", "O2"]:
                 self.assertIn(
-                    f"tests/window-render/windows-render-events.jai -{opt} -exe native-exes/render-wheel-{opt}",
+                    f"stdlib/Windows/tests/render-events.jai -{opt} -exe native-exes/render-wheel-{opt}",
                     body,
                 )
                 self.assertIn(f"native-exes/render-wheel-{opt}.exe", body)

@@ -15,6 +15,7 @@ import shutil
 import struct
 import subprocess
 from cleanroom_lint_contexts import checked_coverage
+from window_render_tests import WINDOW_RENDER_TESTS
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES = (
@@ -52,7 +53,7 @@ def lint_jobs(linter, library, output):
             "Simp/tests/texture-packing.jai",
         ]
     ]
-    programs = [ROOT / f"tests/window-render/{case}.jai" for case in CASES]
+    programs = [ROOT / WINDOW_RENDER_TESTS[case] for case in CASES]
     private = [
         library / "internal/rendering/window-contexts.jai",
         library / "internal/window/lifecycle.jai",
@@ -169,7 +170,7 @@ def wgl_lint_paths(library, cases):
     paths += [library / name for name in
               ["Input/tests/windows-device-decoding.jai", "Input/tests/signed-native-fields.jai",
                "Simp/tests/glyph-atlas.jai", "Simp/tests/texture-packing.jai"]]
-    return paths + [ROOT / f"tests/window-render/{case}.jai" for case in cases]
+    return paths + [ROOT / WINDOW_RENDER_TESTS[case] for case in cases]
 
 
 def main():
@@ -262,7 +263,7 @@ def main():
         return ok
 
     for case in cases:
-        source = ROOT / f"tests/window-render/{case}.jai"
+        source = ROOT / WINDOW_RENDER_TESTS[case]
         run(case, "interp", [compiler, source, "-interp"])
         for optimization in ["O0", "O2"]:
             binary = output / f"{case}-{optimization}.exe"
