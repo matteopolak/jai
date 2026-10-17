@@ -994,3 +994,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Current matching CI candidate](status/shared-candidate-d9f32f30.json): committed source, tools, ABI8 identities and explicit open gates.
 
 - [Windows dynamic SDK packaging](tools/windows-dynamic-sdk-packaging.md): retain actual import libraries, deploy matching DLLs and reject collisions; native replay and CRT/ffi/Clang closure pending.
+
+- [SDL window-manager failure evidence](tools/sdl-wm-failure-evidence.md): actual driver/provider/result diagnostics on failure, preserving every runtime assertion.
