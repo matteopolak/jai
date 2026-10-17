@@ -13,6 +13,7 @@ free_backtrace :: (trace_symbols: [] string) {
 } @Releases
 
 backtrace_symbols :: os_backtrace_symbols;
+
 translate_symbols :: backtrace_symbols;
 
 os_backtrace :: (trace: [] *void, maxcount: int, skip := 0) -> int {

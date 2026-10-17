@@ -83,6 +83,7 @@ destroy :: (font: *Loaded_Font) {
 
 #scope_module
 font_library: FT_Library;
+
 font_page_width: s32 = 2048;
 font_page_height: s32 = 1024;
 
