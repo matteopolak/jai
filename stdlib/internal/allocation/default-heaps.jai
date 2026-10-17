@@ -70,7 +70,7 @@ heap_free_all :: (heap: *Heap) {
 }
 
 global_statistics :: () -> Global_Statistics {
-    // The reviewed standard variant explicitly returns dummy statistics.
+    // The standard variant explicitly returns dummy statistics.
     return .{};
 }
 

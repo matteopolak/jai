@@ -6,7 +6,7 @@ SOCKET_WOULDBLOCK_CONNECT :: SOCKET_WOULDBLOCK;
 
 IOW :: Control.IOW;
 
-// Official Winsock2 FIONBIO encoding; the reviewed character literal is incomplete.
+// Official Winsock2 FIONBIO encoding; the character literal form is incomplete.
 FIONBIO :: #run IOW(102, 126, u32);
 
 socket_init :: () -> bool {

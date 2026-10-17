@@ -1,6 +1,6 @@
 #module_parameters (STATISTICS := true, RAW := false, PUBLIC_HEAPS := true, GLOBAL_CACHE := true, THREAD_CACHE := true, ASSERTS := true, VALIDATE_ARGS := true, ADAPTIVE := false)();
 // Generated from complete pinned official rpmalloc C SDK; not a public Jai facade.
-// Opaque native heaps never alias the reviewed public Jai heap records.
+// Opaque native heaps never alias the public Jai heap records.
 #assert size_of(*void) == 8, "The private rpmalloc SDK backend requires the verified 64-bit C ABI";
 
 rpmalloc_config_t :: struct {
