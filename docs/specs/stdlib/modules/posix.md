@@ -1338,352 +1338,352 @@ Only names visible through the module’s exported scope are listed. Declaration
 - [OS == .LINUX] `system :: (__command: *u8) -> s32 #foreign libc`
 - [OS == .LINUX] `realpath :: (__name: *u8, __resolved: *u8) -> *u8 #foreign libc`
 - [OS == .LINUX && CPU == .X64] `SYS__sysctl :: 156`
-- [OS == .LINUX] `SYS_accept :: 43`
-- [OS == .LINUX] `SYS_accept4 :: 288`
-- [OS == .LINUX] `SYS_access :: 21`
-- [OS == .LINUX] `SYS_acct :: 163`
-- [OS == .LINUX] `SYS_add_key :: 248`
-- [OS == .LINUX] `SYS_adjtimex :: 159`
-- [OS == .LINUX] `SYS_afs_syscall :: 183`
-- [OS == .LINUX] `SYS_alarm :: 37`
-- [OS == .LINUX] `SYS_arch_prctl :: 158`
-- [OS == .LINUX] `SYS_bind :: 49`
-- [OS == .LINUX] `SYS_bpf :: 321`
-- [OS == .LINUX] `SYS_brk :: 12`
-- [OS == .LINUX] `SYS_capget :: 125`
-- [OS == .LINUX] `SYS_capset :: 126`
-- [OS == .LINUX] `SYS_chdir :: 80`
-- [OS == .LINUX] `SYS_chmod :: 90`
-- [OS == .LINUX] `SYS_chown :: 92`
-- [OS == .LINUX] `SYS_chroot :: 161`
-- [OS == .LINUX] `SYS_clock_adjtime :: 305`
-- [OS == .LINUX] `SYS_clock_getres :: 229`
-- [OS == .LINUX] `SYS_clock_gettime :: 228`
-- [OS == .LINUX] `SYS_clock_nanosleep :: 230`
-- [OS == .LINUX] `SYS_clock_settime :: 227`
-- [OS == .LINUX] `SYS_clone :: 56`
-- [OS == .LINUX] `SYS_clone3 :: 435`
-- [OS == .LINUX] `SYS_close :: 3`
-- [OS == .LINUX] `SYS_connect :: 42`
-- [OS == .LINUX] `SYS_copy_file_range :: 326`
-- [OS == .LINUX] `SYS_creat :: 85`
-- [OS == .LINUX] `SYS_create_module :: 174`
-- [OS == .LINUX] `SYS_delete_module :: 176`
-- [OS == .LINUX] `SYS_dup :: 32`
-- [OS == .LINUX] `SYS_dup2 :: 33`
-- [OS == .LINUX] `SYS_dup3 :: 292`
-- [OS == .LINUX] `SYS_epoll_create :: 213`
-- [OS == .LINUX] `SYS_epoll_create1 :: 291`
-- [OS == .LINUX] `SYS_epoll_ctl :: 233`
-- [OS == .LINUX] `SYS_epoll_ctl_old :: 214`
-- [OS == .LINUX] `SYS_epoll_pwait :: 281`
-- [OS == .LINUX] `SYS_epoll_wait :: 232`
-- [OS == .LINUX] `SYS_epoll_wait_old :: 215`
-- [OS == .LINUX] `SYS_eventfd :: 284`
-- [OS == .LINUX] `SYS_eventfd2 :: 290`
-- [OS == .LINUX] `SYS_execve :: 59`
-- [OS == .LINUX] `SYS_execveat :: 322`
-- [OS == .LINUX] `SYS_exit :: 60`
-- [OS == .LINUX] `SYS_exit_group :: 231`
-- [OS == .LINUX] `SYS_faccessat :: 269`
-- [OS == .LINUX] `SYS_fadvise64 :: 221`
-- [OS == .LINUX] `SYS_fallocate :: 285`
-- [OS == .LINUX] `SYS_fanotify_init :: 300`
-- [OS == .LINUX] `SYS_fanotify_mark :: 301`
-- [OS == .LINUX] `SYS_fchdir :: 81`
-- [OS == .LINUX] `SYS_fchmod :: 91`
-- [OS == .LINUX] `SYS_fchmodat :: 268`
-- [OS == .LINUX] `SYS_fchown :: 93`
-- [OS == .LINUX] `SYS_fchownat :: 260`
-- [OS == .LINUX] `SYS_fcntl :: 72`
-- [OS == .LINUX] `SYS_fdatasync :: 75`
-- [OS == .LINUX] `SYS_fgetxattr :: 193`
-- [OS == .LINUX] `SYS_finit_module :: 313`
-- [OS == .LINUX] `SYS_flistxattr :: 196`
-- [OS == .LINUX] `SYS_flock :: 73`
-- [OS == .LINUX] `SYS_fork :: 57`
-- [OS == .LINUX] `SYS_fremovexattr :: 199`
-- [OS == .LINUX] `SYS_fsconfig :: 431`
-- [OS == .LINUX] `SYS_fsetxattr :: 190`
-- [OS == .LINUX] `SYS_fsmount :: 432`
-- [OS == .LINUX] `SYS_fsopen :: 430`
-- [OS == .LINUX] `SYS_fspick :: 433`
-- [OS == .LINUX] `SYS_fstat :: 5`
-- [OS == .LINUX] `SYS_fstatfs :: 138`
-- [OS == .LINUX] `SYS_fsync :: 74`
-- [OS == .LINUX] `SYS_ftruncate :: 77`
-- [OS == .LINUX] `SYS_futex :: 202`
-- [OS == .LINUX] `SYS_futimesat :: 261`
-- [OS == .LINUX] `SYS_get_kernel_syms :: 177`
-- [OS == .LINUX] `SYS_get_mempolicy :: 239`
-- [OS == .LINUX] `SYS_get_robust_list :: 274`
-- [OS == .LINUX] `SYS_get_thread_area :: 211`
-- [OS == .LINUX] `SYS_getcpu :: 309`
-- [OS == .LINUX] `SYS_getcwd :: 79`
-- [OS == .LINUX] `SYS_getdents :: 78`
-- [OS == .LINUX] `SYS_getdents64 :: 217`
-- [OS == .LINUX] `SYS_getegid :: 108`
-- [OS == .LINUX] `SYS_geteuid :: 107`
-- [OS == .LINUX] `SYS_getgid :: 104`
-- [OS == .LINUX] `SYS_getgroups :: 115`
-- [OS == .LINUX] `SYS_getitimer :: 36`
-- [OS == .LINUX] `SYS_getpeername :: 52`
-- [OS == .LINUX] `SYS_getpgid :: 121`
-- [OS == .LINUX] `SYS_getpgrp :: 111`
-- [OS == .LINUX] `SYS_getpid :: 39`
-- [OS == .LINUX] `SYS_getpmsg :: 181`
-- [OS == .LINUX] `SYS_getppid :: 110`
-- [OS == .LINUX] `SYS_getpriority :: 140`
-- [OS == .LINUX] `SYS_getrandom :: 318`
-- [OS == .LINUX] `SYS_getresgid :: 120`
-- [OS == .LINUX] `SYS_getresuid :: 118`
-- [OS == .LINUX] `SYS_getrlimit :: 97`
-- [OS == .LINUX] `SYS_getrusage :: 98`
-- [OS == .LINUX] `SYS_getsid :: 124`
-- [OS == .LINUX] `SYS_getsockname :: 51`
-- [OS == .LINUX] `SYS_getsockopt :: 55`
-- [OS == .LINUX] `SYS_gettid :: 186`
-- [OS == .LINUX] `SYS_gettimeofday :: 96`
-- [OS == .LINUX] `SYS_getuid :: 102`
-- [OS == .LINUX] `SYS_getxattr :: 191`
-- [OS == .LINUX] `SYS_init_module :: 175`
-- [OS == .LINUX] `SYS_inotify_add_watch :: 254`
-- [OS == .LINUX] `SYS_inotify_init :: 253`
-- [OS == .LINUX] `SYS_inotify_init1 :: 294`
-- [OS == .LINUX] `SYS_inotify_rm_watch :: 255`
-- [OS == .LINUX] `SYS_io_cancel :: 210`
-- [OS == .LINUX] `SYS_io_destroy :: 207`
-- [OS == .LINUX] `SYS_io_getevents :: 208`
-- [OS == .LINUX] `SYS_io_pgetevents :: 333`
-- [OS == .LINUX] `SYS_io_setup :: 206`
-- [OS == .LINUX] `SYS_io_submit :: 209`
-- [OS == .LINUX] `SYS_io_uring_enter :: 426`
-- [OS == .LINUX] `SYS_io_uring_register :: 427`
-- [OS == .LINUX] `SYS_io_uring_setup :: 425`
-- [OS == .LINUX] `SYS_ioctl :: 16`
-- [OS == .LINUX] `SYS_ioperm :: 173`
-- [OS == .LINUX] `SYS_iopl :: 172`
-- [OS == .LINUX] `SYS_ioprio_get :: 252`
-- [OS == .LINUX] `SYS_ioprio_set :: 251`
-- [OS == .LINUX] `SYS_kcmp :: 312`
-- [OS == .LINUX] `SYS_kexec_file_load :: 320`
-- [OS == .LINUX] `SYS_kexec_load :: 246`
-- [OS == .LINUX] `SYS_keyctl :: 250`
-- [OS == .LINUX] `SYS_kill :: 62`
-- [OS == .LINUX] `SYS_lchown :: 94`
-- [OS == .LINUX] `SYS_lgetxattr :: 192`
-- [OS == .LINUX] `SYS_link :: 86`
-- [OS == .LINUX] `SYS_linkat :: 265`
-- [OS == .LINUX] `SYS_listen :: 50`
-- [OS == .LINUX] `SYS_listxattr :: 194`
-- [OS == .LINUX] `SYS_llistxattr :: 195`
-- [OS == .LINUX] `SYS_lookup_dcookie :: 212`
-- [OS == .LINUX] `SYS_lremovexattr :: 198`
-- [OS == .LINUX] `SYS_lseek :: 8`
-- [OS == .LINUX] `SYS_lsetxattr :: 189`
-- [OS == .LINUX] `SYS_lstat :: 6`
-- [OS == .LINUX] `SYS_madvise :: 28`
-- [OS == .LINUX] `SYS_mbind :: 237`
-- [OS == .LINUX] `SYS_membarrier :: 324`
-- [OS == .LINUX] `SYS_memfd_create :: 319`
-- [OS == .LINUX] `SYS_migrate_pages :: 256`
-- [OS == .LINUX] `SYS_mincore :: 27`
-- [OS == .LINUX] `SYS_mkdir :: 83`
-- [OS == .LINUX] `SYS_mkdirat :: 258`
-- [OS == .LINUX] `SYS_mknod :: 133`
-- [OS == .LINUX] `SYS_mknodat :: 259`
-- [OS == .LINUX] `SYS_mlock :: 149`
-- [OS == .LINUX] `SYS_mlock2 :: 325`
-- [OS == .LINUX] `SYS_mlockall :: 151`
-- [OS == .LINUX] `SYS_mmap :: 9`
-- [OS == .LINUX] `SYS_modify_ldt :: 154`
-- [OS == .LINUX] `SYS_mount :: 165`
-- [OS == .LINUX] `SYS_move_mount :: 429`
-- [OS == .LINUX] `SYS_move_pages :: 279`
-- [OS == .LINUX] `SYS_mprotect :: 10`
-- [OS == .LINUX] `SYS_mq_getsetattr :: 245`
-- [OS == .LINUX] `SYS_mq_notify :: 244`
-- [OS == .LINUX] `SYS_mq_open :: 240`
-- [OS == .LINUX] `SYS_mq_timedreceive :: 243`
-- [OS == .LINUX] `SYS_mq_timedsend :: 242`
-- [OS == .LINUX] `SYS_mq_unlink :: 241`
-- [OS == .LINUX] `SYS_mremap :: 25`
-- [OS == .LINUX] `SYS_msgctl :: 71`
-- [OS == .LINUX] `SYS_msgget :: 68`
-- [OS == .LINUX] `SYS_msgrcv :: 70`
-- [OS == .LINUX] `SYS_msgsnd :: 69`
-- [OS == .LINUX] `SYS_msync :: 26`
-- [OS == .LINUX] `SYS_munlock :: 150`
-- [OS == .LINUX] `SYS_munlockall :: 152`
-- [OS == .LINUX] `SYS_munmap :: 11`
-- [OS == .LINUX] `SYS_name_to_handle_at :: 303`
-- [OS == .LINUX] `SYS_nanosleep :: 35`
-- [OS == .LINUX] `SYS_newfstatat :: 262`
-- [OS == .LINUX] `SYS_nfsservctl :: 180`
-- [OS == .LINUX] `SYS_open :: 2`
-- [OS == .LINUX] `SYS_open_by_handle_at :: 304`
-- [OS == .LINUX] `SYS_open_tree :: 428`
-- [OS == .LINUX] `SYS_openat :: 257`
-- [OS == .LINUX] `SYS_pause :: 34`
-- [OS == .LINUX] `SYS_perf_event_open :: 298`
-- [OS == .LINUX] `SYS_personality :: 135`
-- [OS == .LINUX] `SYS_pidfd_open :: 434`
-- [OS == .LINUX] `SYS_pidfd_send_signal :: 424`
-- [OS == .LINUX] `SYS_pipe :: 22`
-- [OS == .LINUX] `SYS_pipe2 :: 293`
-- [OS == .LINUX] `SYS_pivot_root :: 155`
-- [OS == .LINUX] `SYS_pkey_alloc :: 330`
-- [OS == .LINUX] `SYS_pkey_free :: 331`
-- [OS == .LINUX] `SYS_pkey_mprotect :: 329`
-- [OS == .LINUX] `SYS_poll :: 7`
-- [OS == .LINUX] `SYS_ppoll :: 271`
-- [OS == .LINUX] `SYS_prctl :: 157`
-- [OS == .LINUX] `SYS_pread64 :: 17`
-- [OS == .LINUX] `SYS_preadv :: 295`
-- [OS == .LINUX] `SYS_preadv2 :: 327`
-- [OS == .LINUX] `SYS_prlimit64 :: 302`
-- [OS == .LINUX] `SYS_process_vm_readv :: 310`
-- [OS == .LINUX] `SYS_process_vm_writev :: 311`
-- [OS == .LINUX] `SYS_pselect6 :: 270`
-- [OS == .LINUX] `SYS_ptrace :: 101`
-- [OS == .LINUX] `SYS_putpmsg :: 182`
-- [OS == .LINUX] `SYS_pwrite64 :: 18`
-- [OS == .LINUX] `SYS_pwritev :: 296`
-- [OS == .LINUX] `SYS_pwritev2 :: 328`
-- [OS == .LINUX] `SYS_query_module :: 178`
-- [OS == .LINUX] `SYS_quotactl :: 179`
-- [OS == .LINUX] `SYS_read :: 0`
-- [OS == .LINUX] `SYS_readahead :: 187`
-- [OS == .LINUX] `SYS_readlink :: 89`
-- [OS == .LINUX] `SYS_readlinkat :: 267`
-- [OS == .LINUX] `SYS_readv :: 19`
-- [OS == .LINUX] `SYS_reboot :: 169`
-- [OS == .LINUX] `SYS_recvfrom :: 45`
-- [OS == .LINUX] `SYS_recvmmsg :: 299`
-- [OS == .LINUX] `SYS_recvmsg :: 47`
-- [OS == .LINUX] `SYS_remap_file_pages :: 216`
-- [OS == .LINUX] `SYS_removexattr :: 197`
-- [OS == .LINUX] `SYS_rename :: 82`
-- [OS == .LINUX] `SYS_renameat :: 264`
-- [OS == .LINUX] `SYS_renameat2 :: 316`
-- [OS == .LINUX] `SYS_request_key :: 249`
-- [OS == .LINUX] `SYS_restart_syscall :: 219`
-- [OS == .LINUX] `SYS_rmdir :: 84`
-- [OS == .LINUX] `SYS_rseq :: 334`
-- [OS == .LINUX] `SYS_rt_sigaction :: 13`
-- [OS == .LINUX] `SYS_rt_sigpending :: 127`
-- [OS == .LINUX] `SYS_rt_sigprocmask :: 14`
-- [OS == .LINUX] `SYS_rt_sigqueueinfo :: 129`
-- [OS == .LINUX] `SYS_rt_sigreturn :: 15`
-- [OS == .LINUX] `SYS_rt_sigsuspend :: 130`
-- [OS == .LINUX] `SYS_rt_sigtimedwait :: 128`
-- [OS == .LINUX] `SYS_rt_tgsigqueueinfo :: 297`
-- [OS == .LINUX] `SYS_sched_get_priority_max :: 146`
-- [OS == .LINUX] `SYS_sched_get_priority_min :: 147`
-- [OS == .LINUX] `SYS_sched_getaffinity :: 204`
-- [OS == .LINUX] `SYS_sched_getattr :: 315`
-- [OS == .LINUX] `SYS_sched_getparam :: 143`
-- [OS == .LINUX] `SYS_sched_getscheduler :: 145`
-- [OS == .LINUX] `SYS_sched_rr_get_interval :: 148`
-- [OS == .LINUX] `SYS_sched_setaffinity :: 203`
-- [OS == .LINUX] `SYS_sched_setattr :: 314`
-- [OS == .LINUX] `SYS_sched_setparam :: 142`
-- [OS == .LINUX] `SYS_sched_setscheduler :: 144`
-- [OS == .LINUX] `SYS_sched_yield :: 24`
-- [OS == .LINUX] `SYS_seccomp :: 317`
-- [OS == .LINUX] `SYS_security :: 185`
-- [OS == .LINUX] `SYS_select :: 23`
-- [OS == .LINUX] `SYS_semctl :: 66`
-- [OS == .LINUX] `SYS_semget :: 64`
-- [OS == .LINUX] `SYS_semop :: 65`
-- [OS == .LINUX] `SYS_semtimedop :: 220`
-- [OS == .LINUX] `SYS_sendfile :: 40`
-- [OS == .LINUX] `SYS_sendmmsg :: 307`
-- [OS == .LINUX] `SYS_sendmsg :: 46`
-- [OS == .LINUX] `SYS_sendto :: 44`
-- [OS == .LINUX] `SYS_set_mempolicy :: 238`
-- [OS == .LINUX] `SYS_set_robust_list :: 273`
-- [OS == .LINUX] `SYS_set_thread_area :: 205`
-- [OS == .LINUX] `SYS_set_tid_address :: 218`
-- [OS == .LINUX] `SYS_setdomainname :: 171`
-- [OS == .LINUX] `SYS_setfsgid :: 123`
-- [OS == .LINUX] `SYS_setfsuid :: 122`
-- [OS == .LINUX] `SYS_setgid :: 106`
-- [OS == .LINUX] `SYS_setgroups :: 116`
-- [OS == .LINUX] `SYS_sethostname :: 170`
-- [OS == .LINUX] `SYS_setitimer :: 38`
-- [OS == .LINUX] `SYS_setns :: 308`
-- [OS == .LINUX] `SYS_setpgid :: 109`
-- [OS == .LINUX] `SYS_setpriority :: 141`
-- [OS == .LINUX] `SYS_setregid :: 114`
-- [OS == .LINUX] `SYS_setresgid :: 119`
-- [OS == .LINUX] `SYS_setresuid :: 117`
-- [OS == .LINUX] `SYS_setreuid :: 113`
-- [OS == .LINUX] `SYS_setrlimit :: 160`
-- [OS == .LINUX] `SYS_setsid :: 112`
-- [OS == .LINUX] `SYS_setsockopt :: 54`
-- [OS == .LINUX] `SYS_settimeofday :: 164`
-- [OS == .LINUX] `SYS_setuid :: 105`
-- [OS == .LINUX] `SYS_setxattr :: 188`
-- [OS == .LINUX] `SYS_shmat :: 30`
-- [OS == .LINUX] `SYS_shmctl :: 31`
-- [OS == .LINUX] `SYS_shmdt :: 67`
-- [OS == .LINUX] `SYS_shmget :: 29`
-- [OS == .LINUX] `SYS_shutdown :: 48`
-- [OS == .LINUX] `SYS_sigaltstack :: 131`
-- [OS == .LINUX] `SYS_signalfd :: 282`
-- [OS == .LINUX] `SYS_signalfd4 :: 289`
-- [OS == .LINUX] `SYS_socket :: 41`
-- [OS == .LINUX] `SYS_socketpair :: 53`
-- [OS == .LINUX] `SYS_splice :: 275`
-- [OS == .LINUX] `SYS_stat :: 4`
-- [OS == .LINUX] `SYS_statfs :: 137`
-- [OS == .LINUX] `SYS_statx :: 332`
-- [OS == .LINUX] `SYS_swapoff :: 168`
-- [OS == .LINUX] `SYS_swapon :: 167`
-- [OS == .LINUX] `SYS_symlink :: 88`
-- [OS == .LINUX] `SYS_symlinkat :: 266`
-- [OS == .LINUX] `SYS_sync :: 162`
-- [OS == .LINUX] `SYS_sync_file_range :: 277`
-- [OS == .LINUX] `SYS_syncfs :: 306`
-- [OS == .LINUX] `SYS_sysfs :: 139`
-- [OS == .LINUX] `SYS_sysinfo :: 99`
-- [OS == .LINUX] `SYS_syslog :: 103`
-- [OS == .LINUX] `SYS_tee :: 276`
-- [OS == .LINUX] `SYS_tgkill :: 234`
-- [OS == .LINUX] `SYS_time :: 201`
-- [OS == .LINUX] `SYS_timer_create :: 222`
-- [OS == .LINUX] `SYS_timer_delete :: 226`
-- [OS == .LINUX] `SYS_timer_getoverrun :: 225`
-- [OS == .LINUX] `SYS_timer_gettime :: 224`
-- [OS == .LINUX] `SYS_timer_settime :: 223`
-- [OS == .LINUX] `SYS_timerfd_create :: 283`
-- [OS == .LINUX] `SYS_timerfd_gettime :: 287`
-- [OS == .LINUX] `SYS_timerfd_settime :: 286`
-- [OS == .LINUX] `SYS_times :: 100`
-- [OS == .LINUX] `SYS_tkill :: 200`
-- [OS == .LINUX] `SYS_truncate :: 76`
-- [OS == .LINUX] `SYS_tuxcall :: 184`
-- [OS == .LINUX] `SYS_umask :: 95`
-- [OS == .LINUX] `SYS_umount2 :: 166`
-- [OS == .LINUX] `SYS_uname :: 63`
-- [OS == .LINUX] `SYS_unlink :: 87`
-- [OS == .LINUX] `SYS_unlinkat :: 263`
-- [OS == .LINUX] `SYS_unshare :: 272`
-- [OS == .LINUX] `SYS_uselib :: 134`
-- [OS == .LINUX] `SYS_userfaultfd :: 323`
-- [OS == .LINUX] `SYS_ustat :: 136`
-- [OS == .LINUX] `SYS_utime :: 132`
-- [OS == .LINUX] `SYS_utimensat :: 280`
-- [OS == .LINUX] `SYS_utimes :: 235`
-- [OS == .LINUX] `SYS_vfork :: 58`
-- [OS == .LINUX] `SYS_vhangup :: 153`
-- [OS == .LINUX] `SYS_vmsplice :: 278`
-- [OS == .LINUX] `SYS_vserver :: 236`
-- [OS == .LINUX] `SYS_wait4 :: 61`
-- [OS == .LINUX] `SYS_waitid :: 247`
-- [OS == .LINUX] `SYS_write :: 1`
-- [OS == .LINUX] `SYS_writev :: 20`
+- [OS == .LINUX && CPU == .X64] `SYS_accept :: 43`
+- [OS == .LINUX && CPU == .X64] `SYS_accept4 :: 288`
+- [OS == .LINUX && CPU == .X64] `SYS_access :: 21`
+- [OS == .LINUX && CPU == .X64] `SYS_acct :: 163`
+- [OS == .LINUX && CPU == .X64] `SYS_add_key :: 248`
+- [OS == .LINUX && CPU == .X64] `SYS_adjtimex :: 159`
+- [OS == .LINUX && CPU == .X64] `SYS_afs_syscall :: 183`
+- [OS == .LINUX && CPU == .X64] `SYS_alarm :: 37`
+- [OS == .LINUX && CPU == .X64] `SYS_arch_prctl :: 158`
+- [OS == .LINUX && CPU == .X64] `SYS_bind :: 49`
+- [OS == .LINUX && CPU == .X64] `SYS_bpf :: 321`
+- [OS == .LINUX && CPU == .X64] `SYS_brk :: 12`
+- [OS == .LINUX && CPU == .X64] `SYS_capget :: 125`
+- [OS == .LINUX && CPU == .X64] `SYS_capset :: 126`
+- [OS == .LINUX && CPU == .X64] `SYS_chdir :: 80`
+- [OS == .LINUX && CPU == .X64] `SYS_chmod :: 90`
+- [OS == .LINUX && CPU == .X64] `SYS_chown :: 92`
+- [OS == .LINUX && CPU == .X64] `SYS_chroot :: 161`
+- [OS == .LINUX && CPU == .X64] `SYS_clock_adjtime :: 305`
+- [OS == .LINUX && CPU == .X64] `SYS_clock_getres :: 229`
+- [OS == .LINUX && CPU == .X64] `SYS_clock_gettime :: 228`
+- [OS == .LINUX && CPU == .X64] `SYS_clock_nanosleep :: 230`
+- [OS == .LINUX && CPU == .X64] `SYS_clock_settime :: 227`
+- [OS == .LINUX && CPU == .X64] `SYS_clone :: 56`
+- [OS == .LINUX && CPU == .X64] `SYS_clone3 :: 435`
+- [OS == .LINUX && CPU == .X64] `SYS_close :: 3`
+- [OS == .LINUX && CPU == .X64] `SYS_connect :: 42`
+- [OS == .LINUX && CPU == .X64] `SYS_copy_file_range :: 326`
+- [OS == .LINUX && CPU == .X64] `SYS_creat :: 85`
+- [OS == .LINUX && CPU == .X64] `SYS_create_module :: 174`
+- [OS == .LINUX && CPU == .X64] `SYS_delete_module :: 176`
+- [OS == .LINUX && CPU == .X64] `SYS_dup :: 32`
+- [OS == .LINUX && CPU == .X64] `SYS_dup2 :: 33`
+- [OS == .LINUX && CPU == .X64] `SYS_dup3 :: 292`
+- [OS == .LINUX && CPU == .X64] `SYS_epoll_create :: 213`
+- [OS == .LINUX && CPU == .X64] `SYS_epoll_create1 :: 291`
+- [OS == .LINUX && CPU == .X64] `SYS_epoll_ctl :: 233`
+- [OS == .LINUX && CPU == .X64] `SYS_epoll_ctl_old :: 214`
+- [OS == .LINUX && CPU == .X64] `SYS_epoll_pwait :: 281`
+- [OS == .LINUX && CPU == .X64] `SYS_epoll_wait :: 232`
+- [OS == .LINUX && CPU == .X64] `SYS_epoll_wait_old :: 215`
+- [OS == .LINUX && CPU == .X64] `SYS_eventfd :: 284`
+- [OS == .LINUX && CPU == .X64] `SYS_eventfd2 :: 290`
+- [OS == .LINUX && CPU == .X64] `SYS_execve :: 59`
+- [OS == .LINUX && CPU == .X64] `SYS_execveat :: 322`
+- [OS == .LINUX && CPU == .X64] `SYS_exit :: 60`
+- [OS == .LINUX && CPU == .X64] `SYS_exit_group :: 231`
+- [OS == .LINUX && CPU == .X64] `SYS_faccessat :: 269`
+- [OS == .LINUX && CPU == .X64] `SYS_fadvise64 :: 221`
+- [OS == .LINUX && CPU == .X64] `SYS_fallocate :: 285`
+- [OS == .LINUX && CPU == .X64] `SYS_fanotify_init :: 300`
+- [OS == .LINUX && CPU == .X64] `SYS_fanotify_mark :: 301`
+- [OS == .LINUX && CPU == .X64] `SYS_fchdir :: 81`
+- [OS == .LINUX && CPU == .X64] `SYS_fchmod :: 91`
+- [OS == .LINUX && CPU == .X64] `SYS_fchmodat :: 268`
+- [OS == .LINUX && CPU == .X64] `SYS_fchown :: 93`
+- [OS == .LINUX && CPU == .X64] `SYS_fchownat :: 260`
+- [OS == .LINUX && CPU == .X64] `SYS_fcntl :: 72`
+- [OS == .LINUX && CPU == .X64] `SYS_fdatasync :: 75`
+- [OS == .LINUX && CPU == .X64] `SYS_fgetxattr :: 193`
+- [OS == .LINUX && CPU == .X64] `SYS_finit_module :: 313`
+- [OS == .LINUX && CPU == .X64] `SYS_flistxattr :: 196`
+- [OS == .LINUX && CPU == .X64] `SYS_flock :: 73`
+- [OS == .LINUX && CPU == .X64] `SYS_fork :: 57`
+- [OS == .LINUX && CPU == .X64] `SYS_fremovexattr :: 199`
+- [OS == .LINUX && CPU == .X64] `SYS_fsconfig :: 431`
+- [OS == .LINUX && CPU == .X64] `SYS_fsetxattr :: 190`
+- [OS == .LINUX && CPU == .X64] `SYS_fsmount :: 432`
+- [OS == .LINUX && CPU == .X64] `SYS_fsopen :: 430`
+- [OS == .LINUX && CPU == .X64] `SYS_fspick :: 433`
+- [OS == .LINUX && CPU == .X64] `SYS_fstat :: 5`
+- [OS == .LINUX && CPU == .X64] `SYS_fstatfs :: 138`
+- [OS == .LINUX && CPU == .X64] `SYS_fsync :: 74`
+- [OS == .LINUX && CPU == .X64] `SYS_ftruncate :: 77`
+- [OS == .LINUX && CPU == .X64] `SYS_futex :: 202`
+- [OS == .LINUX && CPU == .X64] `SYS_futimesat :: 261`
+- [OS == .LINUX && CPU == .X64] `SYS_get_kernel_syms :: 177`
+- [OS == .LINUX && CPU == .X64] `SYS_get_mempolicy :: 239`
+- [OS == .LINUX && CPU == .X64] `SYS_get_robust_list :: 274`
+- [OS == .LINUX && CPU == .X64] `SYS_get_thread_area :: 211`
+- [OS == .LINUX && CPU == .X64] `SYS_getcpu :: 309`
+- [OS == .LINUX && CPU == .X64] `SYS_getcwd :: 79`
+- [OS == .LINUX && CPU == .X64] `SYS_getdents :: 78`
+- [OS == .LINUX && CPU == .X64] `SYS_getdents64 :: 217`
+- [OS == .LINUX && CPU == .X64] `SYS_getegid :: 108`
+- [OS == .LINUX && CPU == .X64] `SYS_geteuid :: 107`
+- [OS == .LINUX && CPU == .X64] `SYS_getgid :: 104`
+- [OS == .LINUX && CPU == .X64] `SYS_getgroups :: 115`
+- [OS == .LINUX && CPU == .X64] `SYS_getitimer :: 36`
+- [OS == .LINUX && CPU == .X64] `SYS_getpeername :: 52`
+- [OS == .LINUX && CPU == .X64] `SYS_getpgid :: 121`
+- [OS == .LINUX && CPU == .X64] `SYS_getpgrp :: 111`
+- [OS == .LINUX && CPU == .X64] `SYS_getpid :: 39`
+- [OS == .LINUX && CPU == .X64] `SYS_getpmsg :: 181`
+- [OS == .LINUX && CPU == .X64] `SYS_getppid :: 110`
+- [OS == .LINUX && CPU == .X64] `SYS_getpriority :: 140`
+- [OS == .LINUX && CPU == .X64] `SYS_getrandom :: 318`
+- [OS == .LINUX && CPU == .X64] `SYS_getresgid :: 120`
+- [OS == .LINUX && CPU == .X64] `SYS_getresuid :: 118`
+- [OS == .LINUX && CPU == .X64] `SYS_getrlimit :: 97`
+- [OS == .LINUX && CPU == .X64] `SYS_getrusage :: 98`
+- [OS == .LINUX && CPU == .X64] `SYS_getsid :: 124`
+- [OS == .LINUX && CPU == .X64] `SYS_getsockname :: 51`
+- [OS == .LINUX && CPU == .X64] `SYS_getsockopt :: 55`
+- [OS == .LINUX && CPU == .X64] `SYS_gettid :: 186`
+- [OS == .LINUX && CPU == .X64] `SYS_gettimeofday :: 96`
+- [OS == .LINUX && CPU == .X64] `SYS_getuid :: 102`
+- [OS == .LINUX && CPU == .X64] `SYS_getxattr :: 191`
+- [OS == .LINUX && CPU == .X64] `SYS_init_module :: 175`
+- [OS == .LINUX && CPU == .X64] `SYS_inotify_add_watch :: 254`
+- [OS == .LINUX && CPU == .X64] `SYS_inotify_init :: 253`
+- [OS == .LINUX && CPU == .X64] `SYS_inotify_init1 :: 294`
+- [OS == .LINUX && CPU == .X64] `SYS_inotify_rm_watch :: 255`
+- [OS == .LINUX && CPU == .X64] `SYS_io_cancel :: 210`
+- [OS == .LINUX && CPU == .X64] `SYS_io_destroy :: 207`
+- [OS == .LINUX && CPU == .X64] `SYS_io_getevents :: 208`
+- [OS == .LINUX && CPU == .X64] `SYS_io_pgetevents :: 333`
+- [OS == .LINUX && CPU == .X64] `SYS_io_setup :: 206`
+- [OS == .LINUX && CPU == .X64] `SYS_io_submit :: 209`
+- [OS == .LINUX && CPU == .X64] `SYS_io_uring_enter :: 426`
+- [OS == .LINUX && CPU == .X64] `SYS_io_uring_register :: 427`
+- [OS == .LINUX && CPU == .X64] `SYS_io_uring_setup :: 425`
+- [OS == .LINUX && CPU == .X64] `SYS_ioctl :: 16`
+- [OS == .LINUX && CPU == .X64] `SYS_ioperm :: 173`
+- [OS == .LINUX && CPU == .X64] `SYS_iopl :: 172`
+- [OS == .LINUX && CPU == .X64] `SYS_ioprio_get :: 252`
+- [OS == .LINUX && CPU == .X64] `SYS_ioprio_set :: 251`
+- [OS == .LINUX && CPU == .X64] `SYS_kcmp :: 312`
+- [OS == .LINUX && CPU == .X64] `SYS_kexec_file_load :: 320`
+- [OS == .LINUX && CPU == .X64] `SYS_kexec_load :: 246`
+- [OS == .LINUX && CPU == .X64] `SYS_keyctl :: 250`
+- [OS == .LINUX && CPU == .X64] `SYS_kill :: 62`
+- [OS == .LINUX && CPU == .X64] `SYS_lchown :: 94`
+- [OS == .LINUX && CPU == .X64] `SYS_lgetxattr :: 192`
+- [OS == .LINUX && CPU == .X64] `SYS_link :: 86`
+- [OS == .LINUX && CPU == .X64] `SYS_linkat :: 265`
+- [OS == .LINUX && CPU == .X64] `SYS_listen :: 50`
+- [OS == .LINUX && CPU == .X64] `SYS_listxattr :: 194`
+- [OS == .LINUX && CPU == .X64] `SYS_llistxattr :: 195`
+- [OS == .LINUX && CPU == .X64] `SYS_lookup_dcookie :: 212`
+- [OS == .LINUX && CPU == .X64] `SYS_lremovexattr :: 198`
+- [OS == .LINUX && CPU == .X64] `SYS_lseek :: 8`
+- [OS == .LINUX && CPU == .X64] `SYS_lsetxattr :: 189`
+- [OS == .LINUX && CPU == .X64] `SYS_lstat :: 6`
+- [OS == .LINUX && CPU == .X64] `SYS_madvise :: 28`
+- [OS == .LINUX && CPU == .X64] `SYS_mbind :: 237`
+- [OS == .LINUX && CPU == .X64] `SYS_membarrier :: 324`
+- [OS == .LINUX && CPU == .X64] `SYS_memfd_create :: 319`
+- [OS == .LINUX && CPU == .X64] `SYS_migrate_pages :: 256`
+- [OS == .LINUX && CPU == .X64] `SYS_mincore :: 27`
+- [OS == .LINUX && CPU == .X64] `SYS_mkdir :: 83`
+- [OS == .LINUX && CPU == .X64] `SYS_mkdirat :: 258`
+- [OS == .LINUX && CPU == .X64] `SYS_mknod :: 133`
+- [OS == .LINUX && CPU == .X64] `SYS_mknodat :: 259`
+- [OS == .LINUX && CPU == .X64] `SYS_mlock :: 149`
+- [OS == .LINUX && CPU == .X64] `SYS_mlock2 :: 325`
+- [OS == .LINUX && CPU == .X64] `SYS_mlockall :: 151`
+- [OS == .LINUX && CPU == .X64] `SYS_mmap :: 9`
+- [OS == .LINUX && CPU == .X64] `SYS_modify_ldt :: 154`
+- [OS == .LINUX && CPU == .X64] `SYS_mount :: 165`
+- [OS == .LINUX && CPU == .X64] `SYS_move_mount :: 429`
+- [OS == .LINUX && CPU == .X64] `SYS_move_pages :: 279`
+- [OS == .LINUX && CPU == .X64] `SYS_mprotect :: 10`
+- [OS == .LINUX && CPU == .X64] `SYS_mq_getsetattr :: 245`
+- [OS == .LINUX && CPU == .X64] `SYS_mq_notify :: 244`
+- [OS == .LINUX && CPU == .X64] `SYS_mq_open :: 240`
+- [OS == .LINUX && CPU == .X64] `SYS_mq_timedreceive :: 243`
+- [OS == .LINUX && CPU == .X64] `SYS_mq_timedsend :: 242`
+- [OS == .LINUX && CPU == .X64] `SYS_mq_unlink :: 241`
+- [OS == .LINUX && CPU == .X64] `SYS_mremap :: 25`
+- [OS == .LINUX && CPU == .X64] `SYS_msgctl :: 71`
+- [OS == .LINUX && CPU == .X64] `SYS_msgget :: 68`
+- [OS == .LINUX && CPU == .X64] `SYS_msgrcv :: 70`
+- [OS == .LINUX && CPU == .X64] `SYS_msgsnd :: 69`
+- [OS == .LINUX && CPU == .X64] `SYS_msync :: 26`
+- [OS == .LINUX && CPU == .X64] `SYS_munlock :: 150`
+- [OS == .LINUX && CPU == .X64] `SYS_munlockall :: 152`
+- [OS == .LINUX && CPU == .X64] `SYS_munmap :: 11`
+- [OS == .LINUX && CPU == .X64] `SYS_name_to_handle_at :: 303`
+- [OS == .LINUX && CPU == .X64] `SYS_nanosleep :: 35`
+- [OS == .LINUX && CPU == .X64] `SYS_newfstatat :: 262`
+- [OS == .LINUX && CPU == .X64] `SYS_nfsservctl :: 180`
+- [OS == .LINUX && CPU == .X64] `SYS_open :: 2`
+- [OS == .LINUX && CPU == .X64] `SYS_open_by_handle_at :: 304`
+- [OS == .LINUX && CPU == .X64] `SYS_open_tree :: 428`
+- [OS == .LINUX && CPU == .X64] `SYS_openat :: 257`
+- [OS == .LINUX && CPU == .X64] `SYS_pause :: 34`
+- [OS == .LINUX && CPU == .X64] `SYS_perf_event_open :: 298`
+- [OS == .LINUX && CPU == .X64] `SYS_personality :: 135`
+- [OS == .LINUX && CPU == .X64] `SYS_pidfd_open :: 434`
+- [OS == .LINUX && CPU == .X64] `SYS_pidfd_send_signal :: 424`
+- [OS == .LINUX && CPU == .X64] `SYS_pipe :: 22`
+- [OS == .LINUX && CPU == .X64] `SYS_pipe2 :: 293`
+- [OS == .LINUX && CPU == .X64] `SYS_pivot_root :: 155`
+- [OS == .LINUX && CPU == .X64] `SYS_pkey_alloc :: 330`
+- [OS == .LINUX && CPU == .X64] `SYS_pkey_free :: 331`
+- [OS == .LINUX && CPU == .X64] `SYS_pkey_mprotect :: 329`
+- [OS == .LINUX && CPU == .X64] `SYS_poll :: 7`
+- [OS == .LINUX && CPU == .X64] `SYS_ppoll :: 271`
+- [OS == .LINUX && CPU == .X64] `SYS_prctl :: 157`
+- [OS == .LINUX && CPU == .X64] `SYS_pread64 :: 17`
+- [OS == .LINUX && CPU == .X64] `SYS_preadv :: 295`
+- [OS == .LINUX && CPU == .X64] `SYS_preadv2 :: 327`
+- [OS == .LINUX && CPU == .X64] `SYS_prlimit64 :: 302`
+- [OS == .LINUX && CPU == .X64] `SYS_process_vm_readv :: 310`
+- [OS == .LINUX && CPU == .X64] `SYS_process_vm_writev :: 311`
+- [OS == .LINUX && CPU == .X64] `SYS_pselect6 :: 270`
+- [OS == .LINUX && CPU == .X64] `SYS_ptrace :: 101`
+- [OS == .LINUX && CPU == .X64] `SYS_putpmsg :: 182`
+- [OS == .LINUX && CPU == .X64] `SYS_pwrite64 :: 18`
+- [OS == .LINUX && CPU == .X64] `SYS_pwritev :: 296`
+- [OS == .LINUX && CPU == .X64] `SYS_pwritev2 :: 328`
+- [OS == .LINUX && CPU == .X64] `SYS_query_module :: 178`
+- [OS == .LINUX && CPU == .X64] `SYS_quotactl :: 179`
+- [OS == .LINUX && CPU == .X64] `SYS_read :: 0`
+- [OS == .LINUX && CPU == .X64] `SYS_readahead :: 187`
+- [OS == .LINUX && CPU == .X64] `SYS_readlink :: 89`
+- [OS == .LINUX && CPU == .X64] `SYS_readlinkat :: 267`
+- [OS == .LINUX && CPU == .X64] `SYS_readv :: 19`
+- [OS == .LINUX && CPU == .X64] `SYS_reboot :: 169`
+- [OS == .LINUX && CPU == .X64] `SYS_recvfrom :: 45`
+- [OS == .LINUX && CPU == .X64] `SYS_recvmmsg :: 299`
+- [OS == .LINUX && CPU == .X64] `SYS_recvmsg :: 47`
+- [OS == .LINUX && CPU == .X64] `SYS_remap_file_pages :: 216`
+- [OS == .LINUX && CPU == .X64] `SYS_removexattr :: 197`
+- [OS == .LINUX && CPU == .X64] `SYS_rename :: 82`
+- [OS == .LINUX && CPU == .X64] `SYS_renameat :: 264`
+- [OS == .LINUX && CPU == .X64] `SYS_renameat2 :: 316`
+- [OS == .LINUX && CPU == .X64] `SYS_request_key :: 249`
+- [OS == .LINUX && CPU == .X64] `SYS_restart_syscall :: 219`
+- [OS == .LINUX && CPU == .X64] `SYS_rmdir :: 84`
+- [OS == .LINUX && CPU == .X64] `SYS_rseq :: 334`
+- [OS == .LINUX && CPU == .X64] `SYS_rt_sigaction :: 13`
+- [OS == .LINUX && CPU == .X64] `SYS_rt_sigpending :: 127`
+- [OS == .LINUX && CPU == .X64] `SYS_rt_sigprocmask :: 14`
+- [OS == .LINUX && CPU == .X64] `SYS_rt_sigqueueinfo :: 129`
+- [OS == .LINUX && CPU == .X64] `SYS_rt_sigreturn :: 15`
+- [OS == .LINUX && CPU == .X64] `SYS_rt_sigsuspend :: 130`
+- [OS == .LINUX && CPU == .X64] `SYS_rt_sigtimedwait :: 128`
+- [OS == .LINUX && CPU == .X64] `SYS_rt_tgsigqueueinfo :: 297`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_get_priority_max :: 146`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_get_priority_min :: 147`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_getaffinity :: 204`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_getattr :: 315`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_getparam :: 143`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_getscheduler :: 145`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_rr_get_interval :: 148`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_setaffinity :: 203`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_setattr :: 314`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_setparam :: 142`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_setscheduler :: 144`
+- [OS == .LINUX && CPU == .X64] `SYS_sched_yield :: 24`
+- [OS == .LINUX && CPU == .X64] `SYS_seccomp :: 317`
+- [OS == .LINUX && CPU == .X64] `SYS_security :: 185`
+- [OS == .LINUX && CPU == .X64] `SYS_select :: 23`
+- [OS == .LINUX && CPU == .X64] `SYS_semctl :: 66`
+- [OS == .LINUX && CPU == .X64] `SYS_semget :: 64`
+- [OS == .LINUX && CPU == .X64] `SYS_semop :: 65`
+- [OS == .LINUX && CPU == .X64] `SYS_semtimedop :: 220`
+- [OS == .LINUX && CPU == .X64] `SYS_sendfile :: 40`
+- [OS == .LINUX && CPU == .X64] `SYS_sendmmsg :: 307`
+- [OS == .LINUX && CPU == .X64] `SYS_sendmsg :: 46`
+- [OS == .LINUX && CPU == .X64] `SYS_sendto :: 44`
+- [OS == .LINUX && CPU == .X64] `SYS_set_mempolicy :: 238`
+- [OS == .LINUX && CPU == .X64] `SYS_set_robust_list :: 273`
+- [OS == .LINUX && CPU == .X64] `SYS_set_thread_area :: 205`
+- [OS == .LINUX && CPU == .X64] `SYS_set_tid_address :: 218`
+- [OS == .LINUX && CPU == .X64] `SYS_setdomainname :: 171`
+- [OS == .LINUX && CPU == .X64] `SYS_setfsgid :: 123`
+- [OS == .LINUX && CPU == .X64] `SYS_setfsuid :: 122`
+- [OS == .LINUX && CPU == .X64] `SYS_setgid :: 106`
+- [OS == .LINUX && CPU == .X64] `SYS_setgroups :: 116`
+- [OS == .LINUX && CPU == .X64] `SYS_sethostname :: 170`
+- [OS == .LINUX && CPU == .X64] `SYS_setitimer :: 38`
+- [OS == .LINUX && CPU == .X64] `SYS_setns :: 308`
+- [OS == .LINUX && CPU == .X64] `SYS_setpgid :: 109`
+- [OS == .LINUX && CPU == .X64] `SYS_setpriority :: 141`
+- [OS == .LINUX && CPU == .X64] `SYS_setregid :: 114`
+- [OS == .LINUX && CPU == .X64] `SYS_setresgid :: 119`
+- [OS == .LINUX && CPU == .X64] `SYS_setresuid :: 117`
+- [OS == .LINUX && CPU == .X64] `SYS_setreuid :: 113`
+- [OS == .LINUX && CPU == .X64] `SYS_setrlimit :: 160`
+- [OS == .LINUX && CPU == .X64] `SYS_setsid :: 112`
+- [OS == .LINUX && CPU == .X64] `SYS_setsockopt :: 54`
+- [OS == .LINUX && CPU == .X64] `SYS_settimeofday :: 164`
+- [OS == .LINUX && CPU == .X64] `SYS_setuid :: 105`
+- [OS == .LINUX && CPU == .X64] `SYS_setxattr :: 188`
+- [OS == .LINUX && CPU == .X64] `SYS_shmat :: 30`
+- [OS == .LINUX && CPU == .X64] `SYS_shmctl :: 31`
+- [OS == .LINUX && CPU == .X64] `SYS_shmdt :: 67`
+- [OS == .LINUX && CPU == .X64] `SYS_shmget :: 29`
+- [OS == .LINUX && CPU == .X64] `SYS_shutdown :: 48`
+- [OS == .LINUX && CPU == .X64] `SYS_sigaltstack :: 131`
+- [OS == .LINUX && CPU == .X64] `SYS_signalfd :: 282`
+- [OS == .LINUX && CPU == .X64] `SYS_signalfd4 :: 289`
+- [OS == .LINUX && CPU == .X64] `SYS_socket :: 41`
+- [OS == .LINUX && CPU == .X64] `SYS_socketpair :: 53`
+- [OS == .LINUX && CPU == .X64] `SYS_splice :: 275`
+- [OS == .LINUX && CPU == .X64] `SYS_stat :: 4`
+- [OS == .LINUX && CPU == .X64] `SYS_statfs :: 137`
+- [OS == .LINUX && CPU == .X64] `SYS_statx :: 332`
+- [OS == .LINUX && CPU == .X64] `SYS_swapoff :: 168`
+- [OS == .LINUX && CPU == .X64] `SYS_swapon :: 167`
+- [OS == .LINUX && CPU == .X64] `SYS_symlink :: 88`
+- [OS == .LINUX && CPU == .X64] `SYS_symlinkat :: 266`
+- [OS == .LINUX && CPU == .X64] `SYS_sync :: 162`
+- [OS == .LINUX && CPU == .X64] `SYS_sync_file_range :: 277`
+- [OS == .LINUX && CPU == .X64] `SYS_syncfs :: 306`
+- [OS == .LINUX && CPU == .X64] `SYS_sysfs :: 139`
+- [OS == .LINUX && CPU == .X64] `SYS_sysinfo :: 99`
+- [OS == .LINUX && CPU == .X64] `SYS_syslog :: 103`
+- [OS == .LINUX && CPU == .X64] `SYS_tee :: 276`
+- [OS == .LINUX && CPU == .X64] `SYS_tgkill :: 234`
+- [OS == .LINUX && CPU == .X64] `SYS_time :: 201`
+- [OS == .LINUX && CPU == .X64] `SYS_timer_create :: 222`
+- [OS == .LINUX && CPU == .X64] `SYS_timer_delete :: 226`
+- [OS == .LINUX && CPU == .X64] `SYS_timer_getoverrun :: 225`
+- [OS == .LINUX && CPU == .X64] `SYS_timer_gettime :: 224`
+- [OS == .LINUX && CPU == .X64] `SYS_timer_settime :: 223`
+- [OS == .LINUX && CPU == .X64] `SYS_timerfd_create :: 283`
+- [OS == .LINUX && CPU == .X64] `SYS_timerfd_gettime :: 287`
+- [OS == .LINUX && CPU == .X64] `SYS_timerfd_settime :: 286`
+- [OS == .LINUX && CPU == .X64] `SYS_times :: 100`
+- [OS == .LINUX && CPU == .X64] `SYS_tkill :: 200`
+- [OS == .LINUX && CPU == .X64] `SYS_truncate :: 76`
+- [OS == .LINUX && CPU == .X64] `SYS_tuxcall :: 184`
+- [OS == .LINUX && CPU == .X64] `SYS_umask :: 95`
+- [OS == .LINUX && CPU == .X64] `SYS_umount2 :: 166`
+- [OS == .LINUX && CPU == .X64] `SYS_uname :: 63`
+- [OS == .LINUX && CPU == .X64] `SYS_unlink :: 87`
+- [OS == .LINUX && CPU == .X64] `SYS_unlinkat :: 263`
+- [OS == .LINUX && CPU == .X64] `SYS_unshare :: 272`
+- [OS == .LINUX && CPU == .X64] `SYS_uselib :: 134`
+- [OS == .LINUX && CPU == .X64] `SYS_userfaultfd :: 323`
+- [OS == .LINUX && CPU == .X64] `SYS_ustat :: 136`
+- [OS == .LINUX && CPU == .X64] `SYS_utime :: 132`
+- [OS == .LINUX && CPU == .X64] `SYS_utimensat :: 280`
+- [OS == .LINUX && CPU == .X64] `SYS_utimes :: 235`
+- [OS == .LINUX && CPU == .X64] `SYS_vfork :: 58`
+- [OS == .LINUX && CPU == .X64] `SYS_vhangup :: 153`
+- [OS == .LINUX && CPU == .X64] `SYS_vmsplice :: 278`
+- [OS == .LINUX && CPU == .X64] `SYS_vserver :: 236`
+- [OS == .LINUX && CPU == .X64] `SYS_wait4 :: 61`
+- [OS == .LINUX && CPU == .X64] `SYS_waitid :: 247`
+- [OS == .LINUX && CPU == .X64] `SYS_write :: 1`
+- [OS == .LINUX && CPU == .X64] `SYS_writev :: 20`
 - [OS == .LINUX] `syscall :: (__sysno: s64, __args: ..Any) -> s64 #foreign libc`
 - [OS == .LINUX] `SCHED_OTHER :: 0`
 - [OS == .LINUX] `SCHED_FIFO :: 1`
