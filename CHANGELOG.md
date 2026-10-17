@@ -6,6 +6,8 @@ The project is now called Jacket ("Jai kit") and lives at [matteopolak/jacket](h
 
 The VS Code extension is now `matteopolak.jacket` (it was `matteopolak.jai-toolchain`, and `matteopolak.jai` before that). If either old ID is installed, the new extension offers to uninstall it and stays inactive until it is gone; `jai.*` settings are unchanged. The Homebrew formula is now `matteopolak/tap/jacket`, and `brew upgrade` moves existing `jai` installs to it.
 
+Release archives are now named `jacket-<platform>.tar.gz` / `.zip` and unpack to `jacket-<platform>/` (they were `jai-<platform>`); `install.sh`, `install.ps1`, Homebrew and the editor extensions use the new names, and all earlier releases are removed.
+
 ## [0.17.0] - 2026-10-13
 
 One `jaic` command line instead of the `run`, `check` and `build` subcommands, with more options for the program being built.
