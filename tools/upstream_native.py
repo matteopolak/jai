@@ -75,9 +75,10 @@ def native_plan(target, native, stdlib, root=ROOT):
             str(root / "tools/build_portable_runtime.py"),
             "--platform",
             target,
-            "--stdlib",
-            str(stdlib),
+            "--output-dir",
+            str(native),
         ]
+        runtime = native
         suffix = ".dylib" if system == "macos" else ".so"
         required = [runtime / ("libportable_crash" + ext) for ext in [".a", suffix]]
         required += [

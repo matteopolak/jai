@@ -156,7 +156,6 @@ jobs:
       - name: Build the native helper libraries
         run: |
           if [ "$RUNNER_OS" = Linux ]; then bash tools/ci_native_deps.sh clipboard; fi
-          python3 tools/build_portable_runtime.py
           bash tools/ci_native_deps.sh developer
       - name: Format check
         id: format
@@ -579,8 +578,6 @@ jobs:
           sudo apt-get install -y libx11-dev xvfb xauth clang-format
           python3 -m pip install ruff==0.14.14
           cargo fetch --locked
-      - name: Build the Linux runtime helper
-        run: python3 tools/build_portable_runtime.py
       - name: X11 clients, the Jai runtime and the relocated package
         run: |
           mkdir -p "$CARGO_TARGET_DIR"
