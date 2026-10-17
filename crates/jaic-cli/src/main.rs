@@ -1,5 +1,6 @@
 //! `jaic` command line: `jaic [options] file.jai [options] [+Plugin ...] [- metaprogram args] [-- program args]`.
 use jaic::build::{BuildEnv, BuildSettings, MainOverrides, OutputBackend, OutputType, Workspaces};
+use jaic::builtin_keys::{BitcodeOptimization, MachineCodeOptimization, WorkspaceFlag};
 use jaic::interp::{NativeHost, SandboxHost, SharedHost};
 use jaic::sema::{
     Compiler, DeadCode, FileSystem, NativeFs, Options, ProgramSource, TargetCpu, TargetOs,
@@ -125,12 +126,12 @@ enum Flavor {
 }
 
 impl Flavor {
-    /// The `llvm_options.bitcode_optimization_setting` name this flavor builds with.
-    fn level(self) -> &'static str {
+    /// The `llvm_options.bitcode_optimization_setting` this flavor builds with.
+    fn level(self) -> BitcodeOptimization {
         match self {
-            Flavor::Optimized => "O2",
-            Flavor::OptimizedDebug => "O1",
-            Flavor::VeryDebug => "O0",
+            Flavor::Optimized => BitcodeOptimization::O2,
+            Flavor::OptimizedDebug => BitcodeOptimization::O1,
+            Flavor::VeryDebug => BitcodeOptimization::O0,
         }
     }
 }
@@ -227,7 +228,7 @@ struct Cli {
     /// `-o`, `-od` or `-very_debug`.
     flavor: Option<Flavor>,
     /// `-O0`..`-O3`; `None`: what the metaprogram chose (default: unoptimized).
-    opt_level: Option<&'static str>,
+    opt_level: Option<BitcodeOptimization>,
     emit_ir: Option<PathBuf>,
     /// `-no_debug_info`: omit native debug information (on by default).
     no_debug_info: bool,
@@ -788,10 +789,10 @@ fn parse(args: &[String]) -> Result<Request, CliError> {
                 }
                 cli.flavor = Some(flavor);
             }
-            "-O0" => cli.opt_level = Some("O0"),
-            "-O1" => cli.opt_level = Some("O1"),
-            "-O2" => cli.opt_level = Some("O2"),
-            "-O3" => cli.opt_level = Some("O3"),
+            "-O0" => cli.opt_level = Some(BitcodeOptimization::O0),
+            "-O1" => cli.opt_level = Some(BitcodeOptimization::O1),
+            "-O2" => cli.opt_level = Some(BitcodeOptimization::O2),
+            "-O3" => cli.opt_level = Some(BitcodeOptimization::O3),
             "-no_inline" => cli.no_inline = true,
             "-no_split" => cli.no_split = true,
             "-no_dce" => cli.no_dce = true,
@@ -1610,8 +1611,8 @@ fn build(
     if let Some(level) = cli.opt_level.or(cli.flavor.map(Flavor::level)) {
         // `-O` and the flavors stand for a whole build: the metaprogram's code generation
         // switches go too.
-        settings.optimization = level.into();
-        settings.machine_code_optimization.clear();
+        settings.optimization = level;
+        settings.machine_code_optimization = MachineCodeOptimization::Unset;
         settings.llvm_switches.clear();
         settings.frame_pointers = None;
     }
@@ -1787,20 +1788,19 @@ impl LlvmBackend {
             intermediate.join(name)
         };
         use jaic_llvm::OptLevel;
-        let opt_level = match settings.optimization.as_str() {
-            // `llvm_options.bitcode_optimization_setting` member names.
-            "O1" => OptLevel::O1,
-            "O2" => OptLevel::O2,
-            "OS" => OptLevel::Os,
-            "OZ" => OptLevel::Oz,
-            "O3" => OptLevel::O3,
-            _ => OptLevel::O0,
+        let opt_level = match settings.optimization {
+            BitcodeOptimization::O1 => OptLevel::O1,
+            BitcodeOptimization::O2 => OptLevel::O2,
+            BitcodeOptimization::Os => OptLevel::Os,
+            BitcodeOptimization::Oz => OptLevel::Oz,
+            BitcodeOptimization::O3 => OptLevel::O3,
+            BitcodeOptimization::O0 | BitcodeOptimization::Unset => OptLevel::O0,
         };
         // `Build_Options.emit_debug_info = .NONE`, `llvm_options.preserve_debug_info = false`
         // (or `set_optimization(..., false)`) turn it off.
         let debug_info = self.debug_info
             && settings.emit_debug_info != Some(false)
-            && settings.llvm_switch("preserve_debug_info") != Some(false);
+            && settings.llvm_switch(WorkspaceFlag::LlvmPreserveDebugInfo) != Some(false);
         let sanitize = if self.sanitize.is_empty() {
             jaic_llvm::Sanitize::default()
         } else {
@@ -1815,27 +1815,27 @@ impl LlvmBackend {
         if let Some(version) = &macos_version {
             extra_link_args.push(format!("-mmacosx-version-min={version}"));
         }
-        let switch = |name: &str| settings.llvm_switch(name);
+        let switch = |flag: WorkspaceFlag| settings.llvm_switch(flag);
         let wanted = |on: bool, suffix: &str| on.then(|| beside(suffix));
         let codegen = jaic_llvm::Codegen {
-            machine_level: match settings.machine_code_optimization.as_str() {
-                "NONE" => Some(OptLevel::O0),
-                "LESS" => Some(OptLevel::O1),
-                "DEFAULT" => Some(OptLevel::O2),
-                "AGGRESSIVE" => Some(OptLevel::O3),
-                _ => None,
+            machine_level: match settings.machine_code_optimization {
+                MachineCodeOptimization::None => Some(OptLevel::O0),
+                MachineCodeOptimization::Less => Some(OptLevel::O1),
+                MachineCodeOptimization::Default => Some(OptLevel::O2),
+                MachineCodeOptimization::Aggressive => Some(OptLevel::O3),
+                MachineCodeOptimization::Unset => None,
             },
-            loop_unrolling: switch("enable_loop_unrolling"),
-            loop_vectorization: switch("enable_loop_vectorization"),
-            slp_vectorization: switch("enable_slp_vectorization"),
-            merge_functions: switch("merge_functions"),
+            loop_unrolling: switch(WorkspaceFlag::LlvmEnableLoopUnrolling),
+            loop_vectorization: switch(WorkspaceFlag::LlvmEnableLoopVectorization),
+            slp_vectorization: switch(WorkspaceFlag::LlvmEnableSlpVectorization),
+            merge_functions: switch(WorkspaceFlag::LlvmMergeFunctions),
             disable_inlining: if self.no_inline {
                 Some(true)
             } else {
-                switch("disable_inlining")
+                switch(WorkspaceFlag::LlvmDisableInlining)
             },
-            tail_calls: switch("enable_tail_calls"),
-            split_modules: switch("enable_split_modules"),
+            tail_calls: switch(WorkspaceFlag::LlvmEnableTailCalls),
+            split_modules: switch(WorkspaceFlag::LlvmEnableSplitModules),
             single_unit: self.no_split,
             frame_pointers: settings.frame_pointers,
             no_red_zone: settings.disable_redzone,
