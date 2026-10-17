@@ -44,9 +44,11 @@ main :: () {
     // Typed constants meet in the wider type, like variables.
     assert(type_of(cast(s16) 1 + cast(s32) 2) == s32);
     assert(type_of(cast(u64) 1 + cast(u8) 2) == u64);
-    // A bit-pattern literal keeps the operand's type.
+    // A bit-pattern literal that fits keeps the operand's type; a complemented one is negative,
+    // so it makes the operation s64.
     mask: u32 = 0xff;
 
-    assert(type_of(mask & ~0x7) == u32 && mask & ~0x7 == 0xf8);
+    assert(type_of(mask & 0xffff_fff8) == u32 && mask & 0xffff_fff8 == 0xf8);
+    assert(type_of(mask & ~0x7) == s64 && mask & ~0x7 == 0xf8);
     print("ok\n");
 }
