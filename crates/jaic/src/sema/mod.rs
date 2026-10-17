@@ -468,6 +468,14 @@ pub struct Compiler {
     /// so its locals have types.
     pub(super) code_procs: HashMap<usize, ProcId>,
     parked_epoch: u64,
+    /// Bumped whenever a name, import, `using` or expanded item becomes visible in a scope
+    /// that is not a body's own (`Scope::namespace_changed`): part of `lower_epoch`.
+    namespace_generation: u64,
+    /// The procedures targeting each IR function (`procs_of_func`).
+    func_targets: HashMap<ir::FuncId, Vec<ProcId>>,
+    /// Debug builds check `namespace_generation` against a full count of scope contents.
+    #[cfg(debug_assertions)]
+    namespace_check: std::cell::Cell<(usize, u64)>,
     /// Type_Info globals per type.
     pub type_infos: HashMap<TypeId, ir::GlobalId>,
     /// Type_Info globals whose descriptor could not be built yet (`type_info_global`).
@@ -727,6 +735,10 @@ impl Compiler {
             multi_consts: HashMap::default(),
             code_procs: HashMap::default(),
             parked_epoch: 0,
+            namespace_generation: 0,
+            func_targets: HashMap::default(),
+            #[cfg(debug_assertions)]
+            namespace_check: std::cell::Cell::new((0, 0)),
             interp: crate::interp::Interp::default(),
             type_infos: HashMap::default(),
             failed_type_infos: HashMap::default(),

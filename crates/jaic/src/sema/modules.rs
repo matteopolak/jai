@@ -1332,9 +1332,13 @@ impl Compiler {
             // The module sees the same entity (a copy would resolve to a second,
             // distinct type).
             for id in self.lookup(file_scope, name)? {
-                let names = self.scope_mut(module_scope).names.entry(name).or_default();
-                if !names.contains(&id) {
-                    names.push(id);
+                if !self
+                    .scope(module_scope)
+                    .names
+                    .get(&name)
+                    .is_some_and(|n| n.contains(&id))
+                {
+                    self.bind_name(module_scope, name, id);
                 }
             }
         }
@@ -1570,7 +1574,7 @@ impl Compiler {
                         .exported_usings
                         .push(entry.clone());
                 }
-                self.scope_mut(scope).usings.push(entry);
+                self.push_using(scope, entry);
             }
             _ => unreachable!("only conditional items are pending"),
         }

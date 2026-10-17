@@ -278,7 +278,36 @@ impl Compiler {
     /// Queue an unnamed (or `using`) import of `scope` for loading.
     pub fn push_import(&mut self, scope: ScopeId, entry: ImportEntry) {
         self.scope_mut(scope).imports.push(entry);
+        self.namespace_changed(scope);
         self.unsettle(scope);
+    }
+
+    /// Add a `using` entry to `scope`.
+    pub(super) fn push_using(&mut self, scope: ScopeId, entry: UsingEntry) {
+        self.scope_mut(scope).usings.push(entry);
+        self.namespace_changed(scope);
+    }
+
+    /// Bind `name` in `scope` to `id` as well.
+    pub(super) fn bind_name(&mut self, scope: ScopeId, name: Sym, id: EntityId) {
+        self.scope_mut(scope)
+            .names
+            .entry(name)
+            .or_default()
+            .push(id);
+        self.namespace_changed(scope);
+    }
+
+    /// Something a name lookup through `scope` can see changed (a name, an import, a `using`,
+    /// an expanded item). Bodies' own scopes are remade by every attempt to lower them, so
+    /// only the others count: see `lower_epoch`.
+    pub(super) fn namespace_changed(&mut self, scope: ScopeId) {
+        if !matches!(
+            self.scope(scope).kind,
+            ScopeKind::Proc | ScopeKind::Block | ScopeKind::Macro
+        ) {
+            self.namespace_generation += 1;
+        }
     }
 
     fn unsettle(&mut self, scope: ScopeId) {
@@ -347,11 +376,7 @@ impl Compiler {
             file_private: false,
             untyped_const: false,
         });
-        self.scope_mut(scope)
-            .names
-            .entry(name)
-            .or_default()
-            .push(id);
+        self.bind_name(scope, name, id);
         if let Some(placeholder) = placeholder {
             self.dependencies
                 .bindings
@@ -637,6 +662,7 @@ impl Compiler {
             return Ok(());
         }
         let s = self.scope_mut(scope);
+        let done = s.pending_done;
         while s
             .pending
             .get(s.pending_done)
@@ -645,6 +671,9 @@ impl Compiler {
             s.pending_done += 1;
         }
         let mut i = s.pending_done;
+        if i != done {
+            self.namespace_changed(scope);
+        }
         while i < self.scope(scope).pending.len() {
             // Items expand in source order: a re-entrant expansion (from inside an
             // item's own condition or lookup) must not run later items early.
