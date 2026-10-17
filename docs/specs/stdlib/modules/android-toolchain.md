@@ -74,7 +74,7 @@ This namespace exports the declarations listed here, including the type members 
 - `Kilobytes :: (x: int) -> int #expand`
 - `Megabytes :: (x: int) -> int #expand`
 - `android_generate_apk_gradle :: (options: Android_Build_Options, config: Android_Project_Config) -> bool, string`
-- `android_generate_apk :: (project_path: string, release := false) -> bool, string #deprecated "Use android_generate_apk that takes Android_Build_Options as first argument"`
+- `android_generate_apk :: (project_path: string, release := false) -> bool, string #deprecated "Pass an Android_Build_Options as the first argument instead."`
 - `gradle_install_apk :: (project_path: string, release := false) -> bool`
 - `run_gradle_task :: (project_path: string, task: string, print_output := true) -> bool`
 - `android_generate_apk_command_line_tools :: (options: Android_Build_Options, config: Android_Project_Config) -> bool, string`

@@ -33,7 +33,7 @@ Visible public declarations and module-conditional variants are listed below. Pr
 - `epoll_create :: (size: s32) -> s32 #foreign libc`
 - `epoll_create1 :: (flags: s32) -> s32 #foreign libc`
 - `epoll_ctl :: (epfd: s32, op: Epoll_Ctl, fd: s32, event: *epoll_event) -> s32 #foreign libc`
-- `epoll_ctl :: (epfd: s32, op: s32, fd: s32, event: *epoll_event) -> s32 #foreign libc #deprecated "Use the variant that takes Epoll_Ctl"`
+- `epoll_ctl :: (epfd: s32, op: s32, fd: s32, event: *epoll_event) -> s32 #foreign libc #deprecated "Pass an Epoll_Ctl operation instead of an s32."`
 - `epoll_wait :: (epfd: s32, events: *epoll_event, maxevents: s32, timeout: s32) -> s32 #foreign libc`
 - `epoll_pwait :: (epfd: s32, events: *epoll_event, maxevents: s32, timeout: s32, sigmask: *sigset_t) -> s32 #foreign libc`
 - `statx_timestamp_t :: struct`
