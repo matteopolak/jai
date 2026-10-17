@@ -1006,3 +1006,4 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 ## Integrated implementation controls
 
 - [Architectural XGETBV](compiler/xgetbv.md): real index/result lowering, guarded interpreter dispatch, ISA-derived controls and outstanding Intel execution proof.
+- [Stdlib native layout: Socket, rpmalloc, libc, Windows text](stdlib-native-layout.md)
