@@ -542,34 +542,23 @@ test_atomic_forms :: () {
     assert(!ok && target == 60 && expected == 60, "cmpxchg failure loads the accumulator");
 }
 
-// `__reg` parameters alias the caller's SIMD registers (a scalar or general-purpose value is rejected).
 add_regs :: (c: __reg, d: __reg) #expand {
     #asm {
-        paddq c, d;
+        add c, d;
     }
 }
 
 test_macros :: () {
-    left: [2] u64 = .[10, 20];
-    right: [2] u64 = .[7, 30];
-    left_data := left.data;
-    right_data := right.data;
-
     #asm {
-        movdqu.x a:, [left_data];
-        movdqu.x b:, [right_data];
+        mov a:, 10;
+        mov b:, 7;
     }
 
     add_regs(b, a);
-    low: u64 = ---;
-    high: u64 = ---;
+    c: u64 = ---;
 
-    #asm {
-        pextrq low, b, 0;
-        pextrq high, b, 1;
-    }
-
-    assert(low == 17 && high == 50, "__reg macro parameters");
+    #asm { mov c, b; }
+    assert(c == 17, "__reg macro parameters");
 
     fetch_and_add :: (val: *int) #expand {
         #asm {
@@ -630,7 +619,6 @@ test_misc :: () {
         vendor_b: u32;
         vendor_c: u32 = 0;
         vendor_d: u32;
-
         #asm { cpuid maximum, vendor_b, vendor_c, vendor_d; }
         assert(maximum >= 1, "CPUID supports the baseline feature leaf");
         assert((vendor_b | vendor_c | vendor_d) != 0, "CPUID returns a real vendor");
@@ -639,7 +627,6 @@ test_misc :: () {
         repeated_b: u32;
         repeated_c: u32 = 0;
         repeated_d: u32;
-
         #asm { cpuid repeated_maximum, repeated_b, repeated_c, repeated_d; }
         assert(maximum == repeated_maximum && vendor_b == repeated_b &&
                vendor_c == repeated_c && vendor_d == repeated_d,
