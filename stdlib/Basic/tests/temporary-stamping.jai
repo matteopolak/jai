@@ -1,5 +1,6 @@
 // TEMP_ALLOCATOR_OVERWRITE_MEMORY is a program parameter: the whole program shares one setting.
 B :: #import "Basic"()(TEMP_ALLOCATOR_OVERWRITE_MEMORY = true);
+
 Stamped :: B;
 
 main :: () {

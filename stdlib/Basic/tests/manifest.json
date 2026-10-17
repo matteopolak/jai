@@ -312,7 +312,7 @@
   },
   {
     "name": "integer-time",
-    "stdout": "",
+    "stdout": "ok\n",
     "unsupported_modes": [
       "wasm-interp",
       "wasm-native"
