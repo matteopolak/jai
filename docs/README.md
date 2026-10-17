@@ -983,3 +983,5 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Module default forwarding](compiler/module-default-forwarding-boundary.md): written-list identity and preserved canonical storage/type checks; root official verdict confirms distinction.
 
 - [Basic wide-float presentation](basic-wide-float-presentation.md): reviewed float64 conversion with canonical metadata; original Linux native replay required.
+
+- [Windows SDL Python contract repair](status/sdl-windows-policy-ae6.md): native-path ledger checks and explicit generated LF policy; actual Windows replay pending.
