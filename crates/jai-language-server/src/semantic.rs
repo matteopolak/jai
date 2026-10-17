@@ -332,6 +332,20 @@ impl Analysis {
         out
     }
 
+    /// The replacement the compile error in `path` suggests (a misspelled module or name): the
+    /// span as (start, end) and the text for it.
+    pub fn suggested_replacement(&mut self, path: &Path) -> Option<(usize, usize, String)> {
+        let file = self.file(path)?;
+        let error = self.errors.first()?;
+        if error.span.file != file {
+            return None;
+        }
+        let suggested = self.compiler.with_name_suggestion(error);
+        let fixes = suggested.as_ref().unwrap_or(error).fixes.as_ref()?;
+        let (span, text) = fixes.replace.clone()?;
+        (span.file == file).then(|| (span.start as usize, span.end as usize, text))
+    }
+
     /// The `#import`s that would declare the unknown name the compile error in `path` reports,
     /// best first, with the error's span as (start, end).
     pub fn missing_imports(

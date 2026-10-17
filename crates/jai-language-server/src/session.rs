@@ -568,7 +568,9 @@ impl Session {
                     "Incomplete lexical edit; this literal or comment is omitted from IDE analysis.");
             }
             for (target, span) in analysis.loads.clone() {
-                if self.document(&target).is_err() {
+                // A file the environment can read is loaded by the compile; only when nothing
+                // can read it (no open document, no file system) does the syntax-only view warn.
+                if self.document(&target).is_err() && self.source(&target).is_none() {
                     analysis.diagnostic(
                         &document.index,
                         &document.text,
@@ -1073,6 +1075,9 @@ impl Session {
                 )?,
             }))
         };
+        if let Some((start, end, text)) = self.link_hover(uri, byte) {
+            return found(start, end, text);
+        }
         if let Some((start, end, text)) = self.format_hover(uri, byte) {
             return found(start, end, text);
         }
