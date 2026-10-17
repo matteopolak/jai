@@ -39,10 +39,30 @@ import tempfile
 import time
 from pathlib import Path
 from http_native import ensure_native_libraries
-from stdlib_test_catalog import HTTP_CONFORMANCE_CASE_IDS, validated_entries
+from stdlib_test_catalog import validated_entries
 
 ROOT = Path(__file__).resolve().parent.parent
 HTTP_TESTS = ROOT / "stdlib" / "Extensions" / "Http" / "tests"
+
+# Reviewed Http test inventory. Exact IDs make a missing standalone test fail dispatch rather than
+# disappear behind a successful substring filter.
+HTTP_CONFORMANCE_CASE_IDS = tuple(
+    "Extensions/Http/tests/" + name
+    for name in (
+        "chunking",
+        "client",
+        "codec",
+        "codec-roundtrip",
+        "https",
+        "llhttp",
+        "server-connections",
+        "server-extractors",
+        "server-responses",
+        "server-routing",
+        "smuggling",
+        "testing",
+    )
+)
 
 
 def find_jaic(explicit):

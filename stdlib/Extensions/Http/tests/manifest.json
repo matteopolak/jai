@@ -76,6 +76,50 @@
     ]
   },
   {
+    "name": "server-connections",
+    "unsupported_modes": [
+      "wasm-interp",
+      "wasm-native"
+    ],
+    "required_capabilities": [
+      "native Io providers",
+      "fiber context switching"
+    ]
+  },
+  {
+    "name": "server-extractors",
+    "unsupported_modes": [
+      "wasm-interp",
+      "wasm-native"
+    ],
+    "required_capabilities": [
+      "native Io providers",
+      "fiber context switching"
+    ]
+  },
+  {
+    "name": "server-responses",
+    "unsupported_modes": [
+      "wasm-interp",
+      "wasm-native"
+    ],
+    "required_capabilities": [
+      "native Io providers",
+      "fiber context switching"
+    ]
+  },
+  {
+    "name": "server-routing",
+    "unsupported_modes": [
+      "wasm-interp",
+      "wasm-native"
+    ],
+    "required_capabilities": [
+      "native Io providers",
+      "fiber context switching"
+    ]
+  },
+  {
     "name": "testing",
     "unsupported_modes": [
       "wasm-interp",

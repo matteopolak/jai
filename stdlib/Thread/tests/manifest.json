@@ -45,5 +45,25 @@
   {
     "name": "shutdown",
     "stdout": "ok\n"
+  },
+  {
+    "name": "synchronization",
+    "unsupported_modes": [
+      "wasm-interp",
+      "wasm-native"
+    ],
+    "required_capabilities": [
+      "native Thread synchronization and workers"
+    ]
+  },
+  {
+    "name": "thread-group",
+    "unsupported_modes": [
+      "wasm-interp",
+      "wasm-native"
+    ],
+    "required_capabilities": [
+      "native Thread_Group workers"
+    ]
   }
 ]

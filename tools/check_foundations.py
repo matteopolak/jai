@@ -153,7 +153,7 @@ def lint_profile_sources(target_os, target_cpu):
             and target_os == "macos"
         ):
             continue  # This fixture explicitly requires OS != BUILD_OS.
-        (library if path.is_relative_to(ROOT / "stdlib") else fixtures).append(path)
+        (library if path.is_relative_to(ROOT / "stdlib") and "tests" not in path.parts else fixtures).append(path)
     return library, fixtures
 
 

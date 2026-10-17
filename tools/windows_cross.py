@@ -45,7 +45,7 @@ WINDOWS_PROGRAMS = [
 # calls to the build host. They remain required in native Windows build jobs.
 WINDOWS_BUILD_HOST_CASES = frozenset(
     {
-        "contracts/program-print-plugin-file-output",
+        "Program_Print/tests/plugin-file-output",
         "compiler/rules-compile-time-execution",
     }
 )
@@ -79,7 +79,7 @@ def fixture_unavailable_reason(case, platform, build_host):
         return "target Win32 File/Process calls during ordinary #run require a Windows build host; native Windows coverage remains required"
     if case["id"] == "compiler/lang-asm" and platform.split("-")[1] != "x64":
         return "fixture contains architectural x86 CPUID/PAUSE/fences; requires x64, not an ARM64 instruction-emulation claim"
-    if case["id"] == "native/imgui-headless-frames":
+    if case["id"] == "ImGui/tests/headless-frames":
         profile = json.loads((ROOT / "tools/native-libs.json").read_text())[
             "libraries"
         ]["imgui"]
@@ -568,7 +568,7 @@ def build(args):
             supported.append(item)
     all_cases = supported
     if any(
-        metadata.get(item[1], {}).get("id") == "extensions/tls-windows-target"
+        metadata.get(item[1], {}).get("id") == "Extensions/Tls/tests/windows-target"
         for item in all_cases
     ):
         probe_id = "socket-inet-pton-sdk"

@@ -137,9 +137,16 @@ def copy_private_fixture(source, target, boundary, cleanup):
     shutil.copy2(source, target)
 
 
+def relocate_private_loads(data):
+    # Fixtures load internal bindings relative to their home under
+    # stdlib/<Module>/tests/...; placed units sit one level below the library.
+    return data.replace(b'#load "../../../../internal/', b'#load "../internal/')
+
+
 def place_private_unit(name, source, stdlib, hashes, cleanup):
     placed = stdlib / PRIVATE_UNITS[name]
     copy_private_fixture(source, placed, stdlib.parent, cleanup)
+    placed.write_bytes(relocate_private_loads(placed.read_bytes()))
     hashes[str(placed.relative_to(stdlib))] = hashlib.sha256(
         placed.read_bytes()
     ).hexdigest()
@@ -341,6 +348,16 @@ def stage_for_checks(destination, existing_stdlib=None, foundation=None):
     shutil.copytree(
         ROOT / "stdlib/internal/bindings", destination / "internal/bindings"
     )
+
+
+def select_stdlib(work, foundation=None, production=None):
+    if production is not None:
+        if foundation is not None:
+            raise ValueError("A production library cannot be combined with an overlay")
+        return Path(production).resolve(strict=True)
+    destination = Path(work) / "stdlib"
+    stage(destination, foundation)
+    return destination
 
 
 def fixture_arguments(name, env):

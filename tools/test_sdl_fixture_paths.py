@@ -61,7 +61,7 @@ class SdlFixturePaths(unittest.TestCase):
             )
 
     def test_missing_canonical_fixture_is_fatal_even_if_old_path_exists(self):
-        old = self.root / "tests/native-bindings/sdl-layout.jai"
+        old = self.root / "stdlib/Bindings_Generator/tests/driven/sdk/sdl-layout.jai"
         old.parent.mkdir(parents=True)
         old.write_text("stale path fixture, never an ABI oracle\n")
         with self.assertRaises(FileNotFoundError):

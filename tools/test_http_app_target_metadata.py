@@ -1,59 +1,43 @@
 """Exact native Http fixtures; no production behavior or target execution."""
 
-import importlib.util
 from pathlib import Path
 import sys
 import unittest
 
+from stdlib_test_catalog import unavailable_reason, validated_entries
+
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location(
-    "foundations_capabilities", ROOT / "tools/foundations_case_capabilities.py"
-)
-capabilities = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(capabilities)
+WASM = ("wasm-interp", "wasm-native")
 
 
 class HttpAppTargets(unittest.TestCase):
+    def setUp(self):
+        self.cases = {case["id"]: case for case in validated_entries(ROOT)}
+
     def test_both_native_app_fixtures_have_explicit_wasm_boundary(self):
         for name in [
-            "extensions/http-client-overload-lint-repro",
-            "extensions/http-dependency-consumer",
+            "Extensions/Http/tests/client-overload-lint",
+            "Extensions/Http/tests/dependency-consumer",
         ]:
             with self.subTest(name=name):
-                case = {
-                    "id": name,
-                    "expected_exit": 0,
-                    "required_capabilities": ["existing"],
-                }
-                capabilities.apply_foundations_capabilities(case)
-                self.assertEqual(
-                    case.get("unsupported_modes"), ["wasm-interp", "wasm-native"]
-                )
-                self.assertEqual(case["expected_exit"], 0)
+                case = self.cases[name]
+                self.assertEqual(case.get("unsupported_modes"), list(WASM))
                 self.assertNotIn("compile_only", case)
                 self.assertNotIn("expected_error", case)
-                self.assertEqual(case["required_capabilities"][0], "existing")
+                self.assertTrue(case["required_capabilities"])
+                for mode in WASM:
+                    self.assertIsNotNone(unavailable_reason(case, mode, "macos-arm64"))
 
     def test_portable_codec_and_declared_wasm_cases_stay_required(self):
         for name in [
             "Extensions/Http/tests/codec",
-            "extensions/http-codec-roundtrip",
-            "extensions/http-wasm-termination-status",
-            "extensions/http-wasm-termination-failure",
-            "extensions/http-new-unclassified-case",
+            "Extensions/Http/tests/codec-roundtrip",
         ]:
             with self.subTest(name=name):
-                case = {"id": name}
-                capabilities.apply_foundations_capabilities(case)
-                self.assertEqual(case, {"id": name})
-
-    def test_capability_attachment_is_idempotent(self):
-        case = {"id": "extensions/http-dependency-consumer"}
-        capabilities.apply_foundations_capabilities(case)
-        once = dict(case)
-        capabilities.apply_foundations_capabilities(case)
-        self.assertEqual(case, once)
+                for mode in WASM:
+                    self.assertIsNone(unavailable_reason(self.cases[name], mode, "macos-arm64"))
+                self.assertNotIn("unsupported_modes", self.cases[name])
 
 
 if __name__ == "__main__":

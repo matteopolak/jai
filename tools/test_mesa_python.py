@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import importlib.util
 import tempfile
 import unittest
 import venv
@@ -14,6 +15,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 import window_render_mesa_windows as mesa
 
 
+@unittest.skipUnless(importlib.util.find_spec("mesonbuild"), "Meson is only installed in the prepared tool venv")
 class MesonPython(unittest.TestCase):
     def test_prepared_python_beats_unprepared_python3_on_path(self):
         with tempfile.TemporaryDirectory(dir=ROOT / "target", prefix="meson python's ") as temporary:

@@ -303,6 +303,8 @@ def run_mode(args, test, path, mode, scratch, metadata=None):
             return contract_result(metadata, code, stdout, stderr), detail
         if metadata and "error_contains" in metadata and metadata.get("mode") != "fault":
             return None, "expects an error while interpreting; nothing to check statically"
+        if metadata and metadata.get("source_check_only") is True:
+            return (None if code == 0 else False), detail
         return code == 0, detail
     wasm = mode.startswith("wasm")
     target = ["-os", "wasm"] if wasm else []

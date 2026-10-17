@@ -125,13 +125,13 @@ class Selection(unittest.TestCase):
             target = "windows-" + cpu + "-mingw"
             for name in (
                 "compiler/socket-select-canonical-timeval",
-                "extensions/io-uring-dependency-repro",
+                "Extensions/Io_Uring/tests/dependency",
             ):
                 self.assertIsNotNone(
                     cross.fixture_unavailable_reason(cases[name], target, "linux-x64")
                 )
             for name in (
-                "contracts/program-print-plugin-file-output",
+                "Program_Print/tests/plugin-file-output",
                 "compiler/rules-compile-time-execution",
             ):
                 self.assertIn(
@@ -146,12 +146,12 @@ class Selection(unittest.TestCase):
             self.assertIn(
                 "imgui",
                 cross.fixture_unavailable_reason(
-                    cases["native/imgui-headless-frames"], target, "linux-x64"
+                    cases["ImGui/tests/headless-frames"], target, "linux-x64"
                 ),
             )
             self.assertIsNone(
                 cross.fixture_unavailable_reason(
-                    cases["native/imgui-headless-frames"],
+                    cases["ImGui/tests/headless-frames"],
                     "windows-" + cpu,
                     "windows-" + cpu,
                 )
@@ -162,9 +162,9 @@ class Selection(unittest.TestCase):
         required = (
             "compiler/proc-type-defaults-ifx",
             "compiler/static-switch-add-context",
-            "extensions/io-configured-production",
-            "extensions/json-windows-host-provider-repro",
-            "extensions/tls-windows-target",
+            "Extensions/Io/tests/configured-production",
+            "Extensions/Json/tests/windows-host-provider",
+            "Extensions/Tls/tests/windows-target",
         )
         for cpu in ("x64", "arm64"):
             for name in required:
