@@ -1077,7 +1077,9 @@ jobs:
         run: |
           JAIC_TEST_WINDOWS_RESOURCE_DIR="$(cygpath -m "$PWD/cross-${{ matrix.cpu }}/resource-fixture")"
           export JAIC_TEST_WINDOWS_RESOURCE_DIR
-          python tools/windows_cross.py run --dir cross-${{ matrix.cpu }}
+          # Mesa ships no arm64 DLLs, so that runner has no OpenGL 3.3 (the native job builds its own).
+          if [ "${{ matrix.cpu }}" = arm64 ]; then extra=--without-opengl; fi
+          python tools/windows_cross.py run --dir cross-${{ matrix.cpu }} $extra
   windows-native:
     name: jaic on Windows ${{ matrix.cpu }} (MSVC)
     needs: changes
