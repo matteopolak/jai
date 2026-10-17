@@ -82,6 +82,13 @@
     "stdout": "ok\n"
   },
   {
+    "name": "logger-output",
+    "required_os": [
+      "linux",
+      "macos"
+    ]
+  },
+  {
     "name": "native-crypto",
     "stdout": "ok\n"
   },
