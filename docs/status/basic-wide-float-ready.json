@@ -1,0 +1,110 @@
+{
+  "owner": "stdlib",
+  "status": "READY narrow contract-backed wide-float presentation repair; Linux native/original CI replay required",
+  "base": "0268330849a5b7c90a3b5291661307276ae53103",
+  "files": {
+    "stdlib/internal/basic/format-float.jai": "c24536519baf705be1db03be63e0b71eb14d1392042c175730f1f55843f4d36a",
+    "tests/extensions/long-double-formatting.jai": "b873c79bdb12a55b4653e0425349172fafac1b16a7f7b6b87d2ca2184eb576b0",
+    "tests/extensions/negative/long-double-format-nonfloat.jai": "4f50c6d54cb51d631a7b658eb454640dea37de3e5e4e2813eaae0716f8cf5902",
+    "tests/extensions/negative/long-double-format-unknown-representation.jai": "349495f141bb896d71500f16097a65565fadc843030489ad8215c0daf31c0fb9",
+    "tests/extensions/negative/long-double-format-private-name.jai": "adcd49e1ce0188904e066e62f51720b679e03ef522ecd5e290019c360e78f07c",
+    "docs/specs/questions/basic-long-double-formatting.md": "6c2bf152c15acd1aeb4ef9edb65ff16d942f38e9d12b89cc8b1842e1bcc546be",
+    "docs/status/basic-long-double-diagnosis.json": "0d20b579e260ca1b1893e0900653285a5862b4406891ef1ff39d4508f09319d7",
+    "docs/basic-wide-float-presentation.md": "a3b2781bf7aa6e33b9b363ad598bda97ac95c58c06cc6c5ce59aae59980c90ff"
+  },
+  "production_scope": [
+    "format-float.jai::emit_float",
+    "file-private Formatter_Extended_Float canonical type alias"
+  ],
+  "public_API_changes": false,
+  "Extensions_source_changes": false,
+  "original_fixtures_changed": false,
+  "reviewed_policy": "Root ext.14 presentation policy review in shared inbox; own compiler Long_Double documented float64 presentation, not an official Jai extended-type claim",
+  "conversion": "formatter_base_type -> FLOAT check -> for non-4/8 storage require exact compiler canonical long-double metadata -> normal compiler wide cast to local float64 -> unchanged formatter",
+  "borrowed_storage": "pointer identity/mutation visibility and every original payload byte checked; local Any copy only, original FormatFloat unchanged",
+  "source_guard": {
+    "inputs": 1391,
+    "drift": [],
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/final-verification.json"
+  },
+  "compiler": {
+    "locked_offline_build": true,
+    "sha256": "69138be8834f432e0dd475e56859da8c2599704007ecf7c09115311024000dc5",
+    "source_drift": [],
+    "receipt": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/compiler-build-proof.json"
+  },
+  "commands": {
+    "final_guarded": 59,
+    "additional_negative_lint": 14,
+    "positive_source_checks": 14,
+    "strict_complete_contexts": 21,
+    "source_privacy_negatives": 7,
+    "format_checks": 5,
+    "positive_interp": 5,
+    "negative_interp": 10,
+    "existing_Basic_interp": 2,
+    "native_builds": 4,
+    "native_executions": 4
+  },
+  "native_targets": [
+    "aarch64-apple-darwin O0/O2",
+    "x86_64-apple-darwin O0/O2"
+  ],
+  "native_executables": {
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/guarded-aarch64-apple-darwin-O0": {
+      "sha256": "19a9924f53da03e54e603d0b22fc7f4233873feb1394b93903db5f9d79ae39cb",
+      "size": 278784,
+      "magic": "cffaedfe"
+    },
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/guarded-x86_64-apple-darwin-O0": {
+      "sha256": "e4e801efa44b03753e8dd953ff835802caed2c061ff8a801854b14eaa9715f4e",
+      "size": 309944,
+      "magic": "cffaedfe"
+    },
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/guarded-aarch64-apple-darwin-O2": {
+      "sha256": "d0a880617f869182ef0cac33aaebbd13d8efaed6141148346a2f3d081a065b08",
+      "size": 197936,
+      "magic": "cffaedfe"
+    },
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/guarded-x86_64-apple-darwin-O2": {
+      "sha256": "9fe50c0d00da7e89fc80238367f9edffed40f571e7aca64cb1b460b7cb442325",
+      "size": 208304,
+      "magic": "cffaedfe"
+    }
+  },
+  "interpreter_targets": [
+    "linux x64/x87",
+    "linux arm64/binary128",
+    "macos x64/x87",
+    "macos arm64/binary64",
+    "wasm/binary128"
+  ],
+  "receipts": {
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/compiler-build-proof.json": "48bd019622ec6e01380133eec2f4ece910fe048d9e30b84bc705b02add3c0924",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/baseline-setup-red.json": "22380d53a12f53dc288c8df61718246b6defae16013efba662fa2f823ba1279d",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/baseline-red.json": "8db8adf917cadf295bc7c936b286759d6ae6f33d8d79c7fc4b3c49e46c9f2944",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/interp-initial.json": "ccc80c1f6ce4de199913f44126223dc891347ccc6c94be77c87d29f21f71fc3f",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/native-final.json": "c98582f637aa762192b1cc970de98d6ada688754f80103b792b80cdbe81be07c",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/final-verification.json": "5bea568aea7c1314e70a8e0cf3620b922ab0b761b5ec222e0c6450f61c372355",
+    "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/stdlib/basic-wide-float/negative-strict-lint.json": "4feeb2e038affea8e1c918a683e5f1f67e0847e319afae6a2a1456ad6bff35c3"
+  },
+  "sealed_runtime_production": {
+    "stdlib/Runtime_Support/module.jai": "488a702e7756d6debcf342654f852bdbbe37657dd7e2da27b699af1880ea023e",
+    "stdlib/internal/runtime/module.jai": "0ed463982413ea66e472e9f16c05c2a2e94892431033118fe6c98b20577cf647",
+    "stdlib/internal/runtime/heap.jai": null
+  },
+  "native_assets_changed": false,
+  "preserved_setup_failures": [
+    "Authored distinct syntax rejected before behavioral baseline; corrected to documented #type,distinct; baseline-setup-red.json retained",
+    "Artifact inspection glob initially included dSYM directory; corrected to regular-file enumeration, executable headers/hashes now verified"
+  ],
+  "negative_dispatch": "Dedicated negative subdirectory excluded from ordinary positive discovery; exact interpreter/source negatives genuinely executed and classified, never counted as unavailable",
+  "remaining": [
+    "Linux x64/ARM64 focused native execution",
+    "Original Linux foreign-sqrtl fixture interpreter/native CI replay",
+    "Windows native execution not locally performed",
+    "Emitted-WASM durability is separate compiler/integration gate; only interpreter claimed here"
+  ],
+  "native_slot": "released",
+  "integration": "Sole index/commit owner; NEW-only nine-file patch; README link requested"
+}
