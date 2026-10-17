@@ -481,11 +481,12 @@ DATA_FIXTURE_BUILDERS = (
     "tools/build_portable_archive_fixtures.py",
     "tools/build_portable_mpeg_fixtures.py",
     "tools/build_portable_meow_fixtures.py",
+    "tools/build_portable_machine_fixtures.py",
 )
 
 
 def build_data_fixtures():
-    """Write the generated inputs (ZIP, archive, MPEG and Meow data) the tests read from
+    """Write the generated inputs (ZIP, archive, MPEG, Meow and CPUID data) the tests read from
     target/portable-tests; each builder is deterministic and takes no compiler."""
     for builder in DATA_FIXTURE_BUILDERS:
         subprocess.run([sys.executable, "-B", str(ROOT / builder)], cwd=ROOT, check=True)

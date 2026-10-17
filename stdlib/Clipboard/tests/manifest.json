@@ -54,7 +54,8 @@
     "required_os": [
       "linux",
       "macos"
-    ]
+    ],
+    "requires_display": true
   },
   {
     "name": "macos-utf8",
@@ -88,6 +89,7 @@
     ],
     "required_capabilities": [
       "native SDK, OS or graphics services"
-    ]
+    ],
+    "requires_display": true
   }
 ]
