@@ -102,6 +102,8 @@ jobs:
       - name: Run every stdlib test in the browser engine
         # because they need what the browser lacks (native libraries, windows); a test that only
         # partly does skips that part itself under `OS == .WASM`. The browser release runs the same check.
+        env:
+          PLAYGROUND_PROGRESS: "1"
         run: node tools/check_playground_stdlib.mjs target/ci-wasm
       - name: Interpreter and browser engine agree (corpus and generated programs)
         # docs/tools/testing.md; the host jaic needs no LLVM to interpret.
