@@ -4413,7 +4413,7 @@ Comment helpers preserve a distinction between leading and trailing comments. `p
 
 ## Reviewed model integration clarifications
 
-These clarifications describe observable behavior and public record relationships reviewed against the supplied 0.2.030 module. They do not specify a private implementation or promise complete C++ ABI coverage. No reference executable was run.
+These clarifications describe observable behavior and public record relationships. They do not specify a private implementation or promise complete C++ ABI coverage.
 
 ### Function equivalence, naming, and omission
 

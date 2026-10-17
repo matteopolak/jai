@@ -4,8 +4,6 @@
 
 The public `Compiler` records are a mutable, user-facing syntax graph used to inspect `Code`, construct changed `Code`, and modify intercepted procedure bodies. This page specifies the reviewed public shape and observable behavior; it does not prescribe the compiler's internal representation or a source-text conversion strategy.
 
-Evidence is the supplied 0.2.030 public `Compiler` declarations, the `630_compiler_get_nodes` lesson, `Preload.For_Flags`, and public `Program_Print` and Iprof usage. Printer support illustrates representable syntax but is not proof that the printer implements every compiler import feature. No reference binary was executed for this review.
-
 ## How it works
 
 ### Graph conversion and edits
@@ -75,7 +73,7 @@ Useful independent contract cases combine an enclosing edit with a retained floa
 
 ## Configuration
 
-These contracts are versioned against the supplied 0.2.030 public API. Workspace selection, interception flags, syntax flags, and the optional scope donor affect the operations. There is no public configuration selecting a serialization format or requiring textual source reconstruction.
+Workspace selection, interception flags, syntax flags, and the optional scope donor affect the operations. There is no public configuration selecting a serialization format or requiring textual source reconstruction.
 
 ## Dependencies
 

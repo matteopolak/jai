@@ -1,7 +1,0 @@
-# Apollo float conversion precision
-
-Independent reduction `tests/portable-stdlib/pending/apollo-negative-femtosecond-float.jai` supplies exactly -1 femtosecond in the reviewed signed128 representation. The reviewed source contract decomposes the magnitude into whole seconds plus residual femtoseconds, converts each component, and reapplies the sign. Therefore this input must produce a nonzero result approximately `-1e-15` seconds with `success = true`; the corresponding positive input produces approximately `+1e-15`.
-
-The general contract is approximate float64 seconds, with no promise that every femtosecond remains exactly representable or a specified rounding mode at larger magnitudes. The boolean indicates whether the whole-second conversion fits its signed 64-bit intermediate, not whether the float result is exact. Returning zero-success for a one-femtosecond input is a confirmed compatibility mismatch.
-
-Resolved and implemented: the public conversion now checks signed whole seconds, computes the residual without cancellation, and combines the signed fraction with the whole value. The independent reduction now passes. Genuine pre-fix evidence is retained at `time-float-red-ej93sd9k`; final shared interpreter/native O0/O2, retained time/calendar, target source/lint/format evidence is `time-shared-7vqj9xrj/results.json` (80 passing checks) under the worker's explicit T7 target. No general exactness/ULP guarantee is inferred.

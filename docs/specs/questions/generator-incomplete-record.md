@@ -1,7 +1,0 @@
-# Canonical incomplete-record emission
-
-2026-10-16 reviewed disposition: Jai accepts a nominal empty record declaration such as `Opaque :: struct {};`. This is suitable as an opaque pointer marker only; it supplies no native size, alignment, field offsets, or by-value ABI. Foreign by-value parameters/results/fields/arrays must be rejected by generation/validation rather than emitted as ABI-compatible.
-
-The canonical `CType` records Clang layout values. Exact `size == -2` and `alignment == -2` means `CXTypeLayoutError.Incomplete`, distinct from invalid and dependent-layout errors. Accept the incomplete marker only when those values are from the canonical native layout query and the corresponding canonical struct/union has no member declarations, template type/instantiation parameters, parents, virtual functions, or overlays. Preserve diagnostics for other negative/mismatched results or model shapes. If the values were not obtained from the canonical native query, -2/-2 alone is not proof. Explicit nonzero alignment and visitor-supplied fields, parents, vtable entries, or overlays must be rejected for an incomplete record; they would invent layout/content.
-
-The public `print_struct` signature does not itself provide a graph-wide by-value-use check. If that function cannot see all use sites, its caller/generation validation boundary must reject those uses. No independent compiler oracle was run. Do not add guessed padding/size, duplicate model fields, or skip the source case. Canonical model/enum and Basic formatter lanes remain separate.
