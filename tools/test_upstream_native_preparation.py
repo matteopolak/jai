@@ -73,10 +73,7 @@ class NativePreparation(unittest.TestCase):
                             str(root / "tools/build_portable_watcher.py"),
                             plan["commands"][2],
                         )
-                        self.assertIn(
-                            root / "stdlib/internal/watching/native/libportable_watch.dylib",
-                            plan["required"],
-                        )
+                        self.assertIn(native / "libportable_watch.dylib", plan["required"])
                     if system == "linux":
                         clipboard = plan["commands"][2]
                         self.assertIn(

@@ -26,6 +26,13 @@ source tree. Windows has its own DLL path ([Windows](windows.md)) and embeds not
 - Release archives, the Nix package and plain `cargo build` need no extra packaging: the runtime
   is inside the binary.
 
+## Also embedded: the macOS file watcher backend
+
+`stdlib/internal/watching/native/watch.c` (bound by `watching/mac.jai` as `native/portable_watch`) is built
+the same way by `build_watcher` in `build.rs` (a universal arm64+x86_64 dylib linked with CoreServices,
+macOS only) and unpacked into the same cache directory. `tools/build_portable_watcher.py` is its helper
+twin (`--output-dir`, default `target/native-helpers/macos-watch`).
+
 ## How to change it
 
 Edit `runtime.c` and rebuild. If the compile recipe changes, change `build.rs` and

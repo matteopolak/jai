@@ -13,19 +13,25 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 const SOURCE_DIR: &str = "../../stdlib/internal/runtime/crash-native";
+const WATCH_DIR: &str = "../../stdlib/internal/watching/native";
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed={SOURCE_DIR}");
+    println!("cargo:rerun-if-changed={WATCH_DIR}");
     println!("cargo:rerun-if-env-changed=CC");
     println!("cargo:rerun-if-env-changed=AR");
     println!("cargo:rerun-if-env-changed=MACOSX_DEPLOYMENT_TARGET");
 
     let out = PathBuf::from(env::var_os("OUT_DIR").expect("OUT_DIR"));
-    let files = build(&out).unwrap_or_else(|reason| {
+    let mut files = build(&out).unwrap_or_else(|reason| {
         println!("cargo:warning=crash runtime not embedded: {reason}");
         Vec::new()
     });
+    match build_watcher(&out) {
+        Ok(found) => files.extend(found),
+        Err(reason) => println!("cargo:warning=file watcher backend not embedded: {reason}"),
+    }
 
     let mut digest: u64 = 0xcbf2_9ce4_8422_2325;
     let mut list = String::new();
@@ -105,6 +111,36 @@ fn build(out: &Path) -> Result<Vec<(String, PathBuf)>, String> {
         ("libportable_crash.a".into(), archive),
         (shared_name.into(), shared),
     ])
+}
+
+/// The macOS FSEvents file watcher backend (`stdlib/internal/watching/mac.jai` binds it as
+/// `native/portable_watch`): one universal dylib. Other targets embed nothing.
+fn build_watcher(out: &Path) -> Result<Vec<(String, PathBuf)>, String> {
+    if env::var("CARGO_CFG_TARGET_OS").as_deref() != Ok("macos") {
+        return Ok(Vec::new());
+    }
+    if env::var("HOST") != env::var("TARGET") {
+        return Err("cross builds do not embed the host's watcher backend".into());
+    }
+    let source = Path::new(&env::var("CARGO_MANIFEST_DIR").unwrap())
+        .join(WATCH_DIR)
+        .join("watch.c");
+    let dir = out.join("watch-backend");
+    fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    let shared = dir.join("libportable_watch.dylib");
+    let cc = env::var("CC").unwrap_or_else(|_| "cc".into());
+    run(Command::new(&cc)
+        .args(["-std=c11", "-O2", "-fblocks", "-fvisibility=hidden"])
+        .args(["-arch", "arm64", "-arch", "x86_64", "-Wall", "-Wextra"])
+        .args([
+            "-dynamiclib",
+            "-Wl,-install_name,@rpath/libportable_watch.dylib",
+        ])
+        .args(["-framework", "CoreServices", "-pthread"])
+        .arg(&source)
+        .arg("-o")
+        .arg(&shared))?;
+    Ok(vec![("libportable_watch.dylib".into(), shared)])
 }
 
 fn run(command: &mut Command) -> Result<(), String> {
