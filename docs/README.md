@@ -989,3 +989,6 @@ Current ready [30901830 candidate](status/shared-candidate-30901830.json) combin
 - [Linux failed-copy observer](extensions/io-failed-copy-observer.md): bounded numeric capture from original children; workload and failure gates retained, Linux correctness unresolved.
 
 - [Intel Mac SDK development dependencies](tools/mac-intel-sdk-closure.md): matching clang-c/libclang provisioning; actual Intel CI remains required.
+
+- [Linux clipboard consumer closure](tools/linux-clipboard-consumer-closure.md): real helper build/search paths across all general Linux native consumers; runtime replay required.
+- [Current matching CI candidate](status/shared-candidate-d9f32f30.json): committed source, tools, ABI8 identities and explicit open gates.
