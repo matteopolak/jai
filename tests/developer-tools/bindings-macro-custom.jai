@@ -8,7 +8,8 @@ macros: s64;
 visit :: (decl: *B.Declaration, _parent: *B.Declaration) -> B.Declaration_Visit_Result {
     if decl.kind == .MACRO_DEFINITION {
         macros += 1;
-        assert(decl.type != null && decl.expression != null && decl.expression.kind == .LITERAL);
+        assert(decl.expression != null && decl.expression.kind == .LITERAL);
+        assert(decl.macro_value_result == .KEEP);
         if decl.name == "ORIGINAL_INTEGER" decl.output_name = "RENAMED_INTEGER";
         if decl.name == "ORIGINAL_LONG_BYTES" decl.macro_value_result = .DISCARD;
     }

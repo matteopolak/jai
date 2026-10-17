@@ -11,3 +11,7 @@ Original_Cpp_Pair original_cpp_workflow_empty() { return {42, 2.5}; }
 Original_Cpp_Pair original_cpp_workflow_collision(int out_result_0) { return {out_result_0, 3.5}; }
 Original_Cpp_Small original_cpp_workflow_small(Original_Cpp_Small value) { return {value.right, value.left}; }
 Original_Cpp_Large original_cpp_workflow_large(Original_Cpp_Large value) { return {value.third, value.first, value.second}; }
+#include "bindings-cpp-nonpod.h"
+Original_Nonpod::Original_Nonpod() : value(5) {}
+Original_Nonpod::~Original_Nonpod() {}
+Original_Nonpod original_nonpod_value() { return Original_Nonpod(); }

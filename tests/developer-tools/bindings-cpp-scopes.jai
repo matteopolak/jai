@@ -12,10 +12,7 @@ beta_record: *B.Struct;
 flatten := true;
 unique_names := true;
 errors: int;
-collision_error: bool;
-scope_error: bool;
 cycle_error: bool;
-nonpod_error: bool;
 make_cycle: bool;
 cycle_children: [..] *B.Declaration;
 
@@ -79,10 +76,7 @@ customize :: (decl: *B.Declaration, parent: *B.Declaration) -> B.Declaration_Vis
 capture_error :: (message: string, data: *void, info: Log_Info) {
     if info.common_flags & .ERROR {
         errors += 1;
-        if contains(message, "output declaration name collision") collision_error = true;
-        if contains(message, "requires explicit flattened output") scope_error = true;
         if contains(message, "cyclic or excessive output namespace graph") cycle_error = true;
-        if contains(message, "non-POD record modeling requires canonical constructor support") nonpod_error = true;
     }
 }
 
@@ -95,33 +89,36 @@ main :: () {
     array_add(*options.extra_clang_arguments, "-x", "c++", "-std=c++17");
     defer array_free(options.source_files);
     defer array_free(options.libraries);
+    array_add(*options.library_search_paths, tprint("%../../target", #filepath));
+    defer array_free(options.library_search_paths);
     defer array_free(options.extra_clang_arguments);
     options.visitor = customize;
     assert(B.generate_bindings(options, tprint("%../../target/developer-tools-cpp-scopes-generated.jai", #filepath), log_results = false));
     options.header = tprint("#include \"%bindings-cpp-scopes.h\"\n", #filepath);
     assert(B.generate_bridge(options, tprint("%../../target/developer-tools-cpp-scopes-bridge.cpp", #filepath)));
     assert(namespaces == 6 && records == 4 && functions == 16);
-    path := tprint("%../../target/developer-tools-cpp-scopes-preserved.jai", #filepath);
+    // Duplicate output names are repaired and nested scopes are qualified,
+    // rather than rejected.
+    path := tprint("%../../target/developer-tools-cpp-scopes-bridge-variants.cpp", #filepath);
 
-    assert(write_entire_file(path, "preserve"));
     unique_names = false;
+    assert(B.generate_bridge(options, path));
+    text, ok := read_entire_file(path);
 
-    push_context {
-        context.logger = capture_error;
-        assert(!B.generate_bridge(options, path));
-    }
-
-    assert(collision_error);
+    assert(ok && contains(text, "(Binding_adjust_Result *") && contains(text, "adjust_1("));
+    free(text);
 
     unique_names = true;
     flatten = false;
+    assert(B.generate_bridge(options, path));
+    text, ok = read_entire_file(path);
+    assert(ok && contains(text, "alpha_alpha_adjust(") && contains(text, "beta_beta_adjust("));
+    free(text);
 
-    push_context {
-        context.logger = capture_error;
-        assert(!B.generate_bridge(options, path));
-    }
+    // A visitor that makes the namespace graph cyclic fails the run and leaves the destination alone.
+    path = tprint("%../../target/developer-tools-cpp-scopes-preserved.jai", #filepath);
 
-    assert(scope_error);
+    assert(write_entire_file(path, "preserve"));
     flatten = true;
     make_cycle = true;
 
@@ -132,18 +129,15 @@ main :: () {
 
     assert(cycle_error);
     make_cycle = false;
-    options.source_files[0] = tprint("%bindings-cpp-default-field.h", #filepath);
 
-    push_context {
-        context.logger = capture_error;
-        assert(!B.generate_bridge(options, path));
-    }
-
-    assert(nonpod_error);
-
-    preserved, ok := read_entire_file(path);
+    preserved, preserved_ok := read_entire_file(path);
 
     defer free(preserved);
-    assert(errors > 0 && ok && preserved == "preserve");
+    assert(errors > 0 && preserved_ok && preserved == "preserve");
+
+    // A record with a default member initializer is still an ordinary record.
+    options.source_files[0] = tprint("%bindings-cpp-default-field.h", #filepath);
+    options.visitor = null;
+    assert(B.generate_bridge(options, path));
     print("ok\n");
 }

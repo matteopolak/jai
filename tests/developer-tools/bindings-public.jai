@@ -29,6 +29,7 @@ main :: () {
     assert(cast(s64) declaration.macro_value_result == 1);
     array_add(*options.source_files, tprint("%bindings-input.h", #filepath));
     array_add(*options.libraries, B.Library.{ filename = "developer_tools_bindings", identifier = "native" });
+    array_add(*options.library_search_paths, tprint("%../../target", #filepath));
     options.will_print_bindings = before_print;
     builder, ok := B.generate_bindings(options);
 
@@ -39,7 +40,7 @@ main :: () {
     defer free(text);
     assert(contains(text, "sample_apply ::"));
     assert(contains(text, "Original SDK-style record documentation."));
-    assert(contains(text, "ADD :: 3"));
+    assert(contains(text, "ADD :: cast(u32) (3)"));
     assert(contains(text, "MODE_ADD :: ADD"));
     assert(B.generate_bindings(options, tprint("%../../target/developer-tools-public-generated.jai", #filepath), log_results = false));
     assert(callbacks == 2);

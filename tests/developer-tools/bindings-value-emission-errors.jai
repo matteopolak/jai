@@ -14,7 +14,7 @@ main :: () {
         defer free_buffers(*destination);
         append(*destination, "keep");
         literal: B.Literal;
-        literal.literal_kind = .RAW_CPP_TOKENS;
+        literal.literal_kind = .ENUM;
         cyclic := B.Paren_Expression.{ kind = .PAREN_EXPRESSION };
         cyclic.child = cast(*B.Expression) *cyclic;
         bad_binary := B.Binary_Operator.{ kind = .BINARY_OPERATOR, op = "=" };

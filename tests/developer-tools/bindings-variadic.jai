@@ -23,6 +23,8 @@ main :: () {
     defer array_free(options.source_files);
     array_add(*options.libraries, B.Library.{ identifier = "native", filename = "developer_tools_variadic" });
     defer array_free(options.libraries);
+    array_add(*options.library_search_paths, tprint("%../../target", #filepath));
+    defer array_free(options.library_search_paths);
     options.generate_printf_wrappers = false;
     options.add_generator_command = false;
     assert(B.generate_bindings(options, tprint("%../../target/developer-tools-variadic-default.jai", #filepath), log_results = false));

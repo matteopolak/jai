@@ -9,7 +9,7 @@ main :: () {
     custom := string.[C.RENAMED_STRING, C.STRING_ESCAPED, C.STRING_JOINED, C.STRING_ALIAS, C.STRING_UTF8, C.STRING_EMPTY];
 
     for text, index: ordinary {
-        assert(G.string_macro_matches(cast(*s8) text.data, cast(u64) text.count, cast(s32) index) == 1);
+        assert(G.string_macro_matches(cast(*u8) text.data, cast(u64) text.count, cast(s32) index) == 1);
         assert(text == custom[index]);
     }
 

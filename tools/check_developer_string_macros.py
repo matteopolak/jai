@@ -33,6 +33,9 @@ def main():
     generated.append(ROOT / "target/developer-tools-original-string-generated.jai")
     flags = ["-dynamiclib"] if platform.system() == "Darwin" else ["-shared", "-fPIC"]
     suffix = "dylib" if platform.system() == "Darwin" else "so"
+    # The generator loads the configured library, so it must exist before the first generation.
+    run([prefix / "bin/clang", "-std=c11", "-O0", *flags, ROOT / "tests/developer-tools/bindings-string-macros-native.c",
+         "-o", ROOT / f"target/libdeveloper_tools_string_macros.{suffix}"])
     for mode in ["interp", "0", "2"]:
         if mode == "interp":
             run([jaic, source, "-interp"], "ok\n")

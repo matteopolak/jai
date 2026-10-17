@@ -27,6 +27,12 @@ def main():
     suffix = "dylib" if platform.system() == "Darwin" else "so"
     generated = [ROOT / f"target/developer-tools-multi-{name}.jai"
                  for name in ["generated", "custom", "cpp-generated"]]
+    # The generator loads every configured library, so both must exist before the
+    # first generation; the C++ one is rebuilt with the generated bridge below.
+    run([prefix / "bin/clang", "-std=c11", "-O0", *flags, native,
+         "-o", ROOT / f"target/libdeveloper_tools_multi.{suffix}"])
+    run([prefix / "bin/clang++", "-x", "c++", "-std=c++17", "-O0", *flags, native,
+         "-o", ROOT / f"target/libdeveloper_tools_multi_cpp.{suffix}"])
     for mode in ["interp", "0", "2"]:
         if mode == "interp":
             run([jaic, source, "-interp"], "ok\n")

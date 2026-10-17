@@ -32,6 +32,8 @@ main :: () {
     array_add(*options.libraries, B.Library.{ filename = "developer_tools_multi", identifier = "native" });
     defer array_free(options.source_files);
     defer array_free(options.libraries);
+    array_add(*options.library_search_paths, tprint("%../../target", #filepath));
+    defer array_free(options.library_search_paths);
     normalized, ok := B.normalize_options(options);
 
     assert(ok && normalized.source_files.count == 3);

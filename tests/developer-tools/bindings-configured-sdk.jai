@@ -12,6 +12,8 @@ main :: () {
     defer array_free(options.source_files);
     array_add(*options.libraries, B.Library.{ filename = "developer_tools_configured", identifier = "configured_native" });
     defer array_free(options.libraries);
+    array_add(*options.library_search_paths, tprint("%../../target", #filepath));
+    defer array_free(options.library_search_paths);
     assert(B.generate_bindings(options, tprint("%../../target/developer-tools-configured-generated.jai", #filepath), log_results = false));
     print("ok\n");
 }

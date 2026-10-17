@@ -6,7 +6,7 @@ main :: () {
     args := get_command_line_arguments();
 
     defer array_free(args);
-    assert(args.count == 2);
+    output_directory := ifx args.count > 1 then args[1] else tprint("%../../target", #filepath);
     source: String_Builder;
 
     defer free_buffers(*source);
@@ -138,6 +138,6 @@ main :: () {
     defer free(after);
     assert(before == after);
     append(*source, "}\n");
-    assert(write_entire_file(tprint("%/developer-tools-cpp-fragments.cpp", args[1]), *source, false));
+    assert(write_entire_file(tprint("%/developer-tools-cpp-fragments.cpp", output_directory), *source, false));
     print("ok\n");
 }

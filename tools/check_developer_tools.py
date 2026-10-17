@@ -245,14 +245,19 @@ def main():
          "tests/developer-tools/header-support.c", "-o", build_developer_bindings.shared_library("developer_tools_support")])
     run([prefix / "bin/clang++", "-x", "c++", "-std=c++17", "-Wall", "-Wextra", "-Werror", "-I", "target",
          "-fsyntax-only", "tests/developer-tools/header-support.c"])
+    # The generator loads every configured library, so each must exist before its
+    # first generation. The C++ bridge libraries are rebuilt with generated bridges later.
+    run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", *build_developer_bindings.shared_flags(),
+         "tests/developer-tools/bindings-sdk.c", "-o", build_developer_bindings.shared_library("developer_tools_sdk")])
+    for stem, library in [("bridge", "bridge"), ("cpp-workflow", "cpp_workflow")]:
+        run([prefix / "bin/clang++", "-x", "c++", "-std=c++17", *build_developer_bindings.shared_flags(),
+             f"tests/developer-tools/bindings-{stem}-native.cpp", "-o", build_developer_bindings.shared_library(f"developer_tools_{library}")])
     run([JAIC, "tests/developer-tools/bindings-public.jai", "-interp"], output="ok\n")
     generated_public = ROOT / "target/developer-tools-public-generated.jai"
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", generated_public])
     run([ROOT / "target/jaifmt", "--config", ROOT / "jaifmt.toml", "--check", generated_public])
     run([ROOT / "target/debug/jailint", "-D", "warnings", generated_public])
     run([JAIC, "tests/developer-tools/bindings-sdk-public.jai", "-interp"], output="ok\n")
-    run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", *build_developer_bindings.shared_flags(),
-         "tests/developer-tools/bindings-sdk.c", "-o", build_developer_bindings.shared_library("developer_tools_sdk")])
     cases.extend(["bindings-clang-diagnostics", "bindings-callback-context", "bindings-custom", "bindings-custom-roundtrip", "bindings-clang-options", "bindings-macros", "bindings-macros-roundtrip", "codeview-lines", "codeview-register"])
     run([prefix / "bin/clang", "-std=c11", "-Wall", "-Wextra", "-Werror", *build_developer_bindings.shared_flags(), "-I", prefix / "include",
          "tests/developer-tools/bindings-options.c", "-o", build_developer_bindings.shared_library("developer_tools_options")])
@@ -419,7 +424,19 @@ def main():
     # lint it below with the actual public platform active, not in a host main module.
     checker_contextual = {ROOT / "stdlib/internal/developer-tools/check-bindings.jai",
                           ROOT / "stdlib/internal/developer-tools/porting-check.jai"}
-    host_lint_paths = [path for path in paths if path not in checker_contextual]
+    # Round-trip consumers import a module that their own check generates into a private
+    # scratch directory; that check lints them. Only programs whose inputs exist on this host belong here.
+    def not_lintable_on_host(path):
+        if path.suffix != ".jai" or not path.is_relative_to(ROOT / "tests"):
+            return False
+        if "#assert OS == .WINDOWS" in path.read_text() and platform.system() != "Windows":
+            return True  # Windows-only programs are linted on a Windows host.
+        names = re.findall(r'#import "(developer-tools-[^"]+)"', path.read_text())
+        loads = re.findall(r'#load "([^"]+)"', path.read_text())
+        return (any(not (ROOT / "target" / f"{name}.jai").exists() for name in names)
+                or any(not (path.parent / name).resolve().exists() for name in loads))
+
+    host_lint_paths = [path for path in paths if path not in checker_contextual and not not_lintable_on_host(path)]
     run([ROOT / "target/debug/jailint", "-D", "warnings", "-I", ROOT / "target", *host_lint_paths])
     check_paths = [ROOT / "stdlib/Check/module.jai", ROOT / "stdlib/internal/developer-tools/check-engine/module.jai",
                    ROOT / "tests/developer-tools/check-porting.jai"]

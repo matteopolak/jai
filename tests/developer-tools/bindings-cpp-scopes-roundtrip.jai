@@ -7,9 +7,8 @@ double_value :: (value: s64) -> s64 #c_call {
 
 main :: () {
     original := G.AlphaSample.{ value = 11 };
-    result: G.AlphaSample;
+    result := G.alpha_adjust(original, 7);
 
-    G.alpha_adjust(*result, original, 7);
     assert(result.value == 18 && original.value == 11);
     real := G.BetaSample.{ value = 2.5 };
 
@@ -17,7 +16,7 @@ main :: () {
     assert(G.alpha_repeat(9) == 20);
     assert(G.alpha_scale(9) == 27);
     bytes: [3] u8 = .[65, 66, 0];
-    pointer := cast(*s8) bytes.data;
+    pointer := bytes.data;
 
     assert(G.alpha_identity(pointer) == pointer);
     large: s64 = 0x100000013;

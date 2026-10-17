@@ -30,6 +30,10 @@ def main():
     generated = ROOT / "target/developer-tools-cpp-scopes-generated.jai"
     flags = ["-dynamiclib"] if platform.system() == "Darwin" else ["-shared", "-fPIC"]
     suffix = "dylib" if platform.system() == "Darwin" else "so"
+    # The generator loads the configured library, so it must exist before the first
+    # generation; it is rebuilt with the generated bridge below.
+    run([prefix / "bin/clang++", "-std=c++17", "-O0", *flags, ROOT / "tests/developer-tools/bindings-cpp-scopes-native.cpp",
+         "-o", ROOT / f"target/libdeveloper_tools_cpp_scopes.{suffix}"])
     for mode in ["interp", "0", "2"]:
         if mode == "interp":
             run([jaic, source, "-interp"], "ok\n")

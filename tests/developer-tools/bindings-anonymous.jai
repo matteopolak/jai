@@ -17,7 +17,7 @@ inspect :: (decl: *B.Declaration, _parent: *B.Declaration) -> B.Declaration_Visi
     }
 
     if decl.kind == .TYPEDEF && decl.name == "Record_Alias" {
-        assert(B.try_find_struct_in_type(decl.type) == canonical_record);
+        assert(B.try_find_struct_in_type(B.strip_type(decl.type, typedefs = true)) == canonical_record);
         assert((decl.decl_flags & .OMIT_FROM_OUTPUT) == 0);
     }
 
@@ -42,6 +42,8 @@ main :: () {
     defer array_free(options.source_files);
     array_add(*options.libraries, B.Library.{ identifier = "native", filename = "developer_tools_anonymous" });
     defer array_free(options.libraries);
+    array_add(*options.library_search_paths, tprint("%../../target", #filepath));
+    defer array_free(options.library_search_paths);
     options.visitor = inspect;
     options.strip_enum_prefixes = false;
     options.add_generator_command = false;
