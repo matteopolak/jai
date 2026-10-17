@@ -544,7 +544,7 @@ def build(args):
             )
             valid = stdlib_runtime.contract_result(case, code, stdout, stderr)
             output = stdout + stderr
-            if case.get("positive_baseline"):
+            if case.get("positive_baseline_id"):
                 baseline = next(
                     c
                     for c in catalogue
