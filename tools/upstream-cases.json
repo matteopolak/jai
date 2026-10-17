@@ -388,7 +388,7 @@
   {"id": "toml-jai-formatting-control", "path": "sjorsdonkers--toml-jai/examples/formatting_control.jai", "mode": "run"},
   {"id": "toml-jai-file-examples-check", "path": "sjorsdonkers--toml-jai/examples/file_examples.jai", "mode": "check"},
   {"id": "no-api-module-windows-check", "path": "UnNabbo--no_api/module.jai", "mode": "check", "args": ["-os", "windows"]},
-  {"id": "toml-jai-first", "path": "sjorsdonkers--toml-jai/examples/first.jai", "mode": "run"},
+  {"id": "toml-jai-first", "only": ["macos-x64", "linux-x64", "windows-x64"], "only_reason": "create_heap on the default allocator needs the x64 allocator; other targets use the C fallback, which cannot create heaps", "path": "sjorsdonkers--toml-jai/examples/first.jai", "mode": "run"},
   {"id": "toml-jai-custom-handlers", "path": "sjorsdonkers--toml-jai/examples/custom_handlers.jai", "mode": "run"},
   {"id": "jai-protobuf-tests", "path": "segcore--jai-protobuf/tests/test.jai", "mode": "run", "copy": ["segcore--jai-protobuf"], "expect": {"stdout_contains": ["All tests passed!"], "source": "segcore/jai-protobuf tests/test.jai main: prints All tests passed! unless a test failed, then exits 1"}},
   {"id": "jai-protobuf-01-compiletime", "path": "segcore--jai-protobuf/examples/01-compiletime.jai", "mode": "run", "copy": ["segcore--jai-protobuf"]},
