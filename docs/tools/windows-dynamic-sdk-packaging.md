@@ -11,3 +11,7 @@ Validation: five package/supervisor tests pass, after the initial controls repro
 Remaining closure: `Crt`, `ffi`/`binding_ffi` and Clang SDK providers need their proper reviewed provider/build mappings; this patch does not invent aliases or claim those failures fixed. Actual Windows replay remains red until checked. The main loader, GPR/XGETBV/output work and all original assertions remain intact.
 
 Tradeoff: each native test executable receives the available SDK DLL set rather than a minimal per-executable dependency graph. This adds hash/read/copy cost and disk usage. A future deployment planner can inspect the actual PE imports and recursively stage only required matching providers; it must retain full dependency/identity validation and cannot guess missing providers. The current implementation favors a complete, explicit package closure and rejects conflicts.
+
+## WASI runner prerequisite companion
+
+The three normal Windows native consumers now use the same pinned setup-node action and Node24 major as the main workflow, and print the actual version. tools/wasi_run.mjs documents Node24 for Memory64. The failed Windows job reported Node22.23.3 and invalid table-limit flags; this provisioning mismatch does not by itself prove the encoding failure cause. Actual failed module bytes/target features/linker arguments and a nextCIreplay are still required; no experimental-flag workaround or rejection waiver was added. Actionlint and allthreejob configuration checks pass.
