@@ -70,10 +70,6 @@ xy :: (x: float, y: float) -> Vector2 {
     return .{ x, y };
 }
 
-make_vector2 :: (x: float, y: float) -> Vector2 {
-    return xy(x, y);
-}
-
 xy :: (x: float) -> Vector2 {
     return make_vector2(x);
 }
@@ -158,10 +154,6 @@ xyz :: (x: float, y: float, z: float) -> Vector3 {
     return .{ x, y, z };
 }
 
-make_vector3 :: (x: float, y: float, z: float) -> Vector3 {
-    return xyz(x, y, z);
-}
-
 xyz :: (x: float) -> Vector3 {
     return make_vector3(x);
 }
@@ -244,10 +236,6 @@ make_vector4 :: (x: float) -> Vector4 {
 
 xyzw :: (x: float, y: float, z: float, w: float) -> Vector4 {
     return .{ x, y, z, w };
-}
-
-make_vector4 :: (x: float, y: float, z: float, w: float) -> Vector4 {
-    return xyzw(x, y, z, w);
 }
 
 xyzw :: (x: float) -> Vector4 {

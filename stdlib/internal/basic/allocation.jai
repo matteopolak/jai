@@ -1,6 +1,6 @@
-alloc :: (size: s64, allocator := context.allocator) -> *void {
+alloc :: (size: s64) -> *void {
     assert(size >= 0);
-    return allocator_call(allocator, .ALLOCATE, size, 0, null);
+    return allocator_call(context.allocator, .ALLOCATE, size, 0, null);
 }
 
 get_capabilities :: (b: Allocator) -> (caps: Allocator_Caps, name: string) {
@@ -58,8 +58,8 @@ Initialize :: (memory: *$T) {
     memory.* = T.{};
 }
 
-New :: ($T: Type, $initialized := true, allocator := context.allocator) -> *T {
-    memory := cast(*T) alloc(size_of(T), allocator);
+New :: ($T: Type, $initialized := true) -> *T {
+    memory := cast(*T) alloc(size_of(T));
 
     assert(memory != null);
     assert(cast(u64) memory % align_of(T) == 0, "allocator returned storage with insufficient alignment");
@@ -68,7 +68,7 @@ New :: ($T: Type, $initialized := true, allocator := context.allocator) -> *T {
     return memory;
 }
 
-NewArray :: (count: s64, $T: Type, $initialized := true, alignment: s32 = -1, allocator := context.allocator) -> (result: [] T, unaligned_base: *void) {
+NewArray :: (count: s64, $T: Type, $initialized := true, alignment: s32 = -1) -> (result: [] T, unaligned_base: *void) {
     assert(count >= 0);
     desired := cast(s64) alignment;
     if desired < 0 desired = align_of(T);
@@ -77,7 +77,7 @@ NewArray :: (count: s64, $T: Type, $initialized := true, alignment: s32 = -1, al
     if count == 0 return .{}, null;
 
     #if size_of(T) > 0 assert(count <= (0x7fffffffffffffff - desired) / size_of(T));
-    base := alloc(count * size_of(T) + desired - 1, allocator);
+    base := alloc(count * size_of(T) + desired - 1);
 
     assert(base != null);
     data := cast(*T) align_forward(cast(s64) base, desired);

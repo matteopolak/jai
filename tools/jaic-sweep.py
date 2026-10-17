@@ -161,7 +161,20 @@ def use_native_libs():
         subprocess.run(
             [sys.executable, str(ROOT / "tools/build_native_libs.py")], check=True
         )
-    os.environ["JAIC_NATIVE_LIBS"] = str(build_native_libs.output_dir())
+    # The Debug module's native helper is built into the stdlib tree of this checkout.
+    suffix = "dylib" if sys.platform == "darwin" else "so"
+    helper = ROOT / f"stdlib/internal/developer-tools/debug-native/libdeveloper_tools_debug.{suffix}"
+    if not helper.exists():
+        subprocess.run([sys.executable, str(ROOT / "tools/build_developer_debug.py")], check=True)
+    libs = [str(build_native_libs.output_dir())]
+    # The source-built SDK providers (tools/build_ci_native_bindings.py): the stdlib's rpmalloc
+    # allocator and the other bound SDKs load them when they exist.
+    from repo_output import shared_output_dir
+
+    providers = shared_output_dir("production-bindings", "native")
+    if providers.is_dir():
+        libs.insert(0, str(providers))
+    os.environ["JAIC_NATIVE_LIBS"] = os.pathsep.join(libs)
 
 
 def physical_memory_gib():

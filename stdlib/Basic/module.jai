@@ -180,7 +180,6 @@ to_float64_seconds :: Impl.to_float64_seconds;
 to_apollo :: Impl.to_apollo;
 #if OS == .MACOS || OS == .LINUX || OS == .ANDROID || OS == .WINDOWS {
     seconds_since_init :: Impl.seconds_since_init;
-    get_time :: Impl.seconds_since_init;
 }
 
 #if OS == .WINDOWS {
