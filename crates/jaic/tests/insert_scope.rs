@@ -342,6 +342,70 @@ fn inserted_local_storage_and_defers_live_until_the_receiving_block_exits() {
 }
 
 #[test]
+fn every_insertion_form_splices_its_declarations_into_the_receiving_scope() {
+    for (name, body) in [
+        ("code value", "a :: #code b := 2; #insert a; x := b;"),
+        (
+            "string of several declarations",
+            "#insert \"b := 2; c := b + 1;\"; x := c;",
+        ),
+        (
+            "string at the insertion scope",
+            "#insert,scope() \"b := 2; c := b + 1;\"; x := c;",
+        ),
+        (
+            "code value at the insertion scope",
+            "a :: #code b := 2; #insert,scope() a; x := b;",
+        ),
+        (
+            "code value scoped to another code",
+            "a :: #code b := 2; #insert,scope(#code null) a; x := b;",
+        ),
+        (
+            "generated string",
+            "#insert -> string { return \"b := 2;\"; }; x := b;",
+        ),
+        (
+            "constant declaration",
+            "a :: #code B :: 2; #insert a; x := B;",
+        ),
+        (
+            "inside a nested block",
+            "if true { a :: #code b := 2; #insert a; x := b; }",
+        ),
+        (
+            "inside a loop body",
+            "for 0..1 { #insert \"b := 2;\"; x := b; }",
+        ),
+        (
+            "two insertions in sequence",
+            "a :: #code b := 2; #insert a; d :: #code e := b; #insert d; x := e;",
+        ),
+        (
+            "outer code inserted in a nested block",
+            "a :: #code b := 2; { #insert a; x := b; }",
+        ),
+    ] {
+        compile(&format!("main :: () {{ {body} }}"))
+            .unwrap_or_else(|error| panic!("{name}: {error}"));
+    }
+}
+
+#[test]
+fn insertion_declarations_do_not_escape_the_receiving_block() {
+    for body in [
+        "{ a :: #code b := 2; #insert a; } x := b;",
+        "{ #insert \"b := 2;\"; } x := b;",
+        "{ #insert,scope() \"b := 2;\"; } x := b;",
+        "a :: #code b := 2; x := b; #insert a;",
+    ] {
+        let error = compile(&format!("main :: () {{ {body} }}"))
+            .expect_err("declarations stay in the receiving block, after the insertion");
+        assert!(error.contains("unknown identifier"), "{body}: {error}");
+    }
+}
+
+#[test]
 fn code_export_and_text_parse_preserve_payload_shape_without_source_heuristics() {
     use jaic::{
         ast::CodeBody, build::parse_code_text, records::Records, sema::code_export::export_code,
