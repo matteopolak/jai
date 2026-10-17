@@ -16,7 +16,7 @@ The package is named `jacket` (formula `jacket`) because it installs all four to
 ### Other ways to install
 
 - **Archives:** every release on the [releases page](https://github.com/matteopolak/jacket/releases) has one per platform. Unpack it anywhere and put `jaic` on your `PATH`, directly or through a symlink.
-- **GitHub Actions:** [setup-jai](https://github.com/matteopolak/setup-jai) (`- uses: matteopolak/setup-jai@v1`).
+- **GitHub Actions:** [setup-jacket](https://github.com/matteopolak/setup-jacket) (`- uses: matteopolak/setup-jacket@v1`).
 - **From source:** you need [Rustup](https://rustup.rs/) (it picks up the pinned toolchain) and, for native builds, LLVM 23 with Clang ([LLVM setup](llvm-setup.md)):
 
   ```sh
