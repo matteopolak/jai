@@ -62,7 +62,7 @@ pub struct BuildSettings {
     pub dead_code_elimination: Option<DeadCode>,
     /// `llvm_options.target_system_triple`, `_cpu` and `_features` (empty: the default for
     /// `os`/`cpu`).
-    pub llvm_triple: String,
+    pub llvm_target: Option<crate::target::Target>,
     pub llvm_cpu: String,
     pub llvm_features: String,
     /// `intermediate_path`: where object files (and LLVM IR or bitcode) go; empty: next to
@@ -125,7 +125,7 @@ impl Default for BuildSettings {
             stack_trace: None,
             emit_debug_info: None,
             dead_code_elimination: None,
-            llvm_triple: String::new(),
+            llvm_target: None,
             llvm_cpu: String::new(),
             llvm_features: String::new(),
             intermediate_path: String::new(),
@@ -652,7 +652,13 @@ impl Workspaces {
             WorkspaceText::OutputPath => s.output_path = value.into(),
             WorkspaceText::IntermediatePath => s.intermediate_path = value.into(),
             WorkspaceText::EntryPointName => s.entry_point_name = value.into(),
-            WorkspaceText::LlvmTargetSystemTriple => s.llvm_triple = value.into(),
+            WorkspaceText::LlvmTargetSystemTriple => {
+                s.llvm_target = if value.is_empty() {
+                    None
+                } else {
+                    Some(crate::target::Target::parse(value)?)
+                }
+            }
             WorkspaceText::LlvmTargetSystemCpu => s.llvm_cpu = value.into(),
             WorkspaceText::LlvmTargetSystemFeatures => s.llvm_features = value.into(),
             WorkspaceText::MinimumOsVersion => s.minimum_os_version = value.into(),
@@ -827,10 +833,10 @@ pub(crate) fn isolated_host_environment(
     (shared, host)
 }
 
-/// Whether a build for `os` with LLVM triple `triple` is a WASI program, which gets
-/// [`WASI_RUNTIME_IMPORT`] added to its sources. Other wasm builds supply their own runtime.
-pub fn wants_wasi_runtime(os: TargetOs, triple: &str) -> bool {
-    os == TargetOs::Wasm && triple.split('-').any(|part| part.starts_with("wasi"))
+/// Whether a build for `target` is a WASI program, which gets [`WASI_RUNTIME_IMPORT`] added to
+/// its sources. Other wasm builds supply their own runtime.
+pub fn wants_wasi_runtime(target: Option<crate::target::Target>) -> bool {
+    target.is_some_and(|t| t.is_wasm() && t.abi == crate::target::TargetAbi::Wasi)
 }
 
 /// `dead_code_elimination` as compile-time code last set it for workspace `id`, which may be
@@ -1038,7 +1044,7 @@ fn step(shared: &SharedWorkspaces, id: i64, budget: &mut Option<u64>) -> Result<
     if stage == Stage::Open {
         let reg = shared.borrow();
         let settings = &reg.list[id as usize].settings;
-        if wants_wasi_runtime(compiler.options.os, &settings.llvm_triple) {
+        if wants_wasi_runtime(settings.llvm_target) {
             pending.push(ProgramSource::String(WASI_RUNTIME_IMPORT.into()));
         }
     }
