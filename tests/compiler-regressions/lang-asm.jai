@@ -630,6 +630,7 @@ test_misc :: () {
         vendor_b: u32;
         vendor_c: u32 = 0;
         vendor_d: u32;
+
         #asm { cpuid maximum, vendor_b, vendor_c, vendor_d; }
         assert(maximum >= 1, "CPUID supports the baseline feature leaf");
         assert((vendor_b | vendor_c | vendor_d) != 0, "CPUID returns a real vendor");
@@ -638,6 +639,7 @@ test_misc :: () {
         repeated_b: u32;
         repeated_c: u32 = 0;
         repeated_d: u32;
+
         #asm { cpuid repeated_maximum, repeated_b, repeated_c, repeated_d; }
         assert(maximum == repeated_maximum && vendor_b == repeated_b &&
                vendor_c == repeated_c && vendor_d == repeated_d,

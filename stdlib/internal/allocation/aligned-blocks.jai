@@ -18,9 +18,11 @@ obtain_contents :: (size: s64, prefix: s64) -> *void {
 
     wide := size >= CACHE_LINE;
     region := c_malloc(cast(u64) (size + prefix + ifx wide then SLACK else 0));
+
     if !region return null;
 
     contents := contents_in(region, prefix, wide);
+
     set_region(contents, region);
 
     return contents;
@@ -43,6 +45,7 @@ regrow_contents :: (contents: *void, size: s64, prefix: s64) -> *void {
     padded := wide || was_at != prefix;
 
     fresh := c_realloc(region, cast(u64) (size + prefix + ifx padded then SLACK else 0));
+
     if !fresh return null;
 
     at := was_at;
@@ -52,6 +55,7 @@ regrow_contents :: (contents: *void, size: s64, prefix: s64) -> *void {
     if at != was_at c_memmove(cast(*u8) fresh + at, cast(*u8) fresh + was_at, cast(u64) size);
 
     result := cast(*u8) fresh + at;
+
     set_region(result, fresh);
 
     return result;

@@ -216,6 +216,7 @@ extended_to_float64 :: (pointer: *void) -> float64 {
         // Bits below the 64-bit significand only decide ties, so they collapse into its last bit.
         if (low & ((cast(u64) 1 << 49) - 1)) != 0 significand |= 1;
         if exponent != 0 significand |= cast(u64) 1 << 63;
+
         has_payload = fraction_high != 0 || low != 0;
     }
 
@@ -231,6 +232,7 @@ extended_to_float64 :: (pointer: *void) -> float64 {
     if significand == 0 return (cast(*float64) *sign_bit).*;
 
     if exponent == 0 exponent = 1;
+
     scale := exponent - 16383 - 63;
 
     // Outside float64's range after the 64-bit significand: overflow or underflow to zero.
