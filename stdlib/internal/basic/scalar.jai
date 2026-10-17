@@ -68,9 +68,18 @@ clamp :: (x: $T, a: T, b: T) -> T #modify {
 } @UseResult
 
 swap :: inline (a: *$T, b: *T) {
+    Swap(a, b);
+}
+
+Swap :: inline (a: *$T, b: *T) {
     t := a.*;
     a.* = b.*;
     b.* = t;
+}
+
+// The two values in exchanged order, for `x, y = swap(x, y)`.
+swap :: inline (a: $T, b: T) -> T, T {
+    return b, a;
 }
 
 to_upper :: (c: u8) -> u8 {

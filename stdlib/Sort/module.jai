@@ -1,4 +1,5 @@
 quick_sort :: Impl.quick_sort;
+bubble_sort :: Impl.bubble_sort;
 compare_floats :: Impl.compare_floats;
 compare_strings :: Impl.compare_strings;
 

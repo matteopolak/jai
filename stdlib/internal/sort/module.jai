@@ -34,6 +34,46 @@ quick_sort :: (array: [] $T, f: (T) -> $R) -> [] T {
     return array;
 }
 
+// Repeated passes that move each larger element toward the end; stops after a pass without
+// exchanges. Stable, and fast only for short or nearly ordered input.
+bubble_sort :: (array: [] $T, f: (T, T) -> $R) -> [] T {
+    end := array.count;
+
+    while end > 1 {
+        last_exchange := 0;
+
+        for i: 1..end - 1 {
+            if f(array[i - 1], array[i]) > 0 {
+                swap(array.data + i - 1, array.data + i);
+                last_exchange = i;
+            }
+        }
+
+        end = last_exchange;
+    }
+
+    return array;
+}
+
+bubble_sort :: (array: [] $T, f: (T) -> $R) -> [] T {
+    end := array.count;
+
+    while end > 1 {
+        last_exchange := 0;
+
+        for i: 1..end - 1 {
+            if f(array[i - 1]) > f(array[i]) {
+                swap(array.data + i - 1, array.data + i);
+                last_exchange = i;
+            }
+        }
+
+        end = last_exchange;
+    }
+
+    return array;
+}
+
 compare_floats :: (a: float, b: float) -> s64 {
     if a < b return -1;
     if a > b return 1;
