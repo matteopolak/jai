@@ -34,10 +34,11 @@ fmt check="false" staged="false" lang="all" jobs=default_jobs *paths:
 [group('check')]
 [arg("fix", long, value="true")]
 [arg("staged", long, value="true")]
+[arg("release", long, value="true")]
 [arg("lang", long, pattern="jai|rust|all")]
 [arg("jobs", long, short="j")]
-lint fix="false" staged="false" lang="all" jobs=default_jobs *paths:
-    {{ py }} tools/dev.py lint -j {{ jobs }} --lang {{ lang }} {{ if fix == "true" { "--fix" } else { "" } }} {{ if staged == "true" { "--staged" } else { "" } }} {{ paths }}
+lint fix="false" staged="false" release="false" lang="all" jobs=default_jobs *paths:
+    {{ py }} tools/dev.py lint -j {{ jobs }} --lang {{ lang }} {{ if release == "true" { "--release" } else { "" } }} {{ if fix == "true" { "--fix" } else { "" } }} {{ if staged == "true" { "--staged" } else { "" } }} {{ paths }}
 
 # Check that the VS Code extension's generated grammar and schemas are current (skipped without node 24).
 [group('check')]
@@ -78,10 +79,10 @@ hooks:
 fetch-upstreams *args:
     {{ py }} tools/fetch_upstreams.py {{ args }}
 
-# Build the browser compiler bundle (wasm32) into artifacts/wasm.
+# Build the browser compiler bundle (wasm32) into target/wasm.
 [group('web')]
 wasm *args:
-    {{ py }} tools/build_scripting_wasm.py --release --output artifacts/wasm {{ args }}
+    {{ py }} tools/build_scripting_wasm.py --release --output target/wasm {{ args }}
 
 # Run an editors/vscode package script (lint, test, build, package, ...) through pnpm.
 [group('web')]

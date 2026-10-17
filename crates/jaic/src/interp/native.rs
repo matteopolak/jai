@@ -167,7 +167,14 @@ impl Library {
             candidates.push(joined(&base, &format!("{file}.{ext}")));
             candidates.push(joined(&base, &format!("lib{file}.{ext}")));
         }
-        let bare = name.strip_prefix("lib").unwrap_or(name);
+        // A name that already carries the library extension (`libstdc++.so.6`, a versioned
+        // soname) is a complete file name: hand it to the loader as written.
+        if file.contains(&format!(".{ext}")) {
+            candidates.push(name.to_string());
+        }
+        // A name with a directory part (`crash-native/portable_crash`) that is not beside the
+        // source is looked up by file name.
+        let bare = file.strip_prefix("lib").unwrap_or(&file);
         for d in library_dirs() {
             candidates.push(d.join(format!("lib{bare}.{ext}")).display().to_string());
         }
@@ -1040,4 +1047,15 @@ fn mask_int(t: Ty, r: u64) -> u64 {
 #[cfg(not(any(target_arch = "x86_64", target_arch = "aarch64")))]
 pub fn call(_addr: u64, _args: &[u64], _sig: &Sig) -> Result<Rets, String> {
     Err("native foreign calls are not available on this platform".into())
+}
+
+#[cfg(all(test, target_os = "linux"))]
+mod library_name_tests {
+    use super::Library;
+
+    /// A versioned soname is a complete file name and loads as written.
+    #[test]
+    fn versioned_soname_opens_verbatim() {
+        assert!(Library::open("libm.so.6", true, "").is_some());
+    }
 }

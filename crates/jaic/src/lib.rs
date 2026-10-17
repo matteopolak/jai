@@ -6,6 +6,7 @@
 pub mod abi;
 pub mod ast;
 pub mod build;
+pub mod builtin_keys;
 pub mod clang;
 pub mod docs;
 pub mod fiber;
@@ -25,6 +26,7 @@ pub mod sema;
 pub mod source;
 pub mod stack_trace;
 pub mod suggest;
+pub mod target;
 pub mod types;
 pub mod wide_float;
 

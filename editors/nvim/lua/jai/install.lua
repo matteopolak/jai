@@ -5,7 +5,7 @@ local toolchain = require('jai.toolchain')
 
 local M = {}
 
-M.REPOSITORY = 'matteopolak/jai'
+M.REPOSITORY = 'matteopolak/jacket'
 M.RELEASES_URL = 'https://github.com/' .. M.REPOSITORY .. '/releases'
 M.TOOLS = { 'jaic', 'jailsp', 'jailint', 'jaifmt' }
 
@@ -25,7 +25,7 @@ function M.asset_for(sysname, machine)
   if not os or not arch then
     return nil
   end
-  return ('jai-%s-%s.%s'):format(os, arch, os == 'windows' and 'zip' or 'tar.gz')
+  return ('jacket-%s-%s.%s'):format(os, arch, os == 'windows' and 'zip' or 'tar.gz')
 end
 
 ---Parses `sha256sum` output: `<hex>  <name>` (or `<hex> *<name>`) per line.

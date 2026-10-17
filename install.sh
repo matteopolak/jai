@@ -1,19 +1,22 @@
 #!/bin/sh
-# Installs the Jai toolchain (jaic, jailsp, jailint, jaifmt) from a GitHub release of
-# https://github.com/matteopolak/jai, verified against the release's SHA256SUMS:
+# Installs Jacket, the Jai toolchain (jaic, jailsp, jailint, jaifmt) from a GitHub release of
+# https://github.com/matteopolak/jacket, verified against the release's SHA256SUMS:
 #
-#   curl -fsSL https://raw.githubusercontent.com/matteopolak/jai/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/matteopolak/jacket/main/install.sh | sh
 #
 # Environment (each JAI_* name also works as JAIC_*; JAI_* wins when both are set):
 #   JAI_VERSION      release to install, e.g. 0.4.0 or v0.4.0 (default: the latest release)
 #   JAI_INSTALL_DIR  where releases are unpacked, one folder per version (default: ~/.local/share/jai)
 #   JAI_BIN_DIR      where the command symlinks go (default: ~/.local/bin)
+#   JAI_BASE_URL     where release assets are fetched from, as <base>/v<version>/<asset> (default:
+#                    https://github.com/matteopolak/jai/releases/download). For mirrors and for
+#                    testing against local archives with a file:// URL; needs JAI_VERSION.
 #
 # Running it again installs the requested (or latest) version, points the symlinks at it and
-# removes the versions it installed before. See docs/tools/package-managers.md.
+# removes the versions it installed before. See docs/tools/releases.md.
 set -eu
 
-REPO="matteopolak/jai"
+REPO="matteopolak/jacket"
 TOOLS="jaic jailsp jailint jaifmt"
 
 say() { printf '%s\n' "$*"; }
@@ -21,7 +24,10 @@ fail() { printf 'error: %s\n' "$*" >&2; exit 1; }
 
 download() { # url dest
     if command -v curl > /dev/null 2>&1; then
-        curl --proto '=https' --tlsv1.2 -fsSL --retry 3 -o "$2" "$1"
+        case "$1" in
+            file://*) curl -fsSL -o "$2" "$1" ;; # only reachable through JAI_BASE_URL
+            *) curl --proto '=https' --tlsv1.2 -fsSL --retry 3 -o "$2" "$1" ;;
+        esac
     elif command -v wget > /dev/null 2>&1; then
         wget -q -O "$2" "$1"
     else
@@ -51,13 +57,6 @@ sha256() {
     else
         fail "neither sha256sum nor shasum is installed, so the download cannot be verified"
     fi
-}
-
-# The release archive's name before -<platform>: jai since 0.4.1, jaic for 0.4.0 and earlier.
-archive_prefix() { # version
-    printf '%s\n' "$1" | awk -F '[.-]' '{
-        if ($1 + 0 > 0 || $2 + 0 > 4 || ($2 + 0 == 4 && $3 + 0 > 0)) print "jai"; else print "jaic"
-    }'
 }
 
 platform() {
@@ -95,7 +94,9 @@ main() {
     plat="$(platform)"
     version="${JAI_VERSION:-${JAIC_VERSION:-}}"
     version="${version#v}"
+    base_url="${JAI_BASE_URL:-${JAIC_BASE_URL:-https://github.com/$REPO/releases/download}}"
     if [ -z "$version" ] || [ "$version" = latest ]; then
+        [ "$base_url" = "https://github.com/$REPO/releases/download" ] || fail "JAI_BASE_URL needs JAI_VERSION"
         version="$(latest_version)"
     fi
     case "$version" in
@@ -103,9 +104,9 @@ main() {
     esac
     install_dir="${JAI_INSTALL_DIR:-${JAIC_INSTALL_DIR:-$HOME/.local/share/jai}}"
     bin_dir="${JAI_BIN_DIR:-${JAIC_BIN_DIR:-$HOME/.local/bin}}"
-    root="$(archive_prefix "$version")-$plat" # the archive's top folder
+    root="jacket-$plat" # the archive's top folder
     archive="$root.tar.gz"
-    base="https://github.com/$REPO/releases/download/v$version"
+    base="${base_url%/}/v$version"
 
     tmp="$(mktemp -d 2> /dev/null || mktemp -d -t jai-install)"
     trap 'rm -rf "$tmp"' EXIT
@@ -114,7 +115,6 @@ main() {
     say "Downloading jai $version ($archive)"
     download "$base/SHA256SUMS" "$tmp/SHA256SUMS" || fail "could not download $base/SHA256SUMS (is $version a release?)"
     expected="$(awk -v f="$archive" '$2 == f || $2 == "*" f { print $1 }' "$tmp/SHA256SUMS")"
-    # Releases up to 0.4.1 have no Intel macOS or Linux arm64 archive.
     [ -n "$expected" ] || fail "jai $version has no $archive (SHA256SUMS lists no build for $plat).
 Install a later version, or build from source: https://github.com/$REPO#install"
     download "$base/$archive" "$tmp/$archive" || fail "could not download $base/$archive"

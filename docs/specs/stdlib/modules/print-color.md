@@ -8,10 +8,9 @@ Only names visible through the module’s exported scope are listed. Declaration
 - `print_color :: (format_string: string, args: .. Any, color: Console_Color, style: Console_Style = .NORMAL, to_standard_error := false)`
 - `Console_Color :: enum_flags u16`
 - `Console_Style :: enum`
-- [USE_ANSI_CODES_ON_WINDOWS || OS != .WINDOWS] `with_console_color :: (color: Console_Color, code: Code, style: Console_Style = .NORMAL, to_standard_error := false) #expand`
-- [USE_ANSI_CODES_ON_WINDOWS || OS != .WINDOWS] `set_console_color :: (color: Console_Color, style: Console_Style = .NORMAL, to_standard_error := false)`
-- [USE_ANSI_CODES_ON_WINDOWS || OS != .WINDOWS] `reset_console_color :: (to_standard_error := false)`
-- [else branch] `with_console_color :: (color: Console_Color, code: Code, style: Console_Style = .NORMAL , to_standard_error := false ) #expand`
+- `with_console_color :: (color: Console_Color, code: Code, style: Console_Style = .NORMAL, to_standard_error := false) #expand`
+- `set_console_color :: (color: Console_Color, style: Console_Style = .NORMAL, to_standard_error := false)`
+- `reset_console_color :: (to_standard_error := false)`
 
 
 ## Public aggregate shapes and enum values
@@ -70,12 +69,12 @@ Console_Style :: enum {
 ```
 ## Behavioral contract
 
-`print_color` writes formatted output using ANSI-style foreground/background color and style flags, selecting stdout or stderr. `with_console_color` is an expansion that brackets caller code with set/reset operations; explicit `set_console_color` and `reset_console_color` are also available. On Windows the implementation uses console attributes; style and stderr selection are ignored by the Windows expansion path, so do not assume ANSI behavior or exact parity there. On Unix-like systems it emits escape sequences and does not detect terminal capability. Depends on `Basic` output and, on Windows, console APIs.
+`print_color` writes formatted output using ANSI-style foreground/background color and style flags, selecting stdout or stderr. `with_console_color` is an expansion that brackets caller code with set/reset operations; explicit `set_console_color` and `reset_console_color` are also available. On Windows the default is native console attributes with a per-stream stack (see `docs/native/windows-console-colors.md`); `USE_ANSI_CODES_ON_WINDOWS` selects escape sequences. On Unix-like systems it emits escape sequences and does not detect terminal capability. Depends on `Basic` output and, on Windows, console APIs.
 
 ## Module parameters
 
 These configure Windows console color handling; they are import-time options, not exported globals.
 
 ```jai
-#module_parameters () (USE_ANSI_CODES_ON_WINDOWS := false, SAVE_RESTORE_ON_WINDOWS := false);
+#module_parameters (USE_ANSI_CODES_ON_WINDOWS := false, SAVE_RESTORE_ON_WINDOWS := false);
 ```

@@ -1,7 +1,7 @@
 name: release
 # Builds jaic, jailsp, jailint and jaifmt for macOS (Apple silicon and Intel), Linux (x86-64 and arm64) and
 # Windows (x86-64 and arm64), optimized with PGO (except Windows arm64) and BOLT on Linux x86-64
-# (tools/build_pgo.py, docs/tools/pgo-and-bolt.md).
+# (tools/build_pgo.py, docs/tools/releases.md).
 # A `v*` tag push builds and publishes the matching compiler version. Manual runs from the default
 # branch also require a tag matching that workflow revision's Cargo version. Historical releases
 # are rebuilt by dispatching each historical workflow from its own tag, preserving its toolchain
@@ -201,8 +201,7 @@ jobs:
         run: |
           exe=""
           if [ "$RUNNER_OS" = "Windows" ]; then exe=".exe"; fi
-          # jai-<platform> since 0.4.1 (0.4.0 and earlier shipped jaic-<platform>).
-          dir="jai-${{ matrix.name }}"
+          dir="jacket-${{ matrix.name }}"
           mkdir -p "$dir"
           out="target/pgo/dist"
           # Symbol tables are about a tenth of the macOS binary (docs/tools/releases.md,
@@ -217,13 +216,11 @@ jobs:
           cp "$out/jaic$exe" "$out/jailsp$exe" "$out/jailint$exe" "$dir/"
           # Bootstrap definitions are packaged with the standard library.
           cp -R stdlib "$dir/stdlib"
-          # The stdlib's own tests and fixtures (stdlib/**/tests) are not part of a module.
-          find "$dir/stdlib" -type d -name tests -prune -exec rm -rf {} +
           cp README.md CHANGELOG.md "$dir/"
           # wgpu-native for the WebGPU module (pinned and checksum-verified, tools/webgpu.json),
-          # where jaic looks for native libraries: <stdlib>/../artifacts/native-libs/<platform>.
+          # where jaic looks for native libraries: <stdlib>/../native-libs/<platform>.
           # The static library is what `jaic` links, the shared one what `jaic -interp` loads.
-          python3 tools/fetch_wgpu_native.py --platform "${{ matrix.name }}" --out "$dir/artifacts/native-libs/${{ matrix.name }}"
+          python3 tools/fetch_wgpu_native.py --platform "${{ matrix.name }}" --out "$dir/native-libs/${{ matrix.name }}"
           # The C libraries the stdlib binds (stb_image, stb_image_write, stb_image_resize,
           # stb_vorbis, lz4, meshoptimizer, pl_mpeg, FreeType, Dear ImGui and MojoShader; rpmalloc
           # on macOS and Linux; SDL2 on Windows x64), built from the pinned, checksum-verified
@@ -234,16 +231,16 @@ jobs:
           if [ "$RUNNER_OS" = "macOS" ]; then
             export MACOSX_DEPLOYMENT_TARGET="${{ matrix.name == 'macos-x64' && '10.12' || '11.0' }}"
           fi
-          python3 tools/build_native_libs.py --platform "${{ matrix.name }}" --out "$dir/artifacts/native-libs/${{ matrix.name }}"
+          python3 tools/build_native_libs.py --platform "${{ matrix.name }}" --out "$dir/native-libs/${{ matrix.name }}"
           unset MACOSX_DEPLOYMENT_TARGET
-          ls -l "$dir/artifacts/native-libs/${{ matrix.name }}"
+          ls -l "$dir/native-libs/${{ matrix.name }}"
           # jaifmt is a Jai program: built by the packaged jaic against the packaged stdlib, -O2
           # with the default checks (not jaifmt/build.jai's unchecked build), no debug files.
           "$dir/jaic$exe" jaifmt/main.jai -O2 -no_debug_info -exe "$dir/jaifmt"
           # SDL3's generated source must satisfy the real repository formatter and linter.
           # No missing dependency or syntax-only lint fallback is accepted by these checks.
           "$dir/jaifmt$exe" --check stdlib/Extensions/SDL3 stdlib/Extensions/SDL3/tests
-          python3 tools/sdl3_gen.py --source artifacts/sdl3/SDL3-3.4.18 --jaifmt "$PWD/$dir/jaifmt$exe" --check
+          python3 tools/sdl3_gen.py --source target/sdl3/SDL3-3.4.18 --jaifmt "$PWD/$dir/jaifmt$exe" --check
           python3 tools/sdl3_lint.py --jailint "$PWD/$dir/jailint$exe" --stdlib "$PWD/$dir/stdlib"
           ls "$dir"
           if [ "$RUNNER_OS" = "Windows" ]; then
@@ -314,11 +311,11 @@ jobs:
           # declared runtime export and artifact hash, then compile/run ABI + headless tests
           # with the packaged static archive, outside the checkout and without system SDL3.
           python3 "$GITHUB_WORKSPACE/tools/test_sdl3.py" --jaic "$jaic" \
-            --native "$GITHUB_WORKSPACE/$PACKAGE_DIR/artifacts/native-libs/${{ matrix.name }}" \
+            --native "$GITHUB_WORKSPACE/$PACKAGE_DIR/native-libs/${{ matrix.name }}" \
             --platform "${{ matrix.name }}" --work "$work/sdl3"
           # Simp and the stb libraries need nothing beyond the archive either: `jaic -interp` loads
           # the packaged shared libraries, and the built executable links the static ones.
-          cp "$GITHUB_WORKSPACE/stdlib/Simp/tests/image.jai" simp-image.jai
+          cp "$GITHUB_WORKSPACE/stdlib/Simp/tests/image.jai" .
           "$jaic" simp-image.jai -interp
           if [ -n "${{ matrix.llvm }}" ]; then
             "$jaic" simp-image.jai -exe simp-image
@@ -327,17 +324,17 @@ jobs:
           # The other shipped libraries, with the stdlib's own runtime tests: FreeType (a BDF font
           # in memory), Dear ImGui (frames with no window), MojoShader (bytecode to GLSL), and on
           # Windows x64 SDL2 (its import library and DLL from the official release).
-          libs=(freetype:bdf-glyph ImGui:headless-frames MojoShader:translate)
-          if [ "${{ matrix.name }}" = "windows-x64" ]; then libs+=(SDL:geometry-timer); fi
-          for entry in "${libs[@]}"; do
-            lib_test="${entry#*:}"
-            cp "$GITHUB_WORKSPACE/stdlib/${entry%%:*}/tests/$lib_test.jai" .
+          libs=(stdlib/freetype/tests/bdf-glyph.jai stdlib/ImGui/tests/headless-frames.jai stdlib/MojoShader/tests/translate.jai)
+          if [ "${{ matrix.name }}" = "windows-x64" ]; then libs+=(stdlib/SDL/tests/geometry-timer.jai); fi
+          for lib_path in "${libs[@]}"; do
+            lib_test=$(basename "$lib_path" .jai)
+            cp "$GITHUB_WORKSPACE/$lib_path" .
             "$jaic" "$lib_test.jai" -interp
             if [ -n "${{ matrix.llvm }}" ]; then
               "$jaic" "$lib_test.jai" -exe "$lib_test"
               # Executables load SDL2.dll from their own directory.
-              if [ -f "$GITHUB_WORKSPACE/$PACKAGE_DIR/artifacts/native-libs/${{ matrix.name }}/SDL2.dll" ]; then
-                cp "$GITHUB_WORKSPACE/$PACKAGE_DIR/artifacts/native-libs/${{ matrix.name }}/SDL2.dll" .
+              if [ -f "$GITHUB_WORKSPACE/$PACKAGE_DIR/native-libs/${{ matrix.name }}/SDL2.dll" ]; then
+                cp "$GITHUB_WORKSPACE/$PACKAGE_DIR/native-libs/${{ matrix.name }}/SDL2.dll" .
               fi
               "./$lib_test$exe"
             fi
@@ -443,8 +440,8 @@ jobs:
           node scripts/pin-toolchain.ts --toolchain-version "$TOOLCHAIN_VERSION" --extension-version "$EDITOR_VERSION" --archives ../../archives
           test "$(node -p 'require("./package.json").version')" = "$EDITOR_VERSION"
           test "$(node -p 'require("./toolchain-checksums.json").version')" = "$TOOLCHAIN_VERSION"
-          pnpm run package -o "jai-vscode-$EDITOR_VERSION.vsix"
-          mkdir -p ../../vsix && mv "jai-vscode-$EDITOR_VERSION.vsix" ../../vsix/
+          pnpm run package -o "jacket-vscode-$EDITOR_VERSION.vsix"
+          mkdir -p ../../vsix && mv "jacket-vscode-$EDITOR_VERSION.vsix" ../../vsix/
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: vscode-extension
@@ -494,15 +491,15 @@ jobs:
             fi
             gh release upload "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --clobber
             if [ "$TAG" = "v$CURRENT_VERSION" ]; then
-              gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title "Jai Toolchain ${TAG#v}" --notes-file notes.md --latest
+              gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title "Jacket ${TAG#v}" --notes-file notes.md --latest
             else
-              gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title "Jai Toolchain ${TAG#v}" --notes-file notes.md
+              gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title "Jacket ${TAG#v}" --notes-file notes.md
             fi
           elif grep -qi 'release not found' release-error.txt; then
             if [ "$TAG" = "v$CURRENT_VERSION" ]; then
-              gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --title "Jai Toolchain ${TAG#v}" --notes-file notes.md --latest --verify-tag
+              gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --title "Jacket ${TAG#v}" --notes-file notes.md --latest --verify-tag
             else
-              gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --title "Jai Toolchain ${TAG#v}" --notes-file notes.md --latest=false --verify-tag
+              gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --title "Jacket ${TAG#v}" --notes-file notes.md --latest=false --verify-tag
             fi
           else
             cat release-error.txt >&2
@@ -546,7 +543,7 @@ jobs:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
         run: |
           if [ -z "$VSCE_PAT" ]; then echo "VSCE_PAT is not set; skipping the Marketplace"; exit 0; fi
-          vsix="$(ls ../../vsix/jai-vscode-*.vsix)"
+          vsix="$(ls ../../vsix/jacket-vscode-*.vsix)"
           # vsce reads the token from VSCE_PAT.
           pnpm exec vsce publish --packagePath "$vsix" --skip-duplicate
 
@@ -584,7 +581,7 @@ jobs:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
         run: |
           if [ -z "$OVSX_PAT" ]; then echo "OVSX_PAT is not set; skipping Open VSX"; exit 0; fi
-          vsix="$(ls ../../vsix/jai-vscode-*.vsix)"
+          vsix="$(ls ../../vsix/jacket-vscode-*.vsix)"
           # The namespace (package.json's publisher) must exist before the first publish. Creating
           # it again fails with "Namespace already exists", which is the state we want.
           if ! out="$(pnpm exec ovsx create-namespace matteopolak -p "$OVSX_PAT" 2>&1)"; then
@@ -595,7 +592,7 @@ jobs:
           fi
           pnpm exec ovsx publish "$vsix" -p "$OVSX_PAT" --skip-duplicate
 
-  # Package managers (docs/tools/package-managers.md). After the GitHub release, the Homebrew
+  # Package managers (docs/tools/releases.md). After the GitHub release, the Homebrew
   # formula is rendered from the tag and the release's own SHA256SUMS
   # by tools/render_packages.py, validated, and published when their secret is set (otherwise the
   # job says it skipped). They run after `publish`, so a failure here never holds up the release.
@@ -640,21 +637,21 @@ jobs:
           fi
           python3 tools/render_packages.py --version "$version" "${source[@]}" --out "$RUNNER_TEMP/packages"
           echo "VERSION=$version" >> "$GITHUB_ENV"
-          cat "$RUNNER_TEMP/packages/homebrew/jai.rb"
+          cat "$RUNNER_TEMP/packages/homebrew/jacket.rb"
       - name: Validate the formula (and, for a release, install and test it)
         run: |
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           brew tap-new --no-git jairelease/local
-          cp "$RUNNER_TEMP/packages/homebrew/jai.rb" "$(brew --repository jairelease/local)/Formula/jai.rb"
+          cp "$RUNNER_TEMP/packages/homebrew/jacket.rb" "$(brew --repository jairelease/local)/Formula/jacket.rb"
           brew trust jairelease/local 2> /dev/null || true
-          brew style jairelease/local/jai
+          brew style jairelease/local/jacket
           if [ -z "$TAG" ]; then
             # The URLs exist only once the release does.
-            brew audit --formula --strict jairelease/local/jai
+            brew audit --formula --strict jairelease/local/jacket
           else
-            brew audit --formula --strict --online jairelease/local/jai
-            brew install --build-from-source jairelease/local/jai
-            brew test jairelease/local/jai
+            brew audit --formula --strict --online jairelease/local/jacket
+            brew install --build-from-source jairelease/local/jacket
+            brew test jairelease/local/jacket
           fi
       # The tap may hold only a README: the first push creates Formula/.
       - name: Push the formula to matteopolak/homebrew-tap
@@ -666,15 +663,18 @@ jobs:
           git clone --depth 1 "https://x-access-token:${TAP_TOKEN}@github.com/matteopolak/homebrew-tap.git" "$RUNNER_TEMP/tap"
           cd "$RUNNER_TEMP/tap"
           mkdir -p Formula
-          cp "$RUNNER_TEMP/packages/homebrew/jai.rb" Formula/jai.rb
-          git add Formula/jai.rb
-          if git diff --cached --quiet; then echo "Formula/jai.rb is already at $VERSION"; exit 0; fi
+          cp "$RUNNER_TEMP/packages/homebrew/jacket.rb" Formula/jacket.rb
+          # The formula was called jai before 0.18.0; the rename lets `brew upgrade` move old installs.
+          git rm -q --ignore-unmatch Formula/jai.rb
+          echo '{ "jai": "jacket" }' > formula_renames.json
+          git add Formula/jacket.rb formula_renames.json
+          if git diff --cached --quiet; then echo "Formula/jacket.rb is already at $VERSION"; exit 0; fi
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-            commit -q -m "jai $VERSION"
+            commit -q -m "jacket $VERSION"
           git push origin HEAD
-          echo "Pushed jai $VERSION to matteopolak/homebrew-tap"
+          echo "Pushed jacket $VERSION to matteopolak/homebrew-tap"
 
-  # The Neovim plugin (editors/nvim) is mirrored to matteopolak/jai.nvim, because vim.pack and
+  # The Neovim plugin (editors/nvim) is mirrored to matteopolak/jacket.nvim, because vim.pack and
   # plugin managers need a repository whose root is the plugin. The mirror's main branch is
   # replaced by the plugin's files with its version and the release's checksums stamped in, and
   # tagged vX.Y.Z. It pushes only when the NVIM_MIRROR_DEPLOY_KEY secret (a write-enabled
@@ -719,14 +719,14 @@ jobs:
               echo "return {"
               echo "  version = '$version',"
               echo "  sha256 = {"
-              awk '$2 ~ /^jai-.*\.(tar\.gz|zip)$/ { printf "    [\047%s\047] = \047%s\047,\n", $2, $1 }' "$RUNNER_TEMP/SHA256SUMS"
+              awk '$2 ~ /^jacket-.*\.(tar\.gz|zip)$/ { printf "    [\047%s\047] = \047%s\047,\n", $2, $1 }' "$RUNNER_TEMP/SHA256SUMS"
               echo "  },"
               echo "}"
             } > lua/jai/checksums.lua
-            grep -c "jai-linux-x64.tar.gz" lua/jai/checksums.lua
+            grep -c "jacket-linux-x64.tar.gz" lua/jai/checksums.lua
             cat lua/jai/checksums.lua
           fi
-      - name: Push to matteopolak/jai.nvim
+      - name: Push to matteopolak/jacket.nvim
         env:
           DEPLOY_KEY: ${{ secrets.NVIM_MIRROR_DEPLOY_KEY }}
         run: |
@@ -740,7 +740,7 @@ jobs:
           ssh-keyscan -t ed25519 github.com > "$known" 2> /dev/null
           ssh-keygen -lf "$known" | grep -q 'SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU' || { echo "unexpected github.com host key"; exit 1; }
           export GIT_SSH_COMMAND="ssh -i $key -o IdentitiesOnly=yes -o UserKnownHostsFile=$known -o StrictHostKeyChecking=yes"
-          git clone git@github.com:matteopolak/jai.nvim.git "$RUNNER_TEMP/mirror"
+          git clone git@github.com:matteopolak/jacket.nvim.git "$RUNNER_TEMP/mirror"
           cd "$RUNNER_TEMP/mirror"
           git checkout -B main
           git rm -rq --ignore-unmatch .
@@ -751,7 +751,7 @@ jobs:
             echo "The mirror already has this content"
           else
             git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-              commit -q -m "jai.nvim $EDITOR_VERSION (toolchain $VERSION)"
+              commit -q -m "jacket.nvim $EDITOR_VERSION (toolchain $VERSION)"
           fi
           if git ls-remote --exit-code --tags origin "refs/tags/v$EDITOR_VERSION" > /dev/null; then
             git fetch -q origin "refs/tags/v$EDITOR_VERSION:refs/tags/v$EDITOR_VERSION"
@@ -765,7 +765,7 @@ jobs:
             git push origin main
           else
             git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-              tag -a "v$EDITOR_VERSION" -m "jai.nvim $EDITOR_VERSION (toolchain $VERSION)"
+              tag -a "v$EDITOR_VERSION" -m "jacket.nvim $EDITOR_VERSION (toolchain $VERSION)"
             git push origin main "v$EDITOR_VERSION"
           fi
-          echo "Pushed jai.nvim $EDITOR_VERSION for toolchain $VERSION to matteopolak/jai.nvim"
+          echo "Pushed jacket.nvim $EDITOR_VERSION for toolchain $VERSION to matteopolak/jacket.nvim"

@@ -15,7 +15,7 @@ fn native_root_foreign_calls_route_without_symbol_name_hints() {
     let provider = dir.join("provider.c");
     std::fs::write(
         &provider,
-        "#include <pthread.h>\nint cleanroom_root_thread(void) { return pthread_main_np(); }\n",
+        "#include <pthread.h>\nint root_thread_probe(void) { return pthread_main_np(); }\n",
     )
     .unwrap();
     let library = dir.join("libmain-route-probe.dylib");
@@ -32,7 +32,7 @@ fn native_root_foreign_calls_route_without_symbol_name_hints() {
         String::from_utf8_lossy(&built.stderr)
     );
     let source = dir.join("main.jai");
-    std::fs::write(&source, "lib :: #library \"main-route-probe\";\nprobe :: () -> s32 #foreign lib \"cleanroom_root_thread\";\nmain :: () -> s32 { return ifx probe() == 1 then 0 else 1; }\n").unwrap();
+    std::fs::write(&source, "lib :: #library \"main-route-probe\";\nprobe :: () -> s32 #foreign lib \"root_thread_probe\";\nmain :: () -> s32 { return ifx probe() == 1 then 0 else 1; }\n").unwrap();
     let output = Command::new(JAIC)
         .arg(&source)
         .arg("-interp")
@@ -798,11 +798,6 @@ fn unsupported_compiler_requests_are_errors() {
     let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("cli-compiler-unsupported");
     std::fs::create_dir_all(&dir).unwrap();
     let cases = [
-        (
-            "backend",
-            "options := get_build_options(w); options.backend = .X64; set_build_options(options, w);",
-            "this compiler has no alternate X64 backend",
-        ),
         (
             "raw-llvm-options",
             "options := get_build_options(w); options.llvm_options.command_line = .[\"-x\"]; set_build_options(options, w);",

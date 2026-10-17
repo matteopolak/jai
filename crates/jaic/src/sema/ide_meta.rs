@@ -23,7 +23,7 @@ const MAX_VARIANTS: usize = 4;
 /// Longest expansion text kept.
 const MAX_TEXT: usize = 64 * 1024;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum IdeExpansionKind {
     /// `#insert`: the code inserted.
     Insert,
@@ -84,8 +84,8 @@ pub struct IdeCallInfo {
     /// Index of the chosen procedure in `signatures`.
     pub active: usize,
     pub args: Vec<IdeArgInfo>,
-    /// Header parameter that takes the format string, when the procedure is print-like: a
-    /// `string` parameter followed by a variadic `Any` one.
+    /// Header parameter that takes the format string, when the procedure is declared
+    /// `@PrintLike`: its `string` parameter followed by a variadic `Any` one.
     pub format_param: Option<usize>,
 }
 
@@ -190,11 +190,8 @@ impl Compiler {
         let Some(ide) = self.ide.as_mut() else {
             return;
         };
-        if let Some(e) = ide
-            .expansions
-            .iter_mut()
-            .find(|e| e.span == span && e.kind == kind)
-        {
+        if let Some(&at) = ide.expansion_index.get(&(span, kind)) {
+            let e = &mut ide.expansions[at];
             if !e.texts.contains(&text) && e.texts.len() < MAX_VARIANTS {
                 e.texts.push(text);
             }
@@ -206,6 +203,8 @@ impl Compiler {
         if ide.expansions.len() >= MAX_EXPANSIONS {
             return;
         }
+        ide.expansion_index
+            .insert((span, kind), ide.expansions.len());
         ide.expansions.push(IdeExpansion {
             span,
             kind,
@@ -750,6 +749,7 @@ impl Compiler {
                 && matches!(&w[1].ty, Some(ast::Expr { kind: ast::ExprKind::Ident(n), .. }) if n.as_str() == "Any");
             is_string && any_args
         });
+        let format_param = format_param.filter(|_| self.is_print_like(call.chosen));
         let args = call
             .args
             .iter()

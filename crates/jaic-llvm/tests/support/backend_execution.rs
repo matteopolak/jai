@@ -1,17 +1,8 @@
 //! Execute original scalar-result fixtures on native and WASM64, O0/O2.
+use crate::common::run;
 use jaic::sema::{Compiler, Options, ProgramSource, TargetCpu, TargetOs, VirtualFs};
 use jaic_llvm::{OptLevel, emit_object};
 use std::{process::Command, rc::Rc};
-
-fn run(command: &mut Command) {
-    let output = command.output().expect("required backend test tool");
-    assert!(
-        output.status.success(),
-        "status {:?}: {}",
-        output.status.code(),
-        String::from_utf8_lossy(&output.stderr)
-    );
-}
 
 pub fn execute(
     name: &str,
@@ -22,9 +13,8 @@ pub fn execute(
 ) {
     for wasm in [false, true] {
         for optimized in [false, true] {
-            let dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(format!(
-                "../../target/cleanroom-execution/{name}-{wasm}-{optimized}"
-            ));
+            let dir = std::path::PathBuf::from(env!("CARGO_TARGET_TMPDIR"))
+                .join(format!("execution/{name}-{wasm}-{optimized}"));
             std::fs::create_dir_all(&dir).unwrap();
             let mut options = Options::host();
             options.runtime_support = false;
@@ -55,7 +45,7 @@ pub fn execute(
             emit_object(
                 &c.program,
                 &jaic_llvm::Options {
-                    target: wasm.then(|| "wasm64-unknown-unknown".into()),
+                    target: wasm.then(|| jaic::target::Target::wasm_module()),
                     opt_level: if optimized {
                         OptLevel::O2
                     } else {

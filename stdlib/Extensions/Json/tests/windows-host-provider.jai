@@ -1,7 +1,5 @@
 Json :: #import "Extensions/Json";
-// The import selects the Windows host provider; nothing in the program names it.
-// jailint: allow(unused_import)
-Tls :: #import "Extensions/Tls";
+Tls :: #import "Extensions/Tls"; // jailint: allow(unused_import) the import pulls in the provider under test
 
 Value :: struct {
     label: string;

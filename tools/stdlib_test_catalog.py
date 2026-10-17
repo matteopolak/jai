@@ -62,6 +62,8 @@ ROW_KEYS = frozenset(
         "input",
         "fixture_libraries",
         "requires_display",
+        # macOS GUI programs run one at a time (stdlib_runtime.py WINDOW_LEASE).
+        "window_lease",
         "clipboard_guard",
         "source_check_only",
         "numerics_target_source",
@@ -149,6 +151,8 @@ def validated_entries(root=ROOT):
             raise ValueError("duplicate test ID: " + case["id"])
         by_id[case["id"]] = case
         apply_numerics_capabilities(case)
+        if "macos" in (case.get("required_os") or ()):
+            case["window_lease"] = True
         if not case["path"].is_file():
             raise ValueError("missing test source: " + str(case["path"]))
         if not case["path"].resolve().is_relative_to(root.resolve()):

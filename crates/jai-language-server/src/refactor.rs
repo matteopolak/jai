@@ -16,7 +16,7 @@ use jaic::ast::{
     StmtKind as S, UnOp,
 };
 use jaic::intern::Sym;
-use jaic::source::FileId;
+use jaic::source::{DiagnosticKind, FileId};
 use jailint::syntax::{Node, walk};
 use std::cell::OnceCell;
 use std::collections::{HashMap, HashSet};
@@ -45,9 +45,17 @@ impl Session {
         let Ok(doc) = self.document(uri) else {
             return Vec::new();
         };
+        let incomplete: Vec<_> = self
+            .with_semantic(uri, &doc.text, |analysis, path| {
+                Some(analysis.check_error_spans(path, DiagnosticKind::IncompleteSwitch))
+            })
+            .unwrap_or_default()
+            .into_iter()
+            .filter_map(|(start, end)| self.range_of(uri, Span::new(start, end)))
+            .collect();
         let mut out = Vec::new();
         for diagnostic in self.check_diagnostics(uri) {
-            if !diagnostic.message.starts_with("#complete switch on") {
+            if !incomplete.contains(&diagnostic.range) {
                 continue;
             }
             let (Ok(a), Ok(b)) = (
@@ -64,9 +72,9 @@ impl Session {
             }
             // The error is on the switched value, which the refactoring reads as "in the switch".
             let fill = self
-                .refactor_actions(uri, a, a)
+                .refactor_actions(uri, a, a, Pick::FillSwitch)
                 .into_iter()
-                .find(|action| action.title.starts_with("Add missing cases"));
+                .next();
             if let Some(mut fix) = fill {
                 fix.kind = Some("quickfix");
                 fix.is_preferred = true;
@@ -77,12 +85,14 @@ impl Session {
         out
     }
 
-    /// The refactorings that apply to the selection `start..end` (bytes) of `uri`.
+    /// The refactorings of the `pick` kinds that apply to the selection `start..end` (bytes) of
+    /// `uri`.
     pub(crate) fn refactor_actions(
         &self,
         uri: &DocumentUri,
         start: usize,
         end: usize,
+        pick: Pick,
     ) -> Vec<CodeAction> {
         let Ok(doc) = self.document(uri) else {
             return Vec::new();
@@ -120,15 +130,31 @@ impl Session {
             types: OnceCell::new(),
         };
         let mut out = Vec::new();
-        cx.extract_variable(&mut out);
-        cx.extract_procedure(&mut out);
-        cx.inline_variable(&mut out);
-        cx.fill_switch(&mut out);
-        cx.fill_struct(&mut out);
-        cx.ifx_to_if(&mut out);
-        cx.if_to_ifx(&mut out);
+        if pick != Pick::FillSwitch {
+            cx.extract_variable(&mut out);
+            cx.extract_procedure(&mut out);
+            cx.inline_variable(&mut out);
+        }
+        if pick != Pick::AllButFillSwitch {
+            cx.fill_switch(&mut out);
+        }
+        if pick != Pick::FillSwitch {
+            cx.fill_struct(&mut out);
+            cx.ifx_to_if(&mut out);
+            cx.if_to_ifx(&mut out);
+        }
         out
     }
+}
+
+/// Which refactorings `refactor_actions` offers.
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Pick {
+    All,
+    /// Only "Add missing cases" of a switch.
+    FillSwitch,
+    /// Everything but "Add missing cases", when the quick fix already offers it.
+    AllButFillSwitch,
 }
 
 struct Root<'a> {
@@ -791,25 +817,51 @@ impl<'a> Cx<'a> {
             return;
         }
         let (sa, sb) = stmt_extent(self.text, stmt);
+        if self.text.get(sb.saturating_sub(1)..sb) != Some("}") {
+            return;
+        }
         // New cases go before a `case;` that takes the rest, else before the closing brace.
         let before = match cases.iter().find(|c| c.values.is_empty()) {
             Some(default) => default.span.start as usize,
-            None => sb.saturating_sub(1),
+            None => sb - 1,
         };
-        if self.text.get(sb.saturating_sub(1)..sb) != Some("}") || !starts_line(self.text, before) {
-            return;
-        }
+        let outer = indent_at(self.text, sa).to_string();
         let indent = match cases.first() {
-            Some(c) => indent_at(self.text, c.span.start as usize).to_string(),
-            None => format!("{}{}", indent_at(self.text, sa), self.unit),
+            Some(c) if starts_line(self.text, c.span.start as usize) => {
+                indent_at(self.text, c.span.start as usize).to_string()
+            }
+            _ => format!("{outer}{}", self.unit),
         };
-        let at = line_start(self.text, before);
-        let text: String = missing
-            .iter()
-            .map(|n| format!("{indent}case .{n};{}", self.nl))
-            .collect();
+        let nl = self.nl;
+        let edit = if starts_line(self.text, before) {
+            // A line of its own: whole lines go in above it.
+            let at = line_start(self.text, before);
+            let text: String = missing
+                .iter()
+                .map(|n| format!("{indent}case .{n};{nl}"))
+                .collect();
+            self.edit(at, at, text)
+        } else {
+            // Something shares the line (`{ }`, `{ case .A; }`): break the line before `before`
+            // and put what follows on a line of its own, indented like the line it was on.
+            let keep = if before == sb - 1 {
+                &outer
+            } else {
+                &indent
+            };
+            let from = before
+                - (self.text[..before].len()
+                    - self.text[..before].trim_end_matches([' ', '\t']).len());
+            let mut text: String = missing
+                .iter()
+                .map(|n| format!("{nl}{indent}case .{n};"))
+                .collect();
+            text.push_str(nl);
+            text.push_str(keep);
+            self.edit(from, before, text)
+        };
         let title = format!("Add missing cases ({})", missing.len());
-        out.extend(self.action(title, REWRITE, vec![self.edit(at, at, text)]));
+        out.extend(self.action(title, REWRITE, vec![edit]));
     }
 
     /// The members of the enum or struct at `at`.

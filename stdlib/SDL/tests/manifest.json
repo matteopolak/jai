@@ -38,6 +38,7 @@
     ],
     "required_capabilities": [
       "native SDL SDK and platform services"
-    ]
+    ],
+    "requires_display": true
   }
 ]

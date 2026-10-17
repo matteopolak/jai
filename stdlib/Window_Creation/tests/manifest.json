@@ -15,7 +15,8 @@
     ],
     "required_capabilities": [
       "native SDK, OS or graphics services"
-    ]
+    ],
+    "window_lease": true
   },
   {
     "name": "input-native-events",
@@ -25,7 +26,8 @@
     ],
     "required_capabilities": [
       "native SDK, OS or graphics services"
-    ]
+    ],
+    "window_lease": true
   },
   {
     "name": "macos-context-reopen",
@@ -36,7 +38,8 @@
     ],
     "required_capabilities": [
       "native SDK, OS or graphics services"
-    ]
+    ],
+    "window_lease": true
   },
   {
     "name": "macos-events",

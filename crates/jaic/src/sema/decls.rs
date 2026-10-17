@@ -11,6 +11,7 @@ pub struct LibraryInfo {
     pub ir: usize,
 }
 
+
 impl Compiler {
     /// Resolve an entity to its value/storage, checking it on first use.
     pub fn resolve_entity(&mut self, id: EntityId) -> Result<Resolved> {
@@ -148,31 +149,13 @@ impl Compiler {
     fn target_constant(&mut self, sym: Sym, span: Span) -> Result<Resolved> {
         let (host_os, host_cpu) = compiler_host();
         let (enum_name, member) = match sym.as_str() {
-            "OS" | "BUILD_OS" => (
+            "OS" => (
                 "Operating_System_Tag",
-                match if sym.as_str() == "BUILD_OS" {
-                    host_os
-                } else {
-                    self.options.os
-                } {
-                    TargetOs::Windows => "WINDOWS",
-                    TargetOs::Linux => "LINUX",
-                    TargetOs::MacOS => "MACOS",
-                    TargetOs::Wasm => "WASM",
-                },
+                crate::target::os_member(self.options.os),
             ),
-            "CPU" | "BUILD_CPU" => (
-                "CPU_Tag",
-                match if sym.as_str() == "BUILD_CPU" {
-                    host_cpu
-                } else {
-                    self.options.cpu
-                } {
-                    TargetCpu::X64 => "X64",
-                    TargetCpu::Arm64 => "ARM64",
-                    TargetCpu::Wasm => "CUSTOM",
-                },
-            ),
+            "BUILD_OS" => ("Operating_System_Tag", crate::target::os_member(host_os)),
+            "CPU" => ("CPU_Tag", crate::target::cpu_member(self.options.cpu)),
+            "BUILD_CPU" => ("CPU_Tag", crate::target::cpu_member(host_cpu)),
             "TEMPORARY_STORAGE_SIZE" => {
                 self.note_runtime_storage_dependencies(&[self.options.temporary_storage_size]);
                 return Ok(Resolved::Const {
@@ -373,7 +356,8 @@ impl Compiler {
                 }
             }
         } else {
-            self.eval_const(scope, value, expected)?
+            let what = "constant declaration needs a constant value";
+            self.eval_const_as(scope, value, expected, Some(what))?
         };
         match op.without_callable() {
             Operand::Type(t) => Ok(Resolved::Const {
@@ -532,14 +516,14 @@ impl Compiler {
         ty: TypeId,
         span: Span,
     ) -> Result<Resolved> {
-        if foreign.library.is_none() && name.as_str() == "__jaic_build_directory" {
+        if foreign.library.is_none() && name.as_str() == super::runtime_info::BUILD_DIRECTORY {
             let global = self.build_directory_global();
             return Ok(Resolved::Global {
                 storage: ir::Storage::Data(global),
                 ty,
             });
         }
-        if foreign.library.is_none() && name.as_str() == "__runtime_info" {
+        if foreign.library.is_none() && name.as_str() == super::runtime_info::RUNTIME_INFO {
             let global = self.runtime_info_global(span)?;
             return Ok(Resolved::Global {
                 storage: ir::Storage::Data(global),
@@ -690,7 +674,19 @@ impl Compiler {
     }
 
     pub fn eval_static_condition(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<bool> {
-        let holds = self.static_condition(scope, expr);
+        self.eval_static_condition_as(scope, expr, Some("#if condition must be a constant"))
+    }
+
+    /// `eval_static_condition`, with `what` starting the error for a variable read (`None`
+    /// allows variables: a `#assert` executes its condition, so it may read what compile-time
+    /// code wrote).
+    pub fn eval_static_condition_as(
+        &mut self,
+        scope: ScopeId,
+        expr: &ast::Expr,
+        what: Option<&'static str>,
+    ) -> Result<bool> {
+        let holds = self.static_condition(scope, expr, what);
         if self.ide.is_some()
             && let Ok(holds) = holds
         {
@@ -699,8 +695,13 @@ impl Compiler {
         holds
     }
 
-    fn static_condition(&mut self, scope: ScopeId, expr: &ast::Expr) -> Result<bool> {
-        match self.eval_const(scope, expr, Some(TypeId::BOOL))? {
+    fn static_condition(
+        &mut self,
+        scope: ScopeId,
+        expr: &ast::Expr,
+        what: Option<&'static str>,
+    ) -> Result<bool> {
+        match self.eval_const_as(scope, expr, Some(TypeId::BOOL), what)? {
             Operand::Const {
                 value: Value::Bool(b),
                 ..
@@ -744,8 +745,26 @@ impl Compiler {
         expr: &ast::Expr,
         expected: Option<TypeId>,
     ) -> Result<Operand> {
+        self.eval_const_as(
+            scope,
+            expr,
+            expected,
+            Some("this must be a constant expression"),
+        )
+    }
+
+    /// `eval_const`, with `what` starting the error for a variable read (`None` allows
+    /// variables, whose values are then read at compile time).
+    fn eval_const_as(
+        &mut self,
+        scope: ScopeId,
+        expr: &ast::Expr,
+        expected: Option<TypeId>,
+        what: Option<&'static str>,
+    ) -> Result<Operand> {
         let file = self.scope_file(scope);
         let mut f = self.thunk_ctx(ir::FuncOrigin::ConstInit, file);
+        f.constant_only = what;
         // Runtime locals of the enclosing procedure are not visible to constants.
         let scope = self.thunk_scope(scope);
         let op = self.check_expr(&mut f, scope, expr, expected)?;
@@ -797,6 +816,7 @@ impl Compiler {
         };
         let file = self.scope_file(scope);
         let mut f = self.thunk_ctx(ir::FuncOrigin::ConstInit, file);
+        f.constant_only = Some("constant declaration needs a constant value");
         let scope = self.thunk_scope(scope);
         let op = self.check_expr(&mut f, scope, expr, None)?;
         let value = match &op {
@@ -824,7 +844,7 @@ impl Compiler {
         expr: &ast::Expr,
         expected: Option<TypeId>,
     ) -> Result<Operand> {
-        self.eval_const(scope, expr, expected)
+        self.eval_const_as(scope, expr, expected, None)
     }
 }
 

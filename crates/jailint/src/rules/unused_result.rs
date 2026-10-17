@@ -1,76 +1,18 @@
 //! `unused_result`: `trim(line);`, `to_upper_copy(name);`, `min(a, b);` as statements.
 //!
-//! These library procedures only compute a value: they do not change their arguments. Calling
+//! These procedures only compute a value: they do not change their arguments. Calling
 //! one as a statement does nothing (or leaks the copy it made), and the usual intent was to
 //! update the argument: `line = trim(line);`.
 //!
-//! Fires on an expression statement that calls one of a fixed list of value-returning
-//! procedures from `Basic`, `String` and `Math` (checked by what the name resolved to, so a
-//! program's own `trim` is not affected), when the call returns a value and no argument is a
-//! pointer (`normalize(*v)` normalizes in place).
-use super::{calls_library, finding, pure};
+//! Fires on an expression statement that calls a procedure declared with the note
+//! `@UseResult` (the library marks its value-returning `String`, `Basic` and `Math`
+//! procedures; a program marks its own the same way), when the call returns a value and no
+//! argument is a pointer (`normalize(*v)` normalizes in place).
+use super::{calls_noted, finding, pure};
 use crate::Finding;
 use crate::syntax::{Cx, Node, root_ident, walk};
 use jaic::ast::{ExprKind as E, StmtKind as S};
 use jaic::types::{TypeId, TypeKind};
-
-const MODULES: &[&str] = &["Basic", "String", "Math"];
-
-/// Procedures whose only effect is their result (or an allocation for it).
-const PURE: &[&str] = &[
-    // String
-    "trim",
-    "trim_left",
-    "trim_right",
-    "to_lower_copy",
-    "to_upper_copy",
-    "slice",
-    "join",
-    "replace",
-    "split",
-    "path_strip_extension",
-    "path_filename",
-    "path_extension",
-    "begins_with",
-    "ends_with",
-    "contains",
-    "compare",
-    "equal",
-    "find_index_from_left",
-    "find_index_from_right",
-    // Basic
-    "copy_string",
-    "sprint",
-    "tprint",
-    "to_lower",
-    "to_upper",
-    "is_digit",
-    "is_alpha",
-    "is_alnum",
-    "is_space",
-    "string_to_int",
-    "string_to_float",
-    "to_integer",
-    "array_copy",
-    // Math (and Basic's min/max/clamp)
-    "min",
-    "max",
-    "clamp",
-    "abs",
-    "sqrt",
-    "sin",
-    "cos",
-    "tan",
-    "floor",
-    "ceil",
-    "round",
-    "lerp",
-    "normalize",
-    "unit_vector",
-    "length",
-    "dot",
-    "cross",
-];
 
 pub(crate) fn check(cx: &Cx, out: &mut Vec<Finding>) {
     if cx.generated() {
@@ -96,7 +38,7 @@ pub(crate) fn check(cx: &Cx, out: &mut Vec<Finding>) {
                 return true;
             };
             if chain.iter().any(|a| matches!(a, Node::Expr(_)))
-                || !calls_library(cx, callee, MODULES, PURE)
+                || !calls_noted(cx, callee, "UseResult")
             {
                 return true;
             }

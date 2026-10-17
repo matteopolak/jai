@@ -22,6 +22,8 @@ use crate::project::{self, CONFIG_FILE, INFERRED_ENTRIES, ProjectConfig};
 use crate::semantic::Environment;
 use crate::session::Session;
 use jaic::sema::TargetOs;
+use std::cell::RefCell;
+use std::collections::HashMap;
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
@@ -63,6 +65,13 @@ pub(crate) struct Module {
 pub(crate) struct Index {
     /// Module folders found for a program root (`modules.rs`), with the files they were read from.
     pub(crate) import_dirs: BTreeMap<PathBuf, (Vec<PathBuf>, Vec<PathBuf>)>,
+    /// What each build metaprogram did when it last ran to the end (`semantic::BuildFacts`),
+    /// by its canonical path. Where a metaprogram has an entry here, discovery follows it
+    /// instead of reading the metaprogram's text.
+    pub(crate) builds: BTreeMap<PathBuf, crate::semantic::BuildFacts>,
+    /// The build files run to see what they build, with a hash of everything they were run
+    /// from: a metaprogram is run again only after that changes.
+    pub(crate) probed: BTreeMap<PathBuf, u64>,
     stdlib: Option<(PathBuf, Rc<Vec<Module>>)>,
     module_dirs: BTreeMap<PathBuf, Rc<Vec<Module>>>,
     /// Scans of files read from the environment.
@@ -151,6 +160,9 @@ struct Program {
     dir: PathBuf,
     /// The project's entry files: never offered for `#load`.
     entries: BTreeSet<PathBuf>,
+    /// `jai.toml`'s `build_files` that exist, when no entry's loads reach the document: one of
+    /// them may build it in a way only running it shows (a computed path).
+    unattributed: Vec<PathBuf>,
     /// Folders of user modules, searched in order.
     module_dirs: Vec<PathBuf>,
     os: TargetOs,
@@ -158,9 +170,39 @@ struct Program {
 }
 
 /// Files as the server sees them: open documents over the environment's file system.
+/// Made for one request: the file system is taken not to change while it lives.
 pub(crate) struct Sources<'a> {
     pub(crate) env: &'a Environment,
     pub(crate) open: BTreeMap<PathBuf, &'a str>,
+    /// `canonical_key` of the paths asked about, each a few file system calls.
+    keys: RefCell<HashMap<PathBuf, PathBuf>>,
+}
+
+impl Session {
+    /// The open documents and lint configurations over the file system of `env`.
+    pub(crate) fn sources<'a>(&'a self, env: &'a Environment) -> Sources<'a> {
+        let keys = RefCell::new(HashMap::default());
+        let open = self
+            .documents
+            .iter()
+            .chain(&self.lint_configs)
+            .map(|(u, d)| (memo_key(&keys, env, Path::new(u.path())), d.text.as_str()))
+            .collect();
+        Sources {
+            env,
+            open,
+            keys,
+        }
+    }
+}
+
+fn memo_key(keys: &RefCell<HashMap<PathBuf, PathBuf>>, env: &Environment, path: &Path) -> PathBuf {
+    if let Some(key) = keys.borrow().get(path) {
+        return key.clone();
+    }
+    let key = canonical_key(env, path);
+    keys.borrow_mut().insert(path.to_path_buf(), key.clone());
+    key
 }
 
 fn hash(text: &str) -> u64 {
@@ -180,7 +222,9 @@ pub(crate) fn canonical_key(env: &Environment, path: &Path) -> PathBuf {
     for parent in path.ancestors().skip(1) {
         if env.fs.is_dir(parent) {
             let suffix = path.strip_prefix(parent).expect("ancestor prefix");
-            return crate::document::path_key(&env.fs.canonical(parent).join(suffix));
+            return crate::document::path_key(
+                &crate::document::file_key(&*env.fs, parent).join(suffix),
+            );
         }
     }
     crate::document::path_key(&canonical)
@@ -188,7 +232,7 @@ pub(crate) fn canonical_key(env: &Environment, path: &Path) -> PathBuf {
 
 impl Sources<'_> {
     pub(crate) fn key(&self, path: &Path) -> PathBuf {
-        canonical_key(self.env, path)
+        memo_key(&self.keys, self.env, path)
     }
 
     pub(crate) fn read(&self, path: &Path) -> Option<String> {
@@ -266,10 +310,16 @@ impl Sources<'_> {
             for load in &scan.loads {
                 pending.push(project::normalize(&dir.join(&load.path)));
             }
-            // What a build metaprogram compiles belongs to its program: relative to the
-            // metaprogram's folder, where `set_working_directory(#filepath)` usually puts it.
-            for build in &scan.builds {
-                pending.push(project::normalize(&dir.join(build)));
+            // What a build metaprogram compiles belongs to its program. After a run, the files
+            // it added; before the first run (or without a compile), the literal paths of its
+            // `add_build_file` calls, relative to the metaprogram's folder, where
+            // `set_working_directory(#filepath)` usually puts it.
+            if let Some(facts) = index.builds.get(&file) {
+                pending.extend(facts.programs.iter().flat_map(|p| p.files.iter().cloned()));
+            } else {
+                for build in &scan.builds {
+                    pending.push(project::normalize(&dir.join(build)));
+                }
             }
         }
         seen
@@ -522,6 +572,14 @@ impl Sources<'_> {
                 }
             }
         }
+        let unattributed: Vec<PathBuf> = match (&found, &config) {
+            (None, Some((_, config))) if !config.build_files.is_empty() => entries
+                .iter()
+                .filter(|e| self.is_file(e))
+                .cloned()
+                .collect(),
+            _ => Vec::new(),
+        };
         let (root, closure) = match found {
             Some(found) => found,
             None => {
@@ -594,6 +652,7 @@ impl Sources<'_> {
             closure,
             dir,
             entries,
+            unattributed,
             module_dirs,
             os: options.os,
             stdlib,
@@ -603,12 +662,7 @@ impl Sources<'_> {
 
 /// Whether a module asserting `only_os` builds for `os`.
 fn builds_for(only_os: &Option<Vec<String>>, os: TargetOs) -> bool {
-    let name = match os {
-        TargetOs::Windows => "WINDOWS",
-        TargetOs::Linux => "LINUX",
-        TargetOs::MacOS => "MACOS",
-        TargetOs::Wasm => "WASM",
-    };
+    let name = jaic::target::os_member(os);
     only_os
         .as_ref()
         .is_none_or(|targets| targets.iter().any(|t| t == name))
@@ -627,22 +681,59 @@ impl Session {
     /// Auto-import items for `prefix` at the cursor of `uri` (whose text is `text`), leaving out
     /// `visible` names; and whether the list is incomplete (more matches, or too short a prefix
     /// yet, so the client asks again as the word grows).
+    /// The `jai.toml` build files whose run is still unknown and could attribute `uri` to a
+    /// program, with a hash of what each would be run from (see `Index::probed`).
+    pub(crate) fn unrecorded_builds(&self, uri: &DocumentUri) -> Vec<(PathBuf, u64)> {
+        let Some(env) = self.environment.as_ref() else {
+            return Vec::new();
+        };
+        let sources = self.sources(env);
+        let mut index = self.index.borrow_mut();
+        let program = sources.program(&mut index, Path::new(uri.path()), &self.workspace_folders);
+        let mut out = Vec::new();
+        for entry in program.unattributed {
+            if index.builds.contains_key(&entry) {
+                continue;
+            }
+            // Everything the run reads: the metaprogram, what it loads, the settings file.
+            let mut files: Vec<PathBuf> = sources.closure(&mut index, &entry).into_iter().collect();
+            if let Some((folder, _)) = sources.config(&mut index, &entry) {
+                files.push(folder.join(CONFIG_FILE));
+            }
+            let mut texts = String::new();
+            for file in files {
+                texts.push_str(&file.to_string_lossy());
+                texts.push('\0');
+                texts.push_str(&sources.read(&file).unwrap_or_default());
+                texts.push('\0');
+            }
+            let hash = hash(&texts);
+            if index.probed.get(&entry) != Some(&hash) {
+                out.push((entry, hash));
+            }
+        }
+        out
+    }
+
     /// The entry file of the project program `uri` belongs to (`jai.toml`'s `build_files`, an
     /// inferred entry, or the file that loads it), read from disk and the open documents.
     pub(crate) fn project_root(&self, uri: &DocumentUri) -> Option<PathBuf> {
         let env = self.environment.as_ref()?;
-        let sources = Sources {
-            env,
-            open: self
-                .documents
-                .iter()
-                .chain(&self.lint_configs)
-                .map(|(u, d)| (canonical_key(env, Path::new(u.path())), d.text.as_str()))
-                .collect(),
-        };
+        let sources = self.sources(env);
         let mut index = self.index.borrow_mut();
         let program = sources.program(&mut index, Path::new(uri.path()), &self.workspace_folders);
         Some(program.root)
+    }
+
+    /// `root` compiles other files by running a build metaprogram (`add_build_file("x", w)`),
+    /// which an untrusted workspace does not: those files are compiled as their own programs.
+    pub(crate) fn is_build_metaprogram(&self, root: &Path) -> bool {
+        let Some(env) = self.environment.as_ref() else {
+            return false;
+        };
+        let sources = self.sources(env);
+        let mut index = self.index.borrow_mut();
+        !sources.scan(&mut index, root).builds.is_empty()
     }
 
     /// Top-level declarations of the project's `.jai` files that are not open, whose name
@@ -657,15 +748,7 @@ impl Session {
         let Some(env) = self.environment.as_ref().filter(|_| room > 0) else {
             return Vec::new();
         };
-        let sources = Sources {
-            env,
-            open: self
-                .documents
-                .iter()
-                .chain(&self.lint_configs)
-                .map(|(u, d)| (canonical_key(env, Path::new(u.path())), d.text.as_str()))
-                .collect(),
-        };
+        let sources = self.sources(env);
         let mut index = self.index.borrow_mut();
         let mut folders: BTreeSet<PathBuf> = self.workspace_folders.iter().cloned().collect();
         for uri in self.documents.keys() {
@@ -744,15 +827,7 @@ impl Session {
         if prefix.chars().count() < MIN_PREFIX {
             return (Vec::new(), true);
         }
-        let sources = Sources {
-            env,
-            open: self
-                .documents
-                .iter()
-                .chain(&self.lint_configs)
-                .map(|(u, d)| (canonical_key(env, Path::new(u.path())), d.text.as_str()))
-                .collect(),
-        };
+        let sources = self.sources(env);
         let file = sources.key(Path::new(uri.path()));
         let here = file.parent().unwrap_or(Path::new("/")).to_path_buf();
         let lower = prefix.to_lowercase();

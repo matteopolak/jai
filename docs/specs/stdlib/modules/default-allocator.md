@@ -147,6 +147,8 @@ The optimized allocator branch is selected for X64 except iOS, and for Nintendo 
 
 With argument validation enabled, optimized allocation and resize requests at or above the limit described above return null. Allocation failure otherwise returns null; no stronger failure guarantee is documented. Pointers must be released with the compatible allocator and are invalid after release. `unsafe_reset` is intended only in a child process after `fork`, to clear inherited lock state; its fallback implementation is a no-op.
 
+Both branches start a block on a 64-byte boundary when it is 64 bytes or larger, and otherwise keep malloc's alignment, so `New` of a type declared `#align 64` (whose size is a multiple of 64) is aligned and freed with `free` like any other block. Each block is carved out of one C allocation with the C pointer stored in the word before the contents (`stdlib/internal/allocation/aligned-blocks.jai`); only malloc, realloc, memmove and free are used so that compile-time code of a cross build works on every host. A block that is resized to 64 bytes or more is moved onto a boundary; one that shrinks keeps its place. Alignments above 64 are not provided.
+
 In the standard optimized implementation, `global_statistics` returns the documented dummy aggregate, while `heap_statistics` reports the heap’s cached size/span byte counts. The separate statistics-enabled variant adds the listed counter fields; counters conditioned on `ENABLE_STATISTICS` have no values when that option is disabled. The API is tied to the target operating system’s virtual-memory and C runtime facilities.
 
 

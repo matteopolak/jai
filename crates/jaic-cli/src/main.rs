@@ -1,9 +1,13 @@
 //! `jaic` command line: `jaic [options] file.jai [options] [+Plugin ...] [- metaprogram args] [-- program args]`.
 use jaic::build::{BuildEnv, BuildSettings, MainOverrides, OutputBackend, OutputType, Workspaces};
+#[cfg(feature = "llvm")]
+use jaic::builtin_keys::WorkspaceFlag;
+use jaic::builtin_keys::{BitcodeOptimization, MachineCodeOptimization};
 use jaic::interp::{NativeHost, SandboxHost, SharedHost};
 use jaic::sema::{
     Compiler, DeadCode, FileSystem, NativeFs, Options, ProgramSource, TargetCpu, TargetOs,
 };
+use jaic::target::Target;
 use std::cell::RefCell;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
@@ -13,6 +17,8 @@ use std::rc::Rc;
 /// costs one relaxed load per call.
 #[global_allocator]
 static ALLOCATOR: jaic::memory_limit::CountingAllocator = jaic::memory_limit::CountingAllocator;
+
+mod crash_runtime;
 
 /// `-timings`: wall time per compiler phase, printed to stderr when the command ends.
 mod timings {
@@ -65,25 +71,40 @@ fn stdlib_dir() -> PathBuf {
     jaic::stdlib_dir(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../stdlib"))
 }
 
-/// Where `tools/build_native_libs.py` puts third-party libraries for this host, or the
-/// `JAIC_NATIVE_LIBS` path list.
+/// Where `tools/build_native_libs.py` (or a release package) puts third-party libraries for this
+/// host, or the `JAIC_NATIVE_LIBS` path list.
 fn native_lib_dirs(stdlib: &Path) -> Vec<PathBuf> {
+    let mut dirs = configured_native_lib_dirs(stdlib);
+    // The crash runtime is built into jaic itself (docs/native/crash-runtime-build.md).
+    dirs.extend(crash_runtime::dir());
+    dirs
+}
+
+fn configured_native_lib_dirs(stdlib: &Path) -> Vec<PathBuf> {
     if let Some(dirs) = std::env::var_os("JAIC_NATIVE_LIBS") {
         return std::env::split_paths(&dirs).collect();
     }
-    let os = match std::env::consts::OS {
-        "macos" => "macos",
-        "linux" => "linux",
-        "windows" => "windows",
-        _ => return Vec::new(),
-    };
-    let arch = match std::env::consts::ARCH {
-        "aarch64" => "arm64",
-        "x86_64" => "x64",
-        _ => return Vec::new(),
-    };
-    let dir = stdlib.join(format!("../artifacts/native-libs/{os}-{arch}"));
-    jaic::canonicalize(&dir)
+    let host = Target::host();
+    if host.is_wasm() {
+        return Vec::new();
+    }
+    let platform = format!(
+        "{}-{}",
+        jaic::target::os_name(host.os),
+        jaic::target::cpu_name(host.cpu)
+    );
+    // `JACKET_OUTPUT_DIR` (tools/repo_output.py) relocates the build output directory; a
+    // release package carries `native-libs/` beside `stdlib/`, a checkout builds them under
+    // `target/`.
+    let mut candidates = Vec::new();
+    if let Some(output) = std::env::var_os("JACKET_OUTPUT_DIR") {
+        candidates.push(PathBuf::from(output).join("native-libs").join(&platform));
+    }
+    candidates.push(stdlib.join("../native-libs").join(&platform));
+    candidates.push(stdlib.join("../target/native-libs").join(&platform));
+    candidates
+        .iter()
+        .find_map(|dir| jaic::canonicalize(dir).ok())
         .map(|d| vec![d])
         .unwrap_or_default()
 }
@@ -105,12 +126,12 @@ enum Flavor {
 }
 
 impl Flavor {
-    /// The `llvm_options.bitcode_optimization_setting` name this flavor builds with.
-    fn level(self) -> &'static str {
+    /// The `llvm_options.bitcode_optimization_setting` this flavor builds with.
+    fn level(self) -> BitcodeOptimization {
         match self {
-            Flavor::Optimized => "O2",
-            Flavor::OptimizedDebug => "O1",
-            Flavor::VeryDebug => "O0",
+            Flavor::Optimized => BitcodeOptimization::O2,
+            Flavor::OptimizedDebug => BitcodeOptimization::O1,
+            Flavor::VeryDebug => BitcodeOptimization::O0,
         }
     }
 }
@@ -142,9 +163,56 @@ impl Added {
 
 /// One `+Name` plugin with the arguments that follow it.
 struct Plugin {
-    /// The module name; it may carry module parameters, `Check(CHECK_BINDINGS=false)`.
-    name: String,
+    /// The module name, without its module parameters.
+    module: String,
+    /// The text inside `Name(...)`: module parameters, `A=1,B=2`.
+    parameters: Option<String>,
     options: Vec<String>,
+}
+
+impl Plugin {
+    /// Split a `Name` or `Name(A=1,B=2)` plugin argument.
+    fn parse(spec: &str) -> Self {
+        let (module, parameters) = match spec.split_once('(') {
+            Some((module, rest)) => (module, Some(rest.strip_suffix(')').unwrap_or(rest))),
+            None => (spec, None),
+        };
+        Plugin {
+            module: module.to_string(),
+            parameters: parameters.map(str::to_string),
+            options: Vec::new(),
+        }
+    }
+
+    /// Give module parameter `name` the value `value` unless the plugin already sets it.
+    fn default_parameter(&mut self, name: &str, value: &str) {
+        let set = self.parameters.as_deref().is_some_and(|parameters| {
+            parameters.split(',').any(|assignment| {
+                assignment
+                    .split('=')
+                    .next()
+                    .is_some_and(|k| k.trim() == name)
+            })
+        });
+        if !set {
+            let assignment = format!("{name}={value}");
+            match &mut self.parameters {
+                Some(parameters) if !parameters.is_empty() => {
+                    parameters.push(',');
+                    parameters.push_str(&assignment);
+                }
+                parameters => *parameters = Some(assignment),
+            }
+        }
+    }
+
+    /// The module parameter list as it follows `#import "Name"`.
+    fn import_parameters(&self) -> String {
+        self.parameters
+            .as_ref()
+            .map(|parameters| format!("({parameters})"))
+            .unwrap_or_default()
+    }
 }
 
 /// Parsed command line.
@@ -160,7 +228,7 @@ struct Cli {
     /// `-o`, `-od` or `-very_debug`.
     flavor: Option<Flavor>,
     /// `-O0`..`-O3`; `None`: what the metaprogram chose (default: unoptimized).
-    opt_level: Option<&'static str>,
+    opt_level: Option<BitcodeOptimization>,
     emit_ir: Option<PathBuf>,
     /// `-no_debug_info`: omit native debug information (on by default).
     no_debug_info: bool,
@@ -207,20 +275,20 @@ struct Cli {
 }
 
 impl Cli {
-    /// The LLVM triple to build for, `None` for the host. `-os windows` on another host
-    /// cross-compiles with MinGW-w64 (x64 unless `-cpu arm64`); other cross targets need an
-    /// explicit `-target`.
-    fn target_triple(&self) -> Result<Option<String>, String> {
-        self.target_triple_from(Options::host().os, Options::host().cpu)
+    /// What to build for, `None` for the host. `-os windows` on another host cross-compiles
+    /// with MinGW-w64 (x64 unless `-cpu arm64`); other cross targets need an explicit
+    /// `-target`.
+    fn build_target(&self) -> Result<Option<Target>, String> {
+        self.build_target_from(Options::host().os, Options::host().cpu)
     }
 
-    fn target_triple_from(
+    fn build_target_from(
         &self,
         host_os: TargetOs,
         host_cpu: TargetCpu,
-    ) -> Result<Option<String>, String> {
+    ) -> Result<Option<Target>, String> {
         if let Some(triple) = &self.target {
-            return Ok(Some(triple.clone()));
+            return Target::parse(triple).map(Some);
         }
         let os = self.os.unwrap_or(host_os);
         let cpu = self.cpu.unwrap_or(host_cpu);
@@ -231,16 +299,13 @@ impl Cli {
             // A Windows host keeps its own toolchain (MSVC) for the other CPU. Elsewhere x64
             // is the default: it is what most Windows machines run, and Windows on arm64
             // runs x64 programs too.
-            TargetOs::Windows => Ok(Some(
-                windows_triple(
-                    self.cpu.unwrap_or(TargetCpu::X64),
-                    host_os == TargetOs::Windows,
-                )
-                .to_string(),
-            )),
+            TargetOs::Windows => Ok(Some(Target::windows(
+                self.cpu.unwrap_or(TargetCpu::X64),
+                host_os == TargetOs::Windows,
+            ))),
             _ if self.mode != Mode::Build => Ok(None),
             // A WASI command, runnable by node, wasmtime and the like.
-            TargetOs::Wasm => Ok(Some(WASI_TRIPLE.into())),
+            TargetOs::Wasm => Ok(Some(Target::wasi())),
             _ => Err(
                 "native cross-compilation is only supported for -os windows and -os wasm; pass -target <triple> for others"
                     .into(),
@@ -249,44 +314,9 @@ impl Cli {
     }
 }
 
-/// What `jaic -os wasm` targets: wasm64 with the `Wasi_Runtime` module linked in.
-const WASI_TRIPLE: &str = "wasm64-unknown-wasi";
-
 /// A build's exit status when the program has no `main` (its work is all `#run`s), so
 /// tools can tell "nothing to build" from a failed compile.
 const NO_MAIN_STATUS: u8 = 3;
-
-/// The triple a Windows build for `cpu` targets: the MSVC environment on a Windows host,
-/// MinGW-w64 (whose cross toolchains exist for macOS and Linux) elsewhere.
-fn windows_triple(cpu: TargetCpu, msvc: bool) -> &'static str {
-    match (cpu, msvc) {
-        (TargetCpu::Arm64, true) => "aarch64-pc-windows-msvc",
-        (TargetCpu::Arm64, false) => "aarch64-pc-windows-gnu",
-        (_, true) => "x86_64-pc-windows-msvc",
-        (_, false) => "x86_64-pc-windows-gnu",
-    }
-}
-
-/// `OS` and `CPU` as a target triple implies them.
-fn os_and_cpu(triple: &str) -> (TargetOs, TargetCpu) {
-    let os = if triple.contains("windows") || triple.contains("mingw") {
-        TargetOs::Windows
-    } else if triple.contains("apple") || triple.contains("darwin") || triple.contains("macos") {
-        TargetOs::MacOS
-    } else if triple.starts_with("wasm") {
-        TargetOs::Wasm
-    } else {
-        TargetOs::Linux
-    };
-    let cpu = if triple.starts_with("aarch64") || triple.starts_with("arm64") {
-        TargetCpu::Arm64
-    } else if triple.starts_with("wasm") {
-        TargetCpu::Wasm
-    } else {
-        TargetCpu::X64
-    };
-    (os, cpu)
-}
 
 /// `jaic -help`.
 fn usage_text() -> String {
@@ -651,10 +681,7 @@ fn parse(args: &[String]) -> Result<Request, CliError> {
         }
         // A plugin takes every argument up to the next `+Name`, `-` or `--`.
         if let Some(name) = arg.strip_prefix('+').filter(|name| !name.is_empty()) {
-            cli.plugins.push(Plugin {
-                name: name.to_string(),
-                options: Vec::new(),
-            });
+            cli.plugins.push(Plugin::parse(name));
             continue;
         }
         if let Some(plugin) = cli.plugins.last_mut() {
@@ -698,15 +725,11 @@ fn parse(args: &[String]) -> Result<Request, CliError> {
             "-run" => cli.added.push(Added::Run(value(a)?)),
             "-os" => {
                 let os = value(a)?;
-                cli.os = Some(match os.as_str() {
-                    "linux" => TargetOs::Linux,
-                    "windows" => TargetOs::Windows,
-                    "macos" => TargetOs::MacOS,
-                    "wasm" => TargetOs::Wasm,
-                    _ => {
-                        let names = ["linux", "windows", "macos", "wasm"];
+                cli.os = Some(match jaic::target::parse_os(&os) {
+                    Some(os) => os,
+                    None => {
                         let mut error = CliError::new(format!("unknown OS `{os}` for `-os`"));
-                        if let Some(near) = jaic::suggest::closest(&os, names) {
+                        if let Some(near) = jaic::suggest::closest(&os, jaic::target::OS_NAMES) {
                             error = error.help(format!("did you mean `-os {near}`?"));
                         }
                         return Err(error.help("the OS names are linux, windows, macos and wasm"));
@@ -715,9 +738,8 @@ fn parse(args: &[String]) -> Result<Request, CliError> {
             }
             "-cpu" => {
                 let cpu = value(a)?;
-                cli.cpu = Some(match cpu.as_str() {
-                    "x64" | "x86_64" => TargetCpu::X64,
-                    "arm64" | "aarch64" => TargetCpu::Arm64,
+                cli.cpu = Some(match jaic::target::parse_cpu(&cpu) {
+                    Some(cpu) if cpu != TargetCpu::Wasm => cpu,
                     _ => {
                         return Err(CliError::new(format!("unknown CPU `{cpu}` for `-cpu`"))
                             .help("the CPU names are x64 (or x86_64) and arm64 (or aarch64)"));
@@ -750,10 +772,10 @@ fn parse(args: &[String]) -> Result<Request, CliError> {
                 }
                 cli.flavor = Some(flavor);
             }
-            "-O0" => cli.opt_level = Some("O0"),
-            "-O1" => cli.opt_level = Some("O1"),
-            "-O2" => cli.opt_level = Some("O2"),
-            "-O3" => cli.opt_level = Some("O3"),
+            "-O0" => cli.opt_level = Some(BitcodeOptimization::O0),
+            "-O1" => cli.opt_level = Some(BitcodeOptimization::O1),
+            "-O2" => cli.opt_level = Some(BitcodeOptimization::O2),
+            "-O3" => cli.opt_level = Some(BitcodeOptimization::O3),
             "-no_inline" => cli.no_inline = true,
             "-no_split" => cli.no_split = true,
             "-no_dce" => cli.no_dce = true,
@@ -880,12 +902,17 @@ fn parse(args: &[String]) -> Result<Request, CliError> {
             "`-quiet` and `-verbose` contradict each other",
         ));
     }
+    if cli.no_check_bindings {
+        for plugin in cli.plugins.iter_mut().filter(|p| p.module == "Check") {
+            plugin.default_parameter("CHECK_BINDINGS", "false");
+        }
+    }
     // Plugins compile the program in a workspace of their own, which `-interp` cannot start.
     if !cli.plugins.is_empty() && cli.mode == Mode::Interp {
         return Err(
             CliError::new("plugins work with a build or `-check`, not `-interp`").help(format!(
                 "use `jaic {} +{} ...` and run the executable",
-                cli.file, cli.plugins[0].name
+                cli.file, cli.plugins[0].module
             )),
         );
     }
@@ -1153,12 +1180,6 @@ fn compile_and_run(mut cli: Cli) -> ExitCode {
         return ExitCode::from(1);
     }
     let mut options = Options::host();
-    if let Some(os) = cli.os {
-        options.os = os;
-    }
-    if let Some(cpu) = cli.cpu {
-        options.cpu = cpu;
-    }
     if cli.no_dce {
         options.dead_code = DeadCode::None;
     }
@@ -1175,30 +1196,17 @@ fn compile_and_run(mut cli: Cli) -> ExitCode {
         options.arithmetic_overflow_check = 0;
         options.cast_bounds_check = 0;
     }
-    match cli.target_triple() {
+    match cli.build_target() {
         // The interpreter models wasm32 (the browser engine's target); LLVM output cannot.
-        Ok(Some(triple)) if triple.starts_with("wasm32") && cli.mode == Mode::Build => {
+        Ok(Some(target)) if target.is_wasm() && target.memory32 && cli.mode == Mode::Build => {
             eprintln!(
                 "error: jaic builds wasm64 (Memory64) only; Jai needs 8-byte pointers (use -target wasm64-unknown-wasi)"
             );
             return ExitCode::from(2);
         }
-        Ok(Some(triple)) => {
-            let (os, cpu) = os_and_cpu(&triple);
-            options.os = os;
-            options.cpu = cpu;
-            let gnu = triple.contains("gnu") || triple.contains("mingw");
-            options.long_double = jaic::sema::long_double_for(os, cpu, gnu);
-        }
-        Ok(None) if cli.os.is_some() || cli.cpu.is_some() => {
-            // `-os`/`-cpu` for checking only: that OS and CPU, with its usual C compiler. A wasm
-            // target has its own CPU (`CUSTOM`), as a `-os wasm` build and the browser give it.
-            if options.os == TargetOs::Wasm && cli.cpu.is_none() {
-                options.cpu = TargetCpu::Wasm;
-            }
-            options.long_double = jaic::sema::long_double_for(options.os, options.cpu, false);
-        }
-        Ok(None) => {}
+        Ok(Some(target)) => target.apply(&mut options),
+        // `-os`/`-cpu` for checking only.
+        Ok(None) => jaic::target::select_os_cpu(&mut options, cli.os, cli.cpu),
         Err(message) => {
             print_error(&message);
             return ExitCode::from(2);
@@ -1281,11 +1289,7 @@ fn compile_and_run(mut cli: Cli) -> ExitCode {
     compiler.attach_workspaces(workspaces.clone());
     // `-os wasm` / `-target wasm64-unknown-wasi`: a WASI command, with its runtime added.
     let wasi = cli.mode == Mode::Build
-        && cli
-            .target_triple()
-            .ok()
-            .flatten()
-            .is_some_and(|t| jaic::build::wants_wasi_runtime(compiler.options.os, &t));
+        && jaic::build::wants_wasi_runtime(cli.build_target().ok().flatten());
     if cli.verbose {
         let what = match cli.mode {
             Mode::Build => "building",
@@ -1294,7 +1298,7 @@ fn compile_and_run(mut cli: Cli) -> ExitCode {
         };
         eprintln!("jaic: {what} {}", shown(&path));
         if !cli.plugins.is_empty() {
-            let names: Vec<&str> = cli.plugins.iter().map(|p| p.name.as_str()).collect();
+            let names: Vec<&str> = cli.plugins.iter().map(|p| p.module.as_str()).collect();
             eprintln!("jaic: plugins: {}", names.join(", "));
         }
     }
@@ -1463,7 +1467,7 @@ fn flush_sandbox(host: &Rc<RefCell<SandboxHost>>) {
 }
 
 /// The metaprogram `+Plugin` stands for: import each plugin module, then compile `path` in a
-/// workspace using the reviewed public Compiler lifecycle primitives.
+/// workspace using the public Compiler lifecycle procedures.
 fn plugin_metaprogram(cli: &Cli, path: &Path, wasi: bool) -> String {
     let quote = |s: &str| {
         let escaped = s
@@ -1491,16 +1495,11 @@ fn plugin_metaprogram(cli: &Cli, path: &Path, wasi: bool) -> String {
     };
     let mut text = String::from("Compiler :: #import \"Compiler\";\n");
     for (i, plugin) in cli.plugins.iter().enumerate() {
-        // `Name(PARAM=value)` passes module parameters along.
-        let (name, params) = plugin
-            .name
-            .split_at(plugin.name.find('(').unwrap_or(plugin.name.len()));
-        let params = if cli.no_check_bindings && name == "Check" {
-            check_bindings_off(params)
-        } else {
-            params.to_string()
-        };
-        text += &format!("__plugin_{i} :: #import {}{params};\n", quote(name));
+        text += &format!(
+            "__plugin_{i} :: #import {}{};\n",
+            quote(&plugin.module),
+            plugin.import_parameters()
+        );
     }
     text += "#scope_file\n__jaic_plugin_failure :: (plugins: [] *Compiler.Metaprogram_Plugin, initialized: s64, w: Workspace, message: string) {\n    for p: plugins {\n        if it_index >= initialized break;\n        if p.shutdown p.shutdown(p);\n    }\n    Compiler.compiler_set_workspace_status(.FAILED, w);\n    Compiler.compiler_report(\"\", 0, 0, message);\n}\n";
     text += &format!(
@@ -1558,16 +1557,6 @@ fn plugin_metaprogram(cli: &Cli, path: &Path, wasi: bool) -> String {
     text
 }
 
-/// Module parameters `params` (`""` or `(A=1,B=2)`) with `CHECK_BINDINGS=false` added, unless
-/// they already say what `CHECK_BINDINGS` is.
-fn check_bindings_off(params: &str) -> String {
-    match params.strip_suffix(')') {
-        _ if params.contains("CHECK_BINDINGS") => params.to_string(),
-        Some(open) => format!("{open},CHECK_BINDINGS=false)"),
-        None => "(CHECK_BINDINGS=false)".into(),
-    }
-}
-
 /// Write the top-level program. `-exe`, `-output_path` and the optimization options override
 /// what the metaprogram set.
 fn build(
@@ -1595,8 +1584,8 @@ fn build(
     if let Some(level) = cli.opt_level.or(cli.flavor.map(Flavor::level)) {
         // `-O` and the flavors stand for a whole build: the metaprogram's code generation
         // switches go too.
-        settings.optimization = level.into();
-        settings.machine_code_optimization.clear();
+        settings.optimization = level;
+        settings.machine_code_optimization = MachineCodeOptimization::Unset;
         settings.llvm_switches.clear();
         settings.frame_pointers = None;
     }
@@ -1623,7 +1612,7 @@ fn native_backend(cli: &Cli) -> LlvmBackend {
     LlvmBackend {
         emit_ir: cli.emit_ir.clone(),
         debug_info: !cli.no_debug_info,
-        target: cli.target_triple().ok().flatten(),
+        target: cli.build_target().ok().flatten(),
         explicit_target: cli.target.is_some() || cli.os.is_some() || cli.cpu.is_some(),
         sanitize: cli.sanitize.join(","),
         no_inline: cli.no_inline,
@@ -1658,8 +1647,8 @@ impl OutputBackend for NoBackend {
 struct LlvmBackend {
     emit_ir: Option<PathBuf>,
     debug_info: bool,
-    /// Target triple; `None` for the host.
-    target: Option<String>,
+    /// What to build for; `None` for the host.
+    target: Option<Target>,
     /// An explicit host OS/CPU still overrides workspace output settings.
     explicit_target: bool,
     /// The `-sanitize` lists, comma-joined (empty: no sanitizers).
@@ -1677,7 +1666,7 @@ struct Prepared {
     object: PathBuf,
     /// The objects stay after linking, for the debugger.
     keep_objects: bool,
-    target: Option<String>,
+    target: Option<Target>,
     options: jaic_llvm::Options,
     /// Linker arguments beyond the metaprogram's (`-mmacosx-version-min`).
     extra_link_args: Vec<String>,
@@ -1685,18 +1674,18 @@ struct Prepared {
 
 #[cfg(feature = "llvm")]
 impl LlvmBackend {
-    fn workspace_target(&self, settings: &BuildSettings) -> Result<Option<String>, String> {
+    fn workspace_target(&self, settings: &BuildSettings) -> Result<Option<Target>, String> {
         if self.explicit_target {
-            return Ok(self.target.clone());
+            return Ok(self.target);
         }
-        if !settings.llvm_triple.is_empty() {
-            return Ok(Some(settings.llvm_triple.clone()));
+        if settings.llvm_target.is_some() {
+            return Ok(settings.llvm_target);
         }
         let host = Options::host();
         let os = settings.os.unwrap_or(host.os);
         let cpu = settings.cpu.unwrap_or(host.cpu);
         if os == TargetOs::Wasm {
-            return Ok(Some(jaic_llvm::WASM_TRIPLE.to_string()));
+            return Ok(Some(Target::wasm_module()));
         }
         if cpu == TargetCpu::Wasm {
             return Err("a native workspace OS requires an X64 or ARM64 CPU".into());
@@ -1704,15 +1693,10 @@ impl LlvmBackend {
         if os == host.os && cpu == host.cpu {
             return Ok(None);
         }
-        let triple = match (os, cpu) {
-            (TargetOs::Linux, TargetCpu::X64) => "x86_64-unknown-linux-gnu",
-            (TargetOs::Linux, TargetCpu::Arm64) => "aarch64-unknown-linux-gnu",
-            (TargetOs::MacOS, TargetCpu::X64) => "x86_64-apple-darwin",
-            (TargetOs::MacOS, TargetCpu::Arm64) => "aarch64-apple-darwin",
-            (TargetOs::Windows, cpu) => windows_triple(cpu, cfg!(target_os = "windows")),
-            _ => unreachable!("native workspace CPU/OS validated above"),
-        };
-        Ok(Some(triple.to_string()))
+        Ok(Some(match os {
+            TargetOs::Windows => Target::windows(cpu, cfg!(target_os = "windows")),
+            _ => Target::new(os, cpu),
+        }))
     }
 
     fn prepare(&self, settings: &BuildSettings, output: &Path) -> Result<Prepared, String> {
@@ -1732,7 +1716,7 @@ impl LlvmBackend {
         let mut output = output.to_path_buf();
         if settings.append_extension
             && output.extension().is_none()
-            && let Some(ext) = kind.and_then(|k| jaic_llvm::output_extension(target.as_deref(), k))
+            && let Some(ext) = kind.and_then(|k| jaic_llvm::output_extension(target, k))
         {
             output.set_extension(ext);
         }
@@ -1772,55 +1756,52 @@ impl LlvmBackend {
             intermediate.join(name)
         };
         use jaic_llvm::OptLevel;
-        let opt_level = match settings.optimization.as_str() {
-            // `llvm_options.bitcode_optimization_setting` member names.
-            "O1" => OptLevel::O1,
-            "O2" => OptLevel::O2,
-            "OS" => OptLevel::Os,
-            "OZ" => OptLevel::Oz,
-            "O3" => OptLevel::O3,
-            _ => OptLevel::O0,
+        let opt_level = match settings.optimization {
+            BitcodeOptimization::O1 => OptLevel::O1,
+            BitcodeOptimization::O2 => OptLevel::O2,
+            BitcodeOptimization::Os => OptLevel::Os,
+            BitcodeOptimization::Oz => OptLevel::Oz,
+            BitcodeOptimization::O3 => OptLevel::O3,
+            BitcodeOptimization::O0 | BitcodeOptimization::Unset => OptLevel::O0,
         };
         // `Build_Options.emit_debug_info = .NONE`, `llvm_options.preserve_debug_info = false`
         // (or `set_optimization(..., false)`) turn it off.
         let debug_info = self.debug_info
             && settings.emit_debug_info != Some(false)
-            && settings.llvm_switch("preserve_debug_info") != Some(false);
+            && settings.llvm_switch(WorkspaceFlag::LlvmPreserveDebugInfo) != Some(false);
         let sanitize = if self.sanitize.is_empty() {
             jaic_llvm::Sanitize::default()
         } else {
             jaic_llvm::Sanitize::parse(&self.sanitize)?
         };
-        let macos = target
-            .as_deref()
-            .map_or(cfg!(target_os = "macos"), |t| t.contains("apple"));
+        let macos = target.unwrap_or_else(Target::host).is_apple();
         let macos_version = (macos && !settings.minimum_os_version.is_empty())
             .then(|| settings.minimum_os_version.clone());
         let mut extra_link_args = Vec::new();
         if let Some(version) = &macos_version {
             extra_link_args.push(format!("-mmacosx-version-min={version}"));
         }
-        let switch = |name: &str| settings.llvm_switch(name);
+        let switch = |flag: WorkspaceFlag| settings.llvm_switch(flag);
         let wanted = |on: bool, suffix: &str| on.then(|| beside(suffix));
         let codegen = jaic_llvm::Codegen {
-            machine_level: match settings.machine_code_optimization.as_str() {
-                "NONE" => Some(OptLevel::O0),
-                "LESS" => Some(OptLevel::O1),
-                "DEFAULT" => Some(OptLevel::O2),
-                "AGGRESSIVE" => Some(OptLevel::O3),
-                _ => None,
+            machine_level: match settings.machine_code_optimization {
+                MachineCodeOptimization::None => Some(OptLevel::O0),
+                MachineCodeOptimization::Less => Some(OptLevel::O1),
+                MachineCodeOptimization::Default => Some(OptLevel::O2),
+                MachineCodeOptimization::Aggressive => Some(OptLevel::O3),
+                MachineCodeOptimization::Unset => None,
             },
-            loop_unrolling: switch("enable_loop_unrolling"),
-            loop_vectorization: switch("enable_loop_vectorization"),
-            slp_vectorization: switch("enable_slp_vectorization"),
-            merge_functions: switch("merge_functions"),
+            loop_unrolling: switch(WorkspaceFlag::LlvmEnableLoopUnrolling),
+            loop_vectorization: switch(WorkspaceFlag::LlvmEnableLoopVectorization),
+            slp_vectorization: switch(WorkspaceFlag::LlvmEnableSlpVectorization),
+            merge_functions: switch(WorkspaceFlag::LlvmMergeFunctions),
             disable_inlining: if self.no_inline {
                 Some(true)
             } else {
-                switch("disable_inlining")
+                switch(WorkspaceFlag::LlvmDisableInlining)
             },
-            tail_calls: switch("enable_tail_calls"),
-            split_modules: switch("enable_split_modules"),
+            tail_calls: switch(WorkspaceFlag::LlvmEnableTailCalls),
+            split_modules: switch(WorkspaceFlag::LlvmEnableSplitModules),
             single_unit: self.no_split,
             frame_pointers: settings.frame_pointers,
             no_red_zone: settings.disable_redzone,
@@ -1948,7 +1929,7 @@ impl OutputBackend for LlvmBackend {
             options,
             extra_link_args,
         } = self.prepare(settings, output)?;
-        let (output, target) = (output.as_path(), target.as_deref());
+        let output = output.as_path();
         if matches!(
             settings.output_type,
             OutputType::ObjectFile | OutputType::NoOutput
@@ -1961,7 +1942,7 @@ impl OutputBackend for LlvmBackend {
             jaic_llvm::emit_objects(program, &options, &object)
         })?;
         let libraries = jaic_llvm::used_libraries(program);
-        let wasm = target.is_some_and(jaic_llvm::is_wasm_target);
+        let wasm = target.is_some_and(|t| t.is_wasm());
         let mut link_args = settings.additional_linker_arguments.clone();
         link_args.extend(extra_link_args);
         let debug_info = options.debug_info;
@@ -1996,7 +1977,7 @@ impl OutputBackend for LlvmBackend {
         // tenth of the build); any other collects the DWARF into `output.dSYM` first.
         let macho = debug_info
             && linked.is_ok()
-            && target.map_or(cfg!(target_os = "macos"), |t| t.contains("apple"))
+            && target.unwrap_or_else(Target::host).is_apple()
             && settings.output_type != OutputType::StaticLibrary;
         if macho
             && !keep_objects
@@ -2023,7 +2004,7 @@ impl OutputBackend for LlvmBackend {
             jaic_llvm::emit_objects(program, &prepared.options, &prepared.object)
         })?;
         let libraries = jaic_llvm::used_libraries(program);
-        let inputs = jaic_llvm::link_inputs(&libraries, prepared.target.as_deref())?;
+        let inputs = jaic_llvm::link_inputs(&libraries, prepared.target)?;
         Ok(jaic::build::LinkObjects {
             objects: objects.iter().map(|o| o.display().to_string()).collect(),
             system_libraries: inputs.system_libraries,
@@ -2042,7 +2023,9 @@ mod tests {
         let Ok(Request::Compile(cli)) = parse(&argv) else {
             panic!("invalid command line {argv:?}");
         };
-        cli.target_triple_from(host_os, host_cpu).expect("a target")
+        cli.build_target_from(host_os, host_cpu)
+            .expect("a target")
+            .map(|target| target.to_string())
     }
 
     fn args(words: &[&str]) -> Vec<String> {
@@ -2104,9 +2087,10 @@ mod tests {
         ]);
         assert_eq!(c.imports, [PathBuf::from("d")]);
         assert_eq!(c.plugins.len(), 2);
-        assert_eq!(c.plugins[0].name, "One");
+        assert_eq!(c.plugins[0].module, "One");
         assert_eq!(c.plugins[0].options, ["-x", "1"]);
-        assert_eq!(c.plugins[1].name, "Two(A=1)");
+        assert_eq!(c.plugins[1].module, "Two");
+        assert_eq!(c.plugins[1].import_parameters(), "(A=1)");
         assert!(c.plugins[1].options.is_empty());
         assert_eq!(c.command_line, ["meta"]);
         assert!(
@@ -2123,13 +2107,16 @@ mod tests {
     }
 
     #[test]
-    fn check_bindings_off_edits_module_parameters() {
-        assert_eq!(check_bindings_off(""), "(CHECK_BINDINGS=false)");
-        assert_eq!(check_bindings_off("(A=1)"), "(A=1,CHECK_BINDINGS=false)");
-        assert_eq!(
-            check_bindings_off("(CHECK_BINDINGS=true)"),
-            "(CHECK_BINDINGS=true)"
-        );
+    fn default_plugin_parameters_do_not_override_explicit_ones() {
+        let mut bare = Plugin::parse("Check");
+        bare.default_parameter("CHECK_BINDINGS", "false");
+        assert_eq!(bare.import_parameters(), "(CHECK_BINDINGS=false)");
+        let mut other = Plugin::parse("Check(A=1)");
+        other.default_parameter("CHECK_BINDINGS", "false");
+        assert_eq!(other.import_parameters(), "(A=1,CHECK_BINDINGS=false)");
+        let mut set = Plugin::parse("Check(CHECK_BINDINGS=true)");
+        set.default_parameter("CHECK_BINDINGS", "false");
+        assert_eq!(set.import_parameters(), "(CHECK_BINDINGS=true)");
     }
 
     #[test]
@@ -2198,38 +2185,29 @@ mod tests {
         let mut settings = BuildSettings {
             os: Some(TargetOs::Linux),
             cpu: Some(TargetCpu::X64),
-            llvm_triple: "x86_64-unknown-linux-musl".into(),
+            llvm_target: Some("x86_64-unknown-linux-musl".parse().unwrap()),
             ..BuildSettings::default()
         };
         assert_eq!(
-            backend.workspace_target(&settings).unwrap().as_deref(),
-            Some("x86_64-unknown-linux-musl")
+            backend.workspace_target(&settings).unwrap(),
+            Some("x86_64-unknown-linux-musl".parse().unwrap())
         );
         let explicit = native_backend(&cli(&["main.jai", "-target", "aarch64-unknown-linux-gnu"]));
         assert_eq!(
-            explicit.workspace_target(&settings).unwrap().as_deref(),
-            Some("aarch64-unknown-linux-gnu")
+            explicit.workspace_target(&settings).unwrap(),
+            Some("aarch64-unknown-linux-gnu".parse().unwrap())
         );
 
         let host = Options::host();
-        let os = match host.os {
-            TargetOs::Linux => "linux",
-            TargetOs::MacOS => "macos",
-            TargetOs::Windows => "windows",
-            TargetOs::Wasm => "wasm",
-        };
-        let cpu = match host.cpu {
-            TargetCpu::X64 => "x64",
-            TargetCpu::Arm64 => "arm64",
-            TargetCpu::Wasm => "wasm",
-        };
+        let os = jaic::target::os_name(host.os);
+        let cpu = jaic::target::cpu_name(host.cpu);
         let explicit_host = native_backend(&cli(&["main.jai", "-os", os, "-cpu", cpu]));
         assert_eq!(
             explicit_host.workspace_target(&settings).unwrap(),
             explicit_host.target
         );
 
-        settings.llvm_triple.clear();
+        settings.llvm_target = None;
         settings.cpu = Some(TargetCpu::Wasm);
         assert!(
             backend
@@ -2239,8 +2217,8 @@ mod tests {
         );
         settings.os = Some(TargetOs::Wasm);
         assert_eq!(
-            backend.workspace_target(&settings).unwrap().as_deref(),
-            Some(jaic_llvm::WASM_TRIPLE)
+            backend.workspace_target(&settings).unwrap(),
+            Some(Target::wasm_module())
         );
     }
 
@@ -2259,11 +2237,7 @@ mod tests {
         );
         assert_eq!(
             triple(&["-target", "aarch64-w64-mingw32"], x64.0, x64.1).as_deref(),
-            Some("aarch64-w64-mingw32")
+            Some("aarch64-pc-windows-gnu")
         );
-        assert!(matches!(
-            os_and_cpu("aarch64-pc-windows-msvc"),
-            (TargetOs::Windows, TargetCpu::Arm64)
-        ));
     }
 }

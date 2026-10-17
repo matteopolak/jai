@@ -5,23 +5,17 @@
 //! it: that element is never visited. `remove it;` removes the current element and keeps the
 //! iteration in step.
 //!
-//! Fires on a call to one of `Basic`'s `array_*_remove_*` procedures whose array argument is
+//! Fires on a call to a procedure declared with the note `@RemovesElements` (`Basic`'s
+//! `array_*_remove_*` procedures carry it) whose array argument is
 //! `*xs` (spelled the same) inside a forward `for xs` / `for *xs` over the same array, unless
 //! the call is directly followed by `break` or `return` (removing the one element searched
 //! for and stopping is fine), or the loop body assigns its index (`i -= 1;` after the removal
 //! steps back by hand).
-use super::{calls_library, finding, statement_lists};
+use super::{calls_noted, finding, statement_lists};
 use crate::Finding;
 use crate::syntax::{Cx, Node, squash, walk};
 use jaic::ast::{Expr, ExprKind as E, ForOver, Stmt, StmtKind as S, UnOp};
 use jaic::source::Span;
-
-const REMOVERS: &[&str] = &[
-    "array_unordered_remove_by_index",
-    "array_ordered_remove_by_index",
-    "array_unordered_remove_by_value",
-    "array_ordered_remove_by_value",
-];
 
 pub(crate) fn check(cx: &Cx, out: &mut Vec<Finding>) {
     for p in &cx.procs {
@@ -55,7 +49,7 @@ pub(crate) fn check(cx: &Cx, out: &mut Vec<Finding>) {
             let E::Unary(UnOp::Star, array) = &first.value.kind else {
                 return true;
             };
-            if !calls_library(cx, callee, &["Basic"], REMOVERS) {
+            if !calls_noted(cx, callee, "RemovesElements") {
                 return true;
             }
             let array_text = squash(cx.whole_src(array.span));

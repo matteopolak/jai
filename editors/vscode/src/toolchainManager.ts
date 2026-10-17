@@ -37,12 +37,14 @@ export class ToolchainManager {
   ) {
     this.pinnedChecksums = this.readPinned();
     this.version = this.pinnedChecksums?.version ?? (context.extension.packageJSON.version as string);
-    this.asset = assetFor(process.platform, process.arch, this.version);
+    this.asset = assetFor(process.platform, process.arch);
     this.store = new ToolchainStore(context.globalStorageUri.fsPath);
   }
 
   get autoDownload(): AutoDownload {
-    return vscode.workspace.getConfiguration("jai").get<AutoDownload>("toolchain.autoDownload", "prompt");
+    const mode = vscode.workspace.getConfiguration("jai").get<AutoDownload>("toolchain.autoDownload", "prompt");
+    // Never download without asking for a workspace nobody has trusted.
+    return mode === "always" && !vscode.workspace.isTrusted ? "prompt" : mode;
   }
 
   /** Checksums pinned into this build of the extension by the release workflow. */
@@ -70,12 +72,10 @@ export class ToolchainManager {
     if (currentInstalled) {
       return { version: this.version, dir: this.store.binDir(this.version, this.asset) };
     }
-    // Each version's own archive name: one downloaded by an older extension unpacked as jaic-*.
     for (const version of await this.store.installedVersions()) {
       if (version === this.version) continue; // this version was checked against the current pin above
-      const asset = assetFor(process.platform, process.arch, version);
-      if (asset && this.store.isInstalled(version, asset)) {
-        return { version, dir: this.store.binDir(version, asset) };
+      if (this.store.isInstalled(version, this.asset)) {
+        return { version, dir: this.store.binDir(version, this.asset) };
       }
     }
     return undefined;
@@ -204,6 +204,6 @@ export class ToolchainManager {
     );
     if (choice === "Download Toolchain") await vscode.commands.executeCommand("jai.downloadToolchain");
     if (choice === "Open Releases") await vscode.env.openExternal(vscode.Uri.parse(RELEASES_URL));
-    if (choice === "Open Settings") await vscode.commands.executeCommand("workbench.action.openSettings", "@ext:matteopolak.jai-toolchain");
+    if (choice === "Open Settings") await vscode.commands.executeCommand("workbench.action.openSettings", "@ext:matteopolak.jacket");
   }
 }

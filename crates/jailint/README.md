@@ -1,9 +1,9 @@
 # jailint
 
 > [!NOTE]
-> This project is unofficial and is not affiliated with or endorsed by Thekla or the official Jai project.
+> This project is unofficial and is not affiliated with or endorsed by Thekla, Inc. or the official Jai project.
 
-A linter for [Jai](https://en.wikipedia.org/wiki/Jai_(programming_language)), part of the [`jai{c,lsp,fmt,lint}`](../../README.md) toolchain. It reports common mistakes and unidiomatic code, and fixes the ones it safely can.
+A linter for [Jai](https://en.wikipedia.org/wiki/Jai_(programming_language)), part of the [Jacket](../../README.md) toolchain. It reports common mistakes and unidiomatic code, and fixes the ones it safely can.
 
 The rules run on the program after `jaic` has type-checked it, so they know each expression's type and what every name refers to. The same findings appear in editors through [`jailsp`](../jai-language-server/README.md), as diagnostics with quick fixes.
 
@@ -17,7 +17,7 @@ jailint -target wasm64-unknown-wasi --manifest target/wasi-lint.json src/
 ```
 
 Target flags select source-checking contexts; they do not run native target code.
-[Target checking and coverage manifests](../../docs/tools/jailint-targets.md) describe
+[Target checking and coverage manifests](../../docs/tools/jailint.md) describe
 ABI defaults, private/library roots, required bindings and incomplete-check failures.
 
 Each finding gives its level and rule, the location, and the source line with the span marked:
@@ -38,11 +38,11 @@ help: loop over the elements: `for names`, with `it` and `it_index`
 `jailint` ships in every toolchain install, next to `jaic`, `jailsp` and `jaifmt`:
 
 ```sh
-brew install matteopolak/tap/jai        # macOS and Linux
-nix profile install github:matteopolak/jai
+brew install matteopolak/tap/jacket        # macOS and Linux
+nix profile install github:matteopolak/jacket
 ```
 
-There are also the `install.sh` and `install.ps1` scripts and prebuilt archives on the [releases page](https://github.com/matteopolak/jai/releases); see the [main README](../../README.md#install) and [package managers](../../docs/tools/package-managers.md). The [VS Code extension](../../docs/tools/vscode-extension.md) shows jailint's findings and fixes through `jailsp`.
+There are also the `install.sh` and `install.ps1` scripts and prebuilt archives on the [releases page](https://github.com/matteopolak/jacket/releases); see the [main README](../../README.md#install) and [package managers](../../docs/tools/releases.md). The [VS Code extension](../../docs/tools/vscode-extension.md) shows jailint's findings and fixes through `jailsp`.
 
 From a checkout: `cargo build -p jailint --release --locked` (the binary is `target/release/jailint`).
 

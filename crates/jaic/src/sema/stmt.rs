@@ -17,7 +17,7 @@ impl Compiler {
         scope: ScopeId,
         stmts: &[ast::Stmt],
     ) -> Result<()> {
-        // `#import` in a body is visible to the whole file, also before the statement.
+        // `#import` in a body is visible to the whole module, also before the statement.
         let file_scope = self.file_scope_of(scope);
         self.hoist_body_imports(file_scope, stmts, false);
         // Constants are visible throughout their block, also before their declaration.
@@ -48,6 +48,12 @@ impl Compiler {
         failed: &mut Option<Box<Diagnostic>>,
     ) -> Result<()> {
         if let Err(error) = self.check_block_stmt(f, scope, stmt) {
+            // A statement that needs compile-time code that was not run (untrusted
+            // workspace) has unknown values, not wrong ones: its names stay declared (as
+            // stand-ins) so the statements after it check without cascading errors.
+            if error.kind == DiagnosticKind::Untrusted && !self.sketching() {
+                self.sketch_salvage(f, scope, stmt);
+            }
             self.check_block_error_ide(f, failed, error)?;
         }
         Ok(())
@@ -332,8 +338,9 @@ impl Compiler {
                     value,
                     cases,
                     complete,
+                    header,
                 } = &**boxed;
-                self.check_switch(f, scope, value, cases, *complete, span)
+                self.check_switch(f, scope, value, cases, *complete, *header, span)
             }
             S::StaticSwitch(boxed) => {
                 let crate::ast::SwitchStmt {
@@ -519,7 +526,7 @@ impl Compiler {
                     args,
                 } = &**boxed;
                 // A sketch's stand-ins meet no condition.
-                let holds = self.eval_static_condition(scope, cond);
+                let holds = self.eval_static_condition_as(scope, cond, None);
                 if self.sketching() {
                     return Ok(());
                 }
@@ -583,7 +590,7 @@ impl Compiler {
     }
 
     /// Add the unnamed (or `using`) `#import`s among `stmts` (and, when `nested`, inside their plain
-    /// blocks and control flow, but not `#if` branches) to `file_scope`, once each.
+    /// blocks and control flow, but not `#if` branches) to the module of `file_scope`, once each.
     pub(super) fn hoist_body_imports(
         &mut self,
         file_scope: ScopeId,
@@ -595,8 +602,14 @@ impl Compiler {
                 // `using Name :: #import` brings the names in like an unnamed import.
                 S::Import(import) if import.name.is_none() || import.using.is_some() => {
                     if self.hoisted_imports.insert(import.span) {
+                        // An anonymous import belongs to the module's import environment,
+                        // wherever it is written (as a top-level one does), so the module's
+                        // other files see it too. Paths and parameters still resolve from
+                        // the file that wrote it.
+                        let module = self.scope(file_scope).module;
+                        let target = self.modules[module.0 as usize].scope;
                         self.push_import(
-                            file_scope,
+                            target,
                             scope::ImportEntry {
                                 import: import.clone(),
                                 module: None,
@@ -845,7 +858,7 @@ impl Compiler {
                     decl.using_filter().unwrap_or(&ast::UsingFilter::None),
                     name.span,
                 )?;
-                self.scope_mut(target).usings.push(entry);
+                self.push_using(target, entry);
             }
         }
         Ok(())
@@ -1529,7 +1542,7 @@ impl Compiler {
                             filter,
                             value.span,
                         )?;
-                        self.scope_mut(scope).usings.push(entry);
+                        self.push_using(scope, entry);
                         self.ide_note_entity_use(value.span, id, ty);
                         return Ok(());
                     }
@@ -1547,7 +1560,7 @@ impl Compiler {
                                 filter,
                                 value.span,
                             )?;
-                            self.scope_mut(scope).usings.push(entry);
+                            self.push_using(scope, entry);
                             self.ide_note_entity_use(value.span, id, ty);
                             return Ok(());
                         }
@@ -1635,7 +1648,7 @@ impl Compiler {
             }
         };
         let entry = self.filter_using_entry(scope, entry, filter, value.span)?;
-        self.scope_mut(scope).usings.push(entry);
+        self.push_using(scope, entry);
         Ok(())
     }
 
@@ -1709,6 +1722,7 @@ impl Compiler {
         value: &ast::Expr,
         cases: &[ast::Case],
         complete: bool,
+        header: Span,
         span: Span,
     ) -> Result<()> {
         let v = self.check_expr(f, scope, value, None)?;
@@ -1759,7 +1773,7 @@ impl Compiler {
                     cases,
                     &taken,
                     complete,
-                    value,
+                    header,
                     span,
                 );
             }
@@ -1771,7 +1785,7 @@ impl Compiler {
                     cases,
                     &[],
                     complete,
-                    value,
+                    header,
                     span,
                 );
             }
@@ -1804,7 +1818,7 @@ impl Compiler {
         }
         // A missing case is reported after the bodies are checked, so they still have types.
         let missing = if complete {
-            self.check_switch_complete(vty, &covered, value.span)
+            self.check_switch_complete(vty, &covered, header)
         } else {
             Ok(())
         };
@@ -1852,7 +1866,7 @@ impl Compiler {
         cases: &[ast::Case],
         taken: &[usize],
         complete: bool,
-        value: &ast::Expr,
+        header: Span,
         span: Span,
     ) -> Result<()> {
         let mut covered = Vec::new();
@@ -1890,7 +1904,7 @@ impl Compiler {
         }
         f.b.switch_to(here);
         if complete {
-            self.check_switch_complete(vty, &covered, value.span)?;
+            self.check_switch_complete(vty, &covered, header)?;
         }
         Ok(())
     }
@@ -1956,14 +1970,17 @@ impl Compiler {
         if missing.is_empty() {
             return Ok(());
         }
-        err(
-            span,
-            format!(
-                "#complete switch on {} has no case for {}",
-                self.types.name(ty),
-                missing.join(", ")
-            ),
-        )
+        Err(Box::new(
+            Diagnostic::error(
+                span,
+                format!(
+                    "#complete switch on {} has no case for {}",
+                    self.types.name(ty),
+                    missing.join(", ")
+                ),
+            )
+            .with_kind(DiagnosticKind::IncompleteSwitch),
+        ))
     }
 
     fn const_equal(&self, a: &Operand, b: &Operand) -> bool {
@@ -2645,6 +2662,9 @@ impl Compiler {
                 procs.push(p);
             }
         }
+        if let Some(iterator) = &for_.iterator {
+            self.ide_note_for_iterator(iterator, &procs);
+        }
         if procs.is_empty() {
             return err(
                 span,
@@ -2967,7 +2987,7 @@ impl Compiler {
             }
         }
         // Check newly formed overload sets now: an unreferenced enclosing body
-        // may be checked after the driver's earlier declared-overload audit.
+        // may be checked after the driver's earlier declared-overload check.
         // The regular checker uses the logical receiving namespace while the
         // entities keep their captured lookup scopes.
         let mut sets = Vec::<Vec<EntityId>>::new();
@@ -2994,14 +3014,13 @@ impl Compiler {
         // Validate the complete namespace before publishing any of it. A bad
         // insertion must not leave a partially published set of declarations.
         for (name, id) in publish {
-            self.scope_mut(target)
-                .names
-                .entry(name)
-                .or_default()
-                .push(id);
+            self.bind_name(target, name, id);
         }
         let usings = self.scope(source).usings.clone();
-        self.scope_mut(target).usings.extend(usings);
+        if !usings.is_empty() {
+            self.scope_mut(target).usings.extend(usings);
+            self.namespace_changed(target);
+        }
         Ok(())
     }
 
@@ -3063,6 +3082,7 @@ impl Compiler {
                 if let Some(names) = self.scope_mut(body.scope).names.get_mut(&original) {
                     names.retain(|&e| e != id);
                 }
+                self.namespace_changed(body.scope);
                 hidden.push((original, id));
             }
         }
@@ -3093,16 +3113,13 @@ impl Compiler {
         f.insert_replacements.push(replacements);
         let result = self.check_scoped(f, body.scope, &body.body);
         for (original, id) in hidden {
-            self.scope_mut(body.scope)
-                .names
-                .entry(original)
-                .or_default()
-                .push(id);
+            self.bind_name(body.scope, original, id);
         }
         for (name, id) in borrowed {
             if let Some(names) = self.scope_mut(body.scope).names.get_mut(&name) {
                 names.retain(|&e| e != id);
             }
+            self.namespace_changed(body.scope);
         }
         f.insert_replacements.pop();
         f.macros.extend(saved);

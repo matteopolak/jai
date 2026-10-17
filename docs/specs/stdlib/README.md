@@ -10,11 +10,6 @@ Procedure bodies and implementation algorithms are omitted. Behavior notes descr
 
 The links below are navigation for this specification only and do not prescribe the implementation's module or file layout.
 
-## Readiness
-
-- [Implementation readiness and audit limits](implementation-readiness.md)
-- [Final source-versus-spec review status](review-status.md)
-
 ## Public module aliases
 
 - [Adpcm](modules/adpcm.md)

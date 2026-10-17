@@ -1,7 +1,5 @@
 #import "Basic";
-// The names are only used on Windows.
-// jailint: allow(unused_import)
-#import "Sound_Player";
+#import "Sound_Player"; // jailint: allow(unused_import) only the Windows branch uses it
 
 main :: () {
     #if OS == .WINDOWS {

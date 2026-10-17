@@ -1,7 +1,7 @@
 {
-  "name": "jai-toolchain",
-  "displayName": "Jai Toolchain",
-  "description": "Jai language support: language server, linter, formatter and syntax highlighting",
+  "name": "jacket",
+  "displayName": "Jacket",
+  "description": "Jai toolchain: language server, linter, formatter and syntax highlighting for the Jai language",
   "version": "0.3.0",
   "publisher": "matteopolak",
   "license": "AGPL-3.0-or-later",
@@ -10,14 +10,14 @@
     "color": "#1e1e1e",
     "theme": "dark"
   },
-  "homepage": "https://github.com/matteopolak/jai/blob/main/docs/tools/vscode-extension.md",
+  "homepage": "https://github.com/matteopolak/jacket/blob/main/docs/tools/vscode-extension.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/matteopolak/jai.git",
+    "url": "https://github.com/matteopolak/jacket.git",
     "directory": "editors/vscode"
   },
   "bugs": {
-    "url": "https://github.com/matteopolak/jai/issues"
+    "url": "https://github.com/matteopolak/jacket/issues"
   },
   "type": "module",
   "packageManager": "pnpm@12.6.0",
@@ -46,6 +46,20 @@
     "workspaceContains:**/*.jai",
     "workspaceContains:**/jailint.toml"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "In an untrusted workspace the language server runs without compile-time execution (no #run, build metaprograms or computed #insert), the Run, Build and Check File commands are off, and workspace settings that name a program, a library directory or compiler arguments are ignored.",
+      "restrictedConfigurations": [
+        "jai.server.path",
+        "jai.compiler.path",
+        "jai.formatter.path",
+        "jai.stdlib.path",
+        "jai.toolchain.autoDownload",
+        "jai.run.arguments"
+      ]
+    }
+  },
   "contributes": {
     "languages": [
       {
@@ -156,7 +170,7 @@
       {
         "id": "formatSpecifier",
         "superType": "string",
-        "description": "A `%` directive in a print-family format string."
+        "description": "A `%` directive in the format string of a call to a procedure declared `@PrintLike`."
       }
     ],
     "semanticTokenScopes": [
@@ -271,7 +285,7 @@
           ],
           "default": "prompt",
           "scope": "machine",
-          "markdownDescription": "What to do when no `jailsp` is configured or on `PATH`: download the toolchain release whose version matches this extension from github.com/matteopolak/jai, verified against pinned SHA-256 checksums."
+          "markdownDescription": "What to do when no `jailsp` is configured or on `PATH`: download the toolchain release whose version matches this extension from github.com/matteopolak/jacket, verified against pinned SHA-256 checksums."
         },
         "jai.completion.autoImport": {
           "type": "boolean",
@@ -300,7 +314,7 @@
     },
     "configurationDefaults": {
       "[jai]": {
-        "editor.defaultFormatter": "matteopolak.jai-toolchain",
+        "editor.defaultFormatter": "matteopolak.jacket",
         "editor.semanticHighlighting.enabled": true
       }
     },

@@ -7,7 +7,7 @@ use super::scope::{EntityId, EntityKind, EntityState, Found, Resolved, ScopeId, 
 use super::value::ProcId;
 use super::*;
 use crate::types::{ArrayKind, StructId, TypeKind};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 /// Lengths of `IdeFacts::refs`, `Compiler::entities` and `Compiler::procs` at a point.
 #[derive(Clone, Copy, Debug)]
@@ -43,8 +43,12 @@ const SHORT_REF: u32 = 64;
 pub struct IdeFacts {
     /// Per-analysis missing filesystem discovery; never a placeholder or failed module body.
     missing_modules: HashMap<(ScopeId, Span), IdeMissingModule>,
-    /// Files whose path starts with one of these are recorded.
+    /// Files whose path starts with one of these are recorded. Roots are spelled with `/`
+    /// separators; on Windows a source path is compared in that same spelling, since the
+    /// filesystem may hand the compiler `\`-separated paths.
     roots: Vec<String>,
+    /// Files recorded wherever they are: the open documents, as `FileSystem::canonical` keys.
+    files: Vec<PathBuf>,
     wanted: HashMap<FileId, bool>,
     /// The exact body associated with an IDE-final lenient failure. Replacing a
     /// procedure's AST invalidates that failure even without another source load.
@@ -55,6 +59,8 @@ pub struct IdeFacts {
     pub scopes: Vec<(Span, ScopeId)>,
     /// What `#insert`, `#run`, `#if` and macro calls produced (see `ide_meta`).
     pub expansions: Vec<super::ide_meta::IdeExpansion>,
+    /// Position in `expansions` of each (span, kind), so recording one is not a scan.
+    pub(super) expansion_index: HashMap<(Span, super::ide_meta::IdeExpansionKind), usize>,
     /// Calls and the procedure and parameters they resolved to.
     pub calls: Vec<super::ide_meta::IdeCall>,
     pub(super) call_spans: HashSet<Span>,
@@ -98,6 +104,12 @@ pub struct IdeFacts {
     by_position: std::cell::RefCell<RefIndex>,
     /// Lint mode (`jailint`): also record the facts below.
     pub lint: bool,
+    /// Workspace trust is withheld: no compile-time code runs (`call_thunk` refuses with
+    /// `DiagnosticKind::Untrusted`), so `#run` results, computed `#insert`s and build
+    /// metaprograms stay unknown.
+    pub untrusted: bool,
+    /// Where compile-time code was refused for that reason.
+    pub refused: Vec<Span>,
     /// Type of each checked expression of the recorded files, by span.
     pub exprs: HashMap<Span, IdeExprFact>,
     /// Each `cast(T) x` / `xx x` of the recorded files whose target was known, by span.
@@ -275,6 +287,12 @@ impl IdeFacts {
         *self.by_position.get_mut() = RefIndex::default();
     }
 
+    /// Also record `files` (open documents), whichever folder they are in.
+    pub fn with_files(mut self, files: Vec<PathBuf>) -> Self {
+        self.files = files;
+        self
+    }
+
     pub fn new(roots: Vec<String>) -> Self {
         Self {
             roots,
@@ -331,6 +349,7 @@ pub enum IdeReceiver {
 
 
 type IdeMissingModuleEpoch = (usize, usize, usize, usize, u64);
+
 struct IdeMissingModule {
     epoch: IdeMissingModuleEpoch,
     wanted: String,
@@ -449,7 +468,12 @@ impl Compiler {
             return w;
         }
         let path = &self.sources.get(file).path;
-        let w = ide.roots.iter().any(|r| path.starts_with(r.as_str()));
+        // Identity, not spelling: `./a`, `a//b/../b`, a symlink or another case of a folder name
+        // one file. Virtual sources (`<input>`) have no path on disk and compare as written.
+        let key = self.fs.canonical(Path::new(path));
+        let w = ide.roots.iter().any(|r| {
+            path.starts_with(r.as_str()) || (key.is_absolute() && key.starts_with(Path::new(r)))
+        }) || ide.files.contains(&key);
         ide.wanted.insert(file, w);
         w
     }
@@ -537,6 +561,22 @@ impl Compiler {
                 span,
                 what,
                 ty,
+                decl: false,
+            });
+        }
+    }
+
+    /// The name after `for :` names the `for_expansion` procedures the loop expands through,
+    /// like any other use of a procedure name.
+    pub(super) fn ide_note_for_iterator(&mut self, name: &ast::Ident, procs: &[ProcId]) {
+        if self.sketching() || !self.ide_wants(name.span.file) {
+            return;
+        }
+        if let Some(ide) = self.ide.as_mut() {
+            ide.refs.push(IdeRef {
+                span: name.span,
+                what: IdeWhat::Procs(procs.to_vec()),
+                ty: TypeId::COMPILE_TIME,
                 decl: false,
             });
         }

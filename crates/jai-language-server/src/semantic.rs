@@ -5,7 +5,7 @@ use jaic::build::{BuildEnv, WorkspaceObserver, Workspaces};
 use jaic::intern::Sym;
 use jaic::interp::{SandboxHost, SharedHost};
 use jaic::sema::ide::{IdeFacts, IdeLayout, IdeName};
-use jaic::sema::{Compiler, FileSystem, Options, TargetCpu, TargetOs};
+use jaic::sema::{Compiler, FileSystem, Options, TargetOs};
 use jaic::source::{FileId, ImportSuggestion};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -135,7 +135,7 @@ impl OverlayFs {
         if let Some(known) = self.canonical.borrow().get(path) {
             return known.clone();
         }
-        let found = crate::document::path_key(&self.base.canonical(&self.at(path)));
+        let found = crate::document::file_key(&*self.base, &self.at(path));
         self.canonical
             .borrow_mut()
             .insert(path.to_path_buf(), found.clone());
@@ -167,6 +167,22 @@ impl FileSystem for OverlayFs {
     fn list_dir(&self, path: &Path) -> Vec<(String, bool)> {
         self.base.list_dir(&self.at(path))
     }
+}
+
+/// What one run of a build metaprogram did: per workspace it created, the files it added with
+/// `add_build_file` (canonical keys), how many strings with `add_build_string`, and the module
+/// folders its build options add to the import path. Recorded while the metaprogram runs, so
+/// computed paths (`tprint`, variables, loops) are known exactly.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct BuildFacts {
+    pub programs: Vec<BuiltProgram>,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct BuiltProgram {
+    pub files: Vec<PathBuf>,
+    pub strings: usize,
+    pub import_dirs: Vec<PathBuf>,
 }
 
 /// The open documents' texts by path, shared so that asking again with the same inputs is
@@ -270,6 +286,22 @@ impl Analysis {
         self.located(path, &self.errors)
     }
 
+    /// The spans (start, end) in `path` of the compile errors of `kind`.
+    pub fn check_error_spans(
+        &self,
+        path: &Path,
+        kind: jaic::source::DiagnosticKind,
+    ) -> Vec<(usize, usize)> {
+        let Some(file) = self.file(path) else {
+            return Vec::new();
+        };
+        self.errors
+            .iter()
+            .filter(|e| e.kind == kind && e.span.file == file)
+            .map(|e| (e.span.start as usize, e.span.end as usize))
+            .collect()
+    }
+
     /// The compiler's warnings (a print format with the wrong argument count, a body that can
     /// fall off its end), placed like the errors.
     pub fn check_warnings(&self, path: &Path) -> Vec<(usize, usize, String)> {
@@ -314,6 +346,20 @@ impl Analysis {
             }
         }
         out
+    }
+
+    /// The replacement the compile error in `path` suggests (a misspelled module or name): the
+    /// span as (start, end) and the text for it.
+    pub fn suggested_replacement(&mut self, path: &Path) -> Option<(usize, usize, String)> {
+        let file = self.file(path)?;
+        let error = self.errors.first()?;
+        if error.span.file != file {
+            return None;
+        }
+        let suggested = self.compiler.with_name_suggestion(error);
+        let fixes = suggested.as_ref().unwrap_or(error).fixes.as_ref()?;
+        let (span, text) = fixes.replace.clone()?;
+        (span.file == file).then(|| (span.start as usize, span.end as usize, text))
     }
 
     /// The `#import`s that would declare the unknown name the compile error in `path` reports,
@@ -550,6 +596,16 @@ pub struct Cache {
     canonical: BTreeMap<PathBuf, PathBuf>,
     /// Programs compiled so far.
     compiles: usize,
+    /// Parsed files compiles share: most files are the same from one compile to the next.
+    parses: Rc<RefCell<jaic::parser::ParseReuse>>,
+    /// Workspace trust is withheld: compiles run no compile-time code (see
+    /// `IdeFacts::untrusted`). Survives `reset`; change it with `set_trusted`.
+    untrusted: bool,
+    /// The last good run of each build metaprogram (by its canonical root path). A run that
+    /// fails or runs out of budget leaves these alone.
+    pub(crate) recorded: BTreeMap<PathBuf, BuildFacts>,
+    /// Moves on whenever `recorded` changes.
+    pub(crate) recorded_version: u64,
 }
 
 fn hash(
@@ -582,6 +638,22 @@ fn quick_key(root: &Path, dirs: &[PathBuf], files: &Buffers, os: Option<TargetOs
 }
 
 impl Cache {
+    /// Whether compile-time code may run. A change drops every compile kept, which were made
+    /// under the other setting.
+    pub fn set_trusted(&mut self, trusted: bool) {
+        if self.untrusted == !trusted {
+            return;
+        }
+        *self = Self {
+            untrusted: !trusted,
+            ..Self::default()
+        };
+    }
+
+    pub fn trusted(&self) -> bool {
+        !self.untrusted
+    }
+
     /// Programs compiled so far, and compiles alive now.
     pub fn counts(&self) -> (usize, usize) {
         (self.compiles, self.entries.len())
@@ -664,9 +736,9 @@ impl Cache {
     ) -> Option<&mut Analysis> {
         let canonical: BTreeMap<PathBuf, Rc<[u8]>> = files
             .iter()
-            .map(|(p, t)| (crate::document::path_key(&env.fs.canonical(p)), t.clone()))
+            .map(|(p, t)| (crate::document::file_key(&*env.fs, p), t.clone()))
             .collect();
-        let path = crate::document::path_key(&env.fs.canonical(path));
+        let path = crate::document::file_key(&*env.fs, path);
         let at = self.entries.iter().rposition(|a| {
             a.usable
                 && a.os.is_none()
@@ -723,7 +795,7 @@ impl Cache {
                 let canonical = match self.canonical.get(p) {
                     Some(c) => c.clone(),
                     None => {
-                        let c = crate::document::path_key(&env.fs.canonical(p));
+                        let c = crate::document::file_key(&*env.fs, p);
                         self.canonical.insert(p.clone(), c.clone());
                         c
                     }
@@ -749,7 +821,35 @@ impl Cache {
             self.make_room(os, root);
             self.compiles += 1;
             let snapshot = files.clone();
-            let (compiler, errors, others) = compile(env, root, dirs, files, os);
+            // Folders a past run of this metaprogram added are not handed back to it: it adds
+            // them again if it still does, and a removed `import_path` line must disappear.
+            let past = self
+                .recorded
+                .get(&crate::document::path_key(&env.fs.canonical(root)));
+            let given_dirs: Vec<PathBuf> = dirs
+                .iter()
+                .filter(|d| {
+                    !past.is_some_and(|f| f.programs.iter().any(|p| p.import_dirs.contains(d)))
+                })
+                .cloned()
+                .collect();
+            let (compiler, errors, others, facts) = compile(
+                env,
+                root,
+                &given_dirs,
+                files,
+                os,
+                &self.parses,
+                self.untrusted,
+            );
+            // Another target's compile says nothing new about what the metaprogram did.
+            if let Some(facts) = facts.filter(|f| os.is_none() && !f.programs.is_empty()) {
+                let key = crate::document::path_key(&env.fs.canonical(root));
+                if self.recorded.get(&key) != Some(&facts) {
+                    self.recorded.insert(key, facts);
+                    self.recorded_version += 1;
+                }
+            }
             let cost = std::iter::once(&compiler)
                 .chain(others.iter().map(|p| &p.compiler))
                 .flat_map(|c| {
@@ -802,28 +902,53 @@ fn find_file(compiler: &Compiler, path: &Path) -> Option<FileId> {
 
 /// The editor facts a compile records for the files under `prefix`, its compile-time output
 /// going to `host`, with what jailint needs (expression types, casts, uses) when `lint`.
-fn editor_facts(prefix: &str, host: &Rc<RefCell<SandboxHost>>, lint: bool) -> Box<IdeFacts> {
-    let mut facts = IdeFacts::new(vec![prefix.to_string()]);
+fn editor_facts(
+    prefix: &str,
+    open: &[PathBuf],
+    host: &Rc<RefCell<SandboxHost>>,
+    lint: bool,
+    untrusted: bool,
+) -> Box<IdeFacts> {
+    let mut facts = IdeFacts::new(vec![prefix.to_string()]).with_files(open.to_vec());
     facts.output = Some(host.clone());
     facts.lint = lint;
+    facts.untrusted = untrusted;
     Box::new(facts)
 }
 
 /// Gives each compiler a metaprogram creates editor facts, and keeps it when it is done.
 struct Built {
+    /// What `add_build_file` / `add_build_string` added, by workspace.
+    added: Rc<RefCell<BTreeMap<i64, Vec<jaic::sema::ProgramSource>>>>,
     prefix: String,
+    open: Vec<PathBuf>,
     host: Rc<RefCell<SandboxHost>>,
     lint: bool,
+    untrusted: bool,
     done: Rc<RefCell<Vec<Compiler>>>,
 }
 
 impl WorkspaceObserver for Built {
     fn created(&mut self, compiler: &mut Compiler) {
-        compiler.ide = Some(editor_facts(&self.prefix, &self.host, self.lint));
+        compiler.ide = Some(editor_facts(
+            &self.prefix,
+            &self.open,
+            &self.host,
+            self.lint,
+            self.untrusted,
+        ));
     }
 
     fn finished(&mut self, compiler: Box<Compiler>, _failed: bool) {
         self.done.borrow_mut().push(*compiler);
+    }
+
+    fn source_added(&mut self, workspace: i64, source: &jaic::sema::ProgramSource) {
+        self.added
+            .borrow_mut()
+            .entry(workspace)
+            .or_default()
+            .push(source.clone());
     }
 }
 
@@ -844,6 +969,28 @@ fn check_rest(
     errors
 }
 
+/// Without the errors that only say compile-time code was not run (an untrusted workspace):
+/// what it would have produced is unknown, not wrong. Code a `#insert` would have generated
+/// may declare any name, so a file that has one refused cannot report names as unknown.
+fn known(
+    compiler: &Compiler,
+    mut errors: Vec<jaic::source::Diagnostic>,
+) -> Vec<jaic::source::Diagnostic> {
+    use jaic::source::DiagnosticKind;
+    let refused = |file: FileId| {
+        compiler
+            .ide
+            .as_ref()
+            .is_some_and(|ide| ide.refused.iter().any(|s| s.file == file))
+            && compiler.sources.get(file).text.contains("#insert")
+    };
+    errors.retain(|e| {
+        e.kind != DiagnosticKind::Untrusted
+            && !(matches!(e.kind, DiagnosticKind::UnknownIdentifier { .. }) && refused(e.span.file))
+    });
+    errors
+}
+
 /// The compiled program and its errors, and the programs its metaprogram built.
 fn compile(
     env: &Environment,
@@ -851,8 +998,16 @@ fn compile(
     dirs: &[PathBuf],
     files: BTreeMap<PathBuf, Rc<[u8]>>,
     os: Option<TargetOs>,
-) -> (Compiler, Vec<jaic::source::Diagnostic>, Vec<Program>) {
+    parses: &Rc<RefCell<jaic::parser::ParseReuse>>,
+    untrusted: bool,
+) -> (
+    Compiler,
+    Vec<jaic::source::Diagnostic>,
+    Vec<Program>,
+    Option<BuildFacts>,
+) {
     let dir = root.parent().map(Path::to_path_buf).unwrap_or_default();
+    let open: Vec<PathBuf> = files.keys().cloned().collect();
     let fs: Rc<dyn FileSystem> = Rc::new(OverlayFs {
         base: env.fs.clone(),
         dir: dir.clone(),
@@ -862,15 +1017,8 @@ fn compile(
     let options = || {
         let mut options = (env.options)(root);
         crate::modules::splice(&mut options.import_paths, dirs);
-        if let Some(os) = os {
-            options.os = os;
-            options.cpu = match os {
-                TargetOs::Windows | TargetOs::Linux => TargetCpu::X64,
-                TargetOs::MacOS => TargetCpu::Arm64,
-                TargetOs::Wasm => TargetCpu::Wasm,
-            };
-            options.long_double = jaic::sema::long_double_for(os, options.cpu, false);
-        }
+        // The target `jaic -check -os <os>` would use.
+        jaic::target::select_os_cpu(&mut options, os, None);
         options
     };
     let mut compiler = Compiler::new(options(), fs.clone());
@@ -881,10 +1029,8 @@ fn compile(
     )));
     compiler.interp.host = Box::new(SharedHost(host.clone()));
     compiler.interp.block_budget = Some(BLOCK_BUDGET);
-    let mut prefix = env.fs.canonical(&dir).to_string_lossy().into_owned();
-    if !prefix.ends_with('/') {
-        prefix.push('/');
-    }
+    // Spelled like the compiler's source paths, which come through the overlay's keys.
+    let prefix = crate::document::dir_prefix(&*env.fs, &dir);
     // Metaprograms may compile other programs (`compiler_create_workspace`): those are checked
     // the same way, with no output and the same host, and their compile-time code draws from
     // this compiler's budget.
@@ -893,6 +1039,7 @@ fn compile(
     // environment's own.
     let lint = os.is_none();
     let built = Rc::new(RefCell::new(Vec::new()));
+    let added = Rc::new(RefCell::new(BTreeMap::new()));
     let workspaces = Workspaces::new(BuildEnv {
         unwritten_output_hint: None,
         fs: compiler.fs.clone(),
@@ -902,20 +1049,28 @@ fn compile(
         make_host: Box::new(move |_| Box::new(SharedHost(workspace_host.clone()))),
         report: Box::new(|_| {}),
         observer: Some(Box::new(Built {
+            added: added.clone(),
             prefix: prefix.clone(),
+            open: open.clone(),
             host: host.clone(),
             lint,
+            untrusted,
             done: built.clone(),
         })),
     });
     compiler.attach_workspaces(workspaces);
-    compiler.ide = Some(editor_facts(&prefix, &host, lint));
+    compiler.ide = Some(editor_facts(&prefix, &open, &host, lint, untrusted));
+    let number = parses.borrow_mut().begin();
+    compiler.parse_reuse = Some((parses.clone(), number));
     let errors = compiler
         .compile_program(root)
         .err()
         .into_iter()
         .map(|e| *e)
         .collect::<Vec<_>>();
+    // A metaprogram that failed or ran out of budget did not finish what it did: its facts
+    // would be a prefix of the real ones.
+    let ran_to_the_end = errors.is_empty();
     // Workspaces no message loop drove compile once the metaprogram is done, as in a build.
     // Their stopping error is in their own facts, so the message here adds nothing.
     if errors.is_empty()
@@ -924,13 +1079,37 @@ fn compile(
         let _ = jaic::build::finish_all(&workspaces, &mut compiler.interp.block_budget);
     }
     let errors = check_rest(&mut compiler, errors);
+    let errors = known(&compiler, errors);
+    let base_paths = (env.options)(root).import_paths;
+    let mut recorded: Vec<(i64, BuiltProgram)> = Vec::new();
     let mut others: Vec<Program> = built
         .take()
         .into_iter()
         .map(|mut compiler| {
+            let id = compiler.workspace;
+            let mut program = BuiltProgram::default();
+            for source in added.borrow().get(&id).into_iter().flatten() {
+                match source {
+                    jaic::sema::ProgramSource::File(path) => {
+                        program
+                            .files
+                            .push(crate::document::path_key(&env.fs.canonical(path)));
+                    }
+                    _ => program.strings += 1,
+                }
+            }
+            program.import_dirs = compiler
+                .options
+                .import_paths
+                .iter()
+                .filter(|p| !base_paths.contains(p))
+                .map(|p| crate::document::path_key(&env.fs.canonical(p)))
+                .collect();
+            recorded.push((id, program));
             // The metaprogram's code spent the budget; checking the rest gets its own.
             compiler.interp.block_budget = Some(BLOCK_BUDGET);
             let errors = check_rest(&mut compiler, Vec::new());
+            let errors = known(&compiler, errors);
             Program {
                 compiler,
                 // Core does not expose a generated program's selected entry. Never borrow
@@ -954,7 +1133,11 @@ fn compile(
     }
     // Every interpreter on the host is closed: what compile-time code left allocated goes too.
     host.borrow_mut().release_memory();
-    (compiler, errors, others)
+    recorded.sort_by_key(|(id, _)| *id);
+    let facts = ran_to_the_end.then(|| BuildFacts {
+        programs: recorded.into_iter().map(|(_, p)| p).collect(),
+    });
+    (compiler, errors, others, facts)
 }
 
 thread_local! {

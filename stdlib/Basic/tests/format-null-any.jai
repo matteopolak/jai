@@ -31,9 +31,7 @@ main :: () {
     address := *(p.*);
 
     assert(address == null);
-    held: Any = p.*;
-
-    ignore_any(held);
+    unused: Any = p.*; // jailint: allow(unused_variable) the formatted value is what is tested
 
     ignore_any(p.*);
     zero: *Empty;

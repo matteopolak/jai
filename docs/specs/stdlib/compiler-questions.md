@@ -201,8 +201,8 @@ and dependent nested interface contracts need review; no permissive fallback is
 counted as support. Runtime Type values cannot establish a concrete binding-time
 interface and diagnose explicitly, including later variadic arguments.
 
-Canonical __reg is a distinct source type and a SIMD operand marker. Expanded
-parameters alias the caller register, including generic forwarding; 32/64-bit
+Canonical __reg is a distinct source type and a register operand marker. Expanded
+parameters alias the caller #asm register (vector, general-purpose or mask), including generic forwarding; 32/64-bit
 lane extraction and mutation execute on interpreter/native/WASM. Standalone
 storage, runtime procedure ABI and scalar coercion diagnose unsupported use.
 Wider register-marker contracts are not established by the reviewed 128-bit

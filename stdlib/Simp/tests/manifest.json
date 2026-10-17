@@ -29,7 +29,8 @@
     ],
     "required_capabilities": [
       "native SDK, OS or graphics services"
-    ]
+    ],
+    "window_lease": true
   },
   {
     "name": "glyph-atlas",
@@ -70,6 +71,7 @@
     ],
     "required_capabilities": [
       "native SDK, OS or graphics services"
-    ]
+    ],
+    "window_lease": true
   }
 ]

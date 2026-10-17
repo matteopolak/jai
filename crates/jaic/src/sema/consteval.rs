@@ -102,6 +102,18 @@ impl Compiler {
 
     /// Finish the compile-time function `f` and run it; returns its scalar results.
     pub fn call_thunk(&mut self, f: FnCtx, span: Span) -> Result<Vec<u64>> {
+        // The one place compile-time code starts running (`#run`, computed `#insert`,
+        // `#modify`, build metaprograms): an untrusted workspace's code never does.
+        if let Some(ide) = self.ide.as_mut().filter(|ide| ide.untrusted) {
+            ide.refused.push(span);
+            return Err(Box::new(
+                Diagnostic::error(
+                    span,
+                    "compile-time code is not run in an untrusted workspace",
+                )
+                .with_kind(DiagnosticKind::Untrusted),
+            ));
+        }
         let func = f.b.finish();
         self.preflight_thunk_entry(&func)?;
         let id = self.program.reserve_func(func.name.clone());
@@ -424,7 +436,7 @@ impl Compiler {
         }
     }
 
-    /// Service available producers without evaluating final assertions while an
+    /// Service the runs that are ready without evaluating final assertions while an
     /// enclosing generator/body controller still owns a suspended continuation.
     /// Sources a run adds to this workspace are loaded immediately after it.
     pub(super) fn service_top_level_runs(&mut self) -> Result<()> {
@@ -477,7 +489,7 @@ impl Compiler {
         while self.asserts_done < self.asserts.len() {
             let (cond, message, args, scope) = self.asserts[self.asserts_done].clone();
             let misses = self.placeholder_misses;
-            let holds = self.eval_static_condition(scope, &cond);
+            let holds = self.eval_static_condition_as(scope, &cond, None);
             if holds.is_err() && !self.placeholders_final && self.placeholder_misses != misses {
                 return Ok(());
             }

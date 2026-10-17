@@ -1,11 +1,14 @@
-# Installs the Jai toolchain (jaic, jailsp, jailint, jaifmt) from a GitHub release of
-# https://github.com/matteopolak/jai, verified against the release's SHA256SUMS:
+# Installs Jacket, the Jai toolchain (jaic, jailsp, jailint, jaifmt) from a GitHub release of
+# https://github.com/matteopolak/jacket, verified against the release's SHA256SUMS:
 #
-#   irm https://raw.githubusercontent.com/matteopolak/jai/main/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/matteopolak/jacket/main/install.ps1 | iex
 #
 # Environment (each JAI_* name also works as JAIC_*; JAI_* wins when both are set):
 #   JAI_VERSION      release to install, e.g. 0.4.0 or v0.4.0 (default: the latest release)
 #   JAI_INSTALL_DIR  where releases are unpacked (default: %LOCALAPPDATA%\Programs\jai)
+#   JAI_BASE_URL     where release assets are fetched from, as <base>/v<version>/<asset> (default:
+#                    https://github.com/matteopolak/jai/releases/download). For mirrors and for
+#                    testing against local archives with a file:// URL; needs JAI_VERSION.
 #
 # Each version is unpacked into <dir>\<version>; <dir>\current is a directory junction to the
 # installed one and is the folder added to the user PATH. Running it again installs the
@@ -18,7 +21,7 @@
     $ProgressPreference = 'SilentlyContinue'
     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
-    $repo = 'matteopolak/jai'
+    $repo = 'matteopolak/jacket'
 
     $arch = $null
     try { $arch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString() } catch { }
@@ -31,7 +34,10 @@
 
     $version = if ($env:JAI_VERSION) { "$env:JAI_VERSION".Trim() } else { "$env:JAIC_VERSION".Trim() }
     if ($version.StartsWith('v')) { $version = $version.Substring(1) }
+    $defaultBase = "https://github.com/$repo/releases/download"
+    $baseUrl = if ($env:JAI_BASE_URL) { "$env:JAI_BASE_URL".TrimEnd('/') } elseif ($env:JAIC_BASE_URL) { "$env:JAIC_BASE_URL".TrimEnd('/') } else { $defaultBase }
     if (-not $version -or $version -eq 'latest') {
+        if ($baseUrl -ne $defaultBase) { throw 'JAI_BASE_URL needs JAI_VERSION' }
         # The /releases/latest page redirects to /releases/tag/v<version>; unlike the API, no
         # rate limit applies.
         $request = [Net.WebRequest]::Create("https://github.com/$repo/releases/latest")
@@ -47,18 +53,20 @@
     if ($version -notmatch '^[0-9A-Za-z.-]+$') { throw "JAI_VERSION '$version' is not a version like 0.4.0" }
 
     $installDir = if ($env:JAI_INSTALL_DIR) { $env:JAI_INSTALL_DIR } elseif ($env:JAIC_INSTALL_DIR) { $env:JAIC_INSTALL_DIR } else { Join-Path $env:LOCALAPPDATA 'Programs\jai' }
-    # The archive and its top folder are jai-<platform> since 0.4.1, jaic-<platform> before.
-    $prefix = 'jai'
-    if ($version -match '^(\d+)\.(\d+)\.(\d+)' -and [version]"$($Matches[1]).$($Matches[2]).$($Matches[3])" -le [version]'0.4.0') { $prefix = 'jaic' }
-    $root = "$prefix-$platform"
+    $root = "jacket-$platform"
     $archive = "$root.zip"
-    $base = "https://github.com/$repo/releases/download/v$version"
+    $base = "$baseUrl/v$version"
     $tmp = Join-Path ([IO.Path]::GetTempPath()) ("jai-install-" + [Guid]::NewGuid())
     New-Item -ItemType Directory -Force $tmp | Out-Null
     try {
         Write-Host "Downloading jai $version ($archive)"
-        Invoke-WebRequest -UseBasicParsing "$base/SHA256SUMS" -OutFile (Join-Path $tmp 'SHA256SUMS')
-        Invoke-WebRequest -UseBasicParsing "$base/$archive" -OutFile (Join-Path $tmp $archive)
+        foreach ($asset in @('SHA256SUMS', $archive)) {
+            if ($base.StartsWith('file://')) { # only reachable through JAI_BASE_URL
+                Copy-Item ([Uri]"$base/$asset").LocalPath (Join-Path $tmp $asset)
+            } else {
+                Invoke-WebRequest -UseBasicParsing "$base/$asset" -OutFile (Join-Path $tmp $asset)
+            }
+        }
         $expected = $null
         foreach ($line in Get-Content (Join-Path $tmp 'SHA256SUMS')) {
             $fields = $line -split '\s+', 2

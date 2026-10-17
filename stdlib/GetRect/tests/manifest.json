@@ -15,7 +15,8 @@
     ],
     "required_capabilities": [
       "native SDK, OS or graphics services"
-    ]
+    ],
+    "window_lease": true
   },
   {
     "name": "widgets-driven",
@@ -26,6 +27,7 @@
     ],
     "required_capabilities": [
       "native SDK, OS or graphics services"
-    ]
+    ],
+    "window_lease": true
   }
 ]
