@@ -85,7 +85,7 @@ jobs:
         # partly does skips that part itself under `OS == .WASM`. The browser release runs the same check.
         run: node tools/check_playground_stdlib.mjs artifacts/ci-wasm
       - name: Interpreter and browser engine agree (corpus and generated programs)
-        # docs/tools/differential-testing.md; the host jaic needs no LLVM to interpret.
+        # docs/tools/testing.md; the host jaic needs no LLVM to interpret.
         run: |
           cargo build --locked -j 2 -p jaic-cli --no-default-features
           python3 tools/jaic-diff.py --jaic target/debug/jaic --backends interp,wasm --wasm artifacts/ci-wasm corpus gen:1:40
@@ -94,7 +94,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # macos-15-intel only on pushes to main (its runners queue for a long time); see docs/tools/continuous-integration.md
+        # macos-15-intel only on pushes to main (its runners queue for a long time); see docs/tools/development.md
         include: ${{ fromJSON(github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/codex/cleanroom-integration') && '[{"runner":"macos-15","architecture":"arm64"},{"runner":"ubuntu-24.04","architecture":"x86_64"},{"runner":"ubuntu-24.04-arm","architecture":"aarch64"},{"runner":"macos-15-intel","architecture":"x86_64"}]' || '[{"runner":"macos-15","architecture":"arm64"},{"runner":"ubuntu-24.04","architecture":"x86_64"},{"runner":"ubuntu-24.04-arm","architecture":"aarch64"}]') }}
     concurrency:
       group: ${{ github.workflow }}-test-${{ github.ref }}-${{ matrix.runner }}-${{ matrix.runner == 'macos-15-intel' && 'newest' || github.sha }}
@@ -113,7 +113,7 @@ jobs:
         with:
           lld: 'true'
           font: 'false'
-      # The format and lint steps below run the Justfile's recipes (docs/tools/justfile.md).
+      # The format and lint steps below run the Justfile's recipes (docs/tools/development.md).
       - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
         with:
           just-version: '1.58.0'
@@ -166,8 +166,8 @@ jobs:
         id: stdlib-targets
         continue-on-error: true
         # Every stdlib module with -no_dce for linux, macos, windows and wasm, against
-        # tests/stdlib-targets.txt (docs/tools/stdlib-target-check.md); every Objective-C selector
-        # against its arguments and, on macOS, the runtime (docs/tools/objc-selector-check.md).
+        # tests/stdlib-targets.txt (docs/tools/testing.md); every Objective-C selector
+        # against its arguments and, on macOS, the runtime (docs/tools/testing.md).
         run: cargo test -p jaic-cli --locked --test stdlib_targets --test objc_selectors
       - name: Prepare hash-pinned SDL Python test inputs
         run: python3 tools/prepare_sdl_python_tests.py --scratch "$RUNNER_TEMP/sdl-python" --cache "$RUNNER_TEMP/sdl-python-cache" >> "$GITHUB_ENV"
@@ -194,7 +194,7 @@ jobs:
         id: backends
         continue-on-error: true
         # The interpreter, -O0 and -O2 native builds must print the same for the corpus and a
-        # fixed set of generated programs (docs/tools/differential-testing.md has the full run).
+        # fixed set of generated programs (docs/tools/testing.md has the full run).
         run: |
           cargo build --locked -p jaic-cli
           python3 tools/jaic-diff.py --jaic target/debug/jaic --backends interp,native,native-O2 corpus gen:1:40
@@ -391,7 +391,7 @@ jobs:
     # Open-source Jai projects built with their own entry points (first.jai, build.jai and the
     # arguments their READMEs document) and run: CLIs and libraries answer a real request or pass
     # their tests, games and editors open a window on a virtual display for a few seconds and must
-    # draw something (docs/tools/third-party-smoke-test.md). `windows-smoke` runs the same checks on
+    # draw something (docs/tools/upstream-corpus.md). `windows-smoke` runs the same checks on
     # Windows.
     name: third-party projects (${{ matrix.platform }})
     strategy:
@@ -569,7 +569,7 @@ jobs:
           xvfb-run -a python3 tools/check_clipboard_linux_package.py --verification-receipt "$(tail -n 1 "$CARGO_TARGET_DIR/runtime.log")" --output "$CARGO_TARGET_DIR/package"
   nix:
     # Evaluates the flake, builds jaic and jaifmt through Nix (their install checks build and run
-    # programs natively) and runs the packaged compiler; see docs/tools/nix.md.
+    # programs natively) and runs the packaged compiler; see docs/tools/releases.md.
     name: flake (${{ matrix.runner }})
     needs: changes
     if: needs.changes.outputs.nix == 'true'
@@ -604,7 +604,7 @@ jobs:
           nix develop "$GITHUB_WORKSPACE" --command sh -c 'cargo --version && llvm-config --version && python3 --version && node --version && echo "$LLVM_SYS_231_PREFIX"'
   # Package channels against the latest published release: install.sh, install.ps1 and the
   # Homebrew formula rendered by tools/render_packages.py, each installed for real and run. Nothing
-  # is published from here (release.yml publishes); see docs/tools/package-managers.md.
+  # is published from here (release.yml publishes); see docs/tools/releases.md.
   shellcheck:
     needs: changes
     if: needs.changes.outputs.packaging == 'true'
@@ -1116,7 +1116,7 @@ jobs:
           if ($watcherExit -ne 0 -or $abiExit -ne 0) { throw 'Native File_Watcher or SDK time-zone ABI suite failed' }
   windows-smoke:
     # The third-party projects of `upstream-smoke`, built and run on Windows with the interactive
-    # desktop and Mesa's software OpenGL (docs/tools/third-party-smoke-test.md).
+    # desktop and Mesa's software OpenGL (docs/tools/upstream-corpus.md).
     name: third-party projects (Windows x64)
     needs: changes
     if: needs.changes.outputs.windows == 'true'

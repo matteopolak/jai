@@ -1,5 +1,5 @@
 name: fuzzing
-# Nightly libFuzzer runs of every target (docs/tools/fuzzing.md), plus a fast replay of the
+# Nightly libFuzzer runs of every target (docs/tools/testing.md), plus a fast replay of the
 # saved crash inputs on every push and pull request so fixed crashes stay fixed.
 on:
   push:
