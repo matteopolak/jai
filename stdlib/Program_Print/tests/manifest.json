@@ -6,11 +6,7 @@
   {
     "name": "plugin-file-output",
     "source": "plugin-file-output/main.jai",
-    "stdout": "ok\n",
-    "required_os": [
-      "linux",
-      "macos"
-    ]
+    "stdout": "ok\n"
   },
   {
     "name": "string-escaping",

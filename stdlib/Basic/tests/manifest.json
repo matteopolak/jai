@@ -159,11 +159,7 @@
   },
   {
     "name": "corpus-api/file-compile-time-qualified",
-    "stdout": "ok\n",
-    "required_os": [
-      "linux",
-      "macos"
-    ]
+    "stdout": "ok\n"
   },
   {
     "name": "corpus-api/file-no-import-negative",

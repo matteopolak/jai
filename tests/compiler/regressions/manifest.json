@@ -341,10 +341,6 @@
     ],
     "required_capabilities": [
       "native Process import and compile-time child process"
-    ],
-    "required_os": [
-      "linux",
-      "macos"
     ]
   },
   {
