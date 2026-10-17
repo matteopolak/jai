@@ -1,4 +1,4 @@
-//! Original enum dependency runtime regression on actual host and WASM64 backends.
+//! Enum dependency runtime regression on actual host and WASM64 backends.
 mod common;
 use common::run;
 use jaic::sema::{Compiler, Options, ProgramSource, TargetCpu, TargetOs, VirtualFs};

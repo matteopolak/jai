@@ -1,4 +1,4 @@
-//! Original mixed scalar/spread normalization regressions.
+//! Mixed scalar/spread normalization regressions.
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 

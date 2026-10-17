@@ -1,4 +1,4 @@
-//! Original private-library lint coverage and application privacy regressions.
+//! Private-library lint coverage and application privacy regressions.
 use jailint::{
     config::Config,
     driver::{Options, run},

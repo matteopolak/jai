@@ -1,4 +1,4 @@
-//! Independent ordinary variadic header/call diagnostics; no native execution.
+//! Ordinary variadic header/call diagnostics; no native execution.
 mod common;
 use common::bare_compiler as compiler;
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};

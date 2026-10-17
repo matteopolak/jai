@@ -1,4 +1,4 @@
-//! Original generic-default metadata regressions using reviewed record fields.
+//! Generic-default metadata exposed through the public record fields.
 use jaic::sema::{Compiler, Options, VirtualFs};
 use std::{path::Path, rc::Rc};
 

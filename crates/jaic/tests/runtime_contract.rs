@@ -1,4 +1,4 @@
-//! Reviewed startup options checked against the actual production library.
+//! Startup options checked against the actual runtime library.
 use jaic::sema::{Compiler, NativeFs, Options, ProgramSource, TargetCpu, TargetOs};
 use std::{path::Path, rc::Rc};
 

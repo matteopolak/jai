@@ -1,4 +1,4 @@
-//! Original enum dependency, ordering and invalid-program regressions.
+//! Enum dependency, ordering and invalid-program regressions.
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 

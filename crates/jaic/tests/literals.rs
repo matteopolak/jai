@@ -1,4 +1,4 @@
-//! Numeric contracts from the reviewed language and Jai_Lexer specifications.
+//! Numeric literal contracts from the language and Jai_Lexer specifications.
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 

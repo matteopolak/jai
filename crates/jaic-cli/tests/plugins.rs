@@ -1,4 +1,4 @@
-//! CLI orchestration uses reviewed Compiler hooks without a public library helper.
+//! `+Plugin` arguments drive the Compiler hooks of a child workspace.
 use std::{path::PathBuf, process::Command};
 
 const PLUGIN: &str = include_str!("../../../tests/compiler-semantics/plugin-lifecycle.jai");

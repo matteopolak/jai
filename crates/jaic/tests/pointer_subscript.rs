@@ -1,4 +1,4 @@
-//! Independent pointer-subscript dispatch and lvalue controls.
+//! Pointer-subscript dispatch and lvalue controls.
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 

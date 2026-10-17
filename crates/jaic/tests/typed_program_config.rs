@@ -1,4 +1,4 @@
-//! Independently authored module configuration controls; no reference inputs.
+//! Module configuration controls.
 use jaic::sema::{Compiler, Options, VirtualFs};
 use std::{path::Path, rc::Rc};
 

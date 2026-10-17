@@ -1473,7 +1473,7 @@ fn flush_sandbox(host: &Rc<RefCell<SandboxHost>>) {
 }
 
 /// The metaprogram `+Plugin` stands for: import each plugin module, then compile `path` in a
-/// workspace using the reviewed public Compiler lifecycle primitives.
+/// workspace using the public Compiler lifecycle procedures.
 fn plugin_metaprogram(cli: &Cli, path: &Path, wasi: bool) -> String {
     let quote = |s: &str| {
         let escaped = s

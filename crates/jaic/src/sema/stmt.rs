@@ -2967,7 +2967,7 @@ impl Compiler {
             }
         }
         // Check newly formed overload sets now: an unreferenced enclosing body
-        // may be checked after the driver's earlier declared-overload audit.
+        // may be checked after the driver's earlier declared-overload check.
         // The regular checker uses the logical receiving namespace while the
         // entities keep their captured lookup scopes.
         let mut sets = Vec::<Vec<EntityId>>::new();

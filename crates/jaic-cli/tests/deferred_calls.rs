@@ -1,4 +1,4 @@
-//! Reference-confirmed placeholder boundary and independent controller invariants.
+//! Placeholder boundary and controller invariants.
 mod common;
 use common::plugin_registration_fixture as fixture;
 use std::{

@@ -512,7 +512,7 @@ mod x86_machine {
 
     #[cfg(target_arch = "x86_64")]
     #[test]
-    // The independent ISA oracle uses unsafe std intrinsics only after real CPUID checks.
+    // The expected values come from std intrinsics, used only after real CPUID checks.
     #[allow(unsafe_code)]
     fn interpreter_uses_real_timestamps_aux_flags_and_optional_feature_diagnostics() {
         use std::arch::x86_64::{__cpuid_count, __rdtscp, _mm_lfence, _rdtsc};

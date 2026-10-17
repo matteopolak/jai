@@ -1,4 +1,4 @@
-//! Independent declaration discovery and configuration phase controls.
+//! Declaration discovery and configuration phase controls.
 use jaic::sema::{Compiler, Options, VirtualFs};
 use std::{path::Path, rc::Rc};
 

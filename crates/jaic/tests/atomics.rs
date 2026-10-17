@@ -1,4 +1,4 @@
-//! Original atomic intrinsic regressions; no module-specific implementation.
+//! Atomic intrinsic regressions; no module-specific implementation.
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 

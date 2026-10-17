@@ -1,4 +1,4 @@
-//! Original permission-metadata controls; no process memory is accessed.
+//! Permission-metadata controls; no process memory is accessed.
 #[path = "../src/interp/probe_maps.rs"]
 mod maps;
 

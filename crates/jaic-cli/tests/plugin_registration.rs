@@ -1,4 +1,4 @@
-//! Independently authored registration primitives; pending servicing stays separate.
+//! Registration primitives; pending servicing stays separate.
 mod common;
 use common::plugin_registration_fixture as fixture;
 use std::path::PathBuf;

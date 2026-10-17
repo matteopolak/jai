@@ -1,4 +1,4 @@
-//! Explicit widening/SDK encoding; narrow shift promotion remains unreviewed.
+//! Explicit widening and SDK encoding of shifts.
 mod common;
 use common::bare_compiler as compiler;
 use jaic::sema::ProgramSource;

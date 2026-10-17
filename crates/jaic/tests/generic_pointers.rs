@@ -1,4 +1,4 @@
-//! Independent reductions of default generic pointee identity and constraint binding.
+//! Reductions of default generic pointee identity and constraint binding.
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 

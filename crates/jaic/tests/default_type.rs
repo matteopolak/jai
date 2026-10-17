@@ -1,4 +1,4 @@
-//! Independent default-value identity checks, without calling a Type formatter.
+//! Default-value identity checks, without calling a Type formatter.
 use jaic::{
     sema::{
         Compiler, Options, VirtualFs,

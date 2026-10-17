@@ -1,4 +1,4 @@
-//! Independent nominal inheritance controls; no Apollo/type-name dispatch exceptions.
+//! Nominal inheritance controls; dispatch never depends on type names.
 use jaic::sema::{Compiler, Options, VirtualFs};
 use std::{path::Path, rc::Rc};
 

@@ -1,4 +1,4 @@
-//! Independent ordinary-module argument identity controls, without an SDK.
+//! Ordinary-module argument identity controls, without an SDK.
 use jaic::sema::{Compiler, Options, VirtualFs};
 use std::path::Path;
 use std::rc::Rc;

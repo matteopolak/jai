@@ -1,4 +1,4 @@
-//! Native thread entry signatures are checked before allocating an OS worker.
+//! Native thread entry signatures are checked before allocating an OS thread.
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 

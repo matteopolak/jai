@@ -1,4 +1,4 @@
-//! Syntax export flags are the reviewed public numbers, not private AST discriminants.
+//! Syntax export flags are the documented public numbers, not private AST discriminants.
 use jaic::{
     ast::{CodeBody, ExprKind, StmtKind},
     parser,

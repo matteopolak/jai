@@ -1,4 +1,4 @@
-//! Original target-aware source checking; no native SDK execution or replaced stdlib oracle.
+//! Target-aware source checking; no native SDK is executed.
 use std::{
     path::{Path, PathBuf},
     process::{Command, Output},

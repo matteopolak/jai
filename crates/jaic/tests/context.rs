@@ -1,4 +1,4 @@
-//! Original lexical context/cleanup regressions independent of stdlib bodies.
+//! Lexical context/cleanup regressions independent of stdlib bodies.
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
 use std::rc::Rc;
 

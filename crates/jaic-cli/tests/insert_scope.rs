@@ -1,4 +1,4 @@
-//! Independent insertion lexical-shape controls; no reference compiler execution.
+//! Insertion lexical-shape controls.
 mod common;
 use common::success_with_stdout as success;
 use std::{path::PathBuf, process::Command};

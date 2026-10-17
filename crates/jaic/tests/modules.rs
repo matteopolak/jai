@@ -1,4 +1,4 @@
-//! Original regressions derived from docs/specs/jai and distribution policy.
+//! Regressions derived from docs/specs/jai and distribution policy.
 use jaic::sema::{Compiler, Options, VirtualFs};
 use std::path::Path;
 use std::rc::Rc;

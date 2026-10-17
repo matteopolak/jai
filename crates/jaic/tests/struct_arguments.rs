@@ -1,5 +1,5 @@
 mod bindings {
-    //! Independent typed generic-struct argument inference, without application code.
+    //! Typed generic-struct argument inference, without application code.
     use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};
     use std::rc::Rc;
 

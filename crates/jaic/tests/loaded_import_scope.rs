@@ -1,4 +1,4 @@
-//! Independent controls for anonymous imports in loaded files.
+//! Controls for anonymous imports in loaded files.
 use jaic::sema::{Compiler, Options, VirtualFs};
 use std::{path::Path, rc::Rc};
 

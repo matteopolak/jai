@@ -1,4 +1,4 @@
-//! Independent conditional exports, import cycles and configured runtime identity.
+//! Conditional exports, import cycles and configured runtime identity.
 use jaic::sema::{Compiler, Options, VirtualFs};
 use jaic::{intern::Sym, sema::scope::EntityState};
 use std::{path::Path, rc::Rc};

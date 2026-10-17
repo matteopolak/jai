@@ -1,4 +1,4 @@
-//! Original constant immutability and documented foreign storage reexport regressions.
+//! Constant immutability and documented foreign storage reexport regressions.
 use jaic::sema::{Compiler, Options, ProgramSource, TargetCpu, TargetOs, VirtualFs};
 use std::rc::Rc;
 

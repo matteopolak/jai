@@ -1,4 +1,4 @@
-//! Inherited field layout contracts required by reviewed public record shapes.
+//! Inherited field layout contracts of the public record shapes.
 mod common;
 use common::compile_source as compile;
 use jaic::sema::{Compiler, Options, ProgramSource, VirtualFs};

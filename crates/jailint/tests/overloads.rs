@@ -1,4 +1,4 @@
-//! Concrete generic instances created during overload probing are not audit roots.
+//! Concrete generic instances created during overload probing are not lint roots.
 use std::{path::PathBuf, process::Command};
 
 fn audit(name: &str, source: &str) -> std::process::Output {
