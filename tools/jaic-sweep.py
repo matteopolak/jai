@@ -31,6 +31,8 @@ UPSTREAM = ROOT / "corpus/upstream"
 # changes the pinned corpus. Case id -> scratch root, filled before the cases start.
 WORKDIRS = {}
 CASE_METADATA = {}
+# Upstream cases that name the platforms they can run on (`only`, with `only_reason`), by id.
+UPSTREAM_PLATFORMS = {}
 
 
 def upstream_root(c):
@@ -133,6 +135,8 @@ def cases(name):
             )
     elif name == "upstream":
         for c in json.loads((ROOT / "tools/upstream-cases.json").read_text()):
+            if "only" in c:
+                UPSTREAM_PLATFORMS[c["id"]] = c
             yield (
                 c["id"],
                 upstream_root(c) / c["path"],
@@ -457,6 +461,13 @@ def main():
 
     def run(case):
         cid, path, mode, expect, extra = case
+        if cid in UPSTREAM_PLATFORMS:
+            from stdlib_runtime import host_platform
+
+            only = UPSTREAM_PLATFORMS[cid]
+            if host_platform() not in only["only"]:
+                reason = f"runs only on {', '.join(only['only'])}: {only.get('only_reason', '')}"
+                return cid, None, "", reason, PLATFORM_UNAVAILABLE
         metadata = CASE_METADATA.get(cid, {})
         if metadata:
             from stdlib_test_catalog import (
