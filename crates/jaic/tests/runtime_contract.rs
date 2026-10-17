@@ -53,7 +53,7 @@ fn public_x64_crash_record_facade_still_rejects_windows_arm64() {
     assert!(
         error
             .message
-            .contains("the reviewed Windows crash handler supports x64 only"),
+            .contains("the Windows crash handler supports x64 only"),
         "{}",
         error.render(&compiler.sources)
     );
