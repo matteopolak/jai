@@ -1,5 +1,5 @@
 {
-  "name": "jai-toolchain",
+  "name": "jacket",
   "displayName": "Jacket (Jai toolchain)",
   "description": "Jai language support: language server, linter, formatter and syntax highlighting",
   "version": "0.3.0",
@@ -300,7 +300,7 @@
     },
     "configurationDefaults": {
       "[jai]": {
-        "editor.defaultFormatter": "matteopolak.jai-toolchain",
+        "editor.defaultFormatter": "matteopolak.jacket",
         "editor.semanticHighlighting.enabled": true
       }
     },
