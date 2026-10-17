@@ -1,0 +1,57 @@
+{
+  "owner": "portable-asn1-socket / io_uring init-contract diagnosis",
+  "status": "source diagnosis verified; source-only catalogue/dispatch proposed, integration adoption pending",
+  "receipt_directory": "/Volumes/T7/codex-builds/jai-cleanroom-01a137eb/portable-asn1-socket/shared-target/io-uring-init-contract-ogb9mhoj",
+  "source_head": "ee06c6e9c54a94eabdcd2b89ae966913990d4cff",
+  "classification": {
+    "fixture": "authored compile-only dependency reduction wrongly executed at runtime",
+    "path": "submit_and_wait -> publish_sqes -> unmapped sq_tail read before io_uring_enter; no ring_init/setup call",
+    "kernel_unsupported_EPERM_proven": false,
+    "allocator_context_or_ABI_defect_proven": false,
+    "production_patch": null
+  },
+  "verification": {
+    "source_outcomes": 12,
+    "complete_strict_contexts": 4,
+    "isolated_policy_methods_pass": 31,
+    "new_dispatch_policy_methods": 4,
+    "ruff_check": true,
+    "new_python_and_foundation_format": true,
+    "JaiFmt": "QUEUED behind integration full current catalogue native lease, not run",
+    "native_kernel_or_Linux_ABI_verified": false,
+    "original_fixture_sha256": "a391c9c2f8450b473bf06b117d12ac840071412811aeb412e0995477c838a389",
+    "frozen_hash_mismatches": [],
+    "source_built_tools": {
+      "jaic": "d98c68137b7b73e46720a06ac66abb7e8c0903ea02aafd391cc6a8f761452fde",
+      "jailint": "94452a7c5c568d2ade7223d1b60a081a20740efe9b074f3ce2bb14a9e8b6f5ea"
+    },
+    "runtime_file_format": "Pending owner formatting; untouched proposal base and candidate both fail full-file Ruff format, retained in runtime-format-owner-qualification.json"
+  },
+  "proposed_shared_hunks_not_applied": [
+    "tools/foundations_case_capabilities.py::apply_foundations_capabilities exact source-only annotation",
+    "tools/stdlib_runtime.py::run_mode check-only dispatch; main nested result/report counters with separate source-check-only count"
+  ],
+  "own_new_files": [
+    "tests/extensions/io-uring-init-contract/initialized-nop.jai",
+    "tools/test_io_uring_source_only.py",
+    "docs/extensions/io-uring-init-contract-review.md",
+    "docs/status/io-uring-init-contract-ready.json"
+  ],
+  "shared_preimage_drift": [],
+  "preserved_runtime_gates": [
+    "extensions/io-uring-raw",
+    "extensions/io-uring-protocol",
+    "all original HTTP workload/assertions/load/timeouts",
+    "integrated exit37/exit1 accounting and sealed childMAIN packet"
+  ],
+  "remaining": [
+    "Integration reconcile exact generic source-only dispatch/report with its Windows provider run_mode changes",
+    "JaiFmt source check of new positive fixture after integration lease release",
+    "Actual supported Linux initialized-ring/kernel/ABI and runtime controls remain required",
+    "Root bounded HTTPS O2 round3 category/status/phase needed; labels alone do not identify cause",
+    "Original Linux HTTP/connect failures remain unresolved; failing-copy observer collection follows integration CI",
+    "No request to recover nonexistent old failed-copy/allthread records",
+    "Hyperserve original runtime unresolved; rejected execution never retried"
+  ],
+  "coordination": "Refreshed current Windows-provider edits into isolated candidate; own narrow hunks applied with fuzz0; 31 policies rerun PASS"
+}
