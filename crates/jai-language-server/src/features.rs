@@ -1010,7 +1010,7 @@ impl Session {
         let path = self
             .environment
             .as_ref()
-            .map_or(path.clone(), |e| e.fs.canonical(&path));
+            .map_or(path.clone(), |e| crate::document::file_key(&*e.fs, &path));
         DocumentUri::from_path(&path).ok()
     }
 

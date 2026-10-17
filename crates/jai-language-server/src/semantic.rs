@@ -135,7 +135,7 @@ impl OverlayFs {
         if let Some(known) = self.canonical.borrow().get(path) {
             return known.clone();
         }
-        let found = crate::document::path_key(&self.base.canonical(&self.at(path)));
+        let found = crate::document::file_key(&*self.base, &self.at(path));
         self.canonical
             .borrow_mut()
             .insert(path.to_path_buf(), found.clone());
@@ -682,9 +682,9 @@ impl Cache {
     ) -> Option<&mut Analysis> {
         let canonical: BTreeMap<PathBuf, Rc<[u8]>> = files
             .iter()
-            .map(|(p, t)| (crate::document::path_key(&env.fs.canonical(p)), t.clone()))
+            .map(|(p, t)| (crate::document::file_key(&*env.fs, p), t.clone()))
             .collect();
-        let path = crate::document::path_key(&env.fs.canonical(path));
+        let path = crate::document::file_key(&*env.fs, path);
         let at = self.entries.iter().rposition(|a| {
             a.usable
                 && a.os.is_none()
@@ -741,7 +741,7 @@ impl Cache {
                 let canonical = match self.canonical.get(p) {
                     Some(c) => c.clone(),
                     None => {
-                        let c = crate::document::path_key(&env.fs.canonical(p));
+                        let c = crate::document::file_key(&*env.fs, p);
                         self.canonical.insert(p.clone(), c.clone());
                         c
                     }
@@ -893,10 +893,8 @@ fn compile(
     )));
     compiler.interp.host = Box::new(SharedHost(host.clone()));
     compiler.interp.block_budget = Some(BLOCK_BUDGET);
-    let mut prefix = env.fs.canonical(&dir).to_string_lossy().into_owned();
-    if !prefix.ends_with('/') {
-        prefix.push('/');
-    }
+    // Spelled like the compiler's source paths, which come through the overlay's keys.
+    let prefix = crate::document::dir_prefix(&*env.fs, &dir);
     // Metaprograms may compile other programs (`compiler_create_workspace`): those are checked
     // the same way, with no output and the same host, and their compile-time code draws from
     // this compiler's budget.

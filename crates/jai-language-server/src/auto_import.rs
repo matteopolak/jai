@@ -212,7 +212,9 @@ pub(crate) fn canonical_key(env: &Environment, path: &Path) -> PathBuf {
     for parent in path.ancestors().skip(1) {
         if env.fs.is_dir(parent) {
             let suffix = path.strip_prefix(parent).expect("ancestor prefix");
-            return crate::document::path_key(&env.fs.canonical(parent).join(suffix));
+            return crate::document::path_key(
+                &crate::document::file_key(&*env.fs, parent).join(suffix),
+            );
         }
     }
     crate::document::path_key(&canonical)
