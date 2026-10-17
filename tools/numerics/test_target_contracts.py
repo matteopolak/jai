@@ -72,7 +72,7 @@ class TargetContracts(unittest.TestCase):
 
     def test_unknown_fixture_never_defaults_to_skip_or_pass(self):
         with self.assertRaisesRegex(ValueError, "uninventoried fixture"):
-            target_contract("tests/numerics/unreviewed.jai", "wasm")
+            target_contract("stdlib/Float16/tests/unreviewed.jai", "wasm")
         with self.assertRaisesRegex(ValueError, "uninventoried target"):
             target_contract("stdlib/Float16/tests/core.jai", "unknown")
 

@@ -77,7 +77,7 @@ def main():
         subprocess.run([compiler, "-check", "-os", "windows", "-cpu", cpu, str(fixture)],
                        cwd=ROOT, env=env, check=True)
     for name in ["time-configured/main", "time-conversion", "elapsed-time", "calendar-text", "calendar-native", "apollo-caller-return"]:
-        source = ROOT / "tests/portable-stdlib" / (name + ".jai")
+        source = ROOT / "stdlib/Basic/tests" / (name + ".jai")
         commands = [[compiler, "-interp", str(source)]]
         for optimization in ["-O0", "-O2"]:
             executable = ROOT / "target/portable-time-foundation" / (name.replace('/', '-') + optimization)

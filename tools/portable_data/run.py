@@ -13,7 +13,7 @@ root = Path(__file__).resolve().parents[2]
 sources = [
     "stdlib/Ico_File", "stdlib/Simple_Package", "stdlib/Subtitles",
     "stdlib/internal/resource-wire", "stdlib/internal/simple-package",
-    "stdlib/internal/subtitles", "tests/portable-data",
+    "stdlib/internal/subtitles",
     "stdlib/Windows_Resources", "stdlib/Ico_File/tests/resource.jai",
     "stdlib/Icon", "stdlib/internal/icon-plugin",
     "stdlib/Windows_Resources/tests/manifest.jai",
@@ -71,15 +71,23 @@ run(sys.executable, "tools/portable_data/api_inventory.py")
 run(formatter, "--check", *sources)
 context_lint()
 run(sys.executable, "tools/portable_data/wire_consumer.py", output, "fixtures")
+PROGRAMS = {
+    "ico-wire": "stdlib/Ico_File/tests/wire.jai",
+    "ico-filename": "stdlib/Ico_File/tests/filename.jai",
+    "package-contract": "stdlib/Simple_Package/tests/package.jai",
+    "subtitles-contract": "stdlib/Subtitles/tests/parsing.jai",
+    "icon-plugin": "stdlib/Icon/tests/plugin.jai",
+    "icon-phase": "stdlib/Icon/tests/phase.jai",
+}
 for name in ("ico-wire", "ico-filename", "package-contract", "subtitles-contract", "icon-plugin", "icon-phase"):
-    source = f"tests/portable-data/{name}.jai"
+    source = PROGRAMS[name]
     run(compiler, "-interp", source, "--", output)
     for mode in ("O0", "O2"):
         binary = output / f"{name}-{mode}"
         run(compiler, f"-{mode}", source, "-exe", binary)
         run(binary, output)
 for name in ("package-contract", "subtitles-contract", "icon-plugin", "icon-phase"):
-    wasm_test(f"tests/portable-data/{name}.jai", name)
+    wasm_test(PROGRAMS[name], name)
 resource_test = "stdlib/Ico_File/tests/resource.jai"
 run(compiler, "-interp", resource_test, "--", output)
 for mode in ("O0", "O2"):
@@ -110,14 +118,14 @@ for os_name, cpu in contexts:
     tag = os_name + (f"-{cpu}" if cpu else "")
     for name in ("ico-wire", "package-contract", "subtitles-contract", "icon-plugin", "icon-phase"):
         run(compiler, "-check", "-no_dce", *target_args,
-            f"tests/portable-data/{name}.jai")
+            PROGRAMS[name])
 if failures:
     print("FAILED target vectors:", ", ".join(failures), file=sys.stderr)
     raise SystemExit(1)
 if os.name == "nt":
     for mode in ("O0", "O2"):
         for name in ("resource", "discovery", "console"):
-            source = f"stdlib/tests/portable-data-{name}-windows.jai"
+            source = f"stdlib/Windows_Resources/tests/{name}-windows.jai"
             binary = output / f"{name}-windows-{mode}.exe"
             run(compiler, f"-{mode}", source, "-exe", binary)
             run(binary, output)

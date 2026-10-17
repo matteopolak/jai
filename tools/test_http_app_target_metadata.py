@@ -6,7 +6,7 @@ import sys
 import unittest
 
 sys.dont_write_bytecode = True
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location(
     "foundations_capabilities", ROOT / "tools/foundations_case_capabilities.py"
 )

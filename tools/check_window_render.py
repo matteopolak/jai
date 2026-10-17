@@ -10,6 +10,7 @@ from pathlib import Path
 import platform
 import subprocess
 from stdlib_runtime import runtime_prefix
+from window_render_tests import WINDOW_RENDER_TESTS
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -35,7 +36,9 @@ def main():
         module = {"signed-native-fields": "Input", "texture-packing": "Simp",
                   "glyph-atlas": "Simp", "macos-events": "Window_Creation",
                   "macos-window": "Window_Creation", "windows-device-decoding": "Input"}.get(name)
-        return ROOT / (f"stdlib/{module}/tests/{name}.jai" if module else f"tests/window-render/{name}.jai")
+        if module:
+            return ROOT / f"stdlib/{module}/tests/{name}.jai"
+        return ROOT / WINDOW_RENDER_TESTS[name]
 
     def run(command, expected=None, restore_clipboard=False):
         nonlocal count
@@ -118,7 +121,7 @@ def main():
         run([compiler, test_source("windows-device-decoding"), "-check", "-add", "#run main();",
              "-os", "windows", "-cpu", cpu, "-I", args.stdlib], "ok\n")
     for case, member in [("private-helper-negative", "pack_bitmap"), ("private-atlas-negative", "atlas_create_page")]:
-        visibility = subprocess.run([str(compiler), str(ROOT / f"tests/window-render/{case}.jai"),
+        visibility = subprocess.run([str(compiler), str(ROOT / WINDOW_RENDER_TESTS[case]),
                                      "-check", "-os", "linux", "-I", str(args.stdlib)],
                                     cwd=ROOT, env=env, capture_output=True, text=True, timeout=60)
         if visibility.returncode != 1 or visibility.stdout or f"has no exported member `{member}`" not in visibility.stderr:

@@ -48,15 +48,15 @@ def main():
             print(json.dumps(record, indent=2), flush=True)
         return record["passed"]
 
-    fibers = ["io-fibers-context", "io-fibers-many", "io-fibers-channels",
-              "io-fibers-sleep-cancel", "io-allocator-ownership", "io-allocator-zero", "io-dependency-workers"]
+    fibers = ["fibers-context", "fibers-many", "fibers-channels",
+              "fibers-sleep-cancel", "allocator-ownership", "allocator-zero", "dependency-workers"]
     args_suites = [f"stdlib/Extensions/Args/tests/{name}.jai"
                   for name in ["parse", "help", "completions"]]
-    sources = [f"tests/extensions/{name}.jai" for name in fibers] + args_suites
+    sources = [f"stdlib/Extensions/Io/tests/{name}.jai" for name in fibers] + args_suites
     for mode in ["interp", "O0", "O2"]:
         for source in sources:
             name = Path(source).stem
-            extra = [str(output / f"workers-{mode}.data")] if name == "io-dependency-workers" else []
+            extra = [str(output / f"workers-{mode}.data")] if name == "dependency-workers" else []
             if mode == "interp":
                 command = [compiler, "-interp", source, "--", *extra]
             else:
@@ -103,9 +103,13 @@ def main():
 
     for os_name in ["linux", "windows", "macos"]:
         for cpu in ["x64", "arm64"]:
-            for name in ["args-process", "io-dependency-workers", "io-allocator-ownership"]:
+            for name, source in [
+                ("args-process", "stdlib/Extensions/Args/tests/process.jai"),
+                ("io-dependency-workers", "stdlib/Extensions/Io/tests/dependency-workers.jai"),
+                ("io-allocator-ownership", "stdlib/Extensions/Io/tests/allocator-ownership.jai"),
+            ]:
                 run(f"check-{name}-{os_name}-{cpu}",
-                    [compiler, f"tests/extensions/{name}.jai", "-check", "-os", os_name, "-cpu", cpu])
+                    [compiler, source, "-check", "-os", os_name, "-cpu", cpu])
 
     failures = sum(not result["passed"] for result in results)
     print(f"{len(results) - failures}/{len(results)} checks passed; {failures} failures")

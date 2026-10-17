@@ -151,7 +151,7 @@ for source, marker in [
         executable = out / (source + "-" + level)
         if check(
             source + "-" + level + "-build",
-            [compiler, "tests/numerics/" + source + ".jai"]
+            [compiler, "stdlib/GetRect/tests/" + source.replace("_", "-") + ".jai"]
             + imports
             + ["-" + level, "-exe", executable],
         ):

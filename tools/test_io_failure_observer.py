@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 sys.dont_write_bytecode = True
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 assigned_scratch = importlib.import_module("ci_test_scratch").assigned_scratch
 

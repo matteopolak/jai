@@ -147,15 +147,15 @@ def main():
             run("jai-format", [formatter, "--check", *[ROOT / p for p in JAI]])
         for cpu in ["x64", "arm64"]:
             for fixture in [
-                "clipboard-linux-api.jai",
-                "clipboard-linux-roundtrip.jai",
-                "clipboard-linux-window-source.jai",
+                "linux-api.jai",
+                "linux-roundtrip.jai",
+                "linux-window-source.jai",
             ]:
                 run(
                     "linux-source:" + cpu + ":" + fixture,
                     [
                         compiler,
-                        ROOT / "tests/portable-stdlib" / fixture,
+                        ROOT / "stdlib/Clipboard/tests" / fixture,
                         "-check",
                         "-no_dce",
                         "-os",
@@ -165,14 +165,14 @@ def main():
                     ],
                 )
             for fixture, name in [
-                ("clipboard-linux-no-empty.jai", "os_clipboard_empty"),
-                ("clipboard-linux-private.jai", "native_read"),
+                ("linux-no-empty.jai", "os_clipboard_empty"),
+                ("linux-private.jai", "native_read"),
             ]:
                 run(
                     "linux-negative:" + cpu + ":" + fixture,
                     [
                         compiler,
-                        ROOT / "tests/portable-stdlib" / fixture,
+                        ROOT / "stdlib/Clipboard/tests" / fixture,
                         "-check",
                         "-os",
                         "linux",

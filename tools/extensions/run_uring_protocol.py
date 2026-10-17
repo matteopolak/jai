@@ -49,9 +49,9 @@ def main():
             run(f"host-{mode}", [exe], "ok\n")
 
     for cpu in ["x64", "arm64"]:
-        for name in ["io-uring-dependency-repro", "io-uring-raw"]:
+        for name in ["dependency", "raw"]:
             run(f"linux-{cpu}-{name}",
-                [compiler, "-check", "-os", "linux", "-cpu", cpu, f"tests/extensions/{name}.jai"])
+                [compiler, "-check", "-os", "linux", "-cpu", cpu, f"stdlib/Extensions/Io_Uring/tests/{name}.jai"])
         run(f"linux-{cpu}-strictlint", [linter, "-D", "warnings", "--os", "linux", "--cpu", cpu,
                                       "--context", "stdlib/Extensions/Io_Uring/tests/raw.jai", "stdlib/Extensions/Io_Uring"])
     run("host-strictlint", [linter, "-D", "warnings", source])
