@@ -270,6 +270,22 @@ impl Analysis {
         self.located(path, &self.errors)
     }
 
+    /// The spans (start, end) in `path` of the compile errors of `kind`.
+    pub fn check_error_spans(
+        &self,
+        path: &Path,
+        kind: jaic::source::DiagnosticKind,
+    ) -> Vec<(usize, usize)> {
+        let Some(file) = self.file(path) else {
+            return Vec::new();
+        };
+        self.errors
+            .iter()
+            .filter(|e| e.kind == kind && e.span.file == file)
+            .map(|e| (e.span.start as usize, e.span.end as usize))
+            .collect()
+    }
+
     /// The compiler's warnings (a print format with the wrong argument count, a body that can
     /// fall off its end), placed like the errors.
     pub fn check_warnings(&self, path: &Path) -> Vec<(usize, usize, String)> {
