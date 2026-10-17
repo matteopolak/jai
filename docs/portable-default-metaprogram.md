@@ -45,8 +45,8 @@ compiler source-name exception. Full command:
 `python3 -B tools/check_portable_default_metaprogram.py`;
 evidence target/default-metaprogram-check-integrated.log.
 
-Remaining compiler execution limits: .X64 backend/debugger are explicitly
-unsupported by current compiler; selected-workspace command-line readback has
+Remaining compiler execution limits: a .X64 backend request builds with the
+single LLVM code generator, and the interactive debugger is unsupported; selected-workspace command-line readback has
 the corrected generic reproducer. These are separate from the now-working normal
 default CLI workflow and its passed source/lint gate. Native other OS/combined
 baseline are coordinator gates, not claimed here.
