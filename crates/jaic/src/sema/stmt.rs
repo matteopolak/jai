@@ -2656,6 +2656,9 @@ impl Compiler {
                 procs.push(p);
             }
         }
+        if let Some(iterator) = &for_.iterator {
+            self.ide_note_for_iterator(iterator, &procs);
+        }
         if procs.is_empty() {
             return err(
                 span,

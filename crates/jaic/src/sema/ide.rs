@@ -558,6 +558,22 @@ impl Compiler {
         }
     }
 
+    /// The name after `for :` names the `for_expansion` procedures the loop expands through,
+    /// like any other use of a procedure name.
+    pub(super) fn ide_note_for_iterator(&mut self, name: &ast::Ident, procs: &[ProcId]) {
+        if self.sketching() || !self.ide_wants(name.span.file) {
+            return;
+        }
+        if let Some(ide) = self.ide.as_mut() {
+            ide.refs.push(IdeRef {
+                span: name.span,
+                what: IdeWhat::Procs(procs.to_vec()),
+                ty: TypeId::COMPILE_TIME,
+                decl: false,
+            });
+        }
+    }
+
     /// Lint mode: `cast` at `span` converted a `from` operand to `target`.
     pub(super) fn ide_note_cast(&mut self, span: Span, target: TypeId, op: &Operand) {
         if !self.ide.as_ref().is_some_and(|i| i.lint) || !self.ide_wants(span.file) {
