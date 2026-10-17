@@ -557,7 +557,10 @@ impl MetaOp {
 /// Id of the program being compiled by the command line (workspace 1 is reserved, as in `jai`).
 pub const TOP_LEVEL_WORKSPACE: i64 = 2;
 
-pub const COMPILER_VERSION: &str = concat!("jaic ", env!("CARGO_PKG_VERSION"));
+/// Version text returned by `compiler_get_version_info`. Programs read the Jai language version
+/// from the first three integers of this text (`0.2.030` is language 0 / 2 / 30), so the
+/// language version comes first and the `jaic` product version follows it.
+pub const COMPILER_VERSION: &str = concat!("Jai 0.2.030 (jaic ", env!("CARGO_PKG_VERSION"), ")");
 
 impl Workspaces {
     /// A registry whose workspace 1 is the top-level program.
